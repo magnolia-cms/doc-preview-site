@@ -1,8 +1,12 @@
 {
     "version": "0.2",
     "language": "en",
-    "words": ["asciidoc", "antora", "jcr", "paas"],
+    "words": ["asciidoc", "antora"],
     "ignorePaths": ["node_modules", "dist"],
-    "dictionaries": ["en_US"]
+    "dictionaries": ["en_US"],
+    "ignoreRegExpList": [
+      "/<[^>]*>/g", // Ignore HTML tags
+      "/&[^;]+;/g" // Ignore HTML entities like &amp; and &lt;
+    ]
   }
   
