@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "gulp": "gulp",
-    "swagger-cli": "swagger-cli"
+    "swagger-cli": "swagger-cli",
+    "spell-check": "cspell '**/*.adoc' || true"
   },
   "dependencies": {
     "@antora/cli": "3.0.0",
@@ -31,5 +32,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://git.magnolia-cms.com/projects/DOCUMENTATION/repos/antora-site.git"
+  },
+  "devDependencies": {
+    "cspell": "^8.10.4"
   }
 }
