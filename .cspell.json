@@ -4,9 +4,10 @@
     "words": ["asciidoc", "antora"],
     "ignorePaths": ["node_modules", "dist"],
     "dictionaries": ["en_US"],
+    "files": ["**/*.adoc"],
     "ignoreRegExpList": [
-      "/<[^>]*>/g", // Ignore HTML tags
-      "/&[^;]+;/g" // Ignore HTML entities like &amp; and &lt;
+      "/<[^>]*>/g",
+      "/&[^;]+;/g"
     ]
   }
   
