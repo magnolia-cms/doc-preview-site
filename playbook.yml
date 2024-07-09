@@ -198,7 +198,8 @@ content:
   - url: https://git.magnolia-cms.com/scm/incubator/incubator-module-docs.git
     branches: [master]
 
-  content_root: ./build/content
+runtime:
+  cache_dir: ./.cache/antora
 
 urls:
   redirect_facility: static
