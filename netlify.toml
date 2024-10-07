@@ -2,11 +2,18 @@
   from = "/product-docs/6.2/:splat.html"
   to = "/product-docs/6.2/:splat"
   status = 301
-  force = true
 
 [[redirects]]
-  from = "/product-docs/:splat"
+  from = "/product-docs/6.2/*"
+  to = "/product-docs/6.2/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/product-docs/6.3/*"
   to = "/product-docs/6.3/:splat"
   status = 301
-  force = true
-  conditions = { "splat" = "!*/6.2/*" }  # Avoid catching versioned paths
+
+[[redirects]]
+  from = "/product-docs/*"
+  to = "/product-docs/6.3/:splat"
+  status = 301
