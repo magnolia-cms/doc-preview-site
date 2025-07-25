@@ -36,7 +36,7 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/documentation/cli-docs.git
       branches: ["v5", "v4"]
     - url: https://gitlab.magnolia-platform.com/pd/documentation/paas-docs.git
-      branches: ['DOCU-3913']
+      branches: ['DOCU-3981']
     - url: https://gitlab.magnolia-platform.com/pd/documentation/api-reference-docs.git
       branches: [master]
     - url: https://gitlab.magnolia-platform.com/ps/incubator/workflow-extended.git
@@ -303,6 +303,9 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/documentation/magnolia-vercel-docs.git
       branches: [master]
     - url: https://gitlab.magnolia-platform.com/pd/modules/imaging.git
+      start_path: docs
+      branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/extensions/image-recognition.git
       start_path: docs
       branches: [master]
 
