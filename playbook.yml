@@ -309,7 +309,9 @@ content:
       start_path: docs
       branches: [master]
     - url: https://gitlab.magnolia-platform.com/pd/extensions/package-manager.git
-      start_path: docs
+      start_paths:
+        - docs
+        - api
       branches: ["apiDocu"]
       
 runtime:
