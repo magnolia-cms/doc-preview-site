@@ -29,9 +29,7 @@ jobs:
       - name: Configure Git credentials for GitLab
         env:
           GIT_CREDENTIALS: ${{ secrets.GIT_CREDENTIALS }}
-        run: |
-          git config --global credential.helper store
-          echo "https://${GIT_CREDENTIALS}@gitlab.magnolia-platform.com" > ~/.git-credentials
+          RUN_VERSION_CHECK: true
 
       - name: Build Antora site (preview)
         run: npx antora playbook.yml
