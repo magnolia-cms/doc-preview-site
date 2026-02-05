@@ -31,9 +31,7 @@ jobs:
           GIT_CREDENTIALS: ${{ secrets.GIT_CREDENTIALS }}
         run: |
           git config --global credential.helper store
-          cat <<EOF > ~/.git-credentials
-https://${GIT_CREDENTIALS}@gitlab.magnolia-platform.com
-EOF
+          echo "https://${GIT_CREDENTIALS}@gitlab.magnolia-platform.com" > ~/.git-credentials
 
       - name: Build Antora site (preview)
         run: npx antora playbook.yml
