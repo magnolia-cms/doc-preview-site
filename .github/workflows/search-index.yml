@@ -26,12 +26,9 @@ jobs:
       - name: Install Antora/site dependencies
         run: npm ci
 
-      - name: Configure Git credentials for GitLab
-        env:
-          GIT_CREDENTIALS: ${{ secrets.GIT_CREDENTIALS }}
-          RUN_VERSION_CHECK: true
-
       - name: Build Antora site (preview)
+        env:
+          GITLAB_TOKEN: ${{ secrets.GIT_CREDENTIALS }}
         run: npx antora playbook.yml
 
       - name: Install native-search dependencies
