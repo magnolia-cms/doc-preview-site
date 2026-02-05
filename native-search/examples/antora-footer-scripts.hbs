@@ -1,0 +1,59 @@
+{{!--
+  Magnolia Search Integration for Antora
+  
+  Replace your existing DocSearch/Algolia integration with this.
+  
+  1. Copy search-data/ files to your UI bundle's assets
+  2. Replace footer-scripts.hbs content with this
+  3. Add CSS link to head.hbs
+--}}
+
+<script src="{{{uiRootPath}}}/js/site.js"></script>
+<script async src="{{{uiRootPath}}}/js/vendor/highlight.js"></script>
+<script async src="{{{uiRootPath}}}/js/vendor/clipboard.js"></script>
+<script async src="{{{uiRootPath}}}/js/vendor/medium-zoom.js"></script>
+<script async src="{{{uiRootPath}}}/js/vendor/collapse.js"></script>
+
+{{!-- Magnolia Search (replaces DocSearch) --}}
+<script src="{{{uiRootPath}}}/js/magnolia-search.js"></script>
+
+<script type="text/javascript">
+(function() {
+  'use strict';
+  
+  // Initialize Magnolia Search
+  var searchUI = new MagnoliaSearchUI({
+    container: '#searchBar',
+    indexUrl: '{{{uiRootPath}}}/search-data/search-index.min.json',
+    chunksUrl: '{{{uiRootPath}}}/search-data/llm-chunks.json',
+    placeholder: 'Search documentation...',
+    hotkey: '/',
+    enableAI: true,
+    // Configure your AI backend endpoint:
+    aiEndpoint: 'https://your-api.example.com/api/ask'
+  });
+  
+  // ========================================
+  // Existing toggleDropDown function
+  // ========================================
+  function toggleDropDown() {
+    var linkEl = document.querySelectorAll('.has-dropdown');
+    var allDrops = document.querySelectorAll('.has-dropdown .navbar-dropdown');
+    for (var i = 0; i < linkEl.length; i++) {
+      linkEl[i].addEventListener('click', function(e) {
+        for (var j = 0; j < allDrops.length; j++) {
+          allDrops[j].style.display = "none";
+        }
+        e.stopPropagation();
+        if (e.target.nextElementSibling) {
+          e.target.nextElementSibling.style.display = "block";
+        }
+      });
+    }
+  }
+  
+  if (window.innerWidth < 1200) {
+    toggleDropDown();
+  }
+})();
+</script>

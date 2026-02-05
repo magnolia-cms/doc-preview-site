@@ -1,0 +1,28 @@
+{
+  "name": "magnolia-docs-search",
+  "version": "0.1.0",
+  "description": "A custom search engine for Magnolia CMS documentation with AI capabilities",
+  "main": "src/indexer.js",
+  "scripts": {
+    "index": "node src/indexer.js",
+    "index:prod": "node src/indexer.js ./build/site ./search-data",
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "cat src/search-client.js src/ai-assistant.js src/search-ui.js > dist/magnolia-search.js",
+    "build:css": "cp src/search-ui.css dist/magnolia-search.css",
+    "serve": "npx http-server . -p 8080",
+    "test": "node test/test.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "magnolia",
+    "search",
+    "documentation",
+    "docsearch",
+    "ai"
+  ],
+  "author": "",
+  "license": "MIT"
+}

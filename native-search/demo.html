@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magnolia Search Demo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    
+    h1 {
+      color: #068449;
+    }
+    
+    .demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+    
+    .search-container {
+      width: 300px;
+    }
+    
+    .info-box {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .info-box h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+    
+    .info-box ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+    
+    .info-box li {
+      margin-bottom: 8px;
+    }
+    
+    code {
+      background: #e2e8f0;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .status {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .status.loading {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status.ready {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status.error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+  </style>
+  
+  <!-- Magnolia Search CSS -->
+  <link rel="stylesheet" href="src/search-ui.css">
+</head>
+<body>
+  <div class="demo-header">
+    <h1>🔍 Magnolia Search Demo</h1>
+    <div class="search-container">
+      <div id="searchBar"></div>
+    </div>
+  </div>
+  
+  <div id="status" class="status loading">
+    Loading search index...
+  </div>
+  
+  <div class="info-box">
+    <h2>How to Use</h2>
+    <ul>
+      <li>Press <code>/</code> or click the search button to open</li>
+      <li>Type to search (minimum 2 characters)</li>
+      <li>Use filter buttons to narrow by version</li>
+      <li>Press <code>↑</code> <code>↓</code> to navigate results</li>
+      <li>Press <code>Enter</code> to open a result</li>
+      <li>Press <code>Esc</code> to close</li>
+    </ul>
+  </div>
+  
+  <div class="info-box">
+    <h2>Try These Searches</h2>
+    <ul>
+      <li><strong>modules</strong> - Should show the Modules landing page</li>
+      <li><strong>list of modules</strong> - Should show section results</li>
+      <li><strong>REST API</strong> - Should show REST-related docs</li>
+      <li><strong>templating</strong> - Should show template documentation</li>
+    </ul>
+  </div>
+  
+  <div class="info-box">
+    <h2>Building the Index</h2>
+    <p>Before this demo works, you need to build the search index:</p>
+    <pre><code>npm install
+node src/indexer.js /path/to/your/build/site ./search-data</code></pre>
+    <p>Then serve this directory:</p>
+    <pre><code>npx http-server . -p 8080</code></pre>
+  </div>
+
+  <!-- Magnolia Search JS -->
+  <script src="src/search-client.js"></script>
+  <script src="src/ai-assistant.js"></script>
+  <script src="src/search-ui.js"></script>
+  
+  <script>
+    // Initialize search
+    var searchUI = new MagnoliaSearchUI({
+      container: '#searchBar',
+      indexUrl: './search-data/search-index.min.json',
+      chunksUrl: './search-data/llm-chunks.json',
+      placeholder: 'Search docs...',
+      enableAI: false  // Set to true if you have an AI backend
+    });
+    
+    // Update status when search loads
+    var statusEl = document.getElementById('status');
+    
+    // Check if search index exists
+    fetch('./search-data/search-index.min.json')
+      .then(function(response) {
+        if (response.ok) {
+          statusEl.className = 'status ready';
+          statusEl.textContent = '✓ Search index loaded! Press / to search.';
+        } else {
+          throw new Error('Index not found');
+        }
+      })
+      .catch(function(err) {
+        statusEl.className = 'status error';
+        statusEl.innerHTML = '✗ Search index not found. Run <code>node src/indexer.js</code> first.';
+      });
+  </script>
+</body>
+</html>
