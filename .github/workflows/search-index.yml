@@ -26,9 +26,14 @@ jobs:
       - name: Install Antora/site dependencies
         run: npm ci
 
-      - name: Build Antora site (preview)
+      - name: Configure Git credentials for GitLab
+        run: |
+          git config --global credential.helper store
+          echo "https://oauth2:${GITLAB_TOKEN}@gitlab.magnolia-platform.com" > ~/.git-credentials
         env:
-          GITLAB_TOKEN: ${{ secrets.GIT_CREDENTIALS }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+
+      - name: Build Antora site (preview)
         run: npx antora playbook.yml
 
       - name: Install native-search dependencies
