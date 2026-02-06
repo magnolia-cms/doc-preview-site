@@ -43,7 +43,7 @@ jobs:
 
       - name: Run search indexer against built preview site
         run: |
-          node native-search/src/indexer.js build/site search-data
+          node native-search/src/indexer.js build/site search-data || exit 1
 
       - name: Commit and push updated search-data
         run: |

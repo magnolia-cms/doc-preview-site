@@ -1,3 +1,9 @@
+[build]
+  command = "bash build.sh"
+  publish = "build/site"
+  secrets_scan_enabled = false
+  timeout = 1800
+
 [[redirects]]
   from = "/product-docs/6.2/*.html"
   to = "/product-docs/6.2/:splat"
