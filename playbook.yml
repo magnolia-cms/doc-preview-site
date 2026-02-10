@@ -316,7 +316,12 @@ content:
         - docs
         - api
       branches: ["apiDocu"]
-      
+    - url: https://gitlab.magnolia-platform.com/pd/extensions/page-editor-apps.git
+      start_path: docs
+      branches: ["main"]
+    - url: https://gitlab.magnolia-platform.com/pd/extensions/image-focal.git
+      start_path: docs
+      branches: ["main"]
 runtime:
   cache_dir: ./.cache/antora
 
