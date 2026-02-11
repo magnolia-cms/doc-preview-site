@@ -6,9 +6,12 @@
   "scripts": {
     "index": "node src/indexer.js",
     "index:prod": "node src/indexer.js ./build/site ./search-data",
-    "build": "npm run build:js && npm run build:css",
+    "build": "npm run build:js && npm run build:css && npm run build:ask-ai",
     "build:js": "cat src/search-client.js src/ai-assistant.js src/search-ui.js > dist/magnolia-search.js",
     "build:css": "cp src/search-ui.css dist/magnolia-search.css",
+    "build:ask-ai": "npm run build:ask-ai:js && npm run build:ask-ai:css",
+    "build:ask-ai:js": "cat src/ai-assistant.js src/ask-ai-ui.js > dist/magnolia-ask-ai.js",
+    "build:ask-ai:css": "cp src/ask-ai-ui.css dist/magnolia-ask-ai.css",
     "serve": "npx http-server . -p 8080",
     "test": "node test/test.js"
   },

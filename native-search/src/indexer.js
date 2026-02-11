@@ -28,6 +28,7 @@ class MagnoliaDocsIndexer {
       filesProcessed: 0,
       searchRecords: 0,
       llmChunks: 0,
+      pagesSplit: 0,
       errors: []
     };
   }
@@ -128,10 +129,15 @@ class MagnoliaDocsIndexer {
       this.stats.searchRecords++;
     }
     
-    // Create LLM chunk (full page context)
-    const llmChunk = this.createLlmChunk(metadata, sections, url);
-    this.llmChunks.push(llmChunk);
-    this.stats.llmChunks++;
+    // Create LLM chunks (may split large pages)
+    const llmChunks = this.createLlmChunks(metadata, sections, url);
+    if (llmChunks.length > 1) {
+      this.stats.pagesSplit++;
+    }
+    for (const chunk of llmChunks) {
+      this.llmChunks.push(chunk);
+      this.stats.llmChunks++;
+    }
   }
 
   /**
@@ -347,10 +353,91 @@ class MagnoliaDocsIndexer {
   }
 
   /**
-   * Create an LLM-optimized chunk
+   * Create LLM-optimized chunks (splits large pages intelligently)
    */
-  createLlmChunk(metadata, sections, url) {
-    // Build a rich, contextual document for LLM consumption
+  createLlmChunks(metadata, sections, url) {
+    const MAX_CHUNK_TOKENS = 1500; // Target max tokens per chunk
+    const chunks = [];
+    
+    // Build header (reused for all chunks from this page)
+    const header = this.buildChunkHeader(metadata, url);
+    const headerTokens = this.estimateTokens(header);
+    
+    // If page is small enough, return single chunk
+    let totalTokens = headerTokens;
+    for (const section of sections) {
+      totalTokens += this.estimateSectionTokens(section);
+    }
+    
+    if (totalTokens <= MAX_CHUNK_TOKENS) {
+      return [this.buildSingleChunk(header, sections, url, metadata, 0, 1)];
+    }
+    
+    // Split into multiple chunks
+    let currentChunk = {
+      sections: [],
+      tokens: headerTokens,
+      startIndex: 0
+    };
+    
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      const sectionTokens = this.estimateSectionTokens(section);
+      
+      // If adding this section would exceed limit AND we already have content
+      if (currentChunk.tokens + sectionTokens > MAX_CHUNK_TOKENS && currentChunk.sections.length > 0) {
+        // Finalize current chunk
+        const chunkIndex = chunks.length;
+        chunks.push(this.buildChunkFromSections(
+          header,
+          currentChunk.sections,
+          url,
+          metadata,
+          chunkIndex,
+          currentChunk.startIndex,
+          i - 1
+        ));
+        
+        // Start new chunk (include header tokens)
+        currentChunk = {
+          sections: [section],
+          tokens: headerTokens + sectionTokens,
+          startIndex: i
+        };
+      } else {
+        // Add section to current chunk
+        currentChunk.sections.push(section);
+        currentChunk.tokens += sectionTokens;
+      }
+    }
+    
+    // Don't forget last chunk
+    if (currentChunk.sections.length > 0) {
+      const chunkIndex = chunks.length;
+      chunks.push(this.buildChunkFromSections(
+        header,
+        currentChunk.sections,
+        url,
+        metadata,
+        chunkIndex,
+        currentChunk.startIndex,
+        sections.length - 1
+      ));
+    }
+    
+    // Update chunkTotal for all chunks
+    const totalChunks = chunks.length;
+    chunks.forEach(chunk => {
+      chunk.chunkTotal = totalChunks;
+    });
+    
+    return chunks;
+  }
+
+  /**
+   * Build chunk header (metadata section)
+   */
+  buildChunkHeader(metadata, url) {
     const lines = [
       `# ${metadata.title}`,
       '',
@@ -364,8 +451,64 @@ class MagnoliaDocsIndexer {
       '---',
       ''
     ];
+    return lines.join('\n');
+  }
+
+  /**
+   * Build a single chunk (for small pages)
+   */
+  buildSingleChunk(header, sections, url, metadata, chunkIndex, chunkTotal) {
+    const content = this.buildChunkContent(header, sections);
+    const baseId = crypto.createHash('md5').update(url).digest('hex').slice(0, 12);
     
-    // Add all sections with hierarchy
+    return {
+      id: chunkTotal === 1 ? baseId : `${baseId}-${chunkIndex}`,
+      url,
+      title: metadata.title,
+      category: metadata.category,
+      version: metadata.version,
+      content,
+      tokenEstimate: this.estimateTokens(content),
+      chunkIndex: chunkTotal === 1 ? undefined : chunkIndex,
+      chunkTotal: chunkTotal === 1 ? undefined : chunkTotal
+    };
+  }
+
+  /**
+   * Build chunk from sections (for split pages)
+   */
+  buildChunkFromSections(header, sections, url, metadata, chunkIndex, startSectionIndex, endSectionIndex) {
+    const content = this.buildChunkContent(header, sections);
+    const baseId = crypto.createHash('md5').update(url).digest('hex').slice(0, 12);
+    
+    // Build section range description
+    const sectionRange = sections.length === 1
+      ? sections[0].heading || 'Introduction'
+      : `${sections[0].heading || 'Introduction'} ... ${sections[sections.length - 1].heading || 'End'}`;
+    
+    return {
+      id: `${baseId}-${chunkIndex}`,
+      url,
+      title: metadata.title,
+      category: metadata.category,
+      version: metadata.version,
+      content,
+      tokenEstimate: this.estimateTokens(content),
+      chunkIndex,
+      chunkTotal: undefined, // Will be set after all chunks created
+      sectionRange,
+      sectionStartIndex: startSectionIndex,
+      sectionEndIndex: endSectionIndex
+    };
+  }
+
+  /**
+   * Build chunk content from header and sections
+   */
+  buildChunkContent(header, sections) {
+    const lines = [header];
+    
+    // Add sections with hierarchy
     for (const section of sections) {
       if (section.heading) {
         const prefix = '#'.repeat(Math.min(section.headingLevel + 1, 4));
@@ -379,17 +522,56 @@ class MagnoliaDocsIndexer {
       }
     }
     
-    const content = lines.join('\n').trim();
+    return lines.join('\n').trim();
+  }
+
+  /**
+   * Estimate tokens for text (improved accuracy)
+   */
+  estimateTokens(text) {
+    if (!text) return 0;
     
-    return {
-      id: crypto.createHash('md5').update(url).digest('hex').slice(0, 12),
-      url,
-      title: metadata.title,
-      category: metadata.category,
-      version: metadata.version,
-      content,
-      tokenEstimate: Math.ceil(content.split(/\s+/).length * 1.3) // Rough token estimate
-    };
+    // More accurate token estimation
+    // Average: ~4 characters per token, but markdown/code increases this
+    let tokens = 0;
+    
+    // Count words (base tokens)
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    tokens += words.length;
+    
+    // Add overhead for markdown formatting (~10%)
+    const markdownChars = (text.match(/[#*_`\[\]()]/g) || []).length;
+    tokens += Math.ceil(markdownChars * 0.1);
+    
+    // Code blocks are more token-dense (~1.5x)
+    const codeBlocks = (text.match(/\[Code\]/g) || []).length;
+    tokens += Math.ceil(codeBlocks * 50); // Rough estimate for code content
+    
+    // Tables have overhead
+    const tables = (text.match(/\[Table\]/g) || []).length;
+    tokens += Math.ceil(tables * 20);
+    
+    // Apply multiplier for general overhead (markdown, formatting, etc.)
+    return Math.ceil(tokens * 1.3);
+  }
+
+  /**
+   * Estimate tokens for a section
+   */
+  estimateSectionTokens(section) {
+    let tokens = 0;
+    
+    // Heading tokens
+    if (section.heading) {
+      tokens += this.estimateTokens(section.heading);
+    }
+    
+    // Content tokens
+    if (section.content) {
+      tokens += this.estimateTokens(section.content);
+    }
+    
+    return tokens;
   }
 
   /**
@@ -445,6 +627,25 @@ class MagnoliaDocsIndexer {
     console.log(`   Files processed: ${this.stats.filesProcessed}`);
     console.log(`   Search records:  ${this.stats.searchRecords}`);
     console.log(`   LLM chunks:      ${this.stats.llmChunks}`);
+    console.log(`   Pages split:     ${this.stats.pagesSplit}`);
+    
+    // Calculate chunk size stats
+    if (this.llmChunks.length > 0) {
+      const sizes = this.llmChunks.map(c => c.tokenEstimate).sort((a, b) => b - a);
+      const maxTokens = sizes[0];
+      const avgTokens = Math.round(sizes.reduce((a, b) => a + b, 0) / sizes.length);
+      const largeChunks = sizes.filter(s => s > 2000).length;
+      const veryLargeChunks = sizes.filter(s => s > 3000).length;
+      
+      console.log(`   Max chunk size:  ${maxTokens} tokens`);
+      console.log(`   Avg chunk size:  ${avgTokens} tokens`);
+      if (largeChunks > 0) {
+        console.log(`   Large chunks (>2000): ${largeChunks}`);
+      }
+      if (veryLargeChunks > 0) {
+        console.log(`   Very large (>3000):   ${veryLargeChunks}`);
+      }
+    }
     
     if (this.stats.errors.length > 0) {
       console.log(`   Errors:          ${this.stats.errors.length}`);
