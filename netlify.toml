@@ -23,3 +23,8 @@
   from = "/product-docs/*"
   to = "/product-docs/6.3/:splat"
   status = 301
+
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
