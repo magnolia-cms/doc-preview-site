@@ -33,6 +33,13 @@ jobs:
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
+      - name: Test GitLab connectivity and token
+        run: |
+          curl -v --connect-timeout 10 https://gitlab.magnolia-platform.com 2>&1 | head -30
+          git ls-remote https://oauth2:${GITLAB_TOKEN}@gitlab.magnolia-platform.com/pd/documentation/product-docs.git HEAD 2>&1 | head -10
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+
       - name: Build Antora site (preview)
         run: npx antora playbook.yml --fetch
         timeout-minutes: 15
