@@ -1,0 +1,83 @@
+---
+title: "Publishing Tools app"
+url: https://docs.magnolia-cms.com/product-docs/Apps/List-of-apps/Publishing-Tools-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Publishing Tools app
+---
+
+# Publishing Tools app
+
+This Publishing Tools app is installed by the [Publishing module](../../../Modules/List-of-modules/Publishing-module/) and has two subapps: Tools and Monitor.
+
+## [](#_tools)Tools
+
+In the Tools subapp, you can generate a new public key and clean the `mgnlSystem` workspace.
+
+![Tools subapp](../../../_images/6-3-appTools.png)
+
+## [](#_monitor)Monitor
+
+> **Note:** There is a known issue in the UI of this app (filed as PUBLISHING-336) where the closing "X" button appearing in the subapp tab will close the subapp but leave no way to reopen it.The subapp will reappear in the app only if you refresh (F5) the browser view. However, if you’ve had any other app open already, refreshing the browser view will also close all those apps running in the background and you will lose any unsaved data you may have already entered in them.Until a fix is available for the PUBLISHING-336 issue, you can overcome this limitation by opening Magnolia apps in separate browser tabs.
+
+The Monitor subapp allows you to monitor publishing details. Track who published what and when.
+
+![Monitor subapp](../../../_images/6-3-appMonitor_v2.png)
+
+-   **Overview**: Number of publishing and unpublishing requests, errors, committed and rollbacked transactions, content size and time needed for publication.
+
+    > **Note:** In the example below, there is only one publishing request. 1880 ms is how long the HTTP publication request took from the author to the public instance, including publishing the content on the public instance. 10 ms is for the second HTTP commit request that is sent when the publication request is successful (transactional publications only).
+
+-   **Publishing requests per workspace**: Number of publication items per workspace.
+
+-   **Public instance response**: Maximum, minimum and average response time for each receiver.
+
+-   **Publishing log**: Details of each publication. Can be filtered by user.
+
+    > **Note:** If the Publishing Tools app is open and something is published, the log doesn’t automatically update for the publication. A workaround is to refresh the page; however, you shouldn’t refresh it if you have unsaved content in other apps.
+
+    > **Tip:** Open the Publishing Tools app in a separate browser tab you don’t use for other apps. This allows you to refresh anytime without saving content in other apps first.
+
+-   **Error log**: Publishing error log.
+
+
+See [Publishing security](../../../Administration/Security/Publishing-security/) for more information about using the Publishing Tools app.
+
+## [](#_configuration)Configuration
+
+The Publishing Tools app is installed by the [Publishing module](../../../Modules/List-of-modules/Publishing-module/). Access to the app is restricted to the `superuser` role in the app configuration and [app launcher layout](../../../Administration/App-Launcher/App-launcher-layout/).
+
+The app configuration is bootstrapped from `/publishing-app/apps/publishing.yaml`.
+
+YAML configuration file for Publishing Tools app
+
+```yaml
+appClass: info.magnolia.publishing.app.PublishingBaseApp
+name: publishing
+subApps:
+  publishing:
+    label: Tools
+    subAppClass: info.magnolia.publishing.app.PublishingMainSubApp
+    class: info.magnolia.ui.api.app.SubAppDescriptor
+  monitor:
+    label: Monitor
+    subAppClass: info.magnolia.publishing.app.monitor.PublishingMonitorSubApp
+    class: info.magnolia.ui.api.app.SubAppDescriptor
+permissions:
+  roles:
+    superuser: superuser
+```
+
+You can access and modify the configuration via the **Resource Files** app or [decorate](../../../Developing/Definition-decoration/) the configuration from another module.
+
+## [](#_publishing_log_storage)Publishing log storage
+
+Publishing logs are stored in memory through info.magnolia.publishing.monitor.MemoryPublishingStorage, which is registered in **Configuration** > `/modules/publishing-core/config/publishingLogStorage`.
+
+You can customize the storage by extending the `MemoryPublishingStorage` interface.
+
+Related topics
+
+-   [Audit](../../../Administration/Monitoring/Audit/)
+
+-   [Monitoring](../../../Administration/Monitoring/)

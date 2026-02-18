@@ -1,0 +1,210 @@
+---
+title: "Caching arbitrary objects"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Cache-modules/Caching-arbitrary-objects/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Cache modules > Caching arbitrary objects
+---
+
+# Caching arbitrary objects
+
+This page explains how to cache arbitrary objects in Magnolia. You can cache basically every object. This takes caching well beyond [page](../../../../Features/Cache/#_page_caching) and [page fragment](../../../../Features/Cache/#_dynamic_page_caching) caching.
+
+## [](#_required_modules)Required modules
+
+The functionality for caching arbitrary objects is provided by at least two modules.
+
+-   Module [`magnolia-cache-core`](../Cache-core/) which defines the cache API.
+
+-   A second module which implements the API. Magnolia provides two implementations based on established third-party libraries for the low-level functions.
+
+    -   [`magnolia-cache-ehcache3`](../Ehcache-3-module/) is the default implementation which uses [Ehcache3](http://www.ehcache.org/).
+
+    -   [`magnolia-cache-memcached`](../Memcached-implementation/) is a high-performance, distributed memory object caching system which uses [Memcached](http://memcached.org/).
+
+
+
+## [](#_things_to_note_about_arbitrary_object_caching)Things to note about arbitrary object caching
+
+### [](#_speed_up_services)Speed up services
+
+The main reason to cache objects is to serve data faster and to save resources (cpu, memory, network load, etc.). For instance, use object caching when there is heavy request on a Magnolia `service` which must provide data from a remote source.
+
+### [](#_assure_data_validity)Assure data validity
+
+When delivering cached data you will probably need a mechanism to ensure cached data is valid and not outdated! How to handle this depends on the use case.
+
+### [](#_restrict_the_lifetime_of_cached_objects)Restrict the lifetime of cached objects
+
+When [putting](#_put_to_cache) objects to the cache you can restrict their lifetime. In this case, instead of checking the validity of cached objects, you can simply let them expire over time.
+
+## [](#_configure_the_cache)Configure the cache
+
+Magnolia allows to configure a cache factory specifically for each cache. For example you could have a specific configuration for `fooBarCache`. When no specific configuration is defined, the `default` factory configuration is used.
+
+Configuration differs depending on which version of Ehcache you use.
+
+### [](#_ehcache)Ehcache
+
+This is an example of how to configure a cache using Ehcache 2.
+
+Extend the `default` factory and override the persistence strategy with `none`. This persistence strategy allows to cache non-serializable objects.
+
+![Configuring a cache](../../../../_images/ADVT-cache-arbit-ehc.png)
+
+> **Warning:** The /modules/cache/config/cacheFactory/caches/fooBarCache node defines the cache name. fooBarCache is the name of the cache which was also used above when acquiring the Cache object within Java code.
+
+### [](#_ehcache3)Ehcache3
+
+This is an example of how to configure a cache using Ehcache 3. On the [Ehcache 3 module](../Ehcache-3-module/) page you will find documentation of all configuration options.
+
+Extend the `default` factory and override the persistence strategy for `disk` set to the value `false`. This persistence strategy allows to cache non-serializable objects.
+
+![Configuring a cache](../../../../_images/ADVT-cache-arbit-ehc3.png)
+
+> **Warning:** The /modules/cache/config/cacheFactory/delegateFactories/fooBarCache node defines the cache name. fooBarCache is the name of the cache which was also used above when acquiring the Cache object within Java code.
+
+## [](#_get_the_cache)Get the cache
+
+Achieve an instance of info.magnolia.module.cache.Cache. This is your cache to operate on. Give it a name which must be unique within the system.
+
+Example:
+
+```java
+import jakarta.inject.Inject;
+import jakarta.inject.Provider;
+
+import info.magnolia.module.cache.Cache;
+import info.magnolia.module.cache.inject.CacheFactoryProvider;
+
+public class MyClass {
+    private final Provider<CacheFactoryProvider> cacheFactoryProvider;
+
+    @Inject
+    public MyClass(Provider<CacheFactoryProvider> cacheFactoryProvider){
+        this.cacheFactoryProvider = cacheFactoryProvider;
+    }
+    public void fooBar(){
+        Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache");
+    }
+}
+```
+
+-   Lines 2, 4-6: Inject info.magnolia.module.cache.inject.CacheFactoryProvider and keep it as a final member of your class.
+
+-   Line 9: Fetch info.magnolia.module.cache.Cache with its name. The cache provider will always return the same instance once it has been created.
+
+
+All subsequent actions - adding, reading and removing objects - are applied on this `Cache` object.
+
+### [](#_cache_interface)Cache Interface
+
+info.magnolia.module.cache.Cache
+
+[Cache.java: Cache interface](https://gitlab.magnolia-platform.com//pd/modules/cache/-/raw/master/magnolia-cache-core/src/main/java/info/magnolia/module/cache/Cache.java?ref_type=heads): An interface around 3rd party or custom cache libraries.
+
+> **Important:** It is up to client components to decide what they use as keys and values.
+
+### [](#_put_to_cache)Put to cache
+
+info.magnolia.module.cache.Cache knows two methods to append objects.
+
+```java
+void put(Object key, Object value);
+
+void put(Object key, Object value, int timeToLiveInSeconds);
+```
+
+| Argument | Notes |
+| --- | --- |
+| `key` | **required**<br><br>The identifier of the object to cache |
+| `value` | **required**<br><br>The object to cache |
+| `timeToLiveInSeconds` | **optional**<br><br>The lifetime of the cached object in seconds.<br><br>Tip: The lifetime also can be configured globally, and you can configure a flush policy to clear the cache when some condition is met, or you may want to delete cached objects programmatically (see [#remove](#_remove_a_single_item) and [#clear](#_clear_complete_cache) below).<br><br>Example:<br><br>```java<br>public class MyClass {<br>    public Object put(Object key, Object value){<br>        Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache");<br>        cache.put(key, value);<br>        return value;<br>    }<br>    public Object put(Object key, Object value, int timeToLiveInSeconds){<br>        Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache");<br>        cache.put(key, value, timeToLiveInSeconds);<br>        return value;<br>    }<br>}<br>``` |
+
+## [](#_retrieve_from_cache)Retrieve from cache
+
+There are two methods to retrieve an object from cache.
+
+```java
+Object get(Object key);
+
+Object getQuiet(Object key);
+```
+
+### [](#_get)get
+
+Returns an object from the cache and blocks all the requests for the same key.
+
+Example:
+
+```java
+public JsonNode getData(String productId) throws Exception {
+    Cache cache = cacheFactoryProvider.get().get().getCache(CACHEKEY);
+    try {
+        JsonNode jsonNode = (JsonNode) cache.get(productId);
+        if (jsonNode != null) {
+            return jsonNode;
+        } else {
+            jsonNode = readJson(productId);
+            cache.put(productId, jsonNode);
+            return jsonNode;
+        }
+    } catch (Exception e) {
+        cache.put(productId, null); //unblock cache!
+        throw e;
+    }
+}
+```
+
+Use `#get` when you are unsure whether the desired object is already cached. If the object is not yet cached, you should acquire it by other means and add it to the cache.
+
+It is good practice to call `#get` and `#put` within the same associated try-catch-finally block for the same cache key.
+
+If there is no object for a key, add `null` to the cache anyway. This way you can ensure that the service doesn’t try to read data for a key without an existing value more than one time
+
+### [](#_getquiet)getQuiet
+
+Returns an object from the cache but does NOT block requests for the same key.
+
+Use `#getQuiet` to acquire objects which are already cached.
+
+This method is used more to `observe` or manage cached objects than to fetch a specific object. The Magnolia [Cache Browser app](../Cache-Browser-app/) is using `#getQuiet`, for instance.
+
+Example:
+
+```java
+public List getCachedObjects() {
+    List<Object> cachedObjects = new ArrayList<>();
+
+    Cache cache = cacheFactoryProvider.get().get().getCache(NAME_OF_CACHE);
+    Collection<Object> keys = cache.getKeys();
+
+    for (Object key : keys) {
+        Object value = cache.getQuiet(key);
+        if (value != null) {
+            cachedObjects.add(value);
+        }
+    }
+
+    return cachedObjects;
+}
+```
+
+Line 8: Uses `#getQuiet`
+
+## [](#_delete_from_cache)Delete from cache
+
+### [](#_remove_a_single_item)Remove a single item
+
+```java
+Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache");
+cache.remove("fb-90270240-xyz");
+```
+
+### [](#_clear_complete_cache)Clear complete cache
+
+`clear` deletes all items of a specific \[.inlineBean\]#info.magnolia.module.cache.Cache, which is identified by its `name`.
+
+```java
+cacheFactoryProvider.get().get().getCache("fooBarCache").clear()
+```

@@ -1,0 +1,40 @@
+---
+title: "Messages App module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Messages-App-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Messages App module
+---
+
+# Messages App module
+
+[Collaboration and workflow](../../../use-cases/collaboration-and-workflow/) Bundled: Community edition
+
+| Edition | CE  |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MSG](https://magnolia-cms.atlassian.net/browse/MSG) |
+| Maven site | [Messages](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fmessages%2Fmagnolia-messages-app%2F6.3.0) |
+| Latest | 6.3.0 |
+
+[Messages app](../../../Apps/List-of-apps/Messages-app/) allows you to send messages to other users via the [Notifications app](../../../Apps/List-of-apps/Notifications-app/).
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.messages</groupId>
+  <artifactId>magnolia-messages-app</artifactId>
+  <version>6.3.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+See [Messages app](../../../Apps/List-of-apps/Messages-app/).

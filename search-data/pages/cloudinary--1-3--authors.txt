@@ -1,0 +1,56 @@
+---
+title: "Authors"
+url: https://docs.magnolia-cms.com/cloudinary/1.3/authors/
+category: Modules
+version: modules
+breadcrumb: Cloudinary External DAM module > Authors
+---
+
+# Authors
+
+The Cloudinary External DAM module lets you store assets in Cloudinary while using them in Magnolia. You can edit images, tags, metadata and more - all in one place as well:
+
+-   Upload or download assets to and from Cloudinary directly from Magnolia.
+
+-   Browse and preview assets in Magnolia.
+
+-   Filter assets using the column filters in Magnolia.
+
+-   Edit key information for assets, such as the name or description where changes are automatically stored in Cloudinary.
+
+-   Edit images using the Magnolia Assets.
+
+-   Delete items from Magnolia.
+
+
+![cloudinary subapp general](_images/cloudinary-subapp-general.jpg)
+
+## [](#_managing_images_in_cloudinary)Managing images in Cloudinary
+
+Cloudinary provides a number of rich features such as transforming and optimizing assets so that your assets are beautifully displayed on all screen types and sizes. It provides secure and scalable storage as well so you can maintain your assets as they grow. Leveraging Cloudinary’s power directly in Magnolia is an optimal workflow and the Cloudinary External DAM module allows you to do just that.
+
+In fact, if you install the [Media Widget](../developers/configure-media-widget/), you can use the Cloudinary interface directly from within Magnolia. This is allowed by the Cloudinary widget field.
+
+![cloudinary widget field](_images/cloudinary-widget-field.png)
+
+When clicking on `Select Image or Video`, the following interface pops up.
+
+![cloudinary cloudinary dashboard](_images/cloudinary-cloudinary-dashboard.jpg)
+
+After inserting an image, the field value is set and the image can be displayed.
+
+There is also an option to select image variations, by double-clicking an image and selecting a variation as below.
+
+![cloudinary select image variation](_images/cloudinary-select-image-variation.png)
+
+After having selected a variation, the `Parameters` field will be filled as well.
+
+![cloudinary widget field parameters](_images/cloudinary-widget-field-parameters.png)
+
+This can be further customized as described on the image above. Authors just have to be careful to add valid transformations (parameters) in the correct format, because otherwise the image will not render.
+
+## [](#_renaming_cloudinary_items)Renaming Cloudinary items
+
+The Cloudinary External DAM module supports Cloudinary’s [Dynamic folder mode](https://cloudinary.com/documentation/dam_folder_modes). You must set `isDynamic` to `true` in your [module configuration](../developers/configure-dam-connector/#_configuration) to avail of the feature.
+
+If you created a Cloudinary account on or after **June 4, 2024**, you can rename assets or folders in Magnolia or Cloudinary. If you created a Cloudinary account before **June 4, 2024**, you must contact [Cloudinary support]({cloudinary-support}) to rename an asset or folder. Attempting to change the name in either Cloudinary or Magnolia modifies the URL and risks breaking production content.

@@ -1,0 +1,40 @@
+---
+title: "Installing Magnolia through npm CLI"
+url: https://docs.magnolia-cms.com/product-docs/Getting-started-with-Magnolia/Installing-Magnolia/Installing-Magnolia-through-npm-CLI/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Installing Magnolia > Installing Magnolia through npm CLI
+---
+
+# Installing Magnolia through npm CLI
+
+Unresolved include directive in modules/ROOT/pages/Getting-started-with-Magnolia/Installing-Magnolia/Installing-Magnolia-through-npm-CLI.adoc - include::magnolia-cli:ROOT:partial$p\_install-magnolia-with-npm-cli.adoc\[\]
+
+> **Caution:** If you set a new superuser password in a properties file before starting up a fresh installation, you must delete the password from the properties file. This is necessary to avoid a security vulnerability. Ensure any bootstrapped password is removed after logging in the first time.magnolia.properties...
+> magnolia.superuser.password=<YOUR_SUPERUSER_PASSWORD> (1)
+>
+> magnolia.eric.password=<BOOTSTRAPPED_PASSWORD_FOR_ERIC> (2)
+> magnolia.eric_de.password=<BOOTSTRAPPED_PASSWORD_FOR_ERIC_DE> (2)
+> magnolia.peter.password=<BOOTSTRAPPED_PASSWORD_FOR_PETER> (2)
+> magnolia.tina.password=<BOOTSTRAPPED_PASSWORD_FOR_TINA> (2)1See values.yml for an example configuration on DX Cloud.2These users are exclusive to Magnolia demo bundles. Their passwords are not part of the bundle. For initial access, you may need to bootstrap passwords. After the first login, ensure that you remove these passwords from the properties file.
+
+## [](#_logging_into_the_author_instance)Logging into the Author instance
+
+Go to [`http://localhost:8080/magnoliaAuthor`](http://localhost:8080/magnoliaAuthor) and log in to the Author instance as a `superuser` :
+
+-   Username: `superuser`
+
+-   Password: `superuser`
+
+
+The first page you see is the `App Launcher`, in which you can see groups of apps:
+
+![App launcher with grouped apps](../../../_images/mgnl-after-login.png)
+
+Congratulations. Magnolia is now installed and running.
+
+Related topics
+
+-   [Magnolia CLI v5](#magnolia-cli:ROOT:index.adoc)
+
+-   [Light development](../../../Developing/Light-development-in-Magnolia/)

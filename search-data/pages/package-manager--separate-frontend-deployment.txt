@@ -1,0 +1,74 @@
+---
+title: "Separate frontend deployment"
+url: https://docs.magnolia-cms.com/package-manager/separate-frontend-deployment/
+category: Modules
+version: modules
+breadcrumb: Package Manager module > Separate frontend deployment
+---
+
+# Separate frontend deployment
+
+The frontend code is contained in `warp-frontend-1.0.0.jar`. If you want to deploy it to a different domain than the backend code, for example, for caching reasons, follow the steps in this section.
+
+Package Manager backend jars:
+
+-   `magnolia-package-manager-core`
+
+-   `magnolia-package-manager-api`
+
+-   `magnolia-package-manager-app`
+
+
+The Package Manager frontend is contained in this jar:
+
+-   `warp-frontend`
+
+
+The key difference is how the frontend is managed separately.
+
+1.  Deploy and configure the frontend independently.
+
+    -   The specific configuration for the frontend’s URL, `magnolia.warp.url`, is handled at the frontend deployment level, not within the Magnolia webapp. The example below is for a Kubernetes configuration, if you have a Tomcat on the host, configure it in the properties file. `magnolia.api.url` is used to define the URL for the backend API. With that, you can specify the endpoint where the API can be accessed.
+
+        values.yml
+
+        ```yaml
+        global:
+          ...
+          env:
+            - name: magnolia.warp.url
+              value: <FRONTEND_ORIGIN> (1)
+            - name: magnolia.api.url
+              value: <AUTHOR_SERVER>/.rest/ (2)
+        ```
+
+        |     |     |
+        | --- | --- |
+        | **1** | Frontend origin value. |
+        | **2** | Backend URL value. |
+
+
+2.  Add a CORS filter because the backend and frontend have different origins.
+
+    -   If you’re using, for example, a Nginx/Apache proxy configuration, add the CORS filter on the proxy and set the file size limit for uploads in Package Manager:
+
+        values.yml
+
+        ```yaml
+        ingress:
+          enabled: true
+          annotations:
+            ...
+            nginx.ingress.kubernetes.io/proxy-body-size: 512m (1)
+            nginx.ingress.kubernetes.io/cors-allow-headers: "Authorization, Tus-Resumable, Upload-Length, Upload-Metadata, Upload-Offset, Accept, Content-Type, Origin, upload-concat, x-http-method-override, X-PINGOTHER, X-Requested-With" (2)
+            nginx.ingress.kubernetes.io/cors-allow-methods: "PUT, GET, POST, HEAD, OPTIONS, DELETE, PATCH" (2)
+            nginx.ingress.kubernetes.io/cors-allow-origin: "http://localhost:3000, <AUTHOR_SERVER>" (2)
+            nginx.ingress.kubernetes.io/enable-cors: "true" (2)
+        ```
+
+        |     |     |
+        | --- | --- |
+        | **1** | File size limit. |
+        | **2** | CORS filter creation. If you add CORS configuration on a proxy, you don’t need to add it in Magnolia instances. |
+
+    -   If you’re not using a proxy, import [this CORS filter](../_attachments/config.modules.site.config.site.cors.travel.yaml) to your site definition: `/modules/travel-demo/config/travel/cors`.

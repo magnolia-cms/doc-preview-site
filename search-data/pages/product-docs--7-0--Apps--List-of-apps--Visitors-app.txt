@@ -1,0 +1,148 @@
+---
+title: "Visitors app"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/List-of-apps/Visitors-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Visitors app
+---
+
+# Visitors app
+
+Use the Visitors app to manually edit or delete consent given by website visitors.
+
+Magnolia stores a data item in the Visitors app for every visitor who submits personal data and consents to their data being stored. A visitor can often withdraw their consent by, for example, clicking a link on webpage. Alternatively, consent can be edited manually using the Visitors app in Magnolia.
+
+## [](#_configuration)Configuration
+
+### [](#_workspaces)Workspaces
+
+The Visitors app operates on the `visitors` JCR workspace.
+
+Note that data displayed in the Visitors app may have references to data stored in other workspaces too. You can see these dependencies using the [Show dependencies](#showing-dependencies) action.
+
+## [](#_privacy_module_writes_into_the_contacts_app)Privacy module writes into the contacts app
+
+**Visitors app adds also contacts**
+
+In the Magnolia DX Core Travel Demo, the `contacts` workspace is registered in the configuration of the Privacy module for demonstration purposes of dealing with personal data. This means the Visitors app interacts not only with the `visitors` workspace but also with the `contacts` workspace, which is otherwise primarily used by the [Contacts app](../Contacts-app/).
+
+## [](#_gdpr_data_is_stored_on_public_and_must_be_synchronized_on_clusters)GDPR data is stored on public and must be synchronized on clusters
+
+Data is stored on the public context.
+
+> **Important:** Synchronization between public nodes may be required.
+
+The record of consent for form-based data in the `visitors` workspace is created on the *public* Magnolia instance, never on the author instance. This is also true for referenced content, for instance in the `contacts` workspace.
+
+You must synchronize the consent records stored if you use several public instances. The instances, or in our sample implementation at least the `visitors`, `pendingContacts` and `contacts` workspaces, must be clustered to share accounts between the different instances. Alternatively, implement observation-based synchronization to replicate visitor and contact data across instances.
+
+### [](#_app_definition)App definition
+
+The Visitors app is defined using YAML in the Magnolia Maven module `magnolia-privacy-ui`, which is part of the [Privacy module](../../../Modules/List-of-modules/Privacy-module/).
+
+If you want to change the app definition, you can [decorate](../../../Developing/Definition-decoration/) it, create a copy in the resources workspace with the [Resource Files app](../../../Developing/Resources/#resource-files-app) or create a copy in a file-based light module using the Magnolia [resources origins loading order](../../../Developing/Resources/#origins-and-loading-order).
+
+### [](#_personal_fields_configuration)Personal fields configuration
+
+The personal fields section contains a list of fields for which a visitor must give consent.
+
+| Node name | Value |
+| --- | --- |
+| 📁 modules |     |
+| 📁 magnolia-privacy-sample |     |
+| 📁 config |     |
+| 📁 personalFields |     |
+| ⸬ name |     |
+| ⸬ fieldNames |     |
+| ⬩ firstName | firstName |
+| ⬩ lastName | lastName |
+
+ PropertyDescription
+
+`<node-name>`
+
+The name of the node that defines a personal field.
+
+The node name is arbitrary but it must be unique.
+
+     `fieldNames`
+
+The node `fieldNames` keeps a list of properties to identify field names that are used for a specific purpose.
+
+         `<field-name>`
+
+The name of a field that is used for a specific purpose for which a user must give consent.
+
+> **Important:** The field name must be identical to the one used in the form where the visitor provides the data.
+
+This data is bootstrapped by the module `magnolia-privacy-sample`, which is part of the [Privacy module](../../../Modules/List-of-modules/Privacy-module/). The definition of the personal fields is used in the dialog to [update consent](#updating-consent).
+
+If you want to make a form privacy-aware (and so require users to give consent for a given form field), you may have to add an additional property to the `fieldNames` node. See [Creating a GDPR compliant form](../../../Modules/List-of-modules/Privacy-module/GDPR-and-forms/#creating-a-gdpr-compliant-form) and [Making an existing form GDPR compliant](../../../Modules/List-of-modules/Privacy-module/GDPR-and-forms/#making-an-existing-form-gdpr-compliant).
+
+## [](#_usage)Usage
+
+> **Tip:** Website visitor-related data is created on the public instances. You must use the Visitors app on the public instance.
+
+Use the Visitors app to:
+
+-   Edit and delete existing data for a visitor.
+
+-   View and update dependencies with data items stored in other workspaces for a visitor.
+
+
+You cannot add new items manually with this app.
+
+> **Note:** The email address of a visitor is used as the Visitor ID, which makes it easy to find a particular visitor.
+
+### [](#_showing_dependencies)Showing dependencies
+
+Click **Show dependencies** to show the data in other workspaces for the selected visitor.
+
+You can click referenced content items to open the related app.
+
+### [](#_deleting_items)Deleting items
+
+Click **Delete item** to delete existing data for a visitor including any referenced data.
+
+If the item contains references to other data stored for the visitor, the Visitors app shows you the related content and asks you to confirm the deletion.
+
+### [](#_updating_consent)Updating consent
+
+Click **Update consent** to update a visitor’s consent manually. This may be necessary in cases where, for example, consent is given over the phone.
+
+In the Edit consent dialog you can add or remove a predefined set of fields for which a website visitor is asked to give or deny consent.
+
+When you update a visitor’s consent manually, you must provide a source. The source can be a website (where you run your Magnolia instance), an email address or a phone number.
+
+| Source | Example value |
+| --- | --- |
+| Website | [http://www.example.org/travel/contact.html?mgnlFormToken=2b1084c4-fd7c-48c5-95ac-b6def1b5a840](http://www.example.org/travel/contact.html?mgnlFormToken=2b1084c4-fd7c-48c5-95ac-b6def1b5a840) |
+| Email | mailto:hans.mueller@example.com |
+| Phone | ‭tel:+41-79-123-45-67 |
+
+The source must comply with a certain format:
+
+-   `http(s)://` for website URLs.
+
+-   `mailto:` for email addresses.
+
+-   `tel:` for phone numbers.
+
+
+### [](#_updating_references)Updating references
+
+If consent is updated or withdrawn for a given item, you must also update or withdraw it for any related items.
+
+Click **Update references** to update referenced data.
+
+The system informs you of what referenced data may be updated and asks you to confirm the action by clicking **Proceed**.
+
+The referenced content items for a visitor are always shown, even if there is no update required.
+
+Related topics
+
+-   [Data privacy](../../../Features/Data-privacy/)
+
+-   [Privacy module](../../../Modules/List-of-modules/Privacy-module/)
+
+-   [GDPR and forms](../../../Modules/List-of-modules/Privacy-module/GDPR-and-forms/)

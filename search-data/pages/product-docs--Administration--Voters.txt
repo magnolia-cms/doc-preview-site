@@ -1,0 +1,36 @@
+---
+title: "Voters"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Voters/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Voters
+---
+
+# Voters
+
+Voters are used in Magnolia whenever configuration values are not assigned at startup but instead depend on rules. For example the Cache module has to determine if a requested resource may be cached or not. The rules to determine values should be configurable. The rules are user-defined using voters which evaluate established criteria by determining *true* or *false* of each rule. Voters are currently used for:
+
+-   Filter configuration: uses voters to determine whether a filter should be executed or bypassed.
+
+-   Cache configuration: uses voters to determine whether a file should be cached or not.
+
+
+The basic concept of voters uses `voter` classes which calculate an `int` vote value, where the positives (`1`, `2`, `3`, …) are treated as `yes` or `true` and `0`, `-1`, `-2`, and so on are treated as `no` or `false`.
+
+If you have a set of voters, then the result of a voting is the largest absolute result. If there are two voters with the same absolute result, then the one with the higher positive value will be taken.
+
+Examples
+
+| Vote results | VoterSet result |
+| --- | --- |
+| \-3, 0, 2 | \-3 |
+| \-3, 0, 3 | 3   |
+| \-3, 0, 4 | 4   |
+
+For most of the `real world` voters only boolean results make sense. These boolean voters return `1` for a `true` and `0` for a `false` result.
+
+## [](#_voter_examples)Voter examples
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 30%;"> <col style="width: 40%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Voter</th><th class="tableblock halign-left valign-top">Parameters</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.voting.voters.AuthenticatedVoter</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>none</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><em>Boolean</em> Checks if the current user is authenticated.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.voting.voters.ExtensionVoter</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>yes</p></div><div class="ulist"><ul><li><p><strong>allow</strong>: comma separated lists of allowed extensions.</p></li><li><p><strong>deny</strong>: comma separated lists of denied extensions.</p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><em>Boolean</em></p></div><div class="ulist"><ul><li><p>Returns false if the extension is not a valid mimetype (as configured in config:/server/MIMEMapping).</p></li><li><p>Returns false if the allow list exists, but the extension is not in the allow list.</p></li><li><p>Returns false if the deny list exists and the extension is in the deny list.</p></li><li><p>Returns true in any other cases.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+> **Tip:** For more information, see the info.magnolia.voting.voters package.

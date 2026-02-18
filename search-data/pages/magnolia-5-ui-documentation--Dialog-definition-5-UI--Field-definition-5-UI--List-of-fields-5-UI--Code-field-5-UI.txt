@@ -1,0 +1,48 @@
+---
+title: "Code field - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Code-field-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > List of fields - 5 UI > Code field - 5 UI
+---
+
+# Code field - 5 UI
+
+Deprecated
+
+> **Note:** This code field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Code field for Magnolia 6 UI instead.
+
+`CodeFieldDefinition` renders a code editor field.
+
+class: `info.magnolia.ui.form.field.definition.CodeFieldDefinition`
+
+fieldType: `code`
+
+![Code](6.2@product-docs:ROOT:code-field.png)
+
+## [](#_code_field_properties)Code field properties
+
+Simple code field definition.
+
+```js
+form:
+  tabs:
+    - name: tabCode
+      label: Code
+      fields:
+        - name: code
+          fieldType: code
+          language: freemarker
+          label: Enter code
+```
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Code-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Referencing-fields-shortcut-info-5-UI.adoc\[\]
+
+| Property | Description |
+| --- | --- |
+| `<field name>` | Name of field. |
+| `fileNameProperty` | **optional**<br><br>Defines the Vaadin `propertyId` under which the file name is exposed by the current form [`Item`](https://vaadin.com/api/com/vaadin/data/Item.html). |
+| `height` | **optional**, *default is \`300\`*<br><br>Height in pixels of the editor. |
+| `language` | **optional**<br><br>Language used for syntax highlighting. |
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Code-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-field-properties-5-UI.adoc\[\]

@@ -1,0 +1,44 @@
+---
+title: "Deprecations"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Reference/deprecations/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Reference > Deprecations
+---
+
+# Deprecations
+
+This page provides a comprehensive summary of deprecations that have been announced by Magnolia in accordance with our [Magnolia DX Core support](../../../../support/).
+
+The deprecations listed on this page have occurred since Magnolia 6.3 was released on September 4, 2024. For details on previous deprecations, see [6.2@product-docs:ROOT:reference/deprecations.adoc](#6.2@product-docs:ROOT:reference/deprecations.adoc).
+
+## [](#_rss_aggregator_module_november_12_2025)RSS Aggregator module (November 12, 2025)
+
+-   Current status: **Deprecated**
+
+
+The [RSS Aggregator module](../../Modules/List-of-modules/RSS-Aggregator-module/) is deprecated.
+
+## [](#_contacts_module_january_29_2025)Contacts module (January 29, 2025)
+
+-   Current status: **End of Life**
+
+
+Magnolia’s [Contacts module](../../Modules/List-of-modules/Contacts-module/) is deprecated.
+
+Use the 6.2 version of the module if you want to use the [Contacts app](../../Apps/List-of-apps/Contacts-app/) in `6.3.20`.
+
+> **Note:** Install the 6.2 version in your Maven dependencies.<dependency>
+>   <groupId>info.magnolia.contacts</groupId>
+>   <artifactId>magnolia-contacts</artifactId>
+>   <version>6.2_COMPATIBLE_VERSION</version> (1)
+> </dependency>1See 6.2 Contacts module for the latest version. Alternatively, if you have an existing 6.2 installation, copy its 6.2 .jar file to the lib folder in your 6.3 installation and restart. You can find the .jar file at: /webapps/magnoliaAuthor/WEB-INF/lib/magnolia-contacts-<6.2_COMPATIBLE_VERSION>.jar.
+
+## [](#_local_image_recognition_submodule_september_4_2024)Local image recognition submodule (September 4, 2024)
+
+-   Current status: **End of Life**
+
+-   Announced in: [Magnolia 6.3.0 Release notes](../../Releases/Release-notes-for-Magnolia-CMS-6.3/#_local_image_recognition_module_discontinued)
+
+
+We have discontinued the option to use a local, pre-trained neural network for the [Image Recognition module](#image-recognition:ROOT:index.adoc). This feature was experimental and relied on outdated and unmaintained libraries. Amazon Rekognition is now the reference implementation for the Image Recognition module.

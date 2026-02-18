@@ -1,0 +1,242 @@
+---
+title: "Integrate with Node.js"
+url: https://docs.magnolia-cms.com/paas/development/nodejs/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Integrate with Node.js
+---
+
+# Integrate with Node.js
+
+This page details steps needed to successfully integrate [Node.js](https://nodejs.org/en/) applications with DX Cloud.
+
+## [](#_ingress)Ingress
+
+To allow the splitting of requests between Node.js and Magnolia we need to tell Ingress to point to a frontend instance. To do it we need to create a new file in the root of the frontend repository.
+
+ingress.yaml
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 512m
+  name: APP_NAME (1)
+  namespace: NAMESPACE (2)
+spec:
+  rules:
+    - host: AUTHOR_URL (3)
+      http:
+        paths:
+          - backend:
+              serviceName: APP_NAME-magnolia-helm-frontend-author-svc (4)
+              servicePort: http
+            path: /
+            pathType: Prefix
+    - host: PUBLIC_URL (5)
+      http:
+        paths:
+          - backend:
+              serviceName: APP_NAME-magnolia-helm-frontend-public-svc (6)
+              servicePort: http
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts: (7)
+        - AUTHOR_URL (8)
+        - PUBLIC_URL
+      secretName: YOUR_SECRET_NAME (9)
+```
+
+**1**App name e.g. `my-spa`.**2**Namespace for which the configuration will be used.**3**URL for the author app.**4**Author service name, notice the use of app name from point 1.**5**URL for the public app.**6**Public service name, notice the use of app name from point 1.**7**The first domain listed in `tls.hosts` can only be a maximum 63 characters long.
+
+> **Tip:** You can use dummy domains like a.[project-name].magnolia-platform.com.Subdomains (e.g. mgnl-author) and pathnames in hosts URLs can be changed.
+
+**8**List of author and public domains**9**Your secret name
+
+## [](#_dockerize_the_frontend_application)Dockerize the frontend application
+
+Dockerize your SPA application.
+
+Below you can see an example of Dockerizing `React SPA` and serving it with `http-server` application.
+
+> **Tip:** You can find more examples here.
+
+frontend application repository
+
+```text
+frontend-application-repository
+...
+└── spa (1)
+└── http-server (2)
+...
+```
+
+|     |     |
+| --- | --- |
+| **1** | Folder with `React SPA`. |
+| **2** | Folder with `http-server` application. |
+
+Dockerfile
+
+```dockerfile
+FROM node:16 as dependencies (1)
+WORKDIR /app
+COPY http-server/package.json ./
+COPY http-server/package-lock.json ./
+RUN npm install
+
+FROM node:16 as builder (2)
+ARG ENV_VARIABLE_1
+ENV REACT_APP_ENV_VARIABLE_1=$ENV_VARIABLE_1
+WORKDIR /app
+COPY spa/package.json ./
+COPY spa/package-lock.json ./
+RUN npm install
+COPY spa ./
+RUN npm run build
+
+FROM node:16 as runner (3)
+WORKDIR /app
+COPY --from=dependencies /app/package.json ./package.json (4)
+COPY --from=dependencies /app/node_modules ./node_modules (5)
+COPY --from=builder /app/build ./public (6)
+EXPOSE 3000 (7)
+CMD ["npm", "start"] (8)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Stage to install `http-server` dependencies. |
+| **2** | Stage to build `React SPA`. |
+| **3** | Prepare the final image. |
+| **4** | Copy `package.json` from `dependencies` stage to be used by `http-server`. |
+| **5** | Copy `node_modules` from `dependencies` stage to be used by `http-server`. |
+| **6** | Copy build files of `React SPA` to `public` folder, from which `http-server` serves the files. |
+| **7** | Expose the port on which Node.js application is listening. |
+| **8** | Start the Node.js application. |
+
+## [](#_the_gitlab_ci_yml_file)The `.gitlab-ci.yml` file
+
+We need to extend CI/CD configuration with jobs to prepare and deploy the Node.js application image.
+
+> **Note:** For CI/CD pipelines with runners hosted on k8s jobs that build Docker images, you must use the kaniko tool.Check out this example on how to adjust your job.
+
+.gitlab-ci.yml
+
+```yaml
+stages:
+  - prepare
+  - deploy
+
+# Prepare the frontend app
+prepare:build-node-js-docker-image:
+  stage: prepare
+  image: 'docker:20'
+  before_script:
+    - apk add --no-cache git
+    - git --version
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - export GIT_TAG=$(git describe --always) (1)
+    - export DOCKER_BUILDKIT=1
+    - export MAGNOLIA_DOCKER_AUTHOR=$CI_REGISTRY_IMAGE/author
+    - export MAGNOLIA_DOCKER_PUBLIC=$CI_REGISTRY_IMAGE/public
+  script:
+    - docker build --pull -t "$MAGNOLIA_DOCKER_AUTHOR:$GIT_TAG" --build-arg ENV_VARIABLE_1=$ENV_VARIABLE_1 . (2)
+    - docker push "$MAGNOLIA_DOCKER_AUTHOR:$GIT_TAG"
+    - docker build --pull -t "$MAGNOLIA_DOCKER_PUBLIC:$GIT_TAG" --build-arg IS_PUBLIC=true --build-arg ENV_VARIABLE_1=$ENV_VARIABLE_1 .
+    - docker push "$MAGNOLIA_DOCKER_PUBLIC:$GIT_TAG"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      variables:
+        ENV_VARIABLE_1: foo
+    - if: $CI_COMMIT_BRANCH == "master"
+      variables:
+        ENV_VARIABLE_1: bar
+
+# Deploy the frontend app to the frontend pods
+deploy:sync-node-js:
+  stage: deploy
+  image: registry.magnolia-platform.com/developers-artifact/spa-nodejs:1.0.2
+  environment:
+    name: $NAME
+  before_script:
+    - export KUBECTL_NAMESPACE=$NAME (3)
+    - export MAGNOLIA_RELEASE=$NAME
+    - export GIT_TAG=$(git describe --always)
+    - export MAGNOLIA_DOCKER_AUTHOR=$CI_REGISTRY_IMAGE/author (4)
+    - export MAGNOLIA_DOCKER_PUBLIC=$CI_REGISTRY_IMAGE/public
+    - export MAGNOLIA_FRONTEND_PORT="3000"
+    - export MAGNOLIA_FRONTEND_CPU="200m"
+    - export MAGNOLIA_FRONTEND_MEMORY="2Gi"
+    - export MAGNOLIA_FRONTEND_AUTHOR_REPLICAS="1" (5)
+    - export MAGNOLIA_FRONTEND_PUBLIC_REPLICAS="2" (6)
+
+  script:
+    - export KUBECONFIG=$KUBE_CONFIG (7)
+    - initialpath=$PWD
+    - cd /k8s/base
+    - envsubst < customization-template.yaml > customization.yaml ; kustomize build .
+    - kubectl -n $NAME apply -k . (8)
+    - cd $initialpath
+    - kubectl apply -f ingress.yaml (9)
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+      variables:
+        NAME: integration
+    - if: $CI_COMMIT_BRANCH == "master"
+      variables:
+        NAME: prod
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `GIT_TAG` is used to set the tag for the created Docker image. |
+| **2** | Build the image. |
+| **3** | Export the environment variables used to customize the Kubernetes deployment. |
+| **4** | You can specify different images for author and public. |
+| **5** | Default number of frontend author replicas. |
+| **6** | Default number of frontend public replicas. |
+| **7** | The KUBE\_CONFIG CI/CD variable should be defined as type `File` and hold KubeConfig of the cluster the deployment should go to. The same variable can be defined in different environment scopes. |
+| **8** | Build the Kubernetes deployment files and apply them to the Kubernetes cluster. |
+| **9** | Apply the Ingress configuration |
+
+## [](#_cdn)CDN
+
+The CDN uses cache headers coming from Node.js app.
+
+## [](#_deploying_multiple_frontend_apps)Deploying multiple frontend apps
+
+When deploying multiple frontend apps within the same subscription:
+
+1.  From inside the frontend repository, create a new Ingress configuration for each app.
+
+2.  Create a Dockerfile for each app.
+
+3.  Modify the [`.gitlab-ci` pipeline](../../deployment/webapp_deployment/#_the_gitlab_ci_yml_file) to build the Docker image for each app.
+
+4.  Modify the [`.gitlab-ci` pipeline](../../deployment/webapp_deployment/#_the_gitlab_ci_yml_file) to deploy the Docker image for each app.
+
+5.  Modify the [`.gitlab-ci` pipeline](../../deployment/webapp_deployment/#_the_gitlab_ci_yml_file) to deploy the Ingress configuration for each app.
+
+
+> **Tip:** You can find deploying multiple frontend apps template here.
+
+## [](#_useful_v8_options)Useful V8 options
+
+### [](#_max_old_space_sizesize_in_megabytes)`--max-old-space-size=SIZE (in megabytes)`
+
+Sets the max memory size of V8’s old memory section. As memory consumption approaches the limit, V8 will spend more time on garbage collection in an effort to free unused memory.
+
+On a machine with 2 GiB of memory, consider setting this to 1536 (1.5 GiB) to leave some memory for other uses and avoid swapping.
+
+Dockerfile
+
+```dockerfile
+...
+ENV NODE_OPTIONS=--max-old-space-size=1536
+CMD ["npm", "start"] (8)
+```

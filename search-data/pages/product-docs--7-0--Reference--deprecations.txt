@@ -1,0 +1,31 @@
+---
+title: "Deprecations"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Reference/deprecations/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Reference > Deprecations
+---
+
+# Deprecations
+
+This page provides a comprehensive summary of deprecations that have been announced by Magnolia in accordance with our [Magnolia DX Core support](../../../../support/).
+
+The deprecations listed on this page have occurred since Magnolia 6.4 was released on September 25, 2025.
+
+## [](#_ldap_connector_module_november_12_2025)LDAP Connector module (November 12, 2025)
+
+-   Current status: **Maintenance mode**
+
+
+The [LDAP Connector module](../../Modules/List-of-modules/LDAP-Connector-module/) is in maintenance mode and has been replaced by Magnolia SSO. New projects should use the [magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc).
+
+## [](#_external_dam_integration_framework_aws_s3_extension_november_12_2025)External DAM integration framework AWS S3 extension (November 12, 2025)
+
+-   Current status: **Maintenance mode**
+
+
+Starting with Magnolia 6.4, the [AWS S3 extension](#6.3@product-docs:ROOT:Modules/extensions-and-frameworks/external-dam-integration-framework/external-dam-s3-config.adoc) in the External DAM integration framework is deprecated in favor of the DAM 6.0 external binary storage implementation provided by the `magnolia-dam-jcr-s3` module.
+
+New projects should use the DAM module for storing binaries externally and keep asset metadata in JCR. See [magnolia-dam-jcr-s3](../../../../dam/developers/dam-jcr-s3/) for details. See [DAM module](../../../../dam/) for an overview of external binary storage.
+
+The External DAM Integration Framework remains available, and the Bynder connector continues to be supported.

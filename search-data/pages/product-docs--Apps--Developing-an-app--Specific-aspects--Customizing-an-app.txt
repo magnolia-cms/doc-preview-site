@@ -1,0 +1,69 @@
+---
+title: "Customizing an app"
+url: https://docs.magnolia-cms.com/product-docs/Apps/Developing-an-app/Specific-aspects/Customizing-an-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > Customizing an app
+---
+
+# Customizing an app
+
+Customizing an existing app is easier and less time consuming than developing a new app from scratch. A secondary benefit is that existing app configurations are updated frequently with new releases of Magnolia. When you extend configuration, new configuration installed with Magnolia releases don’t override your configuration and any goodies they introduce are available to you automatically. On the other hand, Magnolia code is open source. Because you can customize anything, you can also customize in ways that makes the app hard to update. Here are some guidelines for customizing the right way.
+
+> **Tip:** Extend, don’t copy. Add your customizations to the original app configuration directly, or better yet, extend the original.
+
+## [](#_add_custom_actions)Add custom actions
+
+Add your own custom actions to existing apps. Actions are configured is under subapps. The example below substitutes a direct publishing action that bypasses the approval workflow in the [Pages app](../../../List-of-apps/Pages-app/).
+
+![Configuration app showing direct publishing action bypassing the approval workflow in the Pages app.](../../../../_images/ADVT-custom-actions.png)
+
+## [](#_change_columns)Change columns
+
+Change the columns displayed in the tree and lists views. You can find [column configuration](../../../App-configuration/Column-definition/) under the content views (tree, list, search). Here is an example from the Assets app. The columns displayed in the tree view of the app are the same as in the list view, except the path column is left out. The benefit of extending to an existing configuration and overriding specific values is that you always know exactly what you have customized.
+
+![Column configuration of the Assets app](../../../../_images/ADVT-change-columns.png)
+
+## [](#_launch_custom_dialogs)Launch custom dialogs
+
+Change an action definition to launch your own dialog instead of the one provided by default. Identify the dialog in the `dialogName` property. Here is an example of referencing a dialog in the [Contacts app](../../../List-of-apps/Contacts-app/). The dialog definition is not shown here but you can find it in the same module.
+
+![Referencing a dialog in the Contacts app through the Configuration app](../../../../_images/ADVT-launch-custom-dialog.png)
+
+## [](#_change_fields_in_a_dialog)Change fields in a dialog
+
+Add fields to dialogs or change existing fields. See [Dialog definition](../../../../Developing/Templating/Dialog-definition/).
+
+## [](#_create_an_editor_component)Create an editor component
+
+Editor is a component that edits content. It typically displays a form, just like a dialog does. The difference between dialogs and editors is that an editor is contained in a subapp. You can open as many subapps as you like, which means that you can edit many items at the same time. This is not possible with a dialog. In a dialog you edit only one item at a time.
+
+![Location of the editor component in the Configuration app.](../../../../_images/ADVT-editor-comp.png)
+
+## [](#_write_your_own_views)Write your own views
+
+What if you want to write you own view? Say you wish to replace `info.magnolia.sample.app.main.ContentDisplayView` with a new class that you have written called `com.acme.sample.app.main.ContentDisplayViewAcme`.
+
+The right way to implement your custom view is to create a new module and extend the existing module. In the new module’s descriptor (sample-app-acme.xml), point to the existing one. Change only the one `<component>` element to point to the new implementation.
+
+Original ContentDisplayView defined in the sample app
+
+```xml
+<id>app-sample</id>
+   <component>
+    <type>info.magnolia.sample.app.main.ContentDisplayView</type>
+    <implementation>info.magnolia.sample.app.main.ContentDisplayViewImpl</implementation>
+  </component>
+</components>
+```
+
+Overriding the standard view in your own module
+
+```xml
+<id>acme-app-sample</id>
+   <component>
+    <type>info.magnolia.sample.app.main.ContentDisplayView</type>
+    <implementation>com.acme.sample.app.main.ContentDisplayViewImplAcme</implementation>
+  </component>
+</components>
+```

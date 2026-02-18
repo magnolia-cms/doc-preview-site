@@ -1,0 +1,134 @@
+---
+title: "CTSX DeepL Translator"
+url: https://docs.magnolia-cms.com/content-translation-support-ext/deepl/
+category: Modules
+version: modules
+breadcrumb: Content Translation Extended module > CTSX DeepL Translator
+---
+
+# CTSX DeepL Translator
+
+[Content management](../../product-docs/7.0/use-cases/content-management/) [Unbundled: Extension](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.0.0 [Magnolia 6.4](../../product-docs/7.0/) compatible
+
+The **CTSX DeepL** module performs translations using the DeepL APIs. Translations are handled synchronously.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+> **Important:** In order to start the DeepL translation process, please make sure that the core and apps modules in the Content Translation Extended have already been installed.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.translation</groupId>
+  <artifactId>magnolia-content-translation-support-ext-deepl</artifactId>
+  <version>5.0.0</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+The configuration can be done using JCR or YAML.
+
+-   Refer to the [JCR Configuration](#_jcr_configuration) for the JCR configuration.
+
+-   Refer to the [YAML configuration](#_yaml_configuration) for instructions on how to define settings using YAML.
+
+
+### [](#_jcr_configuration)JCR Configuration
+
+Configuration of the DeepL service provider is handled in the module config. This provider should be configured with the following path:
+
+```none
+modules
+└── content-translation-support-ext-deepl
+    └── config
+        └── translationProviders
+            └── Deepl.yaml
+```
+
+> **Note:** For users upgrading from version 4.0.0 to version 4.1.0, ensure you move your existing translation provider configuration to the correct path.
+
+### [](#_yaml_configuration)YAML configuration
+
+DeepL service provider configuration is defined within its provider module (`magnolia-content-translation-support-ext-deepl`) under the following directory structure:
+
+```plaintext
+/src/main/resources/content-translation-support-ext-deepl/translationProviders
+```
+
+#### [](#_required_decorations)Required decorations
+
+This configuration can also be **decorated** to override or extend the default configuration. Decoration file should be placed under the following path:
+
+```plaintext
+<light-module-name>/decorations/content-translation-support-ext-deepl/translationProviders
+```
+
+Below is an example of how to decorate DeepL service provider configuration within a light module:
+
+```plaintext
+light-modules/
+└── my-module/
+    └── decorations/
+        └── content-translation-support-ext-deepl/
+            └── translationProviders/
+                └── DeepL.yaml
+```
+
+### [](#_configuration_properties)Configuration properties
+
+Set the `clientToken` field to the "Authentication Key for DeepL API" from your DeepL account. The "Authentication Key for DeepL API" is found under menu:Account\[Plan\] page in your DeepL account.
+
+| Property | Description |
+| --- | --- |
+| `class` | **required**<br><br>Definition class for the translator to be used.<br><br>See `info.magnolia.translation.ext.provider.deepl.definition.DeepLProviderDefinition`. |
+| `clientId` | **required**<br><br>Unused but needs a value. |
+| `clientToken` | **required**<br><br>token from DeepL account |
+| `glossaryId` | **optional**<br><br>Specify the glossary to use for the translation. |
+| `configName` | **required**<br><br>Identifies the configuration within Magnolia. |
+| `defaultFlag` | **optional**<br><br>The default configuration used by the system in the case of multiple translation services being used. |
+| `enabledFlag` | **required**<br><br>Enable or disable the configuration using this flag. |
+| `implementationClass` | **required**<br><br>Implementation class for interfacing with DeepL.<br><br>See `info.magnolia.translation.ext.provider.deepl.translator.DeepLTranslator`. |
+| `extraQueryParams` | **optional**<br><br>You can adjust more parameters for document translation with this feature. |
+
+### [](#_sample_jcr_configuration)Sample JCR configuration
+
+```yaml
+'config':
+  'jcr:primaryType': 'mgnl:content'
+  'translationProviders':
+    'Deepl':
+      'autoTranslationAllowed': 'false'
+      'class': 'info.magnolia.translation.ext.provider.deepl.definition.DeeplProviderDefinition'
+      'clientId': 'xxx'
+      'clientToken': 'xxxxxx-xxxxx-xxxx-xxxx-xxxx'
+      'configName': 'DeepL.com'
+      'enabledFlag': 'true'
+      'implementationClass': 'info.magnolia.translation.ext.provider.deepl.translator.DeeplTranslator'
+      'extraQueryParams':
+        'tag_handling': 'html'
+        'ignore_tags': 'x'
+```
+
+### [](#_sample_yaml_decorated_configuration)Sample YAML decorated configuration
+
+```yaml
+clientId: xxxxxx
+clientToken: xxxxxx-xxxxx-xxxx-xxxx-xxxx
+defaultFlag: true
+enabledFlag: true
+extraQueryParams:
+  tag_handling: html
+  ignore_tags: x
+```
+
+## [](#_usage)Usage
+
+After registration and starting, The Content Translation Support Extended (CTSX) module will bind the DeepL translator to Configuration field.
+
+> **Note:** You can test the connection to the translator api before using.
+
+### [](#_how_it_works)How it works
+
+Use the same steps outlined with [CTSX Google Translator](../google/) but you will choose **DeepL** instead of Google.com in the Configuration.

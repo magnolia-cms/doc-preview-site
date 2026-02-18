@@ -1,0 +1,315 @@
+---
+title: "Set up DX Cloud"
+url: https://docs.magnolia-cms.com/paas/setup/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Set up dev environment
+---
+
+# Set up DX Cloud
+
+This page guides you on setting up everything you need to set up a new DX Cloud project.
+
+Check you have the correct [prerequisites](#_prerequisites), create your [project](#_create_a_project_using_the_maven_archetype), and then get ready to [deploy](../deploy/) your DX Cloud project.
+
+## [](#_prerequisites)Prerequisites
+
+There are a few things that you need before you can get started with developing for your DX Cloud project.
+
+### [](#_java)Java
+
+Currently, the minimum supported Java version for DX Cloud is **Java 11 (LTS)**.
+
+Magnolia needs at least a **Java Runtime Environment (JRE)** to run. Check if there’s a version of Java already installed on your computer by opening the terminal or command prompt and typing `java -version`. If the system reports a version number, Java is installed on your computer.
+
+> **Important:** See Certified stack to confirm that the version installed is supported.For local development, use 17.0.12-zulu. Example installation using SDKMAN:sdk install java 17.0.12-zulu
+
+Maven is a tool for managing project dependencies and building your Magnolia project.
+
+This page describes how to configure Maven to download Magnolia modules and webapps from our [Nexus](https://nexus.magnolia-cms.com/) server, with appropriate access credentials.
+
+### [](#_install_maven)Install maven
+
+[Download](http://maven.apache.org/download.cgi) and [Install](http://maven.apache.org/install.html) Maven. In order to verify Maven has been installed correctly:
+
+1.  Open a terminal or a shell.
+
+2.  Issue the command `mvn -v`. The command should produce an output similar to this:
+
+    ```sh
+    mvn -v
+
+    Apache Maven 3.9.11 (3e54c93...d3d825b)
+    Maven home: /opt/apache-maven-3.9.11
+    Java version: <JAVA_VERSION>, vendor: Eclipse Adoptium, runtime: path/to/install
+    Default locale: fr_FR, platform encoding: UTF-8
+    OS name: "<OPERATING_SYSTEM>"
+    ```
+
+    > **Note:** Maven keeps your user configuration and local repository under the ${user.home}/.m2/ directory. For more details, see Configuring Maven.
+
+
+### [](#_set_up_magnolia_repositories)Set up Magnolia repositories
+
+-   DX Core
+
+
+For **DX Core** projects, add the following repository to your project POM (or Maven settings profile), and follow the next sections to set up authentication.
+
+```xml
+<repositories>
+  <repository>
+    <id>magnolia.nexus.enterprise</id>
+    <url>https://nexus.magnolia-cms.com/repository/enterprise</url>
+  </repository>
+</repositories>
+```
+
+This also applies to Community Edition releases in [maintenance mode](../../support/).
+
+> **Note:** Magnolia provides additional regional repositories for US and APAC. Choose the appropriate regional URL for your environment.
+
+For more details, see [Maven: Setting up Multiple Repositories](https://maven.apache.org/guides/mini/guide-multiple-repositories.html).
+
+### [](#_create_a_master_password_recommended)Create a master password (recommended)
+
+We recommend you create a master password. However, this is not mandatory.
+
+> **Note:** For more details, see Maven’s Password Encryption.
+
+1.  Run the following command.
+
+    ```sh
+    mvn --encrypt-master-password
+    ```
+
+    > **Note:** This command produces an encrypted version of the password similar to the example below:{jSMOWnoPFgsHVpMvz5VrIt5kRbzGpI8u+9EF1iFQyJQ=}
+
+2.  Store the password in `~/.m2/settings-security.xml`.
+
+    ```xml
+    <settingsSecurity>
+      <master>{jSMOWnoPFgsHVpMvz5VrIt5kRbzGpI8u+9EF1iFQyJQ=}</master>
+    </settingsSecurity>
+    ```
+
+
+### [](#_set_up_credentials_in_maven_settings)Set up credentials in Maven settings
+
+To set up or update your credentials for Maven:
+
+1.  Log into the chosen [regional Magnolia Nexus](#_regional_magnolia_repositories) with SSO.
+
+2.  Access your *User Token* details from the user menu.
+    See more: [Working with Your User Profile](https://help.sonatype.com/en/working-with-your-user-profile.html)
+
+3.  If you have created a master password, encrypt your user token pass code:
+
+    ```sh
+    mvn --encrypt-password ${userTokenPassCode}
+    ```
+
+4.  Finally, store the token in the format shown here.
+
+    ```xml
+    <server>
+      <id>magnolia.nexus.enterprise</id> (1)
+      <!-- Token, not actual username / password -->
+      <username>{userTokenNameCode}</username> (2)
+      <password>{userTokenPassCode}</password> (3)
+    </server>
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | The Magnolia enterprise Nexus repository. The id must match the repository id in your project POM or 'magnolia-repositories' profile in maven settings. |
+    | **2** | Your name code user token from Nexus. |
+    | **3** | Your pass code user token from Nexus. You may use your encrypted pass code token here. |
+
+
+After you have set up Password Encryption above, switch to your shell and run the following command:
+
+```shell
+mvn org.sonatype.plugins:nexus-m2settings-maven-plugin:1.6.5:download -DnexusUrl=https://nexus.magnolia-cms.com -DtemplateId=magnolia-enterprise
+```
+
+#### [](#_testing_maven_settings)Testing Maven settings
+
+A simple way to test your settings: Try to build a project with Maven which is dependent on a Magnolia Enterprise module. Try to build a DX Core bundle from the Magnolia official Maven archetypes:
+
+```shell
+mvn archetype:generate -Dfilter=info.magnolia.maven.archetypes:magnolia
+```
+
+#### [](#_mirroring)Mirroring
+
+If you have your own Repository Manager, the following are the repositories you can mirror:
+
+-   [https://nexus.magnolia-cms.com/content/groups/enterprise/](https://nexus.magnolia-cms.com/content/groups/enterprise/)
+
+
+> **Note:** You need a Magnolia account to access these repositories. For mirroring, please get a "robots" account with us.There are a few third-party artifacts that we have customized and released ourselves. We usually move back to regular releases when fixes are publicly released in these.A few artifacts Magnolia uses which are not available in the Maven Central Repository.
+
+### [](#_ide)IDE
+
+Make sure you have a Java IDE installed. It could be:
+
+-   [IntelliJ](https://www.jetbrains.com/idea/)
+
+-   [Eclipse](https://www.eclipse.org/ide/)
+
+
+## [](#_create_a_project_using_the_maven_archetype)Create a project using the Maven archetype
+
+Create a custom cloud bundle from the following Maven Archetypes:
+
+```sh
+mvn archetype:generate \
+    -DarchetypeGroupId=info.magnolia.maven.archetypes \
+    -DarchetypeArtifactId=magnolia-dx-core-custom-cloud-archetype \
+    -DarchetypeVersion=1.10 \
+    -DarchetypeRepository=https://nexus.magnolia-cms.com/content/repositories/magnolia.public.releases <1>
+```
+
+|     |     |
+| --- | --- |
+| **1** | You can use the [APAC or US URLs](#_set_up_credentials_in_maven_settings) for optimal performance if desired. `[https://nexus.magnolia-cms.com/](https://nexus.magnolia-cms.com/)` is the default URL, optimized for Europe. |
+
+You will be prompted to enter the following info:
+
+-   `groupId`: The Maven groupId of your cloud bundle (ie: info.magnolia.demo)
+
+-   `artifactId`: The Maven artifactId of your cloud bundle (ie: magnolia-demo-ecommerce)
+
+-   `version`: The Maven version of your cloud bundle (ie: 1.0-SNAPSHOT). The final version is generated on release.
+
+-   `package`: The Maven base package of your cloud bundle (usually same a the `groupId`)
+
+-   `magnolia-bundle-version`: The Magnolia version to be used in your cloud bundle (ie: 6.2.24)
+
+-   `project-name`: The project name (ie: magnolia-demo-ecommerce)
+
+-   `shortname`: The name of the project to be used in the Magnolia URLs (ie: [https://dev.shortname.magnolia-platform.com/author](https://dev.shortname.magnolia-platform.com/author))
+
+-   `region`: The AWS region the database backup bucket is located in (ie: eu-central-1)
+
+
+The command will then create the Magnolia Java Webapp project.
+
+The Java webapp in DX Cloud has a typical structure.
+
+Webapp structure example
+
+```text
+custom
+├── .gitignore
+├── .gitlab-ci.yml (1)
+├── .m2
+│   └── settings.xml
+├── README.md
+├── custom-webapp
+│   ├── Dockerfile
+│   ├── pom.xml
+│   ├── src
+│   └── target
+├── pom.xml
+└── values.yml (2)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `.gitlab-ci.yml` file ensures your development changes are automatically picked up. |
+| **2** | The `values.yml` file ensures your DX Cloud application is deployed to the your cluster. |
+
+On the first level you will find the `pom.xml` file which automatically contains the `magnolia-dx-core-custom-cloud-parent` artifact.
+
+```xml
+...
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- DX Core custom cloud dependency management -->
+      <dependency>
+        <groupId>info.magnolia.dx</groupId>
+        <artifactId>magnolia-dx-core-custom-cloud-parent</artifactId> (1)
+        <version>${magnolia.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+...
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `magnolia-dx-core-custom-cloud-parent` artifact. |
+
+### [](#_testing_the_project)Testing the project
+
+Open a terminal and go to the newly created project and then execute the following Maven build command:
+
+```sh
+mvn clean package
+```
+
+### [](#_starting_magnolia_locally)Starting Magnolia locally
+
+Load the project in your IDE and configure the Tomcat server with the following system variables.
+
+```none
+-Xms1024m
+-Xmx2048m
+-Dmagnolia.develop=true
+-Dmagnolia.superuser.enabled=true
+-Dmagnolia.utf8.enabled=true
+-Dmagnolia.update.auto=true
+-Dmagnolia.resources.dir="/opt/magnolia/light-modules"
+-Dmagnolia.repositories.home="/opt/magnolia/repositories"
+-Dmagnolia.webapp="Goofy Author"
+-Dmagnolia.bootstrap.license.owner="your-email@example.com"
+-Dmagnolia.bootstrap.license.key="your-license-key"
+```
+
+### [](#_custom_cloud_parent_project)Custom cloud parent project
+
+**The custom cloud parent project automatically excludes the following modules**:
+
+-   [Backup module](../../product-docs/7.0/Modules/List-of-modules/Backup-module/): It will be part of an outside feature.
+
+
+**It includes the following modules**:
+
+-   Instrumentation: Exposes the Magnolia metrics to the monitoring service.
+
+-   Configuration injection: Facilitates the customization of Magnolia.
+
+
+## [](#_password_manager_key)Password manager key
+
+If you are upgrading [Helm](../faqs/#_how_do_i_update_the_helm_chart_version) to version `1.14` or later and running Magnolia `6.2.44`+, you must manually move the password manager keypair properties file to the expected location for the DX Cloud Helm chart.
+
+> **Note:** This only needs to be done once per environment after upgrading.
+
+### [](#_instructions)Instructions
+
+1.  On your Author instance, move your password manager keypair properties file to the expected location (`/keys/password-app/`).
+
+    ```sh
+    mv /mgnl-home/WEB-INF/config/default/magnolia-password-manager-keypair.properties /keys/password-app/ (1)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Helm expects the file at `/keys/password-app/`. |
+
+2.  Once done, publish the key from JCR.
+
+    ```sh
+    /modules/password-manager-core@publicKey (1)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | This ensures your Public instances receive the correct key. |

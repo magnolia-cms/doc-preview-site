@@ -1,0 +1,72 @@
+---
+title: "Filtering"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Authoring/Search/Search-filters/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Authoring > Searching for content > Filtering
+---
+
+# Filtering
+
+Use multiple parallel filters to quickly find content or narrow down your search results.
+
+You can filter both full-text Find bar search results across apps, and in-app search results.
+
+> **Tip:** The total number of search results is displayed at the bottom of the page so you can see how effective your search is and decide if you want to filter results further.
+
+-   Find bar filters
+
+-   In-app filters
+
+
+The following default search result filters are available for Find bar:
+
+-   **Type** - All types of content configured as searchable. By default, all content apps.
+
+-   **Tags** - All the tags applied to your content in Magnolia.
+
+-   **Last editor**
+
+-   **Last edited** date
+
+
+If you start searching when you have an app open, Magnolia automatically filters results based on the current app so you get relevant results straight away.
+
+Different content filters are available depending on the app you’re using. Generally, there is an in-app **Search** field and a number of drop-down filters.
+
+For example, in the Assets app, the dropdowns are:
+
+-   **Asset type**
+
+-   **Author**
+
+    Includes a **Current user** option to only display your own content. For SSO-based users, this is the only option available.
+
+-   **Size**
+
+-   **Status**
+
+-   **Tag**
+
+
+> **Tip:** The filters available and their options can be configured by your Magnolia administrator. Filters for external data sources can also be configured.
+
+## [](#_filtering_content)Filtering content
+
+To filter the content displayed:
+
+1.  Click **\+ Add filter** next to the search field.
+
+    ![Add an Asset type filter to the Assets app](../../../_images/authoring/assets-app-add-type-filter.png)
+
+2.  Choose the filter type from the dropdown list.
+
+3.  Select a value for the filter.
+
+    If there are more than 8 options in the filter, you can type to search for the value you want in the filter header.
+
+    ![Select the Image type in the filter](../../../_images/authoring/assets-app-type-filter-image.png)
+
+    > **Tip:** Once you set filters, they’re kept throughout your user session. They only reset when you log out or when you remove them.
+
+4.  Click the **x** icon to remove individual filters or click **Remove filters** on the right to remove all filters.

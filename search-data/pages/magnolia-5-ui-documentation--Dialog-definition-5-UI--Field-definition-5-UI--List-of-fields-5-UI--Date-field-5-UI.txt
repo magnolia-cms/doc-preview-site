@@ -1,0 +1,109 @@
+---
+title: "Date field - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Date-field-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > List of fields - 5 UI > Date field - 5 UI
+---
+
+# Date field - 5 UI
+
+Deprecated
+
+> **Note:** This date field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Date field for Magnolia 6 UI instead.
+
+`DateFieldDefinition` renders a calendar that allows the user to select a date and optionally a time.
+
+class: `info.magnolia.ui.form.field.definition.DateFieldDefinition`
+
+fieldType: `date`
+
+![Tour app](6.2@product-docs:ROOT:date-field.png)
+
+## [](#_date_field_properties)Date field properties
+
+Simple date field
+
+```js
+form:
+  tabs:
+    - name: tabText
+      label: Text
+      fields:
+        - name: date
+          fieldType: date
+          time: false
+          type: Date
+          label: Date
+          defaultValue: now
+```
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Date-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Referencing-fields-shortcut-info-5-UI.adoc\[\]
+
+ PropertyDescription
+
+`<field name>`
+
+`type`
+
+**required**
+
+Set the `type` property to `Date` to ensure that the value is saved as a `Calendar` object and not a `String`. The addition of this property is essential.
+
+`dateFormat`
+
+**optional**, *default is \`yyyy-MM-dd\`*
+
+Format in which the date is displayed to users. See [SimpleDateFormat](http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html) class for allowed patterns.
+
+Examples:
+
+```js
+dateFormat: yyyy-MM-dd # 2017-10-31
+dateFormat: yyyy-MMMM-dd # 2017-October-31
+dateFormat: EEE, MMM d, yyyy # Tue, Oct 31, 2017
+```
+
+`defaultValue`
+
+**optional**, *default is \`now\`*
+
+Set the default value to a specific date such as `"2017-10-31"` or use the keyword `now` which defaults to the current date and time. Current time means time at the host server. Magnolia stores dates and times using server time. The stored time is converted and displayed to users in their [preferred time zone](#6.2@product-docs:ROOT:Administration/Security/Users.adoc).
+
+The default value only applies to new content items, not to existing content items that have been created previously.
+
+> **Warning:** Enclose the default value in quotes when using YAML:
+
+```js
+defaultValue: "2017-10-31"
+defaultValue: "2017-10-31 15:09"
+```
+
+If you define the `dateFormat` or `timeFormat` properties then provide the `defaultValue` using those same formats:
+
+```js
+dateFormat: MM/dd/yyyy
+timeFormat: h:mm a
+defaultValue: "10/31/2017 3:09 PM"
+```
+
+`time`
+
+**optional**, *default is `false`*
+
+Enables time selection. Renders dropdown boxes at the bottom of the calendar.
+
+`timeFormat`
+
+**optional**, *default is \`HH:mm\`*
+
+Format in which time is displayed to users. See [SimpleDateFormat](http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html) class for allowed patterns.
+
+Examples:
+
+```js
+timeFormat: HH:mm # 15:09
+timeFormat: h:mm a # 3:09 PM
+```
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Date-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-field-properties-5-UI.adoc\[\]

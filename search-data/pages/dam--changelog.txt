@@ -1,0 +1,51 @@
+---
+title: "DAM module releases"
+url: https://docs.magnolia-cms.com/dam/changelog/
+category: Modules
+version: modules
+breadcrumb: DAM module > Changelog
+---
+
+# DAM module releases
+
+This page provides the initial release changelog and a [compatibility matrix](#_compatibility_matrix) for the module to Magnolia version.
+
+> **Tip:** DAM module 6.0.x is bundled with Magnolia DX Core. Any further updates and fixes made to this branch are listed in the related 6.4.x Release Notes.
+
+For the optional `5.x` branch of the **DAM module**, compatible with 6.3, see [here](#5.0@dam:ROOT:changelog.adoc).
+
+## [](#_initial_changelog)Initial changelog
+
+### [](#_6_0_0)6.0.0
+
+Released on **November 12, 2025**.
+
+This release is compatible with Magnolia 6.4.
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **[MGNLDAM-1705](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1705)** |     | New binary management API.<br><br>The DAM 6 API simplifies adding new storage options and supports varied implementations. It ensures backward compatibility for custom extensions. |
+| **[MGNLDAM-1788](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1788)** |     | Binary detection enhancements.<br><br>DAM 6 detects if binaries are stored in S3, Hybrid Assets, or JCR using node property checks. This feature enhances storage flexibility. |
+|     |     | Hybrid Asset incubator module replacement.<br><br>The Hybrid Asset incubator module, which offered connections to S3 and Azure, is replaced with DAM 6’s natively extensible solution. The incubator module is planned for deprecation. |
+|     |     | [External DAM framework S3 connector](../../product-docs/7.0/Modules/extensions-and-frameworks/external-dam-integration-framework/) replacement.<br><br>DAM 6 aims to replace the External DAM framework S3 connector, which stores both binaries and metadata in S3, due to performance issues. The S3 connector is planned for deprecation, while the Bynder connector remains unaffected. |
+| **[MGNLDAM-1547](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1547)** |     | DAM module is split into `dam` and [`dam-app`](#dam-app:ROOT:index.adoc) (both required).<br><br>This change separates UI components (Assets app, preview functionality, and so on) from the API for better modularity and resolves async circular dependency issues with the Imaging and UI modules. |
+|     |     | New DAM JCR S3 submodule<br><br>The optional [`dam-jcr-s3` submodule](../developers/dam-jcr-s3/) connects Magnolia DAM to S3 storage. Use it if you choose to store asset binaries in S3 while metadata remains in the JCR. |
+| **[MGNLDAM-1822](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1822)** |     | Broken thumbnails and preview for video assets. |
+| **[MGNLDAM-1837](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1837)** |     | S3 implementation binary management API updates. |
+| **[MGNLDAM-1848](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1848)** |     | Disable **Import** and **Export** actions for externally stored binaries. |
+| **[MGNLDAM-1801](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1801)** |     | Implement `HttpBinaryManagement`. |
+| **[MGNLDAM-1852](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1852)** |     | Move `image-metadata-provider` back into `magnolia-dam-jcr`. |
+| **[MGNLDAM-1639](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1639)** |     | Create migration task for HA incubator users (S3 connection) |
+| **[MGNLDAM-1798](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1798)** |     | Remove Hybrid Assets incubator properties from JCR. |
+
+5.0.0
+
+## [](#_compatibility_matrix)Compatibility matrix
+
+| DAM module version | Compatible module versions |
+| --- | --- |
+| 6.0.0 | Magnolia CMS 6.4.0+ |
+| [DAM App module](#dam-app:ROOT:index.adoc) 6.0.0 (required) |
+| [Imaging module](#imaging:ROOT:index.adoc) 5.0.0 (required) |
+| [Image Recognition extension](#image-recognition:ROOT:index.adoc) 4.0.0 (optional) |
+| [Image Focal extension](#image-focal:ROOT:index.adoc) 2.0.0 (optional) |

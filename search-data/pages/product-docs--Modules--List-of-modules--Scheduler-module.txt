@@ -1,0 +1,83 @@
+---
+title: "Scheduler module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Scheduler-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Scheduler module
+---
+
+# Scheduler module
+
+[Administration](../../../use-cases/administration/) Bundled: Community edition
+
+|     |     |
+| --- | --- |
+| Edition | CE  |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLSCH](https://magnolia-cms.atlassian.net/browse/MGNLSCH) |
+| Maven site | [Scheduler](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fscheduler%2Fmagnolia-module-scheduler%2F4.0.0) |
+| Latest | 4.0.0 |
+
+The Magnolia Scheduler module allows you to schedule commands to run at regularly scheduled times and is powered by the [Quartz Engine](http://quartz-scheduler.org/).
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.scheduler</groupId>
+  <artifactId>magnolia-module-scheduler</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+The Scheduler module can be used to execute any configured command at regular intervals. For example, it can:
+
+-   Publish or unpublish a promotional web page on a specific date.
+
+-   Import content from an external source into a Magnolia workspace.
+
+-   Send emails on specific days.
+
+-   Delete specified forum messages or threads.
+
+-   Synchronize target and source instances.
+
+-   Execute a custom command.
+
+
+## [](#_configuration)Configuration
+
+The Scheduler module is used to execute commands that are typically configured in other modules. See [Commands](../../../Developing/Commands/) for more.
+
+Scheduled tasks are configured in `modules/scheduler/config/jobs`.
+
+**Example**: `demo` job that activates the `/news` page hourly.
+
+![demo job that activates the /news page hourly Configuration](../../../_images/ADVT-scheduler-mod1.png)
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobs</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Jobs node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;job name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the job.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>params</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Parameters node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;parameters&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required/optional</strong></p></div><div class="paragraph"><p>Parameters passed to the command. Depends on the command. For example, the <code>publish</code> command expects to receive a repository name and a content path, and the <code>generatePlanetData</code> command used by the <a href="../RSS-Aggregator-module/" class="xref page">RSS Aggregator</a> module, expects only a <code>repository</code> parameter.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>catalog</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the <a href="../../../Developing/Commands/" class="xref page">catalog</a> where the command resides.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>command</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the command.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>cron</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><a href="https://www.ostechnix.com/a-beginners-guide-to-cron-jobs/" target="_blank" rel="noopener">CRON expression</a> that sets the scheduled execution time. For example, <code>0 0 1 5 11 ? 2010</code> means <code>run on November 5th, 2010 at 01:00 am</code>, as opposed to <code>0 0 1 5 11 ? *</code>, which will run <code>annually on Nov 5th at 01:00 am</code>.</p></div><div class="dlist"><dl><dt class="hdlist1">CRON generators</dt><dd><div class="ulist"><ul><li><p><a href="https://freeformatter.com/cron-expression-generator-quartz.html" target="_blank" rel="noopener">Cron Expression Generator &amp; Explainer - Quartz</a> (A FREEFORMATTER.COM service).</p></li><li><p><a href="http://www.cronmaker.com" target="_blank" rel="noopener">cronmaker.com</a></p></li><li><p><a href="https://crontab-generator.org" target="_blank" rel="noopener">crontab-generator.org</a></p></li></ul></div></dd></dl></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>description</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Description of the job.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables and disables the job.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>concurrent</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Defines whether the same job can be running concurrently.</p></div></div></td></tr></tbody></table></div>
+
+> **Note:** The Synchronization, Backup and RSS Aggregator modules use the Scheduler module for scheduling their execution.
+
+## [](#_scheduling_tasks_on_cluster_nodes)Scheduling tasks on cluster nodes
+
+In a clustered configuration one or more workspaces is stored in a shared, clustered storage. See [Clustering](../../../Administration/Instances/Clustering/) for more. Cluster nodes (Magnolia instances) access the clustered workspace rather than their own workspaces. This can lead to a situation where multiple scheduled jobs attempt to access the same content simultaneously and a lockup occurs. To avoid this situation, identify the cluster nodes and run the job on only one node.
+
+1.  Set the `magnolia.clusterid` property in the `magnolia.properties` file of the cluster node. The file is in the `/<CATALINA_HOME>/webapps/<contextPath>/WEB-INF/config/default` folder. The property value can be a literal cluster name such as `public123` (`magnolia.clusterid=public123`) or a variable such as `${servername`}.
+
+2.  To configure the job to run on the identified cluster node, go to `/modules`/`scheduler`/`jobs` and edit the job configuration.
+
+3.  Under the `params` node, add a `clusterId` property and set the value to match the `magnolia.clusterId` of the cluster node where you want to run the job.
+
+    ![Cluster node](../../../_images/ADVT-scheduler-mod2.png)
+
+
+Job configurations are stored in the `config` workspace. If you want to run a particular job on all cluster nodes you would have to cluster the `config` workspace so that all instances can read the configuration or create the same job configuration on all cluster nodes. This can be time consuming. As a workaround, configure the job once on a clustered instance without the `clusterId` property. This has the effect that the job will run on all cluster nodes.

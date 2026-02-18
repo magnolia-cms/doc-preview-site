@@ -1,0 +1,492 @@
+---
+title: "Add an Ingress"
+url: https://docs.magnolia-cms.com/cockpit/networking-ingresses/add/
+category: DX Cloud
+version: cloud
+---
+
+# Add an Ingress
+
+This guide helps you configure a new Ingress resource to manage external access to services.
+
+1.  Go to **Networking > Ingresses** in your Cockpit.
+
+2.  Ensure you are on [your desired cluster](#Select desired cluster).
+
+3.  Click **Add**. This opens a dialog where you configure critical Ingress criteria.
+
+4.  Under **[General settings](#_general_settings)**:
+
+    1.  Give your Ingress a **Name** and a **Description**.
+
+
+5.  Under **[Access control](#_access_control)**:
+
+    1.  Enter the **Allow List IPs**.
+
+    2.  Enter the **Deny List IPs**.
+
+    3.  Disable the robots header (if desired).
+
+    4.  Add any desired **Denied locations**. You can also deny access to Admincentral for locations here.
+
+
+6.  Under **[NGINX options](#_nginx_options)**:
+
+    1.  Set the [Max body size](#_proxybodysize).
+
+    2.  Enable [Response buffering](#_proxybuffering).
+
+    3.  Set the [Max buffer size](#_proxybuffersize).
+
+    4.  Set the [Number buffers](#_proxybuffersnumber).
+
+    5.  Enable [Request buffering](#_proxyrequestbuffering).
+
+    6.  Configure the [Connection timeout](#_proxyconnecttimeout).
+
+    7.  Adjust the [Read timeout](#_proxyreadtimeout).
+
+    8.  Set the [Send timeout](#_proxysendtimeout).
+
+    9.  Enable [Force SSL redirect](#_forcesslredirect) if desired.
+
+    10.  Enable [From to www redirect](#_fromtowwwredirect) if desired.
+
+    11.  Enable [the Ingress firewall](#_enablewaf). **Recommended**
+
+    12.  Set [Rate limiting](#_ratelimiting) parameters.
+
+    13.  Specify any [Headers to clear](#_headerstoclear) in the response.
+
+    14.  Set any [Headers](#_headerstoset) you want in the response.
+
+    15.  If desired, enable and define an [Error page](#_errorpage).
+
+    16.  Enable [Sticky sessions](#_stickysession) to route a client’s requests to the same backend server.
+
+    17.  If desired, enable [Basic auth](#_basicauth).
+
+    18.  Configure [CORS](#cors) to control which domains can access resources.
+
+    19.  Enable [client certificate authentication](#_certificateauthentication) to require clients to present a valid SSL/TLS certificate.
+
+
+7.  Under **[CDN options](#_cdn_options)**:
+
+    1.  Choose to enable content delivery for the Ingress (if desired). If enabled, Fastly is currently the only option.
+
+
+8.  Under **[Rules](#_rules)**:
+
+    Ingress rules specify the direction of allowed access to and from different identities and resources.
+
+    1.  **Allow regular expression**: Allow regular expression.
+
+    2.  **Host**: Choose the host from the dropdown menu. Only available hosts are listed.
+
+    3.  **Path type**: Choose the path type.
+
+        1.  `ImplementationSpecific`: Matching is up to the IngressClass.
+
+        2.  `Exact`: Matches the URL path exactly including being case-sensitive.
+
+        3.  `Prefix`: Matches based on a URL path prefix split by `/`. This is case-sensitive.
+
+
+    4.  **Path**: Specify the path itself, such as `/icons` or `/docs`.
+
+    5.  **Service**: Choose the desired service from the dropdown. This is typically `public` or `author`.
+
+    6.  **Backend port**: Choose the port. This can be the port number (such as `9090`) or the port name if a name is given.
+
+
+9.  Under **[TLS certificates](#_tls)**:
+
+    1.  Choose to enable **Acquire certificates automatically, using Let’s Encrypt (HTTP-01)** if desired.
+
+    2.  Otherwise, select an existing SSL/TLS certificate secret from the cluster to secure the Ingress. This is disabled if certificate acquisition is automatic (enabled above).
+
+
+
+## [](#_general_settings)General settings
+
+### [](#_name)Name
+
+🏷️ **Name**
+
+A unique name for the Ingress resource, used to identify it within the Kubernetes cluster. Must follow Kubernetes naming conventions (lowercase, alphanumeric, hyphens).
+
+### [](#_description)Description
+
+🏷️ **Description**
+
+An optional description of the Ingress, providing context or purpose for the resource. Useful for organizing, auditing, and documenting resources.
+
+## [](#_access_control)Access control
+
+### [](#_whitelistips)whitelistIps
+
+🏷️ **Allow List IPs**
+
+A list of IP addresses or CIDR ranges allowed to access the Ingress. Only requests from these IPs are permitted, enhancing security by restricting access.
+
+### [](#_blacklistips)blacklistIps
+
+🏷️ **Deny List IPs**
+
+A list of IP addresses or CIDR ranges blocked from accessing the Ingress. Requests from these IPs are denied, protecting against known threats.
+
+### [](#_disablerobots)disableRobots
+
+🏷️ **Disable robots header**
+
+Enables or disables the robots header in HTTP responses. When checked, prevents search engine crawlers from indexing the Ingress; useful for private or sensitive endpoints.
+
+### [](#_deniedlocations)deniedLocations
+
+🏷️ **Denied locations**
+
+Allows you to block access to specific paths by defining a list of denied locations. Ensures requests to those paths are rejected before reaching the backend services.
+
+## [](#_nginx_options)NGINX options
+
+### [](#_proxybodysize)proxyBodySize
+
+🏷️ **Max body size**
+
+Sets the maximum allowed size of the client request body, specified in bytes (e.g., "10m" for 10 megabytes). Limits large uploads to protect server resources.
+
+-   **Objective:** Limits the size of client request bodies (e.g., file uploads) to prevent resource exhaustion.
+
+-   **Context**: Magnolia allows authors to upload assets (e.g., images, PDFs) via the admin interface. Large uploads can strain server memory or disk, slowing down the CMS or causing crashes.
+
+    > **Important:** This protects the Magnolia instance from being overwhelmed by oversized uploads (e.g., a user uploading a 1GB video) and ensures server stability for both author and public instances.
+
+-   **Example**: Setting proxyBodySize to "10m" allows images up to 10MB, sufficient for most CMS assets, while blocking larger files that could disrupt performance.
+
+
+### [](#_proxybuffering)proxyBuffering
+
+🏷️ **Enable response buffering**
+
+Controls response buffering:
+
+-   **on** (default): NGINX buffers the response in memory (or disk if large) before delivering it to the client.
+
+-   **off**: NGINX streams the response to the client as it receives it from the backend.
+
+
+Set it "off" for:
+
+-   Server-Sent Events (SSE)
+
+-   Real-time APIs
+
+-   Reduce memory use under load
+
+
+### [](#_proxybuffersize)proxyBufferSize
+
+🏷️ **Max buffer size**
+
+Sets the size of the buffer used for reading the first part of the response received from the proxied server (ie: Magnolia, frontend application), specified in bytes (e.g., "16k" for 16 kilobytes). By default proxy buffer size is set as "4k".
+
+-   **Objective:** Allow large cookies, big JWT token or long custom headers to pass through Nginx.
+
+-   **Context**: Magnolia allows customers to use their own IDP to handle the authentication. Large number can increase the risk of Nginx memory bloat and DoS attacks
+
+-   **Example**: Setting proxyBufferSize to "16k" allows 16 kilobytes of headers/cookies
+
+
+### [](#_proxybuffersnumber)proxyBuffersNumber
+
+🏷️ **Buffer numbers**
+
+Sets the number of the buffers in proxy\_buffers used for reading the first part of the response received from the proxied server (ie: Magnolia, frontend application). By default number of buffers is set as "4".
+
+-   **Objective:** Allow response having a large number of header of a large body content.
+
+-   **Context**: Magnolia allows customers to build their own pages and does not set any limit on the page size or the number of headers. Large number can increase the risk of Nginx memory bloat and DoS attacks
+
+
+### [](#_proxyrequestbuffering)proxyRequestBuffering
+
+🏷️ **Enable request buffering**
+
+Controls request buffering:
+
+-   **on** (default): Buffer the entire request body in memory or to disk before sending it to the backend.
+
+-   **off**: NGINX streams the request to the backend as it receives it from the client.
+
+
+Set it "off" for:
+
+-   File uploads (ie: Enable progress bar while uploading file to Magnolia)
+
+-   Real-time data input
+
+
+### [](#_proxyconnecttimeout)proxyConnectTimeout
+
+🏷️ **Connection timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait while establishing a TCP connection to the upstream (i.e. your Magnolia or frontend instance). By default timout is set as "60" seconds.
+
+### [](#_proxyreadtimeout)proxyReadTimeout
+
+🏷️ **Read timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait to read data from the backend service after the connection has been established. By default timout is set as "60" seconds.
+
+### [](#_proxysendtimeout)proxySendTimeout
+
+🏷️ **Send timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait while sending data to the backend. By default timout is set as "60" seconds.
+
+### [](#_forcesslredirect)forceSslRedirect
+
+🏷️ **Force SSL redirect**
+
+When enabled, redirects all HTTP requests to HTTPS, ensuring secure communication. Useful for enforcing SSL/TLS across all traffic.
+
+-   **Objective:** Redirects HTTP requests to HTTPS to enforce secure, encrypted communication.
+
+-   **Context**: Magnolia public sites (e.g., corporate websites) and author instances handle sensitive data, such as user sessions or content drafts, requiring encryption to protect against eavesdropping.
+
+    > **Important:** Ensures all traffic to Magnolia is secure, building trust with site visitors, improving SEO (Google prioritizes HTTPS), and complying with regulations like GDPR for EU users.
+
+-   **Example**: Enabling forceSslRedirect redirects `http://magnolia-site.com` to `https://magnolia-site.com`, securing user interactions and protecting admin logins.
+
+
+### [](#_fromtowwwredirect)fromToWwwRedirect
+
+🏷️ **From to www redirect**
+
+When enabled, redirects requests between "www" and non-"www" (apex) versions of the domain (e.g., www.example.com to example.com). Ensures consistent URL usage.
+
+If your rule’s host is the apex domain, the Ingress will redirect the "www" requests to the apex domain.
+
+If your rule’s host is the "www" domain, the Ingress will redirect the apex requests to the "www" domain.
+
+In both cases, the preferred domain should be the only one defined in the rules.
+
+-   **Objective:** Redirects traffic between `www` and non-`www` domains to maintain consistent URL structures.
+
+-   **Context**: Magnolia sites often use a primary domain for branding (e.g., `example.com` or `www.example.com`). Inconsistent URLs can confuse users, harm SEO due to duplicate content, or break analytics tracking.
+
+    > **Important:** Provides a unified user experience and improves SEO by preventing duplicate content penalties, ensuring all traffic uses the preferred domain.
+
+-   **Example**: Enabling fromToWwwRedirect redirects `www.magnolia-site.com` to `magnolia-site.com`, standardizing links and analytics for a corporate website.
+
+
+### [](#_enablewaf)enableWaf
+
+🏷️ **Enable Ingress firewall (OWASP)**
+
+Enables the Web Application Firewall (WAF) to protect against common web attacks, such as SQL injection or cross-site scripting. Enhances security for public endpoints.
+
+⚠️ Enabling this feature can heavily impact performance and stability. Use only on Ingresses that are not already protected by a (Fastly) WAF.
+
+For more details, see the [OWASP ModSecurity Project](https://modsecurity.org).
+
+-   **Objective:** Activates a Web Application Firewall to block common web attacks, leveraging OWASP rulesets for protection.
+
+-   **Context**: Magnolia public sites are internet-exposed, making them targets for attacks like SQL injection or XSS. Author instances are critical, as compromised access could lead to content vandalism or data breaches.
+
+    > **Important:** Protects Magnolia from exploits, ensuring site availability and data integrity, and supports compliance with security standards like PCI DSS for e-commerce integrations.
+
+-   **Example**: Enabling enableWaf blocks malicious requests (e.g., XSS attempts on `/login`), safeguarding Magnolia’s public and admin interfaces.
+
+
+### [](#_ratelimiting)rateLimiting
+
+🏷️ **Rate limiting**
+
+Configures rate limiting to restrict the number of requests per client, preventing abuse or denial-of-service attacks. Define limits and burst settings.
+
+-   **Objective:** Limits the frequency of client requests to prevent server overload or denial-of-service (DDoS) attacks.
+
+-   **Context**: Magnolia public sites may face traffic spikes from bots or scrapers, while author instances are vulnerable to brute-force login attempts. Rate limiting ensures server stability under load.
+
+    > **Important:** Maintains Magnolia’s availability during high traffic or attacks, reducing server load and ensuring responsive content delivery for users.
+
+-   **Example**: Setting rateLimiting to 100 requests per minute per IP prevents bots from overwhelming `/api/content`, keeping the public site accessible.
+
+
+### [](#_headerstoclear)headersToClear
+
+🏷️ **Headers to clear**
+
+Specifies HTTP headers to remove from the response, improving security or compatibility by eliminating unwanted headers.
+
+-   **Objective:** Removes specific HTTP response headers to enhance security or resolve compatibility issues.
+
+-   **Context**: Magnolia may include default headers (e.g., `Server: nginx`) that reveal software versions, aiding attackers. Some headers may conflict with Magnolia’s frontend or third-party integrations.
+
+    > **Important:** Reduces the attack surface by hiding server details and ensures compatibility with Magnolia’s rendering or external tools, improving security and functionality.
+
+-   **Example**: Clearing the `Server` header prevents attackers from identifying Nginx version vulnerabilities, protecting the public site.
+
+
+### [](#_headerstoset)headersToSet
+
+🏷️ **Headers to set**
+
+Defines custom HTTP headers to add to the response, such as security headers (e.g., X-Frame-Options) or caching directives.
+
+-   **Objective:** Adds custom HTTP response headers to enhance security, control caching, or support specific functionality.
+
+-   **Context**: Magnolia public sites benefit from security headers (e.g., `X-Frame-Options: DENY` to prevent clickjacking) and caching headers (e.g., `Cache-Control`) for static assets. Author instances may need headers for compliance or integration.
+
+    > **Important:** Strengthens security against attacks and optimizes performance by controlling browser caching, critical for Magnolia’s content delivery and user safety.
+
+-   **Example**: Setting `X-Frame-Options: DENY` prevents Magnolia pages from being embedded in malicious iframes, enhancing site security.
+
+
+### [](#_errorpage)errorPage
+
+🏷️ **Error page**
+
+Customizes error pages for specific HTTP status codes (e.g., `404`, `500`), providing user-friendly messages or redirects.
+
+-   **Objective:** Customizes error pages to improve user experience during HTTP errors.
+
+-   **Context**: Magnolia public sites need branded error pages (e.g., `404`) to guide users back to content, while author instances benefit from clear error messages during maintenance or issues.
+
+    > **Important:** Enhances user experience by replacing default Nginx errors with Magnolia-branded pages, maintaining professionalism and usability during issues.
+
+-   **Example**: Setting errorPage for `404` to `/not-found` redirects users to a custom Magnolia page with navigation links, reducing bounce rates.
+
+
+### [](#_stickysession)stickySession
+
+🏷️ **Sticky session**
+
+Enables sticky sessions to route a client’s requests to the same backend server, useful for session-based applications. Configure session persistence settings.
+
+-   **Objective:** Routes a client’s requests to the same backend server to maintain session persistence.
+
+-   **Context**: Magnolia author instances rely on sessions for user authentication and content editing. Public sites with personalization (e.g., user-specific content) may also use session data.
+
+    > **Important:** Ensures consistent user sessions, preventing login issues or data loss in the CMS, and supports Magnolia’s personalization features for public sites.
+
+-   **Example**: Enabling `stickySession` keeps an author’s editing session on the same pod, avoiding interruptions during content updates.
+
+
+### [](#_basicauth)basicAuth
+
+🏷️ **Basic auth**
+
+Enables HTTP Basic Authentication, requiring a username and password for access. Specify credentials or authentication settings.
+
+-   **Objective:** Requires HTTP Basic Authentication (username/password) to restrict access to the Ingress.
+
+-   **Context**: Magnolia author instances or staging sites need restricted access to prevent unauthorized editing. Public sites may use basicAuth for private sections (e.g., employee portals).
+
+    > **Important:** Secures sensitive Magnolia interfaces (e.g., /author) from public access, providing simple authentication without complex SSO setups.
+
+-   **Example**: Enabling basicAuth on `/author` requires a password, protecting the admin interface from unauthorized access.
+
+
+### [](#_cors)cors
+
+🏷️ **CORS**
+
+Configures Cross-Origin Resource Sharing (CORS) to control which domains can access resources, enabling secure cross-origin requests.
+
+-   **Objective:** Configures Cross-Origin Resource Sharing to allow specific domains to access Magnolia’s resources via HTTP requests.
+
+-   **Context**: Magnolia’s frontend may use REST APIs (e.g., for content delivery) accessed by external domains, such as mobile apps or headless CMS frontends. CORS is critical for these integrations.
+
+    > **Important:** Enables secure integration with Magnolia’s APIs or headless content delivery, supporting modern web and mobile applications consuming CMS content.
+
+-   **Example**: Setting cors to allow `\app.magnolia-site.com` enables a mobile app to fetch content from `/api/content`, ensuring secure API access.
+
+
+### [](#_certificateauthentication)certificateAuthentication
+
+🏷️ **mTLS**
+
+Enables client certificate authentication, requiring clients to present a valid SSL/TLS certificate. Enhances security for sensitive endpoints.
+
+-   **Objective:** Requires clients to present a valid SSL/TLS client certificate for mutual TLS (mTLS) authentication.
+
+-   **Context**: High-security Magnolia author instances or enterprise integrations may use client certificates to restrict access to admins or trusted clients. Common in B2B scenarios for API endpoints.
+
+    > **Important:** Provides strong authentication beyond passwords, ensuring only authorized clients interact with Magnolia, critical for sensitive or enterprise environments.
+
+-   **Example**: Enabling certificateAuthentication for `/api/admin` restricts access to clients with valid certificates, securing enterprise API calls.
+
+
+## [](#_cdn_options)CDN options
+
+### [](#_enabled)enabled
+
+🏷️ **Enabled**
+
+Enables or disables the Content Delivery Network (CDN) for the Ingress. When enabled, traffic is routed through the CDN (Fastly) to improve performance and caching.
+
+### [](#_provider)provider
+
+🏷️ **Provider**
+
+Displays the CDN provider, fixed to Fastly. This field is read-only, indicating the configured CDN service for the cluster.
+
+### [](#_nocdnprovider)noCdnProvider
+
+Indicates that no CDN cluster is available for this Ingress. Enable a CDN cluster in your configuration to access CDN options.
+
+## [](#_rules)Rules
+
+### [](#_allowregex)allowRegex
+
+🏷️ **Allow regular expressions**
+
+Allows using regular expressions in the rules path fields. Only use if you use rules with path type "ImplementationSpecific" and an actual regular expression as a path.
+
+Using that option might have performance impact on your Ingress.
+
+### [](#_host)host
+
+🏷️ **Host**
+
+Specifies the host domain for the Ingress rule (e.g., example.com). Defines which domain or subdomain the rule applies to, routing matching requests to the specified paths.
+
+### [](#_paths)paths
+
+🏷️ **Paths**
+
+Configures the URL paths and their corresponding backend services for the host. Define path patterns (e.g., `/api`) and link them to services for routing traffic.
+
+### [](#_norules)noRules
+
+🏷️ **Define a rule**
+
+Indicates that no rules are defined for the Ingress, which is required. Add at least one rule to specify how traffic is routed to backend services.
+
+## [](#_tls)TLS
+
+### [](#_acquirecertificate)acquireCertificate
+
+🏷️ **SSL/TLS Configuration**
+
+Allow unsecure traffic (No SSL/TLS) - Disables SSL/TLS encryption and allows traffic to be served over HTTP only.
+
+Automatic certificate acquisition - Automatically obtains and manages an SSL/TLS certificate for the Ingress, typically via a certificate manager (e.g., Let’s Encrypt). Manual secret selection is disabled in this mode.
+
+Custom certificate - Use a manually provided SSL/TLS certificate by selecting a pre-created secret containing the required key and certificate.
+
+### [](#_secretname)secretName
+
+🏷️ **Secret name**
+
+Selects an existing SSL/TLS certificate secret from the cluster to secure the Ingress. Disabled when automatic certificate acquisition is enabled.
+
+### [](#_loadingcertificates)loadingCertificates
+
+🏷️ **Loading certificates**
+
+Indicates that the list of available certificate secrets is being fetched. Wait for the list to load or check the certificate configuration if it fails.

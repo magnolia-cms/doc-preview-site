@@ -1,0 +1,64 @@
+---
+title: "User tasks"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Workflow-module/User-tasks/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Workflow module > User tasks
+---
+
+# User tasks
+
+## [](#_what_is_a_user_task)What is a User task?
+
+From the official jBPM [documentation](http://docs.jboss.org/jbpm/v6.0.1/userguide/jBPMBPMN2.html#d0e2866):
+
+> Processes can also involve tasks that need to be executed by human actors. A User Task represents an atomic task to be executed by a human actor. It should have one incoming connection and one outgoing connection. User Tasks can be used in combination with Swimlanes to assign multiple human tasks to similar actors. Refer to the chapter on human tasks for more details. A User Task is actually nothing more than a specific type of service node (of type `Human Task`).
+>
+> ![User task 1](../../../../_images/UserTask.png)
+
+Compared to [Custom tasks](../Custom-tasks/) a User task expects some kind of human interaction. When modeling a User Task in your process you have an edit mask giving you more possibilities to set parameters tailored for user interactions:
+
+![Edit User Task tab](../../../../_images/Screen-Shot-2014-03-25-at-17-22-30.png)
+
+You can also define swim lanes inside your process in context with Human Tasks. A swim lane allows you to define multiple steps or user tasks inside your process to be automatically assigned to the first user who picks up the first task of the swim lane.
+
+## [](#_magnolias_implementation)Magnolia’s implementation
+
+### [](#_tasks_app_and_tasks)Tasks app and tasks
+
+Magnolia uses its Task Management module to implement jBPM User Tasks into the Tasks app. The app gives the user a convenient overview of tasks and their current status.
+
+See [Tasks](../../../../Features/Tasks/) documentation for details.
+
+### [](#_technical)Technical
+
+From a technical point of view there is no difference between [Custom tasks](../Custom-tasks/) and User Tasks; both are handled by a *WorkItemHandler registered at startup* and both implement the same interface. The handler for Human Tasks is configured as follows, where the `Human Task` value in the `name` property is mandatory for the jBPM engine to pick it up as handler for Human Tasks:
+
+![WorkItemHandler registry](../../../../_images/Screen-Shot-2014-06-18-at-15-09-01.png)
+
+> **Note:** If you don’t use a Human Task, a user will not be informed about the workflow and they cannot interact with it. There will be no task in the Tasks app for users to act on.
+
+## [](#_human_task_work_item_handler)Human Task work item handler
+
+What the handler does internally is:
+
+-   Create a Task based on the parameters provided by the work item.
+
+-   Create the Content based on parameters from the work item by using a *parameter resolver*. The `content` data is used for the user to make some sort of decision to complete the task and is usually displayed in the Tasks app. The resulting data is then added to the `result` map of the task.
+
+-   Add the task to the TasksManager.
+
+-   Claim the task as part of a swim lane, otherwise an actor would have to manually claim it.
+
+
+### [](#_parameter_resolver)Parameter resolver
+
+The jBPM engine only allows registering one Human Task Handler. But a human task can be anything involving human interaction. The only thing all human tasks have in common is that they contain some sort of data, a human user who might need to fulfill his task, and the resulting data. This data is the Content or respectively the Result map of a Task. To allow distinguishing between tasks, Magnolia is using TaskDefinitions and ParameterResolver configured inside the TaskDefinition Registry.
+
+The Parameter Resolver takes care of creating the data used by a user to fulfill a task. This is usually the data displayed in the Tasks app. Where that data comes from is up to the implementer. It could for instance be read from the WorkItem Parameters associated with the Human Task inside the Process, so the fields from edit mask, or they may come from the task configuration itself or anything else.
+
+As an example here is the definition of the `publish` task associated with publication:
+
+![Publish task definition](../../../../_images/Screen-Shot-2014-06-18-at-16-16-58.png)
+
+> **Note:** The Content and Result Map can be any Map<String, Object> map where Object is a primitive Type.

@@ -1,0 +1,1094 @@
+---
+title: "Changelog archives"
+url: https://docs.magnolia-cms.com/paas/changelog/archives/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Changelog archives
+---
+
+# Changelog archives
+
+This page contains the changelog information for previous years.
+
+## [](#_2024)2024
+
+### [](#_december)December
+
+-   [Magnolia 6.3.2](#_magnolia_6_3_2)
+
+-   [Magnolia 6.2.53](#_magnolia_6_2_53)
+
+
+#### [](#_magnolia_6_3_2)Magnolia 6.3.2
+
+Release notes for [Magnolia 6.3.2](#6.3@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.3.2.adoc) are available.
+
+#### [](#_magnolia_6_2_53)Magnolia 6.2.53
+
+Release notes for [Magnolia 6.2.53](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.53.adoc) are available.
+
+### [](#_november)November
+
+-   [Custom errors for geofencing](#_custom_errors_for_geofencing)
+
+-   [Resetting credentials](#_resetting_credentials)
+
+-   [Magnolia 6.3.1](#_magnolia_6_3_1)
+
+-   [Magnolia 6.2.52](#_magnolia_6_2_52)
+
+
+#### [](#_custom_errors_for_geofencing)Custom errors for geofencing
+
+You can now set custom error messages for geofencing. The default message is "Restricted Content".
+
+View from the Cockpit
+
+![geofencing](../../cockpit/_images/cdn/cdn-settings/geofencing.jpg)
+
+1.  Go to **CDN > Geofencing**.
+
+2.  *Optional* If desired, add a custom error message. If left blank, the default message is "Restricted Content".
+
+3.  Click **Add rule** to add a new geofencing rule.
+
+    1.  Select the countries from the menu.
+
+    2.  Add the host(s) you want to restrict in the **Hosts** field.
+
+
+4.  Click **Apply geofencing**.
+
+
+#### [](#_resetting_credentials)Resetting credentials
+
+You can now trigger the reset process for both passwords and One-time passwords (OTPs) from the Cockpit.
+
+For more, see [Admin: Reset user credentials](../../cockpit/sections/admin/#_reset_user_credentials).
+
+![reset credentials](../../cockpit/_images/access-management/reset-credentials.jpg)
+
+#### [](#_magnolia_6_3_1)Magnolia 6.3.1
+
+Release notes for [Magnolia 6.3.1](#6.3@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.3.1.adoc) are available.
+
+#### [](#_magnolia_6_2_52)Magnolia 6.2.52
+
+Release notes for [Magnolia 6.2.52](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.52.adoc) are available.
+
+### [](#_october)October
+
+-   [Magnolia 6.2.51](#_magnolia_6_2_51)
+
+-   [Updated Helm chart version](#helm-chart-update-october24)
+
+
+#### [](#_magnolia_6_2_51)Magnolia 6.2.51
+
+Release notes for [Magnolia 6.2.51](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.51.adoc) are available.
+
+#### [](#helm-chart-update-october24)Updated Helm chart version
+
+We have updated the Helm chart version from `1.15.1` to `1.15.2`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+include::partial$changelog/2024/s\_september.adoc\[leveloffset=+2\]gt stat
+
+### [](#_august)August
+
+-   [Updated Helm chart version for Magnolia 6.3 compatibility](#helm-chart-update-august24-2)
+
+-   [Magnolia 6.2.49](#_magnolia_6_2_49)
+
+-   [Updated Helm chart version](#helm-chart-update-august24)
+
+
+#### [](#helm-chart-update-august24-2)Updated Helm chart version
+
+We have updated the Helm chart version from `1.14.1` to `1.15.0` for Magnolia 6.3 compatibility.
+
+For more details on moving to Magnolia 6.3, see [6.3@product-docs:ROOT:Upgrading-to-Magnolia.adoc](#6.3@product-docs:ROOT:Upgrading-to-Magnolia.adoc).
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+#### [](#_magnolia_6_2_49)Magnolia 6.2.49
+
+Release notes for [Magnolia 6.2.49](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.49.adoc) are available.
+
+#### [](#helm-chart-update-august24)Updated Helm chart version
+
+We have updated the Helm chart version from `1.14.0` to `1.14.1`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_july)July
+
+-   [Magnolia 6.2.48](#_magnolia_6_2_48)
+
+-   [Updated Helm chart version](#helm-chart-update-july24)
+
+
+#### [](#_magnolia_6_2_48)Magnolia 6.2.48
+
+Release notes for [Magnolia 6.2.48](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.48.adoc) are available.
+
+> **Important:** Although Magnolia 6.2.47 was released, some changes introduced in 6.2.47 caused some issues. Because of this, we quickly released Magnolia 6.2.48 in order to resolve the issues. For more details, see the release notes mentioned above.
+
+#### [](#helm-chart-update-july24)Updated Helm chart version
+
+We have updated the Helm chart version from `1.13.0` to `1.14.0`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_june)June
+
+-   [Updated Helm chart version](#helm-chart-update-june24-1)
+
+-   [Magnolia 6.2.46](#_magnolia_6_2_46)
+
+-   [Updated Helm chart version](#helm-chart-update-june24)
+
+
+#### [](#helm-chart-update-june24-1)Updated Helm chart version
+
+We have updated the Helm chart version from `1.12.1` to `1.13.0`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+#### [](#_magnolia_6_2_46)Magnolia 6.2.46
+
+Release notes for [Magnolia 6.2.46](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.46.adoc) are available.
+
+#### [](#helm-chart-update-june24)Updated Helm chart version
+
+We have updated the Helm chart version from `1.12.0` to `1.12.1`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_may)May
+
+-   [Segmented caching](#_segmented_caching)
+
+-   [Magnolia 6.2.45](#_magnolia_6_2_45)
+
+
+#### [](#_segmented_caching)Segmented caching
+
+Segmented caching breaks up large files or objects into smaller segments and caches each segment separately, helping optimize content delivery.
+
+For more details, see [CDN settings](../../cockpit/sections/content-delivery/#_cdn_settings).
+
+#### [](#_magnolia_6_2_45)Magnolia 6.2.45
+
+Release notes for [Magnolia 6.2.45](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.45.adoc) are available.
+
+### [](#_april)April
+
+-   [Updated Helm chart version](#helm-chart-update-april24)
+
+-   [Set custom errors from Cockpit](#_set_custom_errors_from_cockpit)
+
+-   [Geofencing](#_geofencing)
+
+
+#### [](#helm-chart-update-april24)Updated Helm chart version
+
+We have updated the Helm chart version from `1.11.0` to `1.12.0`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+#### [](#_set_custom_errors_from_cockpit)Set custom errors from Cockpit
+
+You can now set custom error responses for your site from within the Cockpit instead of requesting via a support ticket.
+
+For more details, see [CDN settings](../../cockpit/sections/content-delivery/#_cdn_settings).
+
+#### [](#_geofencing)Geofencing
+
+DX Cloud’s geofencing lets you control access to your site content based on a user’s geographic location. This allows you to define country boundaries around your site’s access.
+
+For more details, see [CDN settings](../../cockpit/sections/content-delivery/#_cdn_settings).
+
+### [](#_march)March
+
+-   [Magnolia 6.2.44](#_magnolia_6_2_44)
+
+-   [Apply CDN restrictions](#_apply_cdn_restrictions)
+
+-   [Updated Helm chart version](#helm-chart-update-march24)
+
+
+#### [](#_magnolia_6_2_44)Magnolia 6.2.44
+
+Release notes for [Magnolia 6.2.44](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.44.adoc) are available.
+
+#### [](#_apply_cdn_restrictions)Apply CDN restrictions
+
+With Access control in DX Cloud, you’re able to configure rules that prohibit access to certain paths and extensions. This prevents any unintended visits to pages that should be internal or files that should be kept for certain groups or individuals.
+
+For more details, see [CDN settings](../../cockpit/sections/content-delivery/#_cdn_settings).
+
+#### [](#helm-chart-update-march24)Updated Helm chart version
+
+We have updated the Helm chart version from `1.10.0` to `1.11.0`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_february)February
+
+-   [Magnolia 6.2.43](#_magnolia_6_2_43)
+
+-   [Magnolia 6.2.42-sp1](#_magnolia_6_2_42_sp1)
+
+
+#### [](#_magnolia_6_2_43)Magnolia 6.2.43
+
+Release notes for [Magnolia 6.2.43](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.43.adoc) are available.
+
+#### [](#_magnolia_6_2_42_sp1)Magnolia 6.2.42-sp1
+
+A security vulnerability was identified for CKEditor 4.22.1. Magnolia provided a release to address this.
+
+> **Note:** For more details, see Magnolia 6.2.42-sp1.
+
+### [](#_january)January
+
+-   [Organisations](#_organisations)
+
+-   [Editing user roles](#_editing_user_roles)
+
+-   [Magnolia 6.2.42](#_magnolia_6_2_42)
+
+
+#### [](#_organisations)Organisations
+
+You can now create business units called Organisations from the Cockpit.
+
+For more details, see [Organisations](../../cockpit/sections/admin/#_add_organisation).
+
+#### [](#_editing_user_roles)Editing user roles
+
+For some Identity Provider (IDPs), groups are not supported. In light of this, you can now edit an IDP user’s roles from the Cockpit.
+
+For more details, see [User types and roles](../../cockpit/sections/admin/).
+
+#### [](#_magnolia_6_2_42)Magnolia 6.2.42
+
+Release notes for [Magnolia 6.2.42](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.42.adoc) are available.
+
+## [](#_2023)2023
+
+### [](#_december_2)December
+
+-   [Updated Helm chart version](#helm-chart-update-december23-2)
+
+-   [Magnolia 6.2.41](#_magnolia_6_2_41)
+
+-   [Updated Helm chart version](#helm-chart-update-december23)
+
+
+#### [](#helm-chart-update-december23-2)Updated Helm chart version
+
+We have updated the Helm chart version from `1.9.0` to `1.10.0`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+#### [](#_magnolia_6_2_41)Magnolia 6.2.41
+
+Release notes for [Magnolia 6.2.41](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.41.adoc) are available.
+
+#### [](#helm-chart-update-december23)Updated Helm chart version
+
+We have updated the Helm chart version from `1.8.3` to `1.9.0`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_november_2)November
+
+-   [Fastly Waiting Room](#_fastly_waiting_room)
+
+-   [Updated Helm chart version](#helm-chart-update-november23)
+
+
+#### [](#_fastly_waiting_room)Fastly Waiting Room
+
+Premium feature
+
+The Fastly Waiting Room is a feature to help you manage high traffic volume on your site and prevent site overload. It assigns a delay for new user requests which allows existing users to finish what they’re trying to do.
+
+The Fastly Waiting Room:
+
+-   Prevents site overload by intelligently handling the influx of new visitors.
+
+-   Fairly distributes the site traffic so that each user has equal chance of access. During high-demand events, promotions, or sales, this can be highly useful.
+
+-   Reduces server load so performance is not hindered.
+
+
+For more details, see [CDN settings](../../cockpit/sections/content-delivery/#_cdn_settings).\].
+
+#### [](#helm-chart-update-november23)Updated Helm chart version
+
+We have updated the Helm chart version from `1.8.2` to `1.8.3`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_october_2)October
+
+-   [Magnolia 6.2.40](#_magnolia_6_2_40)
+
+
+#### [](#_magnolia_6_2_40)Magnolia 6.2.40
+
+Release notes for [Magnolia 6.2.40](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.40.adoc) are available.
+
+### [](#_september)September
+
+-   [Magnolia 6.2.39](#_magnolia_6_2_39)
+
+-   [Updated Helm chart version](#helm-chart-update-september23)
+
+
+#### [](#_magnolia_6_2_39)Magnolia 6.2.39
+
+Release notes for [Magnolia 6.2.39](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.39.adoc) are available.
+
+#### [](#helm-chart-update-september23)Updated Helm chart version
+
+We have updated the Helm chart version from `1.8.1` to `1.8.2`.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_august_2)August
+
+-   [Magnolia 6.2.38](#_magnolia_6_2_38)
+
+-   [Certificate updates](#_certificate_updates)
+
+
+#### [](#_magnolia_6_2_38)Magnolia 6.2.38
+
+Release notes for [Magnolia 6.2.38](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.38.adoc) are available.
+
+#### [](#_certificate_updates)Certificate updates
+
+With recent changes, when creating a custom certificate, you need to generate a Certificate Signing Request (CSR) from within the Cockpit, which can now be customized. It’s also now possible to renew custom certificates. This is only applicable to certificates created after this feature was released.
+
+For more on this topic, see [Adding certificates with PaaS](../../cockpit/sections/networking/#_manage_certificates).
+
+### [](#_july_2)July
+
+-   [Updated Helm chart version](#helm-chart-update-july23)
+
+-   [Magnolia 6.2.37](#_magnolia_6_2_37)
+
+
+#### [](#helm-chart-update-july23)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+#### [](#_magnolia_6_2_37)Magnolia 6.2.37
+
+Release notes for [Magnolia 6.2.37](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.37.adoc) are available.
+
+### [](#_june_2)June
+
+-   [Block IP: bit prefix detection](#_block_ip_bit_prefix_detection)
+
+-   [Magnolia 6.2.36](#_magnolia_6_2_36)
+
+-   [Magnolia 6.2.35](#_magnolia_6_2_35)
+
+-   [Updated Helm chart version](#helm-chart-update-june23)
+
+
+#### [](#_block_ip_bit_prefix_detection)Block IP: bit prefix detection
+
+Now, when you block an IP from the Cockpit, it automatically detects and appends the appropriate bit prefix to the URL.
+
+-   For [IPv4](https://datatracker.ietf.org/doc/html/rfc791), this is `/32`.
+
+-   For [IPv6](https://datatracker.ietf.org/doc/rfc2460/), this is `/128`.
+
+
+For more information, see [Block IPs](../../cockpit/sections/content-delivery/#_block_ips).
+
+#### [](#_magnolia_6_2_36)Magnolia 6.2.36
+
+Release notes for [Magnolia 6.2.36](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.36.adoc) are available.
+
+#### [](#_magnolia_6_2_35)Magnolia 6.2.35
+
+Release notes for [Magnolia 6.2.35](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.35.adoc) are available.
+
+#### [](#helm-chart-update-june23)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_may_2)May
+
+-   [Magnolia 6.2.34](#_magnolia_6_2_34)
+
+
+#### [](#_magnolia_6_2_34)Magnolia 6.2.34
+
+Release notes for [Magnolia 6.2.34](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.34.adoc) are available.
+
+### [](#_april_2)April
+
+April brings several improvements and updates related to DX Cloud.
+
+-   [Configure redirects settings](#_configure_redirects_settings)
+
+-   [Magnolia 6.2.33](#_magnolia_6_2_33)
+
+-   [Cockpit options for all CDN customers](#_cockpit_options_for_all_cdn_customers)
+
+-   [Redirects are now editable](#_redirects_are_now_editable)
+
+-   [Fastly Image Optimizer](#_fastly_image_optimizer)
+
+-   [Fastly NextGen WAF](#_fastly_nextgen_waf)
+
+
+#### [](#_configure_redirects_settings)Configure redirects settings
+
+You can now configure redirects settings directly in the Cockpit. This allows you to choose either the default backend configuration or a frontend redirect server which will distribute traffic to the servers.
+
+1.  In your Cockpit, go to **Networking > Redirects**.
+
+2.  Click the **Add redirect server** button.
+
+3.  In the dialog, choose the settings that best suit your needs.
+
+    1.  Choose the number of **Replicas** you would like. There is a minimum of 2 redirect server replicas.
+
+        You may choose as many replicas as needed. However, if no more memory is available, the system rejects new replicas.
+
+    2.  Under **Redirects server**, choose **Backend** or **Frontend** .
+
+        If choosing *Frontend*, you’ll need to pass the port number you want to use, such as `3000`.
+
+    3.  Under **Load balancing**, choose **Round Robin** or **Cookie based** load balancing.
+
+        > **Important:** If choosing Cookie based, you’ll need to give the cookie a name. If you have sticky sessions enabled, this name must not be the same as the value in the nginx.ingress.kubernetes.io/session-cookie-name ingress annotation in your values.yml file.
+
+
+4.  Set your desired **Memory limit** in MB.
+
+    Memory limit details
+
+    **Memory limit** specifies the maximum amount of memory (in megabytes) allocated to each redirect server instance. This setting is critical for ensuring the server performs efficiently while managing redirects, especially under varying traffic loads.
+
+    **When to adjust**:
+
+    -   **High traffic**: Add more replicas if you expect unusually high traffic volumes, as this can be memory-intensive.
+
+    -   **Resource optimization**: Decrease the limit for low-traffic scenarios to optimize resource usage, especially in resource-constrained environments.
+
+    -   **Frontend vs. Backend**: Frontend redirect servers (e.g., using a CDN or JavaScript-based redirects) may require different memory considerations compared to backend servers, as frontend redirects offload some processing to client-side resources.
+
+
+    **Start Conservative**: Begin with a moderate memory limit (e.g., 128 MB) and scale up based on observed needs. Increaseing memory is only useful if you have a large amount of rules. Consider increasing to 256 MB if you have a lot of rules. Beyond that, create more replicas.
+
+5.  Don’t forget to save your updates.
+
+
+##### [](#_configure_redirect_server)Configure redirect server
+
+Once you’ve successfully added a redirect server by following the instructions in [\[Add redirect server\]](#Add redirect server) and saved your updates, the Add redirect server button in the Cockpit changes to **Configure redirect server**. Clicking this button opens a dialog where you can:
+
+-   **Edit the redirect server settings**: Modify the existing configuration, such as the number of replicas, redirect server type, load balancing method, or cookie name (if applicable).
+
+    Considerations 🤔
+
+    You can adjust the following settings through the Configure redirect server dialog.
+
+    Consider the following before acting:
+
+    -   **Number of replicas**
+
+        -   *Increasing replicas*: You can add more replicas to handle increased traffic, but sufficient memory must be available. If memory is insufficient, the system will reject the new replicas, leaving your configuration unchanged.
+
+        -   *Decreasing replicas*: Reducing the number of replicas may lower the system’s capacity to manage high traffic loads, potentially degrading performance during peak times.
+
+
+    -   **Redirect server type**
+
+        -   Switching between backend and frontend redirect servers alters how traffic is routed.
+
+        -   *Switching to frontend*: You must specify a valid port (e.g., `3000`). If the port is misconfigured or conflicts with other services, traffic may be misrouted, or the service could become unavailable.
+
+        -   *Switching to backend*: This reverts to the default configuration, which may not suit your original intent (e.g., if frontend was chosen for performance or security reasons).
+
+
+    -   **Load balancing method**
+
+        -   *Switching to Cookie-Based*: You’ll need to provide a cookie name. If sticky sessions are enabled, this name must match the `nginx.ingress.kubernetes.io/session-cookie-name` in your `values.yml` file. A mismatch can break session persistence, causing users to lose session data or be routed inconsistently across servers.
+
+        -   *Switching to Round Robin*: This eliminates session persistence, which could disrupt applications that depend on consistent server routing (e.g., those maintaining user sessions).
+
+        -   *Cookie name*: Changing the cookie name requires updating the corresponding ingress annotation in your `values.yml` file if sticky sessions are enabled. Failing to synchronize these values disrupts session persistence. Additionally, altering the cookie name may invalidate existing sessions, potentially logging users out or resetting their session state.
+
+
+
+-   **Uninstall the redirect server**: Remove the custom redirect server entirely, reverting to the default backend behavior.
+
+    Considerations 🤔
+
+    Choosing to uninstall the redirect server removes the custom configuration and reverts the system to the default behavior (backend redirect server).
+
+    Consider the following before acting:
+
+    -   **Loss of custom benefits**: Any advantages gained from the custom redirect server (e.g., optimized traffic distribution, frontend-specific routing) will be lost.
+
+    -   **Service disruptions**: Applications or services that depend on the custom redirect server may encounter errors or downtime if the default backend configuration doesn’t suit their needs.
+
+
+
+For more on this topic, check out our dedicated [redirects section](../../cockpit/sections/content-delivery/#_redirects_settings).
+
+#### [](#_magnolia_6_2_33)Magnolia 6.2.33
+
+Release notes for [Magnolia 6.2.33](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.33.adoc) are available.
+
+#### [](#_cockpit_options_for_all_cdn_customers)Cockpit options for all CDN customers
+
+All customers regardless of CDN can now avail of the following tabs in **Content Delivery** section of the Cockpit.
+
+-   [Domains](../../cockpit/sections/content-delivery/#_manage_domains)
+
+-   [Certificates](../../cockpit/sections/content-delivery/#_manage_certificates)
+
+-   [Ingresses](../../cockpit/sections/content-delivery/#_ingresses)
+
+
+> **Note:** Previously, these features were only available to customers using Fastly as their CDN.
+
+#### [](#_redirects_are_now_editable)Redirects are now editable
+
+You can now edit redirects directly from the Cockpit.
+
+For more on this topic, check out our dedicated [redirects section](../../cockpit/sections/content-delivery/#_manage_redirects).
+
+#### [](#_fastly_image_optimizer)Fastly Image Optimizer
+
+Customers using Fastly as their CDN can now make use of the Image Optimizer (IO) feature.
+
+For more on this topic, check out our dedicated [Fastly Image Optimizer](../../configuration/fastly-io/) page.
+
+#### [](#_fastly_nextgen_waf)Fastly NextGen WAF
+
+To further improve upon our WAF feature, we’re happy to announce the ***NextGen* WAF** has been released into production. See [Fastly’s NextGen WAF](https://docs.fastly.com/products/fastly-next-gen-waf) page for more information from Fastly.
+
+To see dedicated WAF information in the Cockpit, check out our dedicated section [Security](../../cockpit/sections/security/).
+
+### [](#_march_2)March
+
+-   [Magnolia 6.2.32](#_magnolia_6_2_32)
+
+-   [Magnolia 6.2.31](#_magnolia_6_2_31)
+
+-   [Magnolia 6.2.30](#_magnolia_6_2_30)
+
+-   [Magnolia 6.2.29](#_magnolia_6_2_29)
+
+
+#### [](#_magnolia_6_2_32)Magnolia 6.2.32
+
+Release notes for [Magnolia 6.2.32](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.32.adoc) are available.
+
+#### [](#_magnolia_6_2_31)Magnolia 6.2.31
+
+Release notes for [Magnolia 6.2.31](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.31.adoc) are available.
+
+#### [](#_magnolia_6_2_30)Magnolia 6.2.30
+
+Release notes for [Magnolia 6.2.30](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.30.adoc) are available.
+
+#### [](#_magnolia_6_2_29)Magnolia 6.2.29
+
+Release notes for [Magnolia 6.2.29](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.29.adoc) are available.
+
+### [](#_february_2)February
+
+-   [Create redirects from the Cockpit](#_create_redirects_from_the_cockpit)
+
+-   [Create cache rules from the Cockpit](#_create_cache_rules_from_the_cockpit)
+
+-   [Updated Helm chart version](#helm-chart-update-feb23)
+
+
+#### [](#_create_redirects_from_the_cockpit)Create redirects from the Cockpit
+
+You can now add redirects directly from your Cockpit.
+
+1.  Go to **Networking > Redirects**.
+
+2.  Select the desired **Environment** from the dropdown list.
+
+3.  Add a single redirect or import a redirect CSV file.
+
+    -   Add redirect
+
+    -   Import redirects (CSV)
+
+
+    1.  Click **Add**.
+
+    2.  In the dialog, fill out the following.
+
+        1.  The **Source** URL. *This is the place to redirect from*.
+
+        2.  The **Target** URL. *This is the place to redirect to*.
+
+        3.  Check **Url with regular expression** if the URL provided uses RegEx.
+
+            **`(.*)`** Why use RegEx?
+
+            Using regex for URL redirects offers several advantages:
+
+            -   It provides flexibility for matching patterns across multiple URLs.
+
+            -   It reduces the complexity of managing numerous redirects and allows dynamic handling of URL components.
+
+
+            Using regex for URL patterns better preserve SEO rankings and minimize broken links by accurately mapping old URLs to new ones which enhances user experience and maintains optimal site integrity.
+
+        4.  Click **Forward** if you want the redirect to act as a forward.
+
+            This means the target page is loaded internally without a redirect code.
+
+        5.  The **Code**. *This is the http status code passed with the redirect. Only `3xx` http codes are acceptable.*
+
+        6.  Choose the countries you want to accept in the dropdown under **Countries**.
+
+        7.  Choose the languages you want to accept in the dropdown under **Accept languages**.
+
+        8.  Click **Add** to complete the action.
+
+
+
+    ![add single redirect](../../cockpit/_images/cdn/redirects/add-single-redirect.jpg)
+
+    1.  Click **Upload/Modify**.
+
+    2.  Click **Choose File** to import a CSV file for redirects.
+
+        format
+
+        ```csv
+        Id,Source,Target,Code,IsRegex,IsForward,Country,Language (1)
+        ```
+
+        |     |     |
+        | --- | --- |
+        | **1** | Only `3xx` http codes are acceptable. `Id` is optional. If an `Id` is provided, the system tries to match it with an existing record and update it. If blank or no match is found, a new record is created. |
+
+        example
+
+        ```csv
+        Id,Source,Target,Code,IsRegex,IsForward,Country,Language
+        19514,https://www.example.com,htttps://www.example.be/foo.html:hml,308,true,false,,
+        ,https://www.example.com/[0-9]12}(bar%7Cbaz),https://www.example.be/barbaz.html,,true,true,"AE,AF,PL",pl
+        ```
+
+    3.  Select your file.
+
+    4.  Click **Upload/Modify** to complete the action.
+
+
+
+> **Tip:** Check out the redirects docs here for more details on prerequisites and good-to-knows.
+
+#### [](#_create_cache_rules_from_the_cockpit)Create cache rules from the Cockpit
+
+You can add cache rules from your DX Cloud Cockpit. Caching reduces requests to Magnolia which helps reduce heavy processing loads and improves performance.
+
+The options in the Cache section aren’t available to satellite clusters.
+
+> **Tip:** See the cache section on the CDN page for more on creating cache rules.
+
+#### [](#helm-chart-update-feb23)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_january_2)January
+
+-   [Magnolia 6.2.28](#_magnolia_6_2_28)
+
+-   [Upload certificates](#_upload_certificates)
+
+-   [Updated Helm chart version](#helm-chart-update-jan23)
+
+
+#### [](#_magnolia_6_2_28)Magnolia 6.2.28
+
+Release notes for [Magnolia 6.2.28](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.28.adoc) are available.
+
+#### [](#_upload_certificates)Upload certificates
+
+You can now upload your certificates directly in the Cockpit.
+
+![add cert](../../cockpit/_images/cdn/certs/add-cert.jpg)
+
+> **Tip:** For more, check out the certificates section.
+
+#### [](#helm-chart-update-jan23)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+## [](#_2022)2022
+
+### [](#_december_3)December
+
+-   [Magnolia 6.2.27](#_magnolia_6_2_27)
+
+-   [Updated Helm chart version](#helm-chart-update-dec22)
+
+
+#### [](#_magnolia_6_2_27)Magnolia 6.2.27
+
+Release notes for [Magnolia 6.2.27](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.27.adoc) are available.
+
+#### [](#helm-chart-update-dec22)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_november_3)November
+
+-   [Updated Helm chart version](#helm-chart-update-nov22)
+
+-   [Block IPs from the Cockpit](#_block_ips_from_the_cockpit)
+
+-   [Magnolia 6.2.26](#_magnolia_6_2_26)
+
+
+#### [](#helm-chart-update-nov22)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+#### [](#_block_ips_from_the_cockpit)Block IPs from the Cockpit
+
+Previously, you needed to make a support request to block a specific IP if you were using Fastly as your CDN. Now, you can block IPs directly from the Cockpit.
+
+> **Tip:** For instructions on how to do this, check out the guide here.
+
+#### [](#_magnolia_6_2_26)Magnolia 6.2.26
+
+Release notes for [Magnolia 6.2.26](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.26.adoc) are available.
+
+### [](#_october_3)October
+
+-   [Magnolia 6.2.25](#_magnolia_6_2_25)
+
+
+#### [](#_magnolia_6_2_25)Magnolia 6.2.25
+
+Release notes for [Magnolia 6.2.25](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.25.adoc) are available.
+
+### [](#_september_2)September
+
+-   [Rancher updates](#_rancher_updates)
+
+-   [Magnolia 6.2.24](#_magnolia_6_2_24)
+
+-   [Magnolia 6.2.23](#_magnolia_6_2_23)
+
+
+#### [](#_rancher_updates)Rancher updates
+
+***Dashboard***:
+
+Recently, we upgraded to [Rancher 2.6](https://docs.ranchermanager.rancher.io/). For more on the new dashboard, check out our dedicated [Rancher UI Dashboard](../../troubleshooting/rancher/rancher_dashboard/) page.
+
+***Copying secrets***:
+
+The `All` namespace is deprecated. However, we understand that you may still use it in some of your deployments. For details on migrating them to Rancher 2.6, see our [cloning secrets page](../../troubleshooting/rancher/rancher_copy-secrets/).
+
+#### [](#_magnolia_6_2_24)Magnolia 6.2.24
+
+Release notes for [Magnolia 6.2.24](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.24.adoc) are available.
+
+#### [](#_magnolia_6_2_23)Magnolia 6.2.23
+
+Release notes for [Magnolia 6.2.23](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.23.adoc) are available.
+
+### [](#_august_3)August
+
+-   [Updated Helm chart version](#helm-chart-update-august22)
+
+
+#### [](#helm-chart-update-august22)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_july_3)July
+
+-   [Magnolia 6.2.22](#_magnolia_6_2_22)
+
+-   [Frontend environment metrics](#_frontend_environment_metrics)
+
+-   [Magnolia 6.2.21](#_magnolia_6_2_21)
+
+-   [Archetype version update 1.4](#_archetype_version_update_1_4)
+
+-   [Updated Helm chart version](#helm-chart-update-july22)
+
+
+#### [](#_magnolia_6_2_22)Magnolia 6.2.22
+
+Release notes for [Magnolia 6.2.22](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.22.adoc) are available.
+
+#### [](#_frontend_environment_metrics)Frontend environment metrics
+
+You can now view Frontend environment metrics directly from the Cockpit.
+
+![view frontend metrics](../../cockpit/_images/environments/view-frontend-metrics.gif)
+
+> **Tip:** For more, see Frontend metrics.
+
+#### [](#_magnolia_6_2_21)Magnolia 6.2.21
+
+Release notes for [Magnolia 6.2.21](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.21.adoc) are available.
+
+#### [](#_archetype_version_update_1_4)Archetype version update 1.4
+
+The `maven` archetype version has been updated to `1.4`.
+
+> **Tip:** For more details, see Create a project using the Maven archetype.
+
+#### [](#helm-chart-update-july22)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_june_3)June
+
+-   [Backup and Restore](#_backup_and_restore)
+
+-   [Magnolia 6.2.20](#_magnolia_6_2_20)
+
+-   [Web Application Firewall (WAF)](#_web_application_firewall_waf)
+
+-   [Updated Helm chart version](#helm-chart-update-october24)
+
+
+#### [](#_backup_and_restore)Backup and Restore
+
+You can now perform backup and restore operations directly from the Cockpit, giving you the opportunity to copy, download, and restore backups from a point-in-time.
+
+![dev operations overview](../../cockpit/_images/dev-operations/dev-operations-overview.jpg)
+
+#### [](#_magnolia_6_2_20)Magnolia 6.2.20
+
+Release notes for [Magnolia 6.2.20](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.20.adoc) are available.
+
+#### [](#_web_application_firewall_waf)Web Application Firewall (WAF)
+
+You can now view log information from your [Web Application Firewall (WAF)](../../security/waf/) directly in the Cockpit.
+
+> **Tip:** See the Logs page for more details.
+
+![waf click request](../../cockpit/_images/logs/waf-click-request.gif)
+
+#### [](#_updated_helm_chart_version)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+### [](#_may_3)May
+
+-   [Magnolia 6.2.19](#_magnolia_6_2_19)
+
+-   [Updated Helm chart version](#helm-chart-update-october24)
+
+-   [OpenSearch dashboards](#_opensearch_dashboards)
+
+
+#### [](#_magnolia_6_2_19)Magnolia 6.2.19
+
+Release notes for [Magnolia 6.2.19](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.19.adoc) are available.
+
+#### [](#_updated_helm_chart_version_2)Updated Helm chart version
+
+We have updated the Helm chart version.
+
+The latest helm chart version is `1.17.2`.
+
+> **Tip:** Check out the Magnolia helm repo for more details.
+
+#### [](#_opensearch_dashboards)OpenSearch dashboards
+
+[OpenSearch](https://www.opensearch.org/) is a powerful open-source search tool derived from Apache 2.0. You can use OpenSearch dashboards to visualize OpenSearch data. This is now available to you in your DX Cloud project.
+
+### [](#_april_3)April
+
+-   [Magnolia 6.2.18](#_magnolia_6_2_18)
+
+-   [Cockpit](#april22-cockpit)
+
+-   [Archetype version update](#_archetype_version_update)
+
+
+#### [](#_magnolia_6_2_18)Magnolia 6.2.18
+
+Release notes for [Magnolia 6.2.18](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.18.adoc) are available.
+
+#### [](#_cockpit)Cockpit
+
+-   You can now view your deployment’s [alerts](../../cockpit/) through the Cockpit.
+
+    ![active alerts](../../cockpit/_images/alerts/active-alerts.jpg)
+
+
+#### [](#_archetype_version_update)Archetype version update
+
+The `maven` archetype version has been updated to `1.3`.
+
+> **Tip:** For more details, see Create a project using the Maven archetype.
+
+### [](#_february_3)February
+
+-   [Magnolia 6.2.17](#_magnolia_6_2_17)
+
+-   [Cockpit](#feb22-cockpit)
+
+
+#### [](#_magnolia_6_2_17)Magnolia 6.2.17
+
+Release notes for [Magnolia 6.2.17](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.17.adoc) are available.
+
+#### [](#_cockpit_2)Cockpit
+
+-   We added the [purge CDN cache per URL action](../../cockpit/sections/content-delivery/#_purge_cdn).
+
+    ![purge cdn](../../cockpit/_images/cdn/purge-cdn.jpg)
+
+-   We fixed the `start` and `end` filters in the [log viewer](../../cockpit/sections/logs/).
+
+
+### [](#_january_3)January
+
+-   [Magnolia 6.2.16](#_magnolia_6_2_16)
+
+-   [DX Cloud development](#jan22-dev)
+
+-   [Cockpit](#jan22-cockpit)
+
+
+#### [](#_magnolia_6_2_16)Magnolia 6.2.16
+
+Release notes for [Magnolia 6.2.16](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.16.adoc) are available.
+
+#### [](#_dx_cloud_development)DX Cloud development
+
+We added the shared database blueprint.
+
+#### [](#_cockpit_3)Cockpit
+
+-   We added the environment’s URL in the home page.
+
+    ![environments url](../../_images/changelog/2022-01/environments-url.png)
+
+-   We added the Ingress [log viewer](../../cockpit/sections/logs/#_kubernetes_ingress_logs).
+
+    ![log viewer ingresses](../../_images/changelog/2022-01/log-viewer-ingresses.png)
+
+-   We added the CDN domain [log viewer](../../cockpit/sections/logs/#_fastly_domain_logs).
+
+    ![log viewer domains](../../_images/changelog/2022-01/log-viewer-domains.png)
+
+
+## [](#_2021)2021
+
+### [](#_december_4)December
+
+-   [Magnolia 6.2.15](#_magnolia_6_2_15)
+
+-   [Magnolia 6.2.14](#_magnolia_6_2_14)
+
+-   [DX Cloud development](#dec21-dev)
+
+-   [Cockpit](#dec21-cockpit)
+
+
+#### [](#_magnolia_6_2_15)Magnolia 6.2.15
+
+Release notes for [Magnolia 6.2.15](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.15.adoc) are available.
+
+#### [](#_magnolia_6_2_14)Magnolia 6.2.14
+
+Release notes for [Magnolia 6.2.14](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.14.adoc) are available.
+
+#### [](#_dx_cloud_development_2)DX Cloud development
+
+-   Added the error page blueprint.
+
+
+#### [](#_cockpit_4)Cockpit
+
+-   Added the [Environment’s](../../cockpit/sections/environments/) operations.
+
+    ![environments operations](../../_images/changelog/2021-12/environments-operations.png)
+
+-   The `Purge URL` now works with clusters managed with [Cloudflare](https://www.cloudflare.com/).

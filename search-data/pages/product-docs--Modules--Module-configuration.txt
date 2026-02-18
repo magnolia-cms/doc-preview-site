@@ -1,0 +1,325 @@
+---
+title: "Module configuration"
+url: https://docs.magnolia-cms.com/product-docs/Modules/Module-configuration/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Module configuration
+---
+
+# Module configuration
+
+This page explains how to configure modules in Magnolia. Module configuration data is useful because:
+
+-   It can be accessed programmatically inside the same module and from other modules.
+
+-   It can be changed on a running system.
+
+
+The explanation on this page applies to Magnolia Maven modules with a module class.
+
+## [](#_how_it_works)How it works
+
+A Magnolia Maven module may contain a module class. The class needs to be specified in the [module descriptor](../Module-descriptor/XML-based-module-descriptor/). See, for example, line 6 below:
+
+Module descriptor:
+
+src/main/resources/META-INF/magnolia/another-module.xml
+
+```xml
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+  <name>another-module</name>
+  <displayName>${project.name}</displayName>
+  <description>${project.description}</description>
+  <class>com.example.magnolia.anothermodule.AnotherModule</class>
+  <versionHandler>com.example.magnolia.anothermodule.setup.AnotherModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+  <dependencies>
+    <dependency>
+      <name>core</name>
+      <version>6.1/*</version>
+    </dependency>
+  </dependencies>
+</module>
+```
+
+On the module class, you define module configuration properties as [Java bean properties](https://docs.oracle.com/javase/tutorial/javabeans/writing/properties.html).
+
+A bean in Magnolia configuration can have three states, which are represented by the value of a Boolean property called `enabled`:
+
+-   `enabled = true` (default in most cases, there’s no need to set this).
+
+-   `enabled = false`
+
+-   `enabled = null`, in which case the bean’s configuration is either undefined or inherited - merged with its parent, for example when an area from a page template definition can get its values from a prototype.
+
+
+The property values the class defines may be default and are persisted in the [configuration data](#_configuration_data). On module start-up or when configuration data changes, the system calls the properties setter methods to set the new values on the instance of the module class, using the values from the configuration data. Module configuration items are registered in info.magnolia.config.module.ModuleConfigurationRegistry.
+
+> **Tip:** On a running system, you can use the Definitions app to check module configuration data.
+
+### [](#_changing_the_configuration_on_a_running_system)Changing the configuration on a running system
+
+If you change configuration data on a running system, Magnolia is notified about it. When the configuration data changes, the properties on the module class are reset accordingly and the configuration item is re-registered in `ModuleConfigurationRegistry`.
+
+> **Tip:** If your module requires a specific re-initialization for some custom components, implement info.magnolia.module.ModuleLifecycle and add module-specific code in the #start and #stop interface methods. The system calls these methods if it detects changes in the configuration data.
+
+Typically, when changing configuration data of modules provided by Magnolia, there is no need to restart the instance.
+
+## [](#_configuration_data)Configuration data
+
+Configuration data can be stored either in a YAML file or under a JCR node in the `config` workspace. We recommend using a YAML file. The structure of the configuration data depends on the bean properties defined on the module class.
+
+The next subsection shows an example of configuration data for a hypothetical module class called `com.example.magnolia.anothermodule.AnotherModule`:
+
+src/main/java/com/example/magnolia/anothermodule/AnotherModule.java
+
+```java
+package com.example.magnolia.anothermodule;
+
+import info.magnolia.module.ModuleLifecycle;
+import info.magnolia.module.ModuleLifecycleContext;
+
+import java.util.List;
+
+public class AnotherModule implements ModuleLifecycle {
+
+    private int maxSize;
+    private String welcomeMessage;
+    private FooBar fooBar;
+
+    public String getWelcomeMessage() {
+        return welcomeMessage;
+    }
+
+    public void setWelcomeMessage(String welcomeMessage) {
+        this.welcomeMessage = welcomeMessage;
+    }
+
+    public FooBar getFooBar() {
+        return fooBar;
+    }
+
+    public void setFooBar(FooBar fooBar) {
+        this.fooBar = fooBar;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    @Override
+    public void start(ModuleLifecycleContext moduleLifecycleContext) {
+        // do here whatever is required on module start.
+    }
+
+    @Override
+    public void stop(ModuleLifecycleContext moduleLifecycleContext) {
+        // do here whatever is required on module stop.
+    }
+
+    public class FooBar {
+
+        private List<String> colors;
+        private boolean colorsEnabled;
+
+        public boolean isColorsEnabled() {
+            return colorsEnabled;
+        }
+
+        public void setColorsEnabled(boolean colorsEnabled) {
+            this.colorsEnabled = colorsEnabled;
+        }
+
+        public List<String> getColors() {
+            return colors;
+        }
+
+        public void setColors(List<String> colors) {
+            this.colors = colors;
+        }
+    }
+
+}
+```
+
+### [](#_the_config_yaml_file)The `config.yaml` file
+
+The YAML file containing module configuration data has to reside at `src/main/resources/<module-name>/config.yaml`.
+
+src/main/resources/another-module/config.yaml
+
+```yml
+maxSize: 25
+welcomeMessage: Hello world
+fooBar:
+  colors: [red, green, blue]
+```
+
+## [](#_changing_module_configuration)Changing module configuration
+
+There are several ways to change an original configuration.
+
+-   Original configuration
+
+    Through decoration definition.
+
+-   In YAML file
+
+    By applying a hotfix to the `resources` workspace.
+
+-   In the JCR `config` workspace
+
+    By editing directly in the `config` workspace.
+
+
+> **Warning:** If the original configuration is a YAML file, do not create a node in the JCR config workspace.
+
+### [](#_decorating)Decorating
+
+Decorating means adapting the current configuration. A decorator file can reside in any Magnolia Maven module or light module. In the example below, we create a decorator file in a light module called `test-module`. In this module, create the `decorations/another-module/config.fooBar.yaml` file:
+
+<magnolia.resources.dir>/test-module/decorations/another-module/config.fooBar.yaml
+
+```yml
+colors: [cyan, yellow, magenta, black]
+```
+
+You can also change the appLauncherLayout property via [decoration](../../Developing/Definition-decoration/).
+
+magnolia-personalization-personas-app/src/main/resources/personalization-personas-app/decorations/admincentral/config.yaml
+
+```yml
+appLauncherLayout:
+    hiddenApps:
+        - notifications
+    groups:
+        - name: target
+          apps:
+            - name: personas-app
+```
+
+To specify the order of apps, provide a complete list of apps in a group using the [`!override`](../../Developing/Reusing-configuration/YAML-inherit-and-include/) directive:
+
+magnolia-personalization-segmentation-app/src/main/resources/personalization-segmentation-app/decorations/admincentral/config.yaml
+
+```yml
+appLauncherLayout:
+    groups:
+        - name: target
+          apps: !override
+            - name: preview-app
+            - name: personas-app
+            - name: segmentation-app
+```
+
+> **Tip:** To learn more about decoration, see Definition decoration concept.
+
+### [](#_hotfixing)Hotfixing
+
+Creating a *hotfix* means utilizing the Magnolia Resources framework’s capability which allows a resource to have different origins, see [Resources - Origins and loading order](../../Developing/Resources/#_origins_and_loading_order). A hotfix:
+
+-   Is a representation of a resource in the JCR `resources` workspace.
+
+-   Has precedence over the YAML file in the `jar` file of the deployed module.
+
+
+Utilizing the JCR `resources` workspace can be useful for an administrator to apply a hotfix that is urgent. From a long-term perspective, however, we recommend that you keep your configuration and configuration changes in YAML files. This way they may become part of source control and are easier for large developer teams to work with.
+
+To create a hotfix, follow these steps:
+
+1.  Open the [Resource Files app](../../Developing/Resources/#_resource_files_app).
+
+2.  Browse to `<your-module>` and select the `config.yaml` resource.
+
+3.  In the action bar, click **Edit file**. The Resource Files app creates a copy of the currently used configuration and stores it in the JCR `resources` workspace.
+
+4.  Edit the file as necessary.
+
+    ![Edit file in JCR](../../_images/6-2-moduleConfiguration_creatingHotfixWithResourcesApp.png)
+
+5.  Click **Save changes**.
+
+    You may have to publish the resource node created to your author instances.
+
+
+### [](#_in_the_config_workspace)In the `config` workspace
+
+Even though we recommend using YAML files for configuration data, there are still a lot of modules whose configuration is stored in the JCR `config` workspace. Below is an example using the `ui-admincentral` module, in which we change the `defaultGroup` of the `appLauncherLayout`.
+
+1.  Open the [Configuration app](../../Apps/List-of-apps/Configuration-app/).
+
+2.  Go to the `/modules/ui-admincentral/config/appLauncherLayout` node.
+
+3.  Change the value of the `defaultGroup` property. (Change other subnodes and properties as necessary.)
+
+    ![Configuration app](../../_images/6-2-moduleConfiguration_editWithConfigurationApp.png)
+
+    You also can add new nodes and properties, if they match with the defined bean properties of the module class.
+
+    > **Note:** Changes are applied automatically when you leave a field. You may have to publish the node you changed to your author instances.
+
+
+#### [](#_applauncherlayout_properties)appLauncherLayout Properties
+
+| Property | Description |
+| --- | --- |
+| `groups` | **required**<br><br>List of app groups. |
+| `<group‑name>` | **required**<br><br>App group name. This internal name is not displayed to users. Users see the group `label` instead. |
+| `apps` | **required**<br><br>List of apps in the group. |
+| `<app‑name>` | **required**<br><br>Name of an app that belongs to the group. The name must match the name given in the [app configuration](../../Apps/App-configuration/App-descriptor/), for example pages. |
+| `permissions` | **optional**<br><br>Defines which users can see the app in the App Launcher. This allows you to provision the app to a limited group of users in your organization. See [App permissions](../../Administration/IAM/App-permissions/). |
+| `clientGroup` | **optional**, *default is `false`*<br><br>Moves the group to the bottom of the App Launcher and sets the group color to white. Set the property to `true` when you create your own app groups. This way they will stand apart from Magnolia native apps, and editors can identify them as your company’s apps. |
+| `label` | **optional**<br><br>Text displayed on the group tile. Use a label that says something about all apps in the group such as `Edit` or `Manage`. Magnolia converts the text to all caps. |
+| `defaultGroup` | **optional**, *default is `edit`*<br><br>Defines the group where a new app is added automatically, provided the app has not been added to another group of the App Launcher.<br><br>During installation, Magnolia sets the value of the `defaultGroup` property to `edit`. During an update, it is set to `edit` only if the property has not been set already. |
+| `hiddenApps` | **optional**<br><br>List of apps to be hidden in the App Launcher. |
+| `<app-name>` | **optional**<br><br>Name of an app that should not be shown in the App Launcher. The name of the property is arbitrary.<br><br>Example<br><br>Change `pages` to `pages-app` to fall back to the compatibility version of the app. Remember to log out and back in to see any changes in the App Launcher. |
+
+## [](#_accessing_configuration_data_programmatically)Accessing configuration data programmatically
+
+To access module configuration in a Java class, use `jakarta.inject.Provider` to access the sole instance of your module class. On the module class instance, you can call the getter methods of the module bean properties.
+
+```java
+import jakarta.inject.Inject;
+import jakarta.inject.Provider; (1)
+import com.example.magnolia.anothermodule.AnotherModule;
+
+/**
+ * An example class to demonstrate how to access the bean properties (= module configuration) of a module class.
+ */
+public class GarplyUtils {
+
+    private final Provider<AnotherModule> anotherModuleProvider;
+
+    @Inject (2)
+    public GarplyUtils(Provider<AnotherModule> anotherModuleProvider) {
+        this.anotherModuleProvider = anotherModuleProvider;
+    }
+
+    public void doSomething() {
+
+        // get the (singleton) instance of the module
+        AnotherModule moduleInstance = anotherModuleProvider.get(); (3)
+
+        // access the modules bean properties
+        String welcomeMessage = moduleInstance.getWelcomeMessage(); (4)
+        int maxSize = moduleInstance.getMaxSize();
+        AnotherModule.FooBar fooBar = moduleInstance.getFooBar();
+
+        // do whatever you want to do here
+        // ...
+    }
+
+}
+```
+
+|     |     |
+| --- | --- |
+| **1** | Make the `jakarta.inject.Provider` a *private final* field of your class. |
+| **2** | Inject the `Provider` via a constructor. |
+| **3** | Get the singleton instance of your `AnotherModule` module class. |
+| **4** | Access the bean properties of your module. |

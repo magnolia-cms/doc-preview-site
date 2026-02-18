@@ -1,0 +1,1227 @@
+---
+title: "GraphQL API"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/API/GraphQL-API/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > API > GraphQL API
+---
+
+# GraphQL API
+
+This page describes the GraphQL endpoint for obtaining JCR data as JSON. GraphQL is most convenient if you need to retrieve content from a content app (a specialized app type for managing structured content, see [Content Types](../../../Features/Content-Types/)) and you want control of exactly which properties and related content is included.
+
+> **Note:** The example GraphQL requests and responses shown below on this page make use of the Book and Author catalog apps available in our demo bookcase light module. You can clone the module with this command:git clone https://bitbucket.org/magnolia-cms/bookcase.gitIn the _dev/postmanCollections subfolder, the demo includes a Postman collection which you can use to quickly try all features.
+
+## [](#_scope)Scope
+
+Content types
+
+Magnolia GraphQL API can only fetch content that has been declared using Magnolia [content types](../../../Features/Content-Types/). A GraphQL schema type is automatically created for every registered content type.
+
+To check what GraphQL types are available, see the `graphqlTypes` in the [Definitions app](../../../Apps/List-of-apps/Definitions-app/) or send an [introspection](#_introspection) request to the endpoint. The following GraphQL schema types are available by default:
+
+-   `asset`
+
+-   `date`
+
+-   `jcrMetadata`
+
+
+> **Note:** Content type nameWhen creating content types, use singular and countable forms likebookphotographOtherwise, Magnolia GraphQL types will have double plural forms like bookses and photographses.App nameAppend -app to the name of the app, for example:books-appphotographs-appWorkspace nameIf possible, use the plural form, for example:booksphotographs
+
+Query types
+
+**The API is read-only.** The GraphQL `[query](https://graphql.org/learn/schema/#the-query-and-mutation-types)` type is supported. The `mutation` type has not been implemented yet.
+
+Content from Pages and Stories apps
+
+The API cannot retrieve content used by the [Pages app](../../../Apps/List-of-apps/Pages-app/) and the [Stories app](../../../Apps/List-of-apps/Stories-app/).
+
+> **Note:** If accessing content from the Pages app is an important use case for you, please give us your input at feedback@magnolia-cms.com.
+
+Sorting and metadata for assets
+
+Currently, the [sorting functionality](#_sorting) cannot be applied to the results obtained from [assets](#_retrieving_assets). Retrieving [metadata](#_retrieving_content_metadata) properties is not yet supported.
+
+## [](#_configuration_aspects)Configuration aspects
+
+Endpoint name and access control
+
+By default, all GraphQL requests are mapped to `/.graphql` and pass through a filter chain. On a production instance, make sure that you have configured appropriate Access Control Lists (ACLs) and Web Access permissions for GraphQL. For more details, see [GraphQL module: Configuration](../../../Modules/List-of-modules/GraphQL-module/#_configuration).
+
+## [](#_graphiql)GraphiQL
+
+You can explore the API and test GraphQL queries against *GraphiQL*, a servlet installed by the `magnolia-graphql-core` module. For configuration of the servlet, see the [GraphiQL servlet](../../../Modules/List-of-modules/GraphQL-module/#_graphiql_servlet) section of the GraphQL module page.
+
+The servlet is exposed in two forms:
+
+-   As the [GraphQL app](../../../Apps/List-of-apps/GraphQL-app/), accessible from the the **Dev** group of the App launcher.
+
+-   Directly in your web browser. On a localhost installation of Magnolia, the URL to access the servlet is `[http://localhost:8080/magnoliaAuthor/.graphiql](http://localhost:8080/magnoliaAuthor/.graphiql)`.
+
+
+## [](#_http_methods)HTTP methods
+
+The endpoint supports the POST and GET HTTP methods.
+
+> **Important:** When using the POST method, you also need to set the Content-Type header in your request. The header type needs to reflect the format of content you intend to send in the request body.
+
+### [](#_post_method)POST method
+
+Body format for a POST request with the `application/graphql` content type header:
+
+```graphql
+{
+    books(locale: "en") {
+        title
+    }
+}
+```
+
+Body format for a POST request with the `application/json` content type header:
+
+```json
+{
+  "query":"{ books ( locale: \"en\" ) { title }}"
+}
+```
+
+### [](#_get_method)GET method
+
+```bash
+http://localhost:8080/.graphql?query=%7Bbooks%28locale%3A%20%22en%22%29%20%7Btitle%7D%7D
+```
+
+The value of the `query` parameter is a URL-encoded string `{books(locale: "en") {title}}`.
+
+For more details how to create a GraphQL-valid header and body, see the [HTTP Methods, Headers, and Body](https://graphql.org/learn/serving-over-http/). All the examples below are based on the POST method.
+
+## [](#_introspection)Introspection
+
+> **Note:** By default, this feature is disabled in GraphQL for security reasons. If you need to enable it for development purposes, you can do so using the magnolia.graphql.introspection.enabled Magnolia property. For more details, see the Magnolia properties.
+
+You can use the GraphQL schema [introspection](https://graphql.org/learn/introspection/) to learn about querying GraphQL types and properties. See the following example introspection request body:
+
+```graphql
+{
+  __schema {
+    types {
+      name
+    }
+  }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "__schema": {
+      "types": [
+        {
+          "name": "Asset"
+        },
+        {
+          "name": "AssetRendition"
+        },
+        {
+          "name": "Author"
+        },
+        {
+          "name": "AuthorSort"
+        },
+        {
+          "name": "Book"
+        },
+        {
+          "name": "BookSort"
+        },
+        {
+          "name": "Boolean"
+        },
+        {
+          "name": "Date"
+        },
+        {
+          "name": "ID"
+        },
+        {
+          "name": "JcrMetadata"
+        },
+        {
+          "name": "Locale"
+        },
+        {
+          "name": "Long"
+        },
+        {
+          "name": "Query"
+        },
+        {
+          "name": "String"
+        },
+        {
+          "name": "__Directive"
+        },
+        {
+          "name": "__DirectiveLocation"
+        },
+        {
+          "name": "__EnumValue"
+        },
+        {
+          "name": "__Field"
+        },
+        {
+          "name": "__InputValue"
+        },
+        {
+          "name": "__Schema"
+        },
+        {
+          "name": "__Type"
+        },
+        {
+          "name": "__TypeKind"
+        }
+      ]
+    }
+  }
+}
+```
+
+## [](#_querying_content)Querying content
+
+You can query content of an individual item by providing either its path or its UUID to the `path` and `id` arguments, respectively.
+
+Data fetching is consistent across all content types:
+
+-   Requesting `assets(path: "</some/path>")` or `contentTypes(path: "</some/path>")` returns items directly under the path provided.
+
+-   Requesting `assets(path: "/")` or `contentTypes(path: "/")` returns items directly under the root.
+
+-   Requesting just `assets` or `contentTypes` returns all items regardless of folder structure.
+
+
+Content references are resolved automatically. In the following two examples, references are resolved for the `authors` and `frontcover` fields.
+
+### [](#_single_item_by_uuid)Single item by UUID
+
+```graphql
+{
+    book(id: "c2a5ea72-6611-4f70-8005-42e8694fc610") {
+        title
+        authors {
+            name
+        }
+        publisher
+        publish_date
+        frontcover {
+            name
+            link
+        }
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life",
+      "authors": [
+        {
+          "name": "Charles Darwin"
+        }
+      ],
+      "publisher": "John Murray III",
+      "publish_date": "1859-11-24",
+      "frontcover": {
+        "name": "darwin1859.png",
+        "link": "/dam/jcr:da35e99f-6138-40c9-b7c1-57978aa70268/darwin1859.png"
+      }
+    }
+  }
+}
+```
+
+### [](#_single_item_by_path)Single item by path
+
+```graphql
+{
+    book(path: "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species") {
+        title
+        authors {
+            name
+        }
+        publisher
+        publish_date
+        frontcover {
+            name
+            link
+        }
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life",
+      "authors": [
+        {
+          "name": "Charles Darwin"
+        }
+      ],
+      "publisher": "John Murray III",
+      "publish_date": "1859-11-24",
+      "frontcover": {
+        "name": "darwin1859.png",
+        "link": "/dam/jcr:da35e99f-6138-40c9-b7c1-57978aa70268/darwin1859.png"
+      }
+    }
+  }
+}
+```
+
+### [](#_multiple_items_by_path)Multiple items by path
+
+Given you have the following content structure,
+
+|     |     |
+| --- | --- |
+| 📁 My-Good-Reads |     |
+| 📁 Science |     |
+| ⸬ Hawking 2005 God Created the Integers |     |
+| ⸬ Hawking 1988 A Brief History of Time |     |
+| ⸬ Darwin 1859 On the Origin of Species |     |
+| 📁 Sci-Fi |     |
+| ⸬ Sagan 1997 Contact |     |
+| ⸬ Huxley 1932 Brave New World |     |
+| ⸬ Wells 1898 The War of the Worlds |     |
+
+you can request, for example, just the items from the `Science` folder as follows:
+
+```graphql
+{
+  books(path: "/My-Good-Reads/Science") {
+    title
+  }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "God Created the Integers: The Mathematical Breakthroughs That Changed History"
+      },
+      {
+        "title": "A Brief History of Time: From the Big Bang to Black Holes"
+      },
+      {
+        "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life"
+      }
+    ]
+  }
+}
+```
+
+### [](#_all_items)All items
+
+```graphql
+{
+    books {
+        title
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "The War of the Worlds"
+      },
+      {
+        "title": "Contact"
+      },
+      {
+        "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life"
+      },
+      {
+        "title": "A Brief History of Time: From the Big Bang to Black Holes"
+      },
+      {
+        "title": "God Created the Integers: The Mathematical Breakthroughs That Changed History"
+      },
+      {
+        "title": "Brave New World"
+      }
+    ]
+  }
+}
+```
+
+### [](#_specific_language_variant)Specific language variant
+
+To request a specific language variant, use the `locale` argument. Locale-based content retrieval can be applied to both a single item and multiple items.
+
+```graphql
+{
+    book(
+        path: "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species"
+        locale: "de"
+    ) {
+        title
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "title": "Über die Entstehung der Arten durch natürliche Zuchtwahl oder die Erhaltung der begünstigten Rassen im Kampfe um’s Dasein"
+    }
+  }
+}
+```
+
+> **Caution:** Don’t use the underscore character ("_") to separate the subtags in a language tag. Always use the hyphen ("-", [Unicode] U+002D). For example, as in fi-FI in the following:{
+>     faqs(locale: "fi-FI") {
+>         answers
+>     }
+> }For more details, see RFC 5646 Tags for Identifying Languages, especially sections 2.1. Syntax, 2.2. Language Subtag Sources and Interpretation, and 7. Character Set Considerations.
+
+### [](#_with_aliases)With aliases
+
+GraphQL aliases let you rename the result of a field to anything you want. This functionality is supported by the [graphql-java](https://www.graphql-java.com/) library and works out of the box in the Magnolia GraphQL endpoint.
+
+In the following example, the `originalBookTitle` prefix in the body specifies that the `title` field should be returned as `originalBookTitle` instead:
+
+```graphql
+{
+    book(
+        path: "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species"
+    ) {
+        originalBookTitle: title
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "originalBookTitle": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life"
+    }
+  }
+}
+```
+
+## [](#_retrieving_assets)Retrieving assets
+
+To fetch assets, you can query either the `asset` or the `assets` field.
+
+### [](#_single_asset)Single asset
+
+To retrieve a single asset, use the `asset` field and supply the UUID or path of the asset.
+
+### [](#_multiple_assets)Multiple assets
+
+To retrieve multiple assets, use the `assets` field and provide a path or UUID of the folder containing the assets.
+
+> **Note:** jcr is the default value for the providerId argument. Unless you need to use a different asset provider, providerId can be omitted, as shown in the second example.
+
+### [](#_by_uuid)By UUID
+
+```graphql
+{
+    asset(providerId: "jcr", id: "da35e99f-6138-40c9-b7c1-57978aa70268") {
+        name
+        link
+        path
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "asset": {
+      "name": "darwin1859.png",
+      "link": "/dam/jcr:da35e99f-6138-40c9-b7c1-57978aa70268/darwin1859.png",
+      "path": "/Book-Covers/darwin1859.png"
+    }
+  }
+}
+```
+
+### [](#_by_path)By path
+
+```graphql
+{
+    assets(path: "/Book-Covers") {
+        name
+        link
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "assets": [
+      {
+        "name": "wells1898.png",
+        "link": "/dam/jcr:d6007e99-c6b1-44f4-ac6e-13c2eefa4379/wells1898.png"
+      },
+      {
+        "name": "huxley1932.png",
+        "link": "/dam/jcr:f8cfffe0-5383-4f89-ae5d-26e760dd68b8/huxley1932.png"
+      },
+      {
+        "name": "sagan1997.png",
+        "link": "/dam/jcr:a1a2ff1f-4580-4950-8576-0ec12ee35370/sagan1997.png"
+      },
+      {
+        "name": "hawking2005.png",
+        "link": "/dam/jcr:d5161c3b-2517-4476-9c18-c1c53886d555/hawking2005.png"
+      },
+      {
+        "name": "hawking1988.png",
+        "link": "/dam/jcr:f964ee41-d533-4a21-bb61-8c576498b868/hawking1988.png"
+      },
+      {
+        "name": "darwin1859.png",
+        "link": "/dam/jcr:da35e99f-6138-40c9-b7c1-57978aa70268/darwin1859.png"
+      }
+    ]
+  }
+}
+```
+
+## [](#_resolving_asset_renditions)Resolving asset renditions
+
+To resolve asset renditions, renditions must be defined in a [theme](../../Templating/Theme/) that is linked to a [site definition](../../Templating/Site-definition/).
+
+Let’s assume there is a theme definition called `book-theme` in the `bookcase` light module:
+
+`<light-modules-folder>/bookcase/themes/book-theme.yaml`
+
+```yaml
+imaging:
+  class: info.magnolia.templating.imaging.VariationAwareImagingSupport
+  variations:
+    "1600":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      width: 1600
+    "1366":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      width: 1366
+    "240":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      width: 240
+```
+
+The definition is linked to a site associated with the domain you query with GraphQL requests:
+
+```yaml
+<site-name>:
+  theme:
+    name: book-theme
+```
+
+Then you can issue the following requests.
+
+### [](#_all_renditions)All renditions
+
+```graphql
+{
+    book(path: "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species") {
+        title
+        frontcover {
+            name
+            link
+            renditions {
+                renditionName
+                link
+            }
+        }
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life",
+      "frontcover": {
+        "name": "darwin1859.png",
+        "link": "/dam/jcr:da35e99f-6138-40c9-b7c1-57978aa70268/darwin1859.png",
+        "renditions": [
+          {
+            "renditionName": "1600",
+            "link": "/.imaging/mte/book-theme/1600/dam/Book-Covers/darwin1859.png/jcr:content/darwin1859.png"
+          },
+          {
+            "renditionName": "1366",
+            "link": "/.imaging/mte/book-theme/1366/dam/Book-Covers/darwin1859.png/jcr:content/darwin1859.png"
+          },
+          {
+            "renditionName": "240",
+            "link": "/.imaging/mte/book-theme/240/dam/Book-Covers/darwin1859.png/jcr:content/darwin1859.png"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### [](#_one_rendition)One rendition
+
+```graphql
+{
+    book(path: "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species") {
+        title
+        frontcover {
+            name
+            link
+            renditions(renditionNames: "1600") {
+                renditionName
+                link
+            }
+        }
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life",
+      "frontcover": {
+        "name": "darwin1859.png",
+        "link": "/dam/jcr:da35e99f-6138-40c9-b7c1-57978aa70268/darwin1859.png",
+        "renditions": [
+          {
+            "renditionName": "1600",
+            "link": "/.imaging/mte/book-theme/1600/dam/Book-Covers/darwin1859.png/jcr:content/darwin1859.png"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+### [](#_more_renditions)More renditions
+
+```graphql
+{
+    book(path: "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species") {
+        title
+        frontcover {
+            name
+            link
+            renditions(renditionNames: ["1600","240"]) {
+                renditionName
+                link
+            }
+        }
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life",
+      "frontcover": {
+        "name": "darwin1859.png",
+        "link": "/dam/jcr:da35e99f-6138-40c9-b7c1-57978aa70268/darwin1859.png",
+        "renditions": [
+          {
+            "renditionName": "1600",
+            "link": "/.imaging/mte/book-theme/1600/dam/Book-Covers/darwin1859.png/jcr:content/darwin1859.png"
+          },
+          {
+            "renditionName": "240",
+            "link": "/.imaging/mte/book-theme/240/dam/Book-Covers/darwin1859.png/jcr:content/darwin1859.png"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+## [](#_retrieving_content_metadata)Retrieving content metadata
+
+Values of the following metadata properties can be retrieved for each content item via GraphQL:
+
+-   `created` (DateTime, [ISO 8601 - Wikipedia](https://en.wikipedia.org/wiki/ISO_8601))
+
+-   `createdBy` (username)
+
+-   `id` (UUID)
+
+-   `lastModified` (DateTime, [ISO 8601 - Wikipedia](https://en.wikipedia.org/wiki/ISO_8601))
+
+-   `lastModifiedBy` (username)
+
+-   `name`
+
+-   `nodeType`
+
+-   `path`
+
+-   `tags` (list of assigned [tags](../../../Modules/List-of-modules/Content-Tags-module/))
+
+
+Example:
+
+```graphql
+{
+    book(path: "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species") {
+        title
+        _metadata {
+            id
+            name
+            path
+            nodeType
+        }
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "book": {
+      "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life",
+      "_metadata": {
+        "id": "c2a5ea72-6611-4f70-8005-42e8694fc610",
+        "name": "Darwin-1859-On-the-Origin-of-Species",
+        "path": "/My-Good-Reads/Science/Darwin-1859-On-the-Origin-of-Species",
+        "nodeType": "lib:book"
+      }
+    }
+  }
+}
+```
+
+### [](#_retrieving_other_metadata_properties)Retrieving other metadata properties
+
+You can use the [definition decoration](../../Definition-decoration/) mechanism to define additional metadata properties that should also be retrievable through GraphQL.
+
+In the following example, an additional `published` field is defined to allow accessing the `mgnl:lastActivated` property:
+
+```yaml
+fields:
+  - name: 'published'
+    type:
+      name: Date
+      nonNull: true
+    dataFetcher:
+      class: info.magnolia.graphql.jcr.datafetcher.JcrPropertyDataFetcherDefinition
+      propertyName: 'mgnl:lastActivated'
+```
+
+## [](#_paging)Paging
+
+Paging of results in Magnolia GraphQL can be achieved using the `limit` and `offset` arguments. Their default values are `20` and `0`, respectively.
+
+In the following body definition, only the first four entries for the `title` field are requested:
+
+```graphql
+{
+    books(limit: 4) {
+        title
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "The War of the Worlds"
+      },
+      {
+        "title": "Contact"
+      },
+      {
+        "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life"
+      },
+      {
+        "title": "A Brief History of Time: From the Big Bang to Black Holes"
+      }
+    ]
+  }
+}
+```
+
+With `limit` and `offset` set to `2` and `1`, respectively, titles two and three are delivered:
+
+```graphql
+{
+    books(limit: 2, offset: 1) {
+        title
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "Contact"
+      },
+      {
+        "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life"
+      }
+    ]
+  }
+}
+```
+
+## [](#_sorting)Sorting
+
+For scalar JCR-based GraphQL types, Magnolia automatically generates custom ENUMs in the form `<FIELDNAME>_ASC` and `<FIELDNAME>_DESC`. These ENUMs then describe the fields that can be sorted. Field names must be given in the upper case form.
+
+```graphql
+{
+    books(sort: TITLE_DESC) {
+        title
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "The War of the Worlds"
+      },
+      {
+        "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life"
+      },
+      {
+        "title": "God Created the Integers: The Mathematical Breakthroughs That Changed History"
+      },
+      {
+        "title": "Contact"
+      },
+      {
+        "title": "Brave New World"
+      },
+      {
+        "title": "A Brief History of Time: From the Big Bang to Black Holes"
+      }
+    ]
+  }
+}
+```
+
+You can also chain the sort operations, for example `sort: [AUTHOR_ASC, TITLE_ASC]` first sorts the results by the `author` property and then by the `title` property.
+
+## [](#_filtering)Filtering
+
+To filter the results, you can use a number of simple filters and operators that can be chained using the `AND` and `OR` conjunctions into a multiple predicate. The conjunctions can be used in either case, lower or upper. In case of `JCR`, `AND` has precedence before `OR`. Parentheses,`(` and `)`, can be used for grouping the filters.
+
+Example filter requesting `title` fields that contain `War` or `Struggle`:
+
+```graphql
+{
+    books(filter: "@title LIKE '%War%' OR @title LIKE '%Struggle%'") {
+        title
+    }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "The War of the Worlds"
+      },
+      {
+        "title": "On the Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle for Life"
+      }
+    ]
+  }
+}
+```
+
+### [](#_filters)Filters
+
+#### [](#_numbers)Numbers
+
+Number matching is done against the type stored in the repository.
+
+-   Integers (longs in case of JCR):
+
+    -   `filter: "@bar = 123"`
+
+
+-   For floats (doubles in case of JCR), use the floating-point format or the `f` suffix:
+
+    -   `filter: "@bar = 123.0"`
+
+    -   `filter: "@bar = 123f"`
+
+    -   `filter: "@bar = 123.0f"`
+
+
+-   For big decimals (decimals in case of JCR), use the `D` suffix:
+
+    -   `filter: "@bar = 123D"`
+
+    -   `filter: "@bar = 123.0D"`
+
+
+
+#### [](#_booleans)Booleans
+
+For booleans, use either `true` or `false`. Both letter cases are allowed:
+
+-   `filter: "@foo = true"`
+
+-   `filter: "@foo = FALSE"`
+
+
+#### [](#_nulls)Nulls
+
+Nulls can also be declared in both letter cases. For JCR-stored data, these are property existence checks, not empty value checks.
+
+-   `filter: "@foo = null"`
+
+-   `filter: "@foo <> NULL"`
+
+
+#### [](#_strings)Strings
+
+Strings must be enclosed in single quotes:
+
+-   `filter: "@foo = 'Some String'"`
+
+
+To search within a string, use the percentage sign with the `LIKE` operator:
+
+-   `filter: "@foo LIKE '%World%'"`
+
+
+#### [](#_dates)Dates
+
+For filtering by dates, the JCR implementation recognizes the [ISO 8601 date and time format](https://www.iso.org/iso-8601-date-and-time-format.html):
+
+> **Note:** The presentation format is ISO_OFFSET_DATE_TIME, for example 2018-10-04T11:47:44.408+02:00.
+
+-   `filter: "@fooDate = '2018-10-04T11:47:44.408+02:00'"`
+
+
+Example filter requesting titles and `_metadata.created` of books created after a specific date:
+
+```graphql
+{
+  books(filter: "@_metadata.created > '2018-10-02T12:57+02:00'") {
+    title
+    _metadata {
+      created
+    }
+  }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "The War of the Worlds",
+        "_metadata": {
+          "created": "2018-10-04T11:47:44.408+02:00"
+        }
+      },
+      {
+        "title": "Manufacturing Consent: The Political Economy of the Mass Media",
+        "_metadata": {
+          "created": "2021-11-29T13:09:05.75+01:00"
+        }
+      },
+      {
+        "title": "A Brief History of Time: From the Big Bang to Black Holes",
+        "_metadata": {
+          "created": "2018-10-02T12:57:59.255+02:00"
+        }
+      },
+      {
+        "title": "God Created the Integers: The Mathematical Breakthroughs That Changed History",
+        "_metadata": {
+          "created": "2018-10-09T11:01:30.493+02:00"
+        }
+      }
+    ]
+  }
+}
+```
+
+#### [](#_property_names)Property names
+
+To filter property names, a property must start with the *at* sign (`@`) and match the `[_A-Za-z][_0-9A-Za-z]*` regex pattern, for example `@foo`. Properties can be referenced using the dot notation, such as `@stats.speed` in:
+
+-   `filter: "@stats.speed = 200"`
+
+
+In case of JCR, this will create a condition that tries to filter against a submodel named `stats` and its `speed` property.
+
+#### [](#_jcr_metadata_properties)JCR metadata properties
+
+To filter through JCR metadata properties, the filter expression must start with `@_metadata.`. The metadata property name must match the `[_A-Za-z][_0-9A-Za-z]*` regex pattern. Example:
+
+-   `filter: "@_metadata.lastModifiedBy = 'superuser'"`
+
+
+#### [](#_operators)Operators
+
+> **Note:** Apart from ILIKE, all the other operators are case-sensitive.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Form</th><th class="tableblock halign-left valign-top">Meaning</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>=</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>equal</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;&gt;</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>not equal</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&gt;</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>greater than</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>lesser than</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>⇐</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>lesser than or equal</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&gt;=</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>greater than or equal</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>LIKE</code></p></div><div class="paragraph"><p>Can be used with:</p></div><div class="ulist"><ul><li><p>The percentage sign (<code>%</code>), a wildcard character that stands for zero or more additional characters.</p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>like</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>ILIKE</code></p></div><div class="paragraph"><p>Same as <code>LIKE</code> but case-insensitive.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>case-insensitive like</p></div></div></td></tr></tbody></table></div>
+
+##### [](#_example_letter_case_like_vs_ilike)Example: Letter case (LIKE vs ILIKE)
+
+Suppose you have the following three tours in your content app:
+
+![Three example Tours listed in the Tours app](../../../_images/6-2-39-toursApp-FamiliesTours.png)
+
+The `LIKE` and `ILIKE` operators will work as follows in example requests for `tours` with "Families" in their names.
+
+The case-sensitive `LIKE` does return the three tours for this request:
+
+```graphql
+{
+  tours(filter: "@name LIKE '%Families%'") {
+    name
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "tours": [
+      {
+        "name": "Belize for Families"
+      },
+      {
+        "name": "France for Families"
+      },
+      {
+        "name": "Lapland for Families"
+      }
+    ]
+  }
+}
+```
+
+However, not for this one:
+
+```gql
+{
+  tours(filter: "@name LIKE '%families%'") {
+    name
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "tours": []
+  }
+}
+```
+
+The case-insensitive `ILIKE` can be used instead:
+
+```gql
+{
+  tours(filter: "@name ILIKE '%families%'") {
+    name
+  }
+}
+```
+
+```json
+{
+  "data": {
+    "tours": [
+      {
+        "name": "Belize for Families"
+      },
+      {
+        "name": "France for Families"
+      },
+      {
+        "name": "Lapland for Families"
+      }
+    ]
+  }
+}
+```
+
+#### [](#_retrieving_all_references_for_a_specific_item)Retrieving all references for a specific item
+
+To retrieve all references for a specific content item, you must use the item’s UUID in the filter request.
+
+-   With full UUID and `=` (or `LIKE`).
+
+    ```graphql
+    {
+      books(filter: "@authors = '33fd679b-048d-4732-b8c5-6ce432bfc630'") {
+        title
+        publish_date
+      }
+    }
+    ```
+
+-   With a truncated UUID and `LIKE`. Using the truncated form may lead to ambiguities.
+
+    ```graphql
+    {
+      books(filter: "@authors LIKE '%33fd679b%'") {
+        title
+        publish_date
+      }
+    }
+    ```
+
+    Response
+
+    ```json
+    {
+      "data": {
+        "books": [
+          {
+            "title": "A Brief History of Time: From the Big Bang to Black Holes",
+            "publish_date": "1988-01-01"
+          },
+          {
+            "title": "God Created the Integers: The Mathematical Breakthroughs That Changed History",
+            "publish_date": "2005-10-04"
+          }
+        ]
+      }
+    }
+    ```
+
+
+#### [](#_filtering_multivalue_properties)Filtering multivalue properties
+
+Filtering multivalue properties is also supported. Consider the following definition, where the `authors` property can take more than one value:
+
+```yaml
+...
+    - name: authors
+      type: reference:author
+      multiple: true
+...
+```
+
+Given there is an author with a UUID `a5cb6b59-3661-4b40-893a-62a81ebaa61d`, you can filter out the books written by this author, in spite of the fact that the author value represents a multi field value.
+
+```graphql
+{
+  books(filter: "@authors LIKE '%a5cb6b59-3661-4b40-893a-62a81ebaa61d%'") {
+    title
+    authors {
+      name
+    }
+  }
+}
+```
+
+Response
+
+```json
+{
+  "data": {
+    "books": [
+      {
+        "title": "Manufacturing Consent: The Political Economy of the Mass Media",
+        "authors": [
+          {
+            "name": "Edward S. Herman"
+          },
+          {
+            "name": "Noam Chomsky"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Related topics
+
+-   [GraphQL app](../../../Apps/List-of-apps/GraphQL-app/)
+
+-   [GraphQL module](../../../Modules/List-of-modules/GraphQL-module/)
+
+-   [REST and GraphQL in Magnolia](../../../Features/REST-and-GraphQL/)
+
+-   [Delivery API](#3.1@rest:api:delivery-endpoint.adoc)
+
+
+## [](#_further_resources)Further resources
+
+-   [GraphQL Specification Versions](http://spec.graphql.org)

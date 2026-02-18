@@ -1,0 +1,127 @@
+---
+title: "Block definition"
+url: https://docs.magnolia-cms.com/product-docs/Apps/Developing-an-app/Developing-a-custom-content-editor-app/Block-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > Developing a custom content editor app > Block definition
+---
+
+# Block definition
+
+This page describes definition properties and template definition properties of a `block`, a component-like content element provided by the [Content editor module](../../../../Modules/List-of-modules/Content-Editor-module/).
+
+> **Note:** Compatibility noteCustom content editor and block definitions created in the Magnolia 5 UI framework must be migrated.For block definition properties in the Magnolia 5 UI framework, see instead.
+
+## [](#_overview)Overview
+
+A block is the smallest piece of content in an implementation of the [Content editor](../../../../Modules/List-of-modules/Content-Editor-module/), such as the [Stories app](../../../List-of-apps/Stories-app/). A block definition gives a block a name and specifies the content allowed to form a single block. A block template definition specifies which template should be used to render a block in an area or a page.
+
+## [](#_the_mgnlblock_nodetype)The `mgnl:block` nodetype
+
+Block content is stored using the `mgnl:block` [node type](../../../../Administration/Architecture/Node-types/) in the JCR. `mgnl:block` is similar to the custom node type `mgnl:content`, but it cannot be versioned on its own. Block content is usually grouped into block compositions (`mgnl:composition`), which are versionable.
+
+## [](#_files_required)Files required
+
+You define blocks to add or modify content in the Stories app or in an implementation of the Content editor. To render the block content, you must then define a template definition and a script for the block. You can define them both using [YAML configuration files or JCR nodes](../../../../Modules/Module-configuration/).
+
+If you want to define field labels and other i18n descriptors for the elements of your block, you can create the i18n file for the block(s) included in your module.
+
+| Definition | Location |
+| --- | --- |
+| Block definition | `/<module-name>/blocks/<block-name>.yaml` \* |
+| Template definition | `/<module-name>/templates/<path>/<block-name>.yaml` \*\* |
+| Template script | `/<module-name>/templates/<path>/<block-name>.ftl` \*\* |
+| i18n file (optional) | `/<module-name>/i18n/` |
+
+\* `<block-name>` gives the block its name in the JCR.
+
+\*\* The `<path>` is arbitrary but would typically be `blocks` for block template files.
+
+**Example**
+
+my-module
+├── blocks
+│ └── quotation.yaml
+├── i18n
+│ └── my-module\_en.properties
+└── templates
+    └── blocks
+        ├── quotation.ftl
+        └── quotation.yaml
+
+## [](#_properties)Properties
+
+### [](#_block_definition)Block definition
+
+| Property | Description |
+| --- | --- |
+| `templateId` | **optional** *required if using FTL templates*<br><br>The ID of the template definition in `<module name>:<path to block definition>` format, for example `my-module:blocks/quotation`.<br><br>Using a headless approach?<br><br>If you’re in a headless environment where no FTL templates are being created, you don’t need the `templateId` property. Be sure to remove or comment it out for headless environments; otherwise, you may receive an error. |
+| `icon` | **optional**, default is *icon-text-block*<br><br>The icon used by the block picker box. |
+| `name` | **optional**<br><br>A custom i18n base name to generate a key for the block, for example the name `singleTextRow` in the i18n key `blocks.singleTextRow.label`.<br><br>By default the block’s name in the JCR is used. |
+| `block` | **required**<br><br>A node containing a specification of the block. |
+| `implementationClass` | **optional**, default is `*info.magnolia.ui.editor.FormView*`<br><br>Specifies the implementation used to create the block fields.<br><br>For a block with a [light rich text field](../../../../Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/), the `implementationClass` must be `info.magnolia.editor.field.LightRichTextFormView`. |
+| `label` | **optional**<br><br>An i18n label for the block, for example the value `Text` in the key-value pair `blocks.text.label=Text`. |
+| `properties` | **required**<br><br>A list of arbitrarily named nodes for the fields creating the block.<br><br>Example:<br><br>```yaml<br>  properties:<br>    image:<br>      $type: damLinkField<br>      label: Image<br>      placeholder: Add image...<br>      buttonSelectNewLabel: Select new...<br>    imageAltText:<br>      label: Alt text<br>      $type: textField<br>      placeholder: Add alt text...<br>``` |
+
+#### [](#_example)Example
+
+/module-name/blocks/richText.yaml
+
+```yaml
+templateId: module-name:blocks/richText
+icon: text-block
+block:
+  implementationClass: info.magnolia.editor.field.LightRichTextFormView
+  label: Rich text
+  properties:
+    lightRichTextBox:
+      class: info.magnolia.editor.field.LightRichTextFieldDefinition
+      linkableApps:
+        - pages-app
+        - dam-chooser
+```
+
+#### [](#_additional_content_editor_field_types)Additional Content Editor field types
+
+Besides the fields usable in the [Composite field](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Composite-field/), you can use also the following fields:
+
+-   `LightRichTextFieldDefinition` - Creates a text field with simple text formatting capabilities.
+
+-   `MultiBlockDefinition` - Creates a multi block.
+
+-   `SlugFieldDefinition` - Creates a [URL slug](https://en.wikipedia.org/wiki/Clean_URL#Slug) field, which the story editor can use to create a human-readable story title such as `lost-and-found-in-swiss-alps`.
+
+
+### [](#_block_template_definition)Block template definition
+
+You can use the following properties in a block [template definition](../../../../Developing/Templating/Template-definition/):
+
+ PropertyDescription
+
+`renderType`
+
+**required**
+
+The [renderer](../../../../Developing/Templating/Renderers/) to be used.
+
+`templateScript`
+
+**required**
+
+Path to the template script in the following format:
+
+`/<module-name>/templates/<path>/<filename>.<ext>`
+
+See [Resources](../../../../Developing/Resources/) for more information about script storage locations.
+
+> **Warning:** No dialog definition is required in the block template definition. Everything that is related to the content and the form of a block is defined in the block definition.
+
+Related topics
+
+-   [Stories app](../../../List-of-apps/Stories-app/)
+
+-   [Developing a custom content editor app](../)
+
+-   [Developing and rendering custom content blocks](../Developing-and-rendering-custom-content-blocks/)
+
+-   [Content Editor module](../../../../Modules/List-of-modules/Content-Editor-module/)

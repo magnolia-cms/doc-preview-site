@@ -1,0 +1,334 @@
+---
+title: "Internationalization"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Language/Internationalization/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Language > Internationalization
+---
+
+# Internationalization
+
+This page explains the internationalization concept as applied in Magnolia. The first part of the page provides the internationalization basics, the second part mentions some more advanced points.
+
+## [](#_internationalization_vs_localization)Internationalization vs localization
+
+Internationalization and localization, usually abbreviated as **i18n** and **l10n** respectively, are ways to adapt Magnolia to different languages and regional differences.
+
+-   Internationalization involves designing a system in which it is easy to accommodate new languages without programming.
+
+-   Localization adapts Magnolia to a particular region or language by adding locale-specific configuration.
+
+
+> **Note:** i18n vs l10nMagnolia primarily provides technical means for internationalization and it is mainly these aspects that the text below and other parts of the Language section deal with. For more information regarding l10n and the differences between i18n and l10n, see for example W3C’s page.
+
+The running system assigns a `java.util.Locale` depending on the user settings or browser information. While rendering a page, a dialog, an app or any other part or the user interface, the i18n system evaluates the proper translation for a text by the current `Locale`. It may happen that the i18n system cannot find a translation for the given locale - in this case the translation of the default language is applied.
+
+## [](#_the_basics_of_internationalization_with_message_bundles)The basics of Internationalization with message bundles
+
+All [types of translatable text](../Types-of-translatable-text/) (besides editorial content stored in JCR) are internationalized with message bundles. With message bundles a translator can work with a plain text file and does not need to touch the code. To do this, you need **message bundles** which contain **message keys**.
+
+### [](#_i18n_message_bundle)i18n message bundle
+
+A message bundle ([resource bundle](http://docs.oracle.com/javase/tutorial/i18n/resbundle/concept.html) in Java) is a collection of `.properties` files. Each file contains key-value pairs of translated user interface text such as labels and messages. The keys in all files of the same bundle are identical but the values are language-specific translations.
+
+A message bundle must contain at least one `.properties` file. The files are named after the language (locale): `<bundle-name>_<locale>.properties`, for example, `app-pages-messages_en.properties`. Every Magnolia module should provide its own message bundle. If a module installs several apps, each app should have its own message bundle.
+
+#### [](#_location_of_message_bundles)Location of message bundles
+
+| Location | In Magnolia Maven module | In Magnolia light module |
+| --- | --- | --- |
+| Preferred | `src/main/resources/<module-name>/i18n` | `<magnolia.resources.dir>/<module-name>/i18n` |
+| Deprecated\* | `src/main/resources/mgnl-i18n` | \-  |
+
+Message bundles stored in these directories will be loaded automatically during module startup.
+
+> **Warning:** If you have modules with message bundles located within the deprecated folder, make sure that the bundle file names are unique.
+
+#### [](#_message_bundle_file_name)Message bundle file name
+
+Magnolia will find your message bundle files as long as they are in the `i18n` folder (or in the deprecated folder). Message bundle file names must have the following form:
+
+```xml
+<bundle-name>_<locale>.properties
+```
+
+The `<locale>` part of the file name, defining the i18n language used in the `.properties` file, must conform with the [Java locale notation](http://www.localeplanet.com/java/).
+
+Bundle name is arbitrary. However, it is a good practice to use one of the following patterns:
+
+app-<app-name>-messages\_<locale>.properties
+<module-name>-messages\_<locale>.properties
+
+**Best practice**
+
+Create separate message bundles for user interface labels and template labels. Don’t store these two groups of text in the same properties files or message bundles. They are aimed at different audiences and have different localization requirements.
+
+**Example**: Message files in the Travel Demo
+
+-   [`module-travel-demo-backend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (user interface labels)
+
+-   [`module-travel-demo-frontend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (template labels)
+
+
+### [](#_i18n_message_keys)i18n message keys
+
+Each `.properties` file usually contains one or more key-value pairs that provide the translations for labels, descriptions and other elements:
+
+```xml
+<key>=<translated value>
+```
+
+> **Warning:** In Magnolia documentation, we often use the term key to mean a key-value pair.
+
+The keys may be module- and/or (sub)app-specific in which case the module name and/or the (sub)app name forms a part of the key. For example:
+
+products.browser.actionbar.sections.root.label=Products
+
+This key will assign the word `Products` to the label for the root section of the actionbar of the Browser subapp in the Products app.
+
+For standard Magnolia components such as dialogs, forms and fields, Magnolia i18n API generates keys automatically. You will only have to define keys for [template labels](../Types-of-translatable-text/#_template_labels) and for texts within custom Java classes.
+
+#### [](#_referencing_keys_in_the_ui)Referencing keys in the UI
+
+Once you have defined the keys in the message bundle, the keys can be referenced in the UI. If they are applied correctly, the UI will render the values of the referenced keys in the language of the current locale settings.
+
+![An i18n key in a bundle and displayed in the UI](../../../_images/6-2-i18n_concept_v9_6UI.png)
+
+Magnolia references i18n keys in templates, dialogs, apps, forms, fields, messages, etc. See [Generic i18n keys](../Generic-i18n-keys/) for more information.
+
+### [](#_unicode_and_utf_8_encoding)Unicode and UTF-8 encoding
+
+[UTF-8](https://en.wikipedia.org/wiki/UTF-8) is the dominant character encoding for the World Wide Web. Magnolia supports UTF-8 character encoding for Unicode. UTF-8 can represent any character in the Unicode standard and is backwards compatible with ASCII.
+
+> **Note:** Best practiceMagnolia requires everyone to use UTF-8 character encoding in .properties files.
+
+The Java Content Repository (JCR) will store values in whatever format you provide. Magnolia always ensures that all values are UTF-8 encoded. Java classes read `.properties` files of message bundles from the file system. Depending on the implementation of these stream reading classes, Java allows you to set the encoding in which the files are read.
+
+Magnolia’s i18n framework assumes that files in message bundles are UTF-8 encoded (see info.magnolia.i18nsystem.DefaultMessageBundlesLoader and info.magnolia.cms.i18n.DefaultMessagesImpl).
+
+If you open some older properties files in some of the Magnolia modules you will find keys like this:
+
+link.readon = P\\u0159e\\u010d\\u00edst
+
+This file contains Unicode entities or [Java Unicode Character Representations](http://docs.oracle.com/javase/7/docs/api/java/lang/Character.html). When you use Unicode entities to encode special characters, it does not matter what encoding your file is stored in or read by the Java class.
+
+However, the above is a legacy practice that is no longer necessary. You don’t have to use Unicode entities, just make sure your properties files are UTF-8 encoded. The above snippet from the bundle with basename `info.magnolia.module.templatingkit.messages` can be written like this:
+
+link.readon = Přečíst
+
+## [](#_more_advanced_points)More advanced points
+
+### [](#_finding_the_full_name_of_a_key)Finding the full name of a key
+
+Magnolia generates keys for all dialog text automatically. If a translation for a key is not found in the existing `.properties` file(s), Magnolia will use the key itself in place of the translation. The full name of a key can be obtained in several ways.
+
+#### [](#_use_the_browser_inspector)Use the browser inspector
+
+In the following scenario, a new dialog containing a text input form is added to the Contact Page of the Travel Demo module. After creating the dialogue, it may look like this in the browser:
+
+![New dialog where i18n labels are missing](../../../_images/6-2-i18n_noValue_UI6.png)
+
+Two labels in this dialog are provided with correct i18n texts: the **Cancel** and the **Save changes** buttons. These translations are reused from message bundles of modules that already exist in the Magnolia framework. The other two labels in the dialog have been replaced by the keys themselves.
+
+If an i18n key were too long to fit in its position in the UI, it would be displayed in an abbreviated form. In any case, the full key can be obtained via the *inspector function* of your web browser. Right-click on the key, and in the menu that opens, choose `Inspect`. In the source code part of the browser window, you can see that the i18n key for the text field in this dialog is indeed `travel-demo.components.txtField.TextField.label`:
+
+```xml
+<div class="v-caption v-caption-form-field-layout v-caption-hasdescription">
+    <span id="gwt-uid-874" for="gwt-uid-875">travel-demo.components.txtField.TextField.label</span>
+</div>
+```
+
+To replace the key with a label, add the following line to the English `.properties` files of the Travel Demo module:
+
+travel-demo.components.txtField.TextField.label=Enter Your Text
+
+Deploy the file and start the server. The translation `Enter Your Text` now appears as a label attached to the input text field.
+
+![New dialog where a custom i18n label has been configured](../../../_images/6-2-i18n_addedValue_UI6.png)
+
+#### [](#_use_the_log)Use the log
+
+The full names of translation keys can also be obtained by logging the `info.magnolia.i18nsystem.TranslationServiceImpl` class while using an app. This class prints keys into the `catalina.out` log file as Magnolia looks for them in bundles.
+
+In the Log Levels app of the [Log Tools module](../../../Modules/List-of-modules/Log-Tools-module/), set the logging level for `TranslationServiceImpl` to DEBUG.
+
+> **Note:** If the info.magnolia.i18nsystem.TranslationServiceImpl logger is not present on the list, add it there using the Add logger config button.
+
+![Debugging Log Ltools module](../../../_images/TranslationServiceImpl_class_crop.png)
+
+Use your app. Open all subapps and dialogs. In the log, look for messages starting with \`\`Looking up in global i18n message bundle with key…''.
+
+catalina.out raw output
+
+```bash
+2014-04-04 13:10:45,604 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::sample.app.label, sample.app[] and Locale [de]
+2014-04-04 13:10:45,605 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::sample.app.icon[] and Locale [de]
+2014-04-04 13:10:45,605 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::app-launcher.dev.label, app-launcher.dev, app-launcher.dev[] and Locale [de]
+2014-04-04 13:10:45,605 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::products.app.icon[] and Locale [de]
+2014-04-04 13:10:45,612 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::pages.app.label, pages.app[] and Locale [de]
+...
+```
+
+The raw log output can be confusing since it also contains keys from other Magnolia apps. Parse the log to find keys that are relevant to your app only. Here’s an example command you can run in an OS X Terminal:
+
+cat catalina.out | egrep -o "products(\\.\\w+)+" | sort --unique
+
+Where:
+
+-   `cat catalina.out` prints the contents of the log file to the console
+
+-   `egrep -o "products(\.\w+)+"` matches message keys that start with your app name. Replace `products` with your app name.
+
+-   `sort –unique` ignores duplicate entries
+
+
+catalina.out parsed output
+
+```bash
+products.app
+products.app.icon
+products.app.label
+products.browser
+products.browser.actionbar.sections.folder
+products.browser.actionbar.sections.folder.label
+products.browser.actionbar.sections.product
+products.browser.actionbar.sections.product.label
+...
+```
+
+> **Note:** From Magnolia 6.2.1, if no translation key is found, handleUnknownKey is used as the default fallback method.
+
+info.magnolia.i18nsystem.TranslationServiceImpl
+
+```java
+  private String translate(Locale locale, String basename, String[] keys, String fallback) {
+
+      if (locale == null) {
+          throw new IllegalArgumentException("Locale can't be null");
+      }
+
+      if (keys == null || keys.length < 1) {
+          throw new IllegalArgumentException("Keys can't be null or empty");
+      }
+
+      if (basename != null) {
+          log.debug("Got an explicit basename ({}) for keys {}", basename, Arrays.asList(keys));
+      }
+
+      final String message = lookUpKeyUntilFound(keys, locale, basename);
+      if (message != null) {
+          return message;
+      } else {
+          return I18nText.NO_FALLBACK.equals(fallback) ? handleUnknownKey(locale, basename, keys) : fallback;
+      }
+  }
+```
+
+### [](#_using_the_translation_service)Using the translation service
+
+When you create UI elements in code, use the info.magnolia.i18nsystem.SimpleTranslator translation service. In a simple content app, you likely won’t need to create UI elements in code since most can be configured. But if you create a custom app or anything more complex, this is how to use the service.
+
+#### [](#_java_code)Java code
+
+> **Warning:** Do NOT instantiate SimpleTranslator but inject it in the constructor.
+
+```java
+import info.magnolia.i18nsystem.SimpleTranslator;
+import com.vaadin.ui.Button;
+import javax.inject.Inject;
+
+public class MyClass {
+
+    private final SimpleTranslator i18n;
+
+    @Inject
+    public MyClass(SimpleTranslator i18n){
+        this.i18n = i18n;
+    }
+
+    public void someMethod(){
+        // more code here ...
+        Button sendMessageButton = new Button(i18n.translate("messages-app.app.button.sendMessage"));
+        // more code here ...
+    }
+}
+```
+
+Then pass the key in the `#translate(String key).`
+
+The key `messages-app.app.button.sendMessage` must be in a message file with a value:
+
+myapp-messages\_en.properties
+
+```bash
+messages-app.app.button.sendMessage=Send message
+```
+
+Examples:
+
+-   Translatable fields in a component: [ContactPreview](https://gitlab.magnolia-platform.com/pd/extensions/contacts-app/-/blob/master/src/main/java/info/magnolia/contacts/app/ContactPreview.java)
+
+-   Translatable error message: [JcrAssetUploadAction](https://gitlab.magnolia-platform.com/pd/modules/dam-app/-/blob/master/magnolia-dam-app-jcr/src/main/java/info/magnolia/dam/app/action/JcrAssetUploadAction.java)
+
+
+#### [](#_template_script)Template script
+
+Similar to Java code, you can use the translation service in a template script. Below, in an excerpt from `/travel-demo-content-tags/templates/components/tourDetail-content-tags.ftl`, also with a parameter called `tour.duration` (line 3):
+
+```xml
+<div class="product-property">
+    <div class="property-label">${i18n.get('tour.property.duration')}</div>
+    <div class="property-value">${i18n.get('tour.duration', [tour.duration!])}</div>
+</div>
+```
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+Depending on actual values, this can be displayed for example as follows:
+
+![Rendering of an i18n translation in FreeMarker](../../../_images/6.2.11-internationalization-DOCU-2137-focus.png)
+
+### [](#_additional_freemarker_i18n_examples)Additional FreeMarker i18n examples
+
+You can also use the following Magnolia [cmsfn](../../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/) templating functions to handle internationalized content:
+
+-   `localizedLinks()` - To get a map of localized links to the current node. For more details and an example FreeMarker code, see [Get localized links](../../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_get_localized_links).
+
+-   `wrapForI18n(Node content)` - To deliver node properties in a visitor’s language. For further details and an example FreeMarker code, see [Wrap content in i18n node wrapper](../../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_wrap_content_in_i18n_node_wrapper).
+
+
+## [](#_example_i18n_of_the_tutorial_module)Example: i18n of the Tutorial module
+
+This example shows a selection of English messages from the `app-products-messages_en.properties` message file in the Products app of the Tutorial module:
+
+app-products-messages\_en.properties
+
+\# App name and icon
+products.app.label=Products
+products.app.icon=icon-items
+
+# Action bar sections
+products.browser.actionbar.sections.root.label=Products
+products.browser.actionbar.sections.folder.label=Folder
+products.browser.actionbar.sections.product.label=Product
+products.browser.actionbar.sections.preview.label=Preview
+...
+
+The Products app has message files for English and for Spanish:
+
+| Locale | Message files |
+| --- | --- |
+| English | `app-contacts-messages_en.properties` |
+| Spanish | `app-contacts-messages_es.properties` |
+
+These files together build a message bundle which is stored in the `i18n` directory within the module path:
+
+src
+└── main
+    └── resources
+        └── app-tutorial
+            ├── apps
+            │ └── products.yaml
+            └── i18n
+                ├── app-products-messages\_en.properties
+                └── app-products-messages\_es.properties

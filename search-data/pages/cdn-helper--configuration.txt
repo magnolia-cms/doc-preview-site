@@ -1,0 +1,56 @@
+---
+title: "Configuration"
+url: https://docs.magnolia-cms.com/cdn-helper/configuration/
+category: Modules
+version: modules
+breadcrumb: CDN Helper module > Configuration
+---
+
+# Configuration
+
+The following sections guide you on configuring the CDN Helper module.
+
+Integration with CDN
+
+Integrating with your CDN is determined by your specific CDN type.
+
+## [](#_update_cdn_cache_configuration_class)Update CDN cache configuration class
+
+To use CDN extra header caching, add the `class` property under `/modules/cache/config/contentCaching/defaultPageCache` with the value `info.magnolia.cdn.cache.CDNExtraHeaderCachingConfiguration` as shown here:
+
+![defaultPageCache class](../_images/defaultPageCache_class.jpg)
+
+## [](#_cdn_cache_policy)CDN cache policy
+
+Define a CDN cache policy by adding `cdnCachePolicy` in `/modules/cache/config/contentCaching/defaultPageCache` right after the `browserCachePolicy` node.
+
+![cdn cache policy](../_images/cdn_cache_policy.jpg)
+
+Sample configuration
+
+```yaml
+'cdnCachePolicy':
+  'class': 'info.magnolia.cdn.cache.cdncachepolicy.CDNCachePolicySet' (1)
+  'policies':
+    'default':
+      'class': 'info.magnolia.cdn.cache.cdncachepolicy.ExtraHeaders'
+      'voters':
+        'sampleVoter':
+          'class': 'info.magnolia.voting.voters.URIStartsWithVoter'
+          'pattern': '/example/'
+      'extraHeaders':
+        'header1': 'sampleValue'
+        'header2': 'sampleValue'
+```
+
+|     |     |
+| --- | --- |
+| **1** | You can config non cache policy by using the class, `info.magnolia.cdn.cache.cdncachepolicy.Never`. |
+
+## [](#_cdn_executor)CDN executor
+
+You also need to define a CDN executor under a suitable executors action by using the class, `info.magnolia.cdn.cache.executor.CDNExtraHeadersCacheExecutor`.
+
+Example
+
+![cdn executor](../_images/cdn_executor.jpg)

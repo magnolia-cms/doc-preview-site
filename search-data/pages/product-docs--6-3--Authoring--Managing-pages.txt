@@ -1,0 +1,136 @@
+---
+title: "Managing pages"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Authoring/Managing-pages/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Authoring > Authoring content > Managing pages
+---
+
+# Managing pages
+
+The Pages app displays your site hierarchy. Here you can add pages and move them around.
+
+## [](#_site_hierarchy)Site hierarchy
+
+Pages on a site are displayed in a hierarchical tree. Each site tree has a root page (home page) and child pages.
+
+![Pages app hierarchy](../../_images/authoring/pages-app-hierarchy.png)
+
+Columns:
+
+-   **Name**: Name of the JCR node. The form of a valid JCR name is specified in part [3 Repository Model](https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/3_Repository_Model.html) of the JCR v2.0 Specification.
+
+    JCR [character restrictions](#_character_restrictions) apply to the name, meaning some characters aren’t allowed in page names. Invalid characters are automatically substituted with a hyphen.
+
+    The page name is used in the URL. The convention is to use lower-case words separated by hyphens, for example `standard-article` and `news-and-events`.
+
+-   **Title**: Displayed to visitors. It may be different from the page name and can contain any character. The title string is used in the HTML `title` element, in the `h1` heading on the page and in the navigation title.
+
+-   **Template**: Template assigned to the page.
+
+-   **Status**: Shows the publication status of the page:
+
+
+| Status | Description |
+| --- | --- |
+| Published | Content is published from the author instance to the public instance. Identical content exists on both instances. |
+| Modified | Content was modified since publication. The author instance isn’t in sync with the public. |
+| Draft | Content exists only on the author instance. |
+| Marked for deletion | Content is marked for deletion but still appears in the list (grayed out). It can be restored or permanently deleted. |
+
+> **Note:** The status column also displays the read/write access status of the page.
+
+-   **Last updated**: Timestamp showing when the page was last modified. The timestamp is displayed in the user’s own timezone if one has been set in the user profile, if not, the server timezone is displayed.
+
+
+> **Note:** Although strictly speaking there is no limit on the number of pages in a website, depending on the back-end you use, there could be limitations regarding website structure and total size.
+
+JackRabbit page/node limit
+
+The extensive use of nodes dramatically increases the number of SQL statements necessary to retrieve referenced nodes. This has a serious impact on overall repository performance. With JackRabbit the absolute maximum number of pages permitted at any single level in the site hierarchy is 1000. However, the recommended total is no more than 100 pages at a single level.
+
+Content size
+
+The total size of content in the repository shouldn’t exceed 2 TB. Note that several Magnolia clients have successfully run repositories sized 50-200 GB in production over an extended period of time.
+
+SEO
+
+For search engine optimization keep the hierarchy as flat as possible.
+
+If editors find a deeper site hierarchy easier to manage, elevate pages to higher levels using [URI mapping](../../Administration/URI-mapping/).
+
+Page moves (or renames)
+
+A page’s name and position in the site hierarchy determines its URL. When the page moves or is renamed, the URL changes. This can have a negative SEO impact.
+
+> **Tip:** Use a permanent redirect or a redirect template to tell search engines that the page was moved or renamed.
+
+## [](#_the_integrated_user_experience_feature)The Integrated User Experience feature
+
+The IUX feature can be found in the Pages app by clicking the IUX icon ![IUX icon](../../_images/iux-icon.png). It’s used to display charts and widgets showing data from adjacent applications and content apps directly in Pages without having to switch between apps. Select one of the connected analytics sources, add a time frame and then choose a page to see common metrics from that analytics connector.
+
+![IUX displayed in Pages](../../_images/iux-pages.png)
+
+For more information about configuring IUX slots, see [IUX slot for analytics](../../Modules/extensions-and-frameworks/analytics-integration-framework/analytics-iux-slot/) or [IUX slot with Magnolia Headless](../../Developing/headless/concepts/integration/#iux-slots).
+
+## [](#_character_restrictions)Character restrictions
+
+Website content, asset, configuration and everything else is stored in the content repository. Each item is stored in a node. The node name is generally displayed in the first column in AdminCentral, for example the page name in the `website` workspace and asset name in the `dam` workspace. Besides being an internal reference to the node, the name is also used for various purposes such to create a page URL.
+
+Character restrictions apply only to node names and not to other user-entered content. For example, you can only use certain characters in a page or asset name but any character in the page or asset title. When a disallowed character is used it is automatically substituted with a hyphen (`-`).
+
+The info.magnolia.cms.core.Path class governs character restrictions. All alphanumeric characters (`a-z`, `A-Z`, `0-9`), hyphen (`-`) and underscore (`_`) are safe to use in node names. We recommend that you use lowercase letters separated by a hyphen.
+
+### [](#_invalid_characters)Invalid characters
+
+[JCR 2.0 specification](https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/3_Repository_Model.html#3.2.4%20Naming%20Restrictions) defines the following invalid characters in a local name.
+
+|     | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+|     | Space | `0020` `SPACE` |
+| `*` | Asterisk (Star) | `002A` `ASTERISK` |
+| `/` | Forward slash | `002F` `SOLIDUS` |
+| `:` | Colon | `003A` `COLON` |
+| `[` | Left square bracket | `005B` `LEFT SQUARE BRACKET` |
+| `]` | Right square bracket | `005D` `RIGHT SQUARE BRACKET` |
+| `\|` | Vertical bar (Pipe) | `007C` `VERTICAL LINE` |
+
+Node names are used to create URLs and cannot contain characters that are disallowed or have special meaning in URLs. These conventions are established by the Internet Engineering Task Force ([IETF](http://www.ietf.org/)) [Network Working Group on URLs](http://www.ietf.org/rfc/rfc1738.txt).
+
+|     | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+| `!` | Exclamation mark | `0021` `EXCLAMATION MARK` |
+| `#` | Number sign (Hash) | `0023` `NUMBER SIGN` |
+| `%` | Percent sign | `0025` `PERCENT SIGN` |
+| `'` | Apostrophe | `0027` `APOSTROPHE` |
+| `(` | Left parenthesis | `0028` `LEFT PARENTHESIS` |
+| `)` | Right parenthesis | `0029` `RIGHT PARENTHESIS` |
+| `+` | Plus sign | `002B` `PLUS SIGN` |
+| `/` | Forward slash | `002F` `SOLIDUS` |
+| `;` | Semicolon | `003B` `SEMICOLON` |
+| `?` | Question mark | `003F` `QUESTION MARK` |
+| `^` | Caret | `005E` `CIRCUMFLEX ACCENT` |
+
+### [](#_characters_disallowed_by_magnolia)Characters disallowed by Magnolia
+
+|     | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+| `&` | Ampersand | `0026` `AMPERSAND` |
+| `=` | Equals sign | `003D` `EQUALS SIGN` |
+| `@` | At sign | `0040` `COMMERCIAL AT` |
+
+Apart from the exceptions above, Magnolia allows you to use the full [UTF-8](http://en.wikipedia.org/wiki/UTF-8) character set for node names and other properties, but UTF-8 encoding is disabled by default.
+
+See [UTF-8 in pages names](../../Administration/Language/Language-configuration/#_utf_8_page_names) for instructions on how to enable it. When enabled, all special characters and notations covered by the Unicode specification can also be used.
+
+The dot character (full stop, Unicode 2E) can be used in node names with the single limitation that it cannot be the first character. You can create a user `john.smith`, a page `article.one`, a document `Magnolia-Flyer-4.0.pdf`, a configuration node `option.one` or a JavaScript file `jquery.tabtree`.
+
+## [](#_assigning_a_template_to_a_page)Assigning a template to a page
+
+All pages are based on Templating. The template assigned to a page is displayed in the **Template** column. The template determines what content is displayed and how.
+
+Template availability defines what template you can assign to a page.
+
+You can change a page template. However, the new template may not be able to render content entered using the previous template. If content can’t be rendered, you cannot edit it. The original content exists in the repository, however. If you change the template back to the original, the content is rendered again.
+
+If a template is able to render a component that was originally entered with a different template, the component may be displayed even if the current template does not offer it in the corresponding area. For example, if you enter a text component on a Travel Standard page and later change the page template to a custom template that also offers a text component, the component may still be displayed.

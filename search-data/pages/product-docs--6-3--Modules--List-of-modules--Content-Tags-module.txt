@@ -1,0 +1,74 @@
+---
+title: "Content Tags module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Content-Tags-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Content Tags module
+---
+
+# Content Tags module
+
+[Content management](../../../use-cases/content-management/) Bundled: DX Core
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [CONTTAGS](https://magnolia-cms.atlassian.net/browse/CONTTAGS) |
+| Maven site | [Content Tags](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fcontenttags%2Fmagnolia-content-tags-ui%2F3.0.1) |
+| Latest | 3.0.1 |
+
+The Content Tags module makes [content tagging](./) possible. The module contains UI classes to enable tagging on [content apps](../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/Parts-of-a-content-app-5-UI/) and provides [`tagfn`](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/) templating functions to search for tagged content.
+
+## [](#_module_structure)Module structure
+
+| artifactID |     |
+| --- | --- |
+| `magnolia-content-tags-parent` Parent reactor. | `magnolia-content-tags-core` |
+| Provides the API and the [`tagfn`](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/) templating functions. | `magnolia-content-tags-ui` |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.contenttags</groupId>
+  <artifactId>magnolia-content-tags-ui</artifactId>
+  <version>3.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Tip:** It is sufficient to add magnolia-content-tags-ui only to the POM file of your webapp and let let Maven handle the dependency to magnolia-content-tags-core.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.contenttags</groupId>
+  <artifactId>magnolia-content-tags-core</artifactId>
+  <version>3.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_further_reading)Further reading
+
+-   [How to enable content tags for a content app](How-to-enable-content-tags-for-a-content-app/)
+
+-   [How to enable content tags for a content app - 5 UI](../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/How-to-enable-content-tags-for-a-content-app-5-UI/).
+
+-   Get familiar with the [`tagfn`](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/) templating functions.
+
+
+Related topics
+
+-   [Content tagging](./)
+
+-   [`tagfn` templating functions](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/)
+
+-   [Enable content tags for a content app](How-to-enable-content-tags-for-a-content-app/)

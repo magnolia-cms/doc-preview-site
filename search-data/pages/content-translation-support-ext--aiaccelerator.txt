@@ -1,0 +1,173 @@
+---
+title: "CTSX AI Accelerator Translator"
+url: https://docs.magnolia-cms.com/content-translation-support-ext/aiaccelerator/
+category: Modules
+version: modules
+breadcrumb: Content Translation Extended module > CTSX AI Accelerator Translator
+---
+
+# CTSX AI Accelerator Translator
+
+[Content management](../../product-docs/7.0/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.0.0 [Magnolia 6.4](../../product-docs/7.0/) compatible
+
+The **AI Accelerator translation** module performs translations using the AI Accelerator module. Translations are handled synchronously.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+> **Important:** In order to start the AI accelerator translation process, ensure the core and apps modules for Content Translation Extended are already installed.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.translation</groupId>
+  <artifactId>magnolia-content-translation-support-ext-aiaccelerator</artifactId>
+  <version>5.0.0</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+The configuration can be done using JCR or YAML.
+
+-   Refer to the [JCR Configuration](#_jcr_configuration) for the JCR configuration.
+
+-   Refer to the [YAML configuration](#_yaml_configuration) for instructions on how to define settings using YAML.
+
+
+### [](#_jcr_configuration)JCR Configuration
+
+Configuration of the AI Accelerator translation provider is handled in the module config. This provider should be configured with the following path:
+
+modules
+└── content-translation-support-ext-aiaccelerator
+    └── config
+        └── translationProviders
+            └── aiacceleratorTranslationProviderConfigFile.yaml
+
+### [](#_yaml_configuration)YAML configuration
+
+AI Accelerator translation provider configuration is defined within its provider module (`magnolia-content-translation-support-ext-aiaccelerator`) under the following directory structure:
+
+```plaintext
+/src/main/resources/content-translation-support-ext-aiaccelerator/translationProviders
+```
+
+#### [](#_required_decorations)Required decorations
+
+This configuration can also be **decorated** to override or extend the default configuration. Decoration file should be placed under the following path:
+
+```plaintext
+<light-module-name>/decorations/content-translation-support-ext-aiaccelerator/translationProviders
+```
+
+Below is an example of how to decorate AI Accelerator translation provider configuration within a light module:
+
+```plaintext
+light-modules/
+└── my-module/
+    └── decorations/
+        └── content-translation-support-ext-aiaccelerator/
+            └── translationProviders/
+                └── AiAccelerator.yaml
+```
+
+### [](#_configuration_properties)Configuration properties
+
+> **Note:** Set the modelId property using the model configuration defined in the AI Accelerator module that will be used for translation.
+
+| Property | Description |
+| --- | --- |
+| `class` | **required**<br><br>Definition class for the translator to be used.<br><br>See `info.magnolia.translation.ext.provider.aiaccelerator.definition.AiAcceleratorProviderDefinition`. |
+| `modelId` | **required**<br><br>Model configuration ID defined in the AI Accelerator module. |
+| `configName` | **required**<br><br>Identifies the configuration within Magnolia. |
+| `defaultFlag` | **optional**<br><br>The default configuration used by the system in the case of multiple translation services being used. |
+| `enabledFlag` | **required**<br><br>Enable or disable the configuration using this flag. |
+| `implementationClass` | **required**<br><br>Implementation class for interfacing with Ai Accelerator Translator.<br><br>See `info.magnolia.translation.ext.provider.aiaccelerator.translator.AiAcceleratorTranslator`. |
+| `characterLimit` | **optional**<br><br>You can adjust the character limit in one request.<br><br>Default is `2000` characters. |
+| `whiteSpaceCharacterIndex` | **optional**<br><br>You can adjust on which index the partition is made.<br><br>Default is from the **1500th** character. |
+
+### [](#_setting_system_prompt)Setting system prompt
+
+In the **Hyper Prompt app** of the AI Accelerator module, a new prompt used for translation is automatically created upon installation of the CTSX AI Accelerator Translator module. The path of this prompt is **'/AI-content-translation/Translation'**.
+
+Editors can modify the existing prompt as needed; however, for the translation module to function correctly, the prompt at this path must exist and include the ${Source language} and ${Target language} properties.
+
+### [](#_sample_jcr_configuration)Sample JCR configuration
+
+```yaml
+'config':
+  'translationProviders':
+    'AIAccelerator':
+      'class': 'info.magnolia.translation.ext.provider.aiaccelerator.definition.AiAcceleratorProviderDefinition'
+      'modelId': 'xxxxxx' (1)
+      'configName': 'AI Accelerator module'
+      'enabledFlag': 'true'
+      'implementationClass': 'info.magnolia.translation.ext.provider.aiaccelerator.translator.AiAcceleratorTranslator'
+```
+
+|     |     |
+| --- | --- |
+| **1** | Your Model configuration ID. |
+
+### [](#_sample_yaml_decorated_configuration)Sample YAML decorated configuration
+
+```yaml
+modelId: xxxxxx (1)
+enabledFlag: true
+```
+
+|     |     |
+| --- | --- |
+| **1** | Your Model configuration ID. |
+
+## [](#_usage)Usage
+
+After registration and starting, the Content Translation Support Extended (CTSX) module binds the AI Accelerator translator to the `Configuration` field.
+
+### [](#_choose_pages)Choose Pages
+
+1.  Choose the pages that contain the i18n items before starting the process.
+
+2.  Click to 'Add to translation batch' action on action bar.
+
+3.  In the 'Add to translation batch' dialog:
+
+    1.  Input the batch name or select an existing batch.
+
+    2.  Check to include Dependencies and include Sub-nodes if necessary.
+
+    3.  Select AI Accelerator module in the Configuration.
+
+    4.  Click Save Changes.
+
+
+
+### [](#_submit_batch)Submit Batch
+
+1.  Open the Translation Extend app (under the Tools menu).
+
+2.  From the 'Batches' tab:
+
+    1.  Select your batch.
+
+    2.  Edit the batch information if you want.
+
+    3.  Click to 'Submit batch' action on action bar.
+
+        > **Note:** After The retrieveTranslationResultFromExternalServiceJob has run, you will get notification for the translation result.
+
+        > **Tip:** You can bypass this step (auto import translated content) if you set "autoTranslationAllowed=true".
+
+
+3.  In the 'Translation Review' dialog:
+
+    1.  Click to 'Assign to me' on action bar.
+
+    2.  Can be 'Approve & Import' or Reject the task.
+
+    3.  Click to 'Review' action for comparing the different.
+
+        > **Note:** It can also be 'Import' or "Reject" in the 'Comparison' tab.
+
+        After importing the translated content, you can open the selected page again for checking the result.

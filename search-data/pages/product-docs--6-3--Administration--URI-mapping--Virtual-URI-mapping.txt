@@ -1,0 +1,285 @@
+---
+title: "Virtual URI mapping"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/URI-mapping/Virtual-URI-mapping/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > URI mapping > Virtual URI mapping
+---
+
+# Virtual URI mapping
+
+Virtual URI mapping is a way to redirect an incoming request to the actual location of the content. Typically, the virtual address does not match the site hierarchy exactly.
+
+> **Warning:** Virtual URI mapping is an area where you can quickly break a site if you are not careful. It is easy to create cyclical mappings where the result of one mapping feeds another mapping. This can have unintended consequences and render AdminCentral unreachable. Create and test mappings in an isolated test environment before deploying them to production.If something goes wrong and you cannot access AdminCentral anymore, use the Groovy Rescue App to delete the problematic mapping.
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+## [](#_virtual_uri_mapping_logic_in_magnolia)Virtual URI mapping logic in Magnolia
+
+A given mapping configuration `maps` an incoming URI to a new target URI. It returns a result describing the new URI and the level of match. The following action prefixes are supported for the new URI:
+
+-   `redirect:`
+
+-   `permanent:`
+
+-   `forward:`
+
+-   `proxy:`
+
+
+To trigger either a temporary redirect, a permanent redirect, or a forward, see the [Action prefixes](#_action_prefixes) section below for more detailed explanations.
+
+The URIs can be either absolute or relative within the web application in which case the context path is added automatically. For example:
+
+-   redirect
+
+-   proxy
+
+
+Relative
+
+```yaml
+fromUri: /winter2016
+toUri: redirect:/marketing/campaigns/winter2016
+```
+
+Absolute
+
+```yaml
+fromUri: /winter2016
+toUri: redirect:https://www.example.com/marketing/campaigns/winter2016.html
+```
+
+```yaml
+fromUri: /homepage
+toUri: proxy:https://www.tacksync.com/index.html
+```
+
+### [](#_virtual_uri_mapping_weights)Virtual URI mapping weights
+
+The weight for a Virtual URI mapping depends on the type of [mapping class](#_mapping_classes) implementation that’s used:
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 40%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top"></th><th class="tableblock halign-left valign-top">Weighting</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Simple pattern mappings</strong></p></div><div class="ulist"><ul><li><p><code>DefaultVirtualUriMapping</code></p></li><li><p><code>HostBasedVirtualUriMapping</code></p></li><li><p><code>MultiSiteRootVirtualUriMapping</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Pattern length</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Regexp mappings</strong></p></div><div class="ulist"><ul><li><p><code>RegexpVirtualUriMapping</code></p></li><li><p><code>HostBasedRegexpVirtualUriMapping</code></p></li><li><p><code>MultiSiteRegexpVirtualUriMapping</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Matching group count</strong></p></div><div class="paragraph"><p>Using the <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/regex/Matcher.html#groupCount()" target="_blank" rel="noopener"><code>Matcher</code></a> approach.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_the_mappings_registry)The mappings registry
+
+The mappings are delegated to a separate module (`virtual-uri`) through the `info.magnolia.virtualuri.VirtualUriFilter` class and are stored in their own registry (`VirtualUriRegistry`), which allows to reference each mapping also in YAML definition files. All virtual URI mappings can be located via the Definitions app no matter whether they come from JCR or a YAML file:
+
+![The mappings registry shown in the Definitions app](../../../_images/6-2-virtualURIMapping-definitionsApp.png)
+
+Alternatively, search the `config` space with the [JCR Browser app](../../../Apps/List-of-apps/JCR-Browser-app/).
+
+Warnings for overflow events are logged in `DirectoryWatcher`. Overflow events happen when the maximum number of user watches is reached.
+
+Any existing buffer size is hard-coded and cannot be configured. We recommend to keep the number of files in a single folder below 100 and to use folder hierarchies whenever possible.
+
+## [](#_where_to_use_virtual_mappings)Where to use virtual mappings
+
+Virtual URIs are commonly used in Internet marketing for:
+
+-   Campaigns, events, conferences, shows, [vanity URLs](http://finnotype.blogspot.com/2010/10/vanity-urls-with-magnolia-cms.html)
+
+-   Microsites
+
+-   Landing pages, geo or language specific pages
+
+-   Product pages
+
+-   Conversion pages
+
+-   Downloads
+
+-   Coupon codes, special offers
+
+-   Abbreviations, shorthands
+
+
+There are also utility reasons for redirecting URLs, related to day-to-day site maintenance:
+
+-   Web pages have moved due to site re-organization. Users still have old URLs in their bookmarks and in search engine indexes. Without redirection traffic would be lost.
+
+-   Registering alternative domain extensions like `example.net` and `example.org` and redirecting them to your primary site `example.com`. You can map multiple domain names to a site in your Magnolia site definition. This can be a major time-saver for a CMS team since there is no need to configure a Web server. Note that you need to register the domains with a registrar first and make sure that DNS entries for the domains point to the server hosting your Magnolia instance.
+
+
+As an example of mapping, see also [Turning a template-based JSON provider into a RESTful API with virtualURIMapping](../../../Developing/Development-how-tos/How-to-get-content-as-JSON-an-overview/) where we define a custom virtual mapping to rewrite a path like `/getjson/tours/magnolia-travels/Kyoto` into `/getjson?workspace=tours&path=/magnolia-travels/Kyoto`.
+
+## [](#_configuration)Configuration
+
+You can create virtual URI mappings in the `virtualUriMappings` folder inside your module configuration.
+
+Note that the YAML-based configuration must be stored under the `virtualUriMappings` folder, with the plural **`-s`** at the end and camel-cased **`Uri`** in the middle of the name of the folder. In JCR configuration, the node’s name can be either `virtualUriMappings` or the older `virtualURIMapping`. In either case make sure that the folder is at the top level inside module configuration.
+
+> **Important:** To mitigate an issue caused by having more than 500 configured virtual URI mappings in light modules, a WARN-level message is now logged when a DirectoryWatcher overflow occurs (MAGNOLIA-7762).We recommend you keep the number of files in a single folder below 100 and to use folder hierarchies whenever possible. For the upcoming fix, see MAGNOLIA-7798.
+
+### [](#_via_jcr)Via JCR
+
+**Example**: A mapping named `enterprise-edition` forwards users from `example.com/ee` to `example.com/enterprise-edition`. The `DefaultVirtualUriMapping` class (for description see the [Mapping classes](#_mapping_classes) section below) maps one URI to another. This ensures that external links that point to `example.com/ee` still work when the target page is renamed.
+
+![JCR configuration of virtual mappings](../../../_images/ADVT-Vurimapping.png)
+
+### [](#_via_yaml)Via YAML
+
+You can configure virtual URI mappings in YAML definition files in light modules. For every mapping, one file is required.
+
+<my-module>/virtualUriMappings/enterprise-edition.yaml
+
+```yaml
+class: info.magnolia.virtualuri.mapping.DefaultVirtualUriMapping
+fromUri: /ee
+toUri: forward:/enterprise-edition
+```
+
+### [](#_properties)Properties
+
+| Property | Description |
+| --- | --- |
+| `class` | **required**<br><br>Class that performs the mapping. See the section [Mapping classes](#_mapping_classes) below. |
+| `fromUri` | **required**<br><br>Pattern to match in the requested URI. |
+| `toUri` | **required**<br><br>Concrete URI where the request is mapped to. |
+| `site` | **required** (for the `MultiSiteRegexpVirtualUriMapping` class)<br><br>Specifies the site that should be used for the mapping. |
+
+### [](#_a_catalog_of_mappings)A catalog of mappings
+
+For easier orientation, if you have to configure a lot of mappings, you can store them in folder-like structures rather than in one long flat list of mappings:
+
+![Mappings stored in folder-like structures instead of a long list.](../../../_images/ADVT-Vurimapping-cat.png)
+
+### [](#_mapping_classes)Mapping classes
+
+Magnolia provides seven ready-made classes that perform virtual URI mapping via two primary approaches:
+
+-   Virtual URI
+
+-   Multisite
+
+
+-   `info.magnolia.virtualuri.mapping.*`
+
+-   `info.magnolia.multisite.mapping.*`
+
+
+-   info.magnolia.virtualuri.mapping.DefaultVirtualUriMapping maps a virtual URI to a content path. This is the simplest and most common type.
+
+    > **Note:** If the URI starts with a dot (.), it is not taken as a wildcard anymore but the dot in fact is interpreted as dot. If you need a wildcard, use ? instead.
+
+-   info.magnolia.virtualuri.mapping.RegexpVirtualUriMapping allows you to specify a regular expression pattern that matches a sequence of characters. A regexp pattern can match a variety of URIs, which saves time and effort as you would otherwise have to create default mappings for each case. `toUri` can contain back references to the regexp matches.
+
+-   info.magnolia.virtualuri.mapping.RotatingVirtualUriMapping is an extension of `RegexpVirtualUriMapping` that allows rotation between different destination URIs. In order to rotate, `toUri` must contain an asterisk character `*` that will be replaced by a random integer between `start` (default is `1`) and `end` minus one (default is `3`). An additional property `padding` specifies the desired width of the string. Zeroes are added to the left of the integer to make all strings equally wide. Default width is `2`.
+
+-   info.magnolia.virtualuri.mapping.HostBasedVirtualUriMapping forwards the request to a different URI depending on the requested host name.
+
+-   info.magnolia.virtualuri.mapping.HostBasedRegexpVirtualUriMapping combines the host-based and regex mappings. It forwards the request to a different URI depending on the requested host name and allows you to specify a regular expression pattern that matches a sequence of characters.
+
+
+-   info.magnolia.multisite.mapping.MultiSiteRootVirtualUriMapping is a special class which specifies the root of a site if site matching returns `null`.
+
+-   info.magnolia.multisite.mapping.MultiSiteRegexpVirtualUriMapping adds a site condition to the mapURI check. A mapping will only match the request if both the specified regular expression and the specified site match. You can also write your own implementation.
+
+
+> **Tip:** The patterns for regular expressions in the regex-based classes are defined in java.util.regex.Pattern.
+
+### [](#_action_prefixes)Action prefixes
+
+You can use these action prefixes:
+
+-   `forward` hides the true target URL from the visitor. The URL that the user typed in the browser address bar or the link they clicked remains visible. Forward is performed internally by the servlet. Any browser reload of the resulting page will repeat the original request, with the original URL.
+
+-   `redirect` displays the true target URL in the address bar. It is a two-step process where the web application instructs the browser to fetch a second URL which differs from the original. A browser reload of the second URL will not repeat the original request but will rather fetch the second URL. Redirect is marginally slower than a forward since it requires two browser requests instead of one. A redirect returns HTTP status code 302 `found` to the client. While OK for human visitors, this method can be suboptimal from search engine optimization (SEO) viewpoint as search engines do not transfer the page rank assigned to the old URL to the new URL.
+
+-   `permanent` 301 redirect is a [search engine friendly](http://www.webconfs.com/how-to-redirect-a-webpage.php) option. In this case the HTTP response code is set to 301. [Google](http://www.google.com/support/webmasters/bin/answer.py?hl=en&answer=93633) and [Yahoo!](https://help.yahoo.com/kb/redirects-yahoo-search-sln24714.html) specifically endorse this type of redirection and [Bing](https://blogs.bing.com/webmaster/October-2011/Managing-redirects-%E2%80%93-301s,-302s-and-canonicals) is following the trend. 301 redirect preserves your search engine ranking for the redirected page.
+
+-   `proxy` forwards the original target URL to an external URL, mainly in cases when you need to hide External Dam URLs.
+
+
+> **Note:** It is also possible to leave the action prefix out. A virtual URI mapping that does not have a prefix does not re-process the request. It just changes the current URI in info.magnolia.cms.core.AggregationState.
+
+### [](#_examples)Examples
+
+#### [](#_default)Default
+
+Forward from `/winter2016` to `/marketing/campaigns/winter2016`.
+
+![A default example showing mappings for marketing campaign winter](../../../_images/ADVT-Vurimapping-eg1.png)
+
+#### [](#_regular_expression)Regular expression
+
+> **Warning:** Always test your regex-based virtual URI configurations thoroughly before applying them to a live environment. The configurations that seem correct on the surface can yield unwanted results.For example, using boundary matchers (the hat ^, the dollar $, and others) in fromUri and toUri may improve your matches otherwise a simple value such as /foobar.html will be matched not only in /foobar.html but also in /something/foobar.html.
+
+Take requested page name and pass it as a `productId` request parameter to a product detail page.
+
+![ProductId node](../../../_images/ADVT-Vurimapping-eg2.png)
+
+The pattern `[0-9a-zA-Z-]` in `fromUri` means `` `any single character in the range of 0-9 or a-z or A-Z or the character `- `` literally''. The plus character makes this a greedy pattern that matches one or more of the preceding tokens and will match as many characters as possible before satisfying the next token. By enclosing the pattern in parentheses we create a capturing group `([0-9a-zA-Z-]+)` which can be referenced in the `toUri` using `$1`.
+
+These request URIs:
+
+-   `example.com/products/Wayfarer-Retro.html`
+
+-   `example.com/products/B00LBFSSYI.html`
+
+-   `example.com/products/Sony-MDRZX100.html`
+
+
+would be mapped to these URIs:
+
+-   `example.com/product/detail.html?productId=Wayfarer-Retro`
+
+-   `example.com/product/detail.html?productId=B00LBFSSYI`
+
+-   `example.com/product/detail.html?productId=Sony-MDRZX100`
+
+
+#### [](#_rotating)Rotating
+
+A request URI such as `forward:/banner/image_*.jpg` will randomly forward the request to `/banner/image_01.jpg`, `/banner/image_02.jpg` or `/banner/image_03.jpg`. A use case for this class is rotating images such as banner ads. The mapping displays a random ad on each page visit.
+
+![Mapping for rotating banner ads example](../../../_images/ADVT-Vurimapping-eg3.png)
+
+In addition to randomized ad distribution, the class allows you to do basic A/B or multivariate testing. For example, create two images: A and B. Configure the mapping to display them randomly. Track visitor click-through rates to find out which image is more effective.
+
+#### [](#_host_based)Host-based
+
+Forward the visitor to a German-language version of the home page when the site is requested with the `.de` country domain. Similarly, forward to a French version when the site is requested with the `.fr` country domain. The matching pattern is in the `host` property. The `toUri` value under the parent node works as a fallback option. If no hostname match is found, such as when the site is requested with `acme.com`, forward to an English version.
+
+![Mapping to forward a visitor to a version of the language based on their country.](../../../_images/ADVT-Vurimapping-eg4.png)
+
+#### [](#_host_based_regex)Host-based regex
+
+Suppose you have the following virtual URI configuration:
+
+```yaml
+class: info.magnolia.virtualuri.mapping.HostBasedRegexpVirtualUriMapping
+fromUri: /premier/(.*)$
+toUri: forward:/404
+mappings:
+  myMapping:
+    host: example.net
+    toUri: redirect:/premier-edge/$1
+```
+
+Then, if you have a page `/premier-edge/child` and issue a request for `https://example.net/premier/child.html`, the mapping configured should redirect the request to `https://example.net/premier-edge/child.html`.
+
+The value `forward:/404` in the first `toURI` property functions as a fallback when `fromUri` matches the regex pattern but `host` does not match the domain defined in the mapping. Hence, if you requested `https://example.org/premier/child.html`, it would forward the request to the `404` page.
+
+## [](#_mappings_in_the_default_installations_of_magnolia)Mappings in the default installations of Magnolia
+
+| Module | Edition | Mapping class | From > To |
+| --- | --- | --- | --- |
+| `ui-admincentral` | DX Core | `MultiSiteRootVirtualUriMapping` | **From**: `/`<br><br>**To**: `redirect:/.magnolia/admincentral` |
+| `ui-admincentral` | CE  | `DefaultVirtualUriMapping` | **From**: `/`<br><br>**To**: `redirect:/.magnolia/admincentral` |
+| `ui-admincentral` | DX Core | `MultiSiteRootVirtualUriMapping` | **From**: `/`<br><br>**To**: `redirect:/travel.html` |
+| `ui-admincentral` | CE  | `DefaultVirtualUriMapping` | **From**: `/`<br><br>**To**: `redirect:/travel.html` |
+| `rssaggregator` | DX Core, CE | `RegexpVirtualUriMapping` | **From**: `/rssFeeds/(.*)`<br><br>**To**: `redirect:/rss/?feedPath=/$1` |
+| `rssaggregator` | DX Core, CE | `RegexpVirtualUriMapping` | **From**: `/planetFeeds/(.*)`<br><br>**To**: `redirect:/rss/?feedPath=/$1&generatorName=planet` |
+| `rssaggregator` | DX Core, CE | `RegexpVirtualUriMapping` | **From**: `/categoryFeeds/(**)/(.**)`<br><br>**To**: `redirect:/rss/?generatorName=category&categories=$1&siteRoot=/$2` |
+| `tours` | CE  | `RegexpVirtualUriMapping` | **From**: `/tours(.*).html`<br><br>**To**: `forward:/travel/tour?tour=$1` |
+| `tours` | DX Core | `MultiSiteRegexpVirtualUriMapping` | **From**: `/tours(.*).html` *travel*<br><br>**To**: `forward:/tour?tour=$1` |
+| `tours` | DX Core | `MultiSiteRegexpVirtualUriMapping` | **From**: `/tours(.*).html` *sportstation*<br><br>**To**: `forward:/tour?tour=$1` |
+
+Related topics
+
+-   [Virtual URI module](../../../Modules/List-of-modules/Virtual-URI-module/)
+
+-   [URI to repository mapping](../URI-to-repository-mapping/)
+
+-   [URI mapping](../)

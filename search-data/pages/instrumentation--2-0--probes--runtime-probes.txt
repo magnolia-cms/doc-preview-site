@@ -1,0 +1,117 @@
+---
+title: "Run time probes"
+url: https://docs.magnolia-cms.com/instrumentation/2.0/probes/runtime-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > Run time probes
+---
+
+# Run time probes
+
+Run time probes collect to two things: when the Java Virtual Machine was started how long it has been running. In addition, information about the JVM is collected and saved as labels.
+
+Run time probes can measure:
+
+-   when the JVM running Magnolia was started
+
+-   how long (*in milliseconds*) the JVM has been running
+
+
+## [](#_collecting_run_time_metrics)Collecting run time metrics
+
+You have two options for collecting run time metrics:
+
+Use RuntimeProbe (`info.magnolia.services.instrumentation.probes.environment.RuntimeProbe`) to collect run time metrics. RuntimeProbe will create separate metrics for each system usage characteristic. OSProbe is configured as an instrumentation module probe and the metrics will be measured when Prometheus collects all metrics from Magnolia.
+
+Use RuntimeProbeCommand (`info.magnolia.services.instrumentation.probes.commands.RuntimeProbeCommand`) to collect run time metrics. RuntimeProbeCommand is a Magnolia command that collects the configured metrics when executed.
+
+Executions of RuntimeProbeCommand can be scheduled with the [Scheduler module](../../../../product-docs/7.0/Modules/List-of-modules/Scheduler-module/). You can also execute the OSProbeCommand through the command REST endpoint, see the [rest:ROOT:index.adoc](#rest:ROOT:index.adoc).
+
+RuntimeProbeCommand will store its measurements as a single metric with the metric labels identifying what was measured.
+
+Use [RuntimeProbe](#_runtimeprobe) when
+
+-   you want separate metrics for each run time metric
+
+
+Use [RuntimeProbeCommand](#_runtimeprobecommand) when
+
+-   you want to measure the run time metrics more frequently or less frequently than the collection of metrics from Magnolia
+
+-   you want a single metric for all measurements
+
+-   you want to invoke the collection of run time metrics remotely
+
+-   you want one, but not both, run time metrics
+
+
+* * *
+
+## [](#_runtimeprobe)RuntimeProbe
+
+The RuntimeProbe records when the JVM was started and how long it has been running.
+
+RuntimeProbe is an instrumentation module probe and is configured in the instrumentation module.
+
+### [](#_configuration_properties)Configuration properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 60%;"> <col style="width: 10%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th><th class="tableblock halign-left valign-top">Required</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Should be <code>info.magnolia.services.instrumentation.probes.commands.OSProbeCommand</code>.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The probe name.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The probe name is not used as the metric name</td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>probeName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The metric name.</p></div><div class="listingblock"><div class="title">Default</div><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs">info.magnolia.services.instrumentation.probes.rendering.RenderingLogger</code></pre></div></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>probeDescription</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The metric description.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>metric</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Specifies the metric to be collected, must be one of:</p></div><div class="ulist"><ul><li><p><code>StartTime</code></p></li><li><p><code>Uptime</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr></tbody></table></div>
+
+### [](#_metrics)Metrics
+
+| Metric | Description |
+| --- | --- |
+| `JvmStartTime` | When the JVM was started as a Unix epoch time in milliseconds. |
+| `JvmUptime` | The number of milliseconds the JVM has been running. |
+
+### [](#_labels)Labels
+
+| Label | Metric | Description |
+| --- | --- | --- |
+| `JavaName` | `<probename>` | The name representing the running Java virtual machine. The returned name string can be any arbitrary string and a Java virtual machine implementation can choose to embed platform-specific useful information in the returned name string. Each running virtual machine could have a different name. |
+| `JavaSpecName` | `<probename>` | The Java virtual machine specification name. |
+| `JavaSpecVersion` | `<probename>` | The Java virtual machine specification version. |
+| `JavaSpecVendor` | `<probename>` | The Java virtual machine specification vendor. |
+| `VmName` | `<probename>` | The Java virtual machine implementation name. |
+| `VmVersion` | `<probename>` | The Java virtual machine implementation version. |
+| `VmVendor` | `<probename>` | The Java virtual machine implementation vendor. |
+
+### [](#_example)Example
+
+![RuntimeProbe sample config](../../_images/probes/RuntimeProbe-sample-config.jpg)
+
+## [](#_runtimeprobecommand)RuntimeProbeCommand
+
+The RuntimeProbeCommand records when the JVM started or how long it has been running, along with details about the Java Virtual Machine running Magnolia.
+
+RuntimeProbeCommand can collect two metrics:
+
+-   `StartTime` - when the JVM was started in milliseconds
+
+-   `Uptime` - how long the JVM has been running in milliseconds
+
+
+Along with the measured metric, RuntimeProbeCommand adds the details about the JVM as labels.
+
+Unlike other probes, RuntimeProbeCommand is a Magnolia command. RuntimeProbeCommand only measures its metrics when executed as a command. You will have to arrange for the execution of RuntimeProbeCommand in order to measure its metrics, say with the Scheduler module or the REST command endpoint.
+
+The RuntimeProbeCommand properties metric, probeName and probeDescription can be specified in the command parameters passed during execution and will override the configured values of the properties.
+
+> **Tip:** See Commands for more on Magnolia commands.
+
+### [](#_configuration_properties_2)Configuration properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 60%;"> <col style="width: 10%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th><th class="tableblock halign-left valign-top">Required</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Should be <code>info.magnolia.services.instrumentation.probes.commands.RuntimeProbeCommand</code>.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The command name.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The command name is not used as the metric name.</td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>probeName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The metric name.</p></div><div class="listingblock"><div class="title">Default</div><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs">info.magnolia.services.instrumentation.probes.rendering.RenderingLogger</code></pre></div></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>probeDescription</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The metric description.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>metric</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Specifies the metric to be collected, must be one of:</p></div><div class="ulist"><ul><li><p><code>StartTime</code></p></li><li><p><code>Uptime</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr></tbody></table></div>
+
+### [](#_labels_2)Labels
+
+| Label | Metric | Description |
+| --- | --- | --- |
+| `metric` | `<probename>` | The specified metric, will be either `StartTime` or `Uptime`. |
+| `JavaName` | `<probename>` | The name representing the running Java virtual machine. The returned name string can be any arbitrary string and a Java virtual machine implementation can choose to embed platform-specific useful information in the returned name string. Each running virtual machine could have a different name. |
+| `JavaSpecName` | `<probename>` | The Java virtual machine specification name. |
+| `JavaSpecVersion` | `<probename>` | The Java virtual machine specification version. |
+| `JavaSpecVendor` | `<probename>` | The Java virtual machine specification vendor. |
+| `VmName` | `<probename>` | The Java virtual machine implementation name. |
+| `VmVersion` | `<probename>` | The Java virtual machine implementation version. |
+| `VmVendor` | `<probename>` | The Java virtual machine implementation vendor. |

@@ -1,0 +1,55 @@
+---
+title: "JCR observation definition"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/App-configuration/Data-source-definition/JCR-data-source/JCR-observation-definition/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > App configuration > Data source definition > JCR data source > JCR observation definition
+---
+
+# JCR observation definition
+
+The JCR observation definition lets you configure an automatic observation mechanism in case of performance issues. This is particularly useful with apps while using a browser subapp with a grid. In particular, the UI is notified of any UI changes observed by the [observation module](../../../../../Modules/List-of-modules/Observation-module/). You can configure the interval or waiting time for events to accumulate between sending notifications to the UI.
+
+> **Note:** The JCR observation delay is passed to the JCR observation module. It determines the interval at which events are accumulated before being sent to the UI.
+
+## [](#_example_definitions)Example definitions
+
+-   Example
+
+-   Disabled
+
+
+```yml
+datasource:
+  $type: jcrDatasource
+  workspace: website
+  jcrObservation:
+    delay: 2000
+```
+
+```yml
+datasource:
+  $type: jcrDatasource
+  workspace: website
+  jcrObservation:
+    enabled: false
+```
+
+## [](#_list_of_properties)List of properties
+
+| Property | Description |
+| --- | --- |
+| `enabled` | **optional**, *default is `true`*<br><br>The automatic observation could be disabled by setting this property to `false`. Note that browser subapp won’t be refreshed automatically for changes made by other users. |
+| `delay` | **optional**, *default is `500`*<br><br>Minimum delay in milliseconds after which a browser subapp is refreshed when an event occurs.<br><br>  <br><br>***Example***<br><br>Suppose there are 3 JCR events every second, and the delay is set to 5 seconds. This means that every 5 seconds, the UI receives one event that contains data from the 15 previously accumulated JCR events. |
+
+## [](#_disabling_jcr_observation)Disabling JCR observation
+
+Enabling automatic observation comes with trade-offs. With default delay limits set, problems with the grid responsiveness may occur if there are many items in the workspace or lots of actions are performed in a short period of time.
+
+### [](#_how_do_i_improve_grid_responsiveness)How do I improve grid responsiveness?
+
+Raising `delay` could help with browser subapp responsiveness. Effective values for these delays differ from instance to instance. Disabling this observation is the ultimate solution for the grid to be operable, whatever is happening in the background.
+
+Reducing the frequency of observation events received in the UI decreases the number of updates to the grid, making it more responsive. Keep in mind, however, that the grid will be less up-to-date with changes made by other users.
+
+> **Caution:** Take care when disabling jcrObservation. You should only disable the property for a particular app when experiencing performance problems with its browser subapp.

@@ -1,0 +1,71 @@
+---
+title: "Tools module"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Tools-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Tools module
+---
+
+# Tools module
+
+[Content management](../../../use-cases/content-management/) Bundled: DX Core
+
+|     |     |
+| --- | --- |
+| Download | [magnolia-tools-3.0.0.jar](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/tools/magnolia-tools/1.9.1/magnolia-tools-1.9.1.jar) |
+| Edition | DX Core |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLTOOLS](https://magnolia-cms.atlassian.net/browse/MGNLTOOLs) |
+| Maven site | [Tools](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Ftools%2Fmagnolia-tools%2F3.0.0) |
+| Latest | 3.0.0 |
+
+The Tools module provides an app and some commands useful for manipulating repository content. The app, known as Repository Tools, can be found under the Tools menu of admincentral.
+
+> **Note:** = Module artifacts have changedPlease note that the artifact IDs (Maven groupId and artifactId) have changed since Magnolia 5.5.If you have custom Java code relying on this module, you need to install a compatibility module too.Check Gitlab repo for the new module structure.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.tools</groupId>
+  <artifactId>magnolia-tools</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Warning:** Note the changes in groupId and artifactId since the 1.9 release.
+
+### [](#_compatibility_module)Compatibility module
+
+We have been gradually removing the old Content API from our modules since Magnolia 5.6. If you have custom code relying on classes from the old tools module then you must do one of two things:
+
+-   Update your code for the [new version of the tools module](https://magnolia-cms.atlassian.net/browse/MGNLTOOLS-85).
+
+-   Or you can use the `magnolia-tools-compatibility` module together with the `magnolia-core-compatibility` module.
+
+
+**With Maven:**
+
+Add the following snippet to your POM file:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.tools</groupId>
+  <artifactId>magnolia-tools-compatibility</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+See [Repository Tools app](../../../Apps/List-of-apps/Repository-Tools-app/).

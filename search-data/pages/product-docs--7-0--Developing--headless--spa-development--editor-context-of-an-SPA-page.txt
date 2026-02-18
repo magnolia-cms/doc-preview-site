@@ -1,0 +1,108 @@
+---
+title: "Editor context of an SPA page"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/headless/spa-development/editor-context-of-an-SPA-page/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Headless docs > SPA development > Editor context of an SPA page
+---
+
+# Editor context of an SPA page
+
+The SPA front-end helper libraries provide APIs through which you can stay informed about the status of the current editor context of an SPA page. The status can be that your SPA page is running in:
+
+-   A developer mode.
+
+-   The page editor of the Pages app.
+
+-   The preview mode of the page editor.
+
+
+Being aware of the current editor context can be useful if you need to hit different URLs for content, do rendering or other things conditionally. The status information is retrievable in all frameworks integrating SPA development in Magnolia: React, Angular, and Vue.
+
+## [](#_magnolia_context_object)Magnolia Context object
+
+### [](#_front_end_sdk_v1)Front-end SDK v1
+
+Version `1.3.0` of the SPA front-end helper libraries introduces the `magnoliaContext` object, which standardizes usage of the helper libraries.
+
+> **Tip:** You can use absolute and relative paths for the requestUrl to build the Magnolia Context object.
+
+### [](#_front_end_sdk_v2)Front-end SDK v2
+
+In SDK v2, `magnoliaContext`:
+
+-   Replaces the previous iframe-based detection (`inEditor`, `inEditorAsync`).
+
+-   Is added to the `editable-page`. See the following Angular example.
+
+    ```html
+    <editable-page
+        [content]="content"
+        [templateAnnotations]="templateAnnotations"
+        [magnoliaContext]="magnoliaContext"
+        [config]="magnoliaConfig"
+    ></editable-page>
+    ```
+
+
+> **Note:** There are additional breaking changes in SDK v2.
+
+## [](#_editorpreview_check)Editor/preview check
+
+### [](#_front_end_sdk_v1_2)Front-end SDK v1
+
+To find out whether your SPA page is running in the page editor or in its page preview mode, inject:
+
+-   `EditorContextService` from the `@magnolia/angular-editor`,
+
+-   `EditorContextHelper` from the `@magnolia/react-editor`,
+
+-   `EditorContextHelper` from the `@magnolia/vue-editor`,
+
+
+depending on which framework you are using, Angular, ReactJS or Vue. respectively.
+
+> **Note:** global.mgnlInPageEditor is deprecated and not necessary.
+
+Get the context object by calling:
+
+const magnoliaContext = EditorContextHelper.getMagnoliaContext(fullURL, pageRootPath, languages);
+
+You can then use the following properties to get the status:
+
+-   `magnoliaContext.isMagnolia`
+
+-   `magnoliaContext.isMagnoliaEdit`
+
+-   `magnoliaContext.isMagnoliaPreview`
+
+
+> **Note:** In the EditorContextHelper/EditorContextService context, the inEditor() functions will return false for Server-Side Rendering (SSR).
+
+### [](#_front_end_sdk_v2_2)Front-end SDK v2
+
+In SDK v2, the only thing you need to inject is:
+
+-   `EditorContextService` from the `@magnolia/frontend-helpers-page`
+
+
+## [](#_developer_mode_check_angular)Developer mode check (Angular)
+
+In the Angular framework, the status of an SPA page being in the developer mode can be checked by calling the `isDevMode()` function, which is part of the `@angular/core` library.
+
+## [](#_developer_mode_check_reactjs)Developer mode check (ReactJS)
+
+To retrieve the status of the developer mode in ReactJS, make sure that you import `{EditorContext}` from the `@magnolia/react-editor`, and that the class of `YourComponent` extends the `React.Component`.
+
+After assigning `static contextType = EditorContext` you can call the following functions to get the status:
+
+-   `this.context.isDevMode`
+
+
+Related topics
+
+Some topics below may take you to a different part of the docs site and away from the current **product-docs** section.
+
+-   [Single-page applications](../../../../Features/Single-page-applications/)
+
+-   [Pages module](../../../../Modules/List-of-modules/Pages-module/)

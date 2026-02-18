@@ -1,0 +1,131 @@
+---
+title: "Workspaces"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Architecture/Workspaces/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Workspaces
+---
+
+# Workspaces
+
+Magnolia stores content in the `magnolia` repository. The [repository](../Content-storage-and-structure/) is further divided into workspaces.
+
+## [](#_list_of_workspaces)List of workspaces
+
+Workspaces in the `magnolia` repository:
+
+In Magnolia we sometimes refer to a workspace as a `repository` for historical reasons. But it really is a workspace.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 25%;"> <col style="width: 25%;"> <col style="width: 25%;"> <col style="width: 25%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Workspace</th><th class="tableblock halign-left valign-top">What it contains</th><th class="tableblock halign-left valign-top">How to view it</th><th class="tableblock halign-left valign-top">Created by</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>category</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Categories assigned to content.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Categories app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Categorization module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>config</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Configuration for Magnolia and all modules.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Config app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Magnolia</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>contacts</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Sample contacts used in the Contacts app.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Contacts app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Contacts module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>dam</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Digital asset management system storage for images and video.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Assets app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Digital Asset Management module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>forum</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Page comments and forum posts.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Forums app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Forum module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>googleSitemaps</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Sitemap data</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Google Sitemap app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Google Sitemap module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>imaging</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Dynamically created images used in teasers.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">JCR Browser</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Imaging module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>keystore</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Passwords managed by the Passwords manager module.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">JCR browser</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Password manager module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>marketing-tags</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Marketing tags – snippets of code inserted on Web pages.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Marketing Tags app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Marketing Tags module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>messages</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Messages such as publication request approvals.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Tasks app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">AdminCentral module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnlSystem</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>System information for Magnolia internal use. Among other things, it’s used in the <a href="../Publishing/#_rollback" class="xref page">rollback procedure</a> on public instances.</p></div></div></td><td class="tableblock halign-left valign-top"></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnlVersion</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Versioning information for Magnolia internal use. This workspace keeps track of various versions; see <a href="../Publishing/#_versioning" class="xref page">Versioning</a> for more details.</p></div></div></td><td class="tableblock halign-left valign-top"></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>profiles</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Usage metrics acknowledgement (<code>hasAckedPrivacyNotice</code>) and completed intro (Magnolia app launcher tour, <code>completedIntros</code>) status for <strong>all</strong> users.</p></div><div class="paragraph"><p>User profile information for <a href="#magnolia-sso:ROOT:index.adoc" class="xref unresolved">SSO users</a>:</p></div><div class="ulist"><ul><li><p>Favorite apps</p></li><li><p>Language</p></li><li><p>Last login</p></li><li><p>Previous login</p></li><li><p>Timezone</p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">JCR Browser</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">AdminCentral module</p><p class="tableblock">SSO module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>resources</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>CSS files, JavaScript files</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Resources app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Resources module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>rss</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>RSS feeds</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Feeds app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">RSS Aggregator module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>scripts</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Groovy scripts</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Groovy app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Groovy module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>stories</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Sample blogposts used in the Stories app.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Stories app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Stories app</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>tags</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Content tags – keywords or terms assigned to an item of content.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Tags app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Content Tags module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>tasks</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><a href="../../../Features/Tasks/" class="xref page">Tasks</a></p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Tasks app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Task Management module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>templates</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>(typically nothing, legacy workspace for in-place templates)</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">JCR Browser</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">In-place Templating module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>tours</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Tours of the Travel Demo.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Tours app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Tours module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>users</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>System, admin and public users.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Security app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Magnolia</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>userroles</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>User roles and ACLs.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Security app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Magnolia</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>usergroups</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>User groups.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Security app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Magnolia</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>userranking</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>User search metrics for ranking.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Search results</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">User Result Ranker module</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>visitors</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Visitor information for GDPR compliance.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Visitors app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Magnolia</p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>website</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Web pages, areas and components.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock">Pages app</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">Magnolia</p></td></tr></tbody></table></div>
+
+## [](#_adding_a_custom_workspace)Adding a custom workspace
+
+### [](#_with_magnolia_content_types)With Magnolia Content Types
+
+By utilizing the Magnolia [Content Types module](#content-types:ROOT:index.adoc) you can define custom JCR content types and workspaces within light modules.
+
+> **Tip:** Defining content types within light modules can be accomplished on a running Magnolia system without redeploying the WAR file of your Magnolia instances and without restarting the instance or a module. This makes it a perfect approach if you have a Magnolia Cloud subscription package.
+
+In just one YAML file you can define a JCR workspace, a node type and namespaces.
+
+Example
+
+```yaml
+datasource:
+  workspace: tourguides (1)
+  namespaces:
+    mt: https://www.magnolia-travel.com/jcr/1.0/mt
+  autoCreate: true (1)
+
+model:
+  nodeType: mt:tourGuide
+  properties:
+    - name: birthday
+      type: Date
+    - name: gender
+    - name: shortBio
+      type: richText
+    - name: contact
+      type: contactData
+# .-
+  subModels:
+    - name: contactData
+      properties:
+        - name: email
+        - name: phoneNumber
+        - name: addresses
+          type: address
+          multiple: true
+    - name: address
+      properties:
+        - name: street
+        - name: city
+        - name: postalCode
+        - name: country
+```
+
+|     |     |
+| --- | --- |
+| **1** | If there are no workspaces registered by the given name when the definition item is loaded and the `autoCreate` property is set to `true`, the system registers the workspace. For more details, see [Defining JCR node types and workspaces](../../../Developing/Development-how-tos/How-to-define-JCR-node-types-and-workspaces/). |
+
+### [](#_with_a_magnolia_maven_module_descriptor)With a Magnolia Maven module descriptor
+
+To add your own workspace:
+
+1.  Create a [module descriptor](../../../Modules/#_module_descriptor).
+
+2.  Add a `repositories` section, a `workspaces` section, and register your workspace inside it.
+
+3.  Optional: To register custom node types, add a `nodeTypeFile` section and provide a relative path to the XML file that defines the node types.
+
+
+Example
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>contacts</name>
+  <displayName>Contacts App</displayName>
+  <description>Contacts App</description>
+  <version>${project.version}</version>
+
+  <dependencies>
+    <dependency>
+      <name>ui-admincentral</name>
+      <version>5.1/*</version>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>contacts</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-contacts-nodetypes.xml</nodeTypeFile>
+    </repository>
+  </repositories>
+</module>
+```
+
+## [](#_naming_a_workspace)Naming a workspace
+
+Magnolia uses a defined workspace name also for creating a back-end database table, which means that you must follow table naming rules for your database.
+
+In [H2](http://h2database.com), the default JCR persistency layer in Magnolia `5.5+`, the name (non-quoted):
+
+-   Must begin with a character from the A-Z range or with an undescore character.
+
+    In case of the [Derby](https://wiki.magnolia-cms.com/db.apache.org/derby/) database, which was the default JCR persistency layer before the release of Magnolia 5.5, the ordinary identifier (i.e., the non-quoted name).
+
+-   Must begin with a letter and, contain only letters, underscore characters (`_`), and digits.
+
+-   The permitted letters and digits include all Unicode letters and digits, but Derby does not attempt to ensure that the characters in identifiers are valid in the database’s locale.
+
+
+Further rsources
+
+-   [SQL Grammar: Name](http://www.h2database.com/html/grammar.html#name) (H2 site)
+
+-   [Rules for SQL identifiers](https://db.apache.org/derby/docs/10.13/ref/crefsqlj1003454.html) (Derby site)

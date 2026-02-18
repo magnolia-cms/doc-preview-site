@@ -1,0 +1,130 @@
+---
+title: "Integration modules"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Integration/Integration-modules/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Integration modules
+---
+
+# Integration modules
+
+Magnolia is extremely flexible and built for easy integration. You can connect Magnolia to multiple third-party systems, tools and data sources.
+
+This page summarizes integration solutions provided out-of-the-box by Magnolia and some of our partners, and [Integration points](../Integration-points/) that you can use for your own customizations.
+
+## [](#_analytics)Analytics
+
+### [](#_analytics_integration_framework)Analytics integration framework
+
+Measuring and improving the performance of your website is a universal requirement. The Analytics integration framework allows you to connect third-party web analytics tools such as Adobe Analytics, Google Analytics and Matomo (Piwik) to Magnolia.
+
+The typical scenario for using the Analytics integration framework is:
+
+-   Track metrics such as visitors and sessions on your Magnolia site using the third-party tool of your choice.
+
+-   The third-party tool tracks events on the site and generates analytics data.
+
+-   Use the Analytics integration framework to fetch the analytics reporting data collected by the third-party tool.
+
+-   Display the data in user-friendly charts directly in the Magnolia UI.
+
+-   With the Analytics integration framework, marketers and authors can make data-driven decisions about their content without switching tools.
+
+
+### [](#_marketing_tags)Marketing Tags
+
+[Marketing Tags app](../../../Apps/List-of-apps/Marketing-Tags-app/) is a central place to manage marketing tags such as Web analytics, third-party content and advertising network code snippets. The app allows you to create tags and place them on pages. Tags typically collect analytics information such as how many visitors view the page and how long they stay. Tags can also integrate third-party content such as social media or insert ad campaigns. You can use tags to learn more about visitors or provide content.
+
+> **Note:** Tags work with Magnolia’s data privacy and cookie consent systems to only include the JS tags when the website visitor has given their consent.
+
+## [](#_commerce)Commerce
+
+### [](#_commerce_integration_framework)Commerce integration framework
+
+Unresolved include directive in modules/ROOT/pages/Developing/Integration/Integration-modules.adoc - include::ecommerce:ROOT:partial$c\_commerce-connector-pack-intro.adoc\[\]
+
+## [](#_digital_asset_management)Digital Asset Management
+
+### [](#_dam_integration_framework)DAM integration framework
+
+The DAM integration framework enables you to seamlessly integrate with your external DAM or storage system. This means you can access and use all your assets centrally from Magnolia regardless of where they are stored, eliminating the need for switching tools, costly and time-consuming asset migration or changing processes.
+
+The DAM integration framework caters to enterprise customers who have thousands of assets to manage, including videos, PDFs and images. The pack provides out-of-the-box connectors to:
+
+-   Amazon Simple Storage Service (S3)
+
+-   Bynder
+
+
+## [](#_marketing)Marketing
+
+### [](#_marketing_automation_integration_framework)Marketing Automation integration framework
+
+The Marketing Automation integration framework offers web-to-lead functionality through seamless integration with your third-party marketing software solution. Magnolia provides out-of-the-box connectors to:
+
+-   Adobe Marketo
+
+-   Salesforce Sales Cloud
+
+
+> **Tip:** Use your forms or form fields crafted your external tools directly in Magnolia and efficiently collect data about your prospects and customers.
+
+## [](#_authentication)Authentication
+
+### [](#_cas_module)CAS module
+
+[CAS module](../../../Modules/List-of-modules/CAS-module/) enables [Central Authentication Service](https://en.wikipedia.org/wiki/Central_Authentication_Service) (CAS) in Magnolia. CAS is a single sign-on (SSO) Web protocol that permits a user to log in once to a system and then automatically gain access to all related systems to which they have been granted permission as per their credentials. This avoids the need to log into each system individually. The Magnolia CAS module handles authentication only. When a user logs into CAS, the system authenticates their identity to participating services because the user has been authenticated to CAS.
+
+### [](#_ldap_module)LDAP module
+
+[LDAP Connector module](../../../Modules/List-of-modules/LDAP-Connector-module/) is a [JAAS](http://java.sun.com/products/jaas/) login module that connects to any LDAP v3 directory service. The LDAP Connector is used in intranet environments where an enterprise user management infrastructure already exists. With JAAS you can meet single sign-on requirements or connect to legacy LDAP servers.
+
+### [](#_sso_module)SSO module
+
+Unresolved include directive in modules/ROOT/pages/Developing/Integration/Integration-modules.adoc - include::magnolia-sso:ROOT:partial$c\_module-overview.adoc\[\]
+
+## [](#_cache)Cache
+
+### [](#_ehcache)Ehcache
+
+Magnolia uses [Ehcache](http://ehcache.org/) for back-end cache functionality by default. This is provided by the [Ehcache 3 module](../../../Modules/List-of-modules/Cache-modules/Ehcache-3-module/). Ehcache is a robust, proven and full-featured cache product which has made it the most widely used Java cache.
+
+### [](#_memcached)Memcached
+
+[Memcached module](../../../Modules/List-of-modules/Cache-modules/Memcached-implementation/) adds the advantages of a distributed cache. [Memcached](http://memcached.org/) is a high-performance, distributed memory object caching system that allows you to share cache items between multiple Magnolia instances. Additional benefits include persistence of cached items after the restart of a Magnolia instance and running memcached servers on any server in the network, conserving server memory.
+
+### [](#_sitemesh)SiteMesh
+
+[Advanced Dynamic Page Caching module](../../../Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-Dynamic-Page-Caching/) uses SiteMesh 3 for dynamic page caching. The module allows you to cache static content on an otherwise dynamic page. You can mark which areas and components are dynamic. Magnolia will cache all static content and only renders the dynamic components per request. You can also set a different time-to-live on the dynamic components.
+
+## [](#_frameworks)Frameworks
+
+### [](#_sitemesh_2)SiteMesh
+
+[SiteMesh module](../../../Modules/List-of-modules/High-performance-caching-modules/SiteMesh-module/) integrates the SiteMesh 3 decoration and Web application integration framework with Magnolia.
+
+### [](#_rabbitmq)RabbitMQ
+
+The [magnolia-rabbitmq:ROOT:index.adoc](#magnolia-rabbitmq:ROOT:index.adoc) provides an alternative way of publishing content and synchronizing instances in Magnolia. Magnolia RabbitMQ modules are suitable for environments consisting of more than five public instances and environments that need to synchronize with other environments.
+
+## [](#_search)Search
+
+### [](#_solr_module)Solr module
+
+The [Solr module](../../../Modules/List-of-modules/Solr-module/) uses the [Apache Solr](http://solr.apache.org/) search platform to index and crawl Magnolia content. Solr is a standalone enterprise search server with a REST-like API. Solr uses the Lucene library for full-text indexing and provides faceted search, distributed search and index replication. You can use Solr to index content in an event-based or action-based fashion. The bundle consists of two modules: Content Indexer and Search Provider.
+
+## [](#_language)Language
+
+### [](#_content_translation)Content translation
+
+The [Content Translation Support module](../../../Modules/List-of-modules/Content-Translation-Support-module/) allows you to export and import page content in translation-friendly [XLIFF](http://en.wikipedia.org/wiki/Xliff), CSV and Excel formats. You can send a file to a translator and import the translated content back. The file includes context information and a link back to the page to make translation easier. Export formats are pluggable and can be extended to support a custom format. The module comes with a [Content Translation app](../../../Apps/List-of-apps/Content-Translation-app/).
+
+### [](#_extended_content_translation)Extended content translation
+
+The [Content Translation Extended module](../../../../../content-translation-support-ext/) module bundle consists of five modules that extend the functionality of the [Content Translation Support module](../../../Modules/List-of-modules/Content-Translation-Support-module/).
+
+Further reading
+
+-   [Integration](../../../Features/Integration/)
+
+-   [Integration points](../Integration-points/)

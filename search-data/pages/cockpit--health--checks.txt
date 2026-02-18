@@ -1,0 +1,745 @@
+---
+title: "Health Checks"
+url: https://docs.magnolia-cms.com/cockpit/health/checks/
+category: DX Cloud
+version: cloud
+---
+
+# Health Checks
+
+This file contains detailed information about individual health checks.
+
+## [](#_cdn_availability)cdn\_availability
+
+**How often your website is actually working for visitors**
+
+This checks if your website is up and running properly. We look at how many visitors got error messages (like "Service Unavailable") versus how many could access your site normally in the past hour.
+
+-   **What we’re measuring**: Percentage of successful visits
+
+-   **Target**: At least 99.8% uptime
+
+-   **Why it matters**: If this drops, it means visitors can’t reach your website
+
+
+**What you can do**: Check your DX Cloud instance status and deployment logs. If issues persist, scale up your instance resources or contact Magnolia support. Review recent deployments that might have introduced instability.
+
+## [](#_cdn_round_trip)cdn\_round\_trip
+
+**How fast visitors can connect to your website**
+
+This measures the time it takes for a visitor’s browser to send a request to your server and get a response back - like measuring how long it takes to knock on a door and hear "come in."
+
+-   **What we’re measuring**: Average connection time
+
+-   **Target**: Under 200 milliseconds
+
+-   **Why it matters**: Slower connections frustrate visitors and hurt your search rankings
+
+
+**What you can do**: Verify your CDN configuration is properly distributing traffic to edge locations. Check if your DX Cloud region is optimal for your audience. Consider enabling additional CDN endpoints closer to your users.
+
+## [](#_cdn_response_time_average)cdn\_response\_time\_average
+
+**How long it typically takes your pages to load**
+
+This tracks how long your server takes to process requests and send back web pages. Think of it as how long visitors wait after clicking a link before seeing your content.
+
+-   **What we’re measuring**: Average time to load pages
+
+-   **Target**: Under 1 second
+
+-   **Why it matters**: Slow pages cause visitors to leave and hurt conversions
+
+
+**What you can do**: Optimize your Magnolia templates and components for performance. Review database queries in your custom modules. Enable Magnolia’s built-in caching mechanisms and consider upgrading your DX Cloud instance tier.
+
+## [](#_cdn_response_time_95th_percentile)cdn\_response\_time\_95th\_percentile
+
+**How long your slowest pages take to load**
+
+While most of your pages might load quickly, this catches the slowest 5% that could be frustrating some visitors. It’s like finding the longest wait times at your busiest moments.
+
+-   **What we’re measuring**: 95% of pages load within this time
+
+-   **Target**: Under 1 second even for the slowest pages
+
+-   **Why it matters**: Even if most pages are fast, slow pages hurt user experience
+
+
+**What you can do**: Identify heavy pages using Magnolia’s performance monitoring. Optimize complex templates, reduce component nesting, and implement lazy loading for images and content blocks. Review any custom integrations that might be slow.
+
+## [](#_cdn_service_error_rate)cdn\_service\_error\_rate
+
+**How often your website breaks or crashes**
+
+This counts server errors (like crashes or database failures) that prevent visitors from seeing your content. It’s like tracking how often your store is closed when customers try to visit.
+
+-   **What we’re measuring**: Percentage of visits that hit server errors
+
+-   **Target**: Less than 1% of visits
+
+-   **Why it matters**: High error rates mean lost customers and damaged reputation
+
+
+**What you can do**: Check Magnolia’s error logs and application monitoring. Review recent content changes or module deployments. Ensure your DX Cloud instance has adequate memory and CPU resources. Test integrations with external systems.
+
+## [](#_cdn_request_error_rate)cdn\_request\_error\_rate
+
+**How often things go wrong for visitors**
+
+This includes both server problems and user errors (like broken links or missing pages). It gives you the full picture of how many visitors encounter problems.
+
+-   **What we’re measuring**: Percentage of all failed requests
+
+-   **Target**: Less than 2% of all requests
+
+-   **Why it matters**: Any errors hurt user experience and your site’s credibility
+
+
+**What you can do**: Audit your content for broken internal links using Magnolia’s link checker. Review URL patterns and redirects. Check that all assets (images, CSS, JS) are properly published and accessible. Fix any 404 errors from outdated content.
+
+## [](#_cdn_hit_ratio)cdn\_hit\_ratio
+
+**How well your speed optimization is working**
+
+When visitors request the same content, a good website serves it from a fast cache instead of recreating it each time. This measures how often we can serve that cached content.
+
+-   **What we’re measuring**: Percentage of requests served from cache
+
+-   **Target**: At least 80% from cache
+
+-   **Why it matters**: Better caching means faster loading and lower server costs
+
+
+**What you can do**: Configure appropriate cache headers in your Magnolia templates. Enable page caching for static content. Review your cache invalidation strategy; ensure content updates properly clear relevant caches. Consider implementing Magnolia’s REST delivery for better caching.
+
+## [](#_cdn_cache_coverage)cdn\_cache\_coverage
+
+**How much of your content can be cached for speed**
+
+This shows what percentage of your website traffic could potentially be served from cache to make it faster. Higher coverage means more opportunities for speed improvements.
+
+-   **What we’re measuring**: Percentage of requests that could use caching
+
+-   **Target**: At least 50% of traffic
+
+-   **Why it matters**: More cacheable content means better performance potential
+
+
+**What you can do**: Review your site architecture to identify dynamic content that could be made cacheable. Implement Magnolia’s fragment caching for partially dynamic pages. Separate user-specific content from cacheable page elements. Consider using Magnolia’s REST delivery layer for better cache coverage.
+
+## [](#_ingress_availability)ingress\_availability
+
+**How often your core application is reachable**
+
+This monitors whether your Magnolia DX Cloud instance is responding to requests at the ingress level, before CDN processing. It’s like checking if your server is answering the phone when called directly.
+
+-   **What we’re measuring**: Percentage of successful direct connections to your instance
+
+-   **Target**: At least 99.8% uptime
+
+-   **Why it matters**: If this fails, your entire website goes down regardless of CDN status
+
+
+**What you can do**: Check your DX Cloud instance health in the management console. Verify your Kubernetes ingress configuration is correct. Review pod status and restart unhealthy containers. Scale your instance if resource limits are being hit.
+
+## [](#_ingress_round_trip)ingress\_round\_trip
+
+**How quickly your server infrastructure responds**
+
+This measures the direct connection time to your Magnolia instance, bypassing CDN. It shows the raw performance of your DX Cloud infrastructure and network connectivity.
+
+-   **What we’re measuring**: Direct connection time to your instance
+
+-   **Target**: Under 200 milliseconds
+
+-   **Why it matters**: High ingress latency affects all subsequent processing and user experience
+
+
+**What you can do**: Check your DX Cloud region selection, ensure it’s geographically close to your users. Review network configuration and firewall rules. Consider upgrading your instance size for better network performance. Monitor for network congestion during peak times.
+
+## [](#_ingress_response_time_average)ingress\_response\_time\_average
+
+**How long your Magnolia instance takes to process requests**
+
+This tracks the time your DX Cloud instance needs to generate responses, measured at the ingress before any caching or CDN optimization.
+
+-   **What we’re measuring**: Average processing time at the instance level
+
+-   **Target**: Under 1 second
+
+-   **Why it matters**: Slow ingress response times compound with CDN latency and affect overall performance
+
+
+**What you can do**: Profile your Magnolia application performance using JVM monitoring tools. Optimize database queries and review slow-performing templates. Check Java heap and garbage collection settings. Consider increasing CPU/memory allocation for your DX Cloud instance.
+
+## [](#_ingress_response_time_95th_percentile)ingress\_response\_time\_95th\_percentile
+
+**How long your slowest server requests take**
+
+This captures the longest response times from your Magnolia instance, helping identify performance bottlenecks that affect a minority of requests but could be critical.
+
+-   **What we’re measuring**: 95% of requests complete within this time at instance level
+
+-   **Target**: Under 1 second even for complex requests
+
+-   **Why it matters**: Slow tail requests often indicate resource contention or inefficient code paths
+
+
+**What you can do**: Identify specific pages or operations causing slow responses using Magnolia’s request logging. Review complex content queries and template logic. Implement connection pooling for external integrations. Monitor JVM performance during peak loads and tune garbage collection.
+
+## [](#_ingress_service_error_rate)ingress\_service\_error\_rate
+
+**How often your Magnolia application encounters internal errors**
+
+This tracks server-side errors (5XX) originating from your DX Cloud instance, indicating problems with your Magnolia application, database, or infrastructure.
+
+-   **What we’re measuring**: Percentage of requests resulting in server errors at instance level
+
+-   **Target**: Less than 1% of requests
+
+-   **Why it matters**: High service error rates indicate application instability or infrastructure problems
+
+
+**What you can do**: Review Magnolia application logs and error traces in DX Cloud console. Check database connectivity and performance. Verify all required modules are properly installed and configured. Monitor memory usage and restart instances showing memory leaks.
+
+## [](#_ingress_request_error_rate)ingress\_request\_error\_rate
+
+**How often requests fail at your server level**
+
+This includes both client errors (4XX) and server errors (5XX) at the ingress level, giving you the complete picture of failed requests before CDN processing.
+
+-   **What we’re measuring**: Percentage of all failed requests at instance level
+
+-   **Target**: Less than 2% of all requests
+
+-   **Why it matters**: High error rates at ingress level indicate fundamental application or configuration issues
+
+
+**What you can do**: Analyze request patterns to identify problematic URLs or user agents. Review Magnolia’s URL mapping and virtual URI configuration. Check for missing resources or broken internal links. Validate security configurations aren’t blocking legitimate requests. Update sitemap and fix any structural navigation issues.
+
+## [](#_author_cpu_consistency)author\_cpu\_consistency
+
+**How stable your content editing environment performs**
+
+This ensures your author instance has consistent CPU performance so content editors don’t experience slowdowns or lag when creating and managing content.
+
+-   **What we’re measuring**: CPU resource allocation stability for content management
+
+-   **Target**: Consistent performance without spikes
+
+-   **Why it matters**: Unstable CPU causes frustrating delays during content editing
+
+
+**What you can do**: Monitor content editing patterns for resource-heavy operations. Contact support for CPU optimization if you see consistent performance issues. Consider upgrading your DX Cloud plan if you have many simultaneous editors.
+
+## [](#_author_ingress_root_path)author\_ingress\_root\_path
+
+**Whether your admin interface loads correctly**
+
+This checks if your Magnolia author interface is accessible at the correct URL path without conflicts that could prevent editors from logging in or accessing features.
+
+-   **What we’re measuring**: Proper URL configuration for author access
+
+-   **Target**: Clean, accessible author interface URL
+
+-   **Why it matters**: URL conflicts prevent content editors from working effectively
+
+
+**What you can do**: Verify your author URL configuration in DX Cloud settings. Check for custom URL mappings that might conflict. Contact support if you can’t access the author interface through standard paths.
+
+## [](#_author_jvm_memory)author\_jvm\_memory
+
+**How much memory your content management system uses**
+
+This tracks memory consumption in your author instance to ensure smooth content editing, fast asset uploads, and responsive page creation workflows.
+
+-   **What we’re measuring**: Memory usage for content management operations
+
+-   **Target**: Adequate memory for editing activities
+
+-   **Why it matters**: Low memory causes slow editing, failed uploads, and system freezes
+
+
+**What you can do**: Monitor memory during large asset uploads or bulk content operations. Optimize large files before uploading. Break up large content imports into smaller batches. Contact support for memory upgrades if issues persist.
+
+## [](#_author_memory_consistency)author\_memory\_consistency
+
+**How reliably your editing environment performs**
+
+This prevents unexpected memory limitations that could cause the author interface to become slow or unresponsive during critical content editing tasks.
+
+-   **What we’re measuring**: Stable memory allocation for content editing
+
+-   **Target**: Consistent memory availability
+
+-   **Why it matters**: Memory inconsistency disrupts content workflows and productivity
+
+
+**What you can do**: Report any sudden performance drops to support. Monitor for memory-intensive custom modules or integrations. Consider staggering content editing activities during peak usage times.
+
+## [](#_author_node_deployment)author\_node\_deployment
+
+**How efficiently your editing system components communicate**
+
+This ensures optimal placement of your author instance and database for fast content saving, quick admin interface loading, and responsive content operations.
+
+-   **What we’re measuring**: Optimal service positioning for content management
+
+-   **Target**: Fast communication between author components
+
+-   **Why it matters**: Poor deployment causes delays in content saving and loading
+
+
+**What you can do**: Report slow admin interface performance to support. Monitor content saving times and page loading in the author environment. Support can optimize deployment configuration for better performance.
+
+## [](#_author_non_heap_memory)author\_non\_heap\_memory
+
+**How your system memory handles background operations**
+
+This monitors specialized memory used for content indexing, search functionality, and system operations that keep your author interface running smoothly.
+
+-   **What we’re measuring**: System memory usage beyond content storage
+
+-   **Target**: Stable background operation memory
+
+-   **Why it matters**: Issues cause search problems and system instability
+
+
+**What you can do**: Monitor search functionality and content indexing performance. Check if custom modules are consuming excessive system memory. Contact support immediately if you notice system instability.
+
+## [](#_cloud_version)cloud\_version
+
+**Whether you have access to the latest platform features**
+
+This checks if you’re using a current version of Magnolia DX Cloud, ensuring access to new features, security improvements, and performance optimizations.
+
+-   **What we’re measuring**: Currency of your cloud platform version
+
+-   **Target**: Recent platform version
+
+-   **Why it matters**: Outdated versions miss security updates and performance improvements
+
+
+**What you can do**: Review release notes for new features available in latest versions. Schedule platform updates with support during low-traffic periods. Plan testing for any custom integrations before updating.
+
+## [](#_environment_name)environment\_name
+
+**Whether your environment setup follows best practices**
+
+This validates that your environment naming clearly distinguishes between development, staging, and production to prevent accidental changes to the wrong environment.
+
+-   **What we’re measuring**: Clear, appropriate environment identification
+
+-   **Target**: Descriptive, unambiguous environment names
+
+-   **Why it matters**: Poor naming leads to costly mistakes on wrong environments
+
+
+**What you can do**: Review your environment naming convention with your team. Ensure names clearly indicate purpose (dev, staging, prod).
+
+## [](#_helm_provider)helm\_provider
+
+**Whether your deployment uses supported infrastructure**
+
+This verifies your Magnolia instance uses tested, supported deployment methods that guarantee compatibility with updates and maintenance procedures.
+
+-   **What we’re measuring**: Use of supported deployment infrastructure
+
+-   **Target**: Approved deployment configuration
+
+-   **Why it matters**: Unsupported configurations cause update failures and instability
+
+
+**What you can do**: Work with support to validate your deployment configuration. Avoid custom infrastructure modifications that aren’t supported. Plan migrations to supported configurations if needed.
+
+## [](#_helm_version)helm\_version
+
+**Whether your deployment infrastructure is current**
+
+This ensures your deployment tools are up-to-date for better stability, security, and compatibility with Magnolia updates and new features.
+
+-   **What we’re measuring**: Currency of deployment infrastructure tools
+
+-   **Target**: Recent, supported infrastructure version
+
+-   **Why it matters**: Outdated infrastructure causes deployment failures and security risks
+
+
+**What you can do**: Schedule infrastructure updates during maintenance windows. Contact support to plan upgrades that won’t disrupt your content operations. Test deployment processes after infrastructure updates.
+
+## [](#_magnolia_version)magnolia\_version
+
+**Whether Magnolia has the latest features and security**
+
+This monitors your Magnolia version to ensure you have access to new content management features, performance improvements, and security enhancements.
+
+-   **What we’re measuring**: Version of your Magnolia installation
+
+-   **Target**: Recent Magnolia version with latest features
+
+-   **Why it matters**: Outdated versions lack security patches and useful features
+
+
+**What you can do**: Review Magnolia release notes for new features and improvements. Test custom modules for compatibility before upgrading. Plan updates during content freeze periods to avoid disruption.
+
+## [](#_public_cpu_consistency)public\_cpu\_consistency
+
+**How consistently your website performs for visitors**
+
+This ensures your public website maintains stable CPU performance so visitors experience consistent page loading speeds without sudden slowdowns.
+
+-   **What we’re measuring**: CPU performance consistency for website visitors
+
+-   **Target**: Stable performance during traffic variations
+
+-   **Why it matters**: CPU inconsistency causes unpredictable visitor experience
+
+
+**What you can do**: Monitor website performance during traffic spikes. Identify resource-intensive pages or features causing CPU peaks. Consider upgrading your DX Cloud plan for high-traffic sites.
+
+## [](#_public_jvm_memory)public\_jvm\_memory
+
+**How efficiently your website handles visitor traffic**
+
+This tracks memory usage for your public website to ensure fast page loading and reliable handling of traffic spikes without performance degradation.
+
+-   **What we’re measuring**: Memory usage for public website operations
+
+-   **Target**: Adequate memory for expected traffic levels
+
+-   **Why it matters**: Memory issues cause slow loading and potential site outages
+
+
+**What you can do**: Monitor memory usage during peak traffic periods. Optimize memory-intensive pages and components. Implement caching strategies to reduce memory load. Contact support for memory upgrades if traffic consistently exceeds capacity.
+
+## [](#_public_memory_consistency)public\_memory\_consistency
+
+**How reliably your website serves visitors**
+
+This prevents unexpected memory limitations that could cause your website to become slow or unavailable during important traffic periods or business-critical times.
+
+-   **What we’re measuring**: Stable memory allocation for public website
+
+-   **Target**: Consistent memory performance
+
+-   **Why it matters**: Memory inconsistency causes visitor frustration and lost business
+
+
+**What you can do**: Report any sudden website slowdowns to support. Monitor for traffic patterns that correlate with performance issues. Implement load balancing strategies during expected traffic spikes.
+
+## [](#_public_node_deployment)public\_node\_deployment
+
+**How efficiently your website components work together**
+
+This ensures optimal positioning of your website and database components for fast page loading and reliable performance that visitors expect.
+
+-   **What we’re measuring**: Optimal service placement for public website performance
+
+-   **Target**: Fast inter-component communication
+
+-   **Why it matters**: Poor deployment causes slow page loads and poor user experience
+
+
+**What you can do**: Monitor page loading times and identify slow-performing sections. Report consistent performance issues to support for deployment optimization. Test website performance from different geographic locations.
+
+## [](#_public_non_heap_memory)public\_non\_heap\_memory
+
+**How your website handles background processing**
+
+This monitors system memory that manages caching, indexing, and other background operations essential for serving content quickly and reliably to visitors.
+
+-   **What we’re measuring**: System memory for website background operations
+
+-   **Target**: Stable background processing memory
+
+-   **Why it matters**: Issues affect search, caching, and overall site performance
+
+
+**What you can do**: Monitor website search functionality and caching performance. Check for memory leaks in custom components.
+
+## [](#_public_repartition)public\_repartition
+
+**How resilient your website is to infrastructure issues**
+
+This ensures your website is distributed across multiple availability zones so it stays online even if there’s an issue in one data center location.
+
+-   **What we’re measuring**: Geographic distribution of website infrastructure
+
+-   **Target**: Multi-zone deployment for high availability
+
+-   **Why it matters**: Single-zone deployment creates risk of complete outages
+
+
+**What you can do**: Evaluate your business requirements for uptime and availability. Plan failover testing to validate high availability setup.
+
+## [](#_public_replicas)public\_replicas
+
+**How your website handles traffic and maintains uptime**
+
+This verifies your website has multiple running instances to ensure availability during maintenance periods and to handle traffic spikes effectively.
+
+-   **What we’re measuring**: Number of active website instances
+
+-   **Target**: Multiple instances for redundancy and load distribution
+
+-   **Why it matters**: Single instance means no backup if problems occur
+
+
+**What you can do**: Monitor website availability during maintenance windows. Contact support to configure additional instances for high-traffic sites. Plan replica scaling based on traffic patterns and business requirements.
+
+## [](#_author_version)author\_version
+
+**Whether your content database has the latest improvements**
+
+This ensures your author database uses current version with performance optimizations and security updates for better content management experience.
+
+-   **What we’re measuring**: Currency of author database version
+
+-   **Target**: Recent database version with latest features
+
+-   **Why it matters**: Outdated databases are slower and less secure
+
+
+**What you can do**: Schedule database updates during content freeze periods. Back up critical content before updates.
+
+## [](#_public_version)public\_version
+
+**Whether your website database performs optimally**
+
+This checks if your website database uses a current version for fast page loading, efficient traffic handling, and improved security for visitor data.
+
+-   **What we’re measuring**: Currency of public database version
+
+-   **Target**: Recent database version for optimal performance
+
+-   **Why it matters**: Old database versions slow down your website
+
+
+**What you can do**: Plan database updates during low-traffic periods. Test website functionality after database updates. Monitor page loading performance improvements after updates.
+
+## [](#_author_volume)author\_volume
+
+**How much space you have for content and assets**
+
+This monitors storage space for your content management system to ensure you can continue creating content, uploading assets, and saving work without interruption.
+
+-   **What we’re measuring**: Available storage for content management
+
+-   **Target**: Adequate space for content creation activities
+
+-   **Why it matters**: Full storage prevents content saving and asset uploads
+
+
+**What you can do**: Regularly clean up unused assets and old content versions. Archive or delete outdated content. Monitor storage usage trends and plan upgrades before reaching capacity limits.
+
+## [](#_public_volume)public\_volume
+
+**How much database space your website has available**
+
+This monitors storage for your website database to ensure continued functionality and ability to handle new content publication and visitor interactions.
+
+-   **What we’re measuring**: Available database storage for website operations
+
+-   **Target**: Adequate space for website data and growth
+
+-   **Why it matters**: Full database storage can crash your website
+
+
+**What you can do**: Monitor database growth trends and plan proactive storage upgrades. Clean up old log data and unused database entries. Contact support immediately if storage is nearly full.
+
+## [](#_operator_origin)operator\_origin
+
+**Whether your URL redirects are properly managed**
+
+This ensures URL redirects are configured through proper channels for consistent behavior and to maintain good SEO rankings without broken links.
+
+-   **What we’re measuring**: Proper redirect configuration management
+
+-   **Target**: Centrally managed, trackable redirects
+
+-   **Why it matters**: Improper redirects hurt SEO and create broken links
+
+
+**What you can do**: Use only approved redirect management tools and interfaces. Document all redirect changes for future reference. Contact support before making complex redirect configurations.
+
+## [](#_redirect_replicas)redirect\_replicas
+
+**How reliably your website redirects work**
+
+This ensures your redirect service has backup instances so URL redirects continue working during maintenance, preventing broken links for visitors.
+
+-   **What we’re measuring**: Redundancy of redirect service instances
+
+-   **Target**: Multiple redirect service instances
+
+-   **Why it matters**: Single redirect instance means broken links during maintenance
+
+
+**What you can do**: Test redirect functionality during maintenance windows.
+
+## [](#_cookie_name)cookie\_name
+
+**Whether your website redirects work consistently**
+
+This validates that redirect configuration provides consistent behavior across all visitor sessions, ensuring smooth navigation experience without confusion.
+
+-   **What we’re measuring**: Consistency of redirect configuration
+
+-   **Target**: Uniform redirect behavior for all visitors
+
+-   **Why it matters**: Inconsistent redirects confuse visitors and hurt user experience
+
+
+**What you can do**: Test redirect behavior from different browsers and devices.
+
+## [](#_dns_resolution)dns\_resolution
+
+**Whether your domain points to the right servers**
+
+This checks if your domain name correctly resolves to Fastly’s CDN servers, ensuring visitors reach your website through the optimized delivery network.
+
+-   **What we’re measuring**: DNS resolution target for your domain
+
+-   **Target**: Points to Fastly or approved CDN servers
+
+-   **Why it matters**: Wrong DNS settings prevent visitors from reaching your optimized website
+
+
+**What you can do**: Verify your domain’s DNS settings point to the correct Fastly CNAME records. Contact your domain registrar to update DNS if pointing to wrong servers. Check for any custom DNS configurations that might override CDN routing.
+
+## [](#_dns_ttl_min)dns\_ttl\_min
+
+**How quickly DNS changes take effect**
+
+This ensures your DNS has a reasonable minimum cache time so changes don’t propagate too slowly, but also don’t cause excessive DNS lookups.
+
+-   **What we’re measuring**: Minimum DNS cache duration
+
+-   **Target**: At least 60 seconds
+
+-   **Why it matters**: Too short TTL causes slow website loading due to constant DNS lookups
+
+
+**What you can do**: Adjust your DNS TTL settings through your domain registrar or DNS provider. Set minimum TTL to at least 60 seconds for better performance. Avoid extremely short TTL values unless actively making DNS changes.
+
+## [](#_dns_ttl_max)dns\_ttl\_max
+
+**How long DNS information stays cached**
+
+This ensures your DNS cache time isn’t so long that important changes take too long to reach all visitors around the world.
+
+-   **What we’re measuring**: Maximum DNS cache duration
+
+-   **Target**: No more than 3600 seconds (1 hour)
+
+-   **Why it matters**: Too long TTL delays DNS changes from reaching visitors
+
+
+**What you can do**: Configure DNS TTL to be under 1 hour through your DNS provider. Balance between performance (longer TTL) and flexibility for changes (shorter TTL). Consider shorter TTL periods when planning infrastructure changes.
+
+## [](#_domain_expiry)domain\_expiry
+
+**How much time before your domain expires**
+
+This monitors when your domain registration expires to prevent your website from becoming inaccessible due to an expired domain.
+
+-   **What we’re measuring**: Days until domain registration expires
+
+-   **Target**: At least 30 days remaining
+
+-   **Why it matters**: Expired domains make your entire website inaccessible
+
+
+**What you can do**: Renew your domain registration well before expiration. Set up auto-renewal with your domain registrar to prevent accidental expiration. Monitor domain expiration dates for all your domains and subdomains.
+
+## [](#_certificate_expiry)certificate\_expiry
+
+**How much time before your security certificate expires**
+
+This tracks when your SSL/TLS certificate expires to ensure your website remains secure and accessible without browser security warnings.
+
+-   **What we’re measuring**: Days until SSL certificate expires
+
+-   **Target**: At least 30 days remaining
+
+-   **Why it matters**: Expired certificates cause security warnings and prevent visitor access
+
+
+**What you can do**: Renew SSL certificates before expiration through your CDN provider or certificate authority. Set up automated certificate renewal if available. Monitor certificate expiration dates and plan renewals in advance.
+
+## [](#_certificate_valid_from)certificate\_valid\_from
+
+**Whether your security certificate is active**
+
+This ensures your SSL certificate’s start date has passed and is currently valid, preventing security issues from certificates that aren’t yet active.
+
+-   **What we’re measuring**: Days since certificate became valid
+
+-   **Target**: Certificate is currently active (0 or more days)
+
+-   **Why it matters**: Invalid start dates cause security warnings and access problems
+
+
+**What you can do**: Contact your SSL certificate provider if the certificate isn’t yet active. Verify certificate installation was completed properly. Check system clock settings if certificate timing seems incorrect.
+
+## [](#_certificate_algorithm)certificate\_algorithm
+
+**Whether your security uses strong encryption**
+
+This verifies your SSL certificate uses secure encryption algorithms and doesn’t rely on outdated, weak encryption that could be compromised.
+
+-   **What we’re measuring**: Strength of certificate encryption algorithm
+
+-   **Target**: No weak or outdated algorithms detected
+
+-   **Why it matters**: Weak encryption puts visitor data at risk and hurts SEO rankings
+
+
+**What you can do**: Request a new certificate with stronger encryption if weak algorithms are detected. Contact your certificate provider to upgrade to current security standards. Avoid certificates using MD5, SHA-1, or other deprecated algorithms.
+
+## [](#_certificate_hostname_validation)certificate\_hostname\_validation
+
+**Whether your certificate covers all your website addresses**
+
+This ensures your SSL certificate is valid for all the domain names and subdomains visitors use to access your website.
+
+-   **What we’re measuring**: Certificate coverage for all domain variants
+
+-   **Target**: All hostnames properly covered by certificate
+
+-   **Why it matters**: Uncovered hostnames cause security warnings for some visitors
+
+
+**What you can do**: Use wildcard certificates or multi-domain certificates to cover all subdomains. Verify certificate includes www and non-www versions of your domain. Add any missing hostnames to your certificate or request a new one with proper coverage.
+
+## [](#_certificate_chain_validation)certificate\_chain\_validation
+
+**Whether your security certificate is properly connected**
+
+This verifies your SSL certificate has a complete chain of trust from your site certificate through intermediate certificates to a trusted root authority.
+
+-   **What we’re measuring**: Complete certificate chain validation
+
+-   **Target**: Valid chain from leaf through intermediate to root certificate
+
+-   **Why it matters**: Broken certificate chains cause security warnings and access problems
+
+
+**What you can do**: Install missing intermediate certificates in your certificate chain. Contact your certificate provider for the complete certificate bundle. Verify certificate installation includes all required intermediate certificates.
+
+## [](#_certificate_key_usage)certificate\_key\_usage
+
+**Whether your certificate is configured for web security**
+
+This ensures your SSL certificate has the proper permissions and usage flags set for serving secure web traffic to your visitors.
+
+-   **What we’re measuring**: Certificate key usage permissions
+
+-   **Target**: Appropriate usage flags for web serving
+
+-   **Why it matters**: Wrong key usage can cause certificate validation failures
+
+
+**What you can do**: Request a new certificate with proper key usage extensions if current certificate has restrictions. Work with your certificate provider to ensure web server authentication is permitted. Verify certificate was issued for the correct intended use.

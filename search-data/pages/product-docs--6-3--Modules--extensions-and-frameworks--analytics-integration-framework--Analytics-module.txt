@@ -1,0 +1,140 @@
+---
+title: "Installing"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/extensions-and-frameworks/analytics-integration-framework/Analytics-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Analytics integration framework > Installing
+---
+
+# Installing
+
+[Analytics and optimization](../../../../use-cases/analytics-and-optimization/) Unbundled: [Extension](../../../#_module_types) License: [Special license](../../../../Administration/License/#_special_licenses)\[[1](#_footnotedef_1 "View footnote.")\]
+
+|     |     |
+| --- | --- |
+| **License** | [MLA](https://www.magnolia-cms.com/mla.html) |
+| **Issues** | [ANALYTICS](http://jira.magnolia-cms.com/browse/ANALYTICS) |
+| **Maven site** | [ANALYTICS](https://nexus.magnolia-cms.com/repository/magnolia.addons.releases/info/magnolia/analytics/) |
+| **Latest** | 2.0.0 |
+
+The Analytics integration framework modules provide a framework and extensions to inject your analytics data into the Magnolia UI enabling authors and marketeers to make data-driven decisions.
+
+The overall process to configure a dashboard is:
+
+-   [Connect to a data supplier](../analytics-data-suppliers/), such as Adobe Analytics, Google Analytics, Matomo, a file or another third party analytics data provider.
+
+-   [Configure the data](../analytics-configure-app/) available to your end users in the Analytics app.
+
+-   Use the [Analytics app](../Analytics-app/) to build a dashboard and add charts as Widgets.
+
+
+The framework delivers out-of-the-box extensions, the Analytics app, and extensive [predefined samples](../analytics-chart-and-dashboard-configuration/) to help you understand charts and dashboards. We recommend you build dashboards and charts using the app.
+
+## [](#_module_structure)Module structure
+
+| artifactID | Description |
+| --- | --- |
+| `magnolia-analytics-parent` | Parent reactor. |
+| `magnolia-analytics-amcharts` | Provides a default implementation to connect to amCharts, which provides JavaScript-based interactive charts and maps programming libraries and tools. |
+| `magnolia-analytics-google4-connector` | Provides a default implementation to connect to Google Analytics (GA4) using OAuth2. |
+| `magnolia-analytics-matomo-connector` | Provides a default implementation to connect to Matomo. |
+| `magnolia-analytics-adobe-connector` | Provides a default implementation to connect to Adobe Analytics. |
+| `magnolia-analytics` | Provides the foundation and the API for the Analytics add-on. |
+| `magnolia-analytics-ui` | Provides the Analytics app, the `demo` dashboard and predefined chart types that you can reuse. |
+| `magnolia-analytics-amcharts-samples` | Provides sample dashboards. If you don’t want to have the sample dashboards available, remove this submodule. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.analytics</groupId>
+  <artifactId>magnolia-analytics</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.analytics</groupId>
+  <artifactId>magnolia-analytics-ui</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.analytics</groupId>
+  <artifactId>magnolia-analytics-amcharts</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.analytics</groupId>
+  <artifactId>magnolia-analytics-google4-connector</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.analytics</groupId>
+  <artifactId>magnolia-analytics-matomo-connector</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.analytics</groupId>
+  <artifactId>magnolia-analytics-adobe-connector</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.analytics</groupId>
+  <artifactId>magnolia-analytics-amcharts-samples</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_connecting_to_a_data_supplier)Connecting to a data supplier
+
+Once the framework is installed, you must define the data supplier(s) for the charts to be displayed in the Analytics app dashboard. For more information, see [Connecting to a data supplier](../analytics-data-suppliers/).
+
+* * *
+
+[1](#_footnoteref_1). The framework is included with your DX Core license. However, the associated extensions require an additional special license.

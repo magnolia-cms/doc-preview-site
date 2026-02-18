@@ -1,0 +1,93 @@
+---
+title: "GDPR and apps"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Privacy-module/GDPR-and-apps/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Privacy module > GDPR and apps
+---
+
+# GDPR and apps
+
+This page describes how to configure [a content app](../../../../Apps/Developing-an-app/My-first-content-app/) to be [privacy-aware](../../../../Features/Data-privacy/), for example in the context of GDPR regulations. The [Contacts app](../../../../Apps/List-of-apps/Contacts-app/), a Magnolia demo content app, is an example of an app adapted to comply with privacy regulations. An existing content app can be made privacy-aware almost on the fly. You just need to configure the app in accordance with the following guidelines.
+
+## [](#_add_mgnlvisitorreference_to_content_node_type)Add mgnl:visitorReference to content node type
+
+Define a privacy-related [node type](../../../../Administration/Architecture/Node-types/) the app is expected to handle. In the case of the Contacts app it is the `mgnl:visitorReference` ([mixin](../../../../Administration/Architecture/Node-types/#_mixin_node_types)):
+
+/mgnl-nodetypes/magnolia-privacy-contact-nodetype.xml
+
+```cnd
+<nodeTypes
+    xmlns:rep="internal"
+    xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    xmlns:mix="http://www.jcp.org/jcr/mix/1.0"
+    xmlns:mgnl="http://www.magnolia.info/jcr/mgnl"
+    xmlns:jcr="http://www.jcp.org/jcr/1.0">
+
+  <nodeType name="mgnl:privacyContact" isMixin="false" hasOrderableChildNodes="true" primaryItemName="">
+    <supertypes>
+      <supertype>mgnl:contact</supertype>
+      <supertype>mgnl:visitorReference</supertype>
+    </supertypes>
+  </nodeType>
+
+</nodeTypes>
+```
+
+> **Warning:** Please be aware that the mgnl:visitorReference node type has a mandatory property called visitorId. Without it you cannot save a mgnl:visitorReference node. See below its definition in the Visitor manager submodule:
+
+/mgnl-nodetypes/magnolia-privacy-nodetypes.xml
+
+```cnd
+  <nodeType name="mgnl:visitorReference" isMixin="true" hasOrderableChildNodes="true" primaryItemName="">
+    <propertyDefinition name="visitorId" requiredType="String" autoCreated="false" mandatory="true" onParentVersion="COPY" protected="false" multiple="false"/>
+  </nodeType>
+```
+
+The Visitor manager submodule is where most of the [configuration of the Privacy module](../#_configuration) is done.
+
+## [](#_use_a_dedicated_subapp_class_and_field)Use a dedicated subapp class and field
+
+In your app use a dedicated privacy-enabling subapp class and field(s). In the Contacts app this is done with the `info.magnolia.privacy.sample.contentapp.PrivacyAwareContactDetailSubapp` class (line 1), the `visitorId` field (from line 9). The field is linked to the `visitors` repository (line 11), a dedicated repository which stores visitor consent information:
+
+privacy-sample/decorations/contacts/apps/contacts.subApps.detail.yaml
+
+```yml
+subAppClass: info.magnolia.privacy.sample.contentapp.PrivacyAwareContactDetailSubapp
+editor:
+  nodeType:
+    name: mgnl:privacyContact
+  form:
+    tabs:
+      personal:
+        fields:
+          'visitorId':
+            class: info.magnolia.ui.form.field.definition.SelectFieldDefinition
+            repository: visitors
+            path: /
+            textInputAllowed: true
+            filteringMode: CONTAINS
+            pageLength: 100
+            valueProperty: visitorId
+            labelProperty: visitorId
+```
+
+> **Note:** Lines 3 and 4 make sure the app (subapp) uses the newly defined node type. Because of MGNLPRIV-35 we actually don’t set the mgnl:privacyContact node type in the Detail subapp’s definition decoration.
+
+![Edit contact dialog](../../../../_images/6-2-contactsApp.png)
+
+The field label `Visitor` is defined in the message bundle of the `privacy-ui` module:
+
+privacy-ui/i18n/visitors\_backend\_en.properties
+
+fields.visitorId.label=Visitor
+
+Related topics
+
+-   [Data privacy](../../../../Features/Data-privacy/)
+
+-   [Data privacy API](../../../../Developing/API/Java-Server-APIs/Data-privacy-API/)
+
+-   [Privacy module](../)
+
+-   [Visitors app](../../../../Apps/List-of-apps/Visitors-app/)

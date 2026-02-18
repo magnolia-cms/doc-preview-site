@@ -1,0 +1,56 @@
+---
+title: "Managing assets"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Authoring-content-config/Assets-config/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Authoring content configuration > Managing assets
+---
+
+# Managing assets
+
+## [](#_configuring_the_filename_field)Configuring the filename field
+
+In the default configuration, the dialog does not have a field for renaming the filename of the asset.
+
+![Filename field in the asset upload dialog](../../../_images/MGNLDAM-951-AddFileNameField-AssetUploadEditDialog.png)
+
+You can add the field to the dialog by hotfixing the configuration of the dialog.
+
+In the Resource Files app:
+
+1.  Open the `/dam-app-jcr/dialogs/uploadAndEdit.yaml` configuration file for editing.
+
+2.  In the `jcrDetail` part, add the `jcr:content:` property shown below to the intended position of the filename field, for example just below the media `upload` field property.
+
+3.  Save the updated configuration.
+
+
+```yml
+form:
+  properties:
+    upload:
+      factoryClass: info.magnolia.dam.app.field.factory.DamUploadFieldFactory
+      class: info.magnolia.ui.editor.UploadViewDefinition
+      required: true
+      itemProvider:
+        $type: jcrChildNodeProvider
+        nodeName: jcr:content
+        nodeType: mgnl:resource
+    jcr:content:
+      $type: compositeField
+      itemProvider:
+        $type: jcrChildNodeProvider
+      properties:
+        fileName:
+          $type: textField
+          label: ""
+      label: Filename
+```
+
+Afterwards, to bring the modified configuration to life, open `/dam-app-core/apps/dam.yaml` for editing and save it without changes.
+
+> **Note:** You can touch any decoration that is part of the Dam app so that the included file changes would be picked up.
+
+In a similar way, you can also modify the configuration of the Asset (node) rename dialog (`/dam-app-jcr/dialogs/rename.yaml`) to enable the filename field there as well:
+
+![Filename field in the rename dialog](../../../_images/6-2-renameDialog.png)

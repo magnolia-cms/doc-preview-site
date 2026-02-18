@@ -1,0 +1,239 @@
+---
+title: "WAR file with multiple configurations"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Deploying/WAR-file-with-multiple-configurations/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Deploying WAR files > WAR file with multiple configurations
+---
+
+# WAR file with multiple configurations
+
+You can deploy Magnolia to multiple environments using a single Web application archive (WAR) file. The WAR file can contain several configurations, each customizing the application to a particular target environment. The appropriate configuration is applied automatically when the WAR file is extracted on a servlet container.
+
+You can see this mechanism in action in a standard Magnolia installation. The standard installation deploys two webapps: `magnoliaAuthor` is the authoring instance where content editors work and `magnoliaPublic` is the public website. The two webapps are identical. The name of the webapp determines which configuration is applied at deployment time.
+
+Since the webapp is named after the WAR file (`magnoliaAuthor.war` is extracted to `magnoliaAuthor`) you can select a different configuration by simply renaming the WAR.
+
+This approach has the advantage that you only need to compile the webapp once. It is not necessary to create separate WAR files for each target environment.
+
+## [](#_where_to_use)Where to use
+
+Here are some ideas where multiple configurations in a single WAR are useful:
+
+-   **Author vs. Public**. This is the standard example. One webapp is configured as an author instance that takes authors and editors into the AdminCentral UI while the other webapp is a public instance that displays the published website.
+
+-   **Set different storage mechanisms**. The embedded Derby database that ships with Magnolia is OK for development and testing purposes but in production you need enterprise-scale persistent storage. You can configure different persistent storage for production servers, for example a MySQL database. When the WAR file is deployed to a production server the external database is used.
+
+-   **Bootstrap content to a test environment**. Load some test user accounts and content to a test environment through the bootstrap mechanism. When you deploy the same webapp to production no test content is deployed and the production environment stays clean.
+
+-   **Configure repositories**. With a custom repository configuration you can retrieve production users from a central repository or connect to a shared DMS for corporate assets such as documents and images.
+
+
+## [](#_context_listener_reads_properties_files)Context listener reads properties files
+
+Magnolia’s main listener [MagnoliaServletContextListener](http://dev.magnolia-cms.com/ref/latest-stable/apidocs/info/magnolia/init/MagnoliaServletContextListener.html) reads initialization parameters for each webapp from `magnolia.properties` files. By default, the listener looks for properties files in these locations:
+
+WEB-INF/config/magnolia.properties,
+WEB-INF/config/default/magnolia.properties,
+WEB-INF/config/${webapp}/magnolia.properties,
+WEB-INF/config/${contextPath}/magnolia.properties,
+WEB-INF/config/${servername}/magnolia.properties,
+WEB-INF/config/${servername}/${webapp}/magnolia.properties,
+WEB-INF/config/${servername}/${contextPath}/magnolia.properties
+
+These properties files are in the `WEB-INF/config` directory inside the WAR. You can configure alternative file names and locations by setting the `magnolia.initialization.file` context parameter in `web.xml`.
+
+```xml
+<context-param>
+   <param-name>magnolia.initialization.file</param-name>
+   <param-value>
+      WEB-INF/config/dev.mysite.com/magnoliaAuthor/magnolia.properties,
+      WEB-INF/config/default/magnolia.properties,
+      WEB-INF/config/magnolia.properties
+   </param-value>
+</context-param>
+```
+
+Multiple comma-separated paths are supported. The listener applies the properties files in a last-to-first order, loading the files in reverse of what you see in the list above.
+
+## [](#_using_variables)Using variables
+
+You can use variables to map a configuration to its target environment. When the context listener finds a match it reads the corresponding properties file and applies the properties.
+
+### [](#_servername)${servername}
+
+`${servername}` is the name of the server where the webapp is running. Use lowercase. This variable is resolved to a fully qualified server name obtained using `InetAddress.getLocalHost().getHostName()` which may also contain the domain depending on your server configuration and operating system. Optionally, you can set the `magnolia.unqualified.server.name` context parameter to `true` in `web.xml` if you prefer using an unqualified name. Now `server.domain.com` will simply resolve to `server`.
+
+```xml
+<context-param>
+     <param-name>magnolia.unqualified.server.name</param-name>
+     <param-value>true</param-value>
+ </context-param>
+```
+
+### [](#_webapp)${webapp}
+
+`${webapp}` is the last token in the webapp path, for example `magnoliaPublic` for a webapp deployed at `tomcat/webapps/magnoliaPublic`.
+
+### [](#_contextattributeproperty_and_contextparamproperty)${contextAttribute/property} and ${contextParam/property}
+
+You can also use servlet context attributes and parameters to indicate the location of configuration files. These variables will be replaced with the corresponding attributes or parameters taken from servlet context. This is useful for application servers such as IBM WebSphere that have multiple instances running on the same server. Typical usage in this case:
+
+WEB-INF/config/${servername}/${contextAttribute/com.ibm.websphere.servlet.application.host}/magnolia.properties
+
+Use context attributes and parameters provided by your servlet container or define your own. For example, define a custom context parameter:
+
+```xml
+<context-param>
+    <param-name>instance</param-name>
+    <param-value>mysite-author</param-value>
+</context-param>
+```
+
+And use it in the path:
+
+WEB-INF/config/${contextParam/instance}/magnolia.properties
+
+See your servlet container documentation regarding where to define context parameters and attributes. For example [Tomcat Context container reference](http://tomcat.apache.org/tomcat-6.0-doc/config/context.html#Introduction).
+
+### [](#_naming_conventions)Naming conventions
+
+The short variable names are used only in `web.xml` when resolving. For example, `${webapp}` is a property that is used when resolving paths to `magnolia.properties` files, that is when parsing the string containing the list of said files in `web.xml`. The corresponding variable you can use in the properties files is `${magnolia.webapp}`. This variable corresponds to the name of the folder into which Magnolia is deployed, typically `magnoliaAuthor` on Tomcat. Similarly, `${servername}` will correspond to `${magnolia.servername}`. You also have `${magnolia.app.rootdir}` which is the full path to the deployed app.
+
+## [](#_path_examples)Path examples
+
+Here are some path examples and webapps the properties apply to:
+
+-   Default configuration that applies to all webapps.
+
+    WEB-INF/config/magnolia.properties
+
+-   Author instances that have the default webapp name `magnoliaAuthor`.
+
+    WEB-INF/config/magnoliaAuthor/magnolia.properties
+
+-   Public instances that have the default webapp name `magnoliaPublic`.
+
+    WEB-INF/config/magnoliaPublic/magnolia.properties
+
+-   Webapps deployed to a development server with fully-qualified name `dev.mysite.com`.
+
+    WEB-INF/config/dev.mysite.com/magnolia.properties
+
+-   Webapps deployed to a test server with unqualified name `test`.
+
+    WEB-INF/config/test/magnolia.properties
+
+-   Custom-named author instance deployed to production server `www.mysite.com`.
+
+    WEB-INF/config/www.mysite.com/prod-author/magnolia.properties
+
+
+## [](#_magnolia_properties_file)magnolia.properties file
+
+`magnolia.properties` file contains properties that are not configured in the config repository. They are applied at deployment time before repositories are initialized.
+
+Here is a minimal example of a properties file:
+
+\# This is only used for the initial installation.
+# Afterwards the configuration in the config repository is used.
+# The value is saved in /server/admin
+magnolia.bootstrap.authorInstance=falsehttps://docs.magnolia-cms.com/product-docs/6.2/Apps/Developing-a-custom-non-jcr-content-app.html#\_final\_assembly{
+# Directories in which bootstrap files are searched
+magnolia.bootstrap.dir=WEB-INF/bootstrap/public WEB-INF/bootstrap/common
+
+Setting the `magnolia.bootstrap.authorInstance` property to `false` defines this webapp as a public instance. The webapp is given its own bootstrap directory in the `magnolia.bootstrap.dir` property.
+
+For examples of the properties files, see [/magnolia-empty-webapp/src/main/webapp/WEB-INF/config/default](https://gitlab.com/magnolia-ce/ce/-/tree/release/6.3/magnolia-empty-webapp/src/main/webapp/WEB-INF/config/default?ref_type=heads) or in the `WEB-INF/config/default` directory in your Magnolia installation.
+
+## [](#_properties)Properties
+
+For a list of properties you can set in a `magnolia.properties` file, see [Configuration management](../../Architecture/Configuration-management/).
+
+## [](#_creating_a_single_war_file_with_multiple_configurations)Creating a single WAR file with multiple configurations
+
+To create a single WAR file with multiple configurations:
+
+1.  Create a new folder under `WEB-INF/config` for each configuration you need. Name the folders to match the name of the webapp.
+
+    /WEB-INF
+       /config
+           /devAuthor
+           /devPublic
+
+2.  If you are deploying on different servers, move the webapp folders inside a folder named after the server.
+
+    /WEB-INF
+       /config
+           /dev.mysite.com
+               /devAuthor
+               /devPublic
+
+3.  Copy the contents of `WEB-INF/config/default` into each webapp folder and customize the properties in the files.
+
+    /WEB-INF
+       /config
+           /dev.mysite.com
+               /devAuthor
+                   log4j.xml
+                   magnolia.properties
+                   repositories.xml
+               /devPublic
+                   log4j.xml
+                   magnolia.properties
+                   repositories.xml
+
+4.  Open `WEB-INF/web.xml` in a text editor and uncomment the `context-param` section for `magnolia.initialization.file`.
+
+5.  Edit the `context-param` section, adding paths to the webapp properties.
+
+    ```xml
+    <context-param>
+        <param-name>magnolia.initialization.file</param-name>
+        <param-value>
+            WEB-INF/config/dev.mysite.com/devAuthor/magnolia.properties,
+            WEB-INF/config/dev.mysite.com/devPublic/magnolia.properties
+        </param-value>
+    </context-param>
+    ```
+
+6.  Save `web.xml`.
+
+7.  Compile a WAR file, name it to match one of the webapps, and deploy the WAR on a servlet container on the target server.
+
+
+As the WAR is deployed on the container, the context listener applies any properties that match the path constructed after applying all variables; server name, webapp name and any context parameters and attributes.
+
+To test another deployment configuration, change the name of the WAR file and deploy again. A configuration that matches the new name will now be used.
+
+> **Tip:** You can follow the procedure above by compiling your own WAR file in an integrated development environment (IDE) such as Eclipse. Or, if you just want to try the multiple configuration mechanism, download the standalone Magnolia WAR file (Community Edition, DX Core) and change the file extension to .zip. Extract the zip, make your configuration changes in the extracted files, zip them again and change the extension back to .war. Now you can deploy the WAR to a servlet container. See http://svn.magnolia-cms.com/svn/community/projects/ in SVN for more examples.
+
+Watch `logs/magnolia-debug.log` for notifications. The log tells you which configuration files are loaded during deployment.
+
+2010-08-13 16:13:12,245 DEBUG MagnoliaServletContextListener: servername is dev-mac.local, rootPath is /Applications/tomcat/webapps/devAuthor, webapp is devAuthor
+2010-08-13 16:13:12,246 DEBUG MagnoliaServletContextListener: magnolia.initialization.file value in web.xml is: 'WEB-INF/config/${servername}/${webapp}/magnolia.properties, WEB-INF/config/default/magnolia.properties, WEB-INF/config/magnolia.properties'
+2010-08-13 16:13:12,839 INFO PropertiesInitializer: Loading configuration at /Applications/tomcat/webapps/devAuthor/WEB-INF/config/default/magnolia.properties
+2010-08-13 16:13:12,840 INFO PropertiesInitializer: Loading configuration at /Applications/tomcat/webapps/devAuthor/WEB-INF/config/dev-mac.local/devAuthor/magnolia.properties
+
+## [](#_vaadin_configuration_changes)Vaadin configuration changes
+
+Due to a [Vaadin update](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.20.adoc#_miscellaneous) in Magnolia `6.2.20`, custom setups require a change in the `web.xml` configuration file (in a custom webapp’s WAR under the `WEB-INF/` directory). In particular, you should add the following parameters.
+
+```xml
+<context-param>
+  <description>Vaadin production mode</description>
+  <param-name>productionMode</param-name> (1)
+  <param-value>true</param-value> (2)
+</context-param>
+<context-param>
+  <param-name>heartbeatInterval</param-name>
+  <param-value>90</param-value>
+</context-param>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Ensure the Vaadin `productionMode` parameter is present. |
+| **2** | The value should be `true`. |
+
+> **Warning:** If you don’t set productionMode to true, you’ll receive errors when starting your custom webapp showing that it’s unable to validate your Vaadin subscription.

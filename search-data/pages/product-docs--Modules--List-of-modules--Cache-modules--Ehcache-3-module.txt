@@ -1,0 +1,263 @@
+---
+title: "Ehcache 3 module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Cache-modules/Ehcache-3-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Cache modules > Ehcache 3 module
+---
+
+# Ehcache 3 module
+
+[Operations](../../../../use-cases/operations/) Bundled: Community edition
+
+| Edition | CE, Cloud |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLCACHE](https://magnolia-cms.atlassian.net/browse/MGNLCACHE) |
+| Maven site | [Cache](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcache%2Fmagnolia-cache-ehcache3%2F7.0.0) |
+| Latest | 7.0.0 |
+
+Magnolia uses Ehcache 3 for its back-end cache functionality by default. [Ehcache](http://www.ehcache.org) is a robust, proven and full-featured cache product which has made it the most widely-used Java cache.
+
+Compared with Ehcache 2, the 3.x line brings important changes and improvements such as full compatibility with javax.cache API ([JSR-107](https://www.jcp.org/en/jsr/detail?id=107)), off-heap storage capabilities, a revamped API, persistence, improved performance over Ehcache 2.x and much more.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.cache</groupId>
+  <artifactId>magnolia-cache-ehcache3</artifactId>
+  <version>7.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_ehcache_storage_tiers)Ehcache storage tiers
+
+An Ehcache 3 cache can be organized into storage tiers by storage type:
+
+-   Heap storage
+
+-   Off heap storage
+
+-   Disk storage
+
+
+Each storage tier can specify how much can be stored in each tier. Ehcache will select the appropriate tier to store a cache entry depending on how frequently it used and Ehcache manages storing cache entries among the storage tiers but you define the storage tiers of your cache in Magnolia. Which storage tiers you use and their sizes will affect the performance of the cache.
+
+Each of the storage types have advantages and disadvantages, and when used in combination can provide a performance-optimized, robust cache.
+
+### [](#_heap_storage)Heap storage
+
+Cache entries are stored as individual objects in memory on the JVM heap. Entry values are not serialized or deserialized when being stored or retrieved from the cache, so heap storage is the fastest of the Ehcache storage tiers.
+
+On the other hand, heap storage can be slowed down by JVM garbage collection and the amount of entries that can be stored in the heap storage is limited by the overall amount of heap available in the JVM.
+
+Heap storage can be bounded by number of items stored or by an overall size. However, there is a cost associated calculating the size of the cache contents when limiting the heap storage tier by number of entries.
+
+### [](#_off_heap_storage)Off heap storage
+
+Off heap storage stores the cache entries in blocks of memory on the JVM heap. Unlike heap storage cache values are serialized to the memory block when stored in the cache and deserialized from the memory block when retrieved.
+
+The serialization and deserialization add a certain overhead; so off-heap storage is slower than heap storage. Off-heap storage can be limited by an overall size but not by number of entries.
+
+### [](#_disk_storage)Disk storage
+
+Cache entries are stored as files. Cache values are serialized to the file when stored and deserialized when retrieved. Of the three storage tiers, disk storage is the slowest, though how fast disk storage is will depend on the speed and how dedicated the disk is.
+
+## [](#_storage_tiers_and_caches)Storage tiers and caches
+
+You can configure your cache to have one or more storage tiers. Ehcache will manage the cache entries, moving `hot` (frequently used) entries to faster storage tiers and `cold` (less frequently used) entries to slower storage tiers.
+
+The following combinations of storage tiers for a cache are possible:
+
+-   heap only (single tier)
+
+-   off heap only (single tier)
+
+-   disk only (single tier)
+
+-   heap + off-heap (2 tiers)
+
+-   heap + disk (2 tiers)
+
+-   heap + off-heap + disk (3 tiers)
+
+
+While it possible to define a cache with a single storage tier of any type (heap, off-heap or disk), you must always define a heap storage tier when configuring more than one storage tiers for your cache.
+
+## [](#_storage_tier_sizing)Storage tier sizing
+
+When using multiple storage tiers, Ehcache expects that each succeeding tier be larger than the previous tier. In other words, the heap tier must be smaller than the off-heap tier and disk tier and the off-heap tier must be smaller than the disk tier.
+
+It is possible to use define tiers in different denominations, for example, a heap tier sized by entries and an off heap tier sized by bytes, in this case Ehcache can’t ensure that the heap tier is actually smaller than the off-heap tier.
+
+## [](#_disk_storage_location)Disk storage location
+
+If you use a disk storage tier in your cache, the cache will store its contents on the file system. You can control the location of the cache files with Magnolia properties and configuration:
+
+-   By default, the location for disk storage is `${magnolia.cache.startdir}${magnolia.cache.manager.id}`.
+
+-   In the [`magnolia.properties` file](../../../../Administration/Deploying/WAR-file-with-multiple-configurations/#_magnolia_properties_file), the `magnolia.cache.startdir` property is preset to `${magnolia.home}/cache`.
+
+-   The default value of `magnolia.cache.manager.id` is the [**Context Path**](../../../../Apps/Developing-an-app/Specific-aspects/Location-location-location/#_parts_of_a_url).
+
+
+> **Tip:** See Configuration management for more on configuring Magnolia properties.
+
+You can also set the cache location by setting the property `diskStorePath` for the cache factory configuration at `/modules/cache/config/cacheFactory/delegateFactories/cacheFactory`.
+
+Setting the `diskStorePath` property may override the settings of the Magnolia properties `magnolia.cache.startdir` and `magnolia.cache.manager.id`.
+
+If `diskStorePath` is an absolute path, the disk cache files will be stored at its location.
+
+if `diskStorePath` is a relative path, the disk cache files will be stored at `${magnolia.cache.startdir}/<diskStorePath>`.
+
+## [](#_cache_persistence)Cache persistence
+
+The contents of a cache can be saved and restored after restarting Magnolia. Cache persistence thus saves the time for the cache to be repopulated.
+
+Only a cache with a disk storage tier can be persisted, so if you want a persistent cache, only the following cache configurations tiers can be used:
+
+-   disk only (single tier)
+
+-   heap + disk (2 tiers)
+
+-   heap + off-heap + disk (3 tiers)
+
+
+## [](#_configuring_a_persistent_cache)Configuring a persistent cache
+
+As mentioned, a persistent cache has to have a disk storage tier. The cache can configured to be persistent by setting the property `**persistent**` for the disk tier configuration `/modules/cache/config/cacheFactory/delegateFactories/ehcache3/caches/<cache name>/resourcePoolsBuilder/pools/<disk tier name>` to `true`.
+
+## [](#_configuration)Configuration
+
+Ehcache has its own configuration options that can be set in `/modules/cache/config/cacheFactory/`.
+
+**Example configuration**
+
+| Node name | Value |
+| --- | --- |
+| ⸬ cacheFactory |     |
+| ⬩ class | info.magnolia.module.cache.factory.DelegatingCacheFactory |
+| ⸬ delegateFactories |     |
+| ⸬ ehcache3 |     |
+| ⬩ class | info.magnolia.module.cache.ehcache3.EhCache3Factory |
+| ⸬ caches |     |
+| ⸬ default |     |
+| ⬩ class | info.magnolia.module.cache.ehcache3.configuration.EhCache3ConfigurationBuilder |
+| ⬩ keyType | java.io.Serializable |
+| ⬩ valueType | java.io.Serializable |
+| ⸬ resourcePoolsBuilder |     |
+| ⬩ class | info.magnolia.module.cache.ehcache3.configuration.Ehcache3ResourcePoolsBuilder |
+| ⸬ pools |     |
+| ⸬ heap |     |
+| ⬩ resourceType | HEAP |
+| ⬩ class | info.magnolia.module.cache.ehcache3.configuration.Ehcache3ResourcePoolBuilder |
+| ⬩ size | 10000 |
+| ⬩ resourceUnit | ENTRIES |
+| ⸬ disk |     |
+| ⬩ resourceType | DISK |
+| ⬩ class | info.magnolia.module.cache.ehcache3.configuration.Ehcache3ResourcePoolBuilder |
+| ⬩ persistent | true |
+| ⬩ size | 1000 |
+| ⬩ resourceUnit | MB  |
+| ⸬ expiryPolicy |     |
+| ⬩ class | info.magnolia.module.cache.ehcache3.configuration.EhCache3Expiry |
+
+**Properties**
+
+  PropertyDefaultDescription
+
+`keyType`
+
+`none`
+
+**required**
+
+The key type for the cache.
+
+`valueType`
+
+`none`
+
+**required**
+
+The value type for the cache.
+
+`resourceType`
+
+`HEAP`
+
+The type of the cache pool: `HEAP`, `OFFHEAP`, or `DISK`.
+
+See **Storage tiers** in [http://www.ehcache.org/documentation/3.0/caching-concepts.html](http://www.ehcache.org/documentation/3.0/caching-concepts.html).
+
+`resourceUnit`
+
+`ENTRIES`
+
+**optional**
+
+The size-type applied for the given resource pool.
+
+The `HEAP` pool can be sized by entries (`ENTRIES`) or by bytes (`B`, `KB`, `MB`, `GB`, `TB`, `PB`).
+
+> **Tip:** If you leave resouceUnit unset, but set size (see below) to 10 for example, then it is interpreted as 10 entries.
+
+The `OFFHEAP` and `DISK` pools are sized by bytes only (`B`, `KB`, `MB`, `GB`, `TB`, `PB`).
+
+`persistent`
+
+`false`
+
+Persistence of the disk storage pool. Persistence means the cache will survive a JVM restart.
+
+Only a `DISK` tier can set `persistent` to `true`. Setting a `HEAP` or `OFFHEAP` tier to be persistent will result in an error.
+
+`size`
+
+`10`
+
+**required**
+
+The size of the given resource pool.
+
+> **Important:** A DISK size limit applies to every individual cache, not the DISK size in total. To limit the size of any individual cache, extend the default cache configuration and set the limit there.Table 2. /modules/cache/config/cacheFactory/delegateFactories/ehcache3/caches/  NameValue⸬ someCache     ⸬ resourcePoolsBuilder         ⸬ pools             ⸬ disk                 ⬩ size1                 ⬩ resourceUnitGB⬩ extends../default
+
+`expiryPolicy` / `create`
+
+`infinite`
+
+Lifetime in seconds for all entries when those are initially added. This does not apply to entries with an explicitly specified time to live (TTL).
+
+`infinite` means that the mapping will never expire.
+
+`expiryPolicy` / `update`
+
+`none`
+
+Expiration time in seconds when an existing entry is updated.
+
+`none` means that the expiration time remains unchanged.
+
+`expiryPolicy` / `access`
+
+`none`
+
+Expiration time in seconds when an existing entry is accessed.
+
+`none` means that the expiration time remains unchanged.
+
+`blockingTimeout`
+
+`10000`
+
+Instructs Ehcache to wait the specified time in milliseconds before attempting to cache the request.
+
+> **Warning:** Create the blockingTimeout property in the tree at the same level where the info.magnolia.module.cache.ehcache3.EhCache3Factory class is defined, not inside the <cacheName> node.

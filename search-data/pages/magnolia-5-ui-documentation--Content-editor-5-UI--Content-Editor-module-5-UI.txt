@@ -1,0 +1,72 @@
+---
+title: "Content Editor module - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-editor-5-UI/Content-Editor-module-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content editor - 5 UI > Content Editor module - 5 UI
+---
+
+# Content Editor module - 5 UI
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [CONTEDIT](https://magnolia-cms.atlassian.net/browse/CONTEDIT) |
+| Maven site | [Content Editor](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.sites/content-editor/) |
+| Latest | 2.1.14 |
+
+> **Note:** This page has been created for the Magnolia 5 UI framework. For the 6 UI framework page, see Content Editor module instead.
+
+The Content Editor module provides a platform for handling well-defined blocks of content in Magnolia. The core of the platform is the Magnolia Content Editor submodule, implemented as the stories-app submodule which allows editors to create and edit stories in the Author instance using the [Stories app](#6.2@product-docs:ROOT:Apps/List-of-apps/Stories-app.adoc).
+
+> **Caution:** Compatibility noteUnresolved include directive in modules/ROOT/pages/Content-editor-5-UI/Content-Editor-module-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/_contentEditorModule-5ui6ui.adoc[]
+
+## [](#_module_structure)Module structure
+
+| artifactID |     |
+| --- | --- |
+| `content-editor-parent` | Parent reactor. |
+| `magnolia-content-editor` | Provides a free-form content editor (including the [ContentEditorSubApp](../../Content-apps-5-UI/App-configuration-5-UI/Subapp-descriptor-5-UI/ContentEditorSubApp-descriptor-5-UI/)). |
+| `magnolia-content-editor-widgetset` | Provides a custom widgetset for the Content editor. |
+| `stories-app` | Provides the [Stories app](#6.2@product-docs:ROOT:Apps/List-of-apps/Stories-app.adoc), the default Magnolia implementation. |
+| `article-editor` | Provides the Articles app, an example Magnolia implementation. |
+| `magnolia-block-api` | Provides a basic API for the *blocks* (content sections). |
+| `magnolia-block-templating` | Provides the functionality to render the blocks. |
+| `magnolia-link-unfurl` | Provides utilities for unfurling external web links.*Unfurling* means fetching and displaying metadata for a given URL (for example. a preview image, a title and description etc.). |
+
+If you want to use the example Magnolia implementation – the Stories app – add this dependency to your webapp:
+
+Unresolved include directive in modules/ROOT/pages/Content-editor-5-UI/Content-Editor-module-5-UI.adoc - include::6.2@product-docs:ROOT:partial$general/r\_install-with-maven.adoc\[\]
+
+If you want to build your own custom implementation, add this dependency to your module:
+
+Unresolved include directive in modules/ROOT/pages/Content-editor-5-UI/Content-Editor-module-5-UI.adoc - include::6.2@product-docs:ROOT:partial$general/r\_install-with-maven.adoc\[\]
+
+If you intend to build custom blocks, add this dependency to your module:
+
+Unresolved include directive in modules/ROOT/pages/Content-editor-5-UI/Content-Editor-module-5-UI.adoc - include::6.2@product-docs:ROOT:partial$general/r\_install-with-maven.adoc\[\]
+
+Maven dependency management will include the other required content-editor submodules. Make sure you use the same version for all dependencies.
+
+### [](#_content_editor_modules_in_magnolia_webapps_and_bundles)Content editor modules in Magnolia webapps and bundles
+
+Preconfigured DX Core bundles or webapps, such as [{magnolia-latest-version} WAR file](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/{magnolia-latest-version}/magnolia-dx-core-webapp-{magnolia-latest-version}.war) for example, already contain the following six submodules:
+
+-   `magnolia-content-editor`
+
+-   `magnolia-content-editor-widgetset`
+
+-   `stories-app`
+
+-   `magnolia-block-api`
+
+-   `magnolia-block-templating`
+
+-   `magnolia-link-unfurl`
+
+
+> **Caution:** The module bundled (version 2.1.14) in the 6.2 Magnolia branch is compatible with the 5 UI framework.
+
+#### [](#_demo_modules_decorate_the_stories_app)Demo modules decorate the `stories-app`
+
+Be aware that [Demo](#6.2@product-docs:ROOT:Getting-started-with-Magnolia/Demo.adoc) decorates the `stories-app`.

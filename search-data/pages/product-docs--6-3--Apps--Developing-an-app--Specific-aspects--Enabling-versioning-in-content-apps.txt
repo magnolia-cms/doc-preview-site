@@ -1,0 +1,140 @@
+---
+title: "Enabling versioning in content apps"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/Developing-an-app/Specific-aspects/Enabling-versioning-in-content-apps/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > Developing an app > Enabling versioning in content apps
+---
+
+# Enabling versioning in content apps
+
+Magnolia versions pages, assets and contacts by default when they are [published](../../../../Authoring/Publishing/) and unpublished. You can also configure versioning for any other content type.
+
+> **Tip:** A fresh Magnolia installation does not have versioned content. Demo content is bootstrapped and immediately marked as published. You see a green publication status icon but no publication has actually happened.
+
+## [](#_configuring_versioning)Configuring versioning
+
+You can enable versioning in a content app by triggering the `activate/deactivate` [command chains](#_command_chains) in the `versions` catalog instead of the `activate/deactivate` commands in the `default` catalog. Here is the process to enable versioning in the **Categories** app.
+
+In the **Configuration** app > `/modules/categorization/apps/categories/subApps/browser`:
+
+1.  Change the `activate` and `deactivate` action definitions.
+    In the `/actions/activate` and `/deactivate` nodes add a `catalog` property and set the value to `versioned`. This calls the chained version command configured in the `activation` module in `modules/activation/commands/versioned/activate` and `/deactivate`.
+
+    | Node name | Value |
+    | --- | --- |
+    | 📁 modules |     |
+    | 📁 categorization |     |
+    | ⸬ apps |     |
+    | ⸬ categories |     |
+    | ⸬ subApps |     |
+    | ⸬ browser |     |
+    | ⸬ actions |     |
+    | ⸬ activate |     |
+    | ⸬ availability |     |
+    | ⬩ catalog | versioned |
+    | ⬩ class | info.magnolia.ui.framework.action.ActivationActionDefinition |
+    | ⬩ command | activate |
+    | ⬩ icon | icon-publish |
+    | ⬩ recursive | true |
+    | ⸬ deactivate |     |
+    | ⸬ availability |     |
+    | ⬩ catalog | versioned |
+    | ⬩ class | info.magnolia.ui.framework.action.DeactivationActionDefinition |
+    | ⬩ command | deactivate |
+    | ⬩ icon | icon-unpublish |
+
+2.  Add the **Show versions** action configuration.
+
+    In the `/actions` node add the `/showVersions` configuration as shown below. Alternatively, you can simply [extend](../../../../Administration/Architecture/Configuration-management/#_extending_configuration) the configuration in another content app, for example the configuration in the **Contacts** app configured in `/modules/contacts/apps/contacts/subApps/browser/actions/showVersions`.
+
+    | Node name | Value |
+    | --- | --- |
+    | ⸬ browser |     |
+    | ⸬ actions |     |
+    | ⸬ activate |     |
+    | ⸬ deactivate |     |
+    | ⸬ showVersions |     |
+    | ⸬ availability |     |
+    | ⸬ rules |     |
+    | ⸬ HasVersionsRule |     |
+    | ⬩ implementationClass | info.magnolia.ui.framework.availability.HasVersionsRule |
+    | ⬩ class | info.magnolia.ui.contentapp.browser.action.ShowVersionsActionDefinition |
+    | ⬩ icon | icon-show-versions |
+
+3.  Add the **Show versions** action to the action bar.
+    In the `/actionbar/sections/category/groups` node, add the `/versionsActions` configuration shown below. Alternatively, you can simply [extend](../../../../Administration/Architecture/Configuration-management/#_extending_configuration) the configuration in another content app, for example, the configuration in the **Contacts** app configured in `/modules/contacts/apps/contacts/subApps/browser/actionbar/sections/contact/groups/versionsActions`.
+
+    | Node name | Value |
+    | --- | --- |
+    | ⸬ browser |     |
+    | ⸬ actions |     |
+    | ⸬ actionbar |     |
+    | ⸬ sections |     |
+    | ⸬ root |     |
+    | ⸬ deletedFolder |     |
+    | ⸬ deletedCategory |     |
+    | ⸬ folder |     |
+    | ⸬ category |     |
+    | ⸬ groups |     |
+    | ⸬ addActions |     |
+    | ⸬ editActions |     |
+    | ⸬ activationActions |     |
+    | ⸬ importExportActions |     |
+    | ⸬ versionsActions |     |
+    | ⸬ items |     |
+    | ⸬ showVersions |     |
+
+4.  In the **Categories** app, create a few versions by publishing and unpublishing an item and then execute the **Show versions** action to open the **VERSIONS** dialog.
+
+
+### [](#_number_of_versions)Number of versions
+
+The number of versions you can create depends on the Magnolia edition:
+
+-   In the Community Edition, the number of versions is set to 3 and this is not configurable.
+
+-   In DX Core, the number of versions is unlimited and you can set it in the configuration. By default, 10 versions are stored.
+
+
+The number of versions is configured in `/server/versions`:
+
+| Node name | Value |
+| --- | --- |
+| 📁 server |     |
+| ⸬ version |     |
+| ⬩ active | true |
+| ⬩ maxVersionIndex | 10  |
+
+Properties:
+
+-   `active` enables and disables versioning.
+
+-   `maxVersionIndex` sets the number of versions to store.
+
+
+Previous versions are deleted when you change to a smaller number and create a version. It’s OK to change the number. The index won’t be affected until a new version is created. For example, if node `A` has 10 versions and you change the max version index to 2, you will still see all 10 versions until the next versioning occurs. Once node `A` is versioned again, all previous 9 versions will be removed.
+
+### [](#_version_command)Version command
+
+Versions are created when info.magnolia.commands.impl.VersionCommand is triggered. A new version of the content is created and added to the version file. `VersionCommand` provides for standard and recursive versioning, and the addition of a version comment.
+
+### [](#_command_chains)Command chains
+
+Command definitions that call `versionCommand` are configured for the `publish` and `unpublish` [command chains](../../../../Developing/Commands/#_chaining_commands) in the [Publishing module](../../../../Modules/List-of-modules/Publishing-module/).
+
+The command chains are triggered when the **Publish**, **Unpublish** and **Request permanent deletion** actions are executed in the various apps that use them.
+
+## [](#_diff_implementation)Diff implementation
+
+Version comparison relies on functionality provided by the [Diff module](../../../../Modules/List-of-modules/Diff-module/). The module uses the [daisydiff](http://code.google.com/p/daisydiff/) java library to compare HTML files.
+
+See [Diff configuration](../../../../Modules/List-of-modules/Diff-module/#_configuration).
+
+Related topics
+
+-   [Deleting and restoring](../../../../Authoring/Deleting-and-restoring/)
+
+-   [Diff module](../../../../Modules/List-of-modules/Diff-module/)
+
+-   [Versioning](../../../../Authoring/Versioning/) (how to show, compare and restore versions)

@@ -1,0 +1,41 @@
+---
+title: "Social platform embeds not working"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Troubleshooting/Social-platform-embeds-not-working/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Troubleshooting > Social platform embeds not working
+---
+
+# Social platform embeds not working
+
+Facebook, LinkedIn, X, and some other platforms use HTTP range requests to read Open Graph tags. In certain cases, this may cause the associated crawler to not work for Magnolia websites.
+
+A workaround is to use a [voter](../../Voters/) that bypasses the `gzip` filter if the incoming request is within the specified range type and is coming from the configured platform.
+
+Click to see an example configuration for Facebook.
+
+config.server.filters.gzip.bypasses.facebook.yaml
+
+```yml
+gzip:
+  class: info.magnolia.module.cache.filter.GZipFilter
+  jcr:primaryType: mgnl:content
+  bypasses:
+    jcr:primaryType: mgnl:content
+    vaadinPush:
+      class: info.magnolia.voting.voters.URIRegexVoter
+      enabled: true
+      pattern: ^.*\/.magnolia\/admincentral(-m5)*\/PUSH(\?.+)*$
+    facebook:
+      class: info.magnolia.voting.voters.BoolVoterSet
+      op: AND
+      voters:
+        userAgent:
+          class: info.magnolia.voting.voters.RequestHeaderPatternRegexBoolVoter
+          headerName: User-Agent
+          pattern: .*facebookexternalhit.*
+        rangeRequest:
+          class: info.magnolia.voting.voters.RequestHeaderPatternRegexBoolVoter
+          headerName: Range
+          pattern: .*
+```

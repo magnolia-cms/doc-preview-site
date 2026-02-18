@@ -1,0 +1,466 @@
+---
+title: "AWS S3 extension configuration"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/extensions-and-frameworks/external-dam-integration-framework/external-dam-s3-config/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > External DAM integration framework > AWS S3 extension
+---
+
+# AWS S3 extension configuration
+
+[Digital asset management (DAM)](../../../../use-cases/Digital-asset-management/) Unbundled: [Extension](../../../#_module_types) License: [Special license](../../../../Administration/License/#_special_licenses)\[[1](#_footnotedef_1 "View footnote.")\]
+
+> **Note:** Starting with Magnolia 6.4, the S3 integration in this module is deprecated in favor of the DAM 6.0 external binary storage implementation provided by the magnolia-dam-jcr-s3 module.New projects should use the DAM module for storing binaries externally and keep asset metadata in JCR. See magnolia-dam-jcr-s3 for details. See DAM module for an overview of external binary storage.The External DAM Integration Framework remains available, and the Bynder connector continues to be supported.
+
+This page explains how to configure the connection between the External DAM module and your AWS S3 external asset management solution.
+
+Essentially, you:
+
+-   Set up IAM policy permissions.
+
+-   Provide connection credentials for S3.
+
+-   Enable the subapp to display in the Magnolia [Assets app](../../../../Apps/List-of-apps/Assets-app/).
+
+-   Configure the extension.
+
+
+## [](#_aws_iam_policy)AWS IAM Policy
+
+Make sure that you have acquired appropriate permissions for the service in the [AWS IAM Management Console](https://console.aws.amazon.com/iam/home?region=us-east-2#/users).
+
+![AWS IAM Policy](../../../../_images/aws-aim-console-users-focus-blur.png)
+
+## [](#_licensing)Licensing
+
+The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../Administration/License/).
+
+## [](#_minimum_required_permissions)Minimum required permissions
+
+To use Magnolia with AWS S3, the following permissions are required.
+
+> **Note:** Based on your project requirements, you need to decide which specific S3 buckets these permissions apply to and specify them in your policy’s Resource section. The example below shows permissions granted to all buckets; you should implement a more restrictive policy.
+
+-   `s3:ListBucket`
+
+-   `s3:GetBucketLocation`
+
+-   `s3:ListAllMyBuckets`
+
+-   `s3:GetObject`
+
+-   `s3:PutObject`
+
+-   `s3:DeleteObject`
+
+-   `s3:PutObjectAcl`
+
+-   `s3:GetObjectAcl`
+
+-   `s3:HeadObject`
+
+-   `s3:CopyObject`
+
+-   `s3:CreateBucket`
+
+
+For more information about these permissions, see the Amazon documentation [Actions defined by Amazon S3](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazons3.html#amazons3-actions-as-permissions) page.
+
+Policy example
+
+```javascript
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowS3Operations",
+            "Effect": "Allow",
+            "Action": [ (1)
+                "s3:ListBucket",
+                "s3:GetBucketLocation",
+                "s3:ListAllMyBuckets",
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject",
+                "s3:PutObjectAcl",
+                "s3:GetObjectAcl",
+                "s3:HeadObject",
+                "s3:CopyObject",
+                "s3:CreateBucket"
+            ],
+            "Resource": [ (2)
+                "arn:aws:s3:::*",
+                "arn:aws:s3:::*/*"
+            ]
+        }
+    ]
+}
+```
+
+|     |     |
+| --- | --- |
+| **1** | Grant access for the list of bucket and object-level permissions. |
+| **2** | List the AWS S3 buckets to which you want these permissions to apply. In this example, the permissions apply to all buckets; you should implement a more restrictive policy based on your specific requirements. |
+
+> **Important:** Buckets created via the external DAM connector don’t have ACLs and have blocked public access; you must adjust them to enable public access.
+
+### [](#_configuring_the_aws_connection)Configuring the AWS connection
+
+> **Tip:** The magnolia-aws-foundation module handles all Amazon connections from Magnolia. It’s installed automatically by Maven when you install any AWS-dependent module.
+
+To use AWS in Magnolia, you must have a working AWS account.
+
+You need [AWS credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) to connect AWS to Magnolia. Credentials consist of:
+
+-   AWS access key ID
+
+-   AWS secret access key
+
+-   Optionally, a session token (when using the AWS default credential provider chain)
+
+
+Generate the key in the security credentials section of the [Amazon IAM Management Console](https://console.aws.amazon.com/iam/home?region=us-east-2#/users). In the navigation bar on the upper right, choose your user name, and then choose **My Security Credentials**. You can store your AWS credentials using:
+
+-   Magnolia Passwords app (session tokens aren’t supported in the app)
+
+-   AWS default credential provider chain
+
+
+#### [](#_using_the_passwords_app)Using the Passwords app
+
+Add your generated access key ID and the secret access key to your Magnolia instance in the [Passwords app](../../../List-of-modules/Password-Manager-module/) using the following names and order:
+
+|     |     |
+| --- | --- |
+| 📁 `aws-credentials` |     |
+|     | `aws_access_key_id` |
+|     | `aws_secret_access_key` |
+
+#### [](#_using_the_aws_default_credential_provider_chain)Using the AWS default credential provider chain
+
+The AWS SDK uses a chain of sources to look for credentials in a specific order. For more information, see [Default credentials provider chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html).
+
+1.  Set your AWS credentials by following the instructions in the AWS documentation: [Provide temporary credentials to the SDK](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html).
+
+    > **Note:** For a more secure implementation using the default credential provider chain, we recommend using a session token, which expires, rather than a permanent user token.
+
+2.  Disable Magnolia’s internal credential handling by doing one of the following:
+
+    1.  Adding the following configuration properties to your [`WEB-INF/config/default/magnolia.properties`](../../../../Administration/Architecture/Configuration-management/) file:
+
+        ```java
+        magnolia.aws.validateCredentials=false
+        magnolia.aws.useCredentials=false
+        ```
+
+    2.  Using JVM arguments as shown in the next step.
+
+
+3.  Set your AWS session or user token. AWS credentials can be injected using environment variables or JVM system properties. For more details, see [Default credentials provider chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) and [Configure access to temporary credentials](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-temporary.html).
+
+    Example configuration with a session token and JVM arguments
+
+    ```java
+    -Dmagnolia.aws.validateCredentials=false(1)
+    -Dmagnolia.aws.useCredentials=false(1)
+    -Daws.accessKeyId=$AWS_ACCESS_KEY_ID(2)
+    -Daws.secretAccessKey=$AWS_SECRET_ACCESS_KEY(2)
+    -Daws.sessionToken=$AWS_SESSION_TOKEN(2)(3)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Disables Magnolia’s internal credential handling using JVM properties. |
+    | **2** | JVM properties to inject environment variables containing the AWS credentials. Ensure that your environment variables `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` are set. |
+    | **3** | `AWS_SESSION_TOKEN` is optional. |
+
+    Example configuration with a permanent user token
+
+    ```java
+    -Dmagnolia.aws.validateCredentials=false
+    -Dmagnolia.aws.useCredentials=false
+    -Daws.accessKeyId=<your-access-key-id>
+    -Daws.secretAccessKey=<your-secret-access-key>
+    ```
+
+
+## [](#_enabling_your_subapp)Enabling your subapp
+
+By default, the AWS S3 subapp is disabled.
+
+To enable it, decorate the Magnolia [Assets app](../../../../Apps/List-of-apps/Assets-app/) under `<dam-connector>/decorations/dam` and set the `enabled` property to `true`.
+
+dam-s3/decorations/dam/dam.config.yaml
+
+```yaml
+providers:
+  s3Provider:
+    identifier: s3
+    enabled: true
+    class: info.magnolia.external.dam.s3.datasource.S3AssetProvider
+```
+
+## [](#_configuration)Configuration
+
+You can create or edit the configuration in the JCR or the File System (YAML) under `magnolia-external-dam-s3/external-dams/<definition-name>`.
+
+### [](#_single_asset_provider_for_link_fields)Single asset provider for link fields
+
+You can configure a [link field](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/) to limit your users to selecting assets from only one asset provider.
+
+> **Note:** This is possible from External DAM 1.0.7 (DAM module 3.0.8). Previously, you had to use the aggregated damLinkField and users had to choose from all the enabled asset providers.
+
+This example shows a dialog definition with two link fields, each limited to different asset providers:
+
+external-dam/dialogs/components/textExternalImage.yaml
+
+```yaml
+form:
+  properties:
+    s3:
+      $type: damLinkField
+      chooserId: dam-s3:chooser
+      datasource:
+        class: info.magnolia.dam.app.data.AssetDatasourceDefinition
+        name: s3
+    jcr:
+      $type: linkField
+      converterClass: info.magnolia.ui.editor.converter.JcrAssetConverter
+      datasource:
+        $type: jcrDatasource
+        workspace: website
+```
+
+### [](#_aws_s3_bucket_whitelist)AWS S3 bucket whitelist
+
+By default, all the buckets in the S3 account you connect to are displayed. If you don’t want to display all your buckets, you can configure a whitelist in the **Resource files** app using regex.
+
+For example:
+
+dam-s3/config.yaml
+
+```yaml
+whitelistedBuckets:
+- "^a.*"
+- a-particular-bucket
+```
+
+### [](#_adding_a_filter_capability_to_s3_buckets)Adding a filter capability to S3 buckets
+
+If you want to restrict access to a single bucket, either because it’s used in different use cases or for some confidentiality-related reasons, you can add a bucket prefix. Using a bucket prefix grants access only to that specific bucket without revealing its actual path which might contain unwanted access information. This way the user sees the bucket and folders as the only folders in the Magnolia instance.
+
+To use the filter, add the following bucket prefix to your `config.yaml` file:
+
+dam-s3/config.yaml
+
+```yaml
+whitelistedBuckets:
+	-  BUCKET_NAME
+bucketPrefixes:
+	BUCKET_NAME: “FOLDER_NAME/SUBFOLDER_NAME”
+```
+
+### [](#_cache)Cache
+
+This integration framework uses [Caffeine](https://github.com/ben-manes/caffeine), a high-performance Java cache library, to manage caching for external assets via a Magnolia helper module called `magnolia-addon-commons-cache`.
+
+For S3 caching, you can specify the behavior of the caches. Essentially, you can configure all the parameters available in [CaffeineSpec](https://github.com/ben-manes/caffeine/blob/e8ff6d3261e7f5666d2b486352cc04b2874d70ed/caffeine/src/main/java/com/github/benmanes/caffeine/cache/CaffeineSpec.java).
+
+For example:
+
+-   Set a maximum cache size.
+
+-   Define how often the cache expires.
+
+-   Enable or disable the cache.
+
+
+You configure caching through [decoration](../../../../Developing/Definition-decoration/) under `/<dam-connector>/decorations/addon-commons-cache/config.yaml`.
+
+/dam-s3/decorations/addon-commons-cache/config.yaml
+
+```yml
+cacheConfigurations:
+  s3:
+    caches:
+      s3-objects: maximumSize=500, expireAfterAccess=10m
+      s3-buckets: expireAfterAccess=60m
+    s3-count: maximumSize=500, expireAfterAccess=10m
+    s3-pages: maximumSize=500, expireAfterAccess=10m
+```
+
+#### [](#_cache_configuration_properties)Cache configuration properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>caches</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Use CaffeineSpec properties to specify the cache behavior such as the maximum size of the cache and when cache entries expire for each cache.</p></div><div class="ulist"><ul><li><p><a href="https://www.javadoc.io/doc/com.github.ben-manes.caffeine/caffeine/latest/com/github/benmanes/caffeine/cache/Caffeine.html#maximumSize-long-" target="_blank" rel="noopener">maximumSize</a>: default is 500</p></li><li><p><a href="https://www.javadoc.io/doc/com.github.ben-manes.caffeine/caffeine/latest/com/github/benmanes/caffeine/cache/Caffeine.html#expireAfterAccess-java.time.Duration-" target="_blank" rel="noopener">expireAfterAccess</a>: default is 10m</p></li></ul></div><div class="paragraph"><p>For example:</p></div><div class="paragraph"><p><code>&lt;cacheName-1&gt;: maximumSize=500, expireAfterAccess=10m</code></p></div><div class="paragraph"><p><code>&lt;cacheName-2&gt;: expireAfterAccess=60m</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <code>true</code> by default</p></div><div class="paragraph"><p>Set to <code>false</code> to disable caching.</p></div></div></td></tr></tbody></table></div>
+
+#### [](#_manually_flushing_the_cache)Manually flushing the cache
+
+If you want to flush the cache, you can either set the cache expiry to a very short time (see above) or configure a script in the [Groovy app](../../../../Apps/List-of-apps/Groovy-app/) to flush the cache manually. For example:
+
+```groovy
+import info.magnolia.objectfactory.Components
+
+cacheManager = Components.getComponent(info.magnolia.addon.commons.cache.CacheManager)
+cacheManager.evictCache("s3-objects")
+```
+
+### [](#_pagination)Pagination
+
+Magnolia retrieves *pages* of objects from S3 and then obtains the assets you require from those pages. The pages are cached.
+
+You can configure the size of a page of objects using the property `pageSize` to improve response times.
+
+dam-s3/config.yaml
+
+```yml
+pageSize: 100
+```
+
+| Property | Description |
+| --- | --- |
+| `pageSize` | **optional**<br><br>For S3, the *minimum* number of objects per request retrieved from S3 possible is 100. The *maximum* is 1000. |
+
+### [](#_maximum_search_time_for_s3)Maximum search time for S3
+
+You can configure the maximum time [Magnolia Periscope](../../../List-of-modules/Periscope-module/) spends searching for S3 assets to be displayed in the Magnolia interface when a user searches for an asset in the Global Search.
+
+dam-s3/config.yaml
+
+```yml
+maxSearchTimeInMilis: 10000
+```
+
+| Property | Description |
+| --- | --- |
+| `maxSearchTimeInMilis` | **optional**<br><br>The maximum time Magnolia Periscope spends searching for S3 assets. By default, the maximum search time is 10 seconds.<br><br>For example: maxSearchTimeInMilis: 10000 |
+
+### [](#_presigned_urls_to_enable_previewing_for_s3_assets)Presigned URLs to enable previewing for S3 assets
+
+When you upload assets via Magnolia to S3, they’re set to private by default. If you want to keep the preview functionality available, you must use presigned URLs.
+
+dam-s3/config.yaml
+
+```yml
+presignedSignatureDurationInMinutes: 60
+```
+
+| Property | Description |
+| --- | --- |
+| `presignedSignatureDurationInMinutes` | **optional**<br><br>Determines how long a presigned URL is valid.<br><br>We recommend that the duration is at least equal to the expiration of the caches set for s3-objects\`, `s3-pages` and `s3-count`. Otherwise, the presigned URL may be not valid while it’s still cached.<br><br>For example: `presignedSignatureDurationInMinutes: 60` |
+
+### [](#_default_aws_region)Default AWS region
+
+By default, Magnolia sets the default AWS region to `us-west-2`. If your organization can’t support the default for compliance reasons, you can set a different default AWS region for the S3 connector.
+
+For example, set the `defaultRegion` property to `“cn-northwest-1“` to get buckets in the China region.
+
+/dam-s3/config.yaml
+
+```yaml
+defaultRegion: "cn-northwest-1"
+```
+
+### [](#_aws_regions_list)AWS regions list
+
+When creating an S3 bucket in the Assets app, only AWS-enabled regions are displayed to users.
+
+> **Note:** AWS S3 bucket names are globally unique, meaning no two buckets can have the same name. If you try to create a bucket and receive an error stating the bucket already exists, it means that the bucket name is already in use, either by you or someone else.
+
+If your users want to use a disabled region, you must enable it first in AWS as described in [Managing AWS Regions](https://docs.aws.amazon.com/general/latest/gr/rande-manage.html) in the AWS documentation.
+
+Then you must remove the newly enabled region from the list of disabled regions in the Magnolia configuration so that it appears in the chooser.
+
+/dam-s3/config.yaml
+
+```yaml
+disabledRegions:
+  - "ap-east-1"
+  - "af-south-1"
+  - "eu-south-1"
+  - "me-south-1"
+  - "cn-north-1"
+  - "cn-northwest-1"
+  - "us-gov-east-1"
+  - "us-gov-west-1"
+  - "us-iso-east-1"
+  - "us-isob-east-1"
+```
+
+### [](#_access_buckets_in_multiple_regions)Access buckets in multiple regions
+
+You can access buckets from non-default AWS regions. Previously, buckets from other regions were not listed and could not be accessed.
+
+The optional `extraBuckets` configuration property lets you specify additional buckets to display, even if they are outside the default region.
+
+dam-s3/config.yaml
+
+```yaml
+disabledRegions:
+  - "ap-east-1"
+  - "af-south-1"
+extraBuckets:
+  - "other-bucket"
+defaultRegion: "us-east-2"
+```
+
+### [](#_thread_pool_for_s3_search_operations)Thread pool for S3 search operations
+
+You can control the allocation of system resources for handling search requests in the S3 connector.
+
+dam-s3/config.yaml
+
+```yml
+searchThreadPoolIdleLiveTime: 30L
+```
+
+| Property | Description |
+| --- | --- |
+| `searchThreadPoolIdleLiveTime` | **optional** *default is `30L`*<br><br>Sets the time (in seconds) that the thread is held idle in the pool before being terminated. This helps to optimize resource usage by reducing the number of idle threads when they’re not needed. |
+
+### [](#_number_of_child_objects_when_renaming_folders)Number of child objects when renaming folders
+
+When you rename a folder, all the child objects are retrieved via API and aligned accordingly. The `maxKeysRenaming` property determines the maximum number of keys returned by the API call.
+
+The higher the value of the property, the longer the action takes to complete.
+
+dam-s3/config.yaml
+
+```yml
+maxKeysRenaming: 1000
+```
+
+| Property | Description |
+| --- | --- |
+| `maxKeysRenaming` | **optional**, *default is `1000`*<br><br>The maximum number of keys returned by the API call retrieving children objects from S3 during folder renaming. Valid range is \[100-1000\] |
+
+### [](#_asset_width_and_height_storage_in_metadata)Asset width and height storage in metadata
+
+When you create an asset in Magnolia, the `storeWidthAndHeight` property determines if the width and height of the asset are stored in the corresponding S3 item as metadata.
+
+dam-s3/config.yaml
+
+```yml
+storeWidthAndHeight: false
+```
+
+| Property | Description |
+| --- | --- |
+| `storeWidthAndHeight` | **optional**, *default is `false`*<br><br>Set to `true` to store the width and height of an asset created in Magnolia in the corresponding S3 item as metadata. |
+
+### [](#_hiding_the_bucket_name)Hiding the bucket name
+
+The `hideBucket` property determines if the S3 bucket name is displayed in the Assets app or not. When set to true, the bucket name no longer appears in the app folder names and asset descriptions.
+
+dam-s3/config.yaml
+
+```yml
+hideBucket: false
+```
+
+| Property | Description |
+| --- | --- |
+| `hideBucket` | **optional**, *default is `false`*<br><br>Set to `true` to hide the S3 bucket name in the Assets app. |
+
+* * *
+
+[1](#_footnoteref_1). The framework is included with your DX Core license. However, the associated extensions require an additional special license.

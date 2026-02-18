@@ -1,0 +1,24 @@
+---
+title: "Magnolia Publication logs"
+url: https://docs.magnolia-cms.com/cockpit/logs-magnolia-publication/
+category: DX Cloud
+version: cloud
+---
+
+# Magnolia Publication logs
+
+Magnolia Publication logs provide detailed visibility into content publishing operations between your author and public instances. Use these logs to monitor publishing health, troubleshoot failed transfers, analyze publishing performance, and ensure content synchronization across your public instances.
+
+## [](#_key_information_tracked)Key information tracked
+
+Publication logs capture operational events including:
+
+-   **Publishing operations**: Each publish or unpublish action with the content path, workspace and target subscriber
+
+-   **Transaction status**: Whether operations succeeded, were committed to the public instance, or required rollback due to errors
+
+-   **Performance metrics**: Publishing time and subscriber response time
+
+-   **User attribution**: Which user initiated each publishing action
+
+-   **Environment context**: Component, namespace, pod, and subscriber service handling the operation

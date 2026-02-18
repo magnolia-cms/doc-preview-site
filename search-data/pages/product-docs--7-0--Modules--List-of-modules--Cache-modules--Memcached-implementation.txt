@@ -1,0 +1,107 @@
+---
+title: "Memcached implementation"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Cache-modules/Memcached-implementation/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Cache modules > Memcached implementation
+---
+
+# Memcached implementation
+
+[Operations](../../../../use-cases/operations/) Bundled: Community edition
+
+| Edition | CE, Cloud |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLCACHE](https://magnolia-cms.atlassian.net/browse/MGNLCACHE) |
+| Maven site | [Cache](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcache%2Fmagnolia-cache-memcached%2F7.0.0) |
+| Latest | 7.0.0 |
+
+[Memcached](http://memcached.org) is a high-performance, distributed memory object caching system. Memcached implementation for Magnolia CMS brings you the advantages of a distributed cache:
+
+-   Sharing of cache items between multiple instances of Magnolia.
+
+-   Cached items persist restart of Magnolia instance.
+
+-   Memcached servers may run on any server in the network and so do not consume your server memory.
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.cache</groupId>
+  <artifactId>magnolia-cache-memcached</artifactId>
+  <version>7.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+If you extend your web app from a [magnolia-empty-webapp](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/magnolia-empty-webapp/) or any other web app extended from it (such as [magnolia-bundled-webapp](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/bundle/magnolia-bundled-webapp/)) you also need to exclude the default ehcache implementation:
+
+```xml
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-empty-webapp</artifactId>
+      <type>pom</type>
+      <exclusions>
+        <exclusion>
+          <groupId>info.magnolia.cache</groupId>
+          <artifactId>magnolia-cache-ehcache</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+```
+
+## [](#_usage)Usage
+
+If you’ve never used memcached, look at [how to install](https://github.com/memcached/memcached/wiki) memcached server. You need at least one memcache server per cache. That means for every cache configuration under `/modules/cache/config/contentCaching` you need one entry under `/modules/cache/config/cacheFactory/caches`. This is at least (by default) `defaultPageCache` and `uuid-key-mapping`.
+
+Magnolia Memcached implementation uses [Spymemcached client](https://code.google.com/p/spymemcached/) which has its own configuration options that can be set in `/modules/cache/config/cacheFactory/CACHE_NAME`.
+
+![Cache configuration](../../../../_images/ADVT-memcache-use.png)
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 20%;"> <col style="width: 50%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Parameter</th><th class="tableblock halign-left valign-top">Default</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>protocolN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>BINARY</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>BINARY</code> or <code>TEXT</code> protocol.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>readBufSizeN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>10000</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Size of the read buffer.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>shouldOptimizeN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>false</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>There are <a href="https://code.google.com/p/spymemcached/wiki/Optimizations">several elements</a> of the design that each allow high throughput.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>useNagleAlgorithmN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>true</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Improves the efficiency of TCP/IP networks by reducing the number of packets that need to be sent over the network.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>maxReconnectDelayN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>30</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Set the maximum reconnect delay.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>opQueueMaxBlockTimeN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>1000</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Set the maximum amount of time (in milliseconds) a client is willing to wait for space to become available in an output queue.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>timeoutExceptionThresholdN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>998</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Set the maximum timeout exception threshold.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>opTimeoutN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>-1</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Set the default operation timeout in milliseconds.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>failureModeN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>Redistribute</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Redistribute (Move on to functional nodes when nodes fail)</p></li><li><p>Retry (Continue to retry a failing node until it comes back up)</p></li><li><p>Cancel (Automatically cancel all operations heading towards a downed node)</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>transcoderN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>net.spy.memcached.transcoders.SerializingTranscoder</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Needs to be set as content node with class property:</p></div><div class="ulist"><ul><li><p><code>net.spy.memcached.transcoders.SerializingTranscoder</code></p></li><li><p><code>net.spy.memcached.transcoders.WhalinTranscoder</code></p></li><li><p><code>net.spy.memcached.transcoders.WhalinV1Transcoder</code></p></li><li><p><code>net.spy.memcached.transcoders.IntegerTranscoder</code></p></li><li><p><code>net.spy.memcached.transcoders.LongTranscoder</code></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>locatorN2B</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>ARRAY_MOD</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>ARRAY_MOD</code> (the classic node location algorithm)</p></li><li><p><code>VBUCKET</code> (VBucket support)</p></li><li><p><code>CONSISTENT</code> (Consistent hash algorithm)</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>servers</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>-</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Memcache server/s to use for this cache in format <code>&lt;domain or ip&gt;:&lt;port number&gt;</code></p></div></div></td></tr></tbody></table></div>
+
+## [](#_performance)Performance
+
+One of the advantages of the memcached implementation is the sharing of cache entries between multiple instances of Magnolia. If the cache item is processed by one of the public instances, it is sent to memcached server/s and other Magnolia instances do not need to render the content again; instead they may use the item cached in the registered memcached servers.
+
+For the following tests, we requested content from two Magnolia instances at the same time. You can see the results on the first graph. As you can see the throughput is 2x bigger since the instances share the cache items. This of course applies only for the first requests for a content object, but that’s the time after flushing of cache when the load on the server is highest.
+
+The second graph shows performance when the items are precached. Memcached is a little slower than Ehcache in this case.
+
+![Performance graphs](../../../../_images/ADVT-memcache-charts.png)
+
+## [](#_memcached_client_license)Memcached Client License
+
+> **Important:** the Spymemcached client uses its own licence.
+
+/\*\*
+\* Copyright (c) 2006-2009 Dustin Sallings
+\* Copyright (c) 2009-2011 Couchbase, Inc.
+
+  \*
+\* Permission is hereby granted, free of charge, to any person obtaining a copy
+\* of this software and associated documentation files (the "Software"), to deal
+\* in the Software without restriction, including without limitation the rights
+\* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+\* copies of the Software, and to permit persons to whom the Software is
+\* furnished to do so, subject to the following conditions:
+\*
+\* The above copyright notice and this permission notice shall be included in
+\* all copies or substantial portions of the Software.
+\*
+\* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+\* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+\* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+\* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+\* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+\* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALING
+\* IN THE SOFTWARE.
+\*/

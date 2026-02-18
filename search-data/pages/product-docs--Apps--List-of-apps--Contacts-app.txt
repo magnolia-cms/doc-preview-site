@@ -1,0 +1,41 @@
+---
+title: "Contacts app"
+url: https://docs.magnolia-cms.com/product-docs/Apps/List-of-apps/Contacts-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Contacts app
+---
+
+# Contacts app
+
+## [](#_deprecated_since_6_3_0)Deprecated since 6.3.0
+
+The 6.3-compatible version of the [Contacts module](../../../Modules/List-of-modules/Contacts-module/) that installs the Contacts app isn’t working as expected. Use the 6.2 version if you want to use the Contacts app.
+
+> **Important:** Add the 6.2 Contacts module version to your Maven dependencies.<dependency>
+>   <groupId>info.magnolia.contacts</groupId>
+>   <artifactId>magnolia-contacts</artifactId>
+>   <version>6.2_COMPATIBLE_VERSION</version> (1)
+> </dependency>1See 6.2 Contacts module for the latest version. Alternatively, if you have an existing 6.2 installation, copy its 6.2 .jar file to the lib folder in your 6.3 installation and restart. You can find the .jar file at: /webapps/magnoliaAuthor/WEB-INF/lib/magnolia-contacts-<6.2_COMPATIBLE_VERSION>.jar.
+
+The Contacts app is a simple address book. It stores details such as name, photo and address for each contact person. However, the real purpose of the app is to demonstrate the content app framework. This app is an example how to use the ready-made constructs provided by the framework to build a tool that allows editors to create their own custom data model and use the data on the website.
+
+![Contacts app example with the action bar](../../../_images/6-2-contacts-app-browser.png) ![Edit contact field](../../../_images/6-2-contacts-app-detail.png)
+
+## [](#_configuration)Configuration
+
+The Contacts app is installed by the [Contacts module](../../../Modules/List-of-modules/Contacts-module/). This app is a reference example of a pure content app. You can create your own content apps by copying the Contacts app configuration and adapting it to your needs. The app is configured in `/modules/contacts/apps/contacts`.
+
+### [](#_workspace)Workspace
+
+The Contacts app operates on the `contacts` workspace. The contacts workspace stores the contact persons and their details.
+
+## [](#_privacy_module_writes_into_the_contacts_app)Privacy module writes into the contacts app
+
+**Visitors app adds also contacts**
+
+In the Magnolia DX Core Travel Demo, the `contacts` workspace is registered in the configuration of the Privacy module for demonstration purposes of dealing with personal data. This means the Visitors app interacts not only with the `visitors` workspace but also with the `contacts` workspace, which is otherwise primarily used by the [Contacts app](./).
+
+### [](#_node_types)Node types
+
+The Contacts module registers a custom `mgnl:contact` [node type](../../../Administration/Architecture/Node-types/). The Contacts app operates on nodes of this type and on folders.

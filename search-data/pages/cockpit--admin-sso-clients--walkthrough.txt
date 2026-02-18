@@ -1,0 +1,104 @@
+---
+title: "SSO clients deep dive"
+url: https://docs.magnolia-cms.com/cockpit/admin-sso-clients/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# SSO clients deep dive
+
+## [](#_add_configuration)Add configuration
+
+To add an SSO client configuration:
+
+1.  Go to **Admin > SSO clients**.
+
+2.  Click **Add**.
+
+3.  Choose your desired **Environment** in the dropdown menu. You must only create one SSO client per environment (e.g., production, integration).
+
+4.  Click **Enabled**.
+
+5.  If desired, add redirect URLs.
+
+6.  Add the allowed CORS origins.
+
+    \+ .CORS restrictions
+
+
+Web origins must be listed in the SSO client configuration to allow cross-origin requests.
+
+If your Magnolia instance is hosted at https://example-magnolia.com and you have a front-end app at https://frontend-app.com, you might configure the following web origins in the SSO client (e.g., in Keycloak):
+
+-   https://example-magnolia.com
+
+-   https://frontend-app.com
+
+
+This ensures both domains can participate in the SSO authentication flow without being blocked by CORS restrictions.
+
+1.  Add the Base URL.
+
+    The default URL to use when the auth server needs to redirect or link back to the client.
+
+2.  Add any Magnolia roles you want mapped in the SSO module.
+
+3.  Click **Add**.
+
+    ![sso client details](../../../paas/cockpit/_images/admin/sso-client/sso-client-details.jpg)
+
+
+### [](#_magnolia_sso_config)Magnolia SSO Config
+
+Once you have configured your SSO client:
+
+1.  Go to your SSO client configuration in the SSO Client Config table.
+
+2.  Click the three bars .
+
+3.  Click **Magnolia SSO Config** to get your full Magnolia SSO module `.yaml` configuration. You can copy and paste the configuration directly into your SSO module. For detailed information on SSO module configuration, see [Magnolia SSO module: Configuration](#magnolia-sso:ROOT:index.adoc#_configuring_via_yaml).
+
+    ```yaml
+    callbackUrl: "/.auth"
+    authorizationGenerators:
+    - name: "groupsAuthorization"
+      groups:
+        targetProperty: "groups"
+        mappings:
+        - name: "/admincentral"
+          targetGroups:
+          - "publishers"
+          targetRoles:
+          - "superuser"
+        - name: "/power-editor"
+          targetGroups:
+          - "publishers"
+          targetRoles:
+          - "superuser"
+    clients:
+      oidc.id: "magnolia-sso-integration"
+      oidc.secret: "OIDC_SECRET"
+      oidc.clientAuthenticationMethod: "client_secret_basic"
+      oidc.scope: "openid profile email"
+      oidc.discoveryUri: "https://id.int.example.com/realms/mplatform/.well-known/openid-configuration"
+      oidc.preferredJwsAlgorithm: "RS256"
+      oidc.authorizationGenerators: "groupsAuthorization"
+      oidc.callbackUrl: "/.auth"
+      oidc.postLogoutRedirectUri: "http://localhost:8080"
+      http.bearer.id: "magnolia-sso-integration"
+      http.bearer.secret: "OIDC_SECRET"
+      http.bearer.clientAuthenticationMethod: "client_secret_basic"
+      http.bearer.scope: "openid profile email"
+      http.bearer.discoveryUri: "https://id.int.example.com/realms/mplatform/.well-known/openid-configuration"
+      http.bearer.preferredJwsAlgorithm: "RS256"
+      http.bearer.authorizationGenerators: "groupsAuthorization"
+      http.bearer.authenticator: "oidc-userinfo"
+    userFieldMappings:
+      name: "name"
+      removeEmailDomainFromUserName: false
+      removeSpecialCharactersFromUserName: false
+      email: "email"
+      language: "locale"
+    ```
+
+    ![sso client sso config](../../../paas/cockpit/_images/admin/sso-client/sso-client-sso-config.jpg)

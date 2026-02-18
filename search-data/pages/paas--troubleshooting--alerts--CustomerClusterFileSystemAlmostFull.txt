@@ -1,0 +1,46 @@
+---
+title: "Cluster filesystem is almost full"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/alerts/CustomerClusterFileSystemAlmostFull/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > Cluster filesystem is almost full
+---
+
+# Cluster filesystem is almost full
+
+## [](#_symptom)Symptom
+
+A `CustomerClusterFilesystemAlmostFull` alert is firing.
+
+> **Note:** CustomerClusterFilesystemAlmostFull alerts are are sent to subscribers via email.
+
+## [](#_observations)Observations
+
+Here are the details on the alerts:
+
+### [](#_alert_customerclusterfilesystemalmostfull)Alert: CustomerClusterFilesystemAlmostFull
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>instance:node_filesystem_avail:ratio * 100 &lt; 1</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>15</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>instance</code></p></li><li><p><code>device</code></p></li><li><p><code>mountpoint</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+### [](#_determine_cluster_node_and_filesystem_filling_up)Determine cluster node and filesystem filling up
+
+The alert will contain:
+
+-   the cluster name/id (the `k8s_cluster_name` and `k8s_cluster_id` labels)
+
+-   the cluster node (the instance label)
+
+-   the device (the device label)
+
+-   the filesystem (the mountpoint label)
+
+
+> **Note:** Note the values of these labels.
+
+## [](#_solutions)Solutions
+
+This section provides solutions that should help resolve the issue in most cases.
+
+### [](#_increase_cluster_node_size)Increase cluster node size
+
+The size of the device used by the cluster node can be increased in AWS. Use the cluster node value (instance label) to find the node and the device (device label) running out of space and increase the device size in the AWS EC2 web interface or AWS command line.

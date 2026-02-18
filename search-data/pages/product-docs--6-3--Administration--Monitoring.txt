@@ -1,0 +1,502 @@
+---
+title: "Monitoring"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Monitoring/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Monitoring
+---
+
+# Monitoring
+
+Monitoring is a process that detects, diagnoses, remedies and reports an application’s performance and availability to ensure that it meets user expectations. Magnolia provides built-in tools for logging and debugging application behavior. It also supports Java Management Extensions (JMX), a Java technology for managing and monitoring. These mechanisms provide developers, administrators and especially the support team detailed context for application failures.
+
+## [](#_log4j_2)Log4j 2
+
+Magnolia uses [Apache Log4j 2](https://logging.apache.org/log4j/2.x/), a Java-based logging utility. It logs events in Magnolia core code as well as any modules that support logging. Logging is configured in three places:
+
+| Type | Location | Description |
+| --- | --- | --- |
+| `log4j2.xml` | `/WEB-INF/config/default` | A permanent configuration which persists restarts. In the XML file you can also choose whether you wish to log a [Class or package](#_class_or_package). Any changes made to the file will require a restart of the server. |
+| Log Tools app | Tools menu | A transient configuration which resets after a restart. In the [Log Tools app](../../Apps/List-of-apps/Log-Tools-app/) you can choose whether you wish to log a Class or package. Any changes made in the app are active immediately. This tool is useful for ad-hoc debugging of production issues since you don’t need to restart Magnolia to turn it on. |
+| Audit Logging | `/server/auditLogging` | [Audit logging](Audit/) means tracking user activity in the system such as who signed in and what they did. Here you select the actions you want to audit such as login, create, publish and so on. |
+
+### [](#_debugging_your_configuration)Debugging your configuration
+
+It is possible to debug the log4j 2 configuration itself. Add the status attribute to the Configuration element of the `log4j2.xml` configuration file.
+
+```cnd
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug">
+...
+...
+```
+
+For more information on this topic see [Log4j 2 Status Messages](https://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages).
+
+### [](#_loggers)Loggers
+
+Loggers define what data is logged and how much detail is provided. Think of this as a configuration for the classes and packages you want to log.
+
+Here’s an example from the default `log4j2.xml`.
+
+```xml
+<!-- Publishing - additivity is true so logs also go to sub-categories' appenders -->
+<Logger name="info.magnolia.publishing" level="INFO" additivity="true">
+    <AppenderRef ref="log-publishing"/>
+</Logger>
+```
+
+> **Caution:** Apps configured in the new App Launcher layout will cause entries to appear in the log. To keep the log tidy, we recommend adjusting your App Launcher layout configuration and removing any apps you don’t use.
+
+#### [](#_class_or_package)Class or package
+
+The choice between logging a single class or the whole package depends on whether the issue is limited to a single class. In the example above we log everything within the package `info.magnolia.publishing`.
+
+To summarize:
+
+-   To log a specific class, use the fully qualified class name for the XML `name` attribute in the Logger entry.
+
+-   To log a whole package, use the fully qualified package name for the XML `name` attribute in the Logger entry.
+
+
+#### [](#_level)Level
+
+Magnolia uses the standard log4j [logging levels](https://logging.apache.org/log4j/2.0/log4j-api/apidocs/org/apache/logging/log4j/Level.html).
+
+| Level | Description |
+| --- | --- |
+| OFF | The highest possible rank and is intended to turn off logging. |
+| FATAL | Severe errors that cause premature termination. Visible in console. |
+| ERROR | Other runtime errors or unexpected conditions. Visible in console. |
+| WARN | Use of deprecated APIs, poor use of API, `almost` errors, other runtime situations that are undesirable or unexpected, but not necessarily `wrong`. Visible in console. |
+| INFO | Interesting runtime events (startup/shutdown). Visible in console, so be conservative and keep to a minimum. |
+| DEBUG | Detailed information on the flow through the system. Written to logs only. |
+| TRACE | More detailed information. Written to logs only. |
+
+### [](#_pattern_layout)Pattern Layout
+
+Log4j2’s [Pattern Layout](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout) is a customizable log message formatter that uses conversion patterns to generate structured log outputs.
+
+The log message is encoded to address [CWE 117 (Improper Output Neutralization for Logs)](https://www.veracode.com/security/java/cwe-117), ensuring user-supplied data is properly sanitized so as to prevent log injection attacks.
+
+`WEBAPP/src/main/webapp/WEB-INF/config/default/log4j2.xml`
+
+```xml
+<PatternLayout  pattern="%d %-5p %-50.50c: [publishingId:%X{mgnlPublishingId}]%encode{%m}{CRLF}%n"> (1)
+```
+
+<div class="joplin-table-wrapper"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Where the pattern matches:<div class="ulist"><ul><li><p><code>%d</code> = the date.</p></li><li><p><code>%-5p</code> = the priority (p) left justified by 5 characters.</p></li><li><p><code>%-50.50c:</code> = the name of the logger that published the logging event.</p></li><li><p><code>publishingId:%X{mgnlPublishingId}</code> tracks publishing events across author and public instances by including the <code>publishingId</code> in the log.</p></li><li><p><code>%encode{%m}{CRLF}%n</code> = encodes the user message preventing the CRLF characters from the stream.</p></li></ul></div></td></tr></tbody></table></div>
+
+### [](#_appenders)Appenders
+
+Appenders define where the output is directed. The following [appenders](https://logging.apache.org/log4j/2.x/manual/appenders.html) are configured by default in `log4j2.xml`. They write messages to the console and to various log files.
+
+  AppenderWrites toNotes
+
+`console`
+
+Console
+
+Default output for DEBUG messages
+
+`log-debug`
+
+`magnolia-debug.log`
+
+Default output for DEBUG messages.
+
+`log-error`
+
+`magnolia-error.log`
+
+Default output for ERROR messages.
+
+`log-publishing`
+
+`magnolia-publishing.log`
+
+Content publishing.
+
+`log-bootstrap`
+
+`bootstrap.log`
+
+Bootstrap process.
+
+`log-access`
+
+`magnolia-access.log`
+
+System access.
+
+`log-audit`
+
+`magnolia-audit.log`
+
+See [Audit](Audit/).
+
+`log-form`
+
+`magnolia-form.log`
+
+See [Logging form data](../../Modules/List-of-modules/Form-module/#_logging_form_data).
+
+`mail`
+
+Sends mail.
+
+Disabled by default.
+
+> **Tip:** You can enable it by uncommenting the mail appender XML section commented out by default in this file in your installation: war/WEB-INF/config/default/log4j2.xml.See the shipped version of the file also here.
+
+Example: The `log-publication` appender is used to log events related to content publishing.
+
+```xml
+<RollingFile name="sync-log-publishing"
+             fileName="${magnolia.logs.dir}/magnolia-publishing.log"
+             filePattern="${magnolia.logs.dir}/magnolia-publishing-%i.log"
+             append="true">
+  <PatternLayout pattern="%-5p %c %d{dd.MM.yyyy HH:mm:ss} -- %encode{%m}{CRLF}%n"/>
+  <ThresholdFilter level="ERROR"/>
+  <Policies>
+    <SizeBasedTriggeringPolicy size="1MB"/>
+  </Policies>
+  <DefaultRolloverStrategy max="5"/>
+</RollingFile>
+<Async name="log-publishing">
+  <AppenderRef ref="sync-log-publishing"/>
+</Async>
+```
+
+It is actually two appenders: `log-publishing` appender uses the `Async` class to queue up the messages while the referenced `sync-log-publishing` appender does the actually writing of the messages to the `magnolia-publishing.log` file.
+
+All appenders that write to a log file use the `RollingFile` class. Rolling means that the system takes a backup of the log file when its size reaches a limit set in the `SizeBasedTriggeringPolicy`
+
+(1 MB by default). The old file is date-stamped and a new file is started in the same directory.
+
+### [](#_example_debugging_content_publication)Example: Debugging content publication
+
+This example shows how to log more detail about content publication. It is useful when publication fails and the default INFO messages do not provide enough information to pinpoint the root cause.
+
+Add the Logger to `log4j2.xml` if not already there:
+
+```xml
+<!-- Publishing - additivity is true so logs also go to sub-categories' appenders -->
+<Logger name="info.magnolia.publishing" level="INFO" additivity="true">
+    <AppenderRef ref="log-publishing"/>
+</Logger>
+```
+
+Each category references the `log-publishing` appender which sends output to the `magnolia-publication.log` file. Since `additivity` is `true`, output is also sent to ancestor appenders, in this case the console.
+
+Priority is set at INFO level by default. If more information is needed, this is the detail that needs to be changed.
+
+To change the level to DEBUG:
+
+1.  Stop the Magnolia instance.
+
+2.  Change `priority` in the three categories to DEBUG.
+
+3.  Save the file.
+
+4.  Start Magnolia.
+
+
+To test the new configuration, publish some content and view the logged DEBUG messages in the `magnolia-publication.log`.
+
+Note that by default there is a temp folder called `tmp` configured in `magnolia.properties` in the actual webapp. This folder contains various `exchange_*.xml.gz` files that are stored when debugging is enabled for publication. The location of the files is specified by the `magnolia.upload.tmpdir`.
+
+## [](#_log_tools_app)Log Tools app
+
+It is also possible to adjust the log4j settings from inside a running instance. This is a transient configuration which resets after a restart. From the [Log Tools app](../../Apps/List-of-apps/Log-Tools-app/) you can choose whether you wish to log a Class or package. Any changes made in the app are active immediately. This tool is useful for ad-hoc debugging of production issues since you don’t need to restart Magnolia to turn it on.
+
+## [](#_capturing_request_and_response_headers)Capturing request and response headers
+
+Request and response headers are information passed between a browser and a web server. Headers consist of [fields](http://en.wikipedia.org/wiki/List_of_HTTP_header_fields) that define the operating parameters of the HTTP transaction. Capturing the headers tells you what records are passed and provides a clue for troubleshooting.
+
+The request header contains details of what the browser wants and what it will accept back from the server. It also contains the type, version and capabilities of the browser so that the server returns compatible data.
+
+Example: Request header
+
+```none
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50
+Accept: text/html,application/xhtml-xml,application/xml;q=0.9,*/*;q=0.8
+Referer: http://demopublic.magnolia-cms.com/demo-project.html
+Cache-Control: max-age=0
+```
+
+The response header contains the date, size and type of file that the server is sending back to the client and data about the server itself. The header is attached to the files being sent back to the client.
+
+Example: Response header
+
+```none
+Date: Thu, 13 Oct 2011 11:09:41 GMT
+Content-Encoding: gzip
+Connection: Keep-Alive
+Content-Length: 3229
+Pragma: no-cache
+X-Magnolia-Registration: Registered
+Last-Modified: Thu, 13 Oct 2011 11:01:26 GMT
+Server: Apache/2.2.14 (Ubuntu)
+Vary: Accept-Encoding
+Content-Type: text/html;charset=UTF-8
+Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+Keep-Alive: timeout=15, max=100
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+```
+
+### [](#_browser_extensions)Browser extensions
+
+To capture the headers, you can use a browser extension or plugin that displays headers for the currently open page. A plugin’s advantage over a [Websites](#_websites) is that you can also use it for sites that only exist in your local environment or intranet.
+
+-   Safari: [Developer Tools](http://developer.apple.com/technologies/safari/developer-tools)
+
+-   Firefox: [Web Developer](https://addons.mozilla.org/en-US/firefox/addon/web-developer/) or [Live HTTP Headers](http://livehttpheaders.mozdev.org/) add-on
+
+-   Chrome: [Developer Tools](https://developers.google.com/chrome-developer-tools/docs/overview)
+
+-   Internet Explorer: [Fiddler](http://www.fiddler2.com/fiddler2/)
+
+
+To view headers in Developer Tools:
+
+1.  Open Developer Tools.
+
+2.  Go to **Network**.
+
+3.  Reload the page.
+
+4.  Select the page in the list.
+
+5.  Go to **Headers** tab.
+
+
+### [](#_command_line_tools)Command line tools
+
+Any Unix-like system likely has these command line tools already installed.
+
+-   [cURL](http://en.wikipedia.org/wiki/CURL)
+    `$ curl --head <url>`
+
+-   [wget](http://en.wikipedia.org/wiki/Wget)
+    `$ wget --server-response <url>`
+
+
+### [](#_applications)Applications
+
+Rich client applications:
+
+-   [Wireshark](http://www.wireshark.org/). See [Capturing HTTP traffic](http://wiki.wireshark.org/Hyper_Text_Transfer_Protocol).
+
+
+### [](#_websites)Websites
+
+A header-sniffing website can report headers for a site that resides on the public Internet. These tools do not work for a site that exists only in your local environment.
+
+-   [Web-Sniffer](http://web-sniffer.net/)
+
+-   [Rex Swain’s HTTP Viewer](http://www.rexswain.com/httpview)
+
+
+## [](#_jmx_monitoring)JMX monitoring
+
+You can observe Java Virtual Machine and application server performance through Java Management Extensions (JMX). JMX is Java technology used for managing and monitoring applications and system objects. Objects are represented as management beans (MBean). JMX is supported by many Java application servers such as Apache Tomcat, JBoss AS and IBM WebSphere.
+
+### [](#_jconsole)JConsole
+
+[Java Monitoring and Management Console](http://docs.oracle.com/javase/6/docs/technotes/tools/share/jconsole.html) (JConsole) is a graphical tool that supports JMX monitoring and management on a local or remote machine. It draws graphs for visual representation of performance and resource consumption, which makes it easier to observe changes over time. As a downside, the results are not as easy to export as with [Jmxterm](#_jmxterm).
+
+#### [](#_starting_jconsole)Starting JConsole
+
+1.  Start JConsole: `$ jconsole`
+
+2.  Connect to a process:
+
+    -   **Local**: Select a Java process running on the local machine. Magnolia running on Tomcat would be listed as `org.apache.catalina.startup.Boostrap start`.
+
+    -   **Remote**: Type a remote process location as `<hostname>:<port>` or `service:jmx:<protocol>:<sap>`.
+
+
+3.  Click **Connect**
+
+
+![JConsole New Connection pop up](../../_images/jconsole-connect.png)
+
+See [Using JConsole](http://docs.oracle.com/javase/1.5.0/docs/guide/management/jconsole.html) for instructions on how to view and interpret the charts.
+
+#### [](#_saving_chart_data)Saving Chart Data
+
+To save data from a JConsole chart in CSV format:
+
+1.  Right-click the chart and select **Save data as…**
+
+2.  Specify a file to save.
+
+
+The CSV file can be imported into a spreadsheet to re-create the chart.
+
+#### [](#_example_flushing_the_cache_in_jconsole)Example: Flushing the cache in JConsole
+
+JMX is not only used to observe events. You can also invoke operations. In this example the server cache is flushed on the public instance using JConsole:
+
+1.  Open JConsole and connect to the Magnolia process.
+
+2.  Go to the **MBeans** tab.
+
+3.  Expand **Magnolia > Cachemonitor > magnoliaPublic > Operations**. This is a list of invokable operations provided by the CacheMonitor MBean.
+
+4.  Click **flushAll** to invoke the flush operation.
+
+
+![List of CacheMonitor MBean operations](../../_images/jconsole-flushall.png)
+
+### [](#_jmxterm)Jmxterm
+
+[Jmxterm](http://wiki.cyclopsgroup.org/jmxterm) is a command line JMX tool. Unlike JConsole, it does not have a graphical user interface. However, its big advantage is that Magnolia Support can give you a script that you can paste into your Jmxterm and run it. You can also write the Jmxterm output to a file and attach it to a support ticket. This makes it easier to collect and analyze specific data. Jmxterm is good for point-in-time observation whereas JConsole is better for visualizing events over a longer period.
+
+#### [](#_example_flushing_the_cache_in_jmxterm)Example: Flushing the cache in Jmxterm
+
+Start Jmxterm.
+
+```none
+$ java -jar jmxterm.jar
+Welcome to JMX terminal. Type "help" for available commands.
+```
+
+The `jvms` command tells you what Java processes are running on the machine.
+
+```none
+$>jvms
+5622 ( ) - jmxterm.jar
+4623 ( ) - sun.tools.jconsole.JConsole
+2094 (m) - org.apache.catalina.startup.Bootstrap start
+```
+
+Open the connection to the Catalina JVM using the process ID.
+
+```none
+$>open 2094
+#Connection to 2094 is opened
+```
+
+The `domains` command lists the domains available in the Java process.
+
+```none
+$>domains
+#following domains are available
+Catalina
+JMImplementation
+Magnolia
+Users
+com.sun.management
+java.lang
+java.util.logging
+net.sf.ehcache
+```
+
+Set the domain to `Magnolia`.
+
+```none
+$>domain Magnolia
+#domain is set to Magnolia
+```
+
+The `beans` command provides a list of MBeans in the domain. Here are the beans in the Magnolia domain.
+
+```java
+$>beans
+#domain = Magnolia:
+Magnolia:domain=magnoliaAuthor,type=CacheMonitor
+Magnolia:domain=magnoliaAuthor,type=JCRStats
+Magnolia:domain=magnoliaPublic,type=CacheMonitor
+Magnolia:domain=magnoliaPublic,type=JCRStats
+```
+
+We need the `CacheMonitor` bean for the public instance.
+
+```java
+$>bean Magnolia:domain=magnoliaPublic,type=CacheMonitor
+#bean is set to Magnolia:domain=magnoliaPublic,type=CacheMonitor
+```
+
+`info` tells you what a bean does. The `CacheMonitor` bean provides several attributes and operations.
+
+```none
+$>info
+#mbean = Magnolia:domain=magnoliaPublic,type=CacheMonitor
+#class name = info.magnolia.module.cache.mbean.CacheMonitor
+\# attributes
+  %0   - All (java.util.Map, r)
+  %1   - Bypasses (int, r)
+  %2   - CachedKeysCount (int, r)
+  %3   - CachedUUIDsCount (int, r)
+  %4   - DomainAccesses (java.util.Map, r)
+  %5   - Flushes (java.util.Map, r)
+  %6   - Hits (int, r)
+  %7   - Puts (int, r)
+  %8   - StartCalls (int, r)
+  %9   - StopCalls (int, r)
+\# operations
+  %0   - void flushAll()
+  %1   - void flushByUUID(java.lang.String p1,java.lang.String p2)
+#there's no notifications
+```
+
+Invoke the `flushAll` operation to flush the cache.
+
+```java
+$>run flushAll
+#calling operation flushAll of mbean Magnolia:domain=magnoliaPublic,type=CacheMonitor
+#operation returns:
+null
+```
+
+Let’s see how many times the cache has been flushed by checking the `Flushes` attribute with the `get` command. This particular operation does not return any value, just `null`.
+
+```java
+$>get Flushes
+#mbean = Magnolia:domain=magnoliaPublic,type=CacheMonitor:
+Flushes = {
+  uuid-key-mapping = 3;
+  default = 3;
+ };
+```
+
+Three times, it seems.
+
+#### [](#_example_running_a_jmxterm_script)Example: Running a Jmxterm script
+
+Jmxterm can read a script file with the `-i <input script>` command line option.
+
+Save the following script as `script.txt`:
+
+```none
+open <JVM process ID>
+get -d Magnolia -b Magnolia:domain=magnoliaPublic,type=JCRStats SessionCount
+get -d Magnolia -b Magnolia:domain=magnoliaPublic,type=CacheMonitor All
+quit
+```
+
+Replace `<JVM process ID>` with the ID of the Java Virtual Machine that is executing the Magnolia application. You can find it with `ps | grep jvm`.
+
+Execute the script with:
+
+```bash
+$ java -jar jmxterm.jar -n -i script.txt -o output.txt
+```
+
+where
+
+-   `-n` sets Jmxterm to non-interactive mode.
+
+-   `-i <input script>` reads the script.
+
+-   `-o <output file>` writes the output to a file.
+
+
+You should get results like this in the output file:
+
+```none
+SessionCount = 12;
+CachedUUIDsCount = 7;
+```

@@ -1,0 +1,165 @@
+---
+title: "Travel Demo for editors"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Getting-started-with-Magnolia/Demo/Travel-demo-for-editors/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Getting Started > Demo > Travel Demo for editors
+---
+
+# Travel Demo for editors
+
+Use the Travel Demo to get an overview of content [authoring](../../../Authoring/) with a specific use case. This project illustrates how you can use pages and custom [apps](../../../Apps/) to manage your content.
+
+Content is managed in the Magnolia Shell, our browser-based admin interface.
+
+Log in as `eric` (password `eric`) the example Travel Demo editor.
+
+## [](#_content_organization)Content Organization
+
+| App | Description |
+| --- | --- |
+| Pages | Every project contains a hierarchy (or tree) of website pages. In particular, check out the tree of pages under the `about` page. |
+| Tour Categories | A custom content [app](../../../Apps/) used to manage the `destinations` and `tour-types` categories. This app is based on the [Categories app](../../../Apps/List-of-apps/Categories-app/). |
+| Tours | A custom content [app](../../../Apps/) to manage tours. |
+
+![App launcher as seen by Eric](../../../_images/6-2-30-travelDemoForEditors-appLauncherERIC.png)
+
+## [](#_managing_content_in_a_page)Managing content in a page
+
+### [](#_editing_standard_components)Editing standard components
+
+1.  In the Pages app, expand the `travel` page and edit the `contact` page.
+
+2.  Click the Main bar to activate the component bars.
+
+3.  Click the edit icon in the Text and Image bar. Text and Image is a standard component provided by the [MTE module](../../../Modules/List-of-modules/MTE-module/).
+
+4.  Change text in the dialog and save.
+
+
+![Text and image dialog](../../../_images/6-2-travelDemoForEditors-pagesApp.png)
+
+### [](#_editing_custom_components)Editing custom components
+
+The Travel Demo adds custom components that display content stored in the Tours and Tour categories app.
+
+1.  Edit the `travel` page in the Pages app.
+
+2.  Click the Main bar to activate the component bars.
+
+3.  Click the edit icon in the TourType Teaser Row bar. This is a custom component.
+
+4.  Click the trash can to the right of `/tour-types/cultural` to delete this item.
+
+5.  Click **Add** and then **Select New…**.
+
+6.  Select `family` and click **Commit**.
+
+7.  Save.
+
+
+The family category now displays in the teaser.
+
+![Custom components teaser](../../../_images/6-2-30-travelDemoForEditors-teaserRowUpdated.png)
+
+### [](#_adding_pages)Adding pages
+
+1.  Select the `travel` page and click **Add page**.
+
+2.  In the **Add page** dialog, enter `faq` as the page name.
+
+3.  Select the Travel Standard template in the dropdown. This is a list of available templates.
+
+4.  Click **Next**.
+
+5.  In the **Page properties** dialog, enter `FAQ` as the page title.
+
+6.  Save the changes by clicking **Commit**.
+
+
+Edit the new page and note that it has automatically been added to the top navigation.
+
+![Page edit mode](../../../_images/6-2-30-travelDemoForEditors-newPage.png)
+
+A site can define which page [templates are available](../../../Developing/Templating/Template-availability/). It is also possible to add a custom availability and specify which templates can be added as children of other templates or any other rules that suit your project.
+
+### [](#_adding_components)Adding components
+
+Pages contain areas which are usually used as containers for components. Each area defines which [components are available](../../../Developing/Templating/Template-definition/Area-definition/) in the area.
+
+1.  Edit the new `faq` page.
+
+2.  Click the plus sign in the New Main Component bar.
+
+3.  Select the Text and image component in the dropdown. This is a list of available components.
+
+4.  Click **Next**.
+
+5.  Enter text in the Text tab and select and image in the Image tab.
+
+6.  Save.
+
+
+![Text and image dialog](../../../_images/6-2-travelDemoForEditors-textImageComponent.png)
+
+## [](#_managing_content_in_a_content_app)Managing content in a content app
+
+Content apps are useful for managing the *things* your site is about, such as tours, departments, affiliates, cars, etc. It is faster and easier to work in an app than in the page editor. In an app, there is only one dialog per item, and you do not have to worry about the page layout, or areas and components. Content apps encourage clean reuse of content across the site. The content is entered once in the content app and used in pages throughout the site.
+
+### [](#_adding_tour_categories)Adding tour categories
+
+1.  Open the Tour Categories app.
+
+2.  Select the `tour-types` folder and click **Add category**.
+
+3.  Fill in the fields, except **Importance** and **Related Categories**, as they are not used in the demo.
+
+4.  Save.
+
+
+![Category tab](../../../_images/6-2-30-TravelDemoForEditors-addVolunteer.png)
+
+To see the result:
+
+1.  Edit the `travel` page in the Pages app.
+
+2.  Click **Preview page** in the editor.
+
+3.  Select the new category in the TOURS dropdown.
+
+
+[flickr/Frontierofficial](https://www.flickr.com/photos/frontierofficial/)
+
+![Preview page](../../../_images/6-0-demoAuthor-volunteerResult.png)
+
+### [](#_editing_tours)Editing tours
+
+To move an existing tour into the new category:
+
+1.  Open the Tours app.
+
+2.  Select a tour in the `magnolia-travels` folder and click **Edit tour**.
+
+3.  Delete the existing tour types in the Tour Types field.
+
+4.  Click **Add** then **Select New**.
+
+5.  Select the new category and click **Choose**.
+
+6.  Save.
+
+
+![Edit tour tab](../../../_images/6-2-30-TravelDemoForEditors-addVolunteerCat.png)
+
+To see the result:
+
+1.  Edit the `travel` page in the Pages app.
+
+2.  Click **Preview page** in the editor.
+
+3.  Select the new category in the TOURS dropdown.
+
+4.  The tour is listed in both the featured and `all tours` sections.
+
+
+![Preview page](../../../_images/6-2-TravelDemoForEditors-listedinVolunteer.png)

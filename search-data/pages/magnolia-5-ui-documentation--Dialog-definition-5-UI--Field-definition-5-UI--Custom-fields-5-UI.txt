@@ -1,0 +1,69 @@
+---
+title: "Custom fields - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/Custom-fields-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > Custom fields - 5 UI
+---
+
+# Custom fields - 5 UI
+
+Deprecated
+
+> **Note:** This custom field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Custom fields for Magnolia 6 UI instead.
+
+Create your own fields when the default fields do not meet your requirements. Magnolia fields are implemented as Vaadin components. Start by looking through the [Vaadin sampler](http://demo.vaadin.com/sampler/). When you find a matching field, implement it as a simple Vaadin [Field](https://vaadin.com/api/framework/7/com/vaadin/ui/Field.html) in Magnolia. If you need a more complex field that is a composition of more than one simple field, look at the [composite field](../List-of-fields-5-UI/Composite-field-5-UI/) or implement a Vaadin [CustomField](https://vaadin.com/api/framework/7/com/vaadin/ui/CustomField.html).
+
+`personaSwitcher` is an example of a custom field. Editors can quickly switch between [personas](#6.2@product-docs:ROOT:Features/Personalization.adoc) while previewing the page.
+
+![Persona switcher](6.2@product-docs:ROOT:personaSwitcher-field.png)
+
+## [](#_required_classes)Required classes
+
+Each field needs the following classes:
+
+### [](#_definition_class)Definition class
+
+A definition class defines the field. It typically reads properties from the field definition. The definition class must implement the `FieldDefinition` interface.
+
+### [](#_factory_class)Factory class
+
+A factory class creates and initializes Vaadin fields based on the field definition.
+
+For example, `TextFieldFactory` creates a text field. It contains logic to react to the definition properties. If the `rows` property equals 1 the factory creates a single-line input element. If `rows` is more than 1 the factory creates a multiline text area. Factory classes extend `AbstractFieldFactory`, which can handle all [common field properties](../#_common_field_properties).
+
+### [](#_field_class)Field class
+
+A field class is only needed if you cannot find a single Vaadin field that meets your requirements. Simple fields such as [Text](../List-of-fields-5-UI/Text-field-5-UI/) do not have a field class - the factory class simply creates the matching Vaadin field directly. However, more complex fields need a field class.
+
+For example, [Link](../List-of-fields-5-UI/Link-field-5-UI/) is a compound of a text box and a button. Vaadin doesn’t provide this combination out of the box, so we need a `LinkField` class that extends Vaadin [CustomField](https://vaadin.com/api/8.4.2/index.html?com/vaadin/ui/CustomField.html). The custom field class provides a layout with a text field on the left and a button on the right. It also registers a preview component that displays a thumbnail of the link target if defined.
+
+The link field is an example that provides all three classes:
+
+-   `info.magnolia.ui.form.field.definition.LinkFieldDefinition`
+
+-   `info.magnolia.ui.form.field.factory.LinkFieldFactory`
+
+-   `info.magnolia.ui.form.field.LinkField`
+
+
+## [](#_registering_a_field)Registering a field
+
+Any module can register a new field in the `fieldTypes` node. Register your field in your own module.
+
+If you add the field to the UI Framework module it becomes globally available. Here is an example how the UI Framework module registers the text field.
+
+You can configure field types in a YAML definition file inside a light module folder.
+
+<my-module>/fieldTypes/<field name>.yaml
+
+```js
+definitionClass: info.magnolia.ui.form.field.definition.TextFieldDefinition
+factoryClass: info.magnolia.ui.form.field.factory.TextFieldFactory
+```
+
+## [](#_using_a_field_in_a_form)Using a field in a form
+
+Once the field is registered, add it to a dialog or form by referencing the field definition class in the `class` property or by referencing the field alias name in the `fieldType` property. See [Field definition](../) for more.
+
+If you create a complex field and need to store values in the repository in a specific way, see [Transforming field values](../Transforming-field-values-5-UI/).

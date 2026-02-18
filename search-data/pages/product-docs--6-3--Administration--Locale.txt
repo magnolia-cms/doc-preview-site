@@ -1,0 +1,84 @@
+---
+title: "Locale"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Locale/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Locale
+---
+
+# Locale
+
+This page provides a brief overview of:
+
+-   What is locale?
+
+-   Which locale parameters are directly configurable in Magnolia.
+
+
+## [](#_what_is_locale)What is locale
+
+Generally speaking, a locale in computing is \`\`a set of parameters that defines the user’s language, region and any special variant preferences that the user wants to see in their user interface'' (Wikipedia).
+
+Locale is more often associated with the language parameter, which is usually defined by a two-, three- or four-letter language code, standardized under [ISO 639](https://www.iso.org/iso-639-language-codes.html). See the [IANA Language Subtag Registry](https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry) for a complete list of available language codes and language variants.
+
+Nevertheless, the set of locale parameters is much broader than just the parameter for language. Any operation that requires a locale to perform its task is *locale-sensitive*. For example, even displaying a number may be a locale-sensitive operation: the number should be formatted according to the conventions of the user’s native country, region, or culture.
+
+## [](#_locale_sensitive_parameters)Locale-sensitive parameters
+
+The following is a list of the most common parameters that one should be aware of when implementing a locale-sensitive operation:
+
+-   **Language**
+
+    -   For instance, British English: `en-GB` vs American English: `en-US`.
+
+    -   See the [AdminCentral and public locales](../Language/AdminCentral-and-public-locales/) page for configuration in Magnolia and [java.util.Locale](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.html).
+
+
+-   **Time zone**
+
+    -   Nine standard time zones in the USA, for example.
+
+    -   See the [Time zone](Time-zone/) subpage and [java.util.TimeZone](https://docs.oracle.com/javase/8/docs/api/java/util/TimeZone.html).
+
+
+-   **Date-time format**
+
+    -   UK: `14 March 2016` vs US: `March 14, 2016`. For details see [java.text.DateFormat](https://docs.oracle.com/javase/8/docs/api/java/text/DateFormat.html).
+
+
+-   **Number format**
+
+    -   English: `3.14` vs Czech: `3,14`, for details see [java.text.NumberFormat](https://docs.oracle.com/javase/8/docs/api/java/text/NumberFormat.html).
+
+
+-   **Paper size**
+
+    -   US, Canada and other countries: `ANSI Letter` vs `ISO A4` in many other nations.
+
+
+-   **Currency format**
+
+    -   Please refer to [Currency codes - ISO 4217](https://www.iso.org/iso-4217-currency-codes.html), listing currency codes used in banking and business globally.
+
+
+
+Further reading
+
+Magnolia
+
+-   [AdminCentral and public locales](../Language/AdminCentral-and-public-locales/)
+
+-   [Internationalization](../Language/Internationalization/)
+
+
+External
+
+-   [Internationalization: Understanding Locale in the Java Platform](http://www.oracle.com/us/technologies/java/locale-140624.html) (by John O’Conner)
+
+-   [Locale (computer software)](https://en.wikipedia.org/wiki/Locale_%28computer_software%29) (Wikipedia)
+
+-   [Decimal mark: Influence of calculators and computers](https://en.wikipedia.org/wiki/Decimal_mark#Influence_of_calculators_and_computers) (Wikipedia)
+
+-   Writing paper and certain classes of printed matters - [ISO 216:2007](https://www.iso.org/standard/36631.html)
+
+-   Country Codes - [ISO 3166](https://www.iso.org/iso-3166-country-codes.html)

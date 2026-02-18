@@ -1,0 +1,327 @@
+---
+title: "GraphQL module"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/GraphQL-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > GraphQL module
+---
+
+# GraphQL module
+
+[Multi-experience support](../../../use-cases/multi-experience-support/) Bundled: Extension
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLGQL](https://magnolia-cms.atlassian.net/browse/MGNLGQL) |
+| Maven site | [GraphQL](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fgraphql%2Fmagnolia-graphql-parent%2F3.0.0) |
+| Latest | 3.0.0 |
+
+The GraphQL module allows you to expose content stored in JCR through [GraphQL](http://graphql.org) POST and GET requests. The module provides a [GraphQL API](../../../Developing/API/GraphQL-API/), a binding to Magnolia assets and a seamless integration with [content types](../../../Features/Content-Types/).
+
+## [](#_module_structure)Module structure
+
+| artifactID |     |
+| --- | --- |
+| `magnolia-graphql-parent` | Parent reactor. |
+| `magnolia-graphql-assets` | Integrates GraphQL with Magnolia assets. |
+| `magnolia-graphql-core` | Provides the API. |
+| `magnolia-graphql-jcr` | Integrates GraphQL with Magnolia content types and JCR. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.graphql</groupId>
+  <artifactId>magnolia-graphql-core</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.graphql</groupId>
+  <artifactId>magnolia-graphql-jcr</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.graphql</groupId>
+  <artifactId>magnolia-graphql-assets</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_installing_with_jar_files)Installing with JAR files
+
+### [](#_pre_built_jars)Pre-built JARs
+
+-   [magnolia-graphql-core-3.0.0.jar](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/graphql/magnolia-graphql-core/3.0.0/magnolia-graphql-core-3.0.0.jar)
+
+-   [magnolia-graphql-jcr-3.0.0.jar](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/graphql/magnolia-graphql-jcr/3.0.0/magnolia-graphql-jcr-3.0.0.jar)
+
+-   [magnolia-graphql-assets-3.0.0.jar](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/graphql/magnolia-graphql-assets/3.0.0/magnolia-graphql-assets-3.0.0.jar)
+
+
+### [](#_other_jars_required)Other JARs required
+
+-   [graphql-java-16.2.jar](https://repo1.maven.org/maven2/com/graphql-java/graphql-java/16.2/graphql-java-16.2.jar)
+
+-   [graphql-java-extended-scalars-16.0.1.jar](https://repo1.maven.org/maven2/com/graphql-java/graphql-java-extended-scalars/16.0.1/graphql-java-extended-scalars-16.0.1.jar)
+
+-   [java-dataloader-2.2.3.jar](https://repo1.maven.org/maven2/com/graphql-java/java-dataloader/2.2.3/java-dataloader-2.2.3.jar)
+
+
+## [](#_bundled_with_magnolia_dx_core_demo_webapp)Bundled with `magnolia-dx-core-demo-webapp`
+
+From Magnolia 6.2.10, the module is bundled with `magnolia-dx-core-demo-webapp`.
+
+You can download the webapp from the [release notes](../../../Releases/) or [files.magnolia-cms.com](https://files.magnolia-cms.com).
+
+## [](#_configuration)Configuration
+
+The module itself does not require any configuration adjustments. It is ready for use once your Magnolia instance is up and running. Registered GraphQL types can be verified using the [Definitions app](../../../Apps/List-of-apps/Definitions-app/):
+
+![GraphQL types in the Definitions app](../../../_images/6-2-30-graphqlModule-typesInDefsApp.png)
+
+### [](#_disabling_specific_graphql_types)Disabling specific GraphQL types
+
+If you need to disable a GraphQL schema for a content type, you can do so through [definition decoration](../../../Developing/Definition-decoration/), for example:
+
+`/your-module/decorations/graphql-core/graphqlTypes/character.yaml`
+
+enabled=false
+
+### [](#_disabling_graphql_servlet)Disabling GraphQL servlet
+
+By default, the GraphQL servlet is enabled. To disable it, set the `/server/filters/servlets/GraphQLServlet@enabled` property to `false`.
+
+### [](#_changing_endpoint_name)Changing endpoint name
+
+By default, all GraphQL requests are mapped to `/.graphql`. You can change this by modifying the `pattern` property at `/server/filters/servlets/GraphQLServlet/mappings/-.graphql--`.
+
+### [](#_graphiql_servlet)GraphiQL servlet
+
+The `magnolia-graphql-core` module installs *GraphiQL*, a servlet which you can use to explore the GraphQL API and test your GraphQL requests.
+
+The servlet is exposed in two forms:
+
+-   As the [GraphQL app](../../../Apps/List-of-apps/GraphQL-app/), available in the **Dev** group of the App launcher.
+
+-   Directly in your web browser. On a localhost installation of Magnolia, the URL to access the servlet is `[http://localhost:8080/magnoliaAuthor/.graphiql](http://localhost:8080/magnoliaAuthor/.graphiql)`.
+
+
+#### [](#_servlet_configuration)Servlet configuration
+
+The servlet is installed as `GraphiQLServlet` under `/server/filters/servlets/`.
+
+Its default configuration can be modified under `/modules/graphql-core/config/graphiql/` using the following properties.
+
+##### [](#_base_properties)Base properties
+
+| Property | Description |
+| --- | --- |
+| `endpoint` | **optional**, *default is `/.graphql`*<br><br>GraphQL endpoint servlet mapping.<br><br>The value must correspond with the value of the `pattern` property in the GraphQLServlet mapping at `/server/filters/servlets/GraphQLServlet/mappings/-.graphql--@pattern` |
+| `resource` | **optional**, *default is `/graphql-core/webresources/graphiql/index.ftl`*<br><br>Path to the GraphiQL FreeMarker file.<br><br>If needed, `resource` may be overridden (hotfixed) in the Resources app, or developers can use a path to an FTL file in their own light module. |
+
+##### [](#_cdn_related_properties)CDN-related properties
+
+These properties must be configured under `/modules/graphql-core/config/graphiql/cdn/`.
+
+| Property | Description |
+| --- | --- |
+| `enabled` | **optional**, *default is `false`*<br><br>If `true`, the React and GraphiQL libraries are served from a Content Delivery Network (CDN). Otherwise, they are served via a resource servlet from static resources in the `magnolia-graphql-core` light module. |
+| `version` | **optional**, *default is `1.4.0`*<br><br>GraphiQL version to serve from a CDN. |
+
+### [](#_security)Security
+
+#### [](#_access_control)Access control
+
+All requests to the GraphQL servlet pass through a filter chain. Make sure that the instance handling GraphQL requests in a production environment has an appropriate assignment of JCR Access Control Lists (ACLs) and Web Access permissions for the GraphQL endpoint and for the JCR workspaces where GraphQL content is stored. For more information, see the [Security app](../../../Apps/List-of-apps/Security-app/).
+
+#### [](#_query_limits)Query limits
+
+The module provides built-in protection against denial-of-service (DoS) attacks. These mechanisms enforce strict limits on query complexity and nesting depth.
+
+> **Note:** Why query limits matterGraphQL’s flexibility allows clients to construct arbitrarily complex queries. Without limits, a malicious client could exploit this via:Field duplication: Requesting the same field hundreds of times to exhaust server resources.Deep nesting: Constructing deeply nested queries that consume excessive memory and CPU.Alias overloading: Using aliases to bypass naive field counting and execute expensive operations repeatedly.
+
+The module enforces limits to mitigate these specific attack vectors.
+
+##### [](#_query_limits_configuration)Query limits configuration
+
+You can configure query limits in the module configuration at `/modules/graphql-core/config`.
+
+|     |     |
+| --- | --- |
+| 📁 modules |     |
+| 📁 graphql-core |     |
+| 📁 config |     |
+| ⬩ maxQueryDepth | 15  |
+| ⬩ maxQueryComplexity | 200 |
+
+| Property | Description |
+| --- | --- |
+| `maxQueryDepth` | **optional**, *default is `15`*<br><br>The maximum nesting depth allowed in a query. The minimum value is `1`. |
+| `maxQueryComplexity` | **optional**, *default is `200`*<br><br>The maximum total field count allowed (including duplicates and aliases). The minimum value is `1`. |
+
+> **Caution:** Any changes to maxQueryDepth and maxQueryComplexity require a server restart to take effect.
+
+##### [](#_how_complexity_is_calculated)How complexity is calculated
+
+Every field requested in a query contributes `1` point to the total complexity. This calculation includes:
+
+-   Duplicate fields (requesting the same field multiple times).
+
+-   Aliased fields (each alias counts as a distinct field).
+
+-   Nested fields (costs are cumulative).
+
+-   Fragment spreads (fields within fragments are expanded and counted).
+
+-   Inline fragments (every field within an inline fragment counts).
+
+
+Example query and complexity score
+
+```graphql
+{
+  page {              # 1
+    title             # 1
+    title             # 1 (duplicate counts!)
+    content           # 1
+    children {        # 1
+      title           # 1
+    }
+  }
+}
+# Total complexity: 6
+```
+
+##### [](#_error_responses)Error responses
+
+When a request fails due to these limits, the module returns an appropriate HTTP status code accompanied by a sanitized error message:
+
+| Condition | HTTP code | Error message |
+| --- | --- | --- |
+| Query complexity/depth exceeded | `400` | `Query exceeds allowed limits.` |
+| GraphQL validation error | `400` | `Query validation failed.` |
+| Invalid request format (e.g., array instead of object) | `400` | `Invalid request format.` |
+| Malformed JSON | `400` | `Invalid request format.` |
+| Introspection disabled | `400` | `Introspection is disabled.` |
+| Item not found | `404` | `The requested item was not found.` |
+| Internal server error | `500` | `An internal error occurred.` |
+
+Example JSON response
+
+```json
+{
+  "status": 400,
+  "errors": ["Query exceeds allowed limits."]
+}
+```
+
+For security reasons, the specific limit values are not exposed in client-facing error messages. Detailed information regarding the rejection is logged server-side at the `WARN` level.
+
+##### [](#_adapting_to_the_new_limits_existing_integrations)Adapting to the new limits (existing integrations)
+
+Most legitimate queries continue to function without modification. The default limits are calibrated to accommodate standard usage:
+
+-   A complexity of `200` covers typical content queries.
+
+-   A depth of `15` exceeds the requirements of most content models.
+
+
+If your queries are being blocked:
+
+1.  Check server logs to identify the specific limit exceeded and review query details.
+
+2.  Simplify queries using the following strategies:
+
+    -   Remove duplicate field requests.
+
+    -   Reduce nesting depth.
+
+    -   Split massive queries into smaller, specific requests.
+
+
+3.  Adjust limits only if your use case legitimately demands higher values.
+
+
+Example: Allow more complex queries for admin tools
+
+```yaml
+# Example: Allow more complex queries for admin tools
+maxQueryComplexity: 500
+maxQueryDepth: 20
+```
+
+> **Tip:** Standard introspection queries (typically ~109 fields) fit well within the default complexity limit of 200.
+
+##### [](#_monitoring)Monitoring
+
+The system logs rejected queries at the `WARN` level:
+
+```log
+WARN  GraphQL query rejected: complexity exceeded. Query: {query...}
+WARN  GraphQL query rejected: depth exceeded. Query: {query...}
+```
+
+Monitor these logs to identify:
+
+-   Potential malicious attack attempts.
+
+-   Legitimate queries that require configuration adjustments.
+
+-   Integration issues arising after the upgrade.
+
+
+##### [](#_technical_details)Technical details
+
+-   Defense layers
+
+    The module implements a two-layered protection strategy:
+
+    1.  Depth instrumentation: Rejects queries before execution if nesting exceeds `maxQueryDepth`.
+
+    2.  Complexity instrumentation: Rejects queries before execution if the total field count exceeds `maxQueryComplexity`.
+
+        Both checks occur *before query execution*, ensuring that rejected queries do not consume database or JCR resources.
+
+
+-   Fragment handling
+
+    GraphQL fragments are fully expanded prior to complexity calculation. This approach prevents bypass attempts that rely on fragment duplication:
+
+    ```graphql
+    # This query has complexity 25 (5 fields × 5 spreads), not 5
+    fragment F on Asset { name name name name name }
+    query { asset(id: "1") { ...F ...F ...F ...F ...F } }
+    ```
+
+-   Error sanitization
+
+    -   All error messages undergo sanitization before transmission to clients.
+
+    -   Detailed error information, including actual limit values and full query text, is logged server-side only to prevent information leakage to potential attackers.
+
+
+
+## [](#_usage)Usage
+
+-   See [GraphQL API](../../../Developing/API/GraphQL-API/).

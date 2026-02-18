@@ -1,0 +1,35 @@
+---
+title: "Performance issues"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Troubleshooting/Performance-issues/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > Performance issues
+---
+
+# Performance issues
+
+## [](#_slow_admincentral_with_many_tasks_and_notifications)Slow AdminCentral with many tasks and notifications
+
+AdminCentral might get slow over time. One of the possible causes – especially when there’s no log indication of any specific issue – is a high number of [tasks](../../../Features/Tasks/) and [notifications](../../../Apps/Developing-an-app/Specific-aspects/Messages/Message-types/#_notification) stored in the user profile.
+
+You can check the total number of tasks and notifications using the [Tasks](../../../Apps/List-of-apps/Tasks-app/) and [Notifications](../../../Apps/List-of-apps/Notifications-app/) apps, respectively.
+
+> **Warning:** You should not experience performance issues unless more than several thousand items are stored in your profile.
+
+Tasks and notifications are aggregated by [group](../../IAM/Roles-groups-and-users/#_default_groups). If a person belonging to the `editors` group deletes all items, this action will impact all others in that group.
+
+Finally, remember to check all author instances for a high number of items (production, UAT/QA, development and others).
+
+> **Note:** If multiple users are experiencing performance issues, each should check the number of tasks and notifications and resolve or delete all non-essential items.
+
+## [](#_slow_admincentral_with_multiple_editors)Slow AdminCentral with multiple editors
+
+Concurrent access to the JCR might require a bigger Jackrabbit cache size. To adjust the default 16 MB, add the following parameters to your JVM configuration. They will increase the cache size to 256 MB:
+
+```bash
+-Dorg.apache.jackrabbit.maxCacheMemory=268435456
+-Dorg.apache.jackrabbit.minMemoryPerCache=1048576
+-Dorg.apache.jackrabbit.maxMemoryPerCache=67108864
+```
+
+> **Note:** Memory is allocated from the Java heap.

@@ -1,0 +1,155 @@
+---
+title: "Managing assets"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Authoring/Managing-assets/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Authoring > Managing assets
+---
+
+# Managing assets
+
+## [](#_browsing_assets)Browsing assets
+
+By default, you browse the Magnolia DAM in tree view, which shows your assets in a hierarchical tree, including the folder structure.
+
+![Assets app hierarchy](../../_images/authoring/assets-app-hierarchy.png)
+
+> **Tip:** Your Magnolia administrator can enable other views:List view - Displays the items individually.This is the view you see when you search or filter assets.Thumbnail view - Displays thumbnail images of the assets. There is a zoom control at the top for resizing.
+
+## [](#_how_to_handle_many_assets)How to handle many assets
+
+The DAM can handle a very large number of assets and is used in installations with hundreds of thousands or even millions of files. To keep both JCR operations and the Assets app UI fast and usable, avoid very flat hierarchies and organize assets into folders, aiming for roughly 500 assets per folder and using subfolders where needed.
+
+When your total volume of assets or the size of individual binaries starts to impact publication times, storage footprint, or operational workflows, consider offloading binaries to [DAM 5.0](#5.0@dam:ROOT:index.adoc), our [External DAM integration framework](../../Modules/extensions-and-frameworks/external-dam-integration-framework/), our [DAM API](../../Developing/API/Java-Server-APIs/DAM-API/), or one of our [Incubator modules](../../../../incubator-modules/) extensions.
+
+How many assets should I put in a folder?
+
+As a rule of thumb when using JCR for assets, you should keep it to about **500** assets per folder. This is independent of the asset type. So, whether it’s an image, pdf, or some other type of asset, let’s try to keep it under **500**.
+
+-   Avoid storing too many assets in the same folder. Instead, create subfolders and organize your assets. Storing too many assets within the same folder may lead to performance issues.
+
+-   If you need a large and unstructured flat list of assets, disable the thumbnail and list views.
+
+
+## [](#_supported_file_formats_for_preview_generation)Supported file formats for preview generation
+
+### [](#_image_formats)Image formats
+
+Most common image formats are supported.
+
+However, we **don’t support** the following formats:
+
+-   `image/x-icon`
+
+-   `image/x-portable-bitmap`
+
+-   `image/x-xpixmap`
+
+-   `image/x-portable-graymap`
+
+-   `image/x-cmu-raster`
+
+-   `image/x-portable-pixmap`
+
+-   `image/x-xbitmap`
+
+-   `image/x-rgb`
+
+-   `image/x-xwindowdump`
+
+-   `image/x-cmx`
+
+-   `image/cis-cod`
+
+-   `image/ief`
+
+
+### [](#_video_formats)Video formats
+
+The following video formats *are* supported:
+
+-   `video/mpeg`
+
+-   `video/webm`
+
+-   `video/mp4`
+
+-   `video/ogg`
+
+
+### [](#_audio_formats)Audio formats
+
+The following audio formats *are* supported:
+
+-   `audio/mpeg`
+
+-   `audio/webm`
+
+-   `audio/mp4`
+
+-   `audio/ogg`
+
+-   `audio/aac`
+
+-   `audio/aacp`
+
+-   `audio/flac`
+
+-   `audio/wav`
+
+-   `audio/x-wav`
+
+-   `audio/mp3`
+
+
+## [](#_character_restrictions)Character restrictions
+
+Website content, asset, configuration and everything else is stored in the content repository. Each item is stored in a node. The node name is generally displayed in the first column in AdminCentral, for example the page name in the `website` workspace and asset name in the `dam` workspace. Besides being an internal reference to the node, the name is also used for various purposes such to create a page URL.
+
+Character restrictions apply only to node names and not to other user-entered content. For example, you can only use certain characters in a page or asset name but any character in the page or asset title. When a disallowed character is used it is automatically substituted with a hyphen (`-`).
+
+The info.magnolia.cms.core.Path class governs character restrictions. All alphanumeric characters (`a-z`, `A-Z`, `0-9`), hyphen (`-`) and underscore (`_`) are safe to use in node names. We recommend that you use lowercase letters separated by a hyphen.
+
+### [](#_invalid_characters)Invalid characters
+
+[JCR 2.0 specification](https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/3_Repository_Model.html#3.2.4%20Naming%20Restrictions) defines the following invalid characters in a local name.
+
+|     | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+|     | Space | `0020` `SPACE` |
+| `*` | Asterisk (Star) | `002A` `ASTERISK` |
+| `/` | Forward slash | `002F` `SOLIDUS` |
+| `:` | Colon | `003A` `COLON` |
+| `[` | Left square bracket | `005B` `LEFT SQUARE BRACKET` |
+| `]` | Right square bracket | `005D` `RIGHT SQUARE BRACKET` |
+| `\|` | Vertical bar (Pipe) | `007C` `VERTICAL LINE` |
+
+Node names are used to create URLs and cannot contain characters that are disallowed or have special meaning in URLs. These conventions are established by the Internet Engineering Task Force ([IETF](http://www.ietf.org/)) [Network Working Group on URLs](http://www.ietf.org/rfc/rfc1738.txt).
+
+|     | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+| `!` | Exclamation mark | `0021` `EXCLAMATION MARK` |
+| `#` | Number sign (Hash) | `0023` `NUMBER SIGN` |
+| `%` | Percent sign | `0025` `PERCENT SIGN` |
+| `'` | Apostrophe | `0027` `APOSTROPHE` |
+| `(` | Left parenthesis | `0028` `LEFT PARENTHESIS` |
+| `)` | Right parenthesis | `0029` `RIGHT PARENTHESIS` |
+| `+` | Plus sign | `002B` `PLUS SIGN` |
+| `/` | Forward slash | `002F` `SOLIDUS` |
+| `;` | Semicolon | `003B` `SEMICOLON` |
+| `?` | Question mark | `003F` `QUESTION MARK` |
+| `^` | Caret | `005E` `CIRCUMFLEX ACCENT` |
+
+### [](#_characters_disallowed_by_magnolia)Characters disallowed by Magnolia
+
+|     | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+| `&` | Ampersand | `0026` `AMPERSAND` |
+| `=` | Equals sign | `003D` `EQUALS SIGN` |
+| `@` | At sign | `0040` `COMMERCIAL AT` |
+
+Apart from the exceptions above, Magnolia allows you to use the full [UTF-8](http://en.wikipedia.org/wiki/UTF-8) character set for node names and other properties, but UTF-8 encoding is disabled by default.
+
+See [UTF-8 in pages names](../../Administration/Language/Language-configuration/#_utf_8_page_names) for instructions on how to enable it. When enabled, all special characters and notations covered by the Unicode specification can also be used.
+
+The dot character (full stop, Unicode 2E) can be used in node names with the single limitation that it cannot be the first character. You can create a user `john.smith`, a page `article.one`, a document `Magnolia-Flyer-4.0.pdf`, a configuration node `option.one` or a JavaScript file `jquery.tabtree`.

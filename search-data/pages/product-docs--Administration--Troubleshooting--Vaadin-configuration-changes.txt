@@ -1,0 +1,30 @@
+---
+title: "Vaadin configuration changes"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Troubleshooting/Vaadin-configuration-changes/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > Vaadin configuration changes
+---
+
+# Vaadin configuration changes
+
+Due to a [Vaadin update](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.20.adoc#_miscellaneous) in Magnolia `6.2.20`, custom setups require a change in the `web.xml` configuration file (in a custom webapp’s WAR under the `WEB-INF/` directory). In particular, you should add the following parameters.
+
+```xml
+<context-param>
+  <description>Vaadin production mode</description>
+  <param-name>productionMode</param-name> (1)
+  <param-value>true</param-value> (2)
+</context-param>
+<context-param>
+  <param-name>heartbeatInterval</param-name>
+  <param-value>90</param-value>
+</context-param>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Ensure the Vaadin `productionMode` parameter is present. |
+| **2** | The value should be `true`. |
+
+> **Warning:** If you don’t set productionMode to true, you’ll receive errors when starting your custom webapp showing that it’s unable to validate your Vaadin subscription.

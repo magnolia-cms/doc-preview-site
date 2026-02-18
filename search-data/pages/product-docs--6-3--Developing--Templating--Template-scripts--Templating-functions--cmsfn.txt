@@ -1,0 +1,1135 @@
+---
+title: "cmsfn"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Template-scripts/Templating-functions/cmsfn/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > cmsfn
+---
+
+# cmsfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`cmsfn` templating functions traverse the JCR repository, get content, and create links. Helper functions convert objects from one type to another.
+
+> **Note:** This page only lists the most commonly used functions. See info.magnolia.templating.functions.TemplatingFunctions for the complete list.
+
+## [](#_running_the_examples)Running the examples
+
+The function examples on this page require sample content. Look at each example to figure out what kind of content it needs.
+
+Example
+
+[Children](#_children) is a function that retrieves the children of the current node. To get meaningful results, you need to execute the code on a page that has some children.
+
+```none
+<ul>
+[#list cmsfn.children(content, "mgnl:page") as child ]
+    <li>${child.title!}</li>
+[/#list]
+</ul>
+```
+
+To create sample content:
+
+1.  Put the code example into a page template script. You can use the `hello.ftl` script from the [Hello Magnolia](../../../../../Getting-started-with-Magnolia/Hello-Magnolia/) tutorial, for example.
+
+2.  Create a page and assign the Hello template to it.
+
+3.  Create some child pages and give them titles.
+
+
+Your page structure could look like this:
+
+![Page structure](../../../../../_images/6-0-cmsfn-rbox.png)
+
+The `animals` page contains the example code. It has child pages and the children have titles. When you request the page the example code renders a list:
+
+-   Cats
+
+-   Dogs
+
+-   Monkeys
+
+
+## [](#_retrieving_content)Retrieving content
+
+### [](#_content_by_path)Content by path
+
+Retrieves content by a given path from a [workspace](../../../../../Administration/Architecture/Workspaces/). The function retrieves content from the `website` workspace by default.
+
+#### [](#_method_signature)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `contentByPath(String path)`
+
+#### [](#_arguments)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `path` | **required**<br><br>The path where the content is stored. |
+| `workspace` | **optional**, *default is `website`*<br><br>The [workspace](../../../../../Administration/Architecture/Workspaces/) where the content map is stored. The function retrieves content from the `website` workspace by default. |
+
+#### [](#_returns)Returns
+
+`ContentMap`
+
+#### [](#_usage)Usage
+
+`cmsfn.contentByPath(path, workspace)`
+
+\[#assign myResource = cmsfn.contentByPath("/sample-css/", "resources")\]
+${myResource.text!}
+
+#### [](#_related_functions)Related functions
+
+-   [`Node`](../Templating-function-arguments-and-return-types/#_javax_jcr_node) `nodeByPath(String path, String workspace)`. Retrieves a node by a given path from a workspace.
+
+
+### [](#_content_by_id)Content by ID
+
+Retrieves content by ID from a [workspace](../../../../../Administration/Architecture/Workspaces/). The function retrieves content from the `website` workspace by default.
+
+#### [](#_method_signature_2)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `contentById(String id, String workspace)`
+
+#### [](#_arguments_2)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `id` | **required**<br><br>The identifier whose content map you want to get. |
+| `workspace` | **optional**, *default is `website`*<br><br>The [workspace](../../../../../Administration/Architecture/Workspaces/) where the content map is stored. The function retrieves content from the `website` workspace by default. |
+
+#### [](#_returns_2)Returns
+
+`ContentMap`
+
+#### [](#_usage_2)Usage
+
+`cmsfn.contentById(id, workspace)`
+
+\[#assign myResource = cmsfn.contentById("79fca5a6-b104-417b-a107-25b94ebc3961", "resources")\]
+\[#if myResource??\]
+    ${myResource.text!}
+\[/#if\]
+
+#### [](#_related_functions_2)Related functions
+
+-   [`Node`](../Templating-function-arguments-and-return-types/#_javax_jcr_node) `nodeById(String id, String workspace)`. Retrieves a node by ID from a workspace.
+
+-   [`Node`](../Templating-function-arguments-and-return-types/#_javax_jcr_node) `getReferencedContent(Node content, String idPropertyName, String referencedWorkspace)`. Retrieves referenced content by a given content node, workspace and property. The content node you pass to this function must contain a property whose value identifies the referenced content.
+
+
+### [](#_content_by_template_id)Content by template ID
+
+Find content objects by given template ID, below a given search root. Use this function to find pages that use a particular template, to aggregate content from similar pages, or to check where a template is used before deleting it from the system. You can limit the results to a set number, and add AND and ORDER BY parameters in SQL syntax.
+
+#### [](#_method_signature_3)Method signature
+
+[`List<Node>`](../Templating-function-arguments-and-return-types/#_javax_jcr_node) `contentListByTemplateId(Node searchRoot, String templateId)`
+
+`List<Node> contentListByTemplateId(Node searchRoot, String templateId, int maxResultSize, String andClause, String orderByClause)`
+
+#### [](#_arguments_3)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `searchRoot` | **required**<br><br>The node to use as root for the search. |
+| `templateIds` | **required**<br><br>The template IDs to search for. |
+| `maxResultSize` | **optional**<br><br>Integer that sets the max number of results returned. This can significantly improve query performance. |
+| `andClause` | **optional**<br><br>AND clause in SQL syntax excluding the word "AND" (for example, "date IS NOT NULL"). |
+| `orderByClause` | **optional**<br><br>ORDER BY clause in SQL syntax, excluding the words "ORDER BY" (for example, "date desc" or "date asc"). |
+
+#### [](#_returns_3)Returns
+
+`List<Node>`
+
+#### [](#_usage_3)Usage
+
+`cmsfn.contentListByTemplateId(searchRoot, templateId)`
+
+`cmsfn.contentListByTemplateId(searchRoot, templateId, maxResultSize, andClause, orderByClause)`
+
+Show the paths to all pages done with the template "hello"
+
+```none
+[#assign currentNode = cmsfn.asJCRNode(content)]
+[#assign rootPageNode = cmsfn.root(currentNode, "mgnl:page")!]
+[#if rootPageNode??]
+    [#assign helloPages=cmsfn.contentListByTemplateId(rootPageNode, "hello-magnolia:pages/hello")]
+    [#if helloPages??]
+        <ul>
+        [#list helloPages as child ]
+            <li>${cmsfn.asContentMap(child).title!}</li>
+        [/#list]
+        </ul>
+    [/#if]
+[/#if]
+```
+
+#### [](#_related_functions_3)Related functions
+
+-   `List<Node> contentListByTemplateIds(Node searchRoot, Set<String> templateIds, int maxResultSize, String andClause, String orderByClause)`. Retrieves content by a list of template IDs. This function takes many template IDs instead of only one.
+
+
+### [](#_page_by_content)Page by content
+
+Retrieves the page that the passed content belongs to. For example, when you pass the content of a component to this function you get the parent page back. If the passed content has no parent page, which is the case for content managed in a content app and stored outside the `website` workspace, null is returned. If the passed content represents a page, then the passed content is returned.
+
+#### [](#_method_signature_4)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `page(ContentMap content)`
+
+#### [](#_arguments_4)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content map whose page you want to find. |
+
+#### [](#_returns_4)Returns
+
+`ContentMap`
+
+#### [](#_usage_4)Usage
+
+`cmsfn.page(content)`
+
+\[#assign pageNode = cmsfn.page(content)!"unknown"\]
+The title of the page node is ${pageNode.title}
+
+#### [](#_related_functions_4)Related functions
+
+-   `Node page(Node content)`. Same as above but takes a node as an argument instead of a content map.
+
+
+## [](#_inheritance)Inheritance
+
+The methods here related to node inheritance .
+
+> **Tip:** The inherit methods are seldom necessary because areas already support inheritance natively through configuration.
+
+### [](#_inherit_components_or_properties)Inherit components or properties
+
+Wraps the provided node with an inheritance wrapper so that the node inherits the components and/or properties that exist in the equivalent ancestor nodes of the of the provided node’s anchor . This is typically the page node for the provided node.
+
+> **Note:** Inheritance is subject to the inheritance configuration of the node, but can be overridden with the parameters of this method.
+
+#### [](#_method_signature_5)Method signature
+
+`Node inherit(Node content, String relPath, String nodeTypes, String nodeInheritance, String propertyInheritance)`
+
+#### [](#_arguments_5)Arguments
+
+ ArgumentDescription
+
+`content`
+
+The node you want to inherit.
+
+`relPath`
+
+`String`
+
+If not blank, the node will inherit the node specified by this relative path rather than the actual provided node.
+
+> **Tip:** This can be used to grab a specific property from a subnode.
+
+`nodeTypes`
+
+`String`
+
+If not blank, only ancestors of the anchor with one of the `nodeTypes` in this comma delimited string are evaluated.
+
+`nodeInheritance`
+
+`String`
+
+Specifies which child components of the ancestors to inherit.
+
+`propertyInheritance`
+
+`String`
+
+Specifies which properties of the ancestors to inherit.
+
+#### [](#_returns_5)Returns
+
+`inheritedNode`
+
+#### [](#_usage_5)Usage
+
+`cmsfn.inherit(content, relPath, nodeTypes, nodeInheritance, propertyInheritance)`
+
+### [](#_check_if_node_is_inherited)Check if Node is inherited
+
+Checks whether the Node is inherited from another Node or not.
+
+#### [](#_method_signature_6)Method signature
+
+`boolean isInherited(Node content)`
+
+#### [](#_arguments_6)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | The node you want to inherit. |
+
+#### [](#_returns_6)Returns
+
+-   `true` indicates the Node is inherited from another Node.
+
+-   `false` indicates the Node is **not** inherited from another Node.
+
+
+#### [](#_usage_6)Usage
+
+`cmsfn.isInherited(content)`
+
+## [](#_links)Links
+
+### [](#_create_link_to_node)Create link to node
+
+Creates a link to a given node.
+
+#### [](#_method_signature_7)Method signature
+
+`String link([ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) contentMap)`
+
+#### [](#_arguments_7)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `contentMap` | **required**<br><br>The node you want to link to, as a content map. |
+
+#### [](#_returns_7)Returns
+
+`String`
+
+#### [](#_usage_7)Usage
+
+`cmsfn.link(contentMap)`
+
+\[#assign rootNode = cmsfn.contentByPath("/home")\]
+<a href="${cmsfn.link(rootNode)}">${rootNode.title!}</a>
+
+#### [](#_related_functions_5)Related functions
+
+-   `String link(Node node)`
+
+-   `String link(String workspace, String nodeIdentifier)`
+
+
+### [](#_create_link_from_url_stored_in_node)Create link from URL stored in node
+
+Creates an external link by using the property value of the given node.
+
+#### [](#_method_signature_8)Method signature
+
+`String externalLink([ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) content, String linkPropertyName)`
+
+#### [](#_arguments_8)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The node where the link property is stored. |
+| `linkPropertyName` | **required**<br><br>The name of the property where the link reference is stored. |
+
+#### [](#_returns_8)Returns
+
+`String`
+
+#### [](#_usage_8)Usage
+
+`cmsfn.externalLink(content, linkPropertyName)`
+
+\[#assign externalLink = cmsfn.externalLink(content, "linkTypeExternal")!\]
+\[#if externalLink??\]
+    <a href="${externalLink}">external link</a>
+\[/#if\]
+
+#### [](#_related_functions_6)Related functions
+
+-   `String externalLink([Node](../Templating-function-arguments-and-return-types/#_javax_jcr_node) content, String linkPropertyName)`
+
+
+### [](#_get_link_title_from_url_stored_in_node)Get link title from URL stored in node
+
+Returns the title for a link using the property values of the given node. If the `linkTitlePropertyName` property is null, the method falls back to the same method with 2 parameters, hence returning the link.
+
+#### [](#_method_signature_9)Method signature
+
+`String externalLinkTitle([ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) content, String linkPropertyName, String linkTitlePropertyName)`
+
+#### [](#_arguments_9)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The node where the link property is stored. |
+| `linkPropertyName` | **required**<br><br>The name of the property where the link reference is stored. |
+| `linkTitlePropertyName` | **required**<br><br>The name of the property where the title is stored. |
+
+#### [](#_returns_9)Returns
+
+`String`
+
+#### [](#_usage_9)Usage
+
+`cmsfn.externalLink(content, linkPropertyName, linkTitlePropertyName)`
+
+\[#assign linkText = cmsfn.externalLinkTitle(cmsfn.decode(content), "linkTypeExternal", "title")!\]
+
+#### [](#_related_functions_7)Related functions
+
+-   `String externalLink([Node](../Templating-function-arguments-and-return-types/#_javax_jcr_node) content, String linkPropertyName, linkTitlePropertyName)`
+
+
+### [](#_get_link_prefix_by_node)Get link prefix by node
+
+Gets the link prefix by a given node. For instance, the result is `/<[contextPath](../../Rendering-context-objects/#_ctx)>` or something more complex if there is a URI2Repository mapping for the given node.
+
+#### [](#_method_signature_10)Method signature
+
+`String linkPrefix(Node content)`
+
+#### [](#_arguments_10)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The node you want to get the link prefix for. |
+
+#### [](#_returns_10)Returns
+
+`String`
+
+#### [](#_usage_10)Usage
+
+`cmsfn.linkPrefix(content)`
+
+\[#assign prefix = cmsfn.linkPrefix(cmsfn.asJCRNode(content))!""\]
+prefix = ${prefix}
+
+### [](#_get_localized_links)Get localized links
+
+Returns a map of localized links to the current node. This means if you have defined three locales (`en`, `de_DE` and `de_CH`), the function returns localized links to the node of the context to which you are applying the function (if the current content node is a component, the function searches the parent page node).
+
+Example
+
+The map could look like this:
+
+| Key | Value |
+| --- | --- |
+| `en` | /magnoliaAuthor/travel/about.html |
+| `de_DE` | /magnoliaAuthor/de\_DE/travel/about.html |
+| `de_CH` | /magnoliaAuthor/de\_CH/travel/about.html |
+
+#### [](#_method_signature_11)Method signature
+
+`public Map<String, String> localizedLinks()`
+
+#### [](#_returns_11)Returns
+
+`Map<String, String>`
+
+#### [](#_usage_11)Usage
+
+`cmsfn.localizedLinks()`
+
+```none
+[#-- Build language navigation. --]
+[#assign localizedLinks = cmsfn.localizedLinks()!]
+[#if localizedLinks?has_content]
+   [#assign languages = localizedLinks?keys]
+   <ul>
+      [#list languages as lang]
+      [#assign current = cmsfn.isCurrentLocale(lang)]
+      [#-- Use "compress" to put "li" and "a" on one line to prevent white spaces. --]
+      <li>[@compress single_line=true]
+         [#-- Current locale should not be linked. --]
+         [#if current]${lang!}[/#if]
+         [#if !current]<a href="${localizedLinks[lang]!'#'}">${lang!}</a>[/#if]
+      [/@compress]</li>
+      [/#list]
+   </ul>
+[/#if]
+```
+
+## [](#_converting_nodes_and_content_maps)Converting nodes and content maps
+
+### [](#_convert_node_to_content_map)Convert node to content map
+
+Converts a node to a content map.
+
+#### [](#_method_signature_12)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `asContentMap([Node](../Templating-function-arguments-and-return-types/#_javax_jcr_node) content)`
+
+#### [](#_arguments_11)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The node you want to convert. |
+
+#### [](#_returns_12)Returns
+
+`ContentMap`
+
+#### [](#_usage_12)Usage
+
+`cmsfn.asContentMap(content)`
+
+\[#assign myNode = cmsfn.nodeByPath("/hello")\]
+\[#assign myMap = cmsfn.asContentMap(myNode)\]
+${myMap.title!}
+
+### [](#_convert_node_collection_to_content_map_list)Convert node collection to content map list
+
+Converts a collection of nodes to a list of content map items
+
+#### [](#_method_signature_13)Method signature
+
+`List<[ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap)> asContentMapList(Collection<Node> nodeList)`
+
+#### [](#_arguments_12)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `nodeList` | **required**<br><br>The node collection you want to convert to a content map list. |
+
+#### [](#_returns_13)Returns
+
+`List<ContentMap>`
+
+#### [](#_usage_13)Usage
+
+`cmsfn.asContentMapList(nodeList)`
+
+```none
+[#assign currentNode = cmsfn.asJCRNode(content)]
+[#assign childrenNodesAsContentMaps = cmsfn.asContentMapList(cmsfn.children(currentNode, "mgnl:page"))]
+<ul>
+  [#list childrenNodesAsContentMaps as child ]
+    <li>${child.title!}</li>
+  [/#list]
+</ul>
+```
+
+### [](#_convert_content_map_to_node)Convert content map to node
+
+Converts a content map to a node.
+
+#### [](#_method_signature_14)Method signature
+
+[`Node`](../Templating-function-arguments-and-return-types/#_javax_jcr_node) `asJCRNode([ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) contentMap)`
+
+#### [](#_arguments_13)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `contentMap` | **required**<br><br>The content map you want to convert. |
+
+#### [](#_returns_14)Returns
+
+`Node`
+
+#### [](#_usage_14)Usage
+
+`cmsfn.asJCRNode(contentMap)`
+
+\[#assign myNode = cmsfn.nodeByPath("/hello")\]
+\[#assign myMap = cmsfn.asContentMap(myNode)\]
+${myMap.title!}
+
+### [](#_convert_content_map_collection_to_node_list)Convert content map collection to node list
+
+Converts a content map collection to a list of nodes.
+
+#### [](#_method_signature_15)Method signature
+
+`List<[Node](../Templating-function-arguments-and-return-types/#_javax_jcr_node)> asNodeList(Collection<ContentMap> contentMapList)`
+
+#### [](#_arguments_14)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `contentMapList` | **required**<br><br>The content map collection you want to convert to a list of nodes. |
+
+#### [](#_returns_15)Returns
+
+`List<Node>`
+
+#### [](#_usage_15)Usage
+
+`cmsfn.asNodeList(contentMapList)`
+
+```none
+[#assign myMapList = cmsfn.children(content, "mgnl:page")]
+<ul>
+[#list cmsfn.asNodeList(myMapList) as child]
+  <li>${cmsfn.parent(child)!}</li>
+[/#list]
+</ul>
+```
+
+## [](#_traversing_jcr_hierarchy)Traversing JCR hierarchy
+
+### [](#_children)Children
+
+Retrieves all the children (direct descendants) of the given node. If you don’t specify `nodeType`, the function will return all types of nodes, which is probably not what you want. A page typically has at least two kinds of child nodes: areas and pages. If you want just the pages, specify the [node type](../../../../../Administration/Architecture/Node-types/) `mgnl:page`.
+
+#### [](#_method_signature_16)Method signature
+
+`List<[ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap)> children(ContentMap content, String nodeTypeName, String blockIntermediateNodeName)`
+
+> **Note:** The blockIntermediateNodeName option is provided by the Content Editor module version 2.1 or higher.To use the parameter, you need to use the content-editor-freemarker renderer.
+
+#### [](#_arguments_15)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The node whose children you want to get. |
+| `nodeTypeName` | **optional**<br><br>[Type](../../../../../Administration/Architecture/Node-types/) of the expected return nodes. |
+| `blockIntermediateNodeName` | **optional**<br><br>The property allows you to access content of the [intermediate block nodes](../../../../../Modules/List-of-modules/Content-Editor-module/Multi-JCR-block/#_flat_vs_nested_content_structure).<br><br>In the Magnolia webapps, the name of the intermediate node is `block`. |
+
+#### [](#_returns_16)Returns
+
+`List<ContentMap>`
+
+#### [](#_usage_16)Usage
+
+`cmsfn.children(content, nodeTypeName)`
+
+```none
+<ul>
+[#list cmsfn.children(content, "mgnl:page") as child ]
+    <li>${child.title!}</li>
+[/#list]
+</ul>
+```
+
+#### [](#_related_functions_8)Related functions
+
+-   `List<[Node](../Templating-function-arguments-and-return-types/#_javax_jcr_node)> children(Node content)`
+
+-   `List<Node> children(Node content, String nodeTypeName)`
+
+
+### [](#_ancestors)Ancestors
+
+Retrieves the ancestors of a content map. You can specify `nodeType` to limit the types returned. If you do not, all node types are returned.
+
+#### [](#_method_signature_17)Method signature
+
+`List<[ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap)> ancestors(ContentMap contentMap)`
+
+`List<ContentMap> ancestors(ContentMap contentMap, String nodeTypeName)`
+
+#### [](#_arguments_16)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content map whose ancestors you want to get. |
+| `nodeTypeName` | **optional**<br><br>[Type](../../../../../Administration/Architecture/Node-types/) of the expected return content map items. |
+
+#### [](#_returns_17)Returns
+
+`List<ContentMap>`
+
+#### [](#_usage_17)Usage
+
+`cmsfn.ancestors(contentMap, nodeTypeName)`
+
+```none
+Ancestor pages:
+<ul>
+[#list cmsfn.ancestors(content, "mgnl:page") as ancestor ]
+  <li>${ancestor.title!}</li>
+[/#list]
+</ul>
+```
+
+#### [](#_related_functions_9)Related functions
+
+-   `List<[Node](../Templating-function-arguments-and-return-types/#_javax_jcr_node)> ancestors(Node content)`
+
+-   `List<Node> ancestors(Node content, String nodeTypeName)`
+
+
+### [](#_parent)Parent
+
+Retrieves the parent of a content map. You can specify `nodeType` to limit the types returned. If you do not, all node types are returned.
+
+#### [](#_method_signature_18)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `parent(ContentMap contentMap)`
+
+`ContentMap parent(ContentMap contentMap, String nodeTypeName)`
+
+#### [](#_arguments_17)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `contentMap` | **required**<br><br>The content map whose parent you want to get. |
+| `nodeTypeName` | **optional**<br><br>[Type](../../../../../Administration/Architecture/Node-types/) of the expected return content map items. |
+
+#### [](#_returns_18)Returns
+
+`ContentMap`
+
+#### [](#_usage_18)Usage
+
+`cmsfn.parent(contentMap, nodeTypeName)`
+
+\[#assign parent = cmsfn.parent(content, "mgnl:page")! \]
+Parent: ${parent.title!}
+
+#### [](#_related_functions_10)Related functions
+
+-   `Node parent(Node content, String nodeTypeName)`. Same as above but takes a node as an argument instead of a content map.
+
+-   `boolean isFromCurrentPage(ContentMap content)`. Checks if the passed content is from the current page.
+
+
+### [](#_root)Root
+
+Retrieves the root content map of a content map. You can specify a `nodeType` to limit the types returned. If you do not, all types are returned.
+
+#### [](#_method_signature_19)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `root(ContentMap contentMap)`
+
+`ContentMap root(ContentMap contentMap, String nodeTypeName)`
+
+#### [](#_arguments_18)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `contentMap` | **required**<br><br>The content map whose root you want to get. |
+| `nodeTypeName` | **optional**<br><br>[Type](../../../../../Administration/Architecture/Node-types/) of the expected return content map items. |
+
+#### [](#_returns_19)Returns
+
+`ContentMap`
+
+#### [](#_usage_19)Usage
+
+`cmsfn.root(contentMap, nodeTypeName)`
+
+\[#assign rootNode = cmsfn.root(content)! \]
+\[#assign rootPage = cmsfn.root(content, "mgnl:page")! \]
+The root node title is ${rootNode.title!"not found"}<br/>
+The root page title is ${rootPage.title!}
+
+#### [](#_related_functions_11)Related functions
+
+-   [`Node`](../Templating-function-arguments-and-return-types/#_javax_jcr_node) `root(Node content)`
+
+-   `Node root(Node content, String nodeTypeName)`
+
+
+### [](#_site_root)Site root
+
+Retrieves the site root node by a given content map. The site root content map is defined as the page node with template type `DefaultTemplateTypes#HOME`. If no ancestor page with this type is returned, the JCR workspace root is returned.
+
+#### [](#_method_signature_20)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `siteRoot(ContentMap content)`
+
+#### [](#_arguments_19)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required** |
+
+#### [](#_returns_20)Returns
+
+`ContentMap`
+
+#### [](#_usage_20)Usage
+
+`cmsfn.siteRoot(content)`
+
+\[#assign homeLink = cmsfn.link(cmsfn.siteRoot(content))!"/"\]
+
+#### [](#_related_functions_12)Related functions
+
+-   `Node siteRoot(Node content)`. Retrieves the site root by node.
+
+
+## [](#_dumping_an_objects_structure_and_content_hierarchy)Dumping an object’s structure and content hierarchy
+
+### [](#_dump)Dump
+
+Inspects the structure and content of the given object upto the given depth and outputs it either in plain text form or, optionally, in a simple HTML format.
+
+#### [](#_method_signature_21)Method signature
+
+`String dump(Object obj, int depth, boolean asHtml)`
+
+#### [](#_arguments_20)Arguments
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Argument</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Specifies the object type to be inspected. The following objects are available in the default implementation of this inspector function:</p></div><div class="ulist"><ul><li><p><code>null</code> values</p></li><li><p>Scalars</p></li><li><p>Dates</p></li><li><p>Calendar</p></li><li><p>Arrays</p></li><li><p>Collections</p></li><li><p>Maps</p></li><li><p>ContentMaps</p></li><li><p>Nodes</p></li><li><p>Properties</p></li><li><p>Objects (this one describes only the object class to avoid generating huge hierarchies)</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>depth</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>3</code></em></p></div><div class="paragraph"><p>Specifies the depth of the inspection.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>asHtml</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Output into a simple HTML format.</p></div></div></td></tr></tbody></table></div>
+
+#### [](#_returns_21)Returns
+
+`String`
+
+#### [](#_usage_21)Usage
+
+`cmsfn.dump(obj, depth, asHtml)`
+
+${cmsfn.dump(content, 5, true)} # Outputs the properties of the content object with the depth of 5 in HTML format.
+
+## [](#_system_state_helpers)System state helpers
+
+### [](#_check_for_edit_mode)Check for edit mode
+
+Checks whether the content is requested in the page editor in edit mode on author instance.
+
+#### [](#_method_signature_22)Method signature
+
+`boolean isEditMode()`
+
+#### [](#_returns_22)Returns
+
+`boolean`
+
+#### [](#_usage_22)Usage
+
+`cmsfn.isEditMode()`
+
+\[#if cmsfn.editMode\]You are in the edit mode<br/>\[/#if\]
+Is edit mode: ${cmsfn.isEditMode()?string}
+
+### [](#_check_for_preview_mode)Check for preview mode
+
+Checks whether the content is requested in the page editor in preview mode. The check can be run either on the author instance or on the public instance.
+
+#### [](#_method_signature_23)Method signature
+
+`boolean isPreviewMode()`
+
+#### [](#_returns_23)Returns
+
+`boolean`
+
+#### [](#_usage_23)Usage
+
+`cmsfn.isPreviewMode()`
+
+\[#if cmsfn.previewMode\]you are in the preview mode<br/>\[/#if\]
+is preview: ${cmsfn.isPreviewMode()?string}<br/>
+
+### [](#_check_for_author_instance)Check for author instance
+
+Checks whether content is requested on the author instance.
+
+#### [](#_method_signature_24)Method signature
+
+`boolean isAuthorInstance()`
+
+#### [](#_returns_24)Returns
+
+`boolean`
+
+#### [](#_usage_24)Usage
+
+`cmsfn.isAuthorInstance()`
+
+\[#if cmsfn.authorInstance\]you are on an author instance<br/>\[/#if\]
+is author instance: ${cmsfn.isAuthorInstance()?string}<br/>
+
+### [](#_check_for_public_instance)Check for public instance
+
+Checks whether content is requested on the public instance.
+
+#### [](#_method_signature_25)Method signature
+
+`boolean isPublicInstance()`
+
+#### [](#_returns_25)Returns
+
+`boolean`
+
+#### [](#_usage_25)Usage
+
+`cmsfn.isPublicInstance()`
+
+\[#if cmsfn.publicInstance\]you are on an public instance<br/>\[/#if\]
+is public instance: ${cmsfn.isPublicInstance()?string}<br/>
+
+## [](#_string_manipulation)String manipulation
+
+### [](#_decode_html)Decode HTML
+
+Removes escaping of HTML on properties in a content map.
+
+Text stored in the JCR is usually encoded. For instance, HTML tag brackets are stored as `&gt;` and `&lt;`. However, the [rich text field](../../../Dialog-definition/Field-definition/List-of-fields/Rich-text-field/) stores some HTML that should be rendered as proper HTML and not as encoded text. In that case, use the `decode` method.
+
+#### [](#_method_signature_26)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) `decode(ContentMap content)`
+
+#### [](#_arguments_21)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content map you want to removing escaping of HTML for. |
+
+#### [](#_returns_26)Returns
+
+`ContentMap`
+
+#### [](#_usage_26)Usage
+
+`cmsfn.decode(content)`
+
+\[#if content.text?has\_content\]
+    ${cmsfn.decode(content).text}
+\[/#if\]
+
+#### [](#_related_functions_13)Related functions
+
+-   `Node decode(Node content)`. Removes escaping of HTML on properties in a node.
+
+-   `ContentMap encode(ContentMap content)`. Adds escaping of HTML on properties and changes line breaks into `&lt;br/&gt;` tags in a content map.
+
+-   `Node encode(Node content)`. Adds escaping of HTML on properties and changes line breaks into `&lt;br/&gt;` tags in a node.
+
+
+### [](#_shorten_string)Shorten string
+
+Shortens a given string to a set length and adds the suffix " …​" (space followed by three periods). Use this function to create teasers. Get the main content of a target page, shorten it to 100 characters and render the shortened content in a teaser component.
+
+#### [](#_method_signature_27)Method signature
+
+`String abbreviateString(String stringToAbbreviate, int length)`
+
+#### [](#_arguments_22)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `stringToAbbreviate` | **required**<br><br>The string you want to abbreviate. |
+| `length` | **required**<br><br>The number of characters to shorten to. |
+
+#### [](#_returns_27)Returns
+
+`String`
+
+#### [](#_usage_27)Usage
+
+`cmsfn.abbreviateString(stringToAbbreviate, length)`
+
+\[#assign text = cmsfn.abbreviateString(text, 80)\]
+
+#### [](#_related_functions_14)Related functions
+
+-   `String abbreviateString(String stringToAbbreviate, int length, String suffix)`. Same as above but using a custom suffix such as "Read more".
+
+
+## [](#_request)Request
+
+### [](#_query_string_and_fragment)Query string and fragment
+
+Retrieves the query string and fragment of a URL. Returns an empty string if none exists.
+
+#### [](#_method_signature_28)Method signature
+
+`String queryStringAndFragment(String url)`
+
+#### [](#_arguments_23)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `url` | **required**<br><br>The URL whose query and fragment you want to get. |
+
+#### [](#_returns_28)Returns
+
+`String`
+
+#### [](#_usage_28)Usage
+
+`cmsfn.queryStringAndFragment(url)`
+
+\[#assign queryStringAndFragment = cmsfn.queryStringAndFragment("http://example.com#myApp::running?q=abcd")\]
+Query string and fragment: ${queryStringAndFragment}
+
+## [](#_language)Language
+
+See also [Get localized links](#_get_localized_links) above.
+
+### [](#_current_language)Current language
+
+Retrieves the language currently used.
+
+#### [](#_method_signature_29)Method signature
+
+`String language()`
+
+#### [](#_returns_29)Returns
+
+`String`
+
+#### [](#_usage_29)Usage
+
+`cmsfn.language()`
+
+<html xml:lang="${cmsfn.language()}" lang="${cmsfn.language()}" class="no-js">
+
+> **Note:** ${ctx.locale} is different from ${cmsfn.language()}, the former referring to the locale currently used by the user while the latter to the locale currently used by the site. See also AdminCentral and public locales.
+
+### [](#_wrap_content_in_i18n_node_wrapper)Wrap content in i18n node wrapper
+
+Wraps content in info.magnolia.jcr.wrapper.I18nNodeWrapper to deliver properties in a visitor’s language. Use this function only if required. Usually content nodes are already wrapped having localized properties if they exist. Explicit wrapping using this function might be required when retrieving from a custom model class which may deliver unwrapped content nodes.
+
+#### [](#_method_signature_30)Method signature
+
+[`Node`](../Templating-function-arguments-and-return-types/#_javax_jcr_node) `wrapForI18n(Node content)`
+
+#### [](#_arguments_24)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content you want to wrap. |
+
+#### [](#_returns_30)Returns
+
+`Node`
+
+#### [](#_usage_30)Usage
+
+`cmsfn.wrapForI18n(content)`
+
+\[#assign specialNode = cmsfn.wrapForI18n(model.specialNode)\]
+
+### [](#_test_whether_locale_is_current_one)Test whether locale is current one
+
+The function checks whether a given string representation of a locale is the same as the current locale. The current locale is the one selected by a user browsing the website (note that the current locale is not the same as the browser locale).
+
+#### [](#_method_signature_31)Method signature
+
+`boolean cmsfn.isCurrentLocale(String locale)`
+
+#### [](#_returns_31)Returns
+
+`boolean`
+
+#### [](#_arguments_25)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `locale` | **required**<br><br>String representation of a locale. |
+
+#### [](#_usage_31)Usage
+
+`cmsfn.isCurrentLocale("en")`
+
+\[#if cmsfn.isCurrentLocale("en")\] ... do something here ...\[/#if\]
+
+## [](#_metadata)Metadata
+
+Retrieves content metadata such as the author and date last modified. This function returns a string representation of the metadata property. This means that when you ask for a date you don’t get a Date object back but a String.
+
+### [](#_method_signature_32)Method signature
+
+`String metaData([ContentMap](../Templating-function-arguments-and-return-types/#_info_magnolia_jcr_util_contentmap) content, String property)`
+
+### [](#_arguments_26)Arguments
+
+ ArgumentDescription
+
+`content`
+
+**required**
+
+The content map whose metadata you want to get.
+
+`property`
+
+**required**
+
+| Template ID | Metadata property |
+| --- | --- |
+| mgnl:creationdate | `mgnl:created` |
+| mgnl:lastmodified | `mgnl:lastModified` |
+| mgnl:lastaction | `mgnl:lastActivated` |
+| mgnl:authorid | `mgnl:lastModifiedBy` |
+| mgnl:activatorid | `mgnl:lastActivatedBy` |
+| mgnl:template | `mgnl:template` |
+| mgnl:activated | `mgnl:activationStatus` |
+| mgnl:comment | `mgnl:comment` |
+
+### [](#_returns_32)Returns
+
+`String`
+
+### [](#_usage_32)Usage
+
+`cmsfn.metaData(content, property)`
+
+This page was created by ${cmsfn.metaData(content, "mgnl:createdBy")!"nobody"}<br/>
+and last modified ${cmsfn.metaData(content, "mgnl:lastModified")!"never"}
+
+### [](#_related_functions_15)Related functions
+
+-   `String metaData(Node content, String property)`. Same as above but takes a node as an argument instead of a content map.
+
+
+## [](#_file_helpers)File helpers
+
+### [](#_file_extension)File extension
+
+Tries to determine the file extension of a filename by returning the suffix after the last dot.
+
+#### [](#_method_signature_33)Method signature
+
+`String fileExtension(String fileName)`
+
+#### [](#_arguments_27)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `fileName` | **required**<br><br>The filename you want to get the extension for. |
+
+#### [](#_returns_33)Returns
+
+`String`
+
+#### [](#_usage_33)Usage
+
+`cmsfn.fileExtension(fileName)`
+
+\[#assign fileName = "/lirum-larum.JPG"\]
+The extension of the file ${fileName} is "${cmsfn.fileExtension(fileName)}"
+
+### [](#_file_size)File size
+
+Returns a friendly, human-readable file size such as 120 kB. Use this function, for example, to provide approximate sizes of downloadable files. See Apache [`FileUtils`](https://commons.apache.org/proper/commons-io/javadocs/api-2.4/org/apache/commons/io/FileUtils.html) for more.
+
+#### [](#_method_signature_34)Method signature
+
+`String readableFileSize(long sizeBytes)`
+
+#### [](#_arguments_28)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `sizeBytes` | **required**<br><br>The specific number of bytes. |
+
+#### [](#_returns_34)Returns
+
+`String`
+
+#### [](#_usage_34)Usage
+
+`cmsfn.readableFileSize(sizeBytes)`
+
+\[#assign fileSizeInBytes = 1321432216\]
+The size of my file is ${fileSizeInBytes}, this means: ${cmsfn.readableFileSize(fileSizeInBytes)}
+
+Related topics
+
+-   [About templating functions](../)
+
+-   [Arguments and return types](../Templating-function-arguments-and-return-types/)
+
+-   info.magnolia.templating.functions.TemplatingFunctions

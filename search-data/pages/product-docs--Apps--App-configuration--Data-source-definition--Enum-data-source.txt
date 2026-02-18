@@ -1,0 +1,49 @@
+---
+title: "Enum data source"
+url: https://docs.magnolia-cms.com/product-docs/Apps/App-configuration/Data-source-definition/Enum-data-source/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > App configuration > Data source definition > Enum data source
+---
+
+# Enum data source
+
+The enum data source allows any enum type to be used as a select field data source. By default, it does not provide any component implementation itself other than the one required by select fields.
+
+> **Note:** The enum data source is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.datasource.enumeration.EnumDatasourceDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+datasource:
+  $type: enumDatasource
+  enumeration: info.magnolia.config.source.ConfigurationSourceTypes
+```
+
+## [](#_list_of_properties)List of properties
+
+| Property | Description |
+| --- | --- |
+| `class` or `$type` | **required**<br><br>Use `info.magnolia.ui.datasource.enumeration.EnumDatasourceDefinition` for the `class` property or `enumDatasource` for the `$type` shortcut. |
+| `enumeration` | **required**<br><br>Fully qualified class name of the enum type. Examples include `info.magnolia.config.source.ConfigurationSourceTypes` and `info.magnolia.config.registry.DefinitionProvider$Problem$SeverityType`. |
+| `name` | **optional**, *default is `enum`*<br><br>Name of the data source. |
+
+## [](#_data_source_components)Data source components
+
+Module component mappings can be defined in the context of the current data source (a component section should have an id in the form of `<id>datasource-<ds-name></id>`, where `<ds-name>` is configured in the definition).
+
+| Type | Implementation | Description |
+| --- | --- | --- |
+| `info.magnolia.ui.field.SelectFieldSupport` | `info.magnolia.ui.datasource.enumeration.EnumSelectFieldSupport` | Provides delegates required by select fields. |
+
+Component mappings in module descriptor
+
+```xml
+<components>
+  <id>datasource-enum</id>
+  <component>
+    <type>info.magnolia.ui.field.SelectFieldSupport</type>
+    <implementation>info.magnolia.ui.datasource.enumeration.EnumSelectFieldSupport</implementation>
+  </component>
+</components>
+```

@@ -1,0 +1,24 @@
+---
+title: "Magnolia Audit logs"
+url: https://docs.magnolia-cms.com/cockpit/logs-magnolia-audit/
+category: DX Cloud
+version: cloud
+---
+
+# Magnolia Audit logs
+
+Magnolia Audit logs track content operations performed within your Magnolia instances. These logs record all modifications to your JCR repository content, including creating, updating, moving, copying, and deleting nodes, helping you monitor editorial activity, investigate content changes, and maintain compliance.
+
+## [](#_key_information_tracked)Key information tracked
+
+-   **Actions:** The operation performed (create, update, delete, move, copy)
+
+-   **Identity:** Username performing the action
+
+-   **Content location:** Workspace, node type, source path, and destination path
+
+-   **Component:** Whether the action occurred on Author or Public instances
+
+-   **Infrastructure:** Namespace, pod, and container where the operation was executed
+
+-   **Timestamp:** Precise date and time when the action occurred

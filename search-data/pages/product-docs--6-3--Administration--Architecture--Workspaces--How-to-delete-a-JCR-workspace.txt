@@ -1,0 +1,102 @@
+---
+title: "How to delete a JCR workspace"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Architecture/Workspaces/How-to-delete-a-JCR-workspace/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Architecture > Workspaces > How to delete a JCR workspace
+---
+
+# How to delete a JCR workspace
+
+This page explains how to delete a JCR workspace on a Magnolia system.
+
+## [](#_jcr_api_and_jackrabbit)JCR API and Jackrabbit
+
+You *cannot* delete a JCR workspace programmatically with Magnolia. You must delete it manually.
+
+[Apache Jackrabbit](http://jackrabbit.apache.org/), which is the JCR implementation used by Magnolia, doesn’t implement the `#deleteWorkpace` method defined in the JCR 2.0 API (see [javax.jcr.Workspace](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Workspace.html)).
+
+`org.apache.jackrabbit.core.WorkspaceImpl#delete`
+
+```java
+public void deleteWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {
+  this.context.getRepository().getWorkspaceInfo(name);
+  this.context.getAccessManager().checkRepositoryPermission(32768);
+  throw new UnsupportedRepositoryOperationException("not yet implemented");
+}
+```
+
+For more information, see [ApacheJackrabbit - Frequently Asked Questions](https://jackrabbit.apache.org/jcr/frequently-asked-questions.html#How_do_I_delete_a_workspace_in_Jackrabbit).
+
+## [](#_deleting_a_workspace_manually)Deleting a workspace manually
+
+Before starting:
+
+-   Note that deletion *cannot be reverted*.
+
+-   Ensure that the workspace you want to delete doesn’t contain content you still require.
+
+-   Shut down the application server (such as Tomcat) before manually deleting. You can’t delete a workspace on a running system.
+
+
+### [](#_overview)Overview
+
+There are two main steps involved in deleting a workspace manually:
+
+1.  Delete the folder `$magnolia.repositories.home/magnolia/workspaces/$workspace-name`.
+
+2.  Delete database tables with table names containing the workspace name.
+
+
+On embedded databases such as [H2](https://www.h2database.com/), you can skip step 2.
+
+### [](#_deleting_the_workspace_folder_in_the_repository_folder)Deleting the workspace folder in the repository folder
+
+For every JCR workspace, there is a folder on the file system. The value of the `magnolia.repositories.home` property defines the location of these folders.
+
+1.  Check the value for your system:
+
+    1.  If your system is still running, use the [About app](../../../../Apps/List-of-apps/About-Magnolia-app/) to look up the property.
+
+    2.  Alternatively, check the [`magnolia.properties`](../../Configuration-management/#_properties) files where the property is defined.
+
+
+2.  Determine the path for `$magnolia.repositories.home/magnolia/workspaces/$workspace-name` and delete the folder.
+
+
+|     |     |
+| --- | --- |
+| `magnolia.repositories.home` | `/var/lib/author/tomcat/webapps/author/repositories` |
+| Workspace name | `dms` |
+| Folder to delete | `/var/lib/author/tomcat/webapps/author/repositories/magnolia/workspaces/dms` |
+
+### [](#_deleting_database_tables)Deleting database tables
+
+You should delete all tables which contain the JCR workspace name.
+
+Your approach when deleting these tables depends on the persistence layer. Some examples of persistence layers are:
+
+-   [Apache Derby](https://db.apache.org/derby/)
+
+-   [H2](http://www.h2database.com/)
+
+-   [Ingres](https://en.wikipedia.org/wiki/Ingres_%28database%29)
+
+-   [MySQL](https://www.mysql.com)
+
+-   [Oracle](https://www.oracle.com/database/index.html)
+
+
+The value of the Magnolia property `magnolia.repositories.jackrabbit.config` gives an indication of the persistence layer in use.
+
+|     |     |
+| --- | --- |
+| Jackrabbit persistence layer | MySQL (Version 14.14, Distribution 5.7.20, for Linux (x86\_64)) |
+| Workspace name | `dms` |
+| Table names in MySQL DB | `PM_DMS_BINVAL`, `PM_DMS_BUNDLE`, `PM_DMS_NAMES`, `PM_DMS_REFS` |
+
+## [](#_multiple_instances_and_clustering)Multiple instances and clustering
+
+Depending on how your Magnolia [instances](../../../Instances/) are set up and if you use [clustering](../../../Instances/Clustering/), you must delete a workspace in one or several locations.
+
+> **Note:** Make sure you delete the workspace on both the author instance and on all public instances.

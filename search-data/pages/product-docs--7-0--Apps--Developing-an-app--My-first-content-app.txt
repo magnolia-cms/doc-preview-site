@@ -1,0 +1,116 @@
+---
+title: "My first content app"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/Developing-an-app/My-first-content-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > My first content app
+---
+
+# My first content app
+
+This tutorial guides you through the process of creating a content app in Magnolia. The app you create is called the Bookshelf app and you create it as a Magnolia [light module](../../../Modules/Light-modules/) from a custom [content type](../../../Features/Content-Types/) definition.
+
+* * *
+
+## [](#_tutorial_overview)Tutorial overview
+
+The tutorial consists of three parts:
+
+-   Part I - My first content app – This page, which describes the Bookshelf app.
+
+-   [Part II - Creating a basic content app](Part-II---Creating-a-basic-content-app/) – Shows how to create the basic Bookshelf app from a content type definition.
+
+-   [Part III - Fine-tuning a basic content app](Part-III---Fine-tuning-a-basic-content-app/) – Provides instructions to turn the basic app into the final and ready-to-use Bookshelf app.
+
+
+Going through the tutorial you learn:
+
+-   How to define content types and use them to quickly create *a Content app*.
+
+    A Content app is a specialized app type for managing structured content. The content app user interface consists of a browser subapp and one or more detail subapps. Content apps make it easy to enter items such as products or events. Many native Magnolia apps such as [Tours](../../../Getting-started-with-Magnolia/Demo/) and [Contacts](../../List-of-apps/Contacts-app/) are content apps. Because this app style is used often, the framework provides convenience classes to make building a content app faster.
+
+-   The basics of configuring [fields](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/) and setting [field validators](../../../Developing/Templating/Dialog-definition/Field-definition/Field-validators/).
+
+-   How to [override](../../../Developing/Reusing-configuration/YAML-inherit-and-include/#_yaml_override) configuration properties.
+
+-   How to make the elements of the app’s UI ready for [internationalization](../../../Administration/Language/Internationalization/).
+
+
+> **Note:** If you want to skip the tutorial and install the final app immediately, clone the repository containing the ready-made Bookshelf app as a light module directly into your Magnolia light module folder with the command:git clone -b master --single-branch https://bitbucket.org/magnolia-cms/bookshelf.gitYou can also browse or clone the publicly available example at public-doc-samples/bookshelf.
+
+## [](#_bookshelf_app_use_case)Bookshelf app use case
+
+The Bookshelf app you create in this tutorial is an example of a content app. It is a simple book catalog allowing the user to store basic bibliographic data about each book such as its title, the names of the author(s), the publisher’s name, or the ISBN-13 number. The app also allows you to group selected book items into folders called *shelves* in the app.
+
+### [](#_the_subapps_in_the_bookshelf_app)The subapps in the Bookshelf app
+
+The Bookshelf app contains subapps:
+
+-   [Book Browser](#_book_browser)
+
+-   [Book Detail](#_book_detail)
+
+
+#### [](#_book_browser)Book Browser
+
+In the **Book Browser** subapp, you can:
+
+-   Browse the book catalog.
+
+-   Add, rename and delete books.
+
+-   Add, rename and delete shelves (folders for organizing books).
+
+
+#### [](#_book_detail)Book Detail
+
+The **Book Detail** subapp is a place where you can create and edit a book’s bibliographic properties using [text](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) fields and a [checkbox](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Checkbox-field/) field.
+
+### [](#_book_properties)Book properties
+
+For each book item, the Bookshelf app can store and retrieve the following content properties:
+
+-   Short cataloging name (a required content property).
+
+-   Full book title.
+
+-   Author(s)' name(s).
+
+-   Whether the author(s) role is editorial or not.
+
+-   Book description.
+
+-   Publisher’s name.
+
+-   Book publication date.
+
+-   ISBN-13 number.
+
+
+## [](#_bookshelf_app_and_magnolia_content_types)Bookshelf app and Magnolia content types
+
+The Bookshelf app is based on Magnolia content types.
+
+### [](#_the_books_workspace)The `books` workspace
+
+Magnolia stores content in the `magnolia` repository, a [JCR repository](https://en.wikipedia.org/wiki/Content_repository_API_for_Java) that is divided into [workspaces](../../../Administration/Architecture/Workspaces/). The Bookshelf app stores all books in a new workspace called `books`.
+
+### [](#_custom_libbook_node_type)Custom `lib:book` node type
+
+In the `books` workspace, each book is a custom `lib:book` [node type](../../../Administration/Architecture/Node-types/) defined specifically for this tutorial.
+
+**Continue with [My first content app Part II](Part-II---Creating-a-basic-content-app/)**
+
+
+
+Related topics
+
+-   [App configuration](../../App-configuration/)
+
+-   [How to add SVG icons for apps](../Specific-aspects/How-to-add-SVG-icons-for-apps/)
+
+-   [Content Types](../../../Features/Content-Types/)
+
+-   [Light development in Magnolia](../../../Developing/Light-development-in-Magnolia/)
+
+-   [My first translation](../../../Administration/Language/My-first-translation/)

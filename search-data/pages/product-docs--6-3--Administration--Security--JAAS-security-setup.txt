@@ -1,0 +1,121 @@
+---
+title: "JAAS security setup"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Security/JAAS-security-setup/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Security > JAAS security setup
+---
+
+# JAAS security setup
+
+This short tutorial introduces you to Java Authentication and Authorization Service (JAAS) based on a dual module approach.
+
+## [](#_jaas)JAAS
+
+Magnolia uses Java Authentication and Authorization Service. JAAS creates two distinct processes:
+
+-   Username and password request
+
+-   Authentication and authorization
+
+
+Although it’s possible to use other servlets, the default engine is Tomcat. Configuration is done in `WEB-INF/config/jaas.config`:
+
+`jaas.config`
+
+```java
+magnolia {
+  info.magnolia.jaas.sp.jcr.JCRAuthenticationModule requisite;
+  info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required;
+};
+```
+
+The default configuration uses two classes:
+
+-   One for user login and password authentication.
+
+-   One for authorization of user and password.
+
+
+Each of these classes extends info.magnolia.jaas.sp.AbstractLoginModule. You can use this framework to implement your own login logic.
+
+## [](#_login_procedure)Login procedure
+
+The following (simplified) login procedure assumes you have two JAAS modules configured:
+
+![Simple login procedure diagram](../../../_images/jaas-login-diagram.png)
+
+1.  When a user logs in to Magnolia, all configured JAAS modules try to authenticate the user by calling the `login()` method.
+
+    The method throws a `LoginException` if the login fails authentication. Since info.magnolia.jaas.sp.AbstractLoginModule provides the `login()` method, a JAAS module only has to implement a `validateUser()` method.
+
+2.  After the user is successfully authenticated, the `commit()` method of each JAAS module is called.
+
+
+### [](#_login_method)`login()` method
+
+The `login()` authentication method of info.magnolia.jaas.sp.jcr.JCRAuthenticationModule is mandatory. This method verifies that the user entered is valid and enabled. In addition, it checks that the password entered matches the password stored for that user.
+
+The second module’s login authorization method is only called if the user is verified. Therefore the `login()` authorization method of info.magnolia.jaas.sp.jcr.JCRAuthorizationModule can be implemented empty.
+
+### [](#_commit_method)`commit()` method
+
+The `commit()` method includes the values from both authentication and authorization. The authentication module provides all user properties, while the authorization module adds the roles and groups and the respective ACLs to the user object.
+
+## [](#_example)Example
+
+Creating a new user class implementing info.magnolia.cms.security.User
+
+`User`:
+
+1.  Create a JAAS module extending the info.magnolia.jaas.sp.jcr.JCRAuthorizationModule.
+
+2.  Then, extend the following two methods:
+
+
+```java
+public void validateUser() throws LoginException {
+
+        this.user = authenticate(this.name, this.pswd);
+
+    if (this.user == null) {
+            throw new FailedLoginException("User not found or password incorrect");
+        }
+    if (this.user.getAllGroups() != null) {
+        this.setGroupNames((Set)this.user.getAllGroups());
+    }
+    if (this.user.getAllRoles() != null) {
+        this.setRoleNames((Set) this.user.getAllRoles());
+    }
+    }
+    public void setEntity() {
+        EntityImpl user = new EntityImpl();
+        user.addProperty(Entity.LANGUAGE, this.user.getLanguage());
+        user.addProperty(Entity.NAME, this.user.getName());
+        user.addProperty(Entity.PASSWORD, new String(this.pswd));
+        this.subject.getPrincipals().add(user);
+    }
+```
+
+> **Note:** You still have to implement the authentication method to properly create a User object.
+
+Adding the JAAS module to the JAAS configuration
+
+As Magnolia is to be the *secondary* user management method used, you have to use the following modifier:
+
+```java
+magnolia {
+  my.project.ExternalJAASModule sufficient;
+  info.magnolia.jaas.sp.jcr.JCRAuthenticationModule requisite;
+  info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required;
+};
+```
+
+## [](#_further_reading)Further reading
+
+-   [Magnolia JAAS API](https://nexus.magnolia-cms.com/repository/magnolia.public.sites/ref/6.3.20/magnolia-jaas/apidocs/index.html)
+
+
+Thanks
+
+Credits go to Ralf Hirning for the original content contributed to the [Magnolia Community Wiki](https://wiki.magnolia-cms.com/display/WIKI/Community+Wiki).

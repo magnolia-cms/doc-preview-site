@@ -1,0 +1,36 @@
+---
+title: "Magnolia 6.3.11 known issues"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.11/Magnolia-6.3.11-known-issues/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.11 > Magnolia 6.3.11 known issues
+---
+
+# Magnolia 6.3.11 known issues
+
+## [](#_marketing_tags_update_task_may_lead_to_instance_stalling)Marketing Tags update task may lead to instance stalling
+
+Upgrading to Magnolia 6.3.9, 6.3.10, 6.3.11, or 6.3.12 initiates a Marketing Tags version handler task that may cause instances to become unresponsive if the repository contains a large number of versions.
+
+This issue is caused by [MGNLTAGS-127](https://magnolia-cms.atlassian.net/browse/MGNLTAGS-127) *Page Template setting isn’t working* and is fixed in the **Magnolia 6.3.13** release with ticket [MAGNOLIA-9701](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9701) *`NodeVisitorTasks` iterates over the entire `jcr:system` tree*.
+
+> **Note:** If you have already upgraded to 6.3.9 or later, this issue will not affect you.
+
+We apologize for any inconvenience caused.
+
+## [](#_unexpected_change_in_nodes_api)Unexpected change in Nodes API
+
+An unexpected change introduced by ticket [MGNLREST-877](https://magnolia-cms.atlassian.net/browse/MGNLREST-877) *Introduce JacksonContextResolver to consistent JSON serialization* affects the **Nodes API** functionality in Magnolia 6.3.11.
+
+### [](#_affected_functionality_in_more_detail)Affected functionality in more detail
+
+-   The **Nodes API** operation is broken, impacting users who rely on this API to retrieve content.
+
+-   The **Nodes API - PUT and POST** operations are also broken, resulting in error messages such as:
+
+    ```sh
+    Unrecognized field 'properties' (class info.magnolia.rest.service.node.v1.RepositoryNode), not marked as ignorable
+    ```
+
+
+This issue is fixed in 6.3.12. We apologize for any inconvenience caused and appreciate your patience while we resolve this issue.

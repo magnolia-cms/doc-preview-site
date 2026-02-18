@@ -1,0 +1,26 @@
+---
+title: "RAM"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Getting-started-with-Magnolia/Installing-Magnolia/RAM/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Getting Started > Installing Magnolia > RAM
+---
+
+# RAM
+
+The RAM (Random Access Memory) required for Magnolia depends on many different factors such as the size of your uploads and the images you manipulate, the number of editors, the number of concurrent users on your public instance, if they use sessions or not, and so on.
+
+However, Magnolia suggests you consider the following *minimum* guidelines:
+
+-   Local development: 3GB
+
+-   Production environment
+
+    -   Author: 4GB - 12GB
+
+    -   Public: 4GB - 10GB
+
+
+
+> **Note:** For local development, you can use -Xms and -Xmx values to configure your development server to your needs. -Xmx is the maximum Java heap size, and -Xms is the initial Java heap size.Example-Xms1024m
+> -Xmx3072M

@@ -1,0 +1,36 @@
+---
+title: "Events"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/Developing-an-app/Specific-aspects/Events/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > Developing an app > Events
+---
+
+# Events
+
+Events play a large role in the Magnolia 5 architecture. As actions are performed, either on behalf of the user or by the system, events are fired and dispatched to interested components in the system.
+
+There are four event buses used to dispatch events within the system.
+
+-   **System** wide events are sent on the system event bus. This includes events such as an app descriptor was registered.
+
+-   **AdminCentral** scoped events are only available with the AdminCentral of a single user. This includes events such as the app was started or stopped.
+
+-   **App** wide events are scoped within a single app, for instance an event that all of its subapps might want to handle.
+
+-   **Subapp** wide events are sent within a subapp only. This includes events such as an item was selected in the workbench.
+
+
+You get access to these event buses by injecting them using an annotation qualifier called `@Named` with a special name. (The names are `system`, `admincentral`, `app` and `subapp`.) The event buses are managed by the component providers managing the same scope. Therefore the app event bus is not available to objects managed by the AdminCentral component provider. However, objects in the parent are accessible to objects in child component providers. So, an object in a subapp can reach all the way up to the system event bus and register a handler.
+
+Injecting an app event bus
+
+```java
+@Inject
+public HelloWorldApp(AppContext appContext, @Named("app") EventBus appEventBus) {
+    this.appContext = appContext;
+    this.appEventBus = appEventBus;
+
+    appEventBus.addHandler(ContentChangedEvent.class, this);
+}
+```

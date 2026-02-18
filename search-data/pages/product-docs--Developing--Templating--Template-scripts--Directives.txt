@@ -1,0 +1,234 @@
+---
+title: "Directives"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Templating/Template-scripts/Directives/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > Directives
+---
+
+# Directives
+
+[FreeMarker development only](../../Renderers/#_renderers_provided_by_magnolia)
+
+Directives are a collection of templating statements and commands that simplify scripting. FreeMarker offers its [own directives](#_standard_freemarker_directives), and key templating features are available as [custom Magnolia directives](#_custom_magnolia_directives). Directives are quick to type, but can render complex output.
+
+## [](#_standard_freemarker_directives)Standard FreeMarker directives
+
+Here are the most useful FreeMarker directives with sample code.
+
+> **Warning:** Using the compress directive in FreeMarker is not recommended because it may break area rendering. Consider installing the HTML Compressor module or the HtmlCompressor library instead.
+
+### [](#_if_else_and_elseif)`if`, `else` and `elseif`
+
+Common operators (`&&`, `||`, `!`, `==`, `!=`, `>`, `<`, `>=`, `<=`) are supported.
+
+Boolean test
+
+\[#if content.header?has\_content\]
+   <h1>${content.header}</h1>
+\[#else\]
+   DO\_SOMETHING\_ELSE
+\[/#if\]
+
+Value comparison
+
+\[#if content.imageLocation == "top"\]
+   …
+\[/#if\]
+
+Alternatives
+
+\[#if content.date?has\_content\]
+   ${content.date?time?string.short}
+\[#elseif content.endDate?has\_content\]
+   ${content.endDate?time?string.short}
+\[#else\]
+   No date is set!
+\[/#if\]
+
+### [](#_list)`list`
+
+This can iterate over any collection that extends a Java collection.
+
+\[#list model.getSomeList() as elem\]
+   <li>${elem.title!}</li>
+\[/#list\]
+
+### [](#_assign)`assign`
+
+This allows you to define variables. Any object except null can be passed to a variable.
+
+\[#assign title = content.title!content.@name\]
+\[#assign hasDate = content.date?has\_content\]
+\[#assign dateShort = content.date?time?string.short\]
+\[#assign events = model.events\]
+\[#assign stringgy = "Some direct string data"\]
+
+### [](#_include)`include`
+
+This includes a FreeMarker template script.
+
+\[#include "/my-module/templates/myScript.ftl"\]
+
+### [](#_macro)`macro`
+
+This allows you to reuse a snippet of FreeMarker code.
+
+\[#macro test foo bar="Bar" baaz=-1\]
+    Test text, and the params: ${foo}, ${bar}, ${baaz}
+\[/#macro\]
+\[@test foo="a" bar="b" baaz=5\*5-2/\]
+\[@test foo="a" bar="b"/\]
+\[@test foo="a" baaz=5\*5-2/\]
+\[@test foo="a"/\]
+
+## [](#_custom_magnolia_directives)Custom Magnolia directives
+
+Magnolia provides four custom directives:
+
+-   `cms:area` renders an [area](../../Template-definition/Area-definition/).
+
+-   `cms:component` renders a [component](../../Template-definition/Component-definition/).
+
+-   `cms:block` renders a [block](../../../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/Block-definition/).
+
+-   `cms:page` enables the [page](../../Template-definition/Page-definition/) dialog.
+
+
+These directives are implemented by the info.magnolia.templating.freemarker.Directives class, which is configured in `modules/rendering/renderers/freemarker/contextAttributes/cms/componentClass`.
+
+Standard FreeMarker directives start with the `#` character and custom directives with the `@` character followed by `cms`, a dot character, the name of the macro, and any parameters.
+
+Syntax
+
+\[@cms.<directive name> <attribute>=<value> /\]
+
+Rendering a component in FreeMarker
+
+\[@cms.component content=component /\]
+
+### [](#_cmsarea)`cms:area`
+
+The `cms:area` directive (info.magnolia.templating.freemarker.AreaDirective) renders an [area](../../Template-definition/Area-definition/) and any components inside it. Editors can add components inside the area. Available components are configured in the area definition.
+
+Rendering an area in FreeMarker
+
+\[@cms.area name="content"/\]
+
+The directive references an area by its name. The area name is the node or item that contains the area definition.
+
+On the author instance, the result on the page is an area bar and an end marker. The `title` property is rendered in the bar. When editors click the **Add** icon in the **New component** box, they can add components inside the area.
+
+Attributes
+
+-   `name`: Name of the area definition node.
+
+-   `contextAttributes`: Hash of key-value pairs. Any custom attribute and its value as retrieved from the current context.
+
+
+\[@cms.area name="content" contextAttributes={"divIDPrefix":divIDPrefix, "componentModel":model} /\]
+
+### [](#_cmscomponent)`cms:component`
+
+The `cms:component` directive (info.magnolia.templating.freemarker.ComponentDirective) renders a [component](../../Template-definition/Component-definition/). The `content` attribute defines what content the component edits. This tag is commonly used inside the `list` directive to loop through the components in a map.
+
+The content to render and possibly edit in the case of an editable component is passed in the `content` attribute. On the author instance, the directive renders a component toolbar. The value of the `title` property is rendered in the bar.
+
+Attributes
+
+-   `editable`: Defines whether the **Edit** icon should be displayed. Mainly useful if the content is inherited. Default is `cmsfn.isFromCurrentPage()`.
+
+-   `dialog`: Opens the specified dialog when editing the component.
+
+-   `contextAttributes`: Hash of key-value pairs. Any custom attribute and its value as retrieved from the current context.
+
+
+\[@cms.component content=component contextAttributes={"indexString":indexString, "useIndex":useIndex}/\]
+
+Example
+
+\[#list components as component \]
+   \[@cms.component content=component /\]
+\[/#list\]
+
+### [](#_cmsblock)`cms:block`
+
+The `cms:block` directive (info.magnolia.templating.freemarker.BlockDirective) renders a [block](../../../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/Block-definition/). The directive and its API are provided by the [Content Editor module](../../../../Modules/List-of-modules/Content-Editor-module/), which requires a DX Core license.
+
+On the author instance in the [Stories app](../../../../Apps/List-of-apps/Stories-app/) or in a custom content editor, the directive provides UI elements to edit the content of the block.
+
+The directive is commonly used inside the `list` directive to loop through blocks wrapped by a composition node of an article.
+
+\[#if articleContent?hasContent\]
+  \[#assign blocks = cmsfn.children(articleContent, "mgnl:block") /\]
+  \[#list blocks as block\]
+    \[@cms.block content=block /\]
+  \[/#list\]
+\[#/if\]
+
+The `content` attribute (see line 4 above) defines the block node to be edited or rendered.
+
+### [](#_cmspage)`cms:page`
+
+The `cms:page` directive (info.magnolia.templating.freemarker.PageDirective) enables the [page](../../Template-definition/Page-definition/) dialog. The directive is added to the `<head>` element of the page template.
+
+<head>
+    \[@cms.page /\]
+</head>
+
+## [](#_common_directive_attributes)Common directive attributes
+
+The following attributes can be passed with any directive. They define which content the element created by the directive should operate on.
+
+Attributes
+
+-   `content`: Item, list or map.
+
+-   `workspace`: Workspace used if the path is defined. Same as of the current content.
+
+-   `path`: Path in the workspace.
+
+
+### [](#_content_attribute)`content` attribute
+
+The `content` attribute tells a script which item it should operate on. Scripts typically operate on the current node.
+
+-   For a page-level script, the current node is the page.
+
+-   For an area-level script, the current node is the area.
+
+-   For a component-level script, the current node is the component.
+
+
+However, there are cases where you want the script to operate on a different node. This is where the `content` attribute comes in handy.
+
+For example, let’s assume the `meta` area is a child area of the `main` area and is a `noComponent` area that has no content or components of its own. The area can operate on the page content to render information such as the page title. This is achieved using the `content` attribute.
+
+In the page script, the `main` area operates on the current node (page).
+
+<div id="wrapper-3">
+    \[@cms.area name="main" content=content/\]
+    \[@cms.area name="adverts"/\]
+ </div>
+
+In the area script, the `meta` area operates on the current node (page).
+
+<div id="main" role="main">
+    \[@cms.area name="breadcrumb" content=content/\]
+    \[@cms.area name="meta" content=content/\]
+    \[@cms.area name="content"/\]
+</div><!-- end main -->
+
+Now the `meta` area edits the page content. Although it resides inside the `<div>` element of the `main` area on the page, the title really belongs to the page. It is a property of the page, not of the area, so it makes sense to store this property under the page node in the content structure.
+
+### [](#_workspace_attribute)`workspace` attribute
+
+The `workspace` attribute tells the directive which workspace of the Magnolia JCR repository the content resides in. This is almost always the `website` workspace and defaults to `website` automatically if the current content resides in that workspace.
+
+## [](#_example_directive_rendering)Example directive rendering
+
+Here is an example of how directives are included in a page script and rendered on the page:
+
+-   The `cms:page` directive enables the page properties dialog.
+
+-   The `cms:area` directive calls the areas to be rendered. The directive identifies areas by name. If an area has child areas, you will need a separate script that calls the children to be rendered. However, if the area contains only components, you do not need an area script.

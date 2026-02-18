@@ -1,0 +1,202 @@
+---
+title: "My first personalized campaign"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Personalization-module/My-first-personalized-campaign/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Personalization module > My first personalized campaign
+---
+
+# My first personalized campaign
+
+In this tutorial you learn how to personalize content. You will target content to visitors from a particular country during a specific period of time. You learn how to create page variants and how to choose an audience. You also test the campaign with the Preview app.
+
+## [](#_prerequisites)Prerequisites
+
+Before you start:
+
+-   Read [Personalization](../../../../use-cases/Personalization/) to understand the terms.
+
+-   Install the [Personalization module](../).
+
+
+## [](#_use_case_festival_tours)Use case: Festival tours
+
+Various festivals are held in different countries on different dates throughout the year. Create a personalized campaign that promotes the Puck Fair festival to U.K. visitors and the Dragon Boat Festival to Chinese visitors.
+
+Your tasks:
+
+1.  Create a Festivals page.
+
+2.  Create two personalized variants of the page. In each variant, add content that appeals to the target audience.
+
+3.  Define U.K. and China as target countries using the Country trait.
+
+4.  Run the campaign for two weeks prior to the festival date using the Date trait.
+
+5.  Test the campaign to ensure that correct variant is served to visitors.
+
+
+| Target info | Component info |
+| --- | --- |
+| none | Festivals<br><br>Text<br><br>Experience diverse cultures at their most festive. Join in the fun of festivals around the world with our exclusive festival tour packages.<br><br>Image<br><br>![Image of festival fireworks](../../../../_images/festivals.jpg)<br><br>*Credit: photo by [Stewart White](https://www.flickr.com/photos/stewartwhite/3894985764)* |
+| China; 26 May > 9 June | Dragon Boat Festival<br><br>Text<br><br>The Dragon Boat Festival is also known as the Duanwu Festival. It is a traditional holiday that commemorates the life and death of the famous Chinese scholar Qu Yuan. The festival occurs on the fifth day of the fifth month on the Chinese lunar calendar.<br><br>Image<br><br>![Huge groups of rowers](../../../../_images/dragonboat.jpg)<br><br>*Credit: photo by [Iidxplus](https://commons.wikimedia.org/wiki/File:Dragonboat_racing.jpg)* |
+| UK/IE; 27 July > 10 August | Puck Fair<br><br>Text<br><br>On August 10, a three-day festival known as Puck Fair is held in Killorglin, Ireland. Residents of the town capture a goat and proclaim it to be the King for three days of revelry.<br><br>Image<br><br>![Statue of a goat with a crown](../../../../_images/kingpuck.jpg)<br><br>*Credit: photo by [Buck Lewis](https://www.flickr.com/photos/thephotoholic/1083574355/)* |
+
+## [](#_create_original_page)Create original page
+
+Create a new page in the Travel Demo site:
+
+1.  Open the Pages app.
+
+2.  Select `/travel` and click **Add page**.
+
+3.  Name the page `festivals` and select the Travel Standard template.
+
+4.  Edit the page and add a Text and image component in main area:
+
+    -   **Headline**: Festivals
+
+    -   **Text**: Experience diverse cultures at their most festive. Join in the fun of festivals around the world with our exclusive festival tour packages.
+
+    -   **Image**: festivals.jpg
+
+
+
+![Creating an orignal page example](../../../../_images/6-2-original-page.png)
+
+## [](#_variant)Variant
+
+A variant is an alternative content element that replaces the original element in personalized content delivery. Magnolia serves the variant instead of the original element when personalization rules match. A variant is a copy of the original element, edited to best suit the intended audience.
+
+Create two [variants](../../../../use-cases/Personalization/) of the Festivals page:
+
+1.  Select `/travel/festivals`
+
+2.  Click **Add page variant** two times.
+
+
+Magnolia creates two variants. The system also marks the original page with the variant icon ![The variant icon](../../../../_images/icon-variant.gif). This icon tells editors that the page has alternative content.
+
+![Pages app with pages and its variants](../../../../_images/6-2-new-variant.png)
+
+## [](#_choose_audience)Choose audience
+
+Choose an audience for the Chinese variant:
+
+1.  Select the first variant and click **Choose audience**.
+
+2.  Set **Name** to `Chinese Dragon Boat Festival Travelers`.
+
+3.  Click **Pick Trait** to define [traits](../../../../use-cases/Personalization/):
+
+    1.  Set **Country** to `China`. This rule serves the variant to visitors from China.
+
+    2.  Set **Date** to a range from 2019-05-26 to 2019-06-09. This rule serves the variant for two weeks leading up to the festival.
+
+
+
+![Audience choosing field](../../../../_images/chinese-audience.png)
+
+Choose an audience for the U.K. variant:
+
+1.  Select the second variant and click **Choose audience**.
+
+2.  Set **Name** to `U.K. Puck Fair Travelers`.
+
+3.  Define the personalization rules:
+
+    1.  Set **Country** to `United Kingdom`.
+
+    2.  Set **Start date** to 2019-07-27 and **End date** to 2019-08-10.
+
+
+
+![Choosing audience for the UK variant](../../../../_images/uk-audience.png)
+
+## [](#_personalize_content)Personalize content
+
+Personalize the page variants:
+
+1.  Edit the Chinese page variant.
+
+2.  Edit the Text and image component in main area and replace content with:
+
+    -   **Headline**: Dragon Boat Festival
+
+    -   **Text**: The Dragon Boat Festival is also known as the Duanwu Festival. It is a traditional holiday that commemorates the life and death of the famous Chinese scholar Qu Yuan. The festival occurs on the fifth day of the fifth month on the Chinese lunar calendar.
+
+    -   **Image**: dragonboat.jpg
+
+        ![Preview of the Dragon Boat Festival page](../../../../_images/6-2-chinese-variant.png)
+
+
+3.  Edit the U.K. page variant.
+
+4.  Edit the Text and image component in main area and replace content with:
+
+    -   **Headline**: Puck Fair
+
+    -   **Text**: On August 10, a three-day festival known as Puck Fair is held in Killorglin, Ireland. Residents of the town capture a goat and proclaim it to be the King for three days of revelry.
+
+    -   **Image**: kingpuck.jpg
+
+
+
+![Preview of the Puck Fair festival page](../../../../_images/6-2-uk-variant.png)
+
+## [](#_preview_the_variants)Preview the variants
+
+Test the campaign in the Preview app. Impersonate Chinese and U.K. visitors and verify that the correct content variant is served.
+
+1.  Open the Preview app.
+
+2.  Go to the festivals page.
+
+    -   Expected result: The original page is served, not a personalized variant.
+        ![Preview of the original page](../../../../_images/preview-default.png)
+
+
+3.  Select a Chinese persona 王芳 Wang Fang.
+
+    -   Expected result: The original page is still served because you have not defined a date.
+        ![Preview of the page for the chinese persona](../../../../_images/preview-default-chinese-persona.png)
+
+
+4.  Set **Date** to 2019-06-09 or any other day during the Chinese variant run dates.
+
+    -   Expected result: The Chinese variant is served.
+        ![Preview of the page for the chinese persona with the changed date](../../../../_images/preview-chinese-variant.png)
+
+
+5.  Set **Country** to United Kingdom and **Date** to 2019-08-10 or any other day during the U.K. variant run dates.
+
+    -   Expected result: The U.K. variant is served. This is an example where the country trait you explicitly chose (U.K) overrides the country of the persona (China).
+        ![Preview of the page for the UK persona with the changed date](../../../../_images/preview-uk-variant.png)
+
+
+
+## [](#_publish_content_and_configuration)Publish content and configuration
+
+Publish all modified content and configuration to the public instance:
+
+-   Festivals page in **Pages >** `/travels/festivals`.
+
+-   U.K. and China variants in **Pages >** `/travels/festivals/variants`.
+
+-   Images in the Assets app.
+
+
+## [](#_credits)Credits
+
+-   [Stewart White](https://www.flickr.com/photos/stewartwhite/3894985764): Festivals photo. [Creative Commons Attribution 2.0 Generic (CC BY 2.0)](https://creativecommons.org/licenses/by/2.0/deed.en)
+
+-   [Iidxplus](https://commons.wikimedia.org/wiki/File:Dragonboat_racing.jpg): Dragon boat photo. [Creative Commons](https://en.wikipedia.org/wiki/en:Creative_Commons) [Attribution-Share Alike 3.0 Unported](https://creativecommons.org/licenses/by-sa/3.0/deed.en)
+
+-   [Buck Lewis](https://www.flickr.com/photos/thephotoholic/1083574355/): King Puck photo. [Creative Commons Attribution 2.0 Generic (CC BY 2.0)](https://creativecommons.org/licenses/by/2.0/deed.en)
+
+
+Related topics
+
+-   [Personalization](../../../../use-cases/Personalization/)
+
+-   [Personalization module](../)

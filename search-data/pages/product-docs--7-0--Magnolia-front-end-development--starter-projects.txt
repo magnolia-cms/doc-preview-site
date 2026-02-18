@@ -1,0 +1,81 @@
+---
+title: "Starter projects"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Magnolia-front-end-development/starter-projects/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development > Starter projects
+---
+
+# Starter projects
+
+The *Magnolia Starter Projects* give developers consistent and structured starting points for building projects with Magnolia, whether using headless SPA frameworks or FreeMarker templating. We call them `starters`.
+
+Whether you’re building a single-page application, a server-side rendered app, or a FreeMarker-based site, you can now see how to integrate with Magnolia’s most popular features using the technology that best suits your project.
+
+You don’t have to start with a Starter Project. You can begin with your own project and use the starters as examples of how certain features can be implemented.
+
+![Started Demo Project in the Page Editor](../../_images/headless/starter-demo-project.png)
+
+## [](#_features)Features
+
+Each demo provides insights into how Magnolia works with different technologies, from modern front-end frameworks to FreeMarker templating. They include working examples of the key content management tasks in the visual editor. They also showcase advanced features like:
+
+-   Component auto-generation
+
+-   Inheritance
+
+-   Internationalization (i18n)
+
+-   Personalization (p13n)
+
+
+Whether you’re experimenting with Magnolia integration or using them as a starting point, the `starters` offer a solid foundation.
+
+They’re compatible with both the Magnolia Community Edition and Magnolia DX Core.
+
+## [](#_available_starter_projects)Available starter projects
+
+### [](#_sdk_v2)SDK v2
+
+> **Tip:** It’s useful to browse these GitLab repositories first.
+
+#### [](#_headless_spa_starters)Headless SPA starters
+
+-   [`angular-starter`](https://gitlab.magnolia-platform.com/demos/angular-starter)
+
+-   [`react-starter`](https://gitlab.magnolia-platform.com/demos/react-starter)
+
+-   [`vue-starter`](https://gitlab.magnolia-platform.com/demos/vue-starter)
+
+-   [`angular-ssr-starter`](https://gitlab.magnolia-platform.com/demos/angular-ssr-starter)
+
+-   [`nextjs-starter`](https://gitlab.magnolia-platform.com/demos/nextjs-starter)
+
+-   [`nextjs-ssr-starter`](https://gitlab.magnolia-platform.com/demos/nextjs-ssr-starter)
+
+-   [`nuxt-starter`](https://gitlab.magnolia-platform.com/demos/nuxt-starter)
+
+
+#### [](#_freemarker_starter)FreeMarker starter
+
+-   [`freemarker-starter`](https://gitlab.magnolia-platform.com/demos/freemarker-starter)
+
+
+### [](#_sdk_v1)SDK v1
+
+While the headless SPA starter projects described above are the recommended starting place, they use the **v2** of the [Magnolia front-end SDK](../../Developing/headless/spa-development/magnolia-front-end-sdk/).
+
+If you’re using **v1** of the SDK (known previously as the *Magnolia front-end helpers*), you may want to use the older generation of the headless SPA starters known as the *Minimal Headless SPA Demos*. You can find them all in a single Bitbucket repository:
+
+-   [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos/src/master/)
+
+
+## [](#_jumpstarting_the_projects)Jumpstarting the projects
+
+To get a complete project integrated with Magnolia content editing, use the Magnolia CLI ([Installing CLI](#magnolia-cli:ROOT:getting-started/index.adoc#_installing_cli)).
+
+In a terminal, jumpstart your project by executing the CLI `jumpstart` command:
+
+```console
+npx @magnolia/cli@latest jumpstart
+```

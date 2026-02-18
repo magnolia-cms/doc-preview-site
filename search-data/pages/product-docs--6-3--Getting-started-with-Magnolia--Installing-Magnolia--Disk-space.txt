@@ -1,0 +1,39 @@
+---
+title: "Disk space"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Getting-started-with-Magnolia/Installing-Magnolia/Disk-space/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Getting Started > Installing Magnolia > Disk space
+---
+
+# Disk space
+
+The amount disk space required for a Magnolia instance depends on what data you store and how many versions of content you keep. Today, marketing oriented websites use a lot of images and video. It is not uncommon for such a website to have 5-10 GB of Web content.
+
+> **Note:** We recommend you allocate at least 50GB of disk space for an author instance and 25GB for a public instance.
+
+## [](#_example_calculation)Example calculation
+
+| Item | `GB` |
+| --- | --- |
+| **Total website content**<br><br>Including assets such as images and videos. | 5   |
+| **Magnolia and Tomcat systems** | 0.5 |
+| **Cached content**<br><br>Assuming cache is 70% full. | 3.5 |
+| **Site is served in two languages**<br><br>The other language is also cached. | 3.5 |
+| **Content indexed for search**<br><br>A compressed index is `20%` of the original data size. | 1   |
+| **Logs**<br><br>Access, audit, and errors. | 5   |
+| **Temporary storage**<br><br>For streaming large files. | 5   |
+| **Total for a public instance** | 23.5 |
+| **Versioning on author instance**<br><br>Assuming 30% of content is versioned `20` times. | 30  |
+| **Total for an author instance** | 53.5 |
+
+Adjust the numbers to your needs
+
+-   Is your site smaller?
+
+-   Is your database on the same machine as the application server? You can also persist data to a remote database.
+
+-   Have you switched off versioning?
+
+
+There are many options for reducing the space required. However, assume that you need up to `50GB` of space out of the box at a minimum.

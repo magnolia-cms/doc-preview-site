@@ -1,0 +1,196 @@
+---
+title: "Rendering content"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Rendering-content/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Rendering content
+---
+
+# Rendering content
+
+Rendering is the process of merging templates with content. It generates a meaningful stream of HTML that can be displayed in a browser. This is the step where content becomes visible to the end user in page context.
+
+**Advanced topic**
+
+It is not necessary to use a rendering model in Magnolia templating, but it is useful. Before you create your own model class, see if Magnolia’s [templating functions](../Template-scripts/Templating-functions/) have the logic you need. They may save you some effort.
+
+Rendering is performed by info.magnolia.rendering.engine.RenderingEngine. The engine generates HTML output based on templates. info.magnolia.rendering.engine.RenderingFilter, which is part of the [filter chain](../../../Administration/Architecture/Request-processing-and-filters/Filters/), submits a content node to the engine.
+
+> **Tip:** Since submission of content is handled through a filter, an independent servlet or Java application can also submit content to the Magnolia rendering engine (FreeMarker only). You can trigger the rendering of any content node from Java code or template script. This is useful if you want to render a node that is not part of the page structure.
+
+## [](#_steps_involved_in_rendering_content)Steps involved in rendering content
+
+On submission of content to the engine, the following process kicks off:
+
+1.  **Read template definition**: The rendering engine reads the [template definition](../Template-definition/) assigned to the content. The template definition provides the engine with details such as a path to the `templateScript` and the templating language used (FreeMarker).
+
+2.  **Select renderer**: Based on the templating language, the engine selects a [renderer](#_renderers). Magnolia ships with three renderers:
+
+    1.  Freemarker renderer.
+
+    2.  Site aware renderers.
+
+    3.  SPA renderer. (Uses slightly different rendering techniques.)
+        You can also use your own custom renderer.
+
+
+3.  **Execute renderer**: The renderer is executed. If the template definition specifies a model class then the renderer instantiates the model object from this class. The model is a JavaBean. This is where your business logic resides. Before the renderer calls the script, the model’s `execute()` method is called. The model can execute any Java code to retrieve data from the JCR repository or from an external source. The return value of the `execute` method is passed to the template script with the `actionResult` object.
+
+4.  **Call template script**: The renderer calls the assigned [template script](../Template-scripts/) and passes the current content, the model and all [context objects](../Template-scripts/Rendering-context-objects/) to it. FreeMarker interpolations like `${content.title}` are replaced with actual values and [directives](../Template-scripts/Directives/) like `#list` are processed. The output of the merge process is an HTML stream response that can be displayed in a browser.
+
+
+![A diagram of the steps involved in rendering content](../../../_images/rendering-engine.png)
+
+## [](#_renderers)Renderers
+
+A renderer is a Java class library that understands a particular templating language and produces text output. For example, info.magnolia.rendering.renderer.FreemarkerRenderer understands FreeMarker tags and produces output in HTML, XML, RTF, Java source code and a few other formats. A renderer is not an end-user application but rather something programmers can embed into their products. You can register a renderer in your own module configuration under a `renderers` folder. See [Renderers](../Renderers/) for more.
+
+Any renderer that knows how to call a Java method can theoretically be used to render authoring UI components. Velocity (similar to FreeMarker but lighter) and ColdFusion are examples of popular templating languages that have been implemented successfully.
+
+## [](#_rendering_order)Rendering order
+
+Rendering of page content happens in a top-to-bottom fashion. Rendered HTML is sent to the output stream as soon as it gets rendered.
+
+When a page template script calls an area, and the area in turn calls a component, the rendering engine follows referenced scripts down the rabbit hole until it finds the last script in the sequence. It then moves to the next element on the page, starting where it left off.
+
+As a consequence, you cannot redirect in a component model as the request was already committed when the rendering of the page started. Any operations changing the HTTP response headers (redirects, setting cookies…) can only be executed in the page template’s model.
+
+## [](#_early_execution_of_components)Early execution of components
+
+Sometimes components need to be able to execute logic before page rendering starts. This is necessary for operations such as forwarding and redirecting.
+
+Early execution is implemented using info.magnolia.rendering.model.ModelExecutionFilter. This filter comes before page rendering in the Magnolia [filter chain](../../../Administration/Architecture/Request-processing-and-filters/Filters/). A special request parameter `mgnlModelExecutionUUID` contains the UUID of the component that should be executed. The component model can decide if it wants to output something special or continue with rendering normally. If the model implements the info.magnolia.rendering.model.EarlyExecutionAware interface, then the `executeEarly` method is called. Otherwise the normal `execute` method is called.
+
+Possible special instructions are:
+
+-   `skip-rendering` causes the rendering engine to abort page rendering. The template is never rendered.
+
+-   `redirect:<url>` sends a redirect HTTP header to the client and stops page rendering. The URL can be absolute or relative inside the Web application, that is, the context path is added by Magnolia.
+
+-   `permanent:<url>` sends a permanent redirect (301) to the client and stops page rendering. The URL can be absolute or relative.
+
+-   `forward:<url>` performs a forward to the returned URL. The URL can be absolute or relative.
+
+
+If the component model decides to continue normally, the already-executed model and its `actionResult` are used instead of executing the model again.
+
+Early execution proceeds like this:
+
+1.  info.magnolia.rendering.model.ModelExecutionFilter is configured before info.magnolia.rendering.engine.RenderingFilter in the Magnolia [filter chain](../../../Administration/Architecture/Request-processing-and-filters/Filters/). This filter listens for the request parameter `mgnlModelExecutionUUID`, which contains the UUID of a component that should be executed early.
+
+2.  The filter calls the `execute` method of the component’s rendering model.
+
+3.  The filter checks the returned value for special instructions and performs them. If the result is not a special instruction, the filter stores the returned `actionResult` and the model as request attributes and passes them on to the rendering pipeline. The request attribute is stored with a name that includes the UUID.
+
+4.  info.magnolia.rendering.renderer.AbstractRenderer checks for attributes set by the filter for the component it is about to render. If they are present their values are used, otherwise the model is executed normally.
+
+
+> **Note:** <div class="form-wrapper" >
+> ...
+>     <input type="hidden" name="mgnlModelExecutionUUID" value="${content.@id}" /> (1)
+>     <input type="hidden" name="field" value="" />
+> ...
+> </div><!-- end form-wrapper -->1When using the Form module, do not remove the mgnlModelExecutionUUID parameter when overriding the form template.
+
+![Component execution diagram](../../../_images/early-execution-of-components.png)
+
+## [](#_direct_component_rendering)Direct component rendering
+
+You can request a component to be rendered directly by URL. This is useful when rendering Magnolia content in an external system, for example. The URL pattern follows the storage path in the JCR. For example, the first component in any area on your home page resides at path `/my-site/<area name>/0` in the JCR.
+
+Request the component using the path in the URL:
+
+![Direct component rendering URL path](../../../_images/direct-component-rendering.png)
+
+## [](#_direct_area_rendering)Direct area rendering
+
+Direct area rendering allows you to request any area that has a node in the JCR.
+
+To request an area:
+
+1.  Insert the `mgnlArea` selector into the URL after the page name but before the `.html` extension. Set the value to the area name.
+
+    ```none
+    ~mgnlArea=<area name>~
+    ```
+
+2.  Add the path to the nested area separated by commas to request a nested area.
+
+    ```none
+    ~mgnlArea=<<main area name>,<nested area name>>~
+    ```
+
+
+Direct area rendering is achieved using a rendering listener registered in `/server/rendering/engine/listeners/directAreaRendering`.
+
+![Rendering listener in the Configuration app](../../../_images/ADVT-rendering.png)
+
+| Property | Description |
+| --- | --- |
+| `class` | info.magnolia.rendering.context.AreaFilteringListener is an area rendering listener for enabling/disabling output according to rendered content. |
+| `enabled` | **optional**, *default is `true`*<br><br>Option to disable direct area rendering. When you set this property to `false`, area rendering is bypassed and the entire page is rendered. |
+
+Here’s the `main` area of the `/travel/about` page rendered by the URL:
+
+```none
+http://localhost:8080/magnoliaAuthor/travel/about~mgnlArea=main~.html
+```
+
+![Main area URL](../../../_images/direct-area-rendering.png)
+
+> **Note:** If an area does not exist, the whole page is rendered. For example http://localhost:8080/magnoliaAuthor/your-site/about~mgnlArea=NonExistingArea~.html will return a 404.Where an area exists but contains no content, an empty page is rendered.
+
+## [](#_populating_the_rendering_model_with_request_parameters)Populating the rendering model with request parameters
+
+You can populate info.magnolia.rendering.model.RenderingModel with request parameters. This is useful for reacting to URL information. For example, identify a visitor who comes from an email campaign and execute custom rendering logic for them. Here is an example of parameter that tells you the visitor clicked a link in a Campaign Monitor email campaign.
+
+http://www.your-site.com/about.html?utm\_source=CampaignMonitor
+
+### [](#_enabling_the_population_of_request_parameters)Enabling the population of request parameters
+
+You can enable and disable the population of request parameters globally for all templates or for a specific template. If you cannot control the template, you can also do this for a specific component definition.
+
+-   Globally:
+
+    1.  Go to **Configuration >**`/server/rendering/engine`
+
+    2.  Create a new property `autoPopulateFromRequest` and set the value to `true` or `false`. *default is `true`*.
+
+
+-   For a specific template definition, overriding the global setting:
+
+    1.  Go to **Configuration >** `/modules/<your-module>/templates/pages/<template definition>`
+
+    2.  Create a new property `autoPopulateFromRequest` and set the value to `true` or `false`. *Default is null*. This means the global setting applies if you don’t set a value.
+
+
+-   For a specific component definition, overriding the global setting:
+
+    1.  Go to **Configuration >** `/modules/<your-module>/templates/components/<component_definition>`
+
+    2.  Create a new property `autoPopulateFromRequest` and set the value to `true` or `false`. *Default is null*. This means the global setting applies if you don’t set a value.
+
+
+
+### [](#_processing_the_parameter_in_a_model_class)Processing the parameter in a model class
+
+In your model class, implement a `setSomeParameter(String)` method. The method will be called with the attribute value as the parameter.
+
+```java
+class MyModel implements RenderingModel {
+
+    private String someParameter;
+    public void setSomeParameter(String someParameter) {
+        this.someParameter = someParameter;
+    }
+    public String getSomeParameter() {
+        return someParameter;
+    }
+}
+```
+
+> **Warning:** Populating the rendering model with request attributes impacts performance. The rendering calculation takes about 8% longer when population is enabled. Enable it only for templates where it is really needed.
+
+Related topics
+
+-   [Security aspects: Web Cache Poisoning](../../../Modules/List-of-modules/Cache-modules/Cache-core/#_web_cache_poisoning)

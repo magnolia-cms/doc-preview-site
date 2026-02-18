@@ -1,0 +1,50 @@
+---
+title: "Registry data source"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/List-of-apps/Definitions-app/Registry-data-source/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Definitions app > Registry data source
+---
+
+# Registry data source
+
+The registry data source supplies a list of definition providers of a given registry specified by the registry type. It’s only used in [filters in the Definitions app](../#_searching_and_filtering_definitions). By default, it doesn’t provide any component implementation itself other than the one required by select fields.
+
+> **Note:** The registry data source is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.definitions.app.data.RegistryDatasourceDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+datasource:
+  class: info.magnolia.definitions.app.data.RegistryDatasourceDefinition
+  name: registry-contents
+  type: dialogs
+```
+
+## [](#_list_of_properties)List of properties
+
+| Property | Description |
+| --- | --- |
+| `class` | **required**<br><br>Fully qualified name of the definition class.<br><br>Use `info.magnolia.definitions.app.data.RegistryDatasourceDefinition`. |
+| `type` | **required**<br><br>Type of registry. Examples include `apps`, `dialogs` and `templates`. |
+| `name` | **optional**, *default is `registry-contents`*<br><br>Name of the data source. |
+
+## [](#_data_source_components)Data source components
+
+Module component mappings can be defined in the context of the current data source (a component section should have an id in the form of `<id>datasource-<ds-name></id>`, where `<ds-name>` is configured in the definition).
+
+| Type | Implementation | Description |
+| --- | --- | --- |
+| `info.magnolia.ui.field.SelectFieldSupport` | `info.magnolia.definitions.app.data.RegistryContentSelectFieldSupport` | Provides delegates required by select fields. |
+
+Component mappings in module descriptor
+
+```xml
+<components>
+  <id>datasource-registry-contents</id>
+  <component>
+    <type>info.magnolia.ui.field.SelectFieldSupport</type>
+    <implementation>info.magnolia.definitions.app.data.RegistryContentSelectFieldSupport</implementation>
+  </component>
+</components>
+```

@@ -1,0 +1,50 @@
+---
+title: "Magnolia front-end development"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Magnolia-front-end-development/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development
+---
+
+# Magnolia front-end development
+
+Magnolia gives you the flexibility to build the front-end your way. Whether you are working with modern JavaScript frameworks or FreeMarker templates, Magnolia supports both approaches.
+
+Front-end development in Magnolia typically means building templates and components that render HTML, CSS, and JavaScript, and enabling authors to populate them with content. Projects often involve both front-end and back-end developers. Magnolia supports this collaboration by combining flexible APIs, templating options, and a file-based development model.
+
+This section introduces how front-end development works in Magnolia and helps you choose the best starting point for your project.
+
+## [](#_two_ways_to_build_your_front_end)Two ways to build your front-end
+
+There are two main approaches to front-end development in Magnolia:
+
+Headless development
+
+Use Magnolia as a headless CMS with frameworks like React, Angular, Vue, or server side rendering frameworks such as Next.js, Nuxt, or Angular SSR. Fetch content using REST APIs and build fully decoupled, API-driven applications. Your app can live in its own repository and be deployed independently.
+
+FreeMarker-based development
+
+Use Magnolia’s traditional templating approach to build pages and components using FreeMarker. This is ideal for server rendered sites or when you want to build directly within the CMS with tight integration between authoring and rendering.
+
+## [](#_tools_to_help_you_get_started)Tools to help you get started
+
+Magnolia CLI
+
+A plugin-based command-line tool to jumpstart projects, generate components and pages, and manage light modules. You can extend it with your own plugins as your project grows.
+
+Light modules
+
+A light module is a directory of files such as YAML, FreeMarker templates, static assets, and configuration. It’s versionable and easy to share across teams. This approach enables front-end developers to work independently from Java code.
+
+Starter projects
+
+Magnolia provides starter templates to help you get up and running. You can choose between headless projects, standard webapps, or demo sites with FreeMarker templates.
+
+## [](#_start_here)Start here
+
+-   [Getting started with front-end development](Getting-started-with-front-end-development/)
+
+-   [Choosing between FreeMarker and headless](Choosing-the-right-front-end-approach/)
+
+
+> **Tip:** Looking for a deeper dive? Check out our light development guide, or explore our CLI documentation for custom workflows.

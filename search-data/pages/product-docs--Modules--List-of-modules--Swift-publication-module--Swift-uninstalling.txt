@@ -1,0 +1,288 @@
+---
+title: "Uninstalling Swift publication"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Swift-publication-module/Swift-uninstalling/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Swift publication > Uninstall
+---
+
+# Uninstalling Swift publication
+
+This uninstall guide involves removing configurations, commands, and running Groovy scripts. When using the [Configuration app](../../../../Apps/List-of-apps/Configuration-app/#_configuration) and the [Groovy app](../../../../Apps/List-of-apps/Groovy-app/#_configuration) for some of these changes, your administration user must have the `superuser` role granted in the [Security app](#6.2@product-docs:ROOT:Apps/List-of-apps/Security-app.adoc#_roles).
+
+## [](#_remove_libs)Remove libs
+
+Remove all Swift publication libs from `magnoliaAuthor` and `magnoliaPublic` webapps (not all of which might be present).
+
+-   magnolia-swift-publication-api
+
+-   magnolia-swift-publication-personalization
+
+-   magnolia-swift-publication-rest
+
+-   magnolia-swift-publication-ui
+
+-   magnolia-swift-versioning-api
+
+-   magnolia-swift-versioning-s3
+
+-   magnolia-swift-versioning-ui
+
+-   magnolia-swift-versioning-diff
+
+
+> **Note:** Some libs don’t have to be removed depending on the chosen implementation.
+
+## [](#_remove_configuration_from_jcr)Remove configuration from JCR
+
+Configuration needs to be removed from author and public instance. You can do it manually or by using the [Groovy script](#_groovy_script_for_removing_all_the_jcr_configuration) provided.
+
+### [](#_remove_all_the_swift_publication_configuration_nodes)Remove all the Swift publication configuration nodes
+
+It isn’t straightforward because the delete command is connected to the unpublish one, and unpublishing first and second-level nodes in the `config` repository is forbidden.
+
+The following module configuration nodes could be present (depending on the chosen implementation):
+
+```none
+/modules/swift-publication-api
+/modules/swift-publication-personalization
+/modules/swift-publication-rest
+/modules/swift-publication-ui
+/modules/swift-versioning-api
+/modules/swift-versioning-s3
+/modules/swift-versioning-ui
+```
+
+To remove module nodes manually, the unpublishing command needs to be disabled. This doesn’t need to be done if the [Groovy script](#_groovy_script_for_removing_all_the_jcr_configuration) is used.
+
+| Node name | Value |
+| --- | --- |
+| ⸬ unpublish |     |
+| ⬩ unpublish@enabled | false |
+
+### [](#_remove_workflow_commands)Remove workflow commands
+
+| Node name | Value |
+| --- | --- |
+| 📁 default |     |
+| ⸬ **approvedExternalPublish** |     |
+| ⬩ enabled | true |
+| ⬩ class | info.magnolia.swift.publication.api.command.PublicationCommand |
+| ⸬ **approvedExternalUnpublish** |     |
+| ⬩ enabled | true |
+| ⬩ class | info.magnolia.swift.publication.api.command.UnpublicationCommand |
+| ⸬ **personalizationApprovedExternalPublish** |     |
+| ⬩ enabled | true |
+| ⬩ class | info.magnolia.swift.publication.api.command.PersonalizationPublicationCommand |
+
+| Node name | Value |
+| --- | --- |
+| 📁 external |     |
+| ⸬ **workflowPublish** |     |
+| ⸬ version |     |
+| ⬩ enabled | true |
+| ⬩ class | info.magnolia.swift.versioning.api.command.VersionCommand |
+| ⸬ publish |     |
+| ⬩ workflow | reviewForPublication |
+| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
+| ⬩ parameterMapName | mgnlData |
+| ⬩ commandName | approvedExternalPublish |
+| ⸬ **workflowUnpublish** |     |
+| ⸬ version |     |
+| ⬩ enabled | true |
+| ⬩ class | info.magnolia.swift.versioning.api.command.VersionCommand |
+| ⸬ unpublish |     |
+| ⬩ workflow | reviewForUnpublication |
+| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
+| ⬩ parameterMapName | mgnlData |
+| ⬩ commandName | approvedExternalUnpublish |
+| ⸬ **workflowPublishDeletion** |     |
+| ⬩ workflow | reviewForPublication |
+| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
+| ⬩ parameterMapName | mgnlData |
+| ⬩ commandName | approvedExternalPublish |
+| ⸬ **personalizationWorkflowPublishDeletion** |     |
+| ⸬ publish |     |
+| ⬩ workflow | reviewForPublication |
+| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
+| ⬩ parameterMapName | mgnlData |
+| ⬩ commandName | personalizationApprovedExternalPublish |
+
+### [](#_rest_integration_configuration)REST integration configuration
+
+If `swift-publication-rest` is used, remove:
+
+| Node name | Value |
+| --- | --- |
+| ⸬ additionalProviders |     |
+| ⸬ **objectMapper** |     |
+
+And modify:
+
+| Node name | Value |
+| --- | --- |
+| ⸬ additionalProviders |     |
+| ⸬ restExceptionMapper |     |
+| ⬩ providerClass | info.magnolia.rest.RestExceptionMapper |
+
+### [](#_remove_swift_endpoint_permissions_from_the_rest_anonymous_role)Remove Swift endpoint permissions from the `rest-anonymous` role
+
+This is only relevant when `swift-publication-rest` is used.
+
+```none
+/rest-anonymous
+- /.rest/swift-publication/v1*
+- GET & POST
+```
+
+## [](#_remove_configuration_property_files)Remove configuration property files
+
+Remove all configuration lines from the `magnolia.properties` file that start with the `swift` prefix.
+
+```properties
+swift.publication.receivers[0].name=magnoliaPublic8080
+swift.publication.receivers[0].url=http://localhost:8080/magnoliaPublic
+swift.publication.receivers[0].enabled=false
+
+swift.versioning.s3.bucket=test-magnolia-versioning-publishing
+swift.versioning.s3.region=eu-central-1
+...
+```
+
+## [](#_groovy_script_for_removing_all_the_jcr_configuration)Groovy script for removing all the JCR configuration
+
+```groovy
+import info.magnolia.objectfactory.Components
+import info.magnolia.cms.security.SecuritySupport;
+
+// remove modules
+modules = ["swift-publication-api", "swift-publication-personalization", "swift-publication-rest", "swift-publication-ui", "swift-versioning-api", "swift-versioning-s3", "swift-versioning-ui", "swift-versioning-diff"]
+
+modules.each{ name ->
+    removeModuleConfig(name)
+}
+
+// remove workflow commands
+remove("/modules/workflow/commands/default/approvedExternalPublish")
+remove("/modules/workflow/commands/default/approvedExternalUnpublish")
+remove("/modules/workflow/commands/default/personalizationApprovedExternalPublish")
+removeIfEmpty("/modules/workflow/commands/default")
+remove("/modules/workflow/commands/external/workflowPublish")
+remove("/modules/workflow/commands/external/workflowUnpublish")
+remove("/modules/workflow/commands/external/workflowPublishDeletion")
+remove("/modules/workflow/commands/external/personalizationWorkflowPublishDeletion")
+removeIfEmpty("/modules/workflow/commands/external")
+
+// modify rest-integration config
+removeIfValue("/modules/rest-integration/config/additionalProviders/objectMapper", "providerClass", "info.magnolia.swift.publication.rest.context.ObjectMapperContextResolver")
+modifyProperty("/modules/rest-integration/config/additionalProviders/restExceptionMapper", "providerClass", "info.magnolia.swift.publication.rest.exception.ProblemExceptionMapper", "info.magnolia.rest.RestExceptionMapper")
+
+// save config changes
+ctx.getJCRSession("config").save();
+
+
+// remove permissions
+roleManager = Components.getComponent(SecuritySupport.class).getRoleManager()
+role = roleManager.getRole("rest-anonymous")
+roleManager.removePermission(role, "uri", "/.rest/swift-publication/v1*", 63)
+
+
+def removeModuleConfig(String moduleName) {
+    String path = "/modules/" + moduleName
+    remove(path)
+}
+
+def remove(String path) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        session.getNode(path).remove()
+    }
+}
+
+def removeIfEmpty(String path) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        node = session.getNode(path)
+        if (!node.hasNodes()) {
+            node.remove()
+        }
+    }
+}
+
+def removeIfValue(String path, String property, String value) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        node = session.getNode(path)
+        if (!node.hasProperty(property) || value.equals(node.getProperty(property).getString())) {
+            node.remove()
+        }
+    }
+}
+
+def modifyProperty(String path, String property, String oldValue, String newValue) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        node = session.getNode(path)
+        if (node.hasProperty(property) && oldValue.equals(node.getProperty(property).getString())) {
+            node.setProperty(property, newValue)
+        }
+    }
+}
+```
+
+## [](#_known_issues_after_uninstall)Known issues after uninstall
+
+1.  Published nodes have mixin `mgnl:hasVariant`, but no version present in JCR. This causes version actions to be available, but after using the version actions mixin is automatically removed.
+
+2.  Nodes marked for deletion by Swift publishing can’t be restored after uninstall.
+
+3.  Workflow items started by Swift publishing can’t be finished after uninstall.
+
+
+## [](#_migrating_content_from_swift_to_jcr)Migrating content from Swift to JCR
+
+### [](#_groovy_script_migration)Groovy script migration
+
+You can use the Groovy script below to migrate your content.
+
+```groovy
+import info.magnolia.swift.versioning.api.data.migration.SwiftToJcr
+import info.magnolia.objectfactory.Components
+
+swiftToJcr = Components.newInstance(SwiftToJcr.class)
+
+website = MgnlContext.getInstance().getJCRSession("website")
+page = website.getNode("/page")
+// swiftToJcr.setSaveBulkSize(50)
+
+swiftToJcr.migrateNode(page)
+// swiftToJcr.migrateNode(page, "mgnl:custom") (1)
+// swiftToJcr.migrateRecursively(page)
+// swiftToJcr.migrateRecursively(page, "mgnl:custom") (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | If you use custom node types for pages and their content, you need to provide node types to describe the page content. |
+
+### [](#_endpoint_migration)Endpoint migration
+
+Alternatively, you can enable a REST endpoint by providing a .yaml definition as follows.
+
+/<YOUR\_MODULE>/restEndpoints/swift-migration.yaml
+
+```yaml
+class: info.magnolia.swift.versioning.api.data.migration.endpoint.MigrationEndpointDefinition
+saveBulkSize: 100 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The default value is `50` when the property isn’t specified. See [swift.publication.save.bulk.size](../Swift-configuration/#swift-publication-save-bulk-size) for more details. |
+
+You can trigger the endpoint with the example URLs below.
+
+```none
+http://yourdomain.com/.rest/swift-migration/swift2jcr/website
+http://yourdomain.com/.rest/swift-migration/swift2jcr/website/mgnl:custom,mgnl:another
+```

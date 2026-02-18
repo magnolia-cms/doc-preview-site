@@ -1,0 +1,280 @@
+---
+title: "Action bar definition"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/App-configuration/Action-bar-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > App configuration > Action bar definition
+---
+
+# Action bar definition
+
+An action bar organizes actions into sections and groups. The bar is typically displayed on the right hand side of an app. In content apps, the browser subapp has an action bar that allows the user to manage content items (add, edit or delete).
+
+The action bar also defines [availability](#_action_bar_availability) rules that determine which section of the action bar is displayed to the user. For example, when the user selects a content item, you want to only display actions that are relevant for that item.
+
+The action bar references actions that are [defined elsewhere](../Action-definition/). This separation allows you to define an action once and use it in many places, not only in the action bar.
+
+## [](#_example_definition)Example definition
+
+Action bar in the [Contacts app](../../List-of-apps/Contacts-app/):
+
+```yml
+browser:
+  actionbar:
+    defaultAction: editContact
+    sections:
+      - name: root
+        # group definition
+      - name: deletedContact
+        # group definition
+      - name: deletedFolder
+        # groups definition
+      - name: contact
+        groups:
+          - name: addActions
+            items:
+              - name: addContact
+              - name: confirmDeleteContact
+          - name: editActions
+            items:
+              - name: editContact
+              - name: renameContact
+          - name: activationActions
+            items:
+              - name: activate
+              - name: deactivate
+          - name: importExportActions
+            items:
+              - name: export
+          - name: versionsActions
+            items:
+              - name: showVersions
+              - name: restoreVersion
+        availability:
+          nodeTypes:
+            - mgnl:contact
+```
+
+![Action bar in the Contacts app](../../../_images/6-2-action_bar_updated_v3.png)
+
+## [](#_action_bar_properties)Action bar properties
+
+| Property | Description |
+| --- | --- |
+| `actionbar` | **required**<br><br>Action bar configuration. |
+| `sections` | **required**<br><br>Sections defined in the bar. |
+| `<section name>` | **required**<br><br>Name of the section. Name your sections after what the user has selected, such as `folder` when a folder is selected. |
+| `groups` | **required**<br><br>Actions that belong together. Separated by horizontal lines in the action bar. |
+| `<group name>` | **required**<br><br>Name of the group. |
+| `items` | **required**<br><br>Node containing the action names. |
+| `<action name>` | **required**<br><br>Name of the action. Must be the same as the name defined in [Dialog definition](../../../Developing/Templating/Dialog-definition/). |
+| `availability` | **optional**<br><br>Defines whether the section is displayed to the user. Typically depends on what type of node the user has selected. |
+| `label` | **optional**<br><br>Green text displayed to users in the action bar. |
+| `defaultAction` | **optional**<br><br>Name of the action executed when the user double-clicks an item. |
+
+## [](#_action_bar_availability)Action bar availability
+
+Action bar availability defines whether a particular section of the action bar is available.
+
+> **Note:** Action bar availability is different from action availability where availability rules are defined on an individual action level and apply to each use of the action.
+
+For example, in the action bar configuration in the [Contacts app](../../List-of-apps/Contacts-app/):
+
+-   Actions in the `root` section appear on the root node only. The user sees the **Add contact**, **Add folder** and **Import** actions defined in the groups in the `root` section.
+
+-   Actions in the `contact` section appear on selection of a `mgnl:contact` node type.
+
+-   Actions in the `deletedContact` section appear on selection of a `mgnl:contact` node type, but the `IsDeletedRule` [rule class](../Action-definition/#_action_availability_definition_classes) limits action availability to the **Request permanent deletion** and **Restore previous version** actions when a contact has been marked for deletion. This rule returns `true` if the item is a node and has the `mgnl:deleted` mixin type.
+
+
+```yml
+actionbar:
+  defaultAction: editContact
+  sections:
+    - name: root
+      groups:
+        # group definitions
+      availability:
+        nodes: false
+        root: true
+    - name: deletedContact
+      groups:
+        # group definitions
+      availability:
+        nodeTypes:
+          - mgnl:contact
+        rules:
+          - name: isDeletedRule
+    - name: deletedFolder
+      # groups definition
+    - name: contact
+      groups:
+        # group definitions
+      availability:
+        nodeTypes:
+          - mgnl:contact
+```
+
+### [](#_availability_properties)Availability properties
+
+ PropertyDescription
+
+`<section name>`
+
+**required**
+
+Name of the section.
+
+     `availability`
+
+**required**
+
+Defines the availability configuration for the section.
+
+         `access`
+
+**optional**
+
+Section is available if the current user has one of the listed roles.
+
+             `roles`
+
+**required**
+
+Section is available to users assigned the list of [roles](../../../Administration/IAM/Roles-and-access-control-lists/).
+
+                 `<role>`
+
+**required**
+
+Name of the [role](../../../Administration/IAM/Roles-and-access-control-lists/) that is permitted to execute the action. Add one property for each role.
+
+         `nodes`
+
+**optional**, *default is `true`*
+
+Section is available if the selected item is a node.
+
+         `nodeTypes`
+
+**optional**
+
+Section is available if the selected item is one of the node types listed.
+
+             `<node type>`
+
+**required**
+
+Valid [node type](../../../Administration/Architecture/Node-types/) such as `mgnl:folder`.
+
+         `rules`
+
+**optional**
+
+Section is available if the selected item matches every availability rule class.
+
+             `<rule name>`
+
+**required**
+
+It gives the node a name that describes the rule class. One node for each rule, and the node name is arbitrary.
+
+                 `class`
+
+**required** (unless `$type` is used)
+
+[Action availability definition class](#_action_availability_definition_classes). The class must implement the info.magnolia.ui.api.availability.AvailabilityDefinition interface. Set the value to the fully qualified class name.
+
+                 `$type`
+
+You can use this as a shortcut for `class` if the definition class is annotated with info.magnolia.ui.api.availability.AvailabilityRuleType. The proper value is defined by the annotation.
+
+                 `implementationClass`
+
+**required**
+
+The class that contains custom logic to check if the action is permitted on the selected item and implements info.magnolia.ui.availability.rule.AvailabilityRule. Your custom class must extend info.magnolia.ui.availability.rule.AbstractAvailabilityRule. A default implementation class is typically hard-coded in the definition class. You only need to add this property if you want to override the default implementation.
+
+         `root`
+
+**optional**
+
+Section is available at the workspace root level if `true`.
+
+         `folder`
+
+**optional**, *default is `null`*
+
+Action is available for folders only if `true`, and for non-folder content only if `false`. When this property is not specified, the action is available for both folders and non-folder content.
+
+> **Note:** This option is for CDS content and is not supported for JCR content. Please see the nodeTypes option and use mgnl:folder node type to specify availability for folders in JCR.
+
+         `properties`
+
+**optional**, *default is `false`*
+
+Section is available if the selected item is a property.
+
+         `multiple`
+
+**optional**, *default is `false`*
+
+Defines whether the action is available for multiple items.
+
+For more information, see [Actions on multiple items](#_actions_on_multiple_items).
+
+         `writePermissionRequired`
+
+**optional**, *default is `false`*
+
+Set to `true` if the action requires write permission on the currently selected node. The action will be disabled if the user does not have write permission.
+
+## [](#_action_bar_structure)Action bar structure
+
+The structure of the action bar differs from app to app.
+
+Here’s an example of the action bar in the Contacts app.
+
+-   No contact selected
+
+-   Contact selected
+
+-   Contact deleted
+
+
+With no contact selected.
+
+![Action bar without any action selected](../../../_images/6-2-action-bar-root.png)
+
+When a contact is selected.
+
+![Action bar when a contact is selected](../../../_images/6-2-action-bar-contact.png)
+
+After a contact is deleted.
+
+![Action bar after a contact is deleted](../../../_images/6-2-action-bar-deleted.png)
+
+## [](#_restricting_actions)Restricting actions
+
+As an administrator, you can control which actions are available to other users. For instance, you might want only the `superuser` role to have the ability to import content into the Pages app. By modifying an action’s [availability property](#_availability_properties), you can restrict whether an action is shown in the user interface.
+
+### [](#_restrict_the_import_action_in_the_pages_app)Restrict the import action in the Pages app
+
+To restrict which users see the import action in the Pages app, you can limit the `access` property to certain roles. You can apply the restriction by decorating the import action’s definition in the `pages-app.yaml` configuration file.
+
+/pages-app/apps/pages-app.yaml
+
+```yaml
+subApps:
+  browser:
+    actions:
+      import:
+        availability:
+          access:
+            roles:
+              role: superuser (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Restricts the import action’s visibility to users with the `superuser` role. |

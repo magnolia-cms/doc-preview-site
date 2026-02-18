@@ -1,0 +1,125 @@
+---
+title: "Release notes for Magnolia CMS 6.3.11"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.11/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.11
+---
+
+# Release notes for Magnolia CMS 6.3.11
+
+[LTS release](../../../../support/) • Delivered on July 18, 2025 • Page updated on July 24, 2025 • Changelog: [18427](https://magnolia-cms.atlassian.net/issues/?filter=18427)
+
+> **Warning:** Do not upgrade to Magnolia 6.3.11.This version contains two issues that can impact the stability and functionality of your Magnolia instances:Upgrading to Magnolia 6.3.9, 6.3.10, 6.3.11, or 6.3.12 initiates a Marketing Tags version handler task that may cause instances to become unresponsive if the repository contains a large number of versions. See the Known issues page for more information.The issue has been resolved in the Magnolia 6.3.13 release.An unexpected change introduced by ticket MGNLREST-877 breaks the Nodes API functionality. This issue also affects Put/Post operations, resulting in errors such as:Unrecognized field 'properties' (class info.magnolia.rest.service.node.v1.RepositoryNode), not marked as ignorableWorkaround: No workaround is currently available.The issue is resolved in Magnolia 6.3.12, where MGNLREST-877 is reverted.
+
+**Magnolia 6.3.11** release introduces key improvements and bug fixes to enhance functionality, stability, and security. Notable updates include optimized handling of response filters for personalization endpoints and improved thumbnail and preview support for non-image assets.
+
+Bug fixes address issues such as Vaadin Atmosphere log handling, redirect template functionality with special characters, and unintended page deletion during component removal.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.11/magnolia-dx-core-webapp-6.3.11.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.11/travel-demo-webapp-6.3.11.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.11/travel-demo-community-webapp-6.3.11.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+
+
+## [](#_improvements)Improvements
+
+-   [MGNLPN-842](https://magnolia-cms.atlassian.net/browse/MGNLPN-842) Don’t bypass the response filters when the endpoint disables personalization
+
+-   [MGNLUI-9227](https://magnolia-cms.atlassian.net/browse/MGNLUI-9227) Improve thumbnails and preview for non-image assets
+
+
+### [](#_security_improvements)Security improvements
+
+[ADMINCTR-589](https://magnolia-cms.atlassian.net/browse/ADMINCTR-589), [BUILD-1419](https://magnolia-cms.atlassian.net/browse/BUILD-1419), [BUILD-1431](https://magnolia-cms.atlassian.net/browse/BUILD-1431), [BUILD-1432](https://magnolia-cms.atlassian.net/browse/BUILD-1432), [MGNLTOMCAT-57](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-57), [MGNLUI-9214](https://magnolia-cms.atlassian.net/browse/MGNLUI-9214), [MGNLUI-9223](https://magnolia-cms.atlassian.net/browse/MGNLUI-9223)
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](../../../../support/) if you need more information.
+
+## [](#_bug_fixes)Bug fixes
+
+-   [ADMINCTR-586](https://magnolia-cms.atlassian.net/browse/ADMINCTR-586) Vaadin Atmosphere logs not handled by SLF4J
+
+-   [MAGNOLIA-9662](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9662) Redirect template not working when target page name contains umlaut (¨) characters
+
+-   [MGNLREST-876](https://magnolia-cms.atlassian.net/browse/MGNLREST-876) Decorations not working for the Cache module
+
+    Decorating configuration files must have `config` in the filename in Magnolia 6.3, for example, `/rest-services/decorations/cache/config.yaml` or `/rest-services/decorations/cache/config.contentCaching.yaml`. This was optional in Magnolia 6.2.
+
+-   [MGNLUI-9210](https://magnolia-cms.atlassian.net/browse/MGNLUI-9210) A page may be unintentionally deleted during a **Delete component** action on a slow connection
+
+-   [TASKS-71](https://magnolia-cms.atlassian.net/browse/TASKS-71) Task not displayed when switching to Japanese language
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MAGNOLIA-9694](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9694) Filter out `mgnl:lastActivatedVersion` properties when importing
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Admincentral `6.3.6`
+
+-   Barebones Tomcat Bundle `1.2.38`
+
+-   Community Edition `6.3.11`
+
+-   DX Core `6.3.11`
+
+-   Demo Projects `6.3.11`
+
+-   Magnolia `6.3.11`
+
+-   Pages `6.3.7`
+
+-   Personalization `3.0.6`
+
+-   REST Framework `3.1.2`
+
+-   Tasks `6.3.2`
+
+-   Third-party library BOM for Extensions `6.3.11`
+
+-   Third-party library BOM `6.3.11`
+
+-   UI `6.3.11`
+
+-   Workflow `7.0.5`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.3.10.
+
+-   [AI Accelerator](#ai-accelerator:ROOT:changelog.adoc) `2.2.5`
+
+-   [Campaign Manager](#campaign-manager:ROOT:changelog.adoc) `4.0.1`
+
+-   [CDP integration framework](#cdp-integration-framework:ROOT:index.adoc#_changelog) `1.1.2`
+
+-   [Celum DAM Connector](#celum-dam-connector:ROOT:index.adoc#_changelog) `3.0.2`
+
+-   [Cloudinary External DAM](../../../../cloudinary/1.3/changelog/) `2.1.2`
+
+-   [Content Translation Extended](../../../../content-translation-support-ext/#_changelog) `4.2.0`
+
+-   [External DAM](../../Modules/extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_external_dam_module_changelog) `2.0.5`
+
+-   [JavaScript UI](#ui-framework-javascript:ROOT:index.adoc#_changelog) `3.1.0`
+
+-   [Live Copy](#live-copy:ROOT:changelog.adoc) `4.1.1`
+
+-   [WeChat Login](#wechat-connector:ROOT:index.adoc#_changelog) `1.0.0`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.
+
+Thanks a mill!
+
+Special thanks go out to Jörg von Frantzius.

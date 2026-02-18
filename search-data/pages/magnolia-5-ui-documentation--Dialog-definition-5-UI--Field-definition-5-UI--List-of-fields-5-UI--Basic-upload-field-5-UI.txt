@@ -1,0 +1,61 @@
+---
+title: "Basic upload field - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Basic-upload-field-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > List of fields - 5 UI > Basic upload field - 5 UI
+---
+
+# Basic upload field - 5 UI
+
+Deprecated
+
+> **Note:** This basic upload field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Upload field for Magnolia 6 UI instead.
+
+`BasicUploadFieldDefinition` renders a field to upload a file to a Magnolia JCR workspace. The file is stored on the node of the current context of the form (within a dialog or subApp), which could be a content app item, a page or a component of a page.
+
+class: `info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition`
+
+fieldType: `basicUpload`
+
+The basic upload field has three states. You can set properties for each.
+
+-   **Empty** is the starting point where no file has been selected. You can select a file with the button or drag it into the box.
+
+
+![Empty field in the Import dialog](6.2@product-docs:ROOT:BasicUpload-empty.png)
+
+-   **In progress** displays a progress bar and incremental percentages and uploaded/total ratio.
+
+
+![In progress field in the Import dialog uploading a file](6.2@product-docs:ROOT:BasicUpload-in-progress.png)
+
+-   **Completed** displays a success notification and summary of file info.
+
+
+![Completed field in the Import dialog](6.2@product-docs:ROOT:BasicUpload-completed.png)
+
+## [](#_basic_upload_field_properties)Basic upload field properties
+
+Simple basic upload field definition:
+
+```none
+form:
+  tabs:
+    - name: tabUpload
+      label: Upload
+      fields:
+        - name: upload
+          fieldType: basicUpload
+          label: Upload
+          allowedMimeTypePattern: text/xml
+          binaryNodeName: import
+```
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Basic-upload-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Referencing-fields-shortcut-info-5-UI.adoc\[\]
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Basic-upload-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-upload-field-properties-5-UI.adoc\[\]
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Basic-upload-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-field-properties-5-UI.adoc\[\]
+
+When using the basic upload field in a [composite](../Composite-field-5-UI/) or [multivalue](../Multivalue-field-5-UI/) field, use the [DelegatingCompositeFieldTransformer](../../Transforming-field-values-5-UI/#_delegatingcompositefieldtransformer). The other transformer classes do not work.

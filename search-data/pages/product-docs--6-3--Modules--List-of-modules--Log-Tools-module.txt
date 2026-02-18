@@ -1,0 +1,40 @@
+---
+title: "Log Tools module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Log-Tools-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Log Tools module
+---
+
+# Log Tools module
+
+The Log tools module installs the Log Tools app that includes subapps to view log files and adjust logging settings.
+
+[Operations](../../../use-cases/operations/) Bundled: Community edition
+
+| Edition | CE  |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [LOGTOOLS](https://magnolia-cms.atlassian.net/browse/LOGTOOLS) |
+| Maven site | [UI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Flog%2Fmagnolia-log-tools%2F2.0.0) |
+| Latest | 2.0.0 |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.log</groupId>
+  <artifactId>magnolia-log-tools</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+See [Log Tools app](../../../Apps/List-of-apps/Log-Tools-app/).

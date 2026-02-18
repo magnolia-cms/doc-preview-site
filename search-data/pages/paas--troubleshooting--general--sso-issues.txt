@@ -1,0 +1,40 @@
+---
+title: "SSO known issues"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/general/sso-issues/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > SSO known issues
+---
+
+# SSO known issues
+
+In your Tomcat configuration, make sure that the `CookieProcessor` component does not have the `sameSiteCookies` property set to `strict`. Instead, set the property to `Lax`:
+
+Tomcat
+
+```xml
+<CookieProcessor sameSiteCookies="Lax" /> (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | `sameSiteCookies` set to `Lax` instead of `strict`. |
+
+> **Important:** If the CookieProcessor with sameSiteCookies set to strict, you will likely encounter issues while trying to log into Magnolia. If you decide to continue using the SSO Module, you need to know that setting this cookie to Lax has the potential to impact site security.
+
+## [](#_modify_values_yml)Modify values.yml
+
+To modify `sameSiteCookies`, update your `values.yml` file.
+
+> **Note:** After making these changes, you have to redeploy your application for the changes to be picked up.
+
+values.yml
+
+```yaml
+magnoliaAuthor:
+  sameSiteCookies: Lax (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | `sameSiteCookies` set to `Lax` instead of `strict`. |

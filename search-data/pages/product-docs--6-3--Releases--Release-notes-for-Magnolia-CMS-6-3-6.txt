@@ -1,0 +1,179 @@
+---
+title: "Release notes for Magnolia CMS 6.3.6"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.6/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.6
+---
+
+# Release notes for Magnolia CMS 6.3.6
+
+[LTS release](../../../../support/) • Delivered on March 24, 2025 • Changelog: [16217](https://magnolia-cms.atlassian.net/issues/?filter=16217)
+
+**Magnolia 6.3.6** is primarily a bug-fixing and security release that delivers critical security fixes. This release also enhances workflows with .zip file extraction, preserving folder structures for efficient asset management, and adds REST client caching for improved performance.
+
+We keep the details of the security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.6.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.6/magnolia-dx-core-webapp-6.3.6.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.6.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.6/travel-demo-webapp-6.3.6.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.6.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.6/travel-demo-community-webapp-6.3.6.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+
+
+## [](#_improvements)Improvements
+
+### [](#_zip_extraction_of_assets_upon_upload)ZIP extraction of assets upon upload
+
+You can now upload and extract .zip files while preserving the original file and folder structures. This enhancement simplifies uploading and organizing assets efficiently, especially when dealing with big data sets.
+
+-   Recreate nested folder structures in the `dam` workspace.
+
+-   Streamline uploading structured content.
+
+-   Improve efficiency for teams managing large asset collections.
+
+
+[MGNLDAM-1586](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1586) Ability to upload nested folder structures and extract (ZIP)
+
+### [](#_caching_in_the_rest_client)Caching in the REST client
+
+Similar to Magnolia 6.2, the 6.3 branch now supports REST client definition caching configuration.
+
+-   [MGNLRESTCL-232](https://magnolia-cms.atlassian.net/browse/MGNLRESTCL-232) Re-introduce cache configuration in REST client definition
+
+
+### [](#_other_improvements)Other improvements
+
+-   [MGNLCACHE-390](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-390) Clean up `cacheStream` file in a `temp` folder after request is complete
+
+-   [MGNLDAM-1717](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1717) Use a `LazyThumbnail` in asset views (browse and chooser)
+
+-   [MGNLGQL-192](https://magnolia-cms.atlassian.net/browse/MGNLGQL-192) Allow introspection to be disabled
+
+-   [MGNLPN-337](https://magnolia-cms.atlassian.net/browse/MGNLPN-337) Preview filter is executed on public instances
+
+-   [MGNLTOMCAT-50](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-50) Log error if the Java version isn’t compatible with Magnolia
+
+-   [MGNLUI-9157](https://magnolia-cms.atlassian.net/browse/MGNLUI-9157) Implement a lazy thumbnail that only loads the image when the element is visible on the screen
+
+-   [MGNLUI-9162](https://magnolia-cms.atlassian.net/browse/MGNLUI-9162) Allow for injection of `field` and `fieldDefinition` into validator factories
+
+
+## [](#_bug_fixes)Bug fixes
+
+-   [MGNLDAM-1704](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1704) `DamLinkField` switches the width height attributes
+
+-   [MGNLGQL-183](https://magnolia-cms.atlassian.net/browse/MGNLGQL-183) Definition names with hyphens can’t be queried
+
+-   [MGNLUI-6116](https://magnolia-cms.atlassian.net/browse/MGNLUI-6116) Unable to keep Unicode character when uploading a .zip file (created in Windows) in Assets app
+
+-   [MGNLUI-8714](https://magnolia-cms.atlassian.net/browse/MGNLUI-8714) `date` field uses browser time instead of system time
+
+-   [PAGES-1232](https://magnolia-cms.atlassian.net/browse/PAGES-1232) Component inheritance fails on REST requests for pages below a certain depth
+
+-   [PAGES-1677](https://magnolia-cms.atlassian.net/browse/PAGES-1677) **Show versions** functionality not working correctly in the headless mode
+
+-   [PUBLISHING-370](https://magnolia-cms.atlassian.net/browse/PUBLISHING-370) Unpublish command shouldn’t version content as a pre-requisite
+
+-   [PUBLISHING-371](https://magnolia-cms.atlassian.net/browse/PUBLISHING-371) Programmatically unpublishing from root node causes the `jcr:system` nodes to be unpublished
+
+    For more, see [Recursive and non-recursive publishing](../../Administration/Architecture/Publishing/#_recursive_and_non_recursive_publishing).
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [ADMINCTR-581](https://magnolia-cms.atlassian.net/browse/ADMINCTR-581) Foundation for a password change on the first login with default password
+
+-   [MAGNOLIA-9529](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9529) Foundation to remove the default password for superuser upon a fresh installation
+
+-   [MGNLTOMCAT-51](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-51) Update `org.apache.tomcat:tomcat` to `9.0.102`
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Admincentral `6.3.4`
+
+-   Barebones Tomcat Bundle `1.2.34`
+
+-   CKEditor 5 Build `1.0.3`
+
+-   Cache `6.0.3`
+
+-   Community Edition `6.3.6`
+
+-   DAM `4.0.6`
+
+-   DX Core `6.3.6`
+
+-   Demo Projects `6.3.6`
+
+-   GraphQL `2.0.1`
+
+-   Imaging `4.0.2`
+
+-   Magnolia `6.3.6`
+
+-   Pages `6.3.4`
+
+-   Personalization `3.0.3`
+
+-   Publishing `2.0.3`
+
+-   REST Client `3.0.2`
+
+-   REST Framework `3.0.1`
+
+-   Templating Essentials `3.0.2`
+
+-   Third-party library BOM for Extensions `6.3.6`
+
+-   Third-party library BOM `6.3.6`
+
+-   UI `6.3.6`
+
+-   Workflow `7.0.2`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.3.5. Click the module title to see the changelog (if available),
+
+-   [AI Accelerator](#ai-accelerator:ROOT:changelog.adoc) `2.1.2` and `2.2.0-beta3`
+
+-   Campaign Publisher `3.1.0`
+
+-   [Celum DAM Connector](#celum-dam-connector:ROOT:index.adoc#_changelog) `3.0.0`
+
+-   [Content Diff](#content-diff:ROOT:index.adoc#_changelog) `2.0.0`
+
+-   [Content Exporter](../../../../content-exporter/1.0/#_changelog) `2.0.0`
+
+-   [Content Translation Extended](../../../../content-translation-support-ext/#_changelog) `4.1.1`
+
+-   [E-commerce Category Sync](#ecommerce-catalogsync:ROOT:index.adoc#_changelog) `1.1.2`
+
+-   [External DAM](../../Modules/extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_external_dam_module_changelog) `2.0.3`
+
+-   [Frontify DAM connector](../../../../frontify-dam-connector/#_changelog) `2.0.0`
+
+-   [Image Recognition](#image-recognition:ROOT:changelog.adoc) `2.0.1`
+
+-   [Live Copy](#live-copy:ROOT:changelog.adoc) `4.0.2`
+
+-   [Piano Analytics Connector](#magnolia-analytics-piano-connector:ROOT:index.adoc#_changelog) `2.0.0`
+
+-   [VWO AB Testing](../../../../vwo-abtesting/1.0/changelog/) `1.0`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.
+
+Thanks a mill!
+
+Special thanks go out to Björn Eschle.

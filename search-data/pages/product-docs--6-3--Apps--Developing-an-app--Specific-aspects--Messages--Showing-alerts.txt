@@ -1,0 +1,40 @@
+---
+title: "Showing alerts"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/Developing-an-app/Specific-aspects/Messages/Showing-alerts/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > Developing an app > Messages > Showing alerts
+---
+
+# Showing alerts
+
+## [](#_alert)Alert
+
+Alerts are modal messages that show up in the context the user is currently working in. You can use alerts to confirm that an action should be executed, inform the user of harmful consequences, or report the progress of a long-running action. Since alerts are modal they block the user interface.
+
+Use info.magnolia.ui.AlertBuilder to build various alerts.
+
+Usage examples:
+
+```java
+// Show an ERROR alert.
+void openErrorAlert(String message, Runnable confirmationHandler) {
+   AlertBuilder.alert("Error")
+                .withLevel(Notification.Type.ERROR_MESSAGE)
+                .withBody(message)
+                .withConfirmationHandler(confirmationHandler)
+                .withOkButtonCaption("OK")
+                .buildAndOpen();
+}
+
+// Confirm deletion with a WARNING alert.
+void openConfirmationWarning(String message, Runnable confirmationHandler) {
+    AlertBuilder.confirmDialog("Delete node?")
+                .withLevel(Notification.Type.WARNING_MESSAGE)
+                .withBody("This action cannot be undone.")
+                .withConfirmationHandler(confirmationHandler)
+                .withConfirmButtonCaption("Yes, Delete")
+                .withDeclineButtonCaption("No")
+                .buildAndOpen();
+}
+```

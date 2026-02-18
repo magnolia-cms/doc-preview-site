@@ -1,0 +1,29 @@
+---
+title: "Configure the autosave threshold"
+url: https://docs.magnolia-cms.com/package-manager/configurable-autosave-threshold/
+category: Modules
+version: modules
+breadcrumb: Package Manager module > Configure the autosave threshold
+---
+
+# Configure the autosave threshold
+
+This page explains how to configure the FileVault autosave threshold used during package installations. Use this option to balance performance and memory usage during large imports. If the threshold is set too high, memory consumption can grow significantly; if it is set too low, frequent saves may add overhead.
+
+## [](#_configure_via_microprofile)Configure via MicroProfile
+
+In Magnolia 6.3 and 6.4, configure the autosave threshold using MicroProfile Config.
+
+```properties
+magnolia.packagemanager.import.autoSaveThreshold=512 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Number of modified nodes that trigger a save during package installation. Using `MAX_VALUE` should prevent any save action from being triggered, including both intermediate and final saves. |
+
+> **Note:** Default is 1024 nodes if not configured.
+
+## [](#_usage_guidance)Usage guidance
+
+Optimize large content imports by strategically tuning the autosave threshold. Lower values save more frequently and keep the instance responsive longer during large imports, at the cost of slightly more overhead. Higher values save less frequently and can be faster, but increase memory use as changes accumulate. Balance performance and memory by setting the threshold based on content volume and environment.

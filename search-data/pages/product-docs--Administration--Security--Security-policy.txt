@@ -1,0 +1,72 @@
+---
+title: "Security policy"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Security/Security-policy/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Security > Security policy
+---
+
+# Security policy
+
+This page explains how we ensure that Magnolia is a secure platform for your project.
+
+## [](#_magnolia_is_only_as_secure_as_your_project_implementation)Magnolia is only as secure as your project implementation
+
+There is no single certificate that would validate a web application as secure. Magnolia is a platform, which means security depends on the environment Magnolia is deployed in and on your project-specific implementation.
+
+> ***Only you know** the specifics of your environment and your business. For any given application, there may not be a threat agent that can perform the relevant attack, or the technical impact may not make any difference to your business. Therefore, you should evaluate each risk **for yourself**, focusing on the threat agents, security controls, and business impacts in your enterprise.* *– [Open Web Application Security Project (OWASP)](https://wiki.owasp.org/index.php/Top_10_2013-Top_10)*
+
+## [](#_owasp_top_10_security_risks)OWASP Top 10 security risks
+
+[OWASP Top 10](https://owasp.org/Top10/) is "a standard awareness document for developers and web application security. It represents a broad consensus about the most critical security risks to web applications." ([owasp.org](https://owasp.org/www-project-top-ten/))
+
+### [](#_owasp_top_10_and_magnolia)OWASP Top 10 and Magnolia
+
+While there is no certificate that could certify the Magnolia platform as secure, OWASP Top 10 is a very reasonable checklist.
+
+> **Tip:** It is a good idea to always validate your project implementation against the current OWASP Top 10 list.
+
+## [](#_how_to_report_vulnerabilities)How to report vulnerabilities
+
+If you find a security vulnerability in Magnolia, please **report it privately** in one of the following ways:
+
+-   Create a [SUPPORT issue](https://jira.magnolia-cms.com/secure/CreateIssue!default.jspa?pid=10210).
+
+-   Send an email to [security@magnolia-cms.com](mailto:security@magnolia-cms.com).
+
+
+Our goal is to keep the vulnerability private. Issues in the SUPPORT project are private to Magnolia and the issue reporter.
+
+## [](#_how_we_react_to_vulnerability_reports)How we react to vulnerability reports
+
+1.  Magnolia evaluates whether the vulnerability is real or a case of misconfiguration. If real, we commit to provide a fix in 30 days.
+
+2.  Magnolia creates separate Jira issues for the fix. These issues are visible to Magnolia only.
+
+3.  When a fix is available, Magnolia informs the reporter through the same channel where the issue was reported and provides the fix.
+
+4.  Magnolia makes the fix available to all users in the next maintenance release. We make a short statement about the fix in release notes but give no details since unpatched installations are vulnerable.
+
+5.  Jira issues for the fix remain private for 90 days after the fix is released. This protects users by preventing anyone from exploiting the vulnerability.
+
+
+## [](#_how_to_learn_about_security_fixes)How to learn about security fixes
+
+-   Read the [release notes](../../../Releases/) carefully. Security fixes are announced in release notes.
+
+-   Join the [Magnolia Announcements Mailing List](https://groups.google.com/a/magnolia-cms.com/g/announce-list) to get email notifications.
+
+-   Keep your instances up to date.
+
+
+## [](#_backporting_of_security_fixes)Backporting of security fixes
+
+Security fixes are implemented in all releases currently in [Active and Limited support](../../../../support/release-support-and-life-cycle/#_actively_supported_product_updates).
+
+Maintenance releases for the current major version are available for the Community Edition as well as DX Core.
+
+Maintenance releases for previous major versions of Magnolia are available to DX Core users only (those who have an active subscription to DX Core).
+
+Related topics
+
+-   [Security best practices](../Security-best-practices/)

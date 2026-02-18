@@ -1,0 +1,142 @@
+---
+title: "Installing On Premises Monitoring"
+url: https://docs.magnolia-cms.com/instrumentation/2.0/monitoring/installing-on-premises-monitoring/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > Installing On Premises Monitoring
+---
+
+# Installing On Premises Monitoring
+
+When setting up on-premises monitoring, you will need to:
+
+-   Add the instrumentation module to the Magnolia web app
+
+-   Add the instrumentation Configuration module to the Magnolia web app
+
+-   Install and configure a Prometheus server
+
+-   Install and configure a Grafana server
+
+-   Add the instrumentation dashboards to the Grafana server
+
+
+> **Note:** Each Magnolia that will be monitored must have the Instrumentation module installed and the Instrumentation configuration module installed or manually configured instrumentation probes set up.
+
+> **Important:** For on premise monitoring, a Prometheus server must be installed and configured, as well as a Grafana server. The Prometheus and Grafana servers can be run on the same machine running Magnolia (though this is not recommended, better have a separate machine for monitoring) or separate machines.
+
+Accessing the Instrumentation modules
+
+The instrumentation modules reside in the Incubator repository on Magnolia’s Nexus. See [Accessing the instrumentation modules](../../accessing-the-instrumentation-modules/) for more on setting up Maven.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.services</groupId>
+  <artifactId>instrumentation</artifactId>
+  <version>2.4</version>
+</dependency>
+```
+
+## [](#_adjusting_the_instrumentation_configuration_module)Adjusting the Instrumentation Configuration module
+
+The Instrumentation Configuration module contains both bootstrap content and sample bootstrap content.
+
+Automatically bootstrapped configuration:
+
+-   Probes configured through module configuration (i.e. probes configured at /modules/instrumentation/config)
+
+-   Configuration for the cloud monitoring solution (i.e. service configuration at /modules/instrumentation/config/csPushConfig)
+
+-   Configuration for the Prometheus metrics servlet (i.e. /server/filters/servlets/MetricsServlet)
+
+
+> **Important:** The Prometheus metrics servlet must be configured for the on premise monitoring solution! If not present, Prometheus cannot collect measurements from Magnolia!
+
+> **Note:** If you are using the cloud monitoring solution, you can remove the Prometheus metrics servlet at /server/filters/servlets/MetricsServlet.
+
+Sample bootstrapped configuration:
+
+-   Filter probes
+
+-   Rendering probes
+
+-   Cache probes
+
+-   assorted other probes (activation command probes, probes run as a scheduled jobs, etc.)
+
+
+> **Important:** If the Magnolia instances is does not automatically bootstrap sample content, you’ll have to manually import the probe configurations yourself.The filter, rendering and cache probes are all used by the standard Instrumentation Dashboards. If they aren’t configured, some of the instrumentation dashboards will not be displayed correctly.The filter probes created from sample bootstrapped content will be added at the end of the filter chain, they should be moved to the beginning or near the beginning of the filter chain:/server/filters/totalRequests/server/filters/activeRequests/server/filters/measureFilterChain/server/filters/filterChainTimeDetail/server/filters/servletContextThe above filters are meant to measure the total execution time of the filter chain, if they are not placed the very beginning of the filter chain, they should be as near to the beginning as possible.
+
+## [](#_prometheus)Prometheus
+
+Prometheus may, or may not, be available as bundled installation package for your operating system.
+
+You can also install it [directly](https://prometheus.io/docs/introduction/first_steps/).
+
+### [](#_configuring_prometheus)Configuring Prometheus
+
+Once Prometheus is installed, you must configure it to collect measurements from monitored Magnolia instances.
+
+A sample configuration for monitoring a Magnolia instance could look something like the sample below.
+
+The below configuration will monitor a Magnolia instance:
+
+Monitor Magnolia instance
+
+```yaml
+# monitored Magnolia instance
+- job_name: '<job name>'
+  # Override the global default and scrape targets from this job every 5 seconds.
+  scrape_interval: 5s (1)
+  metrics_path: /.monitoring/scrape (2)
+  basic_auth: (3)
+    username: superuser
+    password: superuser
+  static_configs: (4)
+    - targets: ['localhost:8080']
+```
+
+|     |     |
+| --- | --- |
+| **1** | `scrape_interval` overrides the default global scrape interval defined for the Prometheus server. |
+| **2** | Expects the Prometheus metrics servlet to be installed at /.monitoring/scrape (note: this is the location as installed by the Instrumentation Configuration module). |
+| **3** | The Prometheus metrics servlet is protected and expecs basic authentication credentials, the configuration uses superuser for the credentials. |
+| **4** | Located at localhost on port `8080`, as defined by the static\_configs element. |
+
+> **Important:** The standard Magnolia dashboards use the Prometheus job name to distinguish between different monitored Magnolia instances. You can configure multiple Magnolia servers to be monitored with the static_configs element but you will have to change the dashboards to use the instance label to select different Magnolia servers in the dashboards. The job_name configuration can be more human readable than the static_config/targets configuration for identifying a Magnolia instance.
+
+## [](#_grafana)Grafana
+
+Installing Grafana depends on your host. For instructions on installing Grafana, see:
+
+-   [Ubuntu/Debian](http://docs.grafana.org/installation/debian/)
+
+-   [Centos/Redhat](http://docs.grafana.org/installation/rpm/)
+
+-   [Windows](http://docs.grafana.org/installation/windows/)
+
+-   [MacOS](http://docs.grafana.org/installation/mac/)
+
+-   [Docker](http://docs.grafana.org/installation/docker/)
+
+-   [Source](http://docs.grafana.org/project/building_from_source/)
+
+
+### [](#_configuring_grafana)Configuring Grafana
+
+Once Grafana has been installed, you need to set up a data source for your Prometheus server.
+
+You can create a data source by:
+
+-   [Provisioning](http://docs.grafana.org/administration/provisioning/)
+
+-   [The web interface](http://docs.grafana.org/features/datasources/prometheus/)
+
+-   [The data source API](http://docs.grafana.org/http_api/data_source/)
+
+
+> **Tip:** You should make the Prometheus data source the default data source to work with the instrumentation dashboards.

@@ -1,0 +1,333 @@
+---
+title: "Go Live guide"
+url: https://docs.magnolia-cms.com/paas/support/go-live/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Best Practices > Go Live Guide
+---
+
+# Go Live guide
+
+Welcome to the DX Cloud Go Live Checklist.
+
+This guide is here to ensure a smooth and successful deployment of your project into production. Each point in this checklist addresses critical aspects that need to be reviewed and confirmed before the "Go Live" date.
+
+From infrastructure readiness to automation, we walk you through the essential steps, providing clarity on where to assess each item and noting automation opportunities for streamlined processes.
+
+Pre Go-Live Check
+
+You need to submit a Pre Go-Live Check (PGLC) request at least **5 business days** in advance for standard projects. More complex setups may require additional time. While we strive to accommodate your preferred dates, availability is not guaranteed.
+
+By following this checklist, you’ll be fully prepared to confidently deploy your project. Be sure you complete this checklist before requesting a PGLC.
+
+[Request Pre Go-Live Check](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13/group/39/create/156)
+
+## [](#_go_live_dedicated_assistance_hypercare)Go-Live Dedicated Assistance (Hypercare)
+
+Go-live periods can be high-stakes moments for your team. If you’d like dedicated support beyond your standard SLA coverage, we offer **Go-Live Dedicated Assistance (Hypercare)** as an optional paid service.
+
+This service provides prioritized availability from our team before, during, and after your go-live window, giving you direct access to expertise when timing matters most.
+
+### [](#_whats_included)What’s included
+
+-   Dedicated support availability during your scheduled go-live window
+
+-   Prioritized response during the reserved period
+
+-   Coverage for a few days or weeks post go-live, depending on your needs
+
+
+### [](#_how_to_request)How to request
+
+Contact your [Customer Success representative](mailto:professional-services@magnolia-cms.com) or submit a request through the [Helpdesk](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13).
+
+A minimum of **3 business days** notice is required. Requests with shorter notice are subject to availability and may incur additional fees.
+
+> **Tip:** Go-Live Dedicated Assistance (Hypercare) is separate from your existing SLA. Issues outside the reserved window are handled under your standard support terms.
+
+## [](#_standard_project_checklist)Standard project checklist
+
+There are several items that need to checked before you go live. Completing this list does not necessarily mean going live will be entirely successful, but it helps minimize potential deployment issues.
+
+The checklist is interactive, so you can use this page to tick each item off your list as you go if so desired.
+
+### [](#_administration)Administration
+
+-    You have established contacts for emergency site situations including primary technical contacts for your project and this has been communicated to the DX Cloud team.
+
+-    The `superuser` credentials such as the secret and password have been updated for production including for both Public and Author instances.
+
+
+### [](#_architecture)Architecture
+
+-    Your Magnolia pods and database pods for PostgreSQL are on the same node.
+
+    For more on this topic, see [Kubernetes fundamentals](../../kubernetes/).
+
+-    Your Magnolia Public instances are running in different availability zones. This helps to minimize any potential down time for your site.
+
+    For more on this topic, see [Multicluster environments](../../multicluster/).
+
+
+### [](#_database_and_memory)Database and memory
+
+-    You use PostgreSQL `15` or later.
+
+-    Database persistent volume for Magnolia is less than 50%. If there is an issue with persistent volume, see [Database persistent volume is almost full](../../troubleshooting/alerts/CustomerDatabasePersistentVolumeAlmostFull/).
+
+-    You have at least **2** Magnolia public instances.
+
+    For more on this topic, see [Architecture: Deployment options](../../architecture/#_deployment_options).
+
+-    You have a minimum **6gb** JVM Max Heap available for public instances.
+
+    > **Warning:** Having less than 6gb JVM Max heap can cause issues like a container being OOMKilled.
+
+-    You have at least **4gb** available to public instances. (excluding Max Heap)
+
+-    You have a minimum **8gb** JVM Max Heap available for author instances.
+
+    > **Warning:** Having less than 8gb JVM Max heap can cause issues like a container being OOMKilled.
+
+-    You have at least **4gb** available to author instances. (excluding Max Heap)
+
+-    Your Magnolia instances do not have a CPU limit set.
+
+    For more on this topic, see [`CPU` requests and limits on DX Cloud](../../best-practices/cpu_resources/).
+
+-    Your memory request and memory limit are the same.
+
+    Why is this important?
+
+    If you set a lower memory request than a memory limit, Kubernetes might run your Magnolia instance or Magnolia frontend instance on a cluster node that has enough memory to meet the memory request but not have enough memory to provide all memory of the memory limit.
+
+    > **Tip:** For Magnolia pods, you can set the memory request and limit used for the Magnolia author and public through the Helm chart values.
+
+
+### [](#_helm)Helm
+
+-    You **do not** use a custom helm chart.
+
+    > **Important:** You must use the offical DX Cloud Helm chart.
+
+-    You use a recent Helm chart version that is applicable to the version of Magnolia you use in our project.
+
+    The latest Helm chart version is `1.17.2`.
+
+
+### [](#_monitoring)Monitoring
+
+-    You have defined the JMX jar and JMX configuration in `CATALINA_OPTS`.
+
+    For more on this topic, see [JMX Monitoring](../../monitoring/jmx-monitoring/).
+
+
+### [](#_networking_and_infrastructure)Networking and infrastructure
+
+-    You **do not** use [JCR clustering](../../faqs/#_does_dx_cloud_support_jcr_clustering).
+
+-    You use the standalone redirects server.
+
+    For more on this topic, see [Networking: Add redirect server](../../cockpit/sections/networking/#_add_redirect_server).
+
+-    If you are using the DX Cloud CDN, check with your DX Cloud contact to ensure we have set up the service. Be sure you are connected to [Fastly](../../configuration/cache/connect-to-fastly/).
+
+-    Ensure the [Web Application Firewall (WAF)](../../security/waf/) is set up and ready. You can contact your DX Cloud representative to be sure of this.
+
+-    Ingresses serving life traffic **must have** Fastly annotations (if using DX Cloud CDN).
+
+-    You **do not** use [snippets](../../faqs/#_snippets) in your `values.yml` file.
+
+    > **Important:** All Ingress updates should go through the values.yml file as per the official Helm chart.
+
+-    Adjust TTLs
+
+    To ensure a smooth transition during go-live, it is important to adjust the TTL (Time to Live) values for the DNS records of the domains being migrated to Magnolia DX Cloud.
+
+    TTL determines how long DNS records are cached by DNS servers and clients. Lowering the TTL ensures faster propagation of DNS changes during initial deployment, minimizing potential disruptions.
+
+    After a successful Go-live, the TTL can be increased to reduce the load on DNS servers.
+
+    1.  Check the current TTL settings for all domains.
+
+    2.  Reduce the TTL to a lower value, such as `300` seconds (5 minutes), at least 2 \* current TTL before the go-live date.
+
+        For example: If the current TTL is 24 hours (`86400` seconds), lower the TTL 48 hours before go-live.
+
+    3.  Perform necessary DNS updates (e.g., pointing the domain to Magnolia DX Cloud or to the CDN provider) during the go-live window. With a lower TTL, changes will propagate quickly.
+
+    4.  After confirming a successful go-live, increase the TTL back to its original or a higher value to optimize DNS server performance.
+
+        Example timeline ::
+
+        -   **Current TTL**: 24 hours (`86400` seconds)
+
+        -   **Go-live date**: January 15, 2026
+
+        -   **Action**: Lower TTL to `300` seconds on January 13, 2026 (48 hours before go-live).
+
+
+
+    After completing these steps, the domain transition to DX Cloud will be seamless and efficient.
+
+
+## [](#_configure_ip_whitelisting_with_fastly_for_go_live)Configure IP Whitelisting with Fastly for Go-Live
+
+This section explains how to configure IP whitelisting with Fastly to secure access to DX Cloud instances. IP whitelisting ensures that only authorized IP addresses can access your Magnolia cluster, enhancing security for both public and internal use cases.
+
+-   **[Public instances](#_configure_public_instances)** (e.g., `example-domain.com`): Customer-facing sites restricted to specific client IP addresses via Fastly.
+
+-   **[Author instances](#_configure_author_instances)** (e.g., `author.example-domain.com`): Editorial environments restricted to internal or client IP addresses.
+
+
+### [](#_why_switch_domains_and_configure_ip_whitelisting)Why switch domains and configure IP Whitelisting?
+
+At Go-Live, customers switch from temporary or staging domains to production domains to achieve the following:
+
+-   **Branding**: Use your branded domain for public-facing sites, replacing temporary domains like `magnolia-platform.io`.
+
+-   **Security**: Fastly’s Access Control Lists (ACLs) restrict public instance access to authorized client IP addresses, protecting sensitive content. Author instances are limited to internal IPs for editorial security.
+
+-   **Performance**: Fastly’s CDN optimizes content delivery for public instances, requiring DNS to point to Fastly’s edge network.
+
+-   **Environment Isolation**: Distinct domains for author instances segregate editorial access, ensuring only authorized users can manage content.
+
+
+IP whitelisting with Fastly and Kubernetes Ingress ensures that only trusted IP addresses can access your cluster, aligning with security best practices and compliance requirements.
+
+## [](#_configure_public_instances)Configure Public instances
+
+Public instances are customer-facing sites that route traffic through Fastly, with access restricted to specific client IP addresses.
+
+### [](#_prerequisites)Prerequisites
+
+-   Collate a list of static client IP addresses authorized to access the public instance (e.g., office networks, VPNs).
+
+
+> **Tip:** You should also familiarize yourself with Fastly: Working with ACLs and Fastly’s Public IP List
+
+### [](#_steps)Steps
+
+1.  **Prepare Client IPs**:
+
+    1.  Compile a list of static IP addresses (e.g., corporate networks, CI/CD systems) that need access to `example-domain.com`.
+
+
+2.  **Submit HD Ticket for Fastly ACLs**:
+
+    1.  Create a [Helpdesk ticket](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) with the DX Cloud team to add the client IPs to Fastly’s ACLs for `example-domain.com` and configure firewall rules for your environment.
+
+        > **Note:** Do not attempt to configure Ingress annotations for IP whitelisting directly. The DX Cloud team will ensure the correct firewall configuration for your setup.
+
+
+3.  **Update DNS for Go-Live**:
+
+    1.  Configure the DNS to [point to Fastly](../../configuration/cache/connect-to-fastly/).
+
+        Fastly only allows connections from whitelisted client IPs, blocking all other requests.
+
+
+
+### [](#_best_practices)Best practices
+
+-   Use static IPs to prevent access issues.
+
+-   Test ACLs in a staging environment before Go-Live.
+
+-   Monitor Fastly logs for blocked requests.
+
+
+## [](#_configure_author_instances)Configure Author instances
+
+Author instances (e.g., `author.example-domain.com`) are restricted to internal or client IP addresses for editorial use.
+
+### [](#_option_1_use_provided_domain)Option 1: Use provided domain
+
+1.  **Deploy Magnolia Domain**:
+
+    1.  Use the `magnolia-platform.io` domain created via the [Helm chart](../../deployment/helm-values/).
+
+
+2.  **Configure Access**:
+
+    1.  Map the domain to the author service (`prod-magnolia-helm-author-svc`).
+
+
+3.  **Configure IP Whitelisting**:
+
+    1.  Create a [Helpdesk ticket](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) with the DX Cloud team to configure firewall rules for your environment.
+
+        > **Note:** Do not attempt to configure Ingress annotations for IP whitelisting directly. The DX Cloud team will ensure the correct firewall configuration for your setup.
+
+
+4.  **Verify Access**:
+
+    1.  Test access for authorized users via the `magnolia-platform.io` domain.
+
+
+
+### [](#_option_2_use_custom_author_subdomain)Option 2: Use Custom Author subdomain
+
+1.  **Create Subdomain**:
+
+    1.  Define `author.example-domain.com`.
+
+
+2.  **Prepare Client IPs**:
+
+    1.  Compile a list of static IP addresses (e.g., corporate networks, CI/CD systems) that need access to `example-domain.com`.
+
+
+3.  **Submit HD Ticket for Fastly ACLs**:
+
+    1.  Create a [Helpdesk ticket](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) with the DX Cloud team to add the client IPs to Fastly’s ACLs for `example-domain.com` and configure firewall rules for your environment.
+
+        > **Note:** Do not attempt to configure Ingress annotations for IP whitelisting directly. The DX Cloud team will ensure the correct firewall configuration for your setup.
+
+
+4.  **Update DNS for Go-Live**:
+
+    1.  Configure the DNS to [point to Fastly](../../configuration/cache/connect-to-fastly/).
+
+        Fastly only allows connections from whitelisted client IPs, blocking all other requests.
+
+
+
+### [](#_best_practices_2)Best practices
+
+-   Use `magnolia-platform.io` for faster setup.
+
+-   Restrict author access to essential IPs (e.g., editorial networks).
+
+-   Audit Ingress rules regularly.
+
+-   Document DNS changes in your configuration system.
+
+
+### [](#_troubleshooting)Troubleshooting
+
+-   **Access Denied**: Verify Fastly ACLs or Ingress IP rules.
+
+-   **DNS Issues**: Check `CNAME` records with `dig` or `nslookup`.
+
+-   **Ingress Errors**: Review Kubernetes logs.
+
+
+Contact the [DX Cloud Helpdesk](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) if you need support.
+
+## [](#_additional_headless_checks)Additional headless checks
+
+These checks are only if the project is a headless project or contains a headless element. They are in addition to the [standard checks](#_standard_project_checklist).
+
+-    The service type for the frontend is `clusterIp`.
+
+    > **Warning:** A different service type can cause serious infrastructure issues.
+
+-    You have at least **2** instances for your frontend.
+
+
+## [](#_final_checks)Final checks
+
+-    Your project contains only Magnolia, the redirect server, Solr (if applicable), frontend, and database deployments. No other helm deployments are allowed.
+
+-    Check with your DX Cloud technical contact to ensure response time metrics are ready for launch.

@@ -1,0 +1,53 @@
+---
+title: "Release notes for Magnolia CMS 6.3.12"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.12/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.12
+---
+
+# Release notes for Magnolia CMS 6.3.12
+
+[LTS release](../../../../support/) • Delivered on July 22, 2025 • Page updated on July 24, 2025 • Changelog: [19120](https://magnolia-cms.atlassian.net/issues/?filter=19120)
+
+> **Warning:** Do not upgrade to Magnolia 6.3.12 from Magnolia 6.3.8 and earlier.Upgrading to Magnolia 6.3.9, 6.3.10, 6.3.11, or 6.3.12 initiates a Marketing Tags version handler task that may cause instances to become unresponsive if the repository contains a large number of versions. See the Known issues page for more information.The issue has been resolved in the Magnolia 6.3.13 release.
+
+We’ve released **Magnolia 6.3.12** to fix an issue found in Magnolia 6.3.11. This issue, related to ticket [MGNLREST-877](https://magnolia-cms.atlassian.net/browse/MGNLREST-877) (*Introduce JacksonContextResolver to consistent JSON serialization*), caused an unexpected change in the Nodes API, which may have impacted some REST API integrations. For more details, see [Magnolia 6.3.11 known issues](../Release-notes-for-Magnolia-CMS-6.3.11/Magnolia-6.3.11-known-issues/).
+
+The 6.3.12 release reverts the problematic code from MGNLREST-877 to restore stability. All other improvements and updates from 6.3.11 remain unchanged and are detailed in the [Release notes for Magnolia CMS 6.3.11](../Release-notes-for-Magnolia-CMS-6.3.11/).
+
+Thank you for your understanding. Contact our [Support team](../../../../support/) if you need more information.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.12.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.12/magnolia-dx-core-webapp-6.3.12.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.12.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.12/travel-demo-webapp-6.3.12.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.12.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.12/travel-demo-community-webapp-6.3.12.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Community Edition `6.3.12`
+
+-   DX Core `6.3.12`
+
+-   Demo Projects `6.3.12`
+
+-   Magnolia `6.3.12`
+
+-   REST Framework `3.1.3`
+
+-   Third-party library BOM for Extensions `6.3.12`
+
+-   Third-party library BOM `6.3.12`
+
+-   UI `6.3.12`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.

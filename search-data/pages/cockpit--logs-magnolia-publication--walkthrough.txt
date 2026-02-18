@@ -1,0 +1,51 @@
+---
+title: "Magnolia Publication Logs deep dive"
+url: https://docs.magnolia-cms.com/cockpit/logs-magnolia-publication/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# Magnolia Publication Logs deep dive
+
+## [](#_log_chart)Log chart
+
+The histogram visualizes publishing activity over time, showing the distribution of successful and failed publication operations. Click any bar to filter logs to that specific time period.
+
+## [](#_filters)Filters
+
+Use these filter controls to narrow down the publication logs you want to view. You can filter by:
+
+-   **Time range:** Date range picker to specify the period
+
+-   **Infrastructure:** Namespace and pod to isolate specific deployment locations
+
+-   **Component:** Author or Public instances
+
+-   **Content location:** Workspace and path of the published content
+
+-   **User:** Username of the person who initiated the publish action
+
+-   **Subscriber:** Target public instance receiver
+
+-   **Message content:** Free-text search to find logs containing specific keywords or error messages
+
+-   **Performance thresholds:** Publishing size, publishing time, and subscriber response time
+
+-   **Operation type:** Whether the action was an unpublish (deactivation) operation
+
+-   **Transaction status:** Filter by success, committed, or rolled back status
+
+
+Click the reset button to clear all active filters and return to viewing all logs.
+
+## [](#_log_count)Log count
+
+This displays the total number of publication log entries that match your currently applied filters. When logs are available, a download button appears here, allowing you to export the filtered results for further analysis.
+
+## [](#_details_table)Details table
+
+The table shows individual publication events with detailed information about each operation, including timestamp, namespace, pod, component (author or public instance), workspace, content path, username, and target subscriber.
+
+Performance metrics show publishing size (in bytes), publishing time, and subscriber response time (both in milliseconds). Status columns indicate whether the operation was an unpublish action and the transaction outcome: success, committed, or rolled back.
+
+Click any row to open a detailed drawer with the complete publication event information.

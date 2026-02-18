@@ -1,0 +1,47 @@
+---
+title: "Multisite module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Multisite-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Multisite module
+---
+
+# Multisite module
+
+[Content management](../../../use-cases/content-management/) Bundled: DX Core
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MULTISITE](https://magnolia-cms.atlassian.net/browse/MULTISITE) |
+| Maven site | [Multisite](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmultisite%2Fmagnolia-module-multisite%2F4.0.0) |
+| Latest | 4.0.0 |
+| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | Yes |
+
+Multisite support provided by the Multisite module. It allows you to manage multiple websites in a single Magnolia instance. Each site has its own site definition which can apply unique templates, themes, variations, domains and locales to the site. Besides making each site unique, the multisite feature lets you inherit features from another site.
+
+You can use multisite support for microsites, campaigns, events and product launches. A microsite can inherit page templates from the parent site, yet have its own theme and domain. You save time and effort by not having to create new templates. Sites that are localized to the visitor’s language or geographical area can inherit templates and themes from a parent site and add their own locales to support additional languages and country-specific domains.
+
+> **Note:** Site limitationIn DX Core, the number of sites that can be used is defined by the number of sites purchased.In the Community Edition, you can only create and use one site.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.multisite</groupId>
+  <artifactId>magnolia-module-multisite</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+See [how to use Multisite](../../../Developing/Templating/Site-definition/How-to-use-Multisite/).
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.

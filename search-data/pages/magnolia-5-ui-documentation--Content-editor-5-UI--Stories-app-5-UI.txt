@@ -1,0 +1,190 @@
+---
+title: "Stories app - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-editor-5-UI/Stories-app-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content editor - 5 UI > Stories app - 5 UI
+---
+
+# Stories app - 5 UI
+
+> **Note:** This page has been created for the Magnolia 5 UI framework. For the 6 UI framework page, see Stories app instead.
+
+This page describes how to use the Stories app, an example of a custom content editor that authors can use to quickly create and publish flexible content in Magnolia.
+
+Stories app is a feature available only in DX Core.
+
+Use the Stories app to create and edit stories on a Magnolia author instance. Complete the structured outline to give the story a set of key, static properties. Then build up the unstructured body of your story using content blocks you want: images, texts, videos and links. You can save and publish in one click to get your content on your website fast.
+
+Compared to [pages](#6.2@product-docs:ROOT:Authoring/Editing-pages.adoc), stories are ideal for quickly producing free-form content without any page-hierarchy constraints. Stories, with a clear distinction between formatting and content, can then be published to different destinations: from a web page to a mobile app or as an article for an online newspaper.
+
+## [](#_stories)Stories
+
+You create stories in the Stories app.
+
+![Stories app tile](6.2@product-docs:ROOT:6-1-storiesApp-appLauncher-5ui.png) ![Stories app](6.2@product-docs:ROOT:6-1-storiesApp-addStory-5ui.png)
+
+To add a new story, click **Add story**. You can organize your stories by adding folders.
+
+### [](#_demo_stories)Demo stories
+
+If you have the [Magnolia demo modules](#6.2@product-docs:ROOT:Getting-started-with-Magnolia/Demo.adoc) installed, the Stories app contains some sample blogposts to show what you can do with the Stories app. Without the demo modules, the Stories app does not contain any content by default.
+
+In the demo, the Stories app has been [decorated](#6.2@product-docs:ROOT:Developing/Definition-decoration.adoc) to extend the default functionality described in this page. The customization of the Stories app introduces new blocks, changed outline properties, sample content and templates for rendering the content.
+
+![Stories app UI](6.2@product-docs:ROOT:6-1-storiesApp-list-5ui.png) ![Adding a story to the Stories app](6.2@product-docs:ROOT:6-1-storiesApp-losing-5ui.png)
+
+![Stories homepage published](6.2@product-docs:ROOT:demo-stories-home-5ui.png) ![Published story](6.2@product-docs:ROOT:demo-stories-open-swiss-5ui.png)
+
+## [](#_outline)Outline
+
+When you create a new story, it provides title and lead text fields as well as several collapsible multi-field sections where you can fill in some key properties.
+
+![Creating a story](6.2@product-docs:ROOT:6-1-storiesApp-addNewStoryDialog-5ui.png)
+
+By default, the outline consists of the following fields and collapsible sections:
+
+-   **Title**\* - The title of the story.
+
+-   **Lead text**\* - The lead text for the story.
+
+-   **Lead visual** - Collapsible section where you can select the **Image, Video** or **Embed** visual option:
+
+    -   For the **Image** option, you can select an asset from the [Assets chooser](#6.2@product-docs:ROOT:Features/Digital-asset-management.adoc) dialog and add **Alt text**.
+
+    -   For the **Video** option, you can select a video asset from the [Assets chooser](#6.2@product-docs:ROOT:Features/Digital-asset-management.adoc) dialog and add another asset as an **Alternate image**.
+
+    -   For the **Embed** option, you can embed **HTML code** and add an asset as an **Alternate image**.
+
+    -   In all cases, you can select a **Caption** and **Credits**.
+
+
+-   **Author** - Collapsible section where you can add:
+
+    -   **Author name**
+
+    -   **Author profile image** with [Assets chooser](#6.2@product-docs:ROOT:Features/Digital-asset-management.adoc).
+
+    -   **Author short bio** - A text field with a maximum of 300 characters.
+
+    -   **Author lives in** - For the location of the author.
+
+
+-   **Related content** - Collapsible section where you can add a list of related stories.
+
+-   **Dates & url** - Collapsible section where you can add:
+
+    -   **Story created on**\*
+
+    -   **Story updated on**
+
+    -   **URL slug** - Used as the name of the story and in the URL. If you leave this field empty, the URL slug is automatically generated from the story’s **Title** when you first save the story.
+
+
+
+Mandatory fields are indicated by an asterisk.
+
+## [](#_blocks)Blocks
+
+Once you have completed the outline, you can add, reorder and delete content blocks to suit your requirements.
+
+> **Tip:** See the shortcuts below to work even faster.
+
+Magnolia provides the following block types out-of-the-box:
+
+-   Text
+
+-   Image
+
+-   Video
+
+-   Content from another website
+
+-   Date (provided by the [Travel Demo](#6.2@product-docs:ROOT:Getting-started-with-Magnolia/Demo.adoc))
+
+-   Tour (provided by the [Travel Demo](#6.2@product-docs:ROOT:Getting-started-with-Magnolia/Demo.adoc))
+
+
+To add blocks to your story, click the plus icon in your story to expand the **Block chooser** menu and select the type of blocks you want.
+
+![Block chooser menu](6.2@product-docs:ROOT:6-1-storiesApp-blockChooserToolbar-rbox-5ui.png)
+
+The **… Others** option at the bottom of the menu opens the **Block chooser** dialog.
+
+The types of block available may vary depending on what your development team has configured.
+
+To delete a block, click the trash icon to the right of the block or use the backspace [shortcut](#_shortcuts).
+
+### [](#_text_blocks)Text blocks
+
+Add text blocks to write paragraphs or headings. Each paragraph or heading must be a separate text block. You cannot use line breaks within a block. If you press enter while typing, a new text block is created.
+
+You can format the text and insert or remove links to external content or to Magnolia items using the formatting bar displayed when you are editing a text block.
+
+![Text block](6.2@product-docs:ROOT:6-1-storiesApp-textBlockToolbar.png)
+
+If you apply a header style to text in a block, the entire block becomes a heading.
+
+If you paste text from another source into a text block, all formatting is removed. If you paste several paragraphs at the same time, multiple corresponding blocks are created.
+
+> **Tip:** When you are typing in a text block, press Enter to add a new text box.
+
+If you insert links in a text block:
+
+-   Use the ![Link icon](6.2@product-docs:ROOT:external-link-icon.gif) external link icon to link to external URLs or emails.
+
+-   Use the ![Internal link icon](6.2@product-docs:ROOT:internal-link-icon.gif) internal link icon to link to content in another Magnolia app. By default, you can link to content in the [Assets](#6.2@product-docs:ROOT:Apps/List-of-apps/Assets-app/Magnolia-Assets-subapp.adoc) and [Pages](#6.2@product-docs:ROOT:Apps/List-of-apps/Pages-app.adoc) apps from the Stories app.
+    ![Linking a story to Assets or Pages](6.2@product-docs:ROOT:6-1-storiesApp-internalLink-5ui.png)
+
+
+The list of apps with content you can link to may vary depending on what your development team has configured.
+
+### [](#_image_blocks_and_video_blocks)Image blocks and video blocks
+
+Add image or video blocks to select an existing asset or upload a new one. Magnolia uses basic [mtk components](#6.2@product-docs:ROOT:Developing/Templating/Templates-in-MTK.adoc) to embed images and videos in your stories.
+
+Click **browse** to open the [Assets chooser](#6.2@product-docs:ROOT:Features/Digital-asset-management.adoc) dialog and select an asset for your story or upload a new one. You can also add image-related or video-related metadata.
+
+Image block:
+
+![Image block](6.2@product-docs:ROOT:6-1-storiesApp-addImageBlock-5ui.png)
+
+Video block:
+
+![Video block](6.2@product-docs:ROOT:6-1-storiesApp-addVideoBlock-5ui.png)
+
+### [](#_content_from_another_website_blocks)Content from another website blocks
+
+Use content-from-another-website blocks to embed content from another external website.
+
+![Embedded content](6.2@product-docs:ROOT:6-1-storiesApp-embeddedContent-empty-5ui.png)
+
+This block uses link unfurling: it scans the URL you enter for metadata and provides a preview in the story. For example, this YouTube link displays a thumbnail preview, title and lead text:
+
+![Youtube thumbnail video preview](6.2@product-docs:ROOT:6-1-storiesApp-embeddedContent-withURL-5ui.png)
+
+The preview displayed for external links depends on the metadata the site owner embedded in their web page header.
+
+## [](#_publishing_stories)Publishing stories
+
+When you have finished writing your story, you can directly click **Save and publish** at the bottom of the story. Alternatively, you can select a story in the workbench and click **Publish**.
+
+> **Note:** You must publish any assets you use in your stories separately.
+
+The Stories app does not provide any default page or component templates to render the stories. The [templates](#6.2@product-docs:ROOT:Developing/Templating.adoc) to render the stories must be configured by your development team. The templates provided by the [`article-editor`](#6.2@product-docs:ROOT:Modules/List-of-modules/Content-Editor-module.adoc) module may be used and adapted for this purpose. You can see an example of published stories in the Magnolia [demo](#6.2@product-docs:ROOT:Getting-started-with-Magnolia/Demo.adoc).
+
+## [](#_shortcuts)Shortcuts
+
+The Stories app supports several shortcuts to make editing more user-friendly. The shortcuts vary depending on if you are editing a block (edit mode) or not (select mode).
+
+Unresolved include directive in modules/ROOT/pages/Content-editor-5-UI/Stories-app-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_stories-app-shortcuts-5ui.adoc\[\]
+
+## [](#_multilingual_content)Multilingual content
+
+The Stories app doesn’t yet support multi-language content.
+
+Related topics
+
+-   [Content editor](#6.2@product-docs:ROOT:Features/Content-authoring/Content-editor.adoc)
+
+-   [Content Editor module](#6.2@product-docs:ROOT:Modules/List-of-modules/Content-Editor-module.adoc)

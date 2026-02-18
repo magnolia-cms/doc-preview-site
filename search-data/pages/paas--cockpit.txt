@@ -1,0 +1,85 @@
+---
+title: "Manage DX Cloud"
+url: https://docs.magnolia-cms.com/paas/cockpit/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Manage
+---
+
+# Manage DX Cloud
+
+The **DX Cloud Cockpit** is the control center for your Magnolia deployment. From the Cockpit, you can manage different aspects of your deployment.
+
+What can you do from the Cockpit?
+
+All users
+
+-   Use and configure your whole DX Cloud project with [Cockpit sections](sections/).
+
+-   Manage your own [user profile](users/).
+
+
+Administrators
+
+-   Manage your [subscription’s users](sections/admin/) directly from the Cockpit.
+
+
+## [](#_alerts)Alerts
+
+DX Cloud alerts provide a closer look at the status of your cluster(s). If there is an active alert, you’ll see a notification in the top of your Cockpit.
+
+![topbar alerts](_images/alerts/topbar_alerts.jpg)
+
+There are three categories of alerts:
+
+-   [Active alerts](#active-alerts)
+
+-   [Pending alerts](#pending-alerts)
+
+-   [Inactive alerts](#inactive-alerts)
+
+
+### [](#_select_desired_cluster)Select desired cluster
+
+Select your desired cluster from the dropdown menu at the top of the Cockpit.
+
+![select cluster id](_images/select-cluster-id.jpg)
+
+### [](#active-alerts)Active alerts
+
+As it sounds, active alerts are those alerts that are currently active for your cluster and should be seen to.
+
+![active alerts](_images/alerts/active-alerts.jpg)
+
+### [](#pending-alerts)Pending alerts
+
+Pending alerts means that at least one time series returned by the evaluation engine is *Pending*.
+
+![pending alerts](_images/alerts/pending-alerts.jpg)
+
+### [](#inactive-alerts)Inactive alerts
+
+Inactive alerts are alerts that have already occurred. This is more for information purposes.
+
+![inactive alerts](_images/alerts/inactive-alerts.jpg)
+
+### [](#_alerts_types)Alerts types
+
+The following are the current alerts for DX Cloud.
+
+| Alert | Description |
+| --- | --- |
+| `[CustomerMagnoliaContainerOomKilled](../troubleshooting/alerts/CustomerMagnoliaContainerOomKilled/)` | Magnolia container has been `OOMKilled` at least once in the last `10` minutes. |
+| `[CustomerMagnoliaDown](../troubleshooting/alerts/CustomerMagnoliaDown/)` | Magnolia instance has not been running for at least the last `30` minutes. |
+| `CustomerMagnoliaServiceErrors` | Magnolia service has application errors (`503`) for the last `5` minutes. |
+| `[CustomerMagnoliaSlowResponse](../troubleshooting/alerts/CustomerMagnoliaSlowResponse/)` | Magnolia author instance average response time for **90%** of requests is more than *2 seconds* for the last `15` minutes.<br><br>This also covers `CustomerMagnoliaPublicSlowResponse`.<br><br>Magnolia public instance average response time for **90%** of requests is more than *800 milliseconds* for the last `15` minutes |
+| `[CustomerClusterHighMemoryPressure](../troubleshooting/alerts/CustomerClusterHighMemoryPressure/)` | The node in a customer cluster is under heavy memory pressure. The available memory is under **5%** and there is a high rate of major page faults. |
+| `[CustomerClusterFileSystemAlmostFull](../troubleshooting/alerts/CustomerClusterFileSystemAlmostFull/)` | The filesystem on a <customer> cluster has less than **1%** space available. |
+| `[CustomerClusterFileSystemFillingUp](../troubleshooting/alerts/CustomerClusterFileSystemFillingUp/)` | The filesystem on a customer cluster has less than **30%** space available and is projected to be full within `8` hours. |
+| `[CustomerDatabasePersistentVolumeFillingUp](../troubleshooting/alerts/CustomerDatabasePersistentVolumeFillingUp/)` | A database persistent volume used by Magnolia on a customer cluster has less than **1%** space available. *You may not be able to successfully add or publish content to the Magnolia instance.* |
+| `[CustomerDatabasePersistentVolumeAlmostFull](../troubleshooting/alerts/CustomerDatabasePersistentVolumeAlmostFull/)` | A Magnolia home persistent volume on a <customer cluster> has less than 10% space available. *You should try removing search indexes on the affected persistent volume to free up space.* |
+| `[CustomerCertificateExpiring](../troubleshooting/alerts/CustomerCertificateExpiring/)` | The certificate for a host/ingress on a customer cluster is expiring in `14` days. |
+| `[CustomerTomcatHighLoad](../troubleshooting/alerts/CustomerTomcatHighLoad/)` | Tomcat is using more than **20%** of its thread pool for the last `10` minutes. |
+| `[CustomerMagnoliaCrashLooping](../troubleshooting/alerts/CustomerMagnoliaCrashLooping/)` | Magnolia instance is being restarted frequently by Kubernetes. |
+| `[CustomerBackupCentralDown](../troubleshooting/alerts/CustomerBackupCentralDown/)` | The central backup server in your cluster is not running or not responding for at least `1` hour. *Backups may not be saved.* |
+| `[CustomerElevatedServiceErrors](../troubleshooting/alerts/CustomerElevatedServiceErrors/)` | A service running on your production cluster is returning errors (5xx) for more than 10% of requests for the last 10 minutes. |

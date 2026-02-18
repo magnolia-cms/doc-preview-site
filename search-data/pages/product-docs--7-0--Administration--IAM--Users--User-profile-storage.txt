@@ -1,0 +1,75 @@
+---
+title: "User profile storage"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/IAM/Users/User-profile-storage/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Identity and access management (IAM) > Users > User profile storage
+---
+
+# User profile storage
+
+In addition to a username, Magnolia stores various user profile preferences. User profile information for JCR users is stored in different workspaces that may only be accessed by the `superuser`.
+
+JCR-based users have the following information stored:
+
+-   In the `users` workspace:
+
+    -   Full name
+
+    -   Email address
+
+
+-   In the `profiles` workspace:
+
+    -   Favorite apps
+
+    -   Completed intro status (Magnolia app launcher tour)
+
+    -   Usage metrics acknowledgement status
+
+    -   Last login
+
+    -   Previous login
+
+    -   Time zone
+
+    -   Language
+
+
+
+Unresolved include directive in modules/ROOT/pages/Administration/IAM/Users/User-profile-storage.adoc - include::magnolia-sso:ROOT:partial$r\_sso-user-info-storage.adoc\[\]
+
+## [](#_paths_to_user_profiles_in_the_profiles_workspace)Paths to user profiles in the `profiles` workspace
+
+The `profiles` workspace is hierarchically structured and encrypted to avoid performance issues when storing many user profiles.
+
+![Profiles workspace open in JCR browser](../../../../_images/JCR-browser-profiles-workspace.png)
+
+> **Note:** User profiles are created automatically. We don’t recommend bootstrapping profiles because the structure is created automatically and could change in future.
+
+If you need to generate the path to a given user in the profiles workspace, you can use this groovy script:
+
+Retrieves the path to `superuser` in the `profiles` workspace
+
+```groovy
+import info.magnolia.cms.security.userprofile.jcr.HierarchicalProfilePathResolver;
+import info.magnolia.cms.security.SecuritySupport;
+
+String userName = "superuser" (1)
+
+new HierarchicalProfilePathResolver().getProfilePath(SecuritySupport.Factory.getInstance().getUserManager().getUser(userName));
+```
+
+|     |     |
+| --- | --- |
+| **1** | The user’s ID or username, in this example, `superuser`. |
+
+This script returns something similar to:
+
+```groovy
+====> /jcr/2a/67/00/82/NTFhZTMzNzktNjdjZi00OTk0LTllMDUtZjk3Y2I4YmMzZTRh
+```
+
+## [](#_changing_user_profiles_programmatically)Changing user profiles programmatically
+
+To access user profile preferences, to set favorite apps for users for example, inject the info.magnolia.cms.security.userprofile.jcr.HierarchicalUserProfileManager class. Retrieve `UserPreferencesProfile` with `HierarchicalUserProfileManager#getUserProfile` then change the values and store them back with the `HierarchicalUserProfileManager#saveUserProfile` method.

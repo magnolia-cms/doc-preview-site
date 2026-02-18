@@ -1,0 +1,161 @@
+---
+title: "Release notes for Magnolia CMS 6.3.8"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.8/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.8
+---
+
+# Release notes for Magnolia CMS 6.3.8
+
+[LTS release](../../../../support/) • Delivered on April 28, 2025 • Page updated on May 5, 2025 • Changelog: [17305](https://magnolia-cms.atlassian.net/issues/?filter=17305)
+
+**Magnolia 6.3.8** is a bug-fixing and security-focused release, introducing key enhancements for performance and efficiency. Notable updates include support for Elliptic Curve Cryptography (ECC) to sign publication requests and the new `canSkipProperty` and `excludeProperty` indexing rules, which significantly optimize indexing.
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.8/magnolia-dx-core-webapp-6.3.8.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.8/travel-demo-webapp-6.3.8.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.8/travel-demo-community-webapp-6.3.8.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+
+
+## [](#_breaking_changes)Breaking changes
+
+### [](#_restricted_access_to_component_variants_on_public_instances)Restricted access to component variants on public instances
+
+Two default voters prevent direct rendering of `mgnl:variant` nodes via the URL. See [restricting node type rendering](../../Administration/Architecture/Request-processing-and-filters/Filters/#_restricting_node_type_rendering).
+
+-   [MGNLPN-831](https://magnolia-cms.atlassian.net/browse/MGNLPN-831)
+
+
+## [](#_improvements)Improvements
+
+### [](#_new_signature_mechanism_for_publication_tasks)New signature mechanism for publication tasks
+
+You can now configure Elliptic Curve Cryptography (ECC) to sign publication requests. Due to ECC’s shorter key length, it is more performant than RSA signing. With the addition of this signature mechanism, it’s also possible to use cipher algorithms other than RSA for [data encryption](../../Administration/Architecture/Configuration-management/#_defining_properties).
+
+> **Note:** ECC signature was not yet supported on Magnolia DX Cloud at the time of release. From May 5, 2025, DX Cloud customers can avail of the ECC feature. See the DX Cloud changelog for more details.
+
+-   [EEPUBLISH-75](https://magnolia-cms.atlassian.net/browse/EEPUBLISH-75)
+
+-   [PUBLISHING-381](https://magnolia-cms.atlassian.net/browse/PUBLISHING-381)
+
+-   [PUBLISHING-382](https://magnolia-cms.atlassian.net/browse/PUBLISHING-382)
+
+
+For more, see [How to change the signature algorithm for publication tasks](../../Administration/Security/Activation-security/Activation-keys/#_how_to_change_the_signature_algorithm_for_publication_tasks).
+
+### [](#_new_canskipproperty_and_excludeproperty_indexing_rules)New `canSkipProperty` and `excludeProperty` indexing rules
+
+The `canSkipProperty` and `excludeProperty` indexing rules allow fine-grained control over which properties are excluded from indexing, improving performance and storage efficiency.
+
+> **Note:** This is an experimental feature. It’s disabled by default and must be enabled in the magnolia.properties configuration file of the Magnolia instance where you want to apply indexing optimization.magnolia.repositories.jackrabbit.indexing.optimization=trueYou can also set it at the JVM level using the -D flag:-Dmagnolia.repositories.jackrabbit.indexing.optimization=true
+
+For more, see [Skipping properties](../../Administration/Jackrabbit-search/#_skipping_properties).
+
+-   [MAGNOLIA-9632](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9632) Implement a rule to exclude properties from indexing
+
+
+### [](#_other_improvements)Other improvements
+
+-   [MGNLWORKFLOW-524](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW-524) Performance improvements of workflow creation and the `Approve & publish` action
+
+-   [MGNLWORKFLOW-542](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW-542) Performance issue for workflow creation and the Approve & publish action
+
+
+## [](#_bug_fixes)Bug fixes
+
+-   [ADMINCTR-490](https://magnolia-cms.atlassian.net/browse/ADMINCTR-490) Screen is blocked after rejecting a publication request
+
+-   [ADMINCTR-578](https://magnolia-cms.atlassian.net/browse/ADMINCTR-578) Performance issue in the Notifications app with many long messages
+
+-   [MAGNOLIA-9569](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9569) Add sign/verify functionality to `SecurityUtil` with support for the ECC algorithm
+
+-   [MAGNOLIA-9579](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9579) `MgnlVersioningNodeWrapper#remove` triggers JCR session save
+
+-   [MAGNOLIA-9592](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9592) `MgnlPropertySettingSessionWrapper` may trigger re-indexing twice
+
+-   [MGNLCKE-44](https://magnolia-cms.atlassian.net/browse/MGNLCKE-44) Pasted Google Docs content applies bold formatting
+
+-   [MGNLUI-9061](https://magnolia-cms.atlassian.net/browse/MGNLUI-9061) `JcrMultiLinkField` doesn’t open `multiChooser` correctly
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MGNLTOMCAT-53](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-53) Update `org.apache.tomcat:tomcat` to `9.0.104`
+
+-   **Magnolia CLI version 4 reached end-of-life (EOL)** on April 16, 2025 and will receive no further updates, including security fixes.
+
+    Use [CLI v5](#magnolia-cli:ROOT:getting-started/index.adoc), which was released on October 16, 2024 and is fully supported. Version 5 is a plugin-based CLI designed for developers seeking modularity and the ability to extend functionalities through custom CLI commands.
+
+
+## [](#_third_party_library_updates)Third-party library updates
+
+This release comes with third-party library updates, see the [Magnolia Third-party library BOM 6.3.8](https://gitlab.magnolia-platform.com/pd/build/boms/-/blob/magnolia-bom-6.3.8/pom.xml?ref_type=tags).
+
+### [](#_notable_updates)Notable updates
+
+-   [BUILD-1347](https://magnolia-cms.atlassian.net/browse/BUILD-1347) Update Apache POI to `5.4.1`
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Admincentral `6.3.5`
+
+-   Barebones Tomcat Bundle `1.2.35`
+
+-   CKEditor 5 Build `1.0.4`
+
+-   Community Edition `6.3.8`
+
+-   DX Core `6.3.8`
+
+-   Demo Projects `6.3.8`
+
+-   Magnolia `6.3.8`
+
+-   Personalization `3.0.4`
+
+-   Publishing Transactional `2.0.2`
+
+-   Publishing `2.0.4`
+
+-   Security `7.0.2`
+
+-   Third-party library BOM for Extensions `6.3.8`
+
+-   Third-party library BOM `6.3.8`
+
+-   UI `6.3.8`
+
+-   Workflow `7.0.3`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.3.7.
+
+-   [AI Accelerator](#ai-accelerator:ROOT:changelog.adoc) `2.2.0`
+
+-   [Celum DAM Connector](#celum-dam-connector:ROOT:index.adoc#_changelog) `3.0.1`
+
+-   [Content Locking](#content-locking:ROOT:index.adoc#_changelog) `3.0.0`
+
+-   [Content Translation Extended](../../../../content-translation-support-ext/#_changelog) `4.1.2`
+
+-   [E-commerce](#ecommerce:ROOT:changelog.adoc) `2.0.3`
+
+-   [Piano Analytics Connector](#magnolia-analytics-piano-connector:ROOT:index.adoc#_changelog) `2.0.1`
+
+-   [VWO AB Testing](../../../../vwo-abtesting/1.0/changelog/) `1.0.1`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.

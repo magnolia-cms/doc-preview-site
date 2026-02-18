@@ -1,0 +1,101 @@
+---
+title: "Pages module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Pages-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Pages module
+---
+
+# Pages module
+
+[Content management](../../../use-cases/content-management/) Bundled: Community edition
+
+| Edition | CE  |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [PAGES](https://magnolia-cms.atlassian.net/browse/PAGES) |
+| Maven site | [Pages](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fpages%2Fmagnolia-pages-parent%2F6.3.7) |
+| Latest | 6.3.7 |
+| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | Yes |
+
+The Pages module installs the [Pages app](../../../Apps/List-of-apps/Pages-app/) that allows editors to editors to edit Web pages. See [Authoring](../../../Authoring/) for more information about using the app.
+
+For [Single-page applications](../../../Features/Single-page-applications/), the `magnolia-spa-rendering` submodule provides a dedicated [SPA template definitions endpoint](../../../Developing/API/SPA-templating-API/#_spa_template_definitions_endpoint), which is used to deliver page, area and component template definitions.
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-app</artifactId>
+  <version>6.3.7</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-app-compatibility</artifactId>
+  <version>6.3.7</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-editor-widget</artifactId>
+  <version>6.3.7</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-site-spa-rendering</artifactId>
+  <version>6.3.7</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-spa-rendering</artifactId>
+  <version>6.3.7</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-jcr-rest</artifactId>
+  <version>6.3.7</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |

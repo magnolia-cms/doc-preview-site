@@ -1,0 +1,33 @@
+---
+title: "Archetype bundling error"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/general/bundling-error/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > Archetype bundling error
+---
+
+# Archetype bundling error
+
+## [](#_symptom)Symptom
+
+Missed the `values.yaml` file or an incorrect Maven `settings.xml` file.
+
+## [](#_next_steps)Next steps
+
+If the `values.yaml` file doesn’t autogenerate with the archetype, use the latest archetype version.
+
+If your project doesn’t compile with the downloaded settings, use use the latest archetype version.
+
+> **Note:** The latest archetype version is 1.10.
+
+```sh
+mvn archetype:generate \
+    -DarchetypeGroupId=info.magnolia.maven.archetypes \
+    -DarchetypeArtifactId=magnolia-dx-core-custom-cloud-archetype \
+    -DarchetypeVersion=1.10 \
+    -DarchetypeRepository=https://nexus.magnolia-cms.com/content/repositories/magnolia.public.releases <1>
+```
+
+|     |     |
+| --- | --- |
+| **1** | You can use the [APAC or US URLs](../../../setup/#_set_up_credentials_in_maven_settings) for optimal performance if desired. `[https://nexus.magnolia-cms.com/](https://nexus.magnolia-cms.com/)` is the default URL, optimized for Europe. |

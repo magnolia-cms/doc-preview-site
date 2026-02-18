@@ -1,0 +1,189 @@
+---
+title: "Security best practices"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Security/Security-best-practices/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Security > Security best practices
+---
+
+# Security best practices
+
+## [](#_best_practices_for_a_secure_magnolia_environment)Best practices for a secure Magnolia environment
+
+-   Create a custom user with superuser role and deactivate the `superuser` user as soon as possible after installation.
+
+-   Keep instances up to date.
+
+-   Store public and author databases in separate physical locations. This minimizes the risk of data loss due to hardware failure or breach. The likelihood of a simultaneous event on both instances is less than that of a single instance in a different location. Failing suitable backup data, the surviving instance can be used to restore the instance on which the loss or corruption occurred. This tip is not Magnolia specific, just good common practice.
+
+-   Delegate (move) the JCR repository and all [folders referenced](../../Architecture/Configuration-management/#_defining_properties) from the `magnolia.properties` files outside the webapp.
+
+-   Run your server with a user account that has only read access to the Magnolia webapp. This ensures that a potential attacker can’t use your write access to create a file with a malicious script for example.
+
+-   Train users to create secure passwords. Thomas Baeddal’s article [Usability of passwords](http://www.baekdal.com/tips/password-security-usability) covers the subject in depth.
+
+-   Ensure that anonymous access to AdminCentral URLs is blocked on author and public instances. This is the default. Edit the `anonymous` role and create an [ACL](../../IAM/Roles-and-access-control-lists/) that denies access to `./magnolia` and `.magnolia/*`.
+
+-   Alternatively, if or when you’re not using IP based filtering for access to AdminCentral on `public`, be sure to [restrict access to `./resources` and `.resources/*`](../../../Developing/Resources/#_restricting_access_to_resources).
+
+-   If feasible, block access to the AdminCentral URIs for all users other than those inside the local network.
+
+
+## [](#_servlet_container_and_web_server_configuration)Servlet container and Web server configuration
+
+-   Set up a SSL or TLS connector for Tomcat for encrypted communication and secure identification. Enable HTTPS for all sites managed in Magnolia. Instructions for [Tomcat](https://tomcat.apache.org/tomcat-9.0-doc/ssl-howto.html) and [Apache Web server](http://httpd.apache.org/docs/current/ssl/ssl_howto.html).
+
+-   Restrict access by IP address or remote host. Instructions for [Tomcat](https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html) and [Apache Web server](http://httpd.apache.org/docs/current/howto/access.html). IP filtering is available also in Magnolia at `/server/IPConfig` where you can configure access based on HTTP method. Apply filtering to single IP addresses or to all IP addresses, indicated by using `*` (asterisk). Regular expressions are not supported.
+
+-   Attach a monitoring tool to your Tomcat instance for a better overview what is happening in the container. Try [Lambda Probe](http://www.lambdaprobe.org/) or other [JMX monitoring](http://wiki.magnolia-cms.com/display/DOCS45/Monitoring#Monitoring-JMXmonitoring) tools.
+
+-   Change the `Server` response header field so it does not tell the version of Apache and operating system you are running. Attackers can use such information to their advantage. [Apache Core: ServerTokens directive](http://httpd.apache.org/docs/current/mod/core.html#servertokens)
+
+-   Disable caching for secure content via no-cache headers. Do this in Magnolia [browser cache policy](../../../Modules/List-of-modules/Cache-modules/Cache-core/#_policy_configuration).
+
+-   Take cache-related [measures that prevent Web Cache Poisoning](../../../Modules/List-of-modules/Cache-modules/Cache-core/#_web_cache_poisoning) attacks.
+
+-   Secure session cookies:
+
+    -   [Enforce HTTPS for JSESSIONID cookies](https://owasp.org/www-community/controls/SecureCookieAttribute) by properly configuring Tomcat for your deployment scenario.
+
+    -   Tomcat automatically sets `httpOnly=true` on session cookies, but the `secure` attribute requires proper configuration based on your setup.
+
+        > **Note:** When Tomcat runs behind a proxy, use RemoteIpValve and ensure your proxy forwards the standard X-Forwarded-* headers. This lets Tomcat reconstruct the original scheme, host and port, so cookies are marked Secure and URLs are generated correctly. If Tomcat isn’t behind a proxy and is handling client requests directly, you typically don’t need the valve. For more details, see Configuring Magnolia behind a proxy.If needed, you can explicitly set cookie attributes in the web.xml file, but keep in mind:Tomcat always marks the session cookie as HttpOnly.Tomcat marks it as Secure when the scheme is HTTPS.Setting these via <session-config> is a workaround for proxy setups without a properly configured RemoteIpValve. The recommended approach is to configure the valve so Tomcat interprets the original request as HTTPS and sets Secure automatically.
+
+
+-   Configure a restrictive Content Security Policy (CSP) for production deployments.
+
+    A restrictive CSP helps protect against Cross-Site Scripting (XSS) and clickjacking attacks by controlling what resources can be loaded on your pages. For more details, see [HTTP headers and security best practices](#_http_headers_and_security_best_practices).
+
+
+## [](#_importing_content)Importing content
+
+To mitigate the risk of security vulnerabilities when importing content, restrict the use of import commands to trusted users. Limiting who can import files offers another layer of protection to your environment. See [Restricting actions](../../../Apps/App-configuration/Action-bar-definition/#_restricting_actions) for more information.
+
+## [](#_resolving_a_lockout)Resolving a lockout
+
+If you accidentally lock out `superuser` and are unable to access AdminCentral:
+
+-   If you still remember the `superuser` password, use the [Rescue App](../../../Modules/List-of-modules/Groovy-module/#_rescue_app).
+
+-   If you forgot the `superuser` password, see [Reset superuser account](https://magnolia-cms.atlassian.net/wiki/spaces/WIKI/pages/839943452/Reset+superuser+account).
+
+-   If you suspect the lockout is due to errors in recent configuration changes, see [Rescue Security Support](https://wiki.magnolia-cms.com/display/WIKI/Rescue+Security+Support).
+
+
+## [](#_http_headers_and_security_best_practices)HTTP headers and security best practices
+
+In this subsection, we provide some ideas how you can improve security through select HTTP headers.
+
+### [](#_content_security_policy_csp_header)Content Security Policy (CSP) header
+
+Content Security Policy governs what a web browser (or a user agent, in general) is allowed to load as part of a page. Setting a CSP header allows the creator of a page to control what other resources might be loaded by the underlying HTML or JavaScript code. This is a powerful way to mitigate many Cross-site scripting (XSS) and clickjacking attacks.
+
+> **Important:** CSP configuration is mandatory for production deployments. You should configure a restrictive CSP on all HTML resources before deploying to production.CSP Level 2 is supported by all major browsers and should be used for production deployments.
+
+You should list, as part of the header value, the origin and all the endpoints required for the page to function. However, if you allow any endpoint that is not within your control, you are opening a hole through which an attack might be staged.
+
+If necessary, we recommend you customize the header to define your own whitelist.
+
+-   Create a new filter manually in the [Configuration app](../../../Apps/List-of-apps/Configuration-app/) and add the `Content-Security-Policy` property under it.
+
+-   An example configuration could look similar to the one below. The path `server/filters/HeaderFilterOne` is only a suggestion. When adding CSP headers, you only need to place the header values into the `Content-Security-Policy` property.
+
+    |     |     |
+    | --- | --- |
+    | 📁 server |     |
+    | 📁 filters |     |
+    | 📁 HeaderFilterOne |     |
+    | ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
+    | ⬩ enabled | true |
+    | 📁 headers |     |
+    | ⬩ Content-Security-Policy | default-src \`self' \`unsafe-inline' \`unsafe-eval' [https://ga-dev-tools.appspot.com](https://ga-dev-tools.appspot.com) [https://apis.google.com](https://apis.google.com) [https://www.google.com](https://www.google.com) [https://content.googleapis.com](https://content.googleapis.com) [https://ajax.googleapis.com](https://ajax.googleapis.com) ; img-src \`self' data:; |
+
+
+> **Note:** The Vaadin framework performs the CSP check explicitly instead of relying on browser to do so as part of policy execution. You can see official Vaadin statement here.
+
+#### [](#_strong_csp_level_2_policy_example)Strong CSP level 2 policy example
+
+For production deployments, use a restrictive CSP Level 2 policy such as the example one below.
+
+```text
+Content-Security-Policy: default-src 'none'; script-src 'nonce-r4nd0mN0nce'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; report-uri https://cspreport.example.com/log
+```
+
+This policy:
+
+-   `default-src 'none'` - Blocks all resources by default
+
+-   `script-src 'nonce-r4nd0mN0nce'` - Only allows scripts with the specified nonce
+
+-   `frame-ancestors 'none'` - Prevents the page from being embedded in frames (clickjacking protection)
+
+-   `base-uri 'self'` - Restricts base element URLs to same origin
+
+-   `form-action 'self'` - Restricts form submissions to same origin
+
+-   `report-uri` - Sends violation reports to the specified endpoint
+
+
+#### [](#_development_configuration)Development configuration
+
+During development, you can enable reporting of violations without blocking content by using the `Content-Security-Policy-Report-Only` header instead of `Content-Security-Policy`. This allows you to test and refine your policy before enforcing it in production.
+
+#### [](#_json_requests_are_processed_when_content_type_is_textplain)JSON requests are processed when Content-Type is text/plain?
+
+This does not present a security vulnerability in Vaadin. Vaadin doesn’t enforce `Content-Type: application/json` because it doesn’t rely on it for security.
+
+Requests with an incorrect `Content-Type` fail if the content is malformed. This ensures compatibility with technologies like Portlets. For more details, see [Advanced Vaadin Topics: Content Type Incorrectly Stated](https://vaadin.com/docs/latest/flow/security/advanced-topics/frequent-issues#content-type-incorrectly-stated).
+
+Vaadin secures requests using CSRF tokens, not `Content-Type` validation.
+
+#### [](#_csp_evaluation_and_testing)CSP evaluation and testing
+
+Use the [CSP Evaluator tool](https://csp-evaluator.withgoogle.com/) to test and validate your Content Security Policy configuration. This tool helps identify potential security issues and provides recommendations for improving your policy.
+
+See also
+
+-   [github.com: Insufficient Content-Type: application/json Validation](https://github.com/vaadin/framework/issues/9492#issuecomment-306716024)
+
+-   [Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
+
+-   [MDN: Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
+
+
+### [](#_strict_transport_security_sts_header)`Strict-Transport-Security` (STS) header
+
+The STS header informs the browser that a page should only be accessed over the HTTPS protocol. The browser will use this knowledge and set all future requests for the same domain to go through HTTPS automatically, thus preventing the extra round trip that might be required otherwise.
+
+Using HTTPS instead of HTTP enables traffic encryption between the page and the client, preventing anyone from intercepting the communication. Using this header is considered more secure than using the 301 redirect on the server when an attempt for the over-the-HTTP access is made.
+
+See also:
+
+-   [HSTS - Web Security Best Practices](https://www.checkbot.io/guide/security/hsts/)
+
+-   [MDN: Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
+
+
+### [](#_x_content_type_options_xcto_header)`X-Content-Type-Options` (XCTO) header
+
+XCTO is a marker header that tells the client that the media types (MIME types) advertized as part of the Content-Type headers should be strictly followed and not changed. This helps avoid *MIME Type Sniffing*.
+
+See also:
+
+-   [MDN: X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options)
+
+
+### [](#_x_frame_options_xfo_header)`X-Frame-Options` (XFO) header
+
+Setting the XFO header tells the browser that the given page is not allowed to be embedded in another page. This header setting helps mitigate stealing content, *clickjacking* (UI redress attack) or allowing malicious sites to pose as the regular ones and fool the users to not check the URLs closely but think instead that they are on a safe page when they are actually not.
+
+See also:
+
+-   [Current best practices to restrict framing in the browser](https://pragmaticwebsecurity.com/articles/securitypolicies/preventing-framing-with-policies.html)
+
+-   [MDN: X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
+
+
+Related topics
+
+-   [Security policy](../Security-policy/)

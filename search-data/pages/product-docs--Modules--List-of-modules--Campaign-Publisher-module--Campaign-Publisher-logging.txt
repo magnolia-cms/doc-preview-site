@@ -1,0 +1,48 @@
+---
+title: "Adding logs for campaign-related actions"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Campaign-Publisher-module/Campaign-Publisher-logging/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Campaign Publisher > Logging
+---
+
+# Adding logs for campaign-related actions
+
+You can add [Loggers](../../../../Administration/Monitoring/#_loggers) to the `log4j2.xml` configuration file to define which data is logged and how much detail is provided. [Appenders](../../../../Administration/Monitoring/#_appenders) allow you to specify where the output is directed.
+
+The `log4j2.xml` file is located in your Tomcat installation here: `/apache-tomcat/webapps/magnoliaAuthor/WEB-INF/config/default/log4j2.xml`. Follow the steps below to configure the logs for campaign-related actions.
+
+1.  Add the Logger entry below.
+
+    Logger
+
+    ```xml
+    ...
+    <Logger name="info.magnolia.campaignpublisher" level="INFO" additivity="true">
+      <AppenderRef ref="log-campaigns"/>
+    </Logger>
+    ...
+    ```
+
+2.  Add the following appenders to your configuration file to specify `magnolia-campaigns.log` as the output filename in the Magnolia logs folder of your installation.
+
+    Appenders
+
+    ```xml
+    ...
+    <RollingFile name="sync-log-campaigns"
+                 fileName="${magnolia.logs.dir}/magnolia-campaigns.log"
+                 filePattern="${magnolia.logs.dir}/magnolia-campaigns-%i.log"
+                 append="true">
+      <PatternLayout pattern="%-5p %c %d{dd.MM.yyyy HH:mm:ss} -- %encode{%m}{CRLF}%n"/>
+      <ThresholdFilter level="INFO"/>
+      <Policies>
+        <SizeBasedTriggeringPolicy size="1MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="5"/>
+    </RollingFile>
+    <Async name="log-campaigns">
+      <AppenderRef ref="sync-log-campaigns"/>
+    </Async>
+    ...
+    ```

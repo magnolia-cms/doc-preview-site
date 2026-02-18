@@ -1,0 +1,201 @@
+---
+title: "How to define JCR node types and workspaces"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Development-how-tos/How-to-define-JCR-node-types-and-workspaces/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Development how-tos > How to define JCR node types and workspaces
+---
+
+# How to define JCR node types and workspaces
+
+This page provides an overview of all ways to define custom [JCR node types](../../../Administration/Architecture/Node-types/) and create new workspaces with Magnolia.
+
+Even though it has always been possible to define node types and create workspaces within [Magnolia Maven modules](../../../Modules/#_maven_module), the [Content Types module](#content-types:ROOT:index.adoc) brings this functionality also to the [light modules](../../../Modules/Light-modules/). Both approaches are valid.
+
+> **Note:** Whichever approach you choose, we recommend not to develop and refine these definitions in a productive environment.Editing node type and workspace definitions can lead to new node type definitions and workspaces which are registered again, whereas the system keeps the old ones which become obsolete.
+
+## [](#_with_content_types)With content types
+
+By utilizing the Magnolia Content Types module you can define custom JCR content types and workspaces within light modules.
+
+> **Tip:** Defining content types within light modules can be accomplished on a running Magnolia system without redeploying the WAR file of your Magnolia instances and without restarting the instance or a module. This makes it a perfect approach if you have a Magnolia Cloud subscription package.
+
+### [](#_a_content_type_definition_in_one_file)A content type definition in one file
+
+You can define all of the following in just one file:
+
+1.  JCR workspace
+
+2.  JCR nodetype
+    This node type inherits from the Magnolia node type `mgnl:content`. To define more sophisticated node types, you can create a [node type definition file](#_defining_and_using_a_node_type_definition) in a light module.
+
+3.  JCR namespace
+
+
+Example
+
+```yml
+datasource:
+  $type: jcrContentTypeDatasource
+  workspace: tourguides
+  namespaces:
+    mt: https://www.magnolia-travel.com/jcr/1.0/mt
+  autoCreate: true
+
+model:
+  nodeType: mt:tourGuide
+  properties:
+    - name: birthday
+      type: Date
+    - name: gender
+    - name: shortBio
+```
+
+If a node type inheriting from `mgnl:content` complies with your requirements, we recommend defining all of the items – namespace, node type and workspace – in the content type definition, all in one file.
+
+### [](#_defining_and_using_a_node_type_definition)Defining and using a node type definition
+
+You can define JCR namespaces and nodetypes in a CND file.
+
+## [](#_what_is_cnd_compact_namespace_and_node_type_definition)What is CND - Compact Namespace and Node Type Definition
+
+> **Note:** Applies to JCR-oriented definitions only.
+
+The *Compact Namespace and Node Type Definition* (CND) notation provides a compact standardized syntax for defining node types and making namespace declarations. The notation is intended both for documentation and for programmatically registering node types. See [http://jackrabbit.apache.org/jcr/node-type-notation.html](http://jackrabbit.apache.org/jcr/node-type-notation.html) for more details.
+
+While XML-based node type definitions are still supported, we recommend using CND.
+
+Since this definition must be readable as a [Magnolia Resource](../../Resources/), it can be a file in a light module or in a JAR file or in the `resources` JCR workspace.
+
+> **Note:** The CND node type definition resource is loaded only if the CND resource is referenced in the Content type Data source definition of a Content type definition.
+
+Once the resource is loaded, the system registers the defined JCR node types and namespaces. If required and Jackrabbit allows it, the system may update the definitions.
+
+Example:
+
+1.  Create a CND file in your light module and define a namespace and node types:
+
+    /content-type-examples/jcr-node-type-files/travellers-node-types.cnd
+
+    ```cnd
+    <mt = 'http://www.magnolia.info/jcr/mt'>
+
+    [mt:traveller] > mgnl:content
+     orderable
+
+    [mt:tourGuide] > mt:traveller
+     orderable
+
+    [mt:happyCustomer] > mt:traveller
+     orderable
+    ```
+
+
+2.  Reference the node type definition from a content type definition:
+
+    /content-type-examples/contentTypes/happyCustomer.yaml
+
+    ```yaml
+    datasource:
+      $type: jcrContentTypeDatasource
+      workspace: happycustomers
+      autoCreate: true
+      nodeTypeDefinition: /content-type-examples/jcr-node-type-files/travellers-node-types.cnd (4)
+
+    model:
+      nodeType: mt:happyCustomer
+      properties:
+        - name: country
+        - name: age
+          type: Double
+    ```
+
+
+Line 4: References the node type definition resource via `nodeTypeDefinition`.
+
+## [](#_with_a_magnolia_maven_module_descriptor)With a Magnolia Maven module descriptor
+
+With [Magnolia Maven modules](../../../Modules/#_maven_module) you can register new JCR workspaces and node types. The registration involves the [XML-based module descriptor](../../../Modules/Module-descriptor/XML-based-module-descriptor/).
+
+Magnolia registers workspaces and node types during a module’s start-up phase in case they have not yet been registered.
+
+Example of a module descriptor:
+
+my-maven-module/src/main/resources/META-INF/magnolia/my-module.xml
+
+```numberLines
+<!DOCTYPE module SYSTEM "module.dtd" >
+<module>
+  <name>my-module</name>
+  <displayName>${project.name}</displayName>
+  <description>${project.description}</description>
+  <class>com.example.magnolia.myModule.MyModuleDefinition</class>
+  <versionHandler>com.example.magnolia.myModule.setup.MyModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+
+  <dependencies>
+    <dependency>
+      <name>core</name>
+      <version>6.0/*</version>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>products</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/products-nodetypes.cnd</nodeTypeFile>
+    </repository>
+  </repositories>
+
+</module>
+```
+
+### [](#_workspaces)Workspaces
+
+In the [XML-based module descriptor](../../../Modules/Module-descriptor/XML-based-module-descriptor/) you can add a `<workspace />` section in `/repositories/repository/workspaces`.
+
+```xml
+<workspaces>
+  <workspace>products</workspace>
+</workspaces>
+```
+
+### [](#_node_types)Node types
+
+To define and register new node types requires two things:
+
+1.  Creating a node type definition file (CND or XML) where you define the required node types and name spaces. Create the file in the `my-maven-module/src/main/resources/mgnl-nodetypes/` folder.
+    Example:
+
+    my-maven-module/src/main/resources/mgnl-nodetypes/my-node-types.cnd
+
+    ```none
+    <'mgnl' = 'http://www.magnolia.info/jcr/mgnl'>
+
+    [mt:product] > mgnl:content
+     orderable
+    ```
+
+
+2.  Referencing the node type file in the [XML-based module descriptor](../../../Modules/Module-descriptor/XML-based-module-descriptor/):
+    Example:
+
+    my-maven-module/src/main/resources/META-INF/magnolia/my-module.xml
+
+    (fragment)
+
+
+<nodeTypeFile>/mgnl-nodetypes/my-node-types.cnd</nodeTypeFile>
+
+Related topics
+
+-   [Content Types module](#content-types:ROOT:index.adoc)
+
+-   [Content type definition](../../Content-Types/Content-type-definition/)
+
+    -   [Content type Model definition](../../Content-Types/Content-type-definition/Content-type-Model-definition/)
+
+    -   [Content type Data source definition](../../Content-Types/Content-type-definition/Content-type-Data-source-definition/)

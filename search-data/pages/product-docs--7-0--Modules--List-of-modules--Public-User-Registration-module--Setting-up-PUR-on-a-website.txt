@@ -1,0 +1,226 @@
+---
+title: "Setting up PUR on a website"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Public-User-Registration-module/Setting-up-PUR-on-a-website/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Public User Registration module > Setting up PUR on a website
+---
+
+# Setting up PUR on a website
+
+[Magnolia’s Public User Registration module](../) allows users to register an account on the public site. This page explains how to use the module to set up public user registration and protected pages that are available only to users who have registered and logged in.
+
+The tutorial takes you through the process of:
+
+-   Setting up pages containing the components provided by the module
+
+-   Restricting access to certain pages to registered users only.
+
+
+We use the Sportstation demo in our example. CE users can adapt the example to fit the Travel Demo or their own site.
+
+## [](#_making_pur_components_available)Making PUR components available
+
+The [Public User Registration module](../) includes all the necessary [components](../#_pur_components) to implement PUR on your site.
+
+You can make the components available on any [page template](../../../../Developing/Templating/Template-definition/Page-definition/). The components will be used on [pages](#_creating_pages) for registration, login and related PUR tasks.
+
+The Travel Demo’s Public Users template makes the components available in `main` area of the page. The example uses this template. See [Area definition](../../../../Developing/Templating/Template-definition/Area-definition/) for more.
+
+> **Tip:** See pur.yaml for more details.
+
+## [](#_creating_pages)Creating pages
+
+Your pages can be located anywhere in the site hierarchy.
+
+Create two sets of pages:
+
+-   **PUR pages**:
+
+    -   Base these pages on your PUR template. We will add the [PUR components made available](#_MakingPURcomponentsavailable) above to these pages.
+
+    -   You need one page for each PUR component, for example a registration page for the Registration form component, a login page for the Login form component etc..
+
+
+-   **Restricted content pages**:
+
+    -   These are standard pages. They do not rely on the functionality of the PUR module.
+
+    -   You can base these pages on any template and you add any components.
+
+
+
+Example pages:
+
+-   **Registration**: To register account (`club-registration`).
+
+-   **Login**: To log in (`club-login`).
+
+-   **Registration update**: To update user information (`update-club-profile`).
+
+-   **Password retrieval**: To retrieve lost or forgotten password (`retrieve-club-password`).
+
+-   **Password change**: To change password (`change-club-password`).
+
+-   **Restricted content** page or tree (`club-deals` and subpages).
+
+
+![Pages app](../../../../_images/6-2-settingUpPUROnAWebsite-pages.png)
+
+## [](#_adding_restricted_content)Adding restricted content
+
+The example creates an exclusive club for registered users on the Sportstation site. In the Sports Club area users have access to special deals on the `club-deals` page and its subpages. The example uses the Travel Standard template for these pages.
+
+Example pages:
+
+-   `/sports-club`: All public users can access this page. The teaser component on the left takes logged-out registered users to the login form and logged-in users to the `club-deals` page. The teaser component on the right takes non-registered users to the registration form page.
+
+    -   `/club-deals`: This page contains teasers to all available deals.
+
+        -   `/<deals`: These are the Individual deal pages.
+
+
+
+
+![Sports club page](../../../../_images/sports-club-page.png) ![Exclusive deals](../../../../_images/deals.png) ![Dive with sharks deal](../../../../_images/shark-deal.png)
+
+## [](#_adding_pur_components)Adding PUR components
+
+Open the PUR pages for editing and:
+
+-   Add the corresponding PUR component to each page.
+
+-   Hide the pages from navigation. You can set this in the Page properties dialog.
+
+
+The PUR components are all forms.
+
+Login is delivered as a preconfigured form. In the dialog, set links to the registration and forgotten-password pages. These links display at the bottom of the form. The target page directs the user to a page after login. Set this link to the restricted-content parent page.
+
+![Edit login-form dialog](../../../../_images/6-1-SettingUpPUROnAWebsite-loginDialog.png) ![Login form](../../../../_images/6-1-SettingUpPUROnAWebsite-loginForm.png)
+
+The other PUR components require form setup. See [Creating a form](../../Form-module/#_creating_a_form) for more.
+
+These forms expect fields with the exact names: `username`, `fullName`, `password`, `passwordConfirmation` and `email`. Use [Input fields](../../Form-module/#_fields), without [validators](../../Form-module/#_field_validators), set [advanced field types](../../Form-module/#_fields) to `text`, `password` and `email` and add a [Submit button field](../../Form-module/#_fields).
+
+Here are the components used in the example.
+
+![Registration form](../../../../_images/6-1-SettingUpPUROnAWebsite-registrationForm.png) ![Update profile form](../../../../_images/6-1-SettingUpPUROnAWebsite-updateProfile.png)
+![Retrieve password form](../../../../_images/6-1-SettingUpPUROnAWebsite-forgottenPassword.png) ![Change password form](../../../../_images/6-1-SettingUpPUROnAWebsite-passwordChange.png)
+
+Use this reference table to set up your forms:
+
+| **Component** | **Fields** |
+| --- | --- |
+| `registration` | `username`, `fullName`, `password`, `passwordConfirmation`,`email` |
+| `userUpdate` | `username`, `fullName`, `email` |
+| `forgottenPassword` | `username`, `email` |
+| `passwordChange` | `password`, `passwordConfirmation` |
+
+## [](#_configuring_the_pur_module)Configuring the PUR module
+
+The PUR module configuration used in the example is a copy of the `travel` [configuration](../#_configuration) (that extends `default`) with minor changes.
+
+-   **Registration**: `Always` [registration strategy](../#_registration_strategies) enables users immediately. A user can access restricted content straight after registration.
+
+-   **Password retrieval**: `MailChangePasswordLinkStrategy` sends an email to the user who submits the password retrieval form. A link in the email directs the user to the example /`change-club-password` page.
+
+-   **Default group**: We create the `sportstation-pur` group in [Setting permissions](#_setting_permissions) (below).
+
+-   **Default role**: The configuration overrides `default` to ensure that users assigned only the `anomymous` role cannot access restricted content.
+
+
+These options are configured in `/modules/public-user-registration/config/configurations/sportstation`.
+
+![Configuring the PUR module](../../../../_images/ADVT-pur1.png)
+
+## [](#_publishing)Publishing
+
+At this stage, publish the work to date to the public instance. We [set permissions](#_setting_permissions) and [test the setup](#_testing_the_pur_setup) on the public site because this is where it will be used and anonymous users have different [permissions](../../../../Administration/IAM/Default-permissions/) on the author and public instances by default.
+
+Publish:
+
+-   [Template](#_MakingPURcomponentsavailable) (and [availabiltiy](../../../../Developing/Templating/Template-availability/) configuration, if any).
+
+-   [Pages](#_creating_pages).
+
+-   [PUR configuration](#_configuring_the_pur_module).
+
+
+## [](#_setting_permissions)Setting permissions
+
+On the public instance, first restrict anonymous access to content reserved for registered users and then give registered users access to this content
+
+### [](#_restricting_anonymous_access)Restricting anonymous access
+
+In the [Security app](../../../../Apps/List-of-apps/Security-app/), edit the `anonymous` role and add permissions denying access to restricted content.
+
+**Example**: Web access:
+
+|     |     |
+| --- | --- |
+| **Permission** | **Path** |
+| Deny | `/sportstation/sports-club/club-deals*` |
+| Deny | `<sportstation>/sports-club/club-deals*` |
+| Deny | `/sportstation/sports-club/update-club-profile*` |
+| Deny | `<sportstation>/sports-club/update-club-profile*` |
+
+The permissions starting with `<site name>` prevent cross-site access. See [Site-specific ACLs](../../../../Administration/Security/Cross-site-security/) for more.
+
+### [](#_granting_registered_users_access)Granting registered users access
+
+In the [Security app](../../../../Apps/List-of-apps/Security-app/), create a new role (`sportstation-pur` in the example) that gives access to restricted content.
+
+**Example**: Web access:
+
+|     |     |
+| --- | --- |
+| **Permission** | **Path** |
+| Get & Post | `/sportstation/sports-club/club-deals*` |
+| Get & Post | `<sportstation>/sports-club/club-deals*` |
+| Get & Post | `/sportstation/sports-club/update-club-profile*` |
+| Get & Post | `<sportstation>/sports-club/update-club-profile*` |
+
+Next create a new group named after the value in the `defaultRoles` [configuration](#_configuring_the_pur_module) property (`sportstation-pur` in the example) and assign the new role to the new group. Users in this group also need other basic roles.
+
+**Example**: Group role assignment.
+
+|     |     |
+| --- | --- |
+| **Group** | **Granted roles** |
+| `sportstation-pur` | `sportstation-pur` |
+|     | `travel-demo-base` |
+|     | `imaging-base` |
+
+## [](#_adding_a_client_callback_to_the_security_filter)Adding a client callback to the security filter
+
+Adding a client callback on the [security callback filter](../../../../Administration/Architecture/Request-processing-and-filters/Filters/) ensures that users are redirected to the login component on a page and not to the default (green) Magnolia login screen. The redirect comes into play when a registered user logs out or an unregistered user attempts to access restricted content.
+
+**Example**: `sportstation-pur` client callback configured in `/server/filters/securityCallback/clientCallbacks/sportstation-pur`.
+
+![Adding a client callback to the security filter configuration](../../../../_images/ADVT-pur2.png)
+
+| Property | Description |
+| --- | --- |
+| `sportstation-pur` | **required**<br><br>client callback name. |
+| `originalUrlPattern` | **required**<br><br>Pattern node |
+| `class` | **required**<br><br>info.magnolia.cms.util.SimpleUrlPattern matches strings using simple `*` or `?` wildcards. |
+| `patternString` | **required**<br><br>Pattern that defines the location of the restricted content that triggers the callback. See `java.util.regex.Pattern` for a summary of [regular expression contructs](https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html). |
+| `class` | **required**<br><br>info.magnolia.cms.security.auth.callback.RedirectClientCallback redirects to a configured path or URL. |
+| `location` | **required**<br><br>Relative path to the login page. Add the `?mgnlReturnTo={0}` parameter (with a leading forward slash (`/`)) at the end of this path to direct the user to page they were on prior to login. |
+
+## [](#_testing_the_pur_setup)Testing the PUR setup
+
+Make sure that your [SMTP settings](../../Mail-module/Mail/) are configured on the public instance so that the [Mail module](../../Mail-module/Mail/) can send emails. Remember to assign `superuser` a working email address.
+
+1.  Open the restricted content page logged in as `superuser` and then log out by adding the `?mgnlLogout=true` parameter to the URL. The restricted content disappears and the page redirects to the login form page configured in the [security callback](#_adding_a_client_callback_to_the_security_filter).
+    ![Exclusive deals public page](../../../../_images/deals-page-public.png) ![Login form public page](../../../../_images/login-form-public.png)
+
+2.  Click **Register** in the login form, register a dummy account (using a valid email address) and then login with the new credentials. The protected page (set in the [Login form component](#AddingPURcomponents)) opens.
+    ![Register form public page](../../../../_images/registration-form-public.png) ![Login form public page](../../../../_images/login-john.png)
+
+3.  Log out as the new user, click **Forgotten password** in the login form and enter the dummy account username and email. The link in the password reminder email opens the password reset form page (set in `passwordRetrievalStrategy` [configuration](#_configuring_the_pur_module)) where you can choose a new password.
+    ![Retrieve password form public page](../../../../_images/retrieve-password-form.png) ![Reset password form public page](../../../../_images/reset-password-email.png) ![Change password form public page](../../../../_images/change-password-form.png)
+
+4.  Log in to admincentral and launch the Security app to verify that the dummy user is assigned to the group defined in the `defaultRoles` [configuration](#_configuring_the_pur_module).
+    ![Groups permissions in Security app](../../../../_images/6-1-settingUpPUROnAWebsite-securityApp.png)

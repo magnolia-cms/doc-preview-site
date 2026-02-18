@@ -1,0 +1,191 @@
+---
+title: "Marketing Tags app"
+url: https://docs.magnolia-cms.com/product-docs/Apps/List-of-apps/Marketing-Tags-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Marketing Tags app
+---
+
+# Marketing Tags app
+
+The Marketing Tags app is a central place to manage marketing tags such as Web analytics, third-party content and advertising network code snippets. The app allows you to create tags and place them on pages.
+
+Since many of these tags require cookies to work, you can also [link tags to cookies](../../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/#_mktgtag_eg) defined in the [Cookies app](../Cookies-app/).
+
+![Marketing Tag app](../../../_images/6-2-marketingTagsapp.png)
+
+The app manages *marketing tags*, which are different from *content tags.* Content tags are keywords or terms assigned to an item of content and are managed using the [Tags app](../Tags-app/).
+
+## [](#_marketing_tags)Marketing tags
+
+Marketing tags are snippets of code that you insert on Web pages. Tags typically collect analytics information such as how many visitors view the page and how long they stay. Tags can also integrate third-party content such as social media on your site or insert ad campaigns. You can use tags to learn more about visitors or provide content.
+
+A tag is typically a piece of JavaScript code. When a page loads, the JavaScript code runs and collects usage information about the page and the visitor. The tag then reports this information to the service that provided the tag. The service stores and analyzes the information.
+
+> **Tip:** If the service provides an analytics dashboard, you can display it in the Marketing Tags app.
+
+![Tags function diagram](../../../_images/diagram-tags-manager.png)
+
+Since many of these tags require cookies to work, you can also [link tags to cookies](../../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/) defined in the [Cookies app](../Cookies-app/). By linking tags to cookies, you can make sure the tags used on your website comply with data privacy rules.
+
+For more information about what marketing tags are and how they are used, see:
+
+-   [What are Third Party Tags and Tag Management?](http://www.signal.co/resources/tag-management-101/)
+
+-   [The Google tag and Tag Manager](https://developers.google.com/analytics/devguides/collection/ga4/tag-options)
+
+
+## [](#_configuration)Configuration
+
+The Marketing Tags app is installed by the [Marketing Tags module](../../../Modules/List-of-modules/Marketing-Tags-module/). The app is configured in `/modules/marketing-tags`.
+
+### [](#_workspace)Workspace
+
+The app operates on the `marketing-tags` workspace where the code snippets and their details are stored.
+
+### [](#_node_types)Node types
+
+The Marketing Tags module registers a custom `mgnl:marketing-tag` [node type](../../../Administration/Architecture/Node-types/). The Marketing Tags app operates on nodes of this type.
+
+## [](#_page_areas)Page areas
+
+The module inserts marketing tags into three alternative page areas: `bodyBeginScripts`, `bodyEndScripts` and `headerScripts`. To function correctly, your page templates should contain these areas.
+
+ PropertyDescription
+
+`<area name>`
+
+**required**
+
+[Area definition](../../../Developing/Templating/Template-definition/Area-definition/) within a page template
+
+     `createAreaNode`
+
+**optional**, *default is `true`*
+
+When set to `false` no area node is created in the repository. See [Creating area nodes](../../../Developing/Templating/Template-definition/Area-definition/).
+
+     `modelClass`
+
+**required**
+
+Use `info.magnolia.marketingtags.model.ScriptsAreaModel` for tag insertion. It looks through all the tags to determine which ones belong to each tag area of the page.
+
+     `templateScript`
+
+**required**
+
+`scriptsArea.ftl` assigns the model and inserts the marketing tags into the HTML.
+
+     `type`
+
+**required**
+
+`noComponent` areas contain no components.
+
+     `renderType`
+
+**required** on Blossom\*
+
+[Renderer](../../../Developing/Templating/Renderers/) to use. Magnolia supports the `freemarker` renderer by default.
+
+> **Note:** If not defining the renderType, Magnolia is using the one defined on the parent template (typically the page template). On Blossom, you should define the __renderType* on the area too.
+
+Here’s `scriptsArea.ftl`
+
+```java
+[#assign areaModel = model!]
+[#list areaModel.tags as tagNode]
+    [#assign tag = cmsfn.asContentMap(tagNode)]
+    [#if (cmsfn.publicInstance || tag.activeAuthor!false) && tag.content?has_content]
+        ${areaModel.preRender(tag)}
+    [/#if]
+[/#list]
+```
+
+## [](#_setting_tag_properties)Setting tag properties
+
+In tag properties, define a name for the tag and indicate where in page HTML it should be inserted. Usually, the provider of the tag specifies where the tag should be added. If not specified, the safest is probably the `head` element. If the tag takes a long time to load and delays page rendering put at the end of the body. Optionally you can also define a dashboard URL for viewing the information collected by the tag.
+
+![Setting tag properties](../../../_images/6-2-marketingTagsApp-editTag.png)
+
+Fields:
+
+-   **Name**: Name the service that provided the tag such as \`\`Google Analytics''.
+
+-   **Dashboard URL**: Address of an analytics dashboard provided by the tag service. A dashboard reports the information collected by the tag.
+
+-   **Active on author**: Check the box to insert the tag on pages also on the author [instance](../../../Administration/Instances/). You may want to do this during development and testing so you can see the tag while using the Page Editor. Tags should typically only be inserted on the public instance.
+
+-   **Tag location**: Where to insert the tag in the page HTML. There are three options:
+
+    -   **head**: inside the `<head>` element
+
+    -   **beginning of the body**: right after the opening `<body>` element
+
+    -   **end of the body**: right before the closing `</body>` element
+
+
+
+## [](#_setting_tag_content)Setting tag content
+
+Tag content is typically a piece of JavaScript code. Some tag providers refer to it as a tag, others as a snippet or hook. Paste the code provided by the service into the box. Magnolia inserts the code on the pages you choose on the **Pages** tab.
+
+![Editing tag content](../../../_images/6-0-marketingTagsApp-content.png)
+
+## [](#_choosing_pages)Choosing pages
+
+Choose to which pages the tag should be added. Check the **Insert in subpages** box to insert the tag on all pages in a site branch. Alternatively, you can select a template. Tags are added to all pages based on the template.
+
+![Adding tag to pages](../../../_images/6-0-marketingTagsApp-pages.png)
+
+## [](#_linking_to_cookies)Linking to cookies
+
+Link a tag to a cookie defined in the [Cookies app](../Cookies-app/) to control whether the tag’s cookie is set or not.
+
+Marketing tag cookies are set on the client-side using JavaScript. Although you cannot control cookies set on the client-side using Magnolia, the JavaScript code snippet, which sets the tag’s cookie, is added by Magnolia on the server-side. By linking the tag to a cookie defined in the Cookies app, you can control whether or not the code snippet is added or not (and so whether the cookie is set or not) based on the website visitor’s [cookie consent decision](../../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/#_cookie_consent_interaction).
+
+Click **Add** and select a cookie from the Cookies app.
+
+![Adding cookies to the tag](../../../_images/6-0-marketingTagsApp-cookies.png)
+
+> **Note:** For more, see GDPR and cookies.
+
+## [](#_testing)Testing
+
+To test tag insertion, create a tag that displays a JavaScript popup. This way you can verify that a tag would be inserted on the correct pages.
+
+1.  Create a tag with the following content:
+
+    Test
+
+    ```javascript
+    <script>
+       window.alert("Hello Magnolia!");
+    </script>
+    ```
+
+2.  Check the **Active on author** box.
+
+3.  Choose some pages where the tag is active.
+
+4.  Open a page that has the tag in the Pages app. A popup is displayed.
+
+
+![Hello Magnolia pop-up](../../../_images/6-0-marketingTagsApp-popup.png)
+
+## [](#_publishing)Publishing
+
+Publish the tags from the author instance to the public instance.
+
+## [](#_viewing_the_dashboard)Viewing the dashboard
+
+Visit the website of the service that provided the tag in order to view the information collected by the tag. You can view the information in a separate browser window or in the Marketing Tags app. Click the **Show provider dashboard** action.
+
+> **Note:** Some dashboards such as Google Analytics cannot be displayed in a subapp. Google explicitly specifies in their headers that a dashboard cannot be displayed in an iFrame (x-frame-options: SAMEORIGIN). To get around this limitation, click the link at the top of the subapp to open the dashboard in a new window.
+
+Related topics
+
+-   [Marketing Tags module](../../../Modules/List-of-modules/Marketing-Tags-module/)
+
+-   [GDPR and cookies](../../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/)

@@ -1,0 +1,198 @@
+---
+title: "Creating the page template"
+url: https://docs.magnolia-cms.com/product-docs/Getting-started-with-Magnolia/Hello-Magnolia/Create-page-template/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Hello Magnolia > Creating the page template
+---
+
+# Creating the page template
+
+Hello Magnolia
+
+You can create a working page template instantly with a CLI plugin called `create-page`, but we’ll make the first template by hand for educational reasons.
+
+In the following steps, you’ll learn to create:
+
+-   A CSS-based styling for the page.
+
+-   A *page template script* file containing FreeMarker directives. The directives make it possible to retrieve the content of some parts of the page from the JCR repository.
+
+-   A *page template definition*. This makes the template available to Magnolia’s authoring system.
+
+-   A *dialog definition*. A dialog definition defines the editable page properties.
+
+
+## [](#_create_a_styling_for_the_page)Create a styling for the page
+
+1.  Create a new `css` folder in `/hello-magnolia/webresources/`.
+
+2.  Copy the CSS below and save it as `/hello-magnolia/webresources/css/hello-style.css`. We will reference this stylesheet in a FreeMarker template script.
+
+    /hello-magnolia/webresources/css/hello-style.css
+
+    ```css
+    @import url(//fonts.googleapis.com/css?family=Raleway);
+    body {
+       padding: 20px;
+       font-family: Raleway, Helvetica, Arial, Tahoma, Verdana, sans-serif;
+       background-color: #1e5799;
+       background-attachment: fixed;
+    }
+    .container {
+       width: 100%;
+       max-width: 960px;
+       margin: 0px auto;
+       padding: 20px;
+       box-sizing: border-box;
+       background-color: white;
+    }
+    main {
+       padding: 20px;
+       margin-bottom: 40px;
+    }
+    h1 {
+       font-size: 4em;
+       font-family: Raleway, Helvetica, Arial, Tahoma, Verdana, sans-serif;
+       font-weight: normal;
+       background-color: #f6f6f6;
+       padding: 30px 0 30px 15px;
+       margin: 0;
+    }
+    blockquote {
+       margin-bottom:40px;
+       margin-top: 65px;
+    }
+    blockquote cite {
+       padding-left:20px;
+       font-size: 1.3em;
+       color: #333;
+    }
+    blockquote p {
+       border: 5px solid #0066aa;
+       border-radius: 12px;
+       padding: 25px 15px;
+       position: relative;
+       background-color: #fff;
+       margin-bottom: 30px;
+    }
+    /** Add the bottom triangle for the quote bubble using CSS **/
+    blockquote p:before, blockquote p:after {
+       position: absolute;
+       display: block;
+       border-style: solid;
+       content: "";
+       height: 0;
+       width :0;
+       box-sizing: border-box;
+    }
+    blockquote p:before {
+       left: 20px;
+       bottom: -30px;
+       border-color: transparent #0066aa transparent transparent;
+       border-width: 0 30px 30px 0;
+    }
+    blockquote p:after {
+       left: 29px;
+       bottom: -15px;
+       border-color: transparent #fff transparent transparent;
+       border-width: 0 15px 15px 0;
+    }
+    ```
+
+
+## [](#_create_a_page_template_script)Create a page template script
+
+A [template script](../../../Developing/Templating/Template-scripts/) defines the output, typically HTML, and is interpreted by a page renderer. The script below uses a templating language called FreeMarker.
+
+1.  Go to the `/hello-magnolia/templates/pages/` folder.
+
+2.  In there, create a file called `hello.ftl` and save it with the following content:
+
+    /hello-magnolia/templates/pages/hello.ftl
+
+    ```xml
+    <!DOCTYPE html>
+    <html xml:lang="${cmsfn.language()}" lang="${cmsfn.language()}"> (1)
+      <head>
+        [@cms.page /] (2)
+        <title>${content.windowTitle!content.title!}</title> (3)
+        <link rel="stylesheet" type="text/css" href="${ctx.contextPath}/.resources/hello-magnolia/webresources/css/hello-style.css" media="all" /> (4)
+      </head>
+      <body>
+
+        <div class="container">
+          <h1>${content.windowTitle!content.title!} works!</h1> (5)
+        </div>
+
+      </body>
+    </html>
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Line 2: The `${cmsfn.language()}` function sets the value of the `lang` attributes. This will make sure that the primary language of the page will be rendered correctly if you decide to localize your web page(s) into more languages. |
+    | **2** | The `[@cms.page /]` directive adds toolbars and makes the page properties dialog available. You will create the definition for this dialog immediately after creating a page template definition. |
+    | **3** | The `${content.windowTitle!content.title!}` directive retrieves the content of the `<title>` element from the JCR repository. |
+    | **4** | The `${ctx.contextPath}` directive creates a reference to the CSS file. When the page is rendered, we need to know the absolute path to the CSS resource. This directive ensures that the path to the resource is full and correct on both the author and the public instances. |
+    | **5** | The `${content.windowTitle!content.title!}` directive renders the first part of the page title dynamically using the content of page properties. |
+
+
+## [](#_create_a_page_template_definition)Create a page template definition
+
+A [template definition](../../../Developing/Templating/Template-definition/) gives the template a name and makes it available to the system. It also tells the system which script renders the content.
+
+> **Note:** We use YAML to create template definitions.
+
+In `/hello-magnolia/templates/pages/`, create a file named `hello.yaml` and save it with the definition code below in it.
+
+/hello-magnolia/templates/pages/hello.yaml
+
+```yaml
+title: hello
+templateScript: /hello-magnolia/templates/pages/hello.ftl
+renderType: freemarker
+dialog: hello-magnolia:pages/hello
+visible: true
+```
+
+## [](#_create_a_dialog_definition_for_page_properties)Create a dialog definition for page properties
+
+Copy and save the following code into a file named `hello.yaml` in `/hello-magnolia/dialogs/pages/`:
+
+/hello-magnolia/dialogs/pages/hello.yaml
+
+```yaml
+form:
+  properties:
+    title:
+      $type: textField
+      i18n: true
+    windowTitle:
+      $type: textField
+      i18n: true
+```
+
+A dialog defined like this allows content authors to add and edit the values of page properties such as `windowTitle` and `title` [fields](../../../Developing/Templating/Dialog-definition/Field-definition/). The content of these properties is stored in the Magnolia JCR repository.
+
+## [](#_provide_english_labels_for_dialog_fields)Provide English labels for dialog fields
+
+Dialog fields and other UI elements can be displayed with labels and descriptions. For the fields of the page properties dialog, provide the labels in form of an [i18n language bundle](../../../Administration/Language/Internationalization/#_i18n_message_bundle).
+
+Go to the `/hello-magnolia/i18n/` folder, edit the `hello-magnolia-messages_en.properties` file with the following content and save it:
+
+/hello-magnolia/hello-magnolia-messages\_en.properties
+
+```properties
+hello-magnolia.pages.hello=Page properties
+hello-magnolia.pages.hello.title=Title
+hello-magnolia.pages.hello.windowTitle=Window title
+
+hello-magnolia.components.quotation=Quotation
+hello-magnolia.components.quotation.quotation=Quotation
+hello-magnolia.components.quotation.citedPerson=Cited person
+```
+
+-   Lines 1 to 3 define field labels for the Page properties dialog.
+
+-   Lines 5 to 7 define labels for the fields of the quotation component, which you will create further on.

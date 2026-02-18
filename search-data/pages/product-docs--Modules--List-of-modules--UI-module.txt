@@ -1,0 +1,132 @@
+---
+title: "UI module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/UI-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > UI module
+---
+
+# UI module
+
+[Administration](../../../use-cases/administration/) Bundled: Community edition
+
+| Download | Multiple submodules |
+| --- | --- |
+| Edition | CE, Cloud |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLUI](https://magnolia-cms.atlassian.net/browse/MGNLUI) |
+| Maven site | [UI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fui%2Fmagnolia-ui-project%2F6.4.0) |
+| Latest | 6.4.0 |
+
+The Magnolia UI module is responsible for the user interface of the Magnolia AdminCentral back-end. It provides various UI frameworks for other parts of Magnolia such as content apps.
+
+## [](#_modules)Modules
+
+Magnolia’s UI consists of the following modules. Some modules (magnolia-admincentral, magnolia-about-app, magnolia-messages-app, magnolia-security-app, and magnolia-tasks-app) are stored in different repositories and, therefore, are not listed in the [detailed module list](#_magnolia_6_2_ui_modules) further down.
+
+-   Resurface theme: Magnolia 6 [Vaadin theme](https://vaadin.com/docs/v8/framework/themes/themes-overview.html) based on [Valo](https://vaadin.com/docs/v8/framework/themes/themes-valo.html)..
+
+-   Vaadin widget set: Magnolia custom Vaadin/GWT [components](https://vaadin.com/docs/v8/framework/components/components-overview.html) and [extensions](https://vaadin.com/docs/v8/framework/components/components-extensions.html).
+
+-   [Security app](../../../Apps/List-of-apps/Security-app/): Provides access management in Magnolia.
+
+-   [Tasks app](../../../Apps/List-of-apps/Tasks-app/): Organises messages relating to publishing.
+
+-   [About app](../../../Apps/List-of-apps/About-Magnolia-app/): Provides an overview of relevant installation information.
+
+-   [JCR browser app](../../../Apps/List-of-apps/JCR-Browser-app/): Allows you to work at the repository level in any workspace.
+
+
+## [](#_installing)Installing
+
+There is usually no need to install the Magnolia UI project. Every [preconfigured Magnolia bundle](../../../Developing/Bundles-and-webapps/) already contains the required UI submodules. The Magnolia [pom file](https://gitlab.magnolia-platform.com/pd/platform/ce/-/blob/master/pom.xml) manages the versions for dependent UI modules.
+
+If you have a custom webapp that is completely independent from any preconfigured Magnolia webapp, here is how you should add the UI project submodules to it:
+
+1.  In your parent POM, import dependency management from the UI project.
+
+    your-custom-project/pom.xml (snippet)
+
+    ```xml
+    <!-- ... -->
+      <properties>
+        <magnoliaUiVersion>{magnolia-latest-version}</magnoliaUiVersion>
+        <javaVersion>{base-java-version}</javaVersion>
+      </properties>
+
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>info.magnolia.ui</groupId>
+            <artifactId>magnolia-ui-project</artifactId>
+            <version>${modules-version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+    <!-- ... -->
+    ```
+
+
+2.  In the POM of your webapp, add the UI submodules you rely on. The following is a typical configuration (from `magnolia-empty-webapp`):
+
+    your-custom-project/my-custom-webapp/pom.xml (snippet)
+
+    ```xml
+    <!-- ... -->
+    <dependencies>
+      <dependency>
+        <groupId>info.magnolia.ui</groupId>
+        <artifactId>magnolia-ui-admincentral</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.admincentral</groupId>
+        <artifactId>magnolia-admincentral</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.ui</groupId>
+        <artifactId>magnolia-resurface-theme</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.widgetset</groupId>
+        <artifactId>magnolia-vaadin-widgetset</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.security</groupId>
+        <artifactId>magnolia-security-app</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.task</groupId>
+        <artifactId>magnolia-tasks-app</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.about</groupId>
+        <artifactId>magnolia-about-app</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.jcrbrowser</groupId>
+        <artifactId>magnolia-jcr-browser-app</artifactId>
+      </dependency>
+    </dependencies>
+    <!-- ... -->
+    ```
+
+
+## [](#_magnolia_6_4_ui_modules)Magnolia 6.4 UI modules
+
+Here is a list of all modules in version 6.4 of the Magnolia UI project. The list includes both the Maven modules and the Magnolia modules.
+
+> **Note:** The Magnolia module column refers to the Magnolia module that belongs to the given Maven submodule.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 50%;"> <col style="width: 20%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Maven</strong></p></div><div class="paragraph"><p><code><strong>groupId</strong></code></p></div><div class="paragraph"><p><code><strong>artifactID</strong></code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Function</strong></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Magnolia module</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-project</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Parent reactor</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>n/a</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-framework</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>The primary module/SDK for Magnolia app development</strong></p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>This provides (among others) the content app framework, IoC support for UI components and scopes, Vaadin 8 data-binding facilities and UI view/state management.</p></div><div class="paragraph"><p>It also offers convenience builders for selected Magnolia UI components (for example, alerts and dialogs).</p></div></td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>ui-framework-core</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-api</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>This defines some core components for the UI such as:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.ui.api.action.Action</span>,</p></li><li><p><span class="inlineBean">info.magnolia.ui.api.app.App</span>,</p></li><li><p><span class="inlineBean">info.magnolia.ui.api.app.SubApp</span>,</p></li><li><p><span class="inlineBean">info.magnolia.ui.api.message.Message</span> and others.</p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>n/a</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-framework-jcr</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>JCR implementation of the <em>Magnolia 6 UI</em> framework</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>ui-framework-jcr</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-resurface-theme</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Magnolia 6 <a href="https://vaadin.com/docs/v8/framework/themes/themes-overview.html" target="_blank" rel="noopener">Vaadin theme</a> based on <a href="https://vaadin.com/docs/v8/framework/themes/themes-valo.html" target="_blank" rel="noopener">Valo</a>.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-vaadin-common-widgets</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Magnolia custom Vaadin/GWT <a href="https://vaadin.com/docs/v8/framework/components/components-overview.html" target="_blank" rel="noopener">components</a> and <a href="https://vaadin.com/docs/v8/framework/components/components-extensions.html" target="_blank" rel="noopener">extensions</a></p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">This module contains mainly former Magnolia 5 widget implementations. For Magnolia 6, most of the components have been reimplemented with plain Vaadin. Consequently, this module may be split and partially deprecated in any future version.</td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>n/a</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-mediaeditor</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Magnolia 6 <a href="UI-Media-Editor-module/" class="xref page">UI Media Editor</a></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>ui-mediaeditor</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Magnolia stock apps</strong></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.jcrbrowser</code></p></div><div class="paragraph"><p><code>magnolia-jcr-browser-app</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><a href="../../../Apps/List-of-apps/JCR-Browser-app/" class="xref page">JCR browser</a> app</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>jcr-browser-app</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.sample</code></p></div><div class="paragraph"><p><code>magnolia-sample-app</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><a href="../../../Apps/List-of-apps/Sample-app/" class="xref page">Sample</a> app</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>sample-app</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Magnolia 5 compatibility</strong></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-framework-compatibility</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>This module brings support for running Magnolia 5 content apps in Magnolia 6.</p></div><div class="paragraph"><p>In particular, it contains former Magnolia 5 content-app components such as the workbench, forms and dialogs or image provider. It also provides JCR implementations of the deprecated Vaadin 7 Data API (for example, <code>JcrNodeAdapter</code> and <code>HierarchicalJcrContainer</code>).</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The following Magnolia 5 Maven modules have been relocated to this module:</td></tr></tbody></table></div><div class="ulist"><ul><li><p><code>magnolia-ui-actionbar</code></p></li><li><p><code>magnolia-ui-contentapp</code></p></li><li><p><code>magnolia-ui-dialog</code></p></li><li><p><code>magnolia-ui-form</code></p></li><li><p><code>magnolia-ui-imageprovider</code></p></li><li><p><code>magnolia-ui-vaadin-integration</code></p></li><li><p><code>magnolia-ui-workbench</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>ui-contentapp</code></p></div><div class="paragraph"><p><code>ui-framework</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.ui</code></p></div><div class="paragraph"><p><code>magnolia-ui-vaadin-theme</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Magnolia 5 <a href="https://vaadin.com/docs/v8/framework/themes/themes-overview.html" target="_blank" rel="noopener">Vaadin theme</a>.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>n/a</p></div></div></td></tr></tbody></table></div>
+
+## [](#_issues)Issues
+
+### [](#_safari_browser_and_application_pop_ups)Safari browser and application pop-ups
+
+When exporting or downloading content from any Magnolia app, pop-ups that inform the user about the action are blocked by the Safari browser.
+
+We’re actively working on improving this user experience. For more details and further progress, see [MGNLUI-9117](https://magnolia-cms.atlassian.net/browse/MGNLUI-9117) *Export action requires enabling pop-ups in Safari*.
+
+Until the improvement is released, the Safari browser users must enable pop-ups. See [Apple Support: Allow or block pop-ups in Safari on Mac](https://support.apple.com/en-gb/guide/safari/sfri40696/mac).

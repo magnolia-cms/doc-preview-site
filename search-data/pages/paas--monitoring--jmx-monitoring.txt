@@ -1,0 +1,90 @@
+---
+title: "JMX Monitoring"
+url: https://docs.magnolia-cms.com/paas/monitoring/jmx-monitoring/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > JMX Monitoring
+---
+
+# JMX Monitoring
+
+[Java Virtual Machines](https://docs.oracle.com/en/java/javase/13/vm/) (JVM) have built-in instrumentation that allow you to monitor and manage it using the [Java Management Extensions (JMX)](https://docs.oracle.com/en/java/javase/18/jmx/java-management-extensions-jmx-user-guide.html) technology.
+
+## [](#_why_jmx)Why JMX?
+
+JMX technology can be used for out-of-the-box management of Java Virtual Machines. The Java Virtual Machine (JVM) is highly instrumented using JMX technology. You can start a JMX agent to access the built-in Java VM instrumentation, and thereby monitor and manage a JVM remotely.
+
+The framework makes use of [MBeans](https://docs.oracle.com/javase/tutorial/jmx/mbeans/) for real-time management of applications. Magnolia provides the following mbeans:
+
+-   Cache Monitor: Hits, puts, bypasses, flushes, cached key count.
+
+-   JCR Stats: Session count.
+
+
+## [](#_jvm_parameters)JVM parameters
+
+In order to enable JMX, the tomcat pod (`magnoliaAuthor`/`magnoliaPublic`) needs the following parameters in your project’s [values.yml](../../deployment/webapp_deployment/#_the_values_yml_file) file:
+
+values.yml
+
+```yaml
+magnoliaAuthor:
+  catalinaExtraEnv:
+    com.sun.management.jmxremote.port: "8099"
+    com.sun.management.jmxremote.rmi.port: "8099"
+    com.sun.management.jmxremote.authenticate: "false" (1)
+    com.sun.management.jmxremote.ssl: "false"
+    com.sun.management.jmxremote.local.only: "false"
+    java.rmi.server.hostname: "localhost"
+```
+
+**1**This example uses no authentication.
+
+> **Warning:** Be aware this will enable JMX monitoring on port 8099 without any kind of authentication nor security. For production environments authentication and ssl should be enabled. More information, see here.
+
+## [](#_service_port)Service port
+
+For the JMX agent to be reachable (internally), a service port must be enabled for the corresponding pod(s) in your project’s [values.yml](../../deployment/webapp_deployment/#_the_values_yml_file) file:
+
+> **Important:** Remember to note the http port since the entire ports configuration will be overwritten by the values configuration.
+
+values.yml
+
+```yaml
+magnoliaAuthor:
+...
+service:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+    - name: jmx
+      port: 8099
+      protocol: TCP
+      targetPort: 8099
+```
+
+## [](#_monitoring_tools)Monitoring tools
+
+There are GUIs like [JConsole](https://docs.oracle.com/javase/8/docs/technotes/guides/management/jconsole.html) that use the extensive instrumentation of the Java Virtual Machine (Java VM) to provide information about the performance and resource consumption of applications running on the Java platform.
+
+In order for the monitoring tool to connect, you need to **port forward** to the tomcat pod/container:
+
+```sh
+kubectl port-forward pods/esservices-dev-magnolia-helm-author-0 8099:8099 -n esservices-dev
+```
+
+You can now use `localhost:8099` (with no authentication nor ssl) to connect.
+
+### [](#_example)Example
+
+The New Connection
+
+![jconsole new connection](../../_images/monitoring/jconsole-new-connection.jpg)
+
+> **Caution:** If connecting without authentication or ssl, you may encounter the following dialog:
+
+## [](#_visualvm)VisualVM
+
+You can also use [VisualVM](https://visualvm.github.io/) as your monitoring tool.

@@ -1,0 +1,384 @@
+---
+title: "Preparing for DX Cloud"
+url: https://docs.magnolia-cms.com/paas/prepare/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Introduction > Preparing for DX Cloud
+---
+
+# Preparing for DX Cloud
+
+## [](#_introduction)Introduction
+
+Moving to Magnolia’s DX Cloud is an exciting step, but there are key aspects to prepare before onboarding. This guide outlines what you need to have ready, how the onboarding process works, and what to expect at different stages of your DX Cloud journey.
+
+## [](#_before_onboarding)Before onboarding
+
+Before the onboarding meeting, Magnolia’s team ensures that:
+
+-   Your subscription is set up in the Admin Cockpit.
+
+-   You have received your **shortname** (your unique subscription name).
+
+-   The Cockpit URL is functional.
+
+-   Magnolia’s author and public instances are operational.
+
+
+## [](#_understanding_the_dx_cloud_architecture)Understanding the DX Cloud architecture
+
+![paas architecture premium](../_images/deployment/paas-architecture-premium.jpg)
+
+### [](#_cluster_setup)Cluster setup
+
+-   Initially, you receive a **development (non-prod) cluster**.
+
+-   The **production (prod) cluster** is only provisioned when the project nears maturity.
+
+-   Clusters run on AWS, Azure, Google Cloud Platform, or AliCloud.
+
+-   Magnolia’s SRE team provisions the clusters with the chosen cloud provider.
+
+
+### [](#_customer_access)Customer access
+
+-   You have access to the customer Cockpit.
+
+-   Customers **do not** have access to Rancher (Kubernetes management tool).
+
+-   We provide an architecture diagram detailing components and configurations to ensure you have a high level understanding of how everything works together.
+
+    See [DX Cloud Architecture](../architecture/) for more on this topic.
+
+
+## [](#_what_magnolia_provides)What Magnolia provides
+
+### [](#_standard_stack)Standard stack
+
+-   **GitLab** (default for version control and CI/CD pipelines)
+
+    See [GitLab CI/CD](../gitlab/) for more on this topic.
+
+-   Kubernetes orchestrator
+
+    See [Kubernetes fundamentals](../kubernetes/) for more on this topic.
+
+-   **Docker Registry** (default is GitLab-based, but you can bring your own)
+
+-   **Custom GitLab URL**
+
+    -   If using your own registry, you must provide details to Magnolia.
+
+        See the [GitLab & CI/CD configuration](#_gitlab_cicd_configuration) section below for more details.
+
+
+
+## [](#_gitlab_cicd_configuration)GitLab & CI/CD configuration
+
+If you choose our [DX Cloud standard](../architecture/#_standard), you receive a dedicated GitLab URL. (e.g., `gitlab.customer.magnolia-platform.com`)
+
+You can opt to use your own GitLab, Azure DevOps, GitHub, or BitBucket pipelines. You are always responsible for maintaining the pipeline. However, in this case, you are also responsible for setting up the pipeline.
+
+### [](#_repository_structure)Repository Structure
+
+Using our stack
+
+If you decide to use our DX Cloud repository setup, a **base-dev** repository is provided as a starting point. You should also create a new environment called **dev** where you use the **base-dev** repository as the template.
+
+Using your own stack
+
+If you want to use your own repository setup, we demonstrate during onboarding how everything works using our templates. However, you must then replicate that in your own GitLab CI/CD setup.
+
+> **Note:** You can rename projects but must retain the shortname assigned at the contract stage.You should called your production repository, prod and your development repository dev (instead of base-<environment>.)Regional Magnolia repositories (regional-<region>) exist but are not customer-accessible.
+
+### [](#_deployment_pipeline)Deployment Pipeline
+
+The GitLab CI/CD pipeline includes:
+
+1.  **Build Stage**: Triggers at every commit to build Magnolia.
+
+2.  **Push Stage**: Pushes the Docker image to the registry.
+
+3.  **Deploy Stage**: Uses Helm charts to deploy to the environment.
+
+    -   Deployment to the UAT, dev, and prod [environments](../environments/) is **manual** (controlled via GitLab UI).
+
+    -   The `values.yml` file defines deployment variables and must match the registry secret (`gitlab` by default).
+
+
+
+## [](#_maven_and_nexus_authentication)Maven and Nexus authentication
+
+Understanding Magnolia’s authentication systems is critical for successful DX Cloud deployment and CI/CD pipeline operation.
+
+Magnolia operates two distinct Single Sign-On (SSO) systems. These are separate authentication systems.
+
+Your DX Cloud SSO credentials (used to access GitLab) are different from your Magnolia Services SSO credentials (used to access Nexus).
+
+1.  **DX Cloud SSO** - for infrastructure services
+
+    -   Cockpit (Admin interface)
+
+    -   Rancher (Kubernetes management)
+
+    -   GitLab (Version control & CI/CD)
+
+
+2.  **Magnolia Services SSO** - for development services
+
+    -   Nexus (Maven repository)
+
+    -   Academy (Training platform)
+
+    -   Partner Portal
+
+
+
+> **Important:** Legacy LDAP authentication has been deprecated.The migration was announced in December 2024.The legacy LDAP system was fully shut down in June 2025.Old "robot" Nexus accounts using LDAP credentials no longer work.If your CI/CD pipelines suddenly fail with authentication errors when accessing Nexus, you likely need to migrate from LDAP credentials to SSO user tokens.
+
+### [](#_obtain_nexus_sso_user_tokens)Obtain Nexus SSO user tokens
+
+You need your Nexus user tokens so you can update your [GitLab CI/CD variables](#_update_pipeline_credentials) with the user token values.
+
+> **Note:** If you don’t want to use a personal account for your automation pipeline, send us a bot account email via a support ticket where we will grant it proper permissions for CI/CD usage.
+
+To configure your Maven\[[1](#_footnotedef_1 "View footnote.")\] credentials for pipeline builds:
+
+1.  Log in to the chosen Magnolia Nexus regional URL with SSO.
+
+    -   [Nexus EU](https://nexus.magnolia-cms.com)
+
+    -   [Nexus US](https://nexus.us.magnolia-cms.com)
+
+    -   [Nexus APAC](https://nexus.ap.magnolia-cms.com)
+
+
+2.  Access your *User Token* details from the user menu. User tokens are **region-scoped**, so they are only valid for the corresponding regional repository.
+
+    ![nexus user tokens](../_images/deployment/nexus-user-tokens.jpg)
+
+    For more details on this process, see [Working with Your User Profile](https://help.sonatype.com/en/working-with-your-user-profile.html).
+
+
+### [](#_update_pipeline_credentials)Update pipeline credentials
+
+Your CI/CD pipeline requires Maven credentials to download Magnolia modules from Nexus during the build process.
+
+1.  In GitLab, go to **Settings > CI/CD > Variables**.
+
+2.  Update the following variables:
+
+    | Variable Name | Value | Description |
+    | --- | --- | --- |
+    | `MAVEN_USER` | Your user token **name code** | The username portion of your Nexus SSO token |
+    | `MAVEN_USER_PWD` | Your user token **pass code** | The password portion of your Nexus SSO token |
+
+    Variable scope recommendations
+
+    -   Create these variables at the **group level** to apply them to both frontend and backend repositories
+
+    -   Mark them as **Masked** to prevent exposure in build logs
+
+    -   Mark them as **Protected** if you only want them available on protected branches
+
+
+
+### [](#_regenerate_nexus_sso_user_tokens)Regenerate Nexus SSO user tokens
+
+Your Nexus user tokens will need to be regenerated when:
+
+-   Your SSO password changes or expires
+
+-   You manually revoke the token in Nexus
+
+-   Security requirements mandate token rotation
+
+
+To regenerate your token, follow the same process outlined in [Obtain Nexus SSO user tokens](#_obtain_nexus_sso_user_tokens), then update your [GitLab CI/CD variables](#_update_pipeline_credentials) with the new values.
+
+## [](#_accessing_kubernetes)Accessing Kubernetes
+
+-   You **do not** interact directly with Kubernetes.
+
+-   Deployment authentication is handled via GitLab CI/CD settings using three key variables:
+
+    | Variable | Description |
+    | --- | --- |
+    | `KUBE_CONFIG` | Kubernetes configuration file for cluster access. Provided by Magnolia’s SRE team upon request. |
+    | `MAVEN_USER` | Your Nexus SSO user token name code. Required for downloading Magnolia modules during the build stage.<br><br>See [Maven and Nexus authentication](#_maven_and_nexus_authentication) for how to obtain this. |
+    | `MAVEN_USER_PWD` | Your Nexus SSO user token pass code. Required for downloading Magnolia modules during the build stage.<br><br>See [Maven and Nexus authentication](#_maven_and_nexus_authentication) for how to obtain this. |
+
+-   Magnolia’s SRE team provides the KubeConfig file upon request via [support ticket](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13).
+
+
+Support
+
+You must **open a support ticket** to:
+
+-   Request a Kubernetes service account
+
+-   Obtain your `KUBE_CONFIG` file
+
+-   Store required secrets in Rancher
+
+
+### [](#_secrets_authentication)Secrets & Authentication
+
+-   A GitLab access token is required for orchestrator-to-registry communication.
+
+-   If using a custom registry, you must provide the **registry domain** in your support ticket.
+
+
+> **Important:** By default, the Kubernetes secrets name is gitlab and contains the required credentials. You can name it what you want; however, it must match the image.pullSecrets.name value in the Helm value: Images. If you do change it, you must inform us so we can create the equivalent name in Kubernetes.
+
+## [](#_troubleshooting)Troubleshooting
+
+### [](#_pipeline_fails_with_maven_authentication_errors)Pipeline fails with Maven authentication errors
+
+**Symptoms:**
+
+-   Build stage fails with "401 Unauthorized" errors
+
+-   Error messages reference `nexus.magnolia-cms.com`
+
+-   Dependencies cannot be downloaded from Magnolia repositories
+
+
+**Causes and solutions:**
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 40%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Cause</th><th class="tableblock halign-left valign-top">Solution</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Using legacy LDAP credentials</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Migrate to SSO user tokens. See <a href="#_maven_and_nexus_authentication">Maven and Nexus authentication</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>MAVEN_USER</code> or <code>MAVEN_USER_PWD</code> variables not set</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Configure these variables in GitLab CI/CD settings. See <a href="#_update_pipeline_credentials">Update pipeline credentials</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Variables set at project level instead of group level</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Move variables to group level to ensure they apply to all repositories.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Tokens expired after password change</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Regenerate your Nexus user tokens and update the GitLab variables. See <a href="#_regenerate_nexus_sso_user_tokens">Regenerate Nexus SSO user tokens</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Using wrong Nexus regional URL</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Verify your <code>pom.xml</code> references the correct regional Nexus URL:</p></div><div class="ulist"><ul><li><p>EU: <code>https://nexus.magnolia-cms.com</code></p></li><li><p>US: <code>https://nexus.us.magnolia-cms.com</code></p></li><li><p>APAC: <code>https://nexus.ap.magnolia-cms.com</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+### [](#_old_robot_nexus_account_stopped_working)Old "robot" Nexus account stopped working
+
+**Symptoms:**
+
+-   Previously working pipeline suddenly fails
+
+-   Using a service account created before December 2024
+
+-   Account username suggests LDAP format (e.g., `robot-*`)
+
+
+**Solution:**
+
+Legacy LDAP authentication was deprecated in December 2024 and shut down in June 2025. You must migrate to SSO user tokens:
+
+1.  Log into Nexus using SSO (not legacy login)
+
+2.  Generate new user tokens
+
+3.  Update your GitLab CI/CD variables with the new tokens
+
+
+See [Maven and Nexus authentication](#_maven_and_nexus_authentication) for complete instructions.
+
+### [](#_pipeline_succeeds_but_deployment_fails)Pipeline succeeds but deployment fails
+
+**Symptoms:**
+
+-   Build and push stages complete successfully
+
+-   Deploy stage fails with authentication or permission errors
+
+-   Error messages reference Kubernetes or Helm
+
+
+**Causes and solutions:**
+
+| Cause | Solution |
+| --- | --- |
+| Missing or invalid `KUBE_CONFIG` | Request the KubeConfig file from Magnolia’s SRE team via support ticket. See [\[Accessing Kubernetes\]](#Accessing Kubernetes). |
+| Registry secret misconfigured | Verify the secret name in your `values.yml` matches the Kubernetes secret name. By default, this should be `gitlab`. See [Secrets & Authentication](#_secrets_authentication). |
+| Insufficient Kubernetes permissions | Open a support ticket to verify your service account has the necessary permissions. |
+
+### [](#_cannot_access_gitlab_or_nexus_after_password_change)Cannot access GitLab or Nexus after password change
+
+**Symptoms:**
+
+-   GitLab login still works (PaaS SSO)
+
+-   Nexus authentication fails (Services SSO)
+
+-   Pipeline breaks after password change
+
+
+**Solution:**
+
+Remember that DX Cloud SSO and Magnolia Services SSO are separate systems:
+
+-   **GitLab/Cockpit/Rancher**: Uses DX Cloud SSO - your password change is automatically reflected
+
+-   **Nexus/Academy/Partner Portal**: Uses Services SSO - you must regenerate user tokens
+
+
+After changing your Services SSO password:
+
+1.  Log into Nexus with your new password
+
+2.  Generate new user tokens
+
+3.  Update `MAVEN_USER_PWD` in GitLab CI/CD variables
+
+
+### [](#_how_to_verify_maven_credentials_locally)How to verify Maven credentials locally
+
+If you want to test your Nexus credentials before updating the pipeline:
+
+1.  Create or update your local `~/.m2/settings.xml`:
+
+    ```xml
+    <settings>
+      <servers>
+        <server>
+          <id>magnolia.nexus.enterprise</id>
+          <username>YOUR_USER_TOKEN_NAME_CODE</username>
+          <password>YOUR_USER_TOKEN_PASS_CODE</password>
+        </server>
+      </servers>
+    </settings>
+    ```
+
+2.  Run a test Maven command:
+
+    ```bash
+    mvn dependency:get \
+      -DremoteRepositories=https://nexus.magnolia-cms.com/repository/enterprise \
+      -DgroupId=info.magnolia \
+      -DartifactId=magnolia-core \
+      -Dversion=6.3.0
+    ```
+
+3.  If successful, your credentials are valid and can be used in GitLab CI/CD.
+
+    For complete Maven configuration details, see: [Maven setup documentation](../../product-docs/7.0/Developing/Development-environment/Maven/).
+
+
+### [](#_still_having_issues)Still having issues?
+
+If none of these solutions resolve your issue:
+
+1.  Check [GitLab CI/CD](../gitlab/) for CI/CD pipeline specifics
+
+2.  Review [DX Cloud Architecture](../architecture/) for a system overview
+
+3.  Contact your **Technical Account Manager (TAM)** or open a [support ticket](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13).
+
+
+Include the following information in your support request:
+
+-   Full error message from the failed pipeline stage
+
+-   GitLab project/group path
+
+-   Confirmation that CI/CD variables are configured at the correct scope
+
+-   Whether the issue started after a recent change (password reset, configuration update, etc.)
+
+
+Why is this all important?
+
+By preparing the necessary accounts, credentials, and configurations ahead of time, you ensure a smooth and efficient DX Cloud onboarding experience. If you have any questions, reach out to your **Technical Account Manager (TAM)** or Magnolia Support.
+
+* * *
+
+[1](#_footnoteref_1). Maven is a build and dependency management tool that defines how applications are built and which libraries they depend on. For DX Cloud, Maven uses authentication to securely access artifact repositories (such as Nexus) to download dependencies and publish build outputs.

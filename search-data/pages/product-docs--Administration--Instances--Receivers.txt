@@ -1,0 +1,212 @@
+---
+title: "Receivers"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Instances/Receivers/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Instances > Receivers
+---
+
+# Receivers
+
+In the context of the [Publishing module](../../../Modules/List-of-modules/Publishing-module/), *receiver* is usually a public Magnolia instance that receives content from an author instance.
+
+This page explains how to configure receivers.
+
+## [](#_about_the_publishing_process)About the publishing process
+
+Publishing may refer either to a system process that copies content from an author to public instances or to a user action which triggers the process.
+
+For more information about how publishing works, please refer to the [Publishing overview](../../Architecture/Publishing/) page.
+
+## [](#_license_limitations)License limitations
+
+-   The Community Edition supports one receiver. You can configure many receivers but only the first receiver will receive published content. The publishing process is handled by the Publishing module itself.
+
+-   DX Core supports many receivers and the process is handled by the Publishing and Publishing Transactional modules.
+
+
+## [](#_verifying_publication_success)Verifying publication success
+
+There are three ways to verify successful publication:
+
+-   Status indicator changes to green on the author instance.
+
+-   Page content on the public instance is new. Request the page to test.
+
+-   Publication log `/webapps/magnoliaAuthor/logs/magnolia-activation.log` contains a success entry. See [Monitoring](../../Monitoring/) about logging and debugging.
+
+
+## [](#_configuration)Configuration
+
+Publishing receivers are configured using MicroProfile Config. You can supply MicroProfile configurations using:
+
+-   properties files
+
+-   YAML files
+
+-   system properties or environment variables (and more)
+
+
+To point to your config file, you must pass the `magnolia.config.locations` as a system property (for example, using Tomcat VM options in the `setenv.sh` configuration file), pointing to the directory where your config file resides (for example `-Dmagnolia.config.locations=/opt/magnolia/mounted-config`).
+
+-   microprofile-config.properties
+
+-   microprofile-config.yaml
+
+
+```properties
+magnolia.publishing.receivers[0].name=magnoliaPublic-0
+magnolia.publishing.receivers[0].url=http://dev-magnolia-helm-public-0-svc:8080
+magnolia.publishing.receivers[1].name=magnoliaPublic-1
+magnolia.publishing.receivers[1].url=http://dev-magnolia-helm-public-1-svc:8080
+```
+
+```yaml
+magnolia:
+  publishing:
+    receivers:
+      - name: magnoliaPublic-0
+        url: http://dev-magnolia-helm-public-0-svc:8080
+      - name: magnoliaPublic-1
+        url: http://dev-magnolia-helm-public-1-svc:8080
+```
+
+> **Note:** The default receiver for local development (magnoliaPublic8080) has been removed.Receiver example for local developmentmagnolia.publishing.receivers[0].name=magnoliaPublic
+> magnolia.publishing.receivers[0].url=http://{host}:{port}/magnoliaPublic (1)
+> magnolia.publishing.receivers[0].enabled=true1Put the path magnoliaPublic in the URL for local development.
+
+## [](#_previous_magnolia_6_2_definition_in_jcr)Previous (Magnolia 6.2) definition in JCR
+
+In Magnolia 6.2, publishing receivers were configured in JCR, under the `publishing-core` module. This made it difficult to provision instances across multiple environments and configure receivers during installation or startup through various JCR *bootstrapping* techniques.
+
+| Node name | Value |
+| --- | --- |
+| 📁 modules |     |
+| 📁 publishing-core |     |
+| 📁 config |     |
+| ⸬ receivers |     |
+| ⸬ magnoliaPublic8080 |     |
+| ⬩ url | [http://localhost:8080/magnoliaPublic](http://localhost:8080/magnoliaPublic) |
+| ⬩ enabled | true |
+
+### [](#_receiver_properties)Receiver properties
+
+ PropertyDescription
+
+`name`
+
+**required**
+
+Disambiguating name for a specific receiving public instance.
+
+`url`
+
+**required**
+
+Host name (or IP address) and port number of the receiving public instance.
+
+`enabled`
+
+**optional**, *default is `true`*
+
+Enables or disables the receiver without deleting the setup.
+
+> **Tip:** Useful when there are multiple receivers.
+
+`connectionTimeout`
+
+**optional**, *default is `10000` (10 seconds)*
+
+Sets a connection timeout in milliseconds.
+
+If time runs out before a connection to the receiver can be established, a `java.net.SocketTimeoutException` is thrown. The `0` value is interpreted as an infinite timeout.
+
+`readTimeout`
+
+**optional**, *default is `600000` (10 minutes)*
+
+Sets the read timeout in milliseconds.
+
+If time runs out before the published content is read from the author instance, a `java.net.SocketTimeoutException` is thrown. The `0` value is interpreted as an infinite timeout.
+
+Receivers can receive any content item: websites, website sections, configuration settings, custom content types, forums, comments, documents, images and so on. For example, you could publish a campaign site to a dedicated public instance.
+
+## [](#_troubleshooting_receivers_configuration)Troubleshooting receivers configuration
+
+Use the following Groovy script to check your receivers are correctly configured.
+
+```groovy
+import info.magnolia.objectfactory.Components
+import info.magnolia.publishing.config.PublishingConfig
+import org.eclipse.microprofile.config.Config
+import org.eclipse.microprofile.config.ConfigProvider
+
+config=ConfigProvider.getConfig()
+println "Raw MP value: " + config.getValue("magnolia.publishing.receivers[0].url", String.class)
+
+// Refreshable only via Guice for now, until MAGNOLIA-9367 standardizes the implementation.
+Components.getComponent(PublishingConfig.class).getReceivers().get(0).getUrl()
+```
+
+## [](#_workspaces)Workspaces
+
+> **Caution:** By default, a publishing receiver configuration will react to all workspaces.The purpose of these workspace configs is to react to specific workspaces in a more granular way, by excluding or including certain parts of the data.
+
+For each receiver, the specific content to be published or excluded from publishing is configured through properties under the `workspaces` node.
+
+Example MicroProfile configuration for the `website` workspace
+
+```bash
+magnolia.publishing.receivers[0].workspaces[0].workspace=website
+magnolia.publishing.receivers[0].workspaces[0].fromPath=/
+magnolia.publishing.receivers[0].workspaces[0].toPath=/
+magnolia.publishing.receivers[0].workspaces[0].excluded=true
+```
+
+### [](#_properties)Properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>workspace</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of a workspace.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>fromPath</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Workspace path on the author instance from which content is published.</p></div><div class="paragraph"><p>For a single site, enter the site node such as <code>/my-site</code>. To receive content from a particular branch, enter a more precise path such as <code>/my-site/about</code>.</p></div><div class="paragraph"><p>A trailing slash in the path limits the published content to the subnodes:</p></div><div class="ulist"><ul><li><p><code>/</code> - Everything</p></li><li><p><code>/my-site</code> - The <code>/my-site</code> node and everything under it.</p></li><li><p><code>/my-site/about</code> - The <code>about</code> node and everything under it.</p></li><li><p><code>/my-site/about/</code>- Content under <code>/my-site/about</code> page but not the node itself.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>toPath</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Workspace path on the public instance to which the content is published.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>A Node2Bean property that turns the mapping on (<code>true</code>) or off (<code>false</code>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>excluded</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>The <code>true</code> setting excludes the configured <code>fromPath</code> from publication.</p></div><div class="paragraph"><p>This property allows you to define exceptions such as "Publish everything in the <code>website</code> workspace except the <code>about</code> node and everything under it."</p></div></div></td></tr></tbody></table></div>
+
+### [](#_example_a_reacting_to_a_workspace_partially)Example A - Reacting to a workspace partially
+
+The receiver will react to the content in `/travel` in the `website` workspace, but will ignore everything else.
+
+```bash
+magnolia.publishing.receivers[0].workspaces[0].workspace=website
+magnolia.publishing.receivers[0].workspaces[0].fromPath=/travel
+magnolia.publishing.receivers[0].workspaces[0].toPath=/travel
+```
+
+### [](#_example_b_ignoring_a_workspace_partially)Example B - Ignoring a workspace partially
+
+The receiver will ignore a specific path, here the `/sportstation`, but will react to everything else in the `website2` workspace.
+
+```bash
+magnolia.publishing.receivers[0].workspaces[1].workspace=website2
+magnolia.publishing.receivers[0].workspaces[1].fromPath=/sportstation
+magnolia.publishing.receivers[0].workspaces[1].toPath=/sportstation
+magnolia.publishing.receivers[0].workspaces[1].excluded=true
+```
+
+### [](#_example_c_ignoring_a_complete_workspace)Example C - Ignoring a complete workspace
+
+The receiver will not react at all to the `test-website` workspace.
+
+```bash
+magnolia.publishing.receivers[0].workspaces[2].workspace=test-website
+magnolia.publishing.receivers[0].workspaces[2].fromPath=/
+magnolia.publishing.receivers[0].workspaces[2].toPath=/
+magnolia.publishing.receivers[0].workspaces[2].excluded=true
+```
+
+## [](#_multiple_receivers)Multiple receivers
+
+In DX Core, the author instance can publish content to multiple receivers. Receivers are key to building high-availability, load-balanced environments since they can be configured to receive targeted content. See [Creating a new public instance](../Creating-a-new-public-instance/).
+
+Related topics
+
+-   [Publishing](../../Architecture/Publishing/)
+
+-   [Publishing module](../../../Modules/List-of-modules/Publishing-module/)
+
+-   [Publishing Transactional module](../../../Modules/List-of-modules/Publishing-Transactional-module/)

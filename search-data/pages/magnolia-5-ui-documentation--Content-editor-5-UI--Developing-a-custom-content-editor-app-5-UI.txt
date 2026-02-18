@@ -1,0 +1,235 @@
+---
+title: "Developing a custom content editor app - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-editor-5-UI/Developing-a-custom-content-editor-app-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content editor - 5 UI > Developing a custom content editor app - 5 UI
+---
+
+# Developing a custom content editor app - 5 UI
+
+> **Note:** This page has been created for the Magnolia 5 UI framework. For the 6 UI framework page, see Developing a custom content editor app instead.
+
+This page describes how to develop a custom content editor app based on the Magnolia [Content editor](#6.2@product-docs:ROOT:Features/Content-authoring/Content-editor.adoc).
+
+## [](#_before_you_start)Before you start
+
+This section mentions what you should be aware of before creating an implementation of the content editor.
+
+### [](#_understanding_the_content_model_block_composition)Understanding the content model: *block*, *composition*
+
+A *block* is a well-defined page section which, together with other blocks and additional meta information, can form a single content *composition*.
+
+In the context of the content editor app, each item (e.g. a story in the stories-app) is a *composition* of N *blocks* of editable content, such as headings and paragraphs, complemented by meta information such as the required fields for the *lead* and *title* of the story:
+
+![Example of a story showing the block and composition](6.2@product-docs:ROOT:6-1-developingCustomEditor-storyExample-5ui.png)
+
+### [](#_required_node_types)Required node types
+
+The content editor UI expects nodes of the type `mgnl:composition` and `mgnl:block`. These node types are defined in the file `content-editor-nodetypes.xml` which resides in the `magnolia-content-editor` submodule.
+
+Hoewever, registration of these node types is handled by the `stories-app` or the `article-editor` via the [XML-based module descriptor](#6.2@product-docs:ROOT:Modules/Module-descriptor/XML-based-module-descriptor.adoc).
+
+### [](#_dependencies_on_the_content_editor_modules)Dependencies on the content editor modules
+
+In any case, your implementation of the content editor depends on the following modules:
+
+-   `magnolia-content-editor`
+
+-   `magnolia-block-api`
+
+-   `magnolia-block-templating`
+
+
+Besides the requirement for these `base modules`, you must also ensure that the system registers the [required node types](#_required_node_types).
+
+If your custom content editor is created with a light module, your bundle must contain either the `stories-app` or the `article-editor` module. If created with a Magnolia Maven module, you can register the node types within your custom module.
+
+> **Tip:** If you are using a preconfigured DX Core webapp or bundle (see the list of preconfigured Magnolia bundles), it already contains the stories-app and all the required modules.
+
+Read [Content Editor module - Installing](#6.2@product-docs:ROOT:Modules/List-of-modules/Content-Editor-module.adoc#_installing) for a deeper understanding of the dependencies between the content editor submodules.
+
+### [](#_workspace)Workspace
+
+To store new content items with your custom content editor, you can use
+
+-   the `stories` workspace provided by the `stories-app` module,
+
+-   the `articles` workspace provided by the `article-editor` module,
+
+-   or a [custom workspace](#6.2@product-docs:ROOT:Administration/Architecture/Workspaces.adoc#_adding_a_custom_workspace) defined by your custom module.
+
+
+### [](#_multilingual_content)Multilingual content
+
+The Content editor and the Stories app don’t yet support multi-language content.
+
+## [](#_defining_a_custom_content_editor_app)Defining a custom content editor app
+
+Developing a custom content editor app is similar to creating a [content app](#6.2@product-docs:ROOT:Apps/Developing-an-app/My-first-content-app.adoc) because it is also based on the `info.magnolia.ui.contentapp.ContentApp` app class.
+
+> **Tip:** You can build your custom content editor app within a light module.
+
+Here is an overview how to define a content editor app:
+
+-   Create a YAML [app descriptor](#6.2@product-docs:ROOT:Apps/App-configuration/App-descriptor.adoc) with its subapps.
+
+-   Make sure the `contentConnector` is using the `mgnl:composition` nodetype.
+
+-   Specifiy the `contentDefinition` with the outline and the blocks section.
+
+
+### [](#_creating_the_descriptor_and_subapps)Creating the descriptor and subapps
+
+Create a YAML [app descriptor](#6.2@product-docs:ROOT:Apps/App-configuration/App-descriptor.adoc).
+
+Typically, you need at least the following two subapps:
+
+-   The [browser subapp](../../Content-apps-5-UI/Parts-of-a-content-app-5-UI/#_browser_subapp). Use a regular browser subapp class `info.magnolia.ui.contentapp.browser.BrowserSubApp`.
+
+-   The editor subapp, which is a variant of the [detail subapp](../../Content-apps-5-UI/Parts-of-a-content-app-5-UI/#_detail_subapp). It implements content editor’s `info.magnolia.editor.app.ContentEditorSubAppDescriptor` class (see also [ContentEditorSubApp descriptor](../../Content-apps-5-UI/App-configuration-5-UI/Subapp-descriptor-5-UI/ContentEditorSubApp-descriptor-5-UI/)).
+    The editor subapp must also implement the `ActionDefinition` of the Content Editor module.
+
+
+ContentEditorSubAppDescriptor and ActionDefinition(s)
+
+```yaml
+actions:
+  close:
+    class: info.magnolia.editor.action.CloseContentEditorActionDefinition
+  save:
+    class: info.magnolia.editor.action.SaveContentActionDefinition
+  saveAndPublish:
+    class: info.magnolia.editor.action.SaveContentActionDefinition
+    onSuccessAction:
+      class: info.magnolia.ui.framework.action.ActivationActionDefinition
+      command: activate
+```
+
+### [](#_using_the_mgnlcomposition_nodetype_in_the_contentconnector)Using the `mgnl:composition` nodetype in the contentConnector
+
+Set the `mgnl:composition` nodetype for the [`contentConnector`](../../Content-apps-5-UI/App-configuration-5-UI/Content-connector-5-UI/) property in the [subapp descriptors](#6.2@product-docs:ROOT:Apps/App-configuration/Subapp-descriptor.adoc) of your content editor:
+
+contentConnector of the browser subapp
+
+```yaml
+contentConnector:
+  includeProperties: false
+  workspace: <workspace-name>
+  rootPath: /
+  defaultOrder: jcrName
+  nodeTypes:
+    - icon: icon-node-content
+      name: mgnl:composition
+      strict: true
+    - icon: icon-folder-l
+      name: mgnl:folder
+      strict: true
+```
+
+contentConnector of the editor subapp
+
+```yaml
+contentConnector:
+  workspace: <workspace-name>
+  nodeTypes:
+    - icon: icon-node-content
+      name: mgnl:composition
+      strict: true
+    - icon: icon-folder-l
+      name: mgnl:folder
+      strict: true
+```
+
+Instead of <workspace-name> use `stories`, `articles` or the name of your custom workspace.
+
+### [](#_setting_the_contentdefinition_properties)Setting the `contentDefinition` properties
+
+Add the `contentDefiniton` node to your editor subapp’s descriptor and define in it what content is allowed (i.e. editable).
+
+You must specify `outlineFields`, `initialBlock`, `defaultBlock` and `linkableApps`.
+
+`outlineFields`
+
+With `outlineFields` you define the static, structured information which you want on every content item.
+
+The example below has the following properties: `title`, `lead`, `image`, `created`, `author` and `jcrName`.
+
+[https://git.magnolia-cms.com/projects/DOCUMENTATION/repos/journals-light/raw/apps/journals.yaml?at=master](https://git.magnolia-cms.com/projects/DOCUMENTATION/repos/journals-light/raw/apps/journals.yaml?at=master)
+
+#### [](#_blocks)`blocks`
+
+This property defines the block types that are allowed.
+
+Example definition of allowed blocks
+
+```yaml
+blocks:
+  - text
+  - image
+```
+
+The Content Editor module comes with four predefined types of block you can use in your editor: `text`, `image`, `video` and `externalLink`. You can also [define your own content block(s)](#6.2@product-docs:ROOT:Apps/Developing-an-app/Developing-a-custom-content-editor-app/Developing-and-rendering-custom-content-blocks.adoc).
+
+#### [](#_initialblock)`initialBlock`
+
+Specifies what will be created as the initial, automatically added block when creating new content (or when no block is available).
+
+Example definition of the initialBlock
+
+```yaml
+initialBlock: text
+```
+
+![Initial text block](6.2@product-docs:ROOT:6-1-developingCustomContentEditor-initialBlockText-5ui.png)
+
+Example definition of the initialBlock
+
+```yaml
+initialBlock: image
+```
+
+![Initial image block](6.2@product-docs:ROOT:6-1-developingCustomContentEditor-initialBlockImage-5ui.png)
+
+#### [](#_defaultblock)`defaultBlock`
+
+Defines the block type that will be selected by `BlockPickerField`.
+
+Example definition of the defaultBlock
+
+```yaml
+defaultBlock: image
+```
+
+![Default image block](6.2@product-docs:ROOT:6-1-developingCustomContentEditor-defaultBlockImage-5ui.png)
+
+Example definition of the defaultBlock
+
+```yaml
+defaultBlock: text
+```
+
+![Default text block](6.2@product-docs:ROOT:6-1-developingCustomContentEditor-defaultBlockText-5ui.png)
+
+#### [](#_linkableapp)`linkableApp`
+
+Defines the app(s) whose resources you can link to from the [`text`](#6.2@product-docs:ROOT:Apps/Developing-an-app/Developing-a-custom-content-editor-app/Developing-and-rendering-custom-content-blocks.adoc#_block_types) block.
+
+Example definition of the linkableApps
+
+```yaml
+linkableApps:
+  - pages
+  - assets
+  - contacts
+```
+
+Related topics
+
+-   [Content editor](#6.2@product-docs:ROOT:Features/Content-authoring/Content-editor.adoc)
+
+-   [Stories app](#6.2@product-docs:ROOT:Apps/List-of-apps/Stories-app.adoc)
+
+-   [Developing and rendering custom content blocks](#6.2@product-docs:ROOT:Apps/Developing-an-app/Developing-a-custom-content-editor-app/Developing-and-rendering-custom-content-blocks.adoc)
+
+-   [Content Editor module](#6.2@product-docs:ROOT:Modules/List-of-modules/Content-Editor-module.adoc)

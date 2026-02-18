@@ -1,0 +1,259 @@
+---
+title: "Content apps and content pools"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Features/Content-apps-and-content-pools/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Magnolia DXP > Content apps and content pools
+---
+
+# Content apps and content pools
+
+## [](#_what_are_content_apps)What are content apps?
+
+A Content app is a specialized app type for managing structured content. The content app user interface consists of a browser subapp and one or more detail subapps. Content apps make it easy to enter items such as products or events. Many native Magnolia apps such as [Tours](../../Getting-started-with-Magnolia/Demo/) and [Contacts](../../Apps/List-of-apps/Contacts-app/) are content apps. Because this app style is used often, the framework provides convenience classes to make building a content app faster.
+
+Content apps sit at the heart of Magnolia as a digital experience platform (DXP). They provide a focused back-office UI where marketers and editors manage reusable, structured content such as products, events, locations, offers, or FAQs.
+
+Each content app:
+
+-   Is typically backed by a [content type](../Content-Types/) definition.
+
+-   Stores its items in a dedicated JCR workspace and usually supports folders for structuring items.
+
+-   Provides a browser subapp for searching, filtering and bulk operations.
+
+-   Provides one or more detail subapps with forms for editing individual items.
+
+
+Taken together, your content apps form a *content pool*: a collection of reusable, channel-agnostic content that can be used across pages, sites, apps and channels.
+
+## [](#_managing_structured_content_for_global_teams)Managing structured content for global teams
+
+Managing structured content in content apps is a major improvement over editing everything directly in pages. Global marketing and content operations teams benefit from:
+
+-   Central ownership of key entities such as products, brands, markets and locations.
+
+-   Consistent structures enforced by content types and field validators, reducing editorial mistakes.
+
+-   Clear separation of content and presentation, making reuse across channels straightforward.
+
+-   Search, filter and bulk actions on large catalogs of items.
+
+
+Typical examples of structured content managed in content apps:
+
+-   Products and price lists.
+
+-   Campaigns, promotions and banners.
+
+-   Events, venues and speakers.
+
+-   Locations, branches and contact points.
+
+-   Stories, case studies and testimonials.
+
+
+For an introduction to content modelling with content types and content apps, see [Content modelling](../../Developing/headless/concepts/content-modelling/).
+
+## [](#_publishing_structured_content_to_multiple_endpoints)Publishing structured content to multiple endpoints
+
+Content apps help you publish once and reuse everywhere.
+
+### [](#_reusing_content_on_multiple_pages)Reusing content on multiple pages
+
+When authoring pages:
+
+-   Editors use components that retrieve items from a content app (for example, "Event teaser" or "Product list").
+
+-   Components typically select items via queries, categories, tags or explicit references.
+
+-   The same event, product or location managed in a content app can appear on many different pages, across multiple sites.
+
+
+This allows:
+
+-   Consistent information: the same canonical item is reused wherever it is displayed.
+
+-   Simpler updates: editors change the item once in the content app and all consuming pages reflect the change, after publishing.
+
+-   Targeted experiences: pages can filter the content pool (for example, show only upcoming events in a specific country or category).
+
+
+### [](#_headless_and_omnichannel_delivery)Headless and omnichannel delivery
+
+Content apps also power headless and omnichannel scenarios.
+
+-   Use the [REST Delivery and GraphQL endpoints](../REST-and-GraphQL/) to expose content app items as JSON.
+
+    -   The `REST Delivery` endpoint is convenient for retrieving full items or trees of items.
+
+    -   The `GraphQL` endpoint is ideal if you need fine-grained control over which properties and related content are exposed.
+
+
+
+This way, the same structured content pool can feed:
+
+-   Websites and SPAs.
+
+-   Native mobile apps.
+
+-   In-store screens, kiosks, and other digital touchpoints.
+
+-   External systems or partners that consume your content via APIs.
+
+
+## [](#_cross_referencing_content_between_apps)Cross-referencing content between apps
+
+Real-world content models rarely live in isolation. Content apps often reference each other to express relationships between content types.
+
+Examples:
+
+-   An `Events` app references locations and venues stored in a `Locations` app.
+
+-   A `Products` app references entries in a `Brands` or `Categories` app.
+
+-   A `News` or `Stories` app references authors managed in a `Contacts` app.
+
+
+These relationships are typically modelled via:
+
+-   Fields that reference other items (for example, link or selection fields that point to another app’s workspace).
+
+-   Identifier or path-based references that Magnolia and your front-end can traverse.
+
+
+Benefits of cross-referencing apps:
+
+-   Single source of truth for shared entities such as locations, authors, or brands.
+
+-   You can achieve richer experiences by combining multiple content types in the UI.
+
+-   Simplified maintenance when the same entity is reused across campaigns, markets, and channels.
+
+
+### [](#_freemarker_examples)FreeMarker examples
+
+The following FreeMarker (`ftl`) snippets illustrate how to read content from another app using `cmsfn`. In these examples, `content`, `currentProduct`, and `currentEvent` all represent the current content item being rendered. Their properties (for example, `brandPath` or `locationId`) come from fields in the app or component dialog that authors fill in when creating or editing items.
+
+In your own templates, you may use `content` directly, alias it (`[#assign currentProduct = content]`), or introduce it as the loop variable in a `[#list]` over items from a content app.
+
+-   Products app
+
+-   Events app `contentByPath`
+
+-   Events app `contentById`
+
+
+**Example 1**: In a `Products` app, resolve brand and category references stored as paths or identifiers.
+
+```ftl
+[#-- currentProduct is the product item being rendered --]
+[#assign brandPath = currentProduct.brandPath!]
+[#assign categoryPath = currentProduct.categoryPath!]
+
+[#assign brand = brandPath?has_content?then(cmsfn.contentByPath(brandPath, "brands"), "")!]
+[#assign category = categoryPath?has_content?then(cmsfn.contentByPath(categoryPath, "categories"), "")!]
+
+<div class="product-meta">
+  [#if brand?has_content]
+    <span class="product-brand">${brand.name!}</span>
+  [/#if]
+  [#if category?has_content]
+    <span class="product-category">${category.name!}</span>
+  [/#if]
+</div>
+```
+
+**Example 2**: In an `Events` app, resolve the referenced location from the `Locations` app.
+
+```ftl
+[#-- currentEvent is the event item being rendered --]
+[#assign locationPath = currentEvent.locationPath!]
+[#if locationPath?has_content]
+  [#assign location = cmsfn.contentByPath(locationPath, "locations")!]
+  [#if location?has_content]
+    <div class="event-location">
+      <h3>${location.name!}</h3>
+      <p>${location.address!}</p>
+    </div>
+  [/#if]
+[/#if]
+```
+
+**Example 3**: Resolve the location from the `locations` workspace by identifier instead of path.
+
+```ftl
+[#-- currentEvent stores the identifier of the related location --]
+[#assign locationId = currentEvent.locationId!]
+
+[#if locationId?has_content]
+  [#assign location = cmsfn.contentById(locationId, "locations")!]
+  [#if location?has_content]
+    <div class="event-location">
+      <h3>${location.name!}</h3>
+      <p>${location.address!}</p>
+    </div>
+  [/#if]
+[/#if]
+```
+
+For more details on the available `cmsfn` functions, see [`cmsfn` templating functions](../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/).
+
+## [](#_global_and_local_content_in_a_dxp)Global and local content in a DXP
+
+Global marketing organizations need to balance centralized control with local flexibility. Content apps and content pools are a natural fit for this.
+
+Typical patterns:
+
+-   Global content apps for canonical content (global product catalog, brand guidelines, master campaigns).
+
+-   Local content apps (or local folders in a shared app) for region-specific variants.
+
+-   Shared content pools where global and local items live side by side, differentiated by locale, market, or segment properties.
+
+
+You can support global and local content by:
+
+-   Designing content types with fields for market, language, and audience.
+
+-   Structuring workspaces with folders per region or market.
+
+-   Combining [locales](../../Administration/Locale/), [languages](../../Administration/Language/), and [workspaces](../../Administration/Architecture/Workspaces/) to separate or share content as needed.
+
+
+## [](#_access_control_and_scoped_content_pools)Access control and scoped content pools
+
+Access control is essential for global teams working in shared content pools. Magnolia lets you restrict what different users can see and change.
+
+At a high level, you can:
+
+-   Configure [app permissions](../../Apps/App-configuration/Subapp-descriptor/) so that only certain roles can open a given content app.
+
+-   Use workspace and path-based access control to restrict folders or branches of a content app’s hierarchy.
+
+-   Limit the actions (such as publish, delete, or move) available to a group of users.
+
+
+Examples:
+
+-   Editors in the German market group have access only to the `Events` folders for Germany.
+
+-   Local teams can create and manage their own events, but cannot modify global campaigns or master data.
+
+-   A global team owns and maintains the `Locations` app, while local teams can only reference locations in their own apps.
+
+
+For more information, see:
+
+-   [Security](../../Administration/Security/)
+
+-   [Managing users](../../Administration/Managing-users/)
+
+-   [App configuration](../../Apps/App-configuration/)
+
+-   [Reusing configuration](../../Developing/Reusing-configuration/)
+
+
+## [](#_summary)Summary
+
+Content apps provide a powerful, form-based UI for managing structured content. When combined into content pools and delivered via pages and APIs, they allow global marketing teams to centralize key content, support local variations, and publish consistently to many channels from a single, well-governed source.

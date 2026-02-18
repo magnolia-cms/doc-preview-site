@@ -1,0 +1,185 @@
+---
+title: "Template definition"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Templating/Template-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template definition
+---
+
+# Template definition
+
+A template definition gives a template a name and makes it available to the system. At a minimum, a template definition must specify a [script](../Template-scripts/) and a [renderer](../Renderers/).
+
+You can [configure a template in a YAML file or a JCR node](../../../Modules/Module-configuration/#_changing_module_configuration).
+
+## [](#_template_definition_types)Template definition types
+
+Magnolia has three types of template definitions:
+
+-   [Page definition](Page-definition/) defines a page template. Pages are divided into areas.
+
+-   [Area definition](Area-definition/) defines an area template. An area is configured in a page definition. Areas typically contain components.
+
+-   [Component definition](Component-definition/) defines a component template.
+
+
+The [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) offers the `create-page` and `create-component` commands that automatically create basic scripts, template definitions and dialog definitions.
+
+## [](#_template_properties)Template properties
+
+Magnolia natively supports template properties for rendering pages with FreeMarker or SPA. Some of the properties listed below are required or optional for both of these renderers, some are FreeMarker or SPA specific.
+
+You can also configure [Custom template properties](#_custom_template_properties).
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+### [](#_common_template_properties)Common template properties
+
+You can use common template properties in [page](Page-definition/), [area](Area-definition/) and [component](Component-definition/) definitions. Each template type has its own specific properties too.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>renderType</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> for <code>freemarker</code> and <strong>optional</strong> for the SPA <code>$type</code> aliases (classes):</p></div><div class="ulist"><ul><li><p><code>spa</code> (<code>info.magnolia.rendering.spa.renderer.SpaRenderableDefinition</code>)</p></li><li><p><code>siteSpa</code> (<code>info.magnolia.rendering.spa.renderer.SiteAwareSpaRenderableDefinition</code>)</p></li></ul></div><div class="paragraph"><p>The property specifies which <a href="../Renderers/" class="xref page">renderer</a> to use. Magnolia supports the <code>freemarker</code>, <code>spa</code> and <code>site-spa</code> renderers by default.</p></div><div class="paragraph"><p>If you have the <a href="../../../Modules/List-of-modules/Site-module/" class="xref page">Site module</a>, you can set <code>renderType</code> to <code>site</code> and define a common <code>templateScript</code> in the <a href="../Site-definition/Template-prototype/" class="xref page">template prototype</a> to use for all pages on the site. For site-aware SPA rendering, the value is <code>site-spa</code>.</p></div><div class="paragraph"><p>You can also <a href="../Renderers/#_creating_a_custom_renderer" class="xref page">create a custom renderer</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>dialog</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Dialog definition ID in <code>&lt;module-name&gt;:&lt;path to dialog definition&gt;</code> format. The ID has two parts separated by a colon:</p></div><div class="ulist"><ul><li><p><code>&lt;module-name&gt;</code>: name of the module that contains the dialog definition.</p></li><li><p><code>&lt;path&gt;</code>: relative path to the dialog definition inside the <code>dialogs</code> root item. For example, the dialog ID <code>my-module:pages/homePageProperties</code> points to either the YAML file <code>$magnolia.home/my-module/dialogs/homePageProperties.yaml</code> or the JCR node <code>/modules/my-module/dialogs/homePageProperties</code> in the configuration workspace.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Template title displayed to editors. The value can be literal or retrieved from a message bundle with a <a href="../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a>. Use alphanumeric characters in literal values.</p></div><div class="paragraph"><p>Displayed in:</p></div><div class="ulist"><ul><li><p><a href="Page-definition/" class="xref page">Pages</a>: template dropdown in the Pages app.</p></li><li><p><a href="Area-definition/" class="xref page">Areas</a>: area toolbar in the page editor.</p></li><li><p><a href="Component-definition/" class="xref page">Components</a>: component toolbar in the page editor.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Template description displayed to editors. The value can be literal or retrieved from a message bundle with a <a href="../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a>. Use alphanumeric characters in literal values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> if <code>class</code> is not defined in template definition</p></div><div class="paragraph"><p>Alias for the Java bean representing the definition data of this item. Use the following values:</p></div><div class="ulist"><ul><li><p><code>page</code> for a non-SPA template.</p></li><li><p><code>siteSpa</code> for a site-aware SPA template.</p></li><li><p><code>spa</code> for any other SPA template.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Fully qualified class name for the Java bean representing the definition data of this item. The default class is <code>info.magnolia.rendering.template.TemplateDefinition</code>.</p></div><div class="paragraph"><p>Only set the value when using a custom definition class (for example, <code>com.example.templates.CustomTemplateDefinition</code>).</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>For an <a href="../../headless/spa-development/SPA-hosting/" class="xref page">externally hosted SPA</a>, <code>class</code> is:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.rendering.spa.renderer.SpaRenderableDefinition</code> if <code>$type: spa</code> is not in the template definition.</p></li><li><p><code>info.magnolia.rendering.spa.renderer.SiteAwareSpaRenderableDefinition</code> if <code>$type: siteSpa</code> is not in the template definition.</p></li></ul></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>parameters</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p><a href="#_custom_template_properties">Custom template properties</a> that you can access from a script without having to write a class.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>extends</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (in JCR node configuration only)</p></div><div class="paragraph"><p>Inherits the configuration from another template definition. The value is a valid Magnolia path. See <a href="../../Reusing-configuration/" class="xref page">Reusing configuration</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>variations</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Allows you to deliver the same content in different formats. This helps you optimize content for different channels (desktop, smartphone and tablet) and system parameters.</p></div><div class="paragraph"><p>You can configure variations in the <a href="../Site-definition/" class="xref page">site definition</a> as well as the template definition. Alternatively, you may want to use <a href="../../../use-cases/Personalization/" class="xref page">personalization</a> to create content variants.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_spa_only_template_properties)SPA-only template properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>baseUrl</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>In an <a href="../../headless/spa-development/SPA-hosting/" class="xref page">external SPA</a> configuration, an external URL which the page editor iFrame must point to.</p></div><div class="paragraph"><p>In an <a href="../../headless/spa-development/SPA-hosting/" class="xref page">external SPA</a> setup, multiple pages can have the same page definition but each page may need a different path or parameter to initialize. The format of this initialization element can be specified using the <code>routeTemplate</code> property.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>routeTemplate</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Format of a string appended to <code>baseUrl</code> to initialize a page in an <a href="../../headless/spa-development/SPA-hosting/" class="xref page">external SPA</a> configuration.</p></div><div class="dlist"><dl><dt class="hdlist1">Available properties</dt><dd><p>Besides <code>language</code>, you can use any page node property (for example, <code>@name</code>, <code>@path</code>, <code>@id</code> or the prefixed <code>mgnl:*</code> and <code>jcr:*</code> properties).</p></dd><dt class="hdlist1">Double and single curly brackets</dt><dd><p>Double curly brackets and single curly brackets are interpreted differently. The parameter inside double curly brackets <code>{{ }}</code> is not converted to the <code>application/x-www-form-urlencoded</code> MIME format. In case you need to use <code>@path</code>, other parameters with characters such as <code>space</code>, <code>+</code>, <code>"</code>, <code>%</code>, <code>&lt;</code>, <code>&gt;</code>, <code>\</code>, <code>^</code> or any HTML-unsafe characters, use the single curly brackets.</p></dd></dl></div><div class="paragraph"><p><strong>Examples</strong></p></div><div class="paragraph"><p>With <code>baseUrl: http://localhost:3000</code> and:</p></div><div class="ulist"><ul><li><p><code>routeTemplate:'?title={{title}}'</code><br>Passing <code>The string ü@foo-bar</code> to <code>title</code> will result in a broken address:<br></p></li></ul></div><div class="literalblock"><div class="content"><pre>http://localhost:3000/?title=The string ü@foo-bar</pre></div></div><div class="ulist"><ul><li><p><code>routeTemplate:'?title={title}'</code><br>Passing <code>The string ü@foo-bar</code> will generate a URI-safe form:<br></p></li></ul></div><div class="literalblock"><div class="content"><pre>http://localhost:3000/?title=The+string+%C3%BC%40foo-bar</pre></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>spaRouterClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>In an <a href="../../headless/spa-development/SPA-hosting/" class="xref page">external SPA</a> setup, the implementation class of your own custom router so you can resolve extra attributes that must be added to the URL.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_freemarker_only_template_properties)FreeMarker-only template properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>templateScript</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Path to the template script (in <code>/&lt;module&gt;/templates/&lt;type&gt;/&lt;file&gt;.&lt;ext&gt;</code> path format). See <a href="../../Resources/" class="xref page">Resources</a> for more about script storage locations.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>modelClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Model class that contains business logic for the template. The class needs to implement the <span class="inlineBean">info.magnolia.rendering.model.RenderingModel</span> interface. The renderer creates a bean based on <code>modelClass</code>. The current content, definition and parent model are passed to the constructor. This object is instantiated for each rendering of a page or component.</p></div><div class="paragraph"><p>A Groovy model class can be referenced from a YAML template definition.</p></div><div class="dlist"><dl><dt class="hdlist1">Current limitations</dt><dd><div class="ulist"><ul><li><p>A Groovy model cannot be supplied as a file. You can only reference a Groovy model stored in JCR. See the <a href="../../../Modules/List-of-modules/Groovy-module/#_use_groovy_classes_instead_of_java_classes" class="xref page">Groovy module</a>.</p></li><li><p>The reference path cannot include the hyphen character.</p></li></ul></div></dd><dt class="hdlist1">Value</dt><dd><div class="ulist"><ul><li><p>Java models: fully qualified class name (for example, <code>com.example.templates.HomePageModel</code>).</p></li><li><p>Groovy models: path to the model using dot notation such as <code>myModule.templates.components.LinkModel.</code></p></li></ul></div></dd></dl></div></div></td></tr></tbody></table></div>
+
+### [](#_custom_template_properties)Custom template properties
+
+Use a `parameters` item in any template definition to add custom properties without having to write a custom class. Access the properties from your script using the `def.parameters.<parameter-name>` notation. See [Rendering context objects: `def`](../Template-scripts/Rendering-context-objects/#_def).
+
+```yaml
+parameters:
+  example: my-value
+```
+
+To access the `example` parameter in a FreeMarker script, use the following:
+
+${def.parameters.example!}
+
+## [](#_referencing_templates)Referencing templates
+
+Other configuration nodes can reference templates. The property used in the referencing configuration depends on the mechanism used.
+
+### [](#_referencing_templates_with_id_property)Referencing templates with `id` property
+
+The template `id` property is used for:
+
+-   [Component availability](Component-definition/#_component_availability) in an area definition.
+
+-   [Template availability](../Template-availability/#_Option1Definepagetemplatesexplicitly) in a site definition.
+
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>ID of the template definition in <code>&lt;module name&gt;:&lt;path to page definition&gt;</code> format. The ID has two parts separated by a colon:</p></div><div class="ulist"><ul><li><p><code>&lt;module-name&gt;</code>: name of the module that contains the template definition.</p></li><li><p><code>&lt;path&gt;</code>: relative path to the template definition inside the <code>templates</code> folder. For example, the page ID <code>my-module:pages/home</code> points to either the YAML file <code>$magnolia.resources.dir/my-module/templates/pages/home.yaml</code> or the JCR node <code>/modules/my-module/templates/pages/home</code> in the <code>config</code> workspace.</p></li></ul></div><div class="paragraph"><p>You can reference templates from any module.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p><code>id</code> is not a general property. It can only be used when it is supported by the referencing configuration.</p></div></td></tr></tbody></table></div></div></td></tr></tbody></table></div>
+
+### [](#_referencing_templates_using_path)Referencing templates using path
+
+Various Magnolia mechanisms use the path to the template definition to reference templates. These mechanisms allow you to reuse configurations:
+
+-   [Include mechanism](../../Reusing-configuration/YAML-inherit-and-include/): used in YAML definitions to include a referenced file. The Magnolia-specific `!include` directive uses the absolute path to reference the file.
+
+-   [Extends mechanism](../../Reusing-configuration/JCR-extends/): used in JCR node configuration to extend another configuration. The `extends` property references the source configuration by its path. The target configuration inherits everything from the source and adds its own exceptions.
+
+-   [Definition decoration mechanism](../../Definition-decoration/): allows you to alter existing configured items, such as apps, dialogs, fields, templates and more.
+
+
+## [](#_configuration_examples)Configuration examples
+
+### [](#_spa_render_type)SPA render type
+
+#### [](#_with_baseurl_property)With `baseUrl` property
+
+```yaml
+$type: spa
+title: 'React: Contact'
+baseUrl: http://example.com
+dialog: spa-lm:pages/basic
+```
+
+#### [](#_with_baseurl_and_routetemplate_properties)With `baseUrl` and `routeTemplate` properties
+
+```yaml
+$type: spa
+title: 'React: Contact'
+baseUrl: http://localhost:3000
+routeTemplate: '{{path}}?lang={language}'
+dialog: spa-lm:pages/basic
+```
+
+### [](#_site_spa_render_type)Site SPA render type
+
+```yaml
+$type: siteSpa
+visible: true
+dialog: mte:pages/pageProperties
+baseUrl: http://localhost:3100/magnoliaAuthor
+routeTemplate: '{{@path}}'
+
+areas:
+  header:
+    renderType: spa
+    title: Header
+    type: single
+    availableComponents:
+      navigation:
+        id: vue-lm:components/navigation
+  main:
+    renderType: spa
+    title: Main
+    availableComponents:
+      title:
+        id: vue-lm:components/title
+      text-image:
+        id: vue-lm:components/text-image
+      component-with-area:
+        id: vue-lm:components/component-with-area
+```
+
+### [](#_freemarker_render_type)FreeMarker render type
+
+```yaml
+renderType: freemarker
+templateScript: /my-module/templates/pages/home.ftl
+dialog: my-module:pages/homePageProperties
+class: com.example.templates.CustomTemplateDefinition
+modelClass: com.example.templates.HomePageModel
+```
+
+#### [](#_with_variations_property)With `variations` property
+
+```yaml
+title: 'Sitemap'
+renderType: freemarker
+templateScript: /sitemap-magnolia/templates/pages/sitemap.ftl
+visible: true
+variations:
+  xml:
+    templateScript: /sitemap-magnolia/templates/pages/sitemap-xml.ftl
+```
+
+### [](#_referencing_templates_with_the_id_property)Referencing templates with the `id` property
+
+A `main` area definition referencing the [MTK’s](../../../Modules/List-of-modules/MTE-module/MTK-module/) `textImage` and `linkList` components in the `availableComponents` node.
+
+```yaml
+templateScript: /my-module/templates/pages/my-template.ftl
+renderType: freemarker
+areas:
+  main:
+    availableComponents:
+      textImage:
+        id: mtk2:components/textImage
+      linkList:
+        id: mtk2:components/linkList
+```
+
+Related topics
+
+-   [Page definition](Page-definition/)
+
+-   [Area definition](Area-definition/)
+
+-   [Component definition](Component-definition/)

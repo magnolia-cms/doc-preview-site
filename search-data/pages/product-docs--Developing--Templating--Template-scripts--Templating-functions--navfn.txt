@@ -1,0 +1,455 @@
+---
+title: "navfn"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Templating/Template-scripts/Templating-functions/navfn/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > navfn
+---
+
+# navfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`navfn` templating functions allow you to create navigation for your site. There are methods to access standard pages and also content stored in apps and rendered on virtual pages. The `navfn` templating function library is included in the [MTE module](../../../../../Modules/List-of-modules/MTE-module/).
+
+## [](#_accessing_ancestors)Accessing ancestors
+
+### [](#_getting_the_root_page)Getting the root page
+
+Returns the highest ancestor page of type *mgnl:page* for the provided content - which is the root page.
+
+#### [](#_method_signature)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)`rootPage(ContentMap content)`
+
+#### [](#_argument)Argument
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The node whose ancestors you want to get. |
+
+#### [](#_returns)Returns
+
+`ContentMap`
+
+#### [](#_usage)Usage
+
+`navfn.rootPage(content)`
+
+\[#assign navigationRootPage = navfn.rootPage(content)!\]
+
+Returns the ancestor of the provided content at the specified depth if the ancestor is of type *mgnl:page*.
+
+#### [](#_method_signature_2)Method signature
+
+[`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)`ancestorPageAtLevel(ContentMap content, int depth)`
+
+#### [](#_argument_2)Argument
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The node whose ancestors you want to get. |
+| `depth` | **required**<br><br>The page depth.<br><br>An ancestor of depth x is the page that is x levels down along the path from the root page to this page. e.g. depth == 1 would return the root page of this page, depth == 2 would return the child page of the root page to this page, etc. |
+
+#### [](#_returns_2)Returns
+
+`ContentMap`
+
+#### [](#_usage_2)Usage
+
+`navfn.ancestorPageAtLevel(content, depth)`
+
+\[#assign subNavigationRootPage = navfn.ancestorPageAtLevel(content, 2)!\]
+
+## [](#_accessing_children)Accessing children
+
+### [](#_getting_child_pages_of_a_page)Getting child pages of a page
+
+Returns the list of child nodes of type *mgnl:page* which aren’t hidden in navigation of the the provided page as a list of content maps.
+
+#### [](#_method_signature_3)Method signature
+
+`List<ContentMap> navItems(ContentMap page)`
+
+#### [](#_argument_3)Argument
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required**<br><br>The page whose child pages you want to get. |
+
+#### [](#_returns_3)Returns
+
+`List<ContentMap>`
+
+#### [](#_usage_3)Usage
+
+`navfn.navItems(page)`
+
+```xml
+ <!-- render links to all pages on "level 1" -->
+[#assign navParentItem = navfn.rootPage(content)!]
+[#if navParentItem??]
+  [#assign navItems = navfn.navItems(navParentItem)]
+  [#list navItems as navItem]
+      <a href="${cmsfn.link(navItem)!}">${navItem.navigationTitle!navItem.title!navItem.@name}</a> |
+  [/#list]
+[/#if]
+```
+
+### [](#_getting_child_nodes_by_workspace_path_and_node_type)Getting child nodes by workspace, path and node type
+
+Returns the list of child nodes with specific node type which aren’t hidden in navigation from a defined parent as a list of content maps. The workspace and parent path define the location of the parent. Use this method to render navigations for content stored in content apps on workspaces distinct from website.
+
+#### [](#_method_signature_4)Method signature
+
+`List<[ContentMap](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)> navItemsFromApp(String workspace, String parentPath, String nodeType)`
+
+#### [](#_argument_4)Argument
+
+| Argument | Description |
+| --- | --- |
+| `workspace` | **required**<br><br>The workspace of the parent node. |
+| `parentPath` | **required**<br><br>The path of the parent node whose children you want to get. |
+| `nodeType` | **required**<br><br>The node type of the children you want to get. |
+
+#### [](#_returns_4)Returns
+
+`List<ContentMap>`
+
+#### [](#_usage_4)Usage
+
+`navfn.navItemsFromApp(workspace, parentPath, nodeType)`
+
+\[#assign navContentItems = navfn.navItemsFromApp("contacts", "/", "mgnl:contact")\]
+\[#list navContentItems as navItem\]
+    \[#-- do something with the navItem here --\]
+\[/#list\]
+
+## [](#_checking_templates)Checking templates
+
+### [](#_checking_for_a_specified_template)Checking for a specified template
+
+Checks whether the given page has the specified template.
+
+#### [](#_method_signature_5)Method signature
+
+`boolean hasTemplate(ContentMap page, String template)`
+
+#### [](#_argument_5)Argument
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required**<br><br>The page whose template you want to check. |
+| `template` | **required**<br><br>The template to check for. |
+
+#### [](#_returns_5)Returns
+
+`boolean`
+
+#### [](#_usage_5)Usage
+
+`navfn.hasTemplate(page, template)`
+
+\[#if navfn.hasTemplate(content, "mtk2:pages/contacts")\]
+  \[#-- do something here --\]
+\[/#if\]
+
+### [](#_checking_for_a_specified_template_type)Checking for a specified template type
+
+Checks whether the given page has the specified template type.
+
+#### [](#_method_signature_6)Method signature
+
+`boolean hasTemplateType(ContentMap page, String templateType)`
+
+#### [](#_argument_6)Argument
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required**<br><br>The page whose template you want to check. |
+| `templateType` | **required**<br><br>The template type to check for. |
+
+#### [](#_returns_6)Returns
+
+`boolean`
+
+#### [](#_usage_6)Usage
+
+`navfn.hasTemplateType(ContentMap page, String templateType)`
+
+\[#if navfn.hasTemplateType(content, "section")\]
+  \[#-- do something here --\]
+\[/#if\]
+
+### [](#_checking_for_specified_template_subtype)Checking for specified template subtype
+
+Checks whether the given page has the specified template subtype.
+
+#### [](#_method_signature_7)Method signature
+
+`boolean hasTemplateSubtype(ContentMap page, String templateSubtype)`
+
+#### [](#_argument_7)Argument
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required**<br><br>The page whose template you want to check. |
+| `templateSubType` | **required**<br><br>The sub-template type to check for. |
+
+#### [](#_returns_7)Returns
+
+`boolean`
+
+#### [](#_usage_7)Usage
+
+`navfn.hasTemplateSubtype(page, templateSubtype)`
+
+\[#if navfn.hasTemplateSubtype(navItem, "contactsOverview")\]
+    \[#-- do something here --\]
+\[/#if\]
+
+## [](#_accessing_urls)Accessing URLs
+
+### [](#_getting_a_page_url_with_a_selector)Getting a page URL with a selector
+
+Returns a page URL with a selector (delimited by the ~ \[tilde\] character) identifying the content to be rendered. This relies on Magnolia’s [selector mechanism](../../../../../Apps/Developing-an-app/Specific-aspects/Location-location-location/#_selectors), for example `[https://demopublic.magnolia-cms.com/tour-type](https://demopublic.magnolia-cms.com/tour-type)beach.html`
+
+#### [](#_method_signature_8)Method signature
+
+`String linkWithSelector(ContentMap page, ContentMap content)`
+
+#### [](#_argument_8)Argument
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required**<br><br>The page whose URL you want to get. |
+| `content` | **required**<br><br>The content from the content app. For example contact, tour, etc. |
+
+#### [](#_returns_8)Returns
+
+`String`
+
+#### [](#_usage_8)Usage
+
+`navfn.linkWithSelector(page, content)`
+
+```cnd
+<a href="${navfn.linkWithSelector(page, navContentItem)!"#"}">${navContentItem.lastName!navContentItem.@name}</a>
+```
+
+### [](#_getting_a_page_url_with_a_parameter)Getting a page URL with a parameter
+
+Returns a page url with a parameter identifying the content to be rendered.
+A link of this type is produced `[http://mysite/mypage.html?parameterName=mycontent](http://mysite/mypage.html?parameterName=mycontent)` where \`mypage' is the node name of the target page, \`mycontent' the node name of the content.
+
+#### [](#_method_signature_9)Method signature
+
+`String linkWithParameter(ContentMap page, ContentMap content)`
+
+`String linkWithParameter(ContentMap page, ContentMap content, String parameterName)`
+
+#### [](#_argument_9)Argument
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required**<br><br>The page whose URL you want to get. |
+| `content` | **required**<br><br>The content from the content app. For example contact, tour, etc. |
+| `parameterName` | **optional**, *default* is <workspace-name><br><br>The parameter name. |
+
+#### [](#_returns_9)Returns
+
+`String`
+
+#### [](#_usage_9)Usage
+
+`navfn.linkWithParameter(page, content)`
+
+```cnd
+<a href="${navfn.linkWithParameter(page, navContentItem)!"#"}">${navContentItem.lastName!navContentItem.@name}</a>
+```
+
+`navfn.linkWithParameter(page, content, parameterName)`
+
+```cnd
+<a href="${navfn.linkWithParameter(page, navContentItem, "contacts")!"#"}">${navContentItem.lastName!navContentItem.@name}</a>
+```
+
+### [](#_getting_a_url_for_provided_content)Getting a URL for provided content
+
+Returns a URL for the provided content.
+
+#### [](#_method_signature_10)Method signature
+
+`String link(ContentMap content)`
+
+#### [](#_argument_10)Argument
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content for which you want to get URL. |
+
+#### [](#_returns_10)Returns
+
+`String`
+
+#### [](#_usage_10)Usage
+
+`navfn.link(content)`
+
+```cnd
+<a href="${navfn.link(navigationItem)!"#"}">${navigationItem.navigationTitle!navigationItem.title!navigationItem.@name}</a>
+```
+
+## [](#_checking_navigation_items)Checking navigation items
+
+### [](#_checking_for_current_page)Checking for current page
+
+Checks whether navigation item is the currently displayed content.
+
+#### [](#_method_signature_11)Method signature
+
+`boolean isActive(ContentMap content, ContentMap navigationItem)`
+
+#### [](#_argument_11)Argument
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The current content node (page/area/component). |
+| `navigationItem` | **required**<br><br>The navigation item. |
+
+#### [](#_returns_11)Returns
+
+`boolean`
+
+#### [](#_usage_11)Usage
+
+`navfn.isActive(content, navigationItem)`
+
+\[#if navfn.isActive(content, navItem)\]
+    ...
+\[/#if\]
+
+### [](#_checking_for_ancestor_of_a_nav_item)Checking for ancestor of a nav item
+
+Checks whether navigation item is the ancestor of the current page.
+
+#### [](#_method_signature_12)Method signature
+
+`boolean isOpen(ContentMap content, ContentMap navigationItem)`
+
+#### [](#_argument_12)Argument
+
+content
+
+**required**
+
+The current content node.
+
+navigationItem
+
+**required**
+
+The navigation item.
+
+#### [](#_returns_12)Returns
+
+`boolean`
+
+#### [](#_usage_12)Usage
+
+`navfn.isOpen(content, navigationItem)`
+
+\[#if navfn.isOpen(content, navItem)\]
+    ...
+\[/#if\]
+
+### [](#_checking_if_content_should_be_hidden_in_navigation)Checking if content should be hidden in navigation
+
+Checks whether the given content should be hidden in navigation. The `hideInNav` property of the given content is used.
+
+#### [](#_method_signature_13)Method signature
+
+`boolean isHiddenInNav(ContentMap content)`
+
+#### [](#_argument_13)Argument
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content node. |
+
+#### [](#_returns_13)Returns
+
+`boolean`
+
+#### [](#_usage_13)Usage
+
+`navfn.isHiddenInNav(content)`
+
+\[#if !navfn.isHiddenInNav(navItem)\]
+   ...
+\[/#if\]
+
+### [](#_checking_if_content_should_not_be_hidden_in_navigation)Checking if content should not be hidden in navigation
+
+Checks whether the given content should not be hidden in navigation. The `hideInNav` property of the given content is used.
+
+#### [](#_method_signature_14)Method signature
+
+`boolean isNotHiddenInNav(ContentMap content)`
+
+#### [](#_argument_14)Argument
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content node. |
+
+#### [](#_returns_14)Returns
+
+`boolean`
+
+#### [](#_usage_14)Usage
+
+`navfn.isNotHiddenInNav(content)`
+
+\[#if navfn.isNotHiddenInNav(navigationItem)\]
+    ...
+\[/#if\]
+
+### [](#_checking_for_property_values)Checking for property values
+
+This is small helper method which checks if a given property is true or false. The method is needed because in a FreeMarker template you don’t know if a property is stored as boolean or a string or if it exists at all.
+
+The method avoids using checks like:
+
+\[#if navItem.showInNav?has\_content && navItem.showInNav?string == "true"\]
+
+#### [](#_method_signature_15)Method signature
+
+`boolean isTrue(ContentMap content, String propertyName)`
+
+#### [](#_argument_15)Argument
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required**<br><br>The content node. |
+| `propertyName` | **required**<br><br>The property name. |
+
+#### [](#_returns_15)Returns
+
+`boolean`
+
+#### [](#_usage_15)Usage
+
+`navfn.isTrue(content, propertyName)`
+
+\[#if navfn.isTrue(navItem, "showInNav")\]
+    ...
+\[/#if\]
+
+Related topics
+
+-   [About templating functions](../)
+
+-   [Arguments and return types](../Templating-function-arguments-and-return-types/)
+
+-   Javadoc info.magnolia.templating.functions.NavigationTemplatingFunctions

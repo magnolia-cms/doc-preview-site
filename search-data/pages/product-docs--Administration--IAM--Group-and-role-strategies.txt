@@ -1,0 +1,69 @@
+---
+title: "Group and role strategies"
+url: https://docs.magnolia-cms.com/product-docs/Administration/IAM/Group-and-role-strategies/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Identity and access management (IAM) > Group and role strategies
+---
+
+# Group and role strategies
+
+There are several ways you can define permissions. You can either have many groups with one role each or only few groups with several roles. From a technical point of view it is more or less the same amount of content. Focus on user friendliness and easy-to-understand groupings instead.
+
+One strategy is to first open access to everything and then close it systematically. The opposite is to first close access to everything and then open it systematically.
+
+## [](#_open_close)Open / close
+
+Assume you have the following website structure:
+
+/home
+   /section1
+   /section2
+   /section3
+   /section4
+
+An `open/close` strategy could have the following ACL:
+
+| Permission | Path |
+| --- | --- |
+| Read/Write | `/` |
+| Read only | `/home/section1` |
+| Read only | `/home/section2` |
+| Deny access | `/home/section4` |
+
+First open access to the website, then close it systematically by defining read-only permissions for `/home/section1` and `/home/section2` and denying access to `/home/section4`. When you attach this ACL to a role, the role can read sections 1 and 2, edit section 3 (by virtue of being granted write access to `/`), and is denied access to section 4.
+
+You can achieve similar permissions as above, but with several roles:
+
+| Role | Permission | Path |
+| --- | --- | --- |
+| Managing Editor | Read/Write | `/` |
+| Section 1 Reviewer | Read only | `/home/section1` |
+|     | Deny access | `/home/section4` |
+| Section 2 Reviewer | Read only | `/home/section2` |
+|     | Deny access | `/home/section4` |
+
+Having many roles allows flexibility in defining different groups. On the other hand you get more complexity.
+
+## [](#_close_open)Close / open
+
+Assume the following website structure:
+
+/home
+   /section1
+   /section2
+   /section3
+   /section4
+
+A `close/open` strategy could have the following ACL:
+
+| Permission | Path |
+| --- | --- |
+| Deny access | `/` |
+| Read only | `/home/section1` |
+| Read only | `/home/section2` |
+| Read/Write | `/home/section3` |
+
+First close access to the website, then open it systematically by defining read-only permissions to sections 1 and 2, and write permission to section 3. When you attach this ACL to a role, the role can read sections 1 and 2, edit section 3 and is denied access to section 4.
+
+Effectively, this strategy has the same outcome as the `open/close` strategy above for a user who needs to be able review content in sections 1 and 2, edit section 3, but should not be able to access section 4 at all.

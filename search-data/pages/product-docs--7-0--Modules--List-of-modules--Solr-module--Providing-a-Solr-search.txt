@@ -1,0 +1,137 @@
+---
+title: "Providing a Solr search"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Solr-module/Providing-a-Solr-search/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Solr module > Providing a Solr search
+---
+
+# Providing a Solr search
+
+This page describes how to use the [`solrfn` templating functions](../../../../Developing/Templating/Template-scripts/Templating-functions/solrfn/) to create a search page based on results from [Apache Solr](http://solr.apache.org/). The functions are provided by the Solr Templating submodule of the Magnolia [Solr module](../).
+
+The Solr module integrates [Apache Solr](http://solr.apache.org/), a standalone enterprise-grade search server with a REST-like API, for indexing and crawling of Magnolia content, especially if you need to [manage assets](../../../../Authoring/Managing-assets/#_how_to_handle_large_amount_of_assets) in high volumes (100,000+ assets).
+
+## [](#_creating_a_search_results_page)Creating a search results page
+
+Templating functions allow you to create FreeMarker templates in a light development fashion, that is directly from the templates, without any Java development.
+
+By default, the Solr Templating submodule does not provide any templates. This is because every website is different and may have different requirements for searches. Likewise, in spite of the fact that Apache Solr is very flexible search engine, a Solr document schema may look very different for each client.
+
+It is not easy to provide a generic template which would satisfy all the needs. However, it is considered a best practise to create a template which would suit the page and fields in your schema, without any additional generic logic.
+
+### [](#_using_solrfn_in_templates)Using `solrfn` in templates
+
+The `solrfn` templating functions provide methods for most of the common parameters used in Solr. For a full set of the methods, please see the [solr](../../../../Developing/Templating/Template-scripts/Templating-functions/solrfn/) page.
+
+#### [](#_examples)Examples
+
+-   Create a query and trigger a search:
+
+    ```html
+    [#assign results = solrfn.query("searchTerm").search()?eval]
+    ```
+
+-   Set query parameters and trigger a search:
+
+    ```html
+    [#assign results = solrfn.query(queryTerm)
+        .clientName("my-client-name") [#-- client used for the search --]
+        .rows(50) [#-- maximum number of results returned to 50 --]
+        .field("url", "title", "abstract", "uuid") [#-- restrict fields included in response --]
+        .filterQuery("destinations:europe")) [#-- only documents which have destination Europe --]
+        .search()?eval]
+    ```
+
+
+The results are returned in JSON, for example:
+
+```json
+"responseHeader":{
+  "status":0,
+  "QTime":3,
+  "params":{
+    "hl":"true",
+    "fl":"title,uuid,url,caption",
+    "start":"0",
+    "rows":"10",
+    "version":"2.2",
+    "q":"family",
+    "wt":"json"}},
+"response":{"numFound":2,"start":0,"docs":[
+    {
+      "caption":["Lapland for Families"],
+      "title":["Tour detail"],
+      "url":"http://localhost:8080/magnoliaPublic/travel/tours/magnolia-travels/Lapland-for-Families.html",
+      "uuid":"c2acc92e294ce2d1"},
+    {
+      "caption":["Antarctic Active Adventure"],
+      "title":["Tour detail"],
+      "url":"http://localhost:8080/magnoliaPublic/travel/tours/magnolia-travels/Antarctic-Active-Adventure.html",
+      "uuid":"56fc66075f0d1dc3"}
+}]
+```
+
+To parse the results, use the dot (`.`) notation, for example `results.response.numFound` as in:
+
+```html
+[#assign results = solrfn.query("searchTerm").search()?eval]
+
+Number of results ${results.response.numFound}
+
+<ol>
+[#list results.response.docs as doc]
+  <li>
+    <a href="${doc.url!}">${doc.url!}</a>
+  </li>
+[/#list]
+<ol>
+```
+
+### [](#_example_search_template)Example search template
+
+For demonstration purposes, we have created a light module called `solr` (download link: [solr.zip^](../../../../_attachments/solr/solr.zip)). Feel free to use and modify it.
+
+> **Note:** The module decorates the basic page template from the mtk2. If you are using mtk, rename the mtk2 directory (in /solr/decorations/mtk2) to mtk.
+
+Content of the light module:
+
+-   Search component FreeMarker template.
+
+-   Pagination and faceting macros.
+
+-   Search component dialog.
+
+
+Functions:
+
+-   Selection of a search client.
+
+-   Pagination, with a maximum number of results.
+
+-   Choosing the title field used to represent a page in a search result.
+
+-   Limiting a search to certain fields with a boost factor.
+
+-   Search filtering, to restrict the superset of documents that can be returned.
+
+-   Restricting the information included in a query response to a specified list of fields.
+
+-   Highlighting.
+
+-   Faceting.
+
+
+![Solr example templat dialog](../../../../_images/6-2-30-providingASolrSearch-solrExampleTemplateDialog.png).
+
+## [](#_related_topics)Related topics
+
+-   [Solr module](../)
+
+-   [Installing Apache Solr](../Installing-Apache-Solr/)
+
+-   [Indexing and crawling a website with Solr](../Indexing-and-crawling-a-website-with-Solr/)
+
+-   [App configuration with Solr](../App-configuration-with-Solr/)
+
+-   [Jackrabbit search](../../../../Administration/Jackrabbit-search/)

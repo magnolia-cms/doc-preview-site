@@ -1,0 +1,100 @@
+---
+title: "Content view definition"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/App-configuration/Content-view-definition/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > App configuration > Content view definition
+---
+
+# Content view definition
+
+Magnolia provides view implementations for JCR data that allow tree, list and thumbnail views. A content view must implement the `info.magnolia.ui.contentapp.browser.ContentView` interface.
+
+> **Note:** This content view definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.contentapp.configuration.ContentViewDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+contentViews:
+  - name: tree
+    dropConstraint:
+      $type: jcrDropConstraint
+      primaryNodeType: mgnl:contact
+    $type: treeView
+    columns: &columns (1)
+      - name: jcrName
+        label: name
+        $type: componentColumn
+        editable: true
+        nodeTypeToComponent:
+          mgnl:contact:
+            icon: icon-people
+            showPath: true
+          mgnl:content:
+            icon: icon-folder
+            showPath: true
+        editor:
+          availability:
+            nodes: true
+            properties: true
+      - name: value
+        label: value
+        editable: true
+        editor:
+          availability:
+            nodes: false
+            properties: true
+      - name: jcrPath
+        label: path
+        $type: pathColumn
+      - name: status
+        label: status
+        $type: statusColumn
+      - name: mgnl:created
+        $type: dateColumn
+        label: date
+        editable: false
+        editor:
+          availability:
+            nodeTypes:
+              - mgnl:contact
+            nodes: true
+            properties: false
+          field:
+            $type: textField
+            converterClass: com.vaadin.data.converter.StringToDateConverter
+  - name: list
+    columns: *columns (2)
+    $type: listView
+  - $type: thumbnailView
+```
+
+|     |     |
+| --- | --- |
+| **1** | `&columns` - a YAML anchor that allows you to [reuse](../../../Developing/YAML/#_reusing_an_existing_definition_within_the_same_file) the configuration elsewhere through a similarly formed YAML alias. |
+| **2** | `*columns` - the YAML alias marking the position where the configuration should be reused. |
+
+## [](#_content_view_properties)Content view properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (unless <code>$type</code> is used)</p></div><div class="paragraph"><p>Class extending <span class="inlineBean">info.magnolia.ui.contentapp.configuration.ContentViewDefinition</span> to define the type of view. Set the value to the fully qualified class name. See <a href="#_view_types">View types</a> for possible values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>You can use this as a shortcut for <code>class</code> if the definition class is annotated with <code>info.magnolia.ui.ViewType</code>. The proper value is defined by the annotation.</p></div><div class="listingblock"><div class="title">Example class annotation</div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ViewType("treeView")
+public class TreeViewDefinition&lt;T&gt; implements GridViewDefinition&lt;T&gt; {
+...
+}</code></pre></div></div><div class="paragraph"><p>To use the <code>$type</code> property in YAML, see <a href="#_example_definition">Example definition</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>columns</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (used only in tree and list views)</p></div><div class="paragraph"><p>See <a href="../Column-definition/" class="xref page">Column definition</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code id="_dropConstraint">dropConstraint</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (used only in tree and list views)</p></div><div class="paragraph"><p>By default, there’s no drag-and-drop capability.<a href="#jcrDropConstraint-note"><span class="icon"><i class="fa fa-comment" title="Small caveat when app is created with !content-type directive."></i></span></a></p></div><div id="jcrDropConstraint-note" class="dlist"><dl><dt class="hdlist1">Default caveat</dt><dd><p>When an app is created with the <code>!content-type</code> directive, a <code>jcrDropConstraint</code> is provided by default.</p></dd></dl></div><div class="paragraph"><p>Defines acceptance criteria for move operations. By restricting the nodes that a user can move, you can enforce a certain node hierarchy. For example, you might want to allow moving content under folders but not folders under content. If no value is defined, the view will have no drag-and-drop capability. Possible values are:</p></div><div class="ulist"><ul><li><p><code>alwaysTrueDropConstraint</code>: basic implementation of <code>DropConstraint</code> that always returns <code>true</code>.</p></li><li><p><code>jcrDropConstraint</code>: <code>DropConstraint</code> for JCR content apps that returns <code>true</code> based on the defined <code>primaryNodeType</code>.</p></li></ul></div><div class="paragraph"><p>The property <code>mode</code> indicates potential locations for drag-and-drop targets relative to nodes and the grid. If no specific value is defined, the <code>mode: ON_TOP_OR_BETWEEN</code> will be used as default. Possible values are: <code>ON_TOP_OR_BETWEEN</code>, <code>BETWEEN</code>, <code>ON_TOP</code>, and <code>ON_GRID</code>.</p></div><div class="listingblock"><div class="title">Example definition</div><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">dropConstraint:
+  $type: alwaysTrueDropConstraint
+  primaryNodeType: mgnl:contact
+  mode: ON_TOP_OR_BETWEEN</code></pre></div></div><div class="paragraph"><p>When you write your own class, implement the <code>info.magnolia.ui.contentapp.browser.drop.DropConstraint</code> interface.</p></div><div class="admonitionblock tip alt"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Disabling Drag-n-Drop"></i></td><td class="content"><div class="paragraph"><p>You can disable drag-and-drop by using a decoration:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">subApps:
+  browser:
+    workbench:
+      contentViews:
+        tree:
+          dropConstraint: !override</code></pre></div></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>tree</code>, <code>list</code> or <code>thumbnail</code> depending on view type</em></p></div><div class="paragraph"><p>Name of the content view.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>icon</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>icon-view-tree</code>, <code>icon-view-list</code> or <code>icon-view-thumbnails</code> depending on view type</em></p></div><div class="paragraph"><p>CSS class that identifies an icon used for the view tab. For available names, see <a href="../../Developing-an-app/General-aspects/Designing-an-app/Icons/" class="xref page">Icons</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>readOnly</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Defines whether the workbench is editable inline. You can double-click a cell to edit its value.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">You cannot define <a href="../Action-bar-definition/" class="xref page"><code>defaultAction</code></a> and use inline editing at the same time.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>multiSelect</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code> for list and thumbnail views</em></p></div><div class="paragraph"><p>When <code>true</code>, items are rendered as checkboxes. When <code>false</code>, items are rendered as radio buttons.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>multiSelectByRowClick</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>When <code>true</code>, multiple items can be selected by clicking rows rather than checkboxes. For this to work, <code>multiSelect</code> must be set to <code>true</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>scrollToSelectedItem</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (used only in tree and list views), <em>default is <code>true</code> for tree view or <code>false</code> for list view</em></p></div><div class="paragraph"><p>Defines whether the selected item is scrolled into view when opening the content app.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">Setting <code>scrollToSelectedItem</code> to <code>true</code> for the list view may lead to performance issues with large data sets.</td></tr></tbody></table></div></div></td></tr></tbody></table></div>
+
+## [](#_view_types)View types
+
+Only one view is displayed in a browser subapp at a time. The first view type in the .yaml file is the one that’s displayed.
+
+| $type | class |
+| --- | --- |
+| `listView` | `info.magnolia.ui.contentapp.configuration.ListViewDefinition` |
+| `thumbnailView` | `info.magnolia.ui.contentapp.configuration.ThumbnailViewDefinition` |
+| `treeView` | `info.magnolia.ui.contentapp.configuration.TreeViewDefinition` |

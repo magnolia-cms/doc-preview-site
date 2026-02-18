@@ -1,0 +1,33 @@
+---
+title: "Tips and tricks to hack"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Tutorials/Tips-and-tricks-to-hack/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Tutorials > Tips and tricks to hack
+---
+
+# Tips and tricks to hack
+
+This page is collection of hopefully useful tips and tricks to develop with different approaches and tools.
+
+## [](#_filter_the_log_file)Filter the log file
+
+The log file can be very helpful while developing - but it contains so much information that it might be too much. Often it makes sense to filter the log a bit.
+
+Example:
+
+```bash
+tail -f catalina.out | grep -v --line-buffered --invert-match "^\t\(at\|\.\.\.\) "
+# --line-buffered option makes grep work on a line-by-line basis
+```
+
+## [](#_working_with_ides)Working with IDEs
+
+### [](#_intellij)IntelliJ
+
+-   [Classpath resources in development mode](https://wiki.magnolia-cms.com/display/DEV/Classpath+resources+in+development+mode)
+
+
+## [](#_jcr_queries)JCR queries
+
+-   [JCR query cheat sheet](#Developing/Development-how-tos/jcr-query-cheat-sheet)

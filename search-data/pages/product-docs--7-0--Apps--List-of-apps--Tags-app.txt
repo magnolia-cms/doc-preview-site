@@ -1,0 +1,51 @@
+---
+title: "Tags app"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/List-of-apps/Tags-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Tags app
+---
+
+# Tags app
+
+The Tags app is where you manage *[content tags](../../../Modules/List-of-modules/Content-Tags-module/)*: keywords or terms assigned to an item of content.
+
+This app manages content tags, which are different from *marketing* tags. Marketing tags – advertising or analytics code snippets that you insert on web pages – are managed using the [Marketing Tags app](../Marketing-Tags-app/).
+
+The `content-tags` app is installed by the submodule `magnolia-content-tags-ui`.
+
+The app stores nodes of the type `mgnl:tag` in the workspace `tags`.
+
+## [](#_usage)Usage
+
+The Tools app group that the app belongs to is only available to the `superuser` role. This is configured in the [app launcher layout](../../../Administration/App-Launcher/App-launcher-layout/). Editors can only add and remove tags using the Add tags field in content app browser or detail subapps, once tagging is enabled.
+
+The Tags app has two subapps:
+
+-   **Tags browser** – Provides a tree/list view of all tags stored in the JCR repository’s `tags` workspace:
+    ![Tags browser](../../../_images/6-2-tagsApp_crop.png)
+    In the browser, you can:
+
+    -   Add tags.
+
+    -   Rename tags.
+
+    -   Delete one or multiple tags.
+
+    -   Access the dependencies viewer that displays all the content items a tag is applied to (**Show tagged content** action).
+
+
+-   **Dependencies viewer** – Shows which items are tagged with a particular tag across `tagableWorkspaces` (see [Register content app’s workspace as a taggable workspace](../../../Modules/List-of-modules/Content-Tags-module/How-to-enable-content-tags-for-a-content-app/#_register_content_apps_workspace_as_a_taggable_workspace)). To open the viewer, doubleclick a tag in the browser or use the **Show tagged content** action.
+    ![Dependencies viewer](../../../_images/6-2-dependencies.png)
+    Each dependency listed is a clickable hyperlink that you can use to quickly open the tagged content item.
+
+
+Related topics
+
+-   [Content tagging](../../../Modules/List-of-modules/Content-Tags-module/)
+
+-   [Content Tags module](../../../Modules/List-of-modules/Content-Tags-module/)
+
+-   [How to enable content tags for a content app](../../../Modules/List-of-modules/Content-Tags-module/How-to-enable-content-tags-for-a-content-app/)
+
+-   [tagfn](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/)

@@ -1,0 +1,52 @@
+---
+title: "User interface frameworks - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-apps-5-UI/Developing-an-app-5-UI/User-interface-frameworks-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content apps - 5 UI > Developing an app - 5 UI > User interface frameworks - 5 UI
+---
+
+# User interface frameworks - 5 UI
+
+Deprecated
+
+> **Note:** These user interface frameworks are based on the deprecated Vaadin 7, which has been replaced with Vaadin 8 since Magnolia 6.0. They are part of the Magnolia 5 UI framework.The updated implementations are used as transitive dependencies of Vaadin 8. For Vaadin 8 data binding, see Data source definition and Item providers instead.
+
+Magnolia uses a number of third party user interface frameworks. We use them in order to create a stable but flexible framework using recent innovations.
+
+## [](#_google_web_toolkit)Google Web Toolkit
+
+[Google Web Toolkit](https://developers.google.com/web-toolkit/) (GWT) is a user interface framework for the Web that uses an object oriented approach by taking advantage of the Java programming language. The Java source is compiled to JavaScript and run in the browser. Not all specifications from GWT have been used in Magnolia. Instead, Magnolia uses variations of GWT implementations, in particular for providing bookmarking functionality.
+
+## [](#_vaadin)Vaadin
+
+[Vaadin](https://vaadin.com/home) is a Java Web application framework for rich and interactive applications that run in the browser. Vaadin user interfaces are modeled with components and run on the server with a corresponding component graph displayed in the browser. The client side components are implemented in GWT and communicate with the server in response to user actions.
+
+### [](#_do_i_need_to_know_vaadin)Do I need to know Vaadin?
+
+You can get far without knowing anything about Vaadin. The Magnolia app framework allows you to configure an app, add the app to the launcher, define components and more. But once you have done that and your app launches, it needs to do something useful. You must fill the blank space in your app with Vaadin components.
+
+Read the [Book of Vaadin](https://vaadin.com/book) to get started.
+
+### [](#_where_is_vaadin_used)Where is Vaadin used?
+
+Vaadin elements are used by many Magnolia components directly. A number of Magnolia specific elements have also been implemented specifically for app development.
+
+-   Simple fields such as Text are Vaadin fields. The factory class of the field creates a Vaadin [TextField](https://vaadin.com/api/7.1.0/com/vaadin/ui/TextField.html) directly.
+
+-   Tree and list views use Vaadin [Table](https://vaadin.com/api/7.1.0/com/vaadin/ui/Table.html) and [TreeTable](https://vaadin.com/api/7.1.0/com/vaadin/ui/TreeTable.html).
+
+-   Thumbnail view uses a Vaadin data [Container](https://vaadin.com/api/7.1.0/com/vaadin/data/Container.html).
+
+-   Dialogs use Vaadin [Panels](https://vaadin.com/api/7.1.0/com/vaadin/ui/Panel.html).
+
+-   Image editor uses a Vaadin [Image](https://vaadin.com/api/7.1.0/com/vaadin/ui/Image.html).
+
+-   Context menu uses a Vaadin ContextMenu.
+
+-   etc.
+
+
+## [](#_sass)Sass
+
+[Syntactically Awesome Stylesheets](http://sass-lang.com) (Sass) is a Cascading Style Sheets (CSS) metalanguage that is interpreted into CSS. SassScript is the scripting language itself. Sass uses block formatting similar to that of CSS. Braces are used to denote code blocks, while semicolons separate lines within a block. Magnolia uses the .scss syntax which is the more common one.

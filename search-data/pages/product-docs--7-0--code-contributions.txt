@@ -1,0 +1,156 @@
+---
+title: "Code contribution guidelines"
+url: https://docs.magnolia-cms.com/product-docs/7.0/code-contributions/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Code contributions
+---
+
+# Code contribution guidelines
+
+Contributing code to Magnolia helps improve the platform for everyone in our community. Whether you’re fixing a bug, adding a feature, or donating a module, your contributions make Magnolia better.
+
+This guide walks you through the process of submitting code contributions and module donations to Magnolia. We’ve designed this process to be transparent, collaborative, and efficient for both you and our team.
+
+## [](#_types_of_contributions)Types of contributions
+
+Depending on the scope, your submission is classified as either:
+
+-   *Code contribution*: smaller contributions such as bug fixes, feature enhancements, or improvements to existing code.
+
+    -   Code contributions require a Developer Certificate of Origin (DCO) included in all commits.
+
+
+-   *Module/feature donation*: larger contributions such as complete modules, significant features, or integrations.
+
+    -   Module/feature donations require a full Module Donation Agreement.
+
+
+
+Each code contribution is treated individually and requires its own specific, [legally binding agreement](#_legal_agreements).
+
+## [](#_before_you_start)Before you start
+
+Before submitting a contribution, ensure you have:
+
+-   GitLab access: access to Magnolia’s GitLab instance (contact your technical account manager or Magnolia support to set this up).
+
+-   Understanding of contribution types: familiarity with the difference between code contributions and module donations (see [Types of contributions](#_types_of_contributions) above).
+
+-   Development guidelines: review the [Marketplace Development Guidelines](https://www.magnolia-cms.com/marketplace/development-guidelines.html) and [Submission Checklist](https://www.magnolia-cms.com/marketplace/submission-checklist.html).
+
+
+## [](#_getting_started)Getting started
+
+To initiate our review process, where we evaluate your proposal for both product fit and strategic alignment, email us at [contributions@magnolia-cms.com](mailto:contributions@magnolia-cms.com).
+
+Be prepared to provide the following information. This information helps us determine the appropriate legal agreement and ensure that all parties’ rights are protected.
+
+-   Your name and contact details.
+
+-   Your company or client affiliation, if applicable.
+
+-   The owner of the contribution (you, your employer, or another entity).
+
+-   The required [submission materials](#_submission_materials).
+
+
+After we receive this information, the product team will contact you to acknowledge your request and explain the next steps.
+
+### [](#_submission_materials)Submission materials
+
+Prepare the following:
+
+-   Use case and business value: a clear explanation of what problem your contribution solves and why it’s valuable.
+
+-   Source code: complete, working code that follows our development guidelines.
+
+-   Documentation:
+
+    -   Build and test instructions
+
+    -   Dependency list
+
+    -   Relevant technical documentation
+
+    -   Any known limitations or issues
+
+    -   README file (for module donations)
+
+
+
+## [](#_review_timeline)Review timeline
+
+We review contributions over one month. This section explains what happens during the first week and in the remaining review period.
+
+![Code contribution overview](../_images/code-contributions-overview.png)
+
+### [](#_step_1_product_fit_and_strategic_assessment)Step 1: Product fit and strategic assessment
+
+In the first week after you contact us, our product management team evaluates your contribution for product fit and strategic alignment. At the end of this week, you’ll know whether your contribution moves forward into technical review.
+
+If your contribution is an interesting use case but does not align with our core technology stack or solve a widely requested problem, we may recommend sharing it via [the Magnolia Marketplace](https://www.magnolia-cms.com/marketplace.html) instead.
+
+### [](#_step_2_technical_review_and_integration_planning)Step 2: Technical review and integration planning
+
+If your contribution passes the product assessment, Magnolia’s technical team performs a detailed technical review during the remainder of the month. This is to ensure the code adheres to our development guidelines and to plan its integration into the platform.
+
+## [](#_requirements_during_the_technical_review)Requirements during the technical review
+
+This section explains what happens after your contribution passes the initial product assessment.
+
+### [](#_legal_agreements)Legal agreements
+
+During the technical review, you must sign the appropriate legal agreement for your submission:
+
+-   **[Developer Certificate of Origin (DCO)](http://en.wikipedia.org/wiki/Developer_Certificate_of_Origin)**: required for code contributions, included in all your commits.
+
+    -   It is a lightweight approach for ensuring that contributions contain code that can legally be contributed to an Open Source project, and that the project has the right to distribute it under its license.
+
+    -   You’ll add the DCO signoff to each commit, certifying adherence to the [DCO agreement](https://developercertificate.org), using the `-s` or `--signoff` flag (see [Creating an MR](../reference/merge-mr-guidelines/) for details).
+
+
+-   **Module Donation Agreement**: required for larger module or feature donations.
+
+    -   This agreement covers intellectual property rights and licensing for substantial contributions.
+
+    -   Our product team provides this agreement after the first week if the product evaluation accepts your contribution.
+
+
+
+### [](#_code_submission)Code submission
+
+Submit your code via GitLab merge request (MR), following our development guidelines. See [Creating an MR](../reference/merge-mr-guidelines/) for detailed instructions on:
+
+-   Forking the repository
+
+-   Creating a branch
+
+-   Committing with DCO signoff
+
+-   Opening and submitting a merge request
+
+
+## [](#_outcomes_and_next_steps)Outcomes and next steps
+
+After review, we’ll notify you of the outcome:
+
+-   ✅ Accepted: your contribution is approved and Magnolia can take over ownership and maintenance.
+
+-   🔄 Accepted with required changes: your contribution is approved in principle, but some changes are needed before Magnolia can take it over. Depending on the situation, those changes can be made by you or by Magnolia.
+
+-   ❌ Declined: your contribution doesn’t meet our current requirements, but we appreciate your submission and encourage you to stay involved.
+
+
+If your contribution is accepted, a Magnolia developer is assigned to work with you. They’ll help guide you through any required changes and ensure your code passes validation steps, such as:
+
+-   Code style checks
+
+-   Automated tests
+
+-   Build verification
+
+-   Security scans
+
+
+Once your contribution is accepted, we’ll plan its integration into a specific Magnolia release. This may not happen immediately, but we’ll let you know when we expect to get back to you and when you can expect to see your contribution released. We aim to keep this process transparent, collaborative, and efficient. Thank you for helping us improve Magnolia for everyone.

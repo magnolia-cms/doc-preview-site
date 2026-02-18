@@ -1,0 +1,165 @@
+---
+title: "Ingresses deep dive"
+url: https://docs.magnolia-cms.com/cockpit/networking-ingresses/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# Ingresses deep dive
+
+## [](#_environment)Environment
+
+Choose your **Enviroment** in the dropdown. This is typically `prod` or `dev`.
+
+## [](#_status)Status
+
+Specifies the status of the certificate.
+
+-   **Created**: New ingress; unpublished.
+
+-   **Modified**: Changes were made to the ingress; unpublished.
+
+-   **Deleted**: The ingress is marked for deletion; it is removed the next time you publish (sync).
+
+-   **Synced**: Published ingress including any changes (if applicable).
+
+
+## [](#_add)Add
+
+Add your ingress here in the Cockpit.
+
+## [](#_add_as_yaml)Add as YAML
+
+Add an ingress as a `.yaml` file.
+
+This is the `.yaml` representation of your Magnolia PaaS Ingress configuration. This `.yaml` contains all settings and values that define your Ingress behavior.
+
++
+
+```yaml
+name: "example-emea"
+description: "Imported from existing ingress"
+acquireCertificate: true
+allowRegex: true
+errorPages: false
+nginxOptions:
+  proxyBodySize: "8m"
+  forceSslRedirect: false
+  fromToWwwRedirect: false
+  enableWaf: false
+  disableRobots: false
+  deniedLocations: []
+  headersToClear: []
+  headersToSet: {}
+  errorPage:
+    enabled: false
+  stickySession:
+    enabled: false
+  basicAuth:
+    enabled: false
+  cors:
+    enabled: false
+  rateLimiting:
+    enabled: false
+  certificateAuthentication:
+    enabled: false
+  permanentRedirect:
+    enabled: false
+cdnOptions:
+  enabled: false
+rules:
+- host: "cockpit.example.eu-central.magnolia-platform.com"
+  paths:
+  - path: "/(\\.|dam|VAADIN).*"
+    pathType: "ImplementationSpecific"
+    backendName: "prod-magnolia-redirects-svc"
+    backendPortName: "http"
+secretName: "example-cockpit-emea-mplatform-tls"
+```
+
+## [](#_synchronize)Synchronize
+
+Synchronize Ingresses with the Cockpit. This means that any unpublished changes are lost. Synchronization updates the Cockpit’s view of an unclaimed Ingress to reflect its current configuration in the Kubernetes cluster. Use the synchronize button sparingly to align states.
+
+Synchronization is not available for claimed Ingresses.
+
+## [](#_name)Name
+
+The name of the ingress including the description. You can enter a description when creating an ingress. The default description is "Imported from existing ingress".
+
+## [](#_origin)Origin
+
+Where the ingress was created.
+
+-   `COCKPIT`: created in the Cockpit. (preferred)
+
+-   `MANUAL`: created in Rancher.
+
+-   `PIPELINE`: created as part of your *infra-as-code* setup.
+
+
+## [](#_status_2)Status
+
+The status of the certificate.
+
+-   **Created**: New ingress; unpublished.
+
+-   **Modified**: Changes were made to the ingress; unpublished.
+
+-   **Deleted**: The ingress is marked for deletion; it is removed the next time you publish (sync).
+
+-   **Synced**: Published ingress including any changes (if applicable).
+
+
+## [](#_rules)Rules
+
+Any rules you have defined. Ingress rules specify the direction of allowed access to and from different identities and resources.
+
+Each host routes to a destination.
+
+-   **FASTLY**: When the domain is behind Fastly CDN.
+
+-   **CLUSTER**: When the domain routes to the cluster load balancer IPs.
+
+-   **OTHER**: When the domain routes to unknown IPs or CNAME (private CDN, WAF, …​).
+
+-   **UNAVAILABLE**: Private domains, no public information available.
+
+
+## [](#_created)Created
+
+The date when the ingress was created.
+
+-   **Format**: Month, DD, YYYY, HH:MM AM/PM
+
+-   **Example**: March 17, 2026, 4:20 PM
+
+
+## [](#_updated)Updated
+
+The date when the ingress was last updated.
+
+-   **Format**: Month, DD, YYYY, HH:MM AM/PM
+
+-   **Example**: March 17, 2026, 4:20 PM
+
+
+## [](#_details)Details
+
+Click the stacked lines ☰ to reveal more options such as the list below. What you see depends on if the ingress is claimed or not.
+
+-   **Edit**: Edit your ingress.
+
+-   **Delete**: Delete your ingress.
+
+-   **References**: Certificates and Services information.
+
+-   **Edit as YAML**: Edit the `.yaml` configuration.
+
+-   **K8s definition**: The `.yaml` shows the final definition of Ingress Kubernetes resource.
+
+-   **Publish**: Publish any ingress changes.
+
+-   **Restore**: Restore an ingress from a previous version.
+
+-   **Claim**: Claim the ingress. This means the ingress and subsequent changes are managed through the Cockpit ensuring updates are tracked and external changes are ignored.

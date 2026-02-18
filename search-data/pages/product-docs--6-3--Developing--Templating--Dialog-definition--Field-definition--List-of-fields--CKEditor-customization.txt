@@ -1,0 +1,274 @@
+---
+title: "CKEditor 4 customization"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/CKEditor-customization/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Rich text field > CKEditor 4 customization
+---
+
+# CKEditor 4 customization
+
+> **Warning:** CKEditor 4 is End-of-Life (EOL) since 2023 (at ckeditor.com). It’s no longer maintained and doesn’t receive security updates.In Magnolia 6.3, it is deprecated (and in maintenance mode) since the Magnolia 6.3.20 release.The preferred option in Magnolia is to use CKEditor 5.
+
+You can customize CKEditor 4 using a JavaScript configuration file. Magnolia’s [rich text field](#6.2@product-docs:ROOT:Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field.adoc) and [light rich text field](#6.2@product-docs:ROOT:Modules/List-of-modules/Content-Editor-module/Light-rich-text-field.adoc) use CKEditor 4 as their editor. There are two default configurations: `config-magnolia.js` and `config-default.js`.
+
+> **Caution:** If you use a custom configuration file, Magnolia ignores all the other configured properties.
+
+The default configuration files can be found in `magnolia-ui-framework-jcr/src/main/resources/mgnl-resources/ckeditor/`:
+
+-   Magnolia configuration file: [config-magnolia.js](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/release/6.3/magnolia-ui-framework-jcr/src/main/resources/mgnl-resources/ckeditor/config-magnolia.js).
+
+-   CKEditor configuration file: [config-default.js](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/release/6.3/magnolia-ui-framework-jcr/src/main/resources/mgnl-resources/ckeditor/config-default.js).
+
+
+You can locate the custom configuration file in the `resources` workspace, file system, or classpath (for example, `/.resources/ckeditor/config-magnolia.js`).
+
+> **Tip:** For more information about creating different CKEditor configurations to optimize the authoring experience, see Customizing the RichText field using CKEditor.
+
+## [](#_magnolia_configuration_file)Magnolia configuration file
+
+The Magnolia configuration file is a subset of the default CKEditor configuration. It includes external Magnolia functions described in the table below.
+
+*Default Magnolia toolbar*
+
+![Rich text field toolbar](../../../../../../_images/rich-text-field-toolbar/toolbar.png)
+
+| Function | Icon | Description |
+| --- | --- | --- |
+| **Link to Magnolia page** | ![Link to Magnolia page](../../../../../../_images/rich-text-field-toolbar/link-to-page.png) | Opens a chooser dialog where you can link to a page in the `website` workspace. |
+| **Link to asset** | ![Link to DAM document](../../../../../../_images/rich-text-field-toolbar/link-to-dam.png) | Opens a chooser dialog where you can link to an asset in the `dam` workspace. |
+| **Expand** | ![Expand](../../../../../../_images/rich-text-field-toolbar/expand.png) | Expands the rich text field. |
+
+## [](#_ckeditor_configuration_file)CKEditor configuration file
+
+The CKEditor configuration includes the entire toolbar, as shown in the screenshot below.
+
+![Rich text field - CKEditor default config](../../../../../../_images/richTextField_CKEditorDefault.png)
+
+CKEditor provides a tabbed dialog for inserting links (such as anchor tags) into rich text.
+
+![CKEditor tabbed link dialog](../../../../../../_images/CKEditor_tabbedLinkDialog.png)
+
+The fields of this tabbed dialog map to the following element attributes:
+
+ Field IDAttribute
+
+**Id**
+
+`id`
+
+**Name**
+
+`name`
+
+**Language direction**
+
+`dir`
+
+**Language code**
+
+`lang`
+
+**Access key**
+
+`accesskey`
+
+**Tab index**
+
+`tabindex`
+
+**Advisory title**
+
+`title`
+
+**Advisory content type**
+
+`type`
+
+**Stylesheet classes**
+
+`class`
+
+> **Note:** The style field expects inline style values to consist of one or more tuples with the format "name : value", separated by semi-colons.
+
+**Linked resource charset**
+
+`charset`
+
+**Relationship**
+
+`rel`
+
+**Force download**
+
+`download`
+
+> **Note:** Renders an empty attribute with no value.
+
+> **Warning:** Because a rich text editor adds HTML to your content, the HTML will be indexed by search engines along with the content.
+
+## [](#_customizing_via_a_configuration_file)Customizing via a configuration file
+
+Both default configuration files contain a `CKEDITOR.config` section in which default settings are stored. For example, whether Latin characters are converted to HTML entities can be defined using the [entities\_latin](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-entities_latin) setting.
+
+```js
+config.entities_latin = false;
+```
+
+Alternatively, you can customize how basic text styles appear in the HTML output. For example, you can implement the [Bold feature](https://ckeditor.com/docs/ckeditor4/latest/features/basicstyles.html) in different ways: `<strong>`, `<b>`, `<span style="font-weight: bold;">`, or `<span class="Bold">`.
+
+### [](#_use_case_example_latin_characters)Use case example: Latin characters
+
+Instructions to add the `entities_latin` setting to the default Magnolia configuration file and illustrations are given below.
+
+1.  Add the `config.entities_latin = false;` property to the `/ckeditor/config-magnolia.js` custom file.
+
+    See how to do it…​
+
+    ![Editing the config-magnolia.js file](../../../../../../_images/ckeditor_latin-chars_configJsFile.gif)
+
+2.  Update the `textImage.yaml` mtk2 component dialog file to reference the updated configuration file (for example `configJsFile: /.resources/ckeditor/config-magnolia.js`).
+
+    See how to do it…​
+
+    ![Editing the textImage.yaml file](../../../../../../_images/ckeditor_latin-chars_textImage.gif)
+
+3.  Create a page and add a new `Text and image` component, including Latin characters (`boîte à lettres`, for instance). Check that the characters are displayed properly.
+
+4.  Go to the JCR app and find the page and text field you created. Check that the characters in the value field are correctly displayed.
+
+    ![Inspecting Latin characters in the JCR](../../../../../../_images/ckeditor_latin-chars_JCR.png)
+
+
+### [](#_content_appearance_inside_the_editor)Content appearance inside the editor
+
+By customizing a CKEditor 4 stylesheet, you can achieve consistent styling for content both inside and outside the editor.
+
+It is done by specifying custom styles for edited content using the `config.contentsCss` setting. For more information, see [Classic Editor](https://ckeditor.com/docs/ckeditor4/latest/examples/classic.html#editor1) with Custom Styles.
+
+#### [](#_use_case_example_custom_ckeditor_css)Use case example: Custom CKEditor CSS
+
+The default Magnolia configuration includes a basic presentation configuration for black text on a white background with minimal styling. However, it may be more beneficial for editors to see a preview closer to how their text is rendered: using the same font, for example, or styled bullet points.
+
+> **Note:** You can’t achieve this level of customization using just light modules. You must use a custom Java component instead. To handle loading from different application contexts, place the file inside a VAADIN directory in the Maven module’s resources directory.
+
+|     |
+| --- |
+| 📁 src |
+| 📁 main |
+| 📁 resources |
+| 📁 VAADIN |
+
+From this location, you can refer to the VAADIN directory inside a JavaScript configuration. Subdirectories can be created inside the VAADIN directory. For example, a custom CSS file is inside a CSS directory.
+
+config.contentsCss setting
+
+```none
+config.contentsCss = CKEDITOR.vaadinDirUrl + <THE_CSS_FILE>;
+```
+
+You can deploy the CSS file via the resource loading framework. The config.js file, which contains the `config.contentsCss` setting, is then accessible via `/.resources/<MY-MODULE>/resources/config.js`
+
+|     |
+| --- |
+| 📁 src |
+| 📁 main |
+| 📁 resources |
+| 📁 <MY\_MODULE> |
+| 📁 webresources |
+| ⬩ config.js |
+
+### [](#_adding_drop_down_styles_to_the_toolbar)Adding drop-down styles to the toolbar
+
+You can also introduce drop-downs in the CKEditor toolbar by adding to one of the default configurations. An example of a styles drop-down is given below. For more information, go to [CKEditor Defining Styles](https://ckeditor.com/docs/ckeditor4/latest/features/styles.html#defining-styles) or [CKEditor Applying Block-Level Text Formats](https://ckeditor.com/docs/ckeditor4/latest/features/format.html).
+
+Adding a `stylesSet` within the CKEDITOR.editorConfig
+
+```js
+config.stylesSet = [
+  // Block-level styles
+  { name: 'Blue Title', element: 'h2', styles: { 'color': 'Blue' } },
+  { name: 'Red Title' , element: 'h3', styles: { 'color': 'Red' } },
+
+  // Inline styles
+  { name: 'CSS Style', element: 'span', attributes: { 'class': 'my_style' } },
+  { name: 'Marker: Yellow', element: 'span', styles: { 'background-color': 'Yellow' } }
+];
+```
+
+![CKEditor style drop-down](../../../../../../_images/CKEditor_stylesSet.png)
+
+### [](#_installing_plugins)Installing plugins
+
+You can add [plugins](https://ckeditor.com/docs/ckeditor4/latest/guide/dev_plugins.html) to extend the Rich text field’s functionality. Some plugins are already added in the default configurations. For example, see the [Special character’s use case](#_use_case_example_special_characters) in this section.
+
+For others, such as the [word count plugin](https://www.magnolia-cms.com/blog/customising-the-richtext-field-using-ckeditor.html#chapter-7), you need to download the respective plugin from CKEditor and manually add it to a [Java module’s VAADIN folder](../../../../../Development-how-tos/How-to-create-and-use-a-custom-Magnolia-Maven-module-for-custom-Java-components/) under `src/main/resources/VAADIN/js`.
+
+> **Warning:** Using the CKEditor Maximize plugin may lead to display issues with the external Link to Magnolia page and Link to DAM document Magnolia functions. It is highly recommended that you use the external Expand Magnolia function instead.
+
+#### [](#_use_case_example_special_characters)Use case example: Special characters
+
+This section shows an example configuration customizing the special characters in [CKEditor 4](https://ckeditor.com/docs/ckeditor4/latest/index.html).
+
+When a Rich text field is added to a dialog, it uses a configuration customized by Magnolia to include some specific plugins for linking to content and disabling some others.
+
+The [Special Characters](https://ckeditor.com/cke4/addon/specialchar) plugin is enabled by default and provides an on-screen selection of non-standard characters an editor can add to a page.
+
+> **Tip:** See the CKEditor4 source for the full collection of default characters.
+
+#### [](#_ckeditor_configuration)CKEditor configuration
+
+As per the [CKEditor4 documentation](https://ckeditor.com/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-specialChars), the array of characters to offer authors is provided as `config.specialChars`.
+
+Additionally, you can provide a label for a character by providing an array of two elements: the character and the label. Therefore, you can extend the default set and add a character using:
+
+```none
+config.specialChars = config.specialChars.concat(['\&#9660;']);
+```
+
+Or add a character with a label using:
+
+```none
+config.specialChars = config.specialChars.concat([ ['\&nbsp;','NB Space'] ]);
+```
+
+Those examples append a character to the end of the menu presented to editors. Bringing them to the start may make sense if you know frequently used characters. This is achieved by reversing the `concat` function:
+
+```none
+config.specialChars = ['\&#9660;'].concat(config.specialChars);
+```
+
+Or you may replace the large default selection of characters and only provide those you believe editors need by replacing the entire array, as shown below.
+
+```js
+config.specialChars = [
+    ['&trade;','Trademark'],
+    ['&nbsp;','NB Space'],
+    ['&#9660;','Black Down-Pointing Triangle']];
+```
+
+#### [](#_ckeditor_integration_and_definition)CKEditor integration and definition
+
+The modified config file can be deployed via the `webresources` folder of a light module.
+
+|     |
+| --- |
+| 📁 my-light-module |
+| 📁 config |
+| 📁 webresources |
+| ⬩ config.js |
+
+This file is then accessible via the path `/.resources/my-light-module/webresources/config.js`. The final step is to modify the Rich text field definition and see configuration changes in the respective component dialog.
+
+```yaml
+custom_richText:
+  $type: richTextField
+  label: Customized CKEditor
+  configJsFile: /.resources/field-examples/webresources/ckeditor/config-magnolia-extended.js
+```
+
+Related topics
+
+-   [Rich text field](../Rich-text-field/)
+
+-   [Light rich text field](../../../../../../Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/)

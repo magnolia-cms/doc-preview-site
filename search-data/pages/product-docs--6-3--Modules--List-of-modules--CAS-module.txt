@@ -1,0 +1,148 @@
+---
+title: "CAS module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/CAS-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > CAS module
+---
+
+# CAS module
+
+[Security and authentication](../../../use-cases/security-and-authentication/) Unbundled: Extension
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLCAS](https://magnolia-cms.atlassian.net/browse/MGNLCAS) |
+| Maven site | [CAS](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmagnolia-module-cas%2F1.3.2) |
+| Latest | 1.3.2 |
+
+> **Note:** CAS module 1.1 requires LDAP Connector module 1.6 which authenticates against only one LDAP or Active Directory server at a time. If you have multiple servers and want users to be authenticated against all of them, use the earlier CAS module 1.0 and LDAP Connector 1.4.
+
+[Central Authentication Service](https://en.wikipedia.org/wiki/Central_Authentication_Service) (CAS) provides a single sign-on (SSO) protocol for the Web. CAS enables applications to authenticate a user without needing to access the user’s security credentials (login and password). The name CAS also refers to a software package that implements this protocol.
+
+To use the Magnolia CAS module, you must download the appropriate software. The CAS authentication system was originally created by Yale University to provide a secure means for an application to authenticate a user and, as such, still forms part of the [Jasig project](http://www.jasig.org/cas).
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>magnolia-module-cas</artifactId>
+  <version>1.3.2</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+The CAS module runs in conjunction with Jasig CAS software. You can download the Jasig CAS server software from the [Central Authentication Service project website](http://www.jasig.org/cas_server_3_5_0_release).
+
+## [](#_how_cas_works)How CAS works
+
+The Central Authentication Service is an SSO Web protocol that permits a user to log in once to a system and then automatically gain access to all related systems to which they have permission as per their credentials. This avoids the need to log into each system individually.
+
+### [](#_cas_and_magnolia)CAS and Magnolia
+
+The Magnolia CAS module handles authentication only. When a user logs into CAS, the system authenticates their identity to participating services because the user is authenticated to CAS. The individual services decide if the user has appropriate access rights.
+
+### [](#_cas_process_summary)CAS process summary
+
+1.  A user attempts to access Magnolia.
+
+    The user is redirected to the CAS login URL over a secure connection. The name of the requested service is passed as a parameter.
+
+2.  The user enters their ID and password details on the login page.
+
+3.  CAS then authenticates the user and redirects them back to Magnolia, appending a ticket parameter to the URL.
+
+4.  The application validates the ticket and represents a valid user by calling the CAS `serviceValidate` URL.
+
+    It does this by opening an HTTPS connection and passing the ticket and service name as parameters.
+
+5.  CAS checks that ticket is valid for the requested service. After successful validation, CAS returns the username to the application.
+
+
+### [](#_example)Example
+
+In a real world situation, a company can use a customized Jasig CAS application as a login interface. The interface shows the company logo and provides a login and password area. When a user logs into the interface they’re taken to a page containing links to a selection of applications, including the author instance of Magnolia. Note that there’s no cross-connection of applications. The user doesn’t need to sign in a second time to use Magnolia, but clicks on the application link and is granted access.
+
+## [](#_configuration)Configuration
+
+Note that at present the CAS module 1.1 requires and only works in conjunction with the [LDAP Connector Module 1.6](../LDAP-Connector-module/). The LDAP Connector is a standard JAAS login module and connects to any LDAP V3 supported directory service. In addition, before using the CAS functionality with Magnolia, you must have a Jasig CAS environment set up.
+
+### [](#_ldap_properties)ldap.properties
+
+1.  Ensure that the LDAP connections are set up correctly. Note that CAS module 1.1 authenticates only against one LDAP or Active Directory server at a time.
+
+2.  Check that the `ssoSlave` in your `ldap.properties` or `ad.properties` file is set to `true`.
+
+
+### [](#_configuring_jaas)Configuring JAAS
+
+JAAS is a standard authentication and authorization API provided by Java 1.4 and higher. An external file is used to configure JAAS. Using JAAS with CAS allows you to change the authentication process without having to rebuild and redeploy CAS.
+
+In the `jaas.config` file, split info.magnolia.jaas.sp.jcr.JCRAuthenticationModule\`# and info.magnolia.jaas.sp.ldap.ADAuthenticationModule into different JAAS chains:
+
+`jaas.config`
+
+```bash
+magnolia {
+  info.magnolia.jaas.sp.jcr.JCRAuthenticationModule required;
+  info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required;
+};
+
+magnolia-cas {
+  info.magnolia.jaas.sp.ldap.ADAuthenticationModule required realm=external;
+  info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required;
+};
+```
+
+In the Magnolia Configuration app, set the `jaasChain` property to `magnolia-cas`:
+
+![Configuration](../../../_images/ADVT-cas-jass.png)
+
+> **Note:** You can’t use the LDAP Connector module in jaas.config because the module requires a user password that CAS doesn’t provide.
+
+### [](#_configure_the_cas_module)Configure the CAS module
+
+Go to **Configuration >**`/modules/cas/config`.
+
+1.  Set `casLoginURL` to point to the login form of your CAS server.
+
+2.  Set `casLogoutURL` to point to the logout page of your CAS server.
+
+3.  Set `casServiceURL` to match your current Magnolia instance.
+
+4.  Set `casValidateURL` to point to your CAS server.
+
+
+![Configuration](../../../_images/ADVT-cas-config.png)
+
+> **Warning:** Provided you haven’t changed this parameter in the CAS server implementation, you shouldn’t need to adjust casTicketRequestParameter.
+
+> **Warning:** 1.3+ You may add the parameter casServiceURL to the value of the casLogoutURL. This causes the CAS server to provide a link back to the application after logging out.
+
+![Logout](../../../_images/ADVT-cas-logout.png)
+
+### [](#_setting_the_cas_server)Setting the CAS server
+
+1.  Go to **Configuration>**`/server/filters/securityCallback/clientCallbacks`.
+
+2.  Set `cas` node as the first node in the tree. Typically, the first node in the list in a default configuration is the `form` node.
+
+3.  The next time a user log outs and logs in again, they will be redirected to the CAS server login page.
+
+
+![Configuration](../../../_images/ADVT-cas-server.png)
+
+## [](#_troubleshooting)Troubleshooting
+
+-   To check that CAS is configured correctly, log in to Magnolia: `[http://localhost:8080/magnoliaAuthor/.magnolia/admincentral?mgnlUserId=superuser&mgnlUserPSWD=superuser](http://localhost:8080/magnoliaAuthor/.magnolia/admincentral?mgnlUserId=superuser&mgnlUserPSWD=superuser)`.
+
+-   If you have problems using CAS with a self-signed certificate, try adding the following line to the relevant magnolia.properties: `magnolia.cas.sslDebug=true`.
+
+    > **Important:** Don’t use this setting in a production environment.

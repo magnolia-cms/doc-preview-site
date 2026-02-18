@@ -1,0 +1,133 @@
+---
+title: "Certified stack"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Certified-stack/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Certified stack
+---
+
+# Certified stack
+
+The following software components have passed Magnolia’s certification testing for compatibility and performance with Magnolia DX Core and the Apache Jackrabbit Java Content Repository.
+
+Unless specified otherwise, all currently supported or LTS releases can be used.
+
+## [](#_operating_systems)Operating systems
+
+-   Container-based environments
+
+-   Linux
+
+-   Windows
+
+-   macOS
+
+
+If you want to use a container-based implementation, use the latest version of the official Tomcat container.
+
+-   Ubuntu and Debian
+
+-   Generally, Magnolia should work on any modern Linux distribution.
+
+
+-   Windows Server and Windows 11
+
+
+-   macOS
+
+
+> **Note:** Are you running Magnolia on an OS that is not listed here? Let us know by posting to the .
+
+## [](#_java)Java
+
+| Java version | Magnolia |
+| --- | --- |
+| **Java 21 (LTS)** |     |
+| **Java 17 (LTS)** | The build base for Magnolia 6.4. |
+
+### [](#_maven_coordinates)Maven coordinates
+
+> **Note:** Magnolia 6.4 has Jakarta EE 10 as baseline.
+
+## [](#_application_servers)Application servers
+
+The tabs below show the application servers which we have certified (systematically tested per release) as well as those that are supported but not certified.
+
+> **Note:** All application servers listed here fall under our SLA, meaning we support any issues you encounter with the application servers.
+
+-   Supported and certified
+
+-   Supported but not certified
+
+
+-   Apache Tomcat
+
+    Magnolia 6.4 is a Jakarta EE 10 web application, requiring Tomcat 10.1 (or later).
+
+    Check Apache’s [Apache Tomcat - Which Version Do I Want?](http://tomcat.apache.org/whichversion.html) page to find out about compatibility between Tomcat and Java versions.
+
+
+The following servers (latest versions) are not certified, only supported. We provide support for them if you use them, but we do not proactively test them for major or maintenance releases of Magnolia.
+
+-   Wildfly
+
+-   JBoss EAP
+
+-   IBM WebSphere Application Server
+
+-   IBM WebSphere Liberty
+
+
+> **Caution:** IBM WebSphere is supported only with DX Core and with the special Magnolia package for IBM WebSphere.
+
+## [](#_databases)Databases
+
+-   External
+
+-   Embedded
+
+
+Unless otherwise noted, all vendor-supported database versions are supported for Magnolia.
+
+-   PostgreSQL
+
+    See [PostgreSQL: Versioning support](https://www.postgresql.org/support/versioning/) for more details.
+
+-   MySQL `5.5` and later
+
+    InnoDB storage engine for MySQL is supported by Magnolia, MyISAM is not. InnoDB is the default in MySQL 5.5 and later.
+
+-   Oracle Database
+
+-   Microsoft SQL Server
+
+
+-   H2
+
+    We don’t recommend using H2 for production environments.
+
+-   Derby
+
+    Apache Derby is only supported as an embedded database in a packaged version for low-volume use only.
+
+
+> **Note:** Magnolia BOM manages versions of the embedded databases.
+
+## [](#_cloud_providers)Cloud providers
+
+You can deploy Magnolia on major cloud providers such as Amazon AWS, Microsoft Azure, or Google Cloud Platform and generally in any Kubernetes cluster.
+
+## [](#_repositories)Repositories
+
+-   Apache Jackrabbit (2.x series)
+
+
+> **Note:** Magnolia BOM manages the version of the repository.
+
+## [](#_browsers)Browsers
+
+The Magnolia Admincentral and any Magnolia front-end (sites built with MTE) are compatible with major [web browsers](https://en.wikipedia.org/wiki/Usage_share_of_web_browsers) such as Chrome or Safari, released within the past two years.
+
+> **Note:** We don’t proactively test Magnolia for use with the emerging browsers but we do our best effort to give support for them if you use them.
+
+Admincentral UI is designed for desktop or small screens and tablets.

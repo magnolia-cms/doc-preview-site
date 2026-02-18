@@ -1,0 +1,48 @@
+---
+title: "Advanced Cache for Personalization"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-for-Personalization/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > High performance caching modules > Advanced Cache for Personalization
+---
+
+# Advanced Cache for Personalization
+
+[Operations](../../../../use-cases/operations/) Bundled: Extension
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLADVCACHE](https://magnolia-cms.atlassian.net/browse/MGNLADVCACHE) |
+| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache-personalization%2F4.0.0) |
+| Latest | 4.0.0 |
+
+This module sets the cache policy and cache store configuration on installation, allowing you to cache pages that contain personalized content. See [Personalization](../../../../use-cases/Personalization/).
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.advancedcache</groupId>
+  <artifactId>magnolia-advanced-cache-personalization</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_uninstalling)Uninstalling
+
+1.  Go to the app, unset all checkboxes for site aware workspaces and confirm.
+
+2.  Set the property `/modules/cache/config/contentCaching/defaultPageCache/cachePolicy@class` to `info.magnolia.module.cache.cachepolicy.Default`
+
+3.  Set the property `/modules/cache/config/contentCaching/defaultPageCache/executors/store/cacheContent@class` to `info.magnolia.module.cache.executor.Store`
+
+4.  Create `/modules/cache/config/contentCaching/defaultPageCache/cachePolicy/ttlVoters/PersonalizedContentTtlVoter@class` and set its value to info.magnolia.personalization.cache.PersonalizedContentTtlVoter
+
+5.  Shut down Magnolia, remove the Advanced Cache module JAR (`magnolia-advanced-cache-personalization.jar`) from `WEB-INF/lib` and start up Magnolia again

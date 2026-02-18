@@ -1,0 +1,66 @@
+---
+title: "Form definition - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Form-definition-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Form definition - 5 UI
+---
+
+# Form definition - 5 UI
+
+Deprecated
+
+> **Note:** This form definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Form definition for Magnolia 6 UI instead.
+
+The form definition defines the tabs and fields in a dialog.
+
+## [](#_form_properties)Form properties
+
+Simple form definition with two tabs, a title ([plain text](../Field-definition-5-UI/List-of-fields-5-UI/Text-field-5-UI/)) and text ([rich text](../Field-definition-5-UI/List-of-fields-5-UI/Rich-text-field-5-UI/)) and a [link field](../Field-definition-5-UI/List-of-fields-5-UI/Link-field-5-UI/) to link to an asset from DAM.
+
+File Tree
+
+<my-module>/dialogs/components/<dialog name>.yaml
+
+```yml
+form:
+  tabs:
+    - name: tabText
+      label: Text
+      fields:
+        - name: title
+          fieldType: text
+          label: Title
+        - name: textEditor
+          fieldType: richText
+          label: Text editor
+    - name: tabImage
+      label: Image
+      fields:
+        - name: image
+          fieldType: link
+          targetWorkspace: dam
+          appName: assets
+          identifierToPathConverter:
+            class: info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator
+          contentPreviewDefinition:
+            contentPreviewClass: info.magnolia.dam.app.ui.field.DamFilePreviewComponent
+```
+
+| Property | Description |
+| --- | --- |
+| `<dialog name>` | **required**<br><br>Arbitrary node name. Typically matches the template it edits. For example the component definition node and dialog definition node for a link component could both be named `link`. This is not required and one dialog can be used for more than one template. |
+| `form` | **required**<br><br>Contains the form definition which defines the tabs and fields where content is entered. |
+| `tabs` | **required**<br><br>Contains the tabs within the form. Every dialog needs at least one tab. |
+| `<tab name>` | **required**<br><br>The name of the tab. Arbitrary node name. Use a name that describes the content of the tab like `imageTab` or `addressTab`. |
+| `fields` | **required**<br><br>Contains the fields within the tab. See [Field definition](../Field-definition-5-UI/) for more. |
+| `<field name>` | **required**<br><br>Arbitrary field name. Use a name that describes the field like `title` or `headline`.<br><br>`class`<br><br>or |
+| `fieldType` | **required**<br><br>Field definition class (if using `class`, see [Available field definition classes](#_available_field_definition_classes) and [List of fields](../Field-definition-5-UI/List-of-fields-5-UI/) for more) or field definition name (if using `fieldType`). To view the field names, look at the [Definitions app](#6.2@product-docs:ROOT:Apps/List-of-apps/Definitions-app.adoc). |
+| `<other field properties>` | **optional**<br><br>See [Common field properties](../Field-definition-5-UI/#_common_field_properties) for a list of optional properties that can be used with all fields.<br><br>**required**<br><br>Each field definition class supports its own properties. See [List of fields](../Field-definition-5-UI/List-of-fields-5-UI/) for properties and example configurations of each field**.** |
+| `label` | **optional**<br><br>A label that appears in the tab. |
+
+Please note that if there is only a single tab defined for the form, the tab bar is hidden, form content moved directly under the form header and the label is not rendered.
+
+![Text form](6.2@product-docs:ROOT:6-0-formDefinition-formExample_v2.png)
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Form-definition-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Field-definition-classes-5-UI.adoc\[\]

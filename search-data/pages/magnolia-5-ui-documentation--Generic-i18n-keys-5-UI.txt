@@ -1,0 +1,168 @@
+---
+title: "Generic i18n keys - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Generic-i18n-keys-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Generic i18n keys - 5 UI
+---
+
+# Generic i18n keys - 5 UI
+
+Deprecated
+
+> **Note:** These generic i18n keys have been deprecated since Magnolia 6.0. They are part of the Magnolia 5 UI framework.For the updated implementations, see Generic i18n keys for Magnolia 6 UI instead.
+
+Generic i18n keys can be used in more than one location simultaneously, such as in multiple modules, apps and subapps, tabs or views. A list of such keys is provided at the end of this page.
+
+## [](#_reusing_keys_from_other_modules)Reusing keys from other modules
+
+At startup, Magnolia creates a global message bundle by reading keys from all `.properties` files of all modules in the current project. The global bundle is a virtual bundle, not a physical file. It includes keys from your module and keys from Magnolia’s own modules such as `ui-admincentral` and `ui-framework`.
+
+This means that you do not need to provide keys for all UI elements in your app. Keys for commonly reused elements such as buttons and subapps are in Magnolia’s own modules. Just reuse the UI element in your app, and Magnolia will find the existing key automatically. In simple terms, the shorter the form of the key, the more places it will apply to.
+
+**Example**: The contact edit form has **Save changes** and **Cancel** buttons.
+
+![Contact edit form](6.2@product-docs:ROOT:default-action-labels.png)
+
+The [Contacts app](#6.2@product-docs:ROOT:Apps/List-of-apps/Contacts-app.adoc) does not provide the text for either button in its own message bundle. They are provided in the [`module-ui-framework-messages_en.properties`](http://git.magnolia-cms.com/gitweb/?p=magnolia_ui.pub.git;a=blob;f=magnolia-ui-framework/src/main/resources/mgnl-i18n/module-ui-framework-messages_en.properties) file of the `ui-framework` module.
+
+module-ui-framework-messages\_en.properties
+
+```powershell
+# Default Action Labels
+actions.commit=save changes
+actions.cancel=cancel
+```
+
+Therefore, it is not necessary to insert two specific keys such as the following into the `.properties` file of the Contacts app.
+
+contacts-app-messages\_en.properties
+
+```powershell
+contacts-app.actions.commit=save changes
+contacts-app.actions.cancel=cancel
+```
+
+If your app needs these buttons, just name your [actions](../Dialog-definition-5-UI/Dialog-action-definition-5-UI/) `commit` and `cancel`.
+
+![Configuring buttons](6.2@product-docs:ROOT:ADVT-geni18nkeys-1.png)
+
+## [](#_providing_a_key_to_other_modules_or_apps)Providing a key to other modules or apps
+
+If a key is to be made available to other modules or apps, make the key less specific by omitting the `<module>` or `<app>` part of the key. See the list below for acceptable shorter forms of i18n keys.
+
+**Example:** The key for the `teaser` component in the MTK module ([https://demo.magnolia-cms.com/.magnolia/admincentral;#app:resources:detail;/mtk2/templates/components/teaser.yaml](https://demo.magnolia-cms.com/.magnolia/admincentral;#app:resources:detail;/mtk2/templates/components/teaser.yaml))
+
+```xml
+mtk.templates.components.teaser=Teaser
+```
+
+can be shortened just to
+
+```xml
+templates.components.teaser=Teaser
+```
+
+By omitting the module name (`mtk`) from the key, the shorter form can be reused for translation in other modules, e.g. in Travel Demo ([https://demo.magnolia-cms.com/.magnolia/admincentral;#app:resources:detail;/travel-demo/templates/components/teaser.yaml](https://demo.magnolia-cms.com/.magnolia/admincentral;#app:resources:detail;/travel-demo/templates/components/teaser.yaml:edit)).
+
+## [](#_overriding_a_generic_key)Overriding a generic key
+
+There are, however, scenarios when a translation for an element has to be different from the one available in the generic key. In this case, the user still has the option to expand the key from its short (generic) form into a longer pattern that specifies the element (e.g. the module, app, subapp, etc.) where the translation should appear. For example, if the key for the `teaser` component in the Travel Demo module needs a different translation from that used in MTK, the key can be expanded into a more specific form:
+
+```xml
+travel-demo.templates.components.teaser=The Travel Demo Teaser
+```
+
+The translation will now be available primarily to the `teaser` component in the Travel Demo module.
+
+## [](#_list_of_generic_i18n_keys)List of generic i18n keys
+
+The parts in `[brackets]` can be omitted.
+
+### [](#_apps)Apps
+
+-   `<app>.app[.label]`
+
+
+### [](#_app_launcher_group)App launcher group
+
+-   `app-launcher.<groupName>[.label]`
+
+
+### [](#_sections)Sections
+
+-   `<app>.[<subapp>.]actionbar.<section>[.label]`
+
+-   `[<app>.][<subapp>.]actionbar.sections.<section>[.label]`
+
+
+> **Warning:** If used in the key, <subapp> requires <app>.
+
+### [](#_actions)Actions
+
+-   `[<app>.][<subapp>.]actions.<action>[.label]`
+
+
+### [](#_columns)Columns
+
+-   `[<app>.][<subapp>.]views.[<view-type>.]<column>[.label]`
+
+
+> **Warning:** If used in the key, <subapp> requires <app>.
+
+### [](#_tabs)Tabs
+
+-   `<module>.<dialogPath>.<tab>[.label]`
+
+-   `tabs.<tab>[.label]`
+
+
+### [](#_dialogs)Dialogs
+
+-   `<module>.<dialogPath>[.label]`
+
+-   `dialogs.<dialogPath>[.label]`
+
+
+### [](#_fields)Fields
+
+-   `[<module>.]<dialogPath>.[<tab>.]<field>[.label]`
+
+-   `[<module>.]<dialogPath>.[<tab>.]<field>.description`
+
+-   `<tab>.<field>[.label]`
+
+-   `<tab>.<field>.description`
+
+-   `fields.<field>[.label]`
+
+-   `fields.<field>.description`
+
+
+#### [](#_field_validators)Field validators
+
+The generic i18n key for a field validator is `validators.<validatorName>.errorMessage`.
+
+If a validator is defined for the field, the i18n keys may take the validator suffix:
+
+-   `[<module>.]<dialogPath>.[<tab>.]<field>.validation.errorMessage`
+
+-   `<tab>.<field>.validation.errorMessage`
+
+-   `fields.<field>.validation.errorMessage`
+
+
+### [](#_templates)Templates
+
+#### [](#_pagescomponents)Pages/components
+
+-   `[<module>.]templates.<templatePath>`
+
+-   `[<module>.]templates.<templatePath>.description`
+
+
+#### [](#_areas)Areas
+
+-   `templates.areas.<areaName>`
+
+-   `templates.areas.<areaName>.description`

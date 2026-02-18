@@ -1,0 +1,91 @@
+---
+title: "Package Manager module"
+url: https://docs.magnolia-cms.com/package-manager/Package-manager-module/
+category: Modules
+version: modules
+breadcrumb: Package Manager module > Package Manager module
+---
+
+# Package Manager module
+
+Unbundled: Extension Magnolia 6.4 compatible
+
+|     |     |
+| --- | --- |
+| **Edition** | DX Core |
+| **License** | [MLA](https://www.magnolia-cms.com/mla.html) |
+| **Issues** | [PACKMAN](https://magnolia-cms.atlassian.net/browse/PACKMAN) |
+| **Maven site** | [Package manager](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fpackagemanager%2Fmagnolia-package-manager-parent%2F2.0.2) |
+| **Latest** | 2.0.2 |
+
+The Package Manager module installs the Package Manager app allowing users to [configure packages](../configuration/) on author instances and [use the packages](../usage/) on both author and public instances. This page contains details for setting up your environment, from [installation](#_installing_with_maven) to [deployment](#Deployment) and [audit logging](#Audit logging configuration).
+
+> **Note:** When installing any package that overwrites or restructures existing content, schedule a maintenance window for the affected paths. During this window, team members must not edit, publish, move, delete, or run bulk operations on the impacted content. Use a system-wide notification to inform all affected users before and during the window.
+
+> **Caution:** Package manager is incompatible with assets that include binaries stored outside of JCR. This applies to hybrid assets and DAM version 5, version 6, and later.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.packagemanager</groupId>
+  <artifactId>magnolia-package-manager-core</artifactId>
+  <version>2.0.2</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.packagemanager</groupId>
+  <artifactId>magnolia-package-manager-api</artifactId>
+  <version>2.0.2</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.packagemanager</groupId>
+  <artifactId>magnolia-package-manager-app</artifactId>
+  <version>2.0.2</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.warp</groupId>
+  <artifactId>warp-frontend</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+## [](#_logging_configuration)Logging configuration
+
+### [](#_audit_log)Audit log
+
+Audit logging can be activated for the Package Manager app to track who performed actions and when. To activate Package Manager audit logging, go to the log configuration for packages in the Configuration app and set `active` to `true` to enable it. For more details, see [Audit](../../product-docs/7.0/Administration/Monitoring/Audit/).
+
+| Node name | Value |
+| --- | --- |
+| ⸬ package |     |
+| ⬩ active | true |
+| ⬩ logName | log-audit |
+
+![Log Tools app - magnolia-audit.log ](../_images/magnolia-audit-log.png)
+
+### [](#_installation_log)Installation log
+
+You can configure the location where Package Manager logs installation actions using the `magnolia.packagemanager.storage.logs.path` property.

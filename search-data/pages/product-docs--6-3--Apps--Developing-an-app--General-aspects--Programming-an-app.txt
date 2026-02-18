@@ -1,0 +1,462 @@
+---
+title: "Programming an app"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/Developing-an-app/General-aspects/Programming-an-app/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > Developing an app > Programming an app
+---
+
+# Programming an app
+
+To program an app, you need a development environment. Use the same environment you would use for other Magnolia development tasks.
+
+> **Tip:** See Development environment for instructions on how to set up your development environment.
+
+## [](#_components)Components
+
+The term **component** is a developer term that here refers to Java objects, not templating components.
+
+A component provides a service such as keeping a registry of templates. Components expose their functionality to other components through an interface or an API. A typical component depends on a number of other components and benefits from dependency injection as Magnolia will connect components to satisfy their dependencies. Components are either singletons, which means that they are around for the lifetime of the server, or they are tied to shorter durations such as the duration of an HTTP request or a user session. The duration is known as scope.
+
+## [](#_apps_and_components)Apps and components
+
+Each app has its own component provider that uses components in the `app-<app name>` group. Each subapp has a component provider that uses components described for it. Component providers have the app component provider as their parent:
+
+## [](#_defining_app_components_in_a_module_descriptor)Defining app components in a module descriptor
+
+Define your components in the module descriptor. Here is a minimal module descriptor that doesn’t declare any components yet. It just declares the module name and version.
+
+A minimal module descriptor
+
+```xml
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>ui-helloworld-app</name>
+  <displayName>Hello World App</displayName>
+  <description>The Famous Hello World App</description>
+  <version>1.0</version>
+</module>
+```
+
+## [](#_defining_an_app_or_subapp_as_a_component)Defining an app or subapp as a component
+
+**Best practice**
+
+Defining something as a component allows other developers to quickly change the implementation. For this reason, you should define anything that is likely to be changed or customized later as a component. For example, define your apps and subapps as components. Views are also common customization points so define the views returned by subapps as components. Any components you define are available for injection. This is also true for components further up the hierarchy in parent components.
+
+In the module descriptor file, add a section for each component. Name the components using the following convention:
+
+-   `app-<app name>`
+
+-   `app-<app name>-<subapp name>`
+
+
+The `<app name>` is the name configured in the app configuration in AdminCentral. For example:
+
+-   `app-helloworld`
+
+-   `app-helloworld-main`
+
+-   `app-helloworld-greeter`
+
+
+Component defined in a module descriptor XML file
+
+```xml
+<components>
+  <id>app-helloworld</id>
+</components>
+<components>
+  <id>app-helloworld-main</id>
+  <component>
+    <type>info.magnolia.ui.app.helloworld.main.HelloWorldMainSubAppView</type>
+    <implementation>info.magnolia.ui.app.helloworld.main.HelloWorldMainSubAppViewImpl</implementation>
+  </component>
+</components>
+
+<components>
+  <id>app-helloworld-greeter</id>
+  <component>
+      <type>info.magnolia.ui.app.helloworld.greeter.HelloWorldGreeterSubAppView</type>
+      <implementation>info.magnolia.ui.app.helloworld.greeter.HelloWorldGreeterSubAppViewImpl</implementation>
+  </component>
+</components>
+```
+
+## [](#_project_structure)Project structure
+
+1.  Use a [Maven archetype](http://wiki.magnolia-cms.com/display/WIKI/Module+QuickStart) to get a ready-made Magnolia module structure. An archetype has a top-level project and a webapp configured as a Maven submodule.
+
+2.  Structure your app project in the IDE as shown in the example below. Put the app and subapp classes in the same folder.
+
+3.  Export the app configuration and the [app launcher configuration](../../../../Administration/App-Launcher/App-launcher-layout/) into XML and put them in the `resources` folder. The module descriptor file goes in `resources/META-INF.magnolia`.
+
+
+App project structure in your IDE:
+
+![The app project structure in your integrated development environment](../../../../_images/magnolia-ui-app-helloworld.png)
+
+## [](#_implementing_an_app)Implementing an app
+
+1.  Create a class that implements the `App` interface, or extend the `BaseApp` class. The second option is more convenient.
+
+2.  In your app class, implement any custom methods or functionality you need.
+
+3.  Inject the `AppContext` and `AppView` as a dependency.
+
+
+> **Note:** This is only needed if you want to extend the App by custom functionality. Otherwise use info.magnolia.ui.framework.app.BaseApp as the app class in the configuration.
+
+Implementing an app class and injecting a dependency on AppContext.
+
+```java
+public class HelloWorldApp extends BaseApp {
+    @Inject
+    public HelloWorldApp(AppContext appContext, AppView view) {
+        super(appContext, view);
+    }
+    ...
+}
+```
+
+### [](#_starting_an_app)Starting an app
+
+1.  To start an app, you can either search for it In the Find Bar or click the app launcher icon (mgnl-app-launcher: \[\])and then click the icon. To do this programmatically, you can trigger a `LocationChange` event by calling `LocationController.goTo()` with the location as an argument.
+
+2.  The `AppController` will now take care of opening the correct app and subapp based on the app name and subapp ID as defined in the [configuration](../../../App-configuration/App-descriptor/).
+
+3.  To hook into the starting cycle or location handling of an app:
+
+
+Override App methods
+
+```java
+public class HelloWorldApp extends BaseApp {
+
+    ...
+
+    @Override
+    public void start(Location location) {
+        super.start(location);
+        // code to extend default behavior
+    }
+    @Override
+    public void locationChanged(Location location) {
+        super.locationChanged(location);
+        // code to extend default behavior
+    }
+}
+```
+
+### [](#_stopping_an_app)Stopping an app
+
+When an app stops, you get a callback to the `stop` method to do cleanup. The cleanup can involve closing files, closing network connections and so on.
+
+Stopping an app
+
+```java
+@Override
+public void stop() {
+    // code to extend default behavior
+}
+```
+
+### [](#_handling_location_changes)Handling location changes
+
+When your app is requested with a location fragment, you might need to handle changing the location. In your app class, override the `locationChanged` method.
+
+Handling a location change
+
+```java
+@Override
+public void locationChanged(Location location) {
+    super.locationChanged(location);
+    String parameter = location.getParameter();
+    doFoo(parameter);
+}
+```
+
+Remember, if the subapp is requested with a location that is already open in a running subapp, the Magnolia Shell takes care of bringing that subapp to focus instead of starting a new one.
+
+## [](#_subapp)SubApp
+
+Subapp is an app that runs in its own tab. For example, the Pages app always has the `main` subapp open in the first tab and multiple `detail` subapps for each page that is edited. The `main` subapp has the label `Pages` while the `detail` subapps are labeled according to the page title, for example Travel Home.
+
+![An example showing a main subapp and detail subapp tabs opened](../../../../_images/6-2-subApp.png)
+
+When the subapp starts it must return a view. The view draws a user interface on the tab so that there is something for the user to interact with. The view takes up the whole tab and adds a caption.
+
+### [](#_implementing_a_subapp)Implementing a SubApp
+
+Create a class that implements the SubApp interface or extend the `BaseSubApp` class. The second option is more convenient. In your subApp class, implement any custom methods or functionality you need. Inject the `SubAppContext` and a view associated with the subApp as a dependency.
+
+Implementing a SubApp
+
+```java
+public class MyMainSubApp extends BaseSubApp {
+
+    @Inject
+    public MyMainSubApp(final SubAppContext subAppContext, final View view) {
+        super(subAppContext, view);
+    }
+}
+```
+
+### [](#_starting_a_subapp)Starting a subApp
+
+The default implementation for starting and changing the location of Apps is being delegated to the actual subApp defined in the `location`. If a subApp with the referenced `subApp Id` is already running, it will be asked whether it actually supports the `location`.
+
+```java
+public class BaseSubApp implements SubApp {
+
+    ...
+
+    @Override
+    public boolean supportsLocation(Location location) {
+        return true;
+    }
+}
+```
+
+In this case all locations with a reference to its subApp Id will be handled by this subApp instance. By overriding this method and make it return `false` you would open a new tab for every location change the AppController gets which is targeted to this subAppId. To open a new tab based on the parameters passed to the subApp, it would look like this:
+
+```java
+public class MySubApp extends BaseSubApp {
+
+    ...
+
+    @Override
+    public boolean supportsLocation(Location location) {
+        DefaultLocation newLocation = (DefaultLocation) location;
+        String currentParameter = getCurrentLocation().getParameter();
+        return currentParameter.equals(newLocation.getParameter());
+    }
+}
+```
+
+To hook into the starting cycle or location handling of an App:
+
+```java
+public class MySubApp extends BaseSubApp {
+
+    ...
+
+    @Override
+    protected void onSubAppStart() {
+        // code to extend default behavior
+    }
+
+    @Override
+    protected void onSubAppStop() {
+        // code to extend default behavior
+    }
+
+    @Override
+    public void locationChanged(Location location) {
+        super.locationChanged(location);
+        // code to extend default behavior
+    }
+}
+```
+
+## [](#_module_dependencies)Module dependencies
+
+You need to declare your dependencies in the module descriptor. You can define runtime or install time dependencies, not build dependencies. If you define a dependency on another module, then this module will be installed and started before your module. In order to develop a basic app, add the following section to your module descriptor:
+
+Adding a dependency on AdminCentral.
+
+```xml
+<dependencies>
+    <dependency>
+        <name>ui-admincentral</name>
+        <version>5.0/*</version>
+    </dependency>
+</dependencies>
+```
+
+## [](#_hello_world_example)Hello World example
+
+This is a step-by-step guide on how to implement a basic hello world app. When started, it shows a `main` subApp containing two buttons. Clicking on a button should open a new `greeter` subApp greeting the user associated with the button.
+
+### [](#_main_subapp)Main SubApp
+
+The logic is taken care of by the `HelloWorldMainSubApp` which adds buttons to the view and listens to actions by implementing the `Listener` interface.
+
+In addition to the `SubAppContext` and the `View` we also inject the `LocationController` which will be used to open the `greeter` subApp.
+
+Creating a main subapp
+
+```java
+public class HelloWorldMainSubApp extends BaseSubApp implements HelloWorldMainSubAppView.Listener {
+
+    private LocationController locationController;
+
+    @Inject
+    public HelloWorldMainSubApp(final SubAppContext subAppContext, HelloWorldMainSubAppView view, LocationController locationController) {
+        super(subAppContext, view);
+        this.locationController = locationController;
+    }
+
+    @Override
+    protected void onSubAppStart() {
+        getView().setListener(this);
+        getView().addUser("Lisa");
+        getView().addUser("Mark");
+    }
+
+    @Override
+    public HelloWorldMainSubAppView getView() {
+        return (HelloWorldMainSubAppView) super.getView();
+    }
+
+    /**
+     * When a button gets clicked in the {@link HelloWorldMainSubAppView} it will call back to this method.
+     * The {@link LocationController#goTo(info.magnolia.ui.framework.location.Location)} will cause the app framework to handle the location change event.
+     */
+    @Override
+    public void greetUser(String user) {
+        locationController.goTo(new DefaultLocation(DefaultLocation.LOCATION_TYPE_APP, getAppContext().getName(), "greeter", user));
+    }
+}
+```
+
+A simple interface providing methods to add buttons in the view.
+
+View Interface and Listener for actions in the view
+
+```java
+public interface HelloWorldMainSubAppView extends View {
+
+    void setListener(Listener listener);
+    void addUser(String user);
+
+    public interface Listener {
+        void greetUser(String user);
+    }
+}
+```
+
+The view consists of a VerticalLayout and a Label `Say Hello!`.
+
+Implementing a View for the main subapp
+
+```java
+public class HelloWorldMainSubAppViewImpl implements HelloWorldMainSubAppView {
+
+    private VerticalLayout layout = new VerticalLayout();
+    private Listener listener;
+
+    public HelloWorldMainSubAppViewImpl() {
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        layout.addComponent(new Label("Say Hello!"));
+    }
+
+    @Override
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
+    }
+
+    @Override
+    public void addUser(final String user) {
+        Button button = new Button("Say hello to " + user + "!");
+        button.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                listener.greetUser(user);
+            }
+        });
+        layout.addComponent(button);
+    }
+}
+```
+
+### [](#_greeter_subapp)Greeter subApp
+
+When the user clicks one of the buttons, a new location is requested. The `AppController` will take care of redirecting it to the hello world app and launching the `greeter` subApp.
+
+A simple interface providing a method to set the name.
+
+Simple View Interface
+
+```java
+public interface HelloWorldGreeterSubAppView extends View {
+    void setGreeting(String name);
+}
+```
+
+The view consists of a VerticalLayout and a Label `"Hello " + name + "!"`.
+
+Implementing a View for the main subapp
+
+```java
+public class HelloWorldGreeterSubAppViewImpl implements HelloWorldGreeterSubAppView {
+
+    VerticalLayout layout = new VerticalLayout();
+
+    public HelloWorldGreeterSubAppViewImpl() {
+        layout.setMargin(true);
+        layout.setSpacing(true);
+    }
+    @Override
+    public Component asVaadinComponent() {
+        return layout;
+    }
+    @Override
+    public void setGreeting(String name) {
+        layout.addComponent(new Label("Hello " + name + "!"));
+    }
+}
+```
+
+The `HelloWorldGreeterSubApp` will override the default caption of the tab by the name passed as a parameter and set it on the view.
+
+Creating a main subapp
+
+```java
+public class HelloWorldGreeterSubApp extends BaseSubApp {
+
+    private String name;
+
+    @Inject
+    protected HelloWorldGreeterSubApp(final SubAppContext subAppContext, final HelloWorldGreeterSubAppView view) {
+        super(subAppContext, view);
+    }
+
+    /**
+     * Extracts the name to greet from the {@link Location}s parameter and passes it to the {@link HelloWorldGreeterSubAppView}.
+     */
+    @Override
+    protected void onSubAppStart() {
+        this.name = getCurrentLocation().getParameter();
+        getView().setGreeting(name);
+    }
+
+    @Override
+    public HelloWorldGreeterSubAppView getView() {
+        return (HelloWorldGreeterSubAppView)super.getView();
+    }
+
+    /**
+     * Used to set the label on the tab.
+     */
+    @Override
+    public String getCaption() {
+        return name;
+    }
+
+    /**
+     * In case there is a subApp instance running, here the decision is made whether this instance will handle the new {@link Location}.
+     */
+    @Override
+    public boolean supportsLocation(Location location) {
+        String newUser = location.getParameter();
+        return getCurrentLocation().getParameter().equals(newUser);
+    }
+}
+```

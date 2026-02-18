@@ -1,0 +1,61 @@
+---
+title: "Magnolia 6.3.1 known issues"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.1/Magnolia-6.3.1-known-issues/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.1 > Magnolia 6.3.1 known issues
+---
+
+# Magnolia 6.3.1 known issues
+
+## [](#_some_in_app_search_fields_and_filters_not_working)Some in-app search fields and filters not working
+
+We’re investigating an issue with the search improvements introduced in 6.3.1. In-app search for the following apps isn’t working as expected due to a build issue:
+
+-   Definitions app
+
+-   Resource Files app
+
+-   Tasks app
+
+
+For more details, see:
+
+-   [CFGUI-199](https://magnolia-cms.atlassian.net/browse/CFGUI-199).
+
+-   [MGNLRES-421](https://magnolia-cms.atlassian.net/browse/MGNLRES-421).
+
+-   [TASKS-64](https://magnolia-cms.atlassian.net/browse/TASKS-64).
+
+
+If you rely on search in these apps, please wait until the release of Magnolia 6.3.2. We’re actively working on resolving the issues.
+
+## [](#_assets_cant_be_loaded_or_served)Assets can’t be loaded or served
+
+This issue is caused by the upgrade of the `commons-io` library to version `2.17.0`, where the constructor of `AutoCloseInputStream` changed to
+
+```java
+...
+public AutoCloseInputStream(InputStream in) {
+    super(ClosedInputStream.ifNull(in));
+}
+...
+```
+
+A fix for this issue will be delivered as [BUILD-1297](https://magnolia-cms.atlassian.net/browse/BUILD-1297).
+
+### [](#_workaround)Workaround
+
+As a temporary workaround, downgrade the library to version `2.16.1`.
+
+## [](#_variants_unintentionally_valued)Variants unintentionally valued
+
+Switching between [variants](../../../Modules/List-of-modules/Personalization-module/My-first-personalized-campaign/) during editing replaces the target variant being edited with the current value, even if the changes are not saved. This behavior can result in unintended updates to the target variant.
+
+If you use variants, we recommend waiting until the release of Magnolia 6.3.2.
+
+A fix for this issue is delivered with [MGNLUI-9095](https://magnolia-cms.atlassian.net/browse/MGNLUI-9095).
+
+## [](#_performance_issues_with_the_assets_app)Performance issues with the Assets app
+
+> **Note:** This issue is described in the Magnolia 6.3.0 known issues. It is addressed in 6.3.4 with MGNLUI-9115.

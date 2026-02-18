@@ -1,0 +1,28 @@
+---
+title: "Package manager"
+url: https://docs.magnolia-cms.com/package-manager/
+category: Modules
+version: modules
+breadcrumb: Package Manager module > Introduction
+---
+
+# Package manager
+
+When you use built-in import and export features in Magnolia, they may not scale to large amounts of data. To move content quickly and conveniently from one environment to another, you can use the Package Manager. It’s designed to handle gigabytes of data reliably and prevent long waiting times.
+
+The [Package manager module](Package-manager-module/) is based on [FileVault](https://jackrabbit.apache.org/filevault) and allows you move data between Magnolia instances via packages. A package contains compressed workspace content from one of your Magnolia instances.
+
+![package manager splash](_images/package-manager-splash.png)
+
+## [](#_use_cases)Use cases
+
+> **Note:** When installing any package that overwrites or restructures existing content, schedule a maintenance window for the affected paths. During this window, team members must not edit, publish, move, delete, or run bulk operations on the impacted content. Use a system-wide notification to inform all affected users before and during the window.
+
+Magnolia Package Manager is commonly used for:
+
+-   Transferring packaged content between environments
+
+
+## [](#_performance)Performance
+
+Package Manager has been tested with large packages, yet installing a lot of content on an instance is a resource-intensive task. Content added by Package Manager also needs to be indexed, which can apply even more strain on the instance where a package with a lot of nodes (1000+) is installed. As exact performance depends heavily on the exact configuration of your instance (available memory, processing power), make sure you always test large package installations on a non-productive instance before installing on PROD systems.

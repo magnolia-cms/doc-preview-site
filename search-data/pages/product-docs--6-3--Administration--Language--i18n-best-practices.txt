@@ -1,0 +1,58 @@
+---
+title: "i18n best practices"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Language/i18n-best-practices/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Language > i18n best practices
+---
+
+# i18n best practices
+
+This page describes selected best practices within the context of i18n API.
+
+## [](#_use_message_bundles)Use message bundles
+
+Provide a message bundle in your module. It makes translation easier. A translator can work with a plain text file and doesn’t need to touch the code. A message bundle is a collection of `.properties` files. Each file contains key-value pairs of translated user interface text such as labels and messages. The keys in all `.properties` files of the same bundle are identical but the values are language specific translations.
+
+## [](#_recommended_filename_structure)Recommended filename structure
+
+We recommend the following i18n filename patterns, for apps and modules, respectively:
+
+```xml
+app-<app-name>-messages_<locale>.properties
+```
+
+```xml
+module-<module-name>-messages_<locale>.properties
+```
+
+## [](#_use_java_locale_notation_for_locale)Use Java locale notation for <locale>
+
+Make sure the [locale](../Language-configuration/#_defining_locales) is correct. Magnolia follows the [Java locale notation](http://www.localeplanet.com/java/).
+
+## [](#_bundle_properties_into_module_namei18n)Bundle `*.properties` into `./<module-name>/i18n/`
+
+Keep your message bundles in the following folders:
+
+-   `src/main/resources/<module-name>/i18n/` (Maven module development) or in
+
+-   `<magnolia.resources.dir>/<module-name>/i18n/` (light development).
+
+
+## [](#_use_generic_i18n_keys)Use generic i18n keys
+
+Whenever possible (see [here](../Generic-i18n-keys/) for more details and restrictions), use generic, i.e. shorter i18n keys. The shorter the form, the more modules will exist where the key can be instantly reused.
+
+## [](#_use_utf_8_encoding)Use UTF-8 encoding
+
+Use UTF-8 character encoding in `.properties` files.
+
+## [](#_separate_message_bundles)Separate message bundles
+
+Create separate message bundles for user interface labels and template labels. Don’t store these two groups of text in the same properties files or message bundles. They are aimed at different audiences and have different localization requirements.
+
+**Example**: Message files in the Travel Demo
+
+-   [`module-travel-demo-backend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (user interface labels)
+
+-   [`module-travel-demo-frontend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (template labels)

@@ -1,0 +1,179 @@
+---
+title: "CTSX AT Language Solutions"
+url: https://docs.magnolia-cms.com/content-translation-support-ext/atls/
+category: Modules
+version: modules
+breadcrumb: Content Translation Extended module > CTSX AT Language Solutions
+---
+
+# CTSX AT Language Solutions
+
+[Content management](../../product-docs/7.0/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.0.0 [Magnolia 6.4](../../product-docs/7.0/) compatible
+
+The **CTSX AT Language Solutions** module performs translations using the [AT Language Solutions APIs](https://www.at-languagesolutions.com/en/). Translations are handled synchronously or asynchronously.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+> **Important:** In order to start the ATLS translation process, please make sure that the core and apps modules in the Content Translation Extended have already been installed.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.translation</groupId>
+  <artifactId>magnolia-content-translation-support-ext-atls</artifactId>
+  <version>5.0.0</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+The configuration can be done using JCR or YAML.
+
+-   Refer to the [JCR Configuration](#_jcr_configuration) for the JCR configuration.
+
+-   Refer to the [YAML configuration](#_yaml_configuration) for instructions on how to define settings using YAML.
+
+
+### [](#_jcr_configuration)JCR Configuration
+
+Configuration of the ATLS service provider is handled in the module config. This provider should be configured with the following path:
+
+```none
+modules
+└── magnolia-content-translation-support-ext-atls
+    └── config
+        └── translationProviders
+            └── altsTranslationProviderConfigFile.yaml
+```
+
+> **Note:** For users upgrading from version 4.0.0 to version 4.1.0, ensure you move your existing translation provider configuration to the correct path.
+
+### [](#_yaml_configuration)YAML configuration
+
+ATLS service provider configuration is defined within its provider module (`magnolia-content-translation-support-ext-atls`) under the following directory structure:
+
+```plaintext
+/src/main/resources/magnolia-content-translation-support-ext-atls/translationProviders
+```
+
+#### [](#_required_decorations)Required decorations
+
+This configuration can also be **decorated** to override or extend the default configuration. Decoration file should be placed under the following path:
+
+```plaintext
+<light-module-name>/decorations/magnolia-content-translation-support-ext-atls/translationProviders
+```
+
+Below is an example of how to decorate ATLS service provider configuration within a light module:
+
+```plaintext
+light-modules/
+└── my-module/
+    └── decorations/
+        └── magnolia-content-translation-support-ext-atls/
+            └── translationProviders/
+                └── syncAtls.yaml
+```
+
+### [](#_configuration_properties)Configuration properties
+
+This provider can be configured with the following properties.
+
+| Property | Description |
+| --- | --- |
+| `class` | **required**<br><br>Definition class for the translator to be used.<br><br>See `info.magnolia.translation.ext.provider.definition.AtlsSynchronousProviderDefinition`. |
+| `configName` | **required**<br><br>The display name of the configuration in Magnolia. |
+| `defaultFlag` | **optional**<br><br>The default configuration used by the system in the case of multiple translation services being used. |
+| `enabledFlag` | **required**<br><br>Enable or disable the configuration using this flag. |
+| `implementationClass` | **required**<br><br>Implementation class for interfacing with ATLS.<br><br>See `info.magnolia.translation.ext.provider.google.translator.AtlsSynchronousTranslator`. |
+
+| Property | Description |
+| --- | --- |
+| `class` | **required**<br><br>Definition class for the translator to be used.<br><br>See info.magnolia.translation.ext.provider.definition.AtlsAsynchronousProviderDefinition |
+| `configName` | **required**<br><br>The display name of the configuration in Magnolia. |
+| `defaultFlag` | **optional**<br><br>The default configuration used by the system in the case of multiple translation services being used. |
+| `enabledFlag` | **required**<br><br>Enable or disable the configuration using this flag. |
+| `implementationClass` | **required**<br><br>Implementation class for interfacing with AT Language Solutions.<br><br>See `info.magnolia.translation.ext.atls.translator.AtlsAsynchronousTranslator`. |
+
+### [](#_restclients_configuration)restClients Configuration
+
+The AT Language Solutions module is integrated using the [REST Client module](../../product-docs/7.0/Modules/List-of-modules/REST-Client-module/). The configuration in YAML is.
+
+Expand to see sample
+
+/magnolia-content-translation-support-ext-atls/restClients/atls.yaml
+
+```yaml
+baseUrl: https://rts.at-ls.com
+restCalls:
+  ping:
+    method: GET
+    entityClass: com.fasterxml.jackson.databind.JsonNode
+    path: /atrts/restapi/ping
+  synchronous:
+    method: POST
+    entityClass: com.fasterxml.jackson.databind.JsonNode
+    path: /atrts/restapi/translateSynchronous
+    body: '{"sourcelang": "{sourcelang}", "filename": "{filename}", "targetlang": "{targetlang}", "base64": "{base64}"}'
+    headers:
+      X-ATRTS-API-Key: "-- API KEY FROM ATLS --"
+      Host: "rts.at-ls.com"
+      Content-Type: "application/json"
+  asynchronous:
+    method: POST
+    entityClass: com.fasterxml.jackson.databind.JsonNode
+    path: /atrts/restapi/translateAsynchronous
+    body: '{"sourcelang": "{sourcelang}", "filename": "{filename}", "targetlang": "{targetlang}", "base64": "{base64}"}'
+    headers:
+      X-ATRTS-API-Key: "-- API KEY FROM ATLS --"
+      Host: "rts.at-ls.com"
+      Content-Type: "application/json"
+  fileByToken:
+    method: POST
+    entityClass: com.fasterxml.jackson.databind.JsonNode
+    path: /atrts/restapi/getFileByToken
+    body: '{"token": "{token}"}'
+    headers:
+      X-ATRTS-API-Key: "-- API KEY FROM ATLS --"
+      Host: "rts.at-ls.com"
+      Content-Type: "application/json"
+```
+
+#### [](#_required_decorations_2)Required decorations
+
+You have to decorate "magnolia-content-translation-support-ext-atls" in order to add the "X-ATRTS-API-Key" and "Host" values provided by AT Language Solutions.
+
+Expand to see sample
+
+```yaml
+restCalls:
+  synchronous:
+    headers:
+      X-ATRTS-API-Key: "978cd5fa-1e82-xxxx-adc1-0242ac120002"
+      Host: "rts.at-ls.com"
+  asynchronous:
+    headers:
+      X-ATRTS-API-Key: "978cd5fa-1e82-xxxx-adc1-0242ac120002"
+      Host: "rts.at-ls.com"
+  fileByToken:
+    headers:
+      X-ATRTS-API-Key: "978cd5fa-1e82-xxxx-adc1-0242ac120002"
+      Host: "rts.at-ls.com"
+```
+
+## [](#_usage)Usage
+
+After registration and starting, The Content Translation Support Extended (CTSX) module will bind the AT Language Solutions translator, to Configuration field.
+
+> **Note:** You can test the connection to the translator API before using.
+
+![atls](_images/atls.jpg)
+
+### [](#_how_it_works)How it works
+
+The same steps with CTSX Google Translator but you will choose "Sync Atls Translate" or "Async Atls Translate" instead of "Google.com" in the Configuration depending on whether you want a synchronous or asynchronous translation.
+
+> **Note:** In addition, if you have chosen an asynchronous translation, at "Step 2" after submitting the batch you must wait for the response from AT Language Solutions translator.
+
+You would be able to see the Task notification for translation result as soon as the submission has been delivered.

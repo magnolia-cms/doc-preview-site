@@ -1,0 +1,373 @@
+---
+title: "Upgrading to Magnolia 6.4"
+url: https://docs.magnolia-cms.com/product-docs/Upgrading-to-Magnolia/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Upgrading to Magnolia 6.4
+---
+
+# Upgrading to Magnolia 6.4
+
+Upgrading to Magnolia 6.4 introduces important platform updates, new features, and compatibility changes that require careful planning. This guide helps you through the upgrade process based on your current Magnolia version, highlighting mandatory steps, potential pitfalls, and recommended best practices.
+
+> **Tip:** If you are currently running on Magnolia 6.2 and wish to upgrade to Magnolia 6.4, see Upgrading Magnolia 6.2 to 6.4.
+
+-   Update to the latest maintenance release of Magnolia 6.3 first. You can find this at [Magnolia 6.3 releases](#6.3@product-docs:ROOT:Releases.adoc).
+
+-   Read the [Magnolia 6.4 Release notes](../Releases/Release-notes-for-Magnolia-DX-Core-6.4/).
+
+-   Read the [Magnolia 6.4 Certified stack](../Administration/Certified-stack/) and confirm that your environment matches.
+
+-   Back up your system.
+
+-   Verify that all custom modules are compatible with 6.4.
+
+
+Upgrading for the first time? Click to see more guidance.
+
+> **Tip:** Because the upgrade process takes time and is vulnerable to incidents, we recommend you minimize the risk:Clean up your systemRemove unused dataReindex everythingDo a full backup first
+
+**Latest maintenance release**
+
+1.  First, upgrade to the latest maintenance release of your current Magnolia version.
+
+    For example, if you are on Magnolia `6.3.6`, the upgrade path should ideally be `6.3.6` → the last maintenance release on the 6.3 branch → the latest release on the 6.4 branch.
+
+2.  Once Magnolia is running, check the [Definitions app](../Apps/List-of-apps/Definitions-app/) for deprecated or problematic definitions.
+
+
+**Maven-managed webapps**
+
+-   **Parent POM**
+
+    Update the parent `pom.xml` file of your webapp. In the `<properties>` tag of your parent POM, change the version of the `magnoliaBundleVersion` property:
+
+    ```xml
+    ...
+    <properties>
+      <magnoliaBundleVersion>6.4.2</magnoliaBundleVersion>
+      <foobarModuleVersion>1.2</foobarModuleVersion>
+      <javaVersion>21</javaVersion>
+    </properties>
+    ...
+    ```
+
+-   **Magnolia Extensions**
+
+    Magnolia extensions are managed using a separate BOM, see the [extensions-bom](https://git.magnolia-cms.com/projects/EXTENSIONS/repos/extensions-bom/browse/pom.xml) file.
+
+-   **Servlet container**
+
+    If you use Apache Tomcat, we recommend that you always update to the latest supported Tomcat version. For other servlet containers, check out the [certified stack](../Administration/Certified-stack/).
+
+
+**The `magnolia.properties` file**
+
+Compare your `magnolia.properties` file with the one from the newly released Magnolia bundles. Below are the latest versions of the `magnolia.properties` files for Magnolia 6.4.
+
+-   [Magnolia CE](https://gitlab.magnolia-platform.com/pd/platform/ce/-/raw/master/magnolia-empty-webapp/src/main/webapp/WEB-INF/config/default/magnolia.properties?ref_type=heads6.4.2)
+
+-   [Magnolia DX Core](https://gitlab.magnolia-platform.com/pd/platform/dx-core/-/raw/master/magnolia-dx-core-webapp/src/main/webapp/WEB-INF/config/default/magnolia.properties?ref_type=heads6.4.2)
+
+
+## [](#_required_changes)Required changes
+
+1.  Update dependency management to use the `6.4` version of `dx-core-bundle-parent`
+
+2.  Update the Extensions BOM if you use [Extension modules](../Modules/#_module-types).
+
+3.  Update your environments or Docker images to the latest Tomcat.
+
+4.  Update `javax` dependencies to their Jakarta EE 10 equivalents. This includes any extension versions; you must update everything at the same time before initiating the upgrade.
+
+5.  Migrate your custom code for Jakarta EE 10 compatibility and Java dependencies.
+
+6.  Update any renamed or deprecated dependencies in both the Magnolia module descriptor and each affected light module `module.yaml`.
+
+
+## [](#_update_your_magnolia_bundle_version)Update your Magnolia bundle version
+
+Update the Magnolia bundle version in your project’s parent `pom.xml`:
+
+```xml
+<properties>
+  <magnoliaBundleVersion>6.4.2</magnoliaBundleVersion> (1)
+  <javaVersion>17</javaVersion> (2)
+</properties>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Ensure you’re on the latest available 6.4 release. Currently, this is `6.4.2`. |
+| **2** | Java 17 (LTS) is the build base for Magnolia 6.4. |
+
+## [](#_review_your_site_and_multisite_configurations)Review your site and multisite configurations
+
+If you are upgrading from Magnolia 6.2 or earlier, review your site and multisite configurations. Sites in `/modules/multisite/config/sites` are still loaded for backward compatibility but can no longer be decorated.
+
+You must move site configurations to YAML files in `<module-name>/sites/` in your light module. For detailed migration steps, see [Code and configuration updates](../upgrade/upgrading-magnolia-62-to-64/#_code_and_configuration_updates) in the 6.2 to 6.4 upgrade guide.
+
+## [](#_ip_security_filter)IP security filter
+
+From Magnolia 6.4 and later, new instances don’t bootstrap the `ipConfig` configuration for the `ipSecurity` filter. If you add the filter configuration without providing the corresponding MicroProfile Config, your instance can become temporarily inaccessible.
+
+If your environment uses IP-based access control, review and update your configuration as part of the upgrade:
+
+1.  In the Configuration app, check whether `/server/filters/ipSecurity` exists. By default, on fresh 6.4 instances, it isn’t present, and no IP restriction is enforced out of the box.
+
+2.  If you rely on the `ipSecurity` filter, add the filter configuration and define its configuration for the necessary allow/deny lists via the [MicroProfile Config](../Administration/Security/IP-and-HTTP-permissions/#ipsecurity-microprofile-config).
+
+    ```properties
+    magnolia.server.ipSecurityRules[0].ip=*
+    magnolia.server.ipSecurityRules[0].methods[0]=GET
+    magnolia.server.ipSecurityRules[0].methods[1]=POST
+    magnolia.server.ipSecurityRules[0].methods[2]=DELETE
+    magnolia.server.ipSecurityRules[0].methods[3]=PATCH
+    magnolia.server.ipSecurityRules[1].ip=127.0.0.1
+    magnolia.server.ipSecurityRules[1].methods[0]=GET
+    magnolia.server.ipSecurityRules[1].methods[1]=POST
+    magnolia.server.ipSecurityRules[1].methods[2]=DELETE
+    magnolia.server.ipSecurityRules[1].methods[3]=PATCH
+    ```
+
+3.  Restart your instance to ensure MicroProfile Config values are applied.
+
+4.  Verify that access behaves as expected from both allowed and disallowed IP addresses.
+
+
+For more details, see [IP security](../Administration/Architecture/Request-processing-and-filters/Filters/#_ip_security).
+
+## [](#_reverse_proxy_configuration)Reverse proxy configuration
+
+> **Warning:** Starting with Magnolia 6.4.2, reverse proxy deployments require explicit RemoteIpValve configuration. Without this configuration, React dialogs (for example, Global Search and "Mark for deletion") fail with mixed content errors.
+
+Magnolia 6.4.2 ([MGNLUI-9351](https://magnolia-cms.atlassian.net/browse/MGNLUI-9351)) removes the custom `X-Forwarded-*` header parsing logic. The system now relies exclusively on standard `HttpServletRequest` methods (`getScheme()`, `getServerName()`, etc.), which require Tomcat’s `RemoteIpValve` to properly handle proxy headers.
+
+Before 6.4.2, Magnolia’s custom code worked without `RemoteIpValve` configuration. This architectural change aligns with standard deployment practices but is a breaking change for existing reverse proxy setups.
+
+You must configure both your reverse proxy and Tomcat:
+
+1.  Your reverse proxy must forward protocol headers to Tomcat. For nginx, add the following to your proxy configuration:
+
+    ```nginx
+    proxy_set_header X-Forwarded-Proto https;
+    ```
+
+2.  Configure Tomcat to read these headers. Add `RemoteIpValve` to `server.xml`.
+
+
+See [Configuring Magnolia (on Tomcat) behind a reverse proxy](../Administration/Deploying/Configuring-Magnolia-behind-a-proxy/) for details about `RemoteIpValve` configuration in `server.xml`.
+
+## [](#_jakarta_ee_10)Jakarta EE 10
+
+Magnolia 6.4 is a Jakarta EE 10 web application.
+
+You must:
+
+-   Use Tomcat 10.1 or later.
+
+    For other servlet containers, see the [Certified stack](../Administration/Certified-stack/).
+
+-   Update Maven dependencies from `javax` group IDs to their Jakarta equivalents.
+
+    > **Caution:** Do not convert the Jackrabbit JCR APIs.Keep javax.jcr imports intact, for example:import javax.jcr.Node;
+    > import javax.jcr.NodeIterator;
+    > import javax.jcr.RepositoryException;
+
+    Example dependency changes
+
+    ```properties
+    javax.inject:javax.inject:1 >> jakarta.inject:jakarta.inject-api:2.0
+    javax.json:javax.json-api   >> jakarta.json:jakarta.json-api:2.0
+    ```
+
+    > **Tip:** To avoid duplicate classes on the classpath, replace the javax dependencies with their Jakarta EE 10 equivalents.
+
+    Versions of these dependencies are provided in Magnolia’s third-party library BOM via the `jakarta.jakartaee-bom` import. For more details, see [Certified stack: Maven coordinates](../Administration/Certified-stack/#_maven_coordinates).
+
+
+To upgrade to Magnolia 6.4 with custom code, follow these steps:
+
+1.  Before setting your `<magnoliaBundleVersion>` to 6.4.2. add the following to your `pom.xml` under `<build><plugins>` to declare the `rewrite-maven-plugin`:
+
+    ```xml
+          <plugin>
+            <groupId>org.openrewrite.maven</groupId>
+            <artifactId>rewrite-maven-plugin</artifactId>
+            <version>6.8.1</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.openrewrite.recipe</groupId>
+                <artifactId>rewrite-migrate-java</artifactId>
+                <version>3.11.0</version> (1)
+              </dependency>
+            </dependencies>
+          </plugin>
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Update to the newest version available. |
+
+2.  Run the following Maven command to migrate from `javax` to `jakarta`:
+
+    ```bash
+    mvn org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.activeRecipes=org.openrewrite.java.migrate.jakarta.JavaxMigrationToJakarta
+    ```
+
+3.  If your project depends on `vaadin-server` or `vaadin-compatibility-server`, update the `artifactId` by appending `-mpr-jakarta` to ensure compatibility with Jakarta EE.
+
+    **For example:**
+
+    1.  Change `vaadin-server` to `vaadin-server-mpr-jakarta`.
+
+    2.  Change `vaadin-compatibility-server` to `vaadin-compatibility-server-mpr-jakarta`.
+
+
+4.  Verify that no non-Jakarta Vaadin dependencies are included by running:
+
+    ```bash
+    mvn dependency:tree -Dincludes=com.vaadin:vaadin-server,com.vaadin:vaadin-compatibility-server -Dverbose=true
+    ```
+
+    For additional details on integrating Vaadin MPR with Maven for Vaadin 8, see [Vaadin: How to Integrate Vaadin MPR with Maven for Vaadin 8](https://vaadin.com/docs/v8/framework/mpr/mpr-maven.html).
+
+
+## [](#_new_ui_forms)New UI Forms
+
+Magnolia 6.4 introduces [New UI Forms](../Developing/Templating/Dialog-definition/New-ui-forms/), a React-based forms UI built for accessibility and consistency.
+
+The New UI Forms are used in content apps, but not in dialogs, or the Page Editor.
+
+Some form fields are not yet supported in the New UI, for example, a custom field from an extension module. When a field in a form isn’t supported, then the entire form falls back to displaying the Vaadin form.
+
+Because of this, usually no form migration is required. You can choose whether or not to invest time in adjusting the form definitions to display them in the New UI.
+
+> **Tip:** Test your content app forms in a development environment to confirm behavior and fallback handling.
+
+For more details, see [Migrating to New UI Forms](../Developing/Templating/Dialog-definition/New-ui-forms/#_migrating_to_new_ui_forms).
+
+### [](#_migrating_ckeditor)Migrating CKEditor
+
+> **Warning:** CKEditor 4 is End-of-Life (EOL) since 2023 (at ckeditor.com). It’s no longer maintained and doesn’t receive security updates.In Magnolia, it is deprecated (and in the maintenance mode) since the Magnolia 6.4.2 release, which brought the upgrade of the CKEditor 5 to version 47.3.The preferred option in Magnolia is to use CKEditor 5.
+
+-   If you use **CKEditor 4 customizations**, we recommend you migrate to CKEditor 5. [New UI forms](../Releases/Release-notes-for-Magnolia-DX-Core-6.4/#_new_ui_forms_for_accessibility_and_extensibility) require CKEditor 5, which is the default in Magnolia 6.4.
+
+    **How to migrate to CKEditor 5**
+
+    -   Recreate any custom plugins or toolbars with CKEditor 5 equivalents.
+
+    -   For custom builds or plugins (e.g., General HTML Support), see [CKEditor 5 customization](../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/CKEditor5-customization/).
+
+    -   If you decorate link behavior, note that `rel`/`target` support was added in the CKEditor 5 `MgnlLink` plugin.
+
+
+    Preview all migrated content from CKEditor 4 to ensure it displays and publishes correctly. See the CKEditor 5 migration guides (ckeditor.com/docs/) and the compatibility tables for configuration and plugin differences.
+
+-   If you must keep CKEditor 4, set `ckEditorVersion: CKEDITOR_4`. See [rich text field properties](../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/#_field_properties) for details.
+
+
+## [](#_global_search)Global Search
+
+In Magnolia 6.4, [Global Search](../Authoring/Search/Global-search/) takes center stage, replacing the Magnolia 6.3 *Find Bar*. Global Search is the central tool for searching across all content in Magnolia. It’s designed to handle large datasets efficiently and provide relevant results quickly and intuitively.
+
+Global Search is optimized for most use cases, so you typically don’t need to modify the default search settings.
+
+If you need to update the configuration, note it has moved from the [Admincentral module](#6.3@product-docs:ROOT:Modules/List-of-modules/Admincentral-module.adoc) to the [`periscope-core`](../Modules/List-of-modules/Periscope-module/) module in 6.4 (now located in `/periscope-core/config.yaml`).
+
+## [](#_deletion_action_changes)Deletion action changes
+
+Label and message properties in deletion actions are no longer supported. Deletion actions (mark for deletion, permanently delete, request permanent deletion, and content dependency warnings) are updated to show the new dialogs by default.
+
+For most users, no configuration changes are needed and the existing actions and dialogs are automatically updated. If you have extended default actions, you may have to revalidate behavior.
+
+This automatic replacement *doesn’t* apply to the following apps: Campaign Publisher, Configuration, Cookies, External DAM, JCR, Security, and Tags.
+
+Click to see details of cases requiring configuration updates
+
+-   `DeleteNodesConfirmationAction`
+
+    -   If you have extended `DeleteNodesConfirmationAction` and overridden the `execute` method without calling `super.execute();`, the new 6.4 confirmation dialogs will not appear automatically. Update or remove your customization.
+
+    -   If you have overridden `getConfirmationMessage`, your custom message no longer applies. The 6.4 dialogs don’t support customization.
+
+    -   The following properties in `DeleteNodesConfirmationActionDefinition` no longer apply: `confirmationHeader`, `confirmationMessage`, `successActionName`, `cancelActionName`, `proceedLabel`, `cancelLabel`, `defaultCancel`.
+
+
+-   Marking items for deletion with dependency warnings enabled
+
+    If you are using `DependencyAwareConfirmationActionDefinition` (which extends `DeleteNodesConfirmationActionDefinition`), the same limitations as above apply. Inherited properties no longer affect the action.
+
+-   Enabling permanent deletion
+
+    If you are using `ConfirmationAlertActionDefinition` with `successActionName` set to `publishDeletion` or `activateDeleted`, the following properties no longer apply: `confirmationHeader`, `confirmationMessage`, `cancelActionName`, `proceedLabel`, `cancelLabel`, `defaultCancel`.
+
+-   Requesting permanent deletion
+
+    If you are using `OpenDialogActionDefinition` with `dialogId` set to `workflow-pages:publishDeletion`, the following properties no longer apply: `populate`, `alwaysOnTop`, and any properties inherited from its parent class.
+
+
+## [](#_digital_asset_management_dam_changes)Digital Asset Management (DAM) changes
+
+In Magnolia 6.4, you can decouple asset binary storage to an external system while managing metadata in Magnolia’s native DAM. This reduces the size of the JCR, speeds up publishing, and improves search performance by optimizing metadata storage. See the [DAM](../../dam/) documentation for details about implementing external binary storage. Migration scripts are provided to [move assets from JCR to S3](../../dam/migrate/migrate-jcr-to-dam/).
+
+> **Note:** DAM module 5.0 and DAM module 6.0 provide almost identical functionality and code. The deciding factor for which version to use is the Magnolia version you are running.DAM 5.0 is compatible with Magnolia 6.3 and requires an opt-in approach. In Magnolia 6.3, DAM 4.x remains the default.DAM 6.0 is compatible with Magnolia 6.4, is the default in version 6.4, and follows the 6.4 lifecycle.
+
+## [](#_upgrade_from_hybrid_assets_incubator)Upgrade from Hybrid Assets incubator
+
+This step applies only if you used the [Hybrid Assets incubator module](#hybrid-assets:ROOT:index.adoc).
+
+The functionality offered by the incubator module is replaced by DAM 5.0 and later. If you used the incubator module, use the [migration scripts](../../dam/migrate/migrate-HA-to-dam/) to move your assets to the new implementation.
+
+> **Note:** The DAM module offers out-of-the-box integration with AWS S3. To use other providers, you must write a custom implementation.
+
+## [](#_upgrade_from_the_dam_focal_incubator)Upgrade from the DAM Focal incubator
+
+This step applies only if you used the [DAM Focal incubator module](#dam-focal:ROOT:index.adoc) (`dam-focal`).
+
+In 6.2 and 6.3, DAM Focal was provided as an incubator module. In 6.4, it is promoted to a DX Core extension with a new module name: `image-focal`. The Magnolia 6.4-compatible version of this extension is 2.0.
+
+To upgrade:
+
+1.  Uninstall all the `dam-focal` incubator submodules.
+
+2.  Delete the JCR node `/modules/dam-focal-samples`. Note that the `dam/image-focal-samples` submodule is only intended for testing purposes.
+
+3.  Update dependency management to use the `image-focal` extension version 2.0.x.
+
+
+Existing focal point data is preserved when switching modules.
+
+## [](#_upgrade_from_the_ctsx_deepl_translator_incubator)Upgrade from the CTSX DeepL Translator incubator
+
+This step applies only if you used the [CTSX DeepL Translator](../../content-translation-support-ext/deepl/) (`magnolia-content-translation-support-ext-deepl`).
+
+Move the translation provider configuration from `/modules/content-translation-support-ext-deepl/config/Deepl` to `/modules/content-translation-support-ext-deepl/config/translationProviders/Deepl`.
+
+## [](#_updating_javascript_fields)Updating JavaScript fields
+
+The forms in your project are likely eligible for the [New UI Forms](#_new_ui_forms). If you use JavaScript fields from the **JavaScript UI module** together with the New UI Forms, add the dependency below and remove the legacy `implementationClass`.
+
+1.  Add the integration dependency to your webapp `pom.xml` (the version is managed by the Magnolia BOM):
+
+    ```xml
+    <dependency>
+      <groupId>info.magnolia.ui</groupId>
+      <artifactId>magnolia-ui-framework-javascript-warp-integration</artifactId>
+    </dependency>
+    ```
+
+2.  A form that includes a `javascriptField` probably has the `implementationClass: info.magnolia.ui.javascript.form.FormViewWithChangeListener`, which causes the form to fall back to Vaadin. If you want to upgrade the form to the New UI, follow these steps:
+
+    1.  Comment out all the JS fields.
+
+    2.  Check whether the form renders in the New UI. If not, adjust the form definition until it does. See also [New UI Forms: Troubleshooting](../Developing/Templating/Dialog-definition/New-ui-forms/#_troubleshooting).
+
+    3.  Remove the `implementationClass`.
+
+    4.  Uncomment the JS fields.
+
+        If the forms still fall back to Vaadin (for example in the Pages app), do keep the `implementationClass` so that JS fields `changeListeners` can work as expected.
+
+
+    > **Tip:** Remember that you can also enforce a fallback to Vaadin by appending :vaadinForm to the end of the url. You need to copy the full url and paste it in a new browser tab.For example: …​/Kyoto:edit:vaadinForm.

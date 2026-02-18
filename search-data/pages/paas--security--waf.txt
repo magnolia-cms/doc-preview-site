@@ -1,0 +1,61 @@
+---
+title: "Web Application Firewall (WAF)"
+url: https://docs.magnolia-cms.com/paas/security/waf/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Web Application Firewall (WAF)
+---
+
+# Web Application Firewall (WAF)
+
+Web Application Firewalls, or WAFs, protect web applications from common malicious attacks such as cross-site-scripting (XSS) and SQL injections. Essentially, they act as a type of wall or shield between your web application and the internet. If you have your own CDN for your project, you’ll likely have your own WAF.
+
+If you choose to go with the default CDN for DX Cloud, you’ll be protected with the [Fastly](https://www.fastly.com/) WAF.
+
+The Fastly WAF inspects the web traffic at the HTTP application layer by looking at all HTTP and HTTPS requests (both header and body included). This can be configured specifically for your deployment.
+
+Check it out!
+
+Logs
+
+You can view the requests handled by your Web Application Firewall directly under the **WAF** tab in the [Logs](../../cockpit/sections/logs/#_waf_logs) section of the Cockpit.
+
+Content Delivery
+
+You can get a visualization of the passed, logged, and blocked requests for your [WAF](../../cockpit/sections/security/#_webapp_firewall) in the Cockpit.
+
+![waf overview](../../_images/security/waf-overview.jpg)
+
+> **Tip:** For more details, check out Fastly’s WAF page.
+
+## [](#_default_settings)Default settings
+
+By default, your DX Cloud deployment has WAF activated with a certain set of rules on your `prod` [cluster](../../cockpit/sections/security/).
+
+ RuleNotes
+
+`owasp`
+
+Contains approximately **200** rules to protect against the top 10 vectors such as cross-site-scripting attacks and injections like SQL injections.
+
+> **Tip:** See here for more information on the top attack vectors.
+
+`application-multi`
+
+Contains dozens of rules that detect application-specific threats such as CVEs as well as request anomalies such as missing UAs, [XFF mismatch](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For#security_and_privacy_concerns) and so on.
+
+## [](#_waf_configuration_for_your_project)WAF configuration for your project
+
+DX Cloud typically provides an aggressive set of security rules out-of-the-box. We can disable rules or add rule exclusions to handle false positives to fit your specific project.
+
+> The Fastly WAF filters requests through a set of security rules that match patterns known to be associated with malicious traffic. There are three types of rules:
+>
+> -   **Scoring rules**: Rules which, when matched, do not immediately flag the request, but will contribute a score to a category and an overall total. Rules based on the OWASP core ruleset are scoring rules, as are some Fastly rules.
+>
+> -   **Strict rules**: Strict rules are those which will, when matched, immediately flag a request. Most Fastly rules and all Trustwave rules are strict.
+>
+> -   **Threshold rules**: Rules which flag a request if a scoring category or the total anomaly score exceeds a configured threshold. Threshold rules work in conjunction with scoring rules, and do not match on characteristics of the request, but instead match on the current value of an anomaly score.
+>
+
+— Fastly docs
+WAF filters

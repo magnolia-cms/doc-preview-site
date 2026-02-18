@@ -1,0 +1,337 @@
+---
+title: "Theme"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Theme/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Theme
+---
+
+# Theme
+
+A theme is a collection of resource files that gives a site its visual identity through the use of colors and typography. A theme consists of cascading style sheets (CSS), JavaScript files and an imaging configuration that tells the [Imaging module](../../../Modules/List-of-modules/Imaging-module/) what to do with images for a particular page or component.
+
+## [](#_what_is_a_theme)What is a theme?
+
+A theme is a module or part of a module composed of CSS, JS and images.
+
+## [](#_when_to_use_a_theme)When to use a theme
+
+The [Site module](#2.0@site:ROOT:index.adoc) provides theme functionality. You can only create a theme if you use this module and have configured a [site definition](../Site-definition/).
+
+## [](#_themes_and_modules)Themes and modules
+
+Theme resources can be stored in light (YAML) or Maven [modules](../../../Modules/). Themes can reside in a dedicated theme module or form part of another module. A special module version handler is not necessary.
+
+## [](#_resource_loading)Resource loading
+
+All Magnolia [resources](../../Resources/), including theme resources, are loaded under the `/.resources` path.
+
+-   In a Maven module, the resources are located in `/src/main/resources/<moduleName>` and any subfolder.
+
+-   In a light module, resources can be located in any subfolder of your module (for example, `/<moduleName>/webresources/`).
+
+
+Theme resources can also be loaded from an external source by specifying the full URL. This is very useful if you use a [CDN](https://en.wikipedia.org/wiki/Content_delivery_network) to store, cache and deliver your static resources.
+
+See [Resources](../../Resources/) and [Module structure](../../../Modules/Module-structure/) for more.
+
+## [](#_benefits_of_using_a_theme)Benefits of using a theme
+
+Themes offer a number of benefits:
+
+-   Theme resources are applied to the entire site.
+
+-   Resources are all in one place.
+
+-   Themes are an easy way to work with resources without having to modify the head section of your HTML.
+
+-   You can define more than one theme and switch between them or apply a different theme to a variation of your site. For example, you could use a different theme for pages targeted at U.S. users and European users or a seasonal theme for different times of the year.
+
+-   You can still use different or additional overriding resources on a page-template level.
+
+
+## [](#_configuring_a_theme)Configuring a theme
+
+### [](#_where_to_configure_a_theme)Where to configure a theme
+
+Themes can be configured in:
+
+-   Any module.
+
+-   YAML on the file system or in the JCR.
+
+
+#### [](#_proper_location)Proper location
+
+The configuration must reside in the `themes` folder of the module in `/<module-name>/themes/<theme-name>`. This can be done in YAML or JCR.
+
+#### [](#_old_location)Old location
+
+> **Warning:** The old and deprecated location for themes is site/config/<theme-name>. Themes in this location could only be configured in the JCR. Themes configured in the old location should be moved to the new location.
+
+### [](#_example)Example
+
+`travel-demo-theme` in `travel-demo/themes/travel-demo-theme.yaml`
+
+travel-demo/themes/travel-demo-theme.yaml
+
+```yml
+cssFiles:
+  #CSS file configuration
+jsFiles:
+  #JavaScript file configuration
+imaging:
+  #Image variation configuration
+```
+
+Three configuration nodes define the individual elements of a theme:
+
+| Property | Description |
+| --- | --- |
+| `cssFiles` | [FreeMarker development only](../Renderers/#_renderers_provided_by_magnolia)<br><br>**Optional**<br><br>References [CSS files](#_css_files). |
+| `jsFiles` | [FreeMarker development only](../Renderers/#_renderers_provided_by_magnolia)<br><br>**Optional**<br><br>References [JavaScript files](#_javascript_files). |
+| `imaging` | **Optional**<br><br>Defines [Image variations](#_image_variations) (renditions). |
+
+### [](#_css_files)CSS files
+
+Links to CSS resources are configured in the `cssFiles` node of the theme.
+
+CSS defines the presentation semantics of an HTML document and creates the look and feel of the site.
+
+**Example**: `cssFiles` configuration in `travel-demo-theme` in `travel-demo/themes/travel-demo-theme.yaml`.
+
+travel-demo/themes/travel-demo-theme.yaml
+
+```yml
+cssFiles:
+  bootstrap:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/libs/twitterbootstrap/css/bootstrap.min.css
+    media: all
+  roboto-condensed:
+    addFingerPrint: true
+    link: https://fonts.googleapis.com/css?family=Roboto-Condensed:400,300,700
+    media: all
+  slick:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/libs/slick-carousel/css/slick.css
+    media: all
+  slick-theme:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/libs/slick-carousel/css/slick-theme.css
+    media: all
+  travels-magnolia:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/css/travels-magnolia.css
+    media: all
+  video:
+    addFingerPrint: true
+    link: /.resources/mtk2/css/video.css
+    media: all
+jsFiles:
+  #JavaScript file configuration
+imaging:
+  #Image variation configuration
+```
+
+| Property | Description |
+| --- | --- |
+| `cssFiles` | **optional**<br><br>CSS node of the theme. |
+| `<name>` | **required**<br><br>Arbitrary node name. Add a node for each sheet. |
+| `addFingerPrint` | **optional**<br><br>Embeds a file content fingerprint in the resource URL. The fingerprint consists of a timestamp in the `yyyy-MM-dd-HH-mm-ss-SSS` format and the word "cache", both preceded by the standard selector (`~`). For example, the `travels-magnolia` link above becomes `/.resources/travel-demo-theme/css/travels-magnolia~2015-08-16-09-49-00-000~cache.css`. [Google recommends](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#invalidating-and-updating-cached-responses) fingerprinting as a best practice. |
+| `link` | **required**<br><br>Path to the CSS file that is added to the HTML. See [Adding style to HTML](http://www.w3.org/TR/html401/present/styles.html#h-14.2) for more. See also [Web resources](../../Resources/) and [Origins and loading order](../../Resources/) for different options for storing and loading resources. |
+| `media` | **optional**<br><br>Media associated with the linked CSS file. If you use a responsive web design framework like [Bootstrap](http://getbootstrap.com/) or [Foundation](http://foundation.zurb.com/), set this property to `all`. See [Media descriptors](http://www.w3.org/TR/html401/types.html#type-media-descriptors) for a list of available media. |
+| `conditionalComment` | **optional**<br><br>Defines a [conditional comment](http://en.wikipedia.org/wiki/Conditional_comment) for the linked CSS file. Conditional comments are used to overcome the limitations of legacy browsers such as Internet Explorer 9 and earlier. For example, the conditional comment "lte IE9" would be translated to:<br><br>```xml<br><!--[if lte IE9]><br>    //inclusion of the stylesheet or javascript resource<br><![endif]--><br>``` |
+
+This simple theme example uses only the default Bootstrap-minimized CSS with no customizations.
+
+![Theme example](../../../_images/css.png)
+
+### [](#_javascript_files)JavaScript files
+
+Links to JavaScripts are configured in the `jsFiles` node of the theme.
+
+JavaScript is responsible for client-side functionality such as carousel paging, AJAX, menu animations, trees, embedded video player, mouse wheel support, Google Analytics and much more.
+
+**Example**: `jsFiles` configuration in `travel-demo-theme` in `travel-demo/themes/travel-demo-theme.yaml`.
+
+travel-demo/themes/travel-demo-theme.yaml
+
+```yaml
+cssFiles:
+  #CSS file configuration
+jsFiles:
+  respimage:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/libs/lazysizes/respimage.min.js
+  lazysizes:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/libs/lazysizes/lazysizes.min.js
+  modernizr:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/js/modernizr-2.6.2.min.js
+  jquery:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/js/jquery-1.10.2.min.js
+  js.cookies:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/js/js.cookies-2.1.2.js
+  jquery.object-fit-cover-simple:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/js/jquery.object-fit-cover-simple.js
+  slick:
+    addFingerPrint: true
+    link: /.resources/travel-demo-theme/libs/slick-carousel/js/slick.min.js
+  addtoany:
+    link: https://static.addtoany.com/menu/page.js
+imaging:
+  #Image variation configuration
+```
+
+| Property | Description |
+| --- | --- |
+| `jsFiles` | **optional**<br><br>JavaScript node of the theme. |
+| `<name>` | **required**<br><br>Arbitrary node name. Add a node for each JavaScript file. |
+| `addFingerPrint` | **optional**<br><br>Embeds a file content fingerprint in the resource URL. The fingerprint consists of a timestamp in the `yyyy-MM-dd-HH-mm-ss-SSS` format, and the word "cache", both preceded by the standard selector (`~`). For example, the `modernizr` link above becomes `/.resources/travel-demo-theme/js/modernizr-2.6.2.min~2015-08-16-09-49-00-000~cache.css`. [Google recommends](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#invalidating-and-updating-cached-responses) fingerprinting as a best practice. |
+| `link` | **required**<br><br>Path to the JavaScript file. See [Web resources](../../Resources/) and [Origins and loading order](../../Resources/) for different options for storing and loading resources.<br><br>Here is an example JavaScript alert box using JQuery and the default Bootstrap-minimized CSS.<br><br>![JavaScript alert box](../../../_images/js.png) |
+
+### [](#_image_variations)Image variations
+
+Themes can make use of the [Imaging module](../../../Modules/List-of-modules/Imaging-module/) to preconfigure image variations. A variation is a specific configuration that defines features of a target image. Variations can range from complex operations, such as applying filters and overlays, to simple resizing of the target image.
+
+Variations are an effective alternative to resizing images with CSS:
+
+-   Image size is reduced and less data transferred.
+
+-   Editors can upload images of any size, which will automatically be resized to fit the template.
+
+-   Image sizes are uniform throughout the site.
+
+
+Variations are configured in the `imaging` node of the theme.
+
+**Example**: `imaging` configuration in `travel-demo-theme` in `travel-demo/themes/travel-demo-theme.yaml`.
+
+travel-demo/themes/travel-demo-theme.yaml
+
+```yml
+cssFiles:
+  #CSS file configuration
+jsFiles:
+  #JavaScript file configuration
+imaging:
+  class: info.magnolia.templating.imaging.VariationAwareImagingSupport
+  variations:
+    "1600":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      width: 1600
+    "1366":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      width: 1366
+    #......
+    "240":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      width: 240
+    "1600x1200":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      height: 1200
+      width: 1600
+    "1366x1024":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      height: 1024
+      width: 1366
+    #.....
+    "240x180":
+      class: info.magnolia.templating.imaging.variation.SimpleResizeVariation
+      height: 180
+      width: 240
+    #.....
+    "max-1000x1000":
+      class: info.magnolia.templating.imaging.variation.ImageOperationProvidingVariation
+      imageOperation:
+        class: info.magnolia.imaging.operations.ImageOperationChain
+        outputFormat:
+          quality: 100
+        operations:
+          load:
+            class: info.magnolia.imaging.operations.load.FromBinaryNode
+          resize:
+            class: info.magnolia.imaging.operations.cropresize.BoundedResize
+            maxWidth: 1000
+            maxHeight: 1000
+```
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>imaging</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Imaging node of the theme.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><span class="inlineBean">info.magnolia.templating.imaging.VariationAwareImagingSupport</span> provides support for image variations.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>variations</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Map of image variations.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;variation name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the variation (rendition). Choose a name that describes the variation. The name is used in template scripts to reference the variation. Add one node for every variation.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>You can use one of the available classes or create a custom one. The available properties depend on the class used for the variation. Any custom class must implement <span class="inlineBean">info.magnolia.imaging.variation.Variation</span>.</p></div><div class="paragraph"><p>The <a href="../../../Modules/List-of-modules/MTE-module/" class="xref page">MTE module</a> provides:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.templating.imaging.variation.SimpleResizeVariation</span> to resize images to a defined size in pixels (see below for available properties).</p></li><li><p><span class="inlineBean">info.magnolia.templating.imaging.variation.ImageOperationProvidingVariation</span> to create your own image operation chain using the <code>mte</code> image generator.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;properties&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Add properties that are supported by the class used.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Enables and disables support for image variations.</p></div></div></td></tr></tbody></table></div>
+
+#### [](#_configuring_a_simple_resize)Configuring a simple resize
+
+The info.magnolia.templating.imaging.variation.SimpleResizeVariation class is suitable for most resize variations.
+
+Properties of `SimpleResizeVariation`:
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;variation name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Class used to resize images to a defined size in pixels. Must implement <span class="inlineBean">info.magnolia.templating.imaging.variation.SimpleResizeVariation</span>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>crop</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Defines whether the image can be cropped to fit the desired aspect ratio.</p></div><div class="paragraph"><p><strong>Example</strong>: A source image in the DAM is 800x800 px (square). For a variation, you define the desired target size as 200x100 (rectangle). The image is first resized to 200x200 and then cropped equally from the top and bottom to reach 200x100 so that it is not distorted. If you set <code>crop</code> to <code>false</code>, the image will be distorted to achieve the desired target size.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>expand</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Defines whether the image can be expanded when it is not cropped.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>height</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Integer to define the height in pixels. You must define either <code>height</code> or <code>width</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>width</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Integer to define the width in pixels. You must define either <code>height</code> or <code>width</code>.</p></div><div class="ulist"><ul><li><p>If you do not define either <code>height</code> or <code>width</code>, the <a href="../Renderers/" class="xref page">renderer</a> will internally throw <code>ImagingException</code> and the image will appear in its original uploaded size.</p></li><li><p>If you define both <code>height</code> and <code>width</code>, the image will be sized down to the lower of the two and the rest will be cropped if necessary. Cropping starts from the middle, so the image is cropped either on the top and bottom or the left and right.</p></li><li><p>If you define only <code>height</code> or <code>width</code>, the other property will be calculated using the aspect ratio of the original image.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+> **Tip:** See damfn and How to work with images using damfn for how to use variations in your scripts.
+
+## [](#_assigning_a_theme_to_a_site)Assigning a theme to a site
+
+Themes are assigned to a site in the `theme` node of a [site definition](../Site-definition/).
+
+**Example**
+
+/<module-name>/sites/travel.yaml
+
+```yaml
+templates:
+  class: info.magnolia.module.site.templates.ReferencingPrototypeTemplateSettings
+  prototypeId: travel-demo:pages/prototype
+  availability:
+    templates:
+      home:
+        id: travel-demo:pages/home
+      standard:
+        id: travel-demo:pages/standard
+    enableAllWithRenderType:
+      freemarker: freemarker
+      spa: spa
+theme:
+  name: travel-demo-theme
+```
+
+| Property | Description |
+| --- | --- |
+| `theme` | **required**<br><br>Theme node. |
+| `name` | **required**<br><br>The value of this property must match the name of the theme [configured](#_configuring_a_theme) in `/modules/site/config/theme`. |
+
+## [](#_using_theme_resources_in_template_scripts)Using theme resources in template scripts
+
+[FreeMarker development only](../Renderers/#_renderers_provided_by_magnolia)
+
+Theme resources are typically added to the `<head>` element of a page template.
+
+-   Retrieve the configured theme configured over the [sitefn function](../Template-scripts/Templating-functions/sitefn/) class:
+
+    \[#assign site =
+    sitefn.site()!\]
+
+    \[#assign theme =
+    sitefn.theme(site)!\]
+
+-   Iterate over the theme configuration and include the configured resources:
+
+    \[#list theme.cssFiles as cssFile\]
+        <link rel="stylesheet" href="${cssFile.link}" media="${cssFile.media}" />
+    \[/#list\]
+
+    \[#list theme.jsFiles as jsFile\]
+        <script src="${jsFile.link}"></script>
+    \[/#list\]
+
+
+## [](#_viewing_and_editing_themes)Viewing and editing themes
+
+Theme definitions from all sources and origins are available in the [Definitions app](../../../Apps/List-of-apps/Definitions-app/). Select **themes** in **Type** to find all theme definitions. You can hotfix themes in the [Resource Files](../../../Apps/List-of-apps/Resource-Files-app/) app. Select the theme definition and click **Show in Resources app** in the Definitions app to access the file.
+
+**Example**: `travel-demo-theme` in the Definitions app and Resource Files app.
+
+![travel-demo-theme in the Definitions app](../../../_images/6-2-theme-defApp.png) ![travel-demo-theme in the Resource Files app.](../../../_images/6-2-theme-rscApp.png)

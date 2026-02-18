@@ -1,0 +1,915 @@
+---
+title: "jsonfn"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Templating/Template-scripts/Templating-functions/jsonfn/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > jsonfn
+---
+
+# jsonfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`jsonfn` templating functions generate [JSON](http://json.org/) from JCR nodes in any workspace. This allows you to generate highly customized JSON without writing custom Java classes.
+
+These [templating functions](../) are provided by the `magnolia-jsonfn` module which is hosted in the [github.com/magnolia-community/jsonfn](https://github.com/magnolia-community/jsonfn) repository. The `jsonfn` templating functions originated in the `neat-jsonfn` module, hosted on GitHub and developed by [rah003](https://github.com/rah003).
+
+## [](#_installation)Installation
+
+`jsonfn` templating functions are not bundled with preconfigured Magnolia bundles or webapps.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.templating</groupId>
+  <artifactId>magnolia-jsonfn</artifactId>
+  <version>1.0.9</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_general_usage_of_jsonfn)General usage of `jsonfn`
+
+Use `jsonfn` to generate JSON from JCR nodes. You can customize the JSON to suit your needs by combining methods.
+
+Combine at least one *[node defining method](#_nodes_defining_methods)* with one *[property defining method](#_property_defining_methods).* All property defining methods are applied to all nodes. Finish with the `#print` method to get JSON as a string.
+
+`jsonfn` methods are provided by the `JsonTemplatingFunctions` class. These methods return a [`JsonBuilder`](../Templating-function-arguments-and-return-types/#_jsonbuilder) object to apply on further methods, which in turn return the same `JsonBuilder` object. This allows the methods to be applied in an additive way.
+
+### [](#_generating_json)Generating JSON
+
+To generate JSON:
+
+|     |     |     |
+| --- | --- | --- |
+| Define the JCR node(s) to transform into JSON. | **required** | See [Node defining methods](#_nodes_defining_methods). |
+| Define the JCR properties to be added to the JSON object. | **required** | See [Property defining methods](#_properties_defining_methods). |
+| Customize JSON, resolve referenced nodes and renditions, format. | **optional** |     |
+| Generate the JSON string with the `#print` method. | **required** | See [`print`](#_print). |
+
+### [](#_rendering_json)Rendering JSON
+
+In your FreeMarker template render the JSON string directly in the output stream (or assign it to a JavaScript variable).
+
+**Example**:
+
+\[#assign pageNode = cmsfn.contentByPath("/vinyl", "website") /\]\\
+${jsonfn\`\[\`.from(pageNode)\`\]{style="color: rgb(102, 102, 153);"}\[\`.addAll().exclude("mgnl.\*", "jcr.\*")\`\]{style="color: rgb(0, 128, 128);"}\[\`.print()\`\]{style="color: rgb(153, 51, 102);"}\`}
+
+-   Node defining method
+
+-   Property defining methods
+
+-   Get the JSON String
+
+
+**Example output**:
+
+{
+  "@nodeType" : "mgnl:page",
+  "@name" : "vinyl",
+  "@link" : "/vinyl-site/",
+  "hideInNav" : true,
+  "@depth" : 1,
+  "navigationTitle" : "Best vinyl",
+  "windowTitle" : "Best vinyl",
+  "@id" : "17ac0768-4337-4dda-a8da-223c036d299d",
+  "title" : "Best vinyl",
+  "@path" : "/vinyl"
+}
+
+\==
+
+## [](#_node_defining_methods)Node defining methods
+
+Select the JCR nodes to transform into JSON. All methods return a [`JsonBuilder`](../Templating-function-arguments-and-return-types/#_jsonbuilder) object to apply to further methods.
+
+### [](#_from)`from`
+
+Get JSON by a given [`Node`](../Templating-function-arguments-and-return-types/#_javax.jcr.node) or [`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap).
+
+#### [](#_method_signatures)Method signatures
+
+`JsonBuilder from(Node node)`
+
+`JsonBuilder from(ContentMap node)`
+
+#### [](#_argument)Argument
+
+| Argument | Description |
+| --- | --- |
+| `node` | **required**<br><br>The node you want to work with. |
+
+#### [](#_example)Example
+
+\[#assign contentMap = cmsfn.contentByPath("/comics", "website") /\]\\
+\[#assign contentNode = cmsfn.asJCRNode(cmsfn.contentByPath("/vinyl", "website")) /\]\\
+\[\\
+${jsonfn\`\*\*\`.from(contentMap)\`\*\*\`.add("title").print()},\\
+${jsonfn\`\*\*\`.from(contentNode)\`\*\*\`.add("title").print()}\\
+\]
+
+While the code on line 2 probably has no practical application, it is included to demonstrate that the `#from` method can also handle the javax.jcr.Node as an argument.
+
+```js
+[
+  {
+  "title" : "Best comics"
+},
+  {
+  "title" : "Best vinyl"
+}
+]
+```
+
+### [](#_fromchildnodesof)`fromChildNodesOf`
+
+Get the child nodes of a given node or workspace. The given node can be a [`Node`](../Templating-function-arguments-and-return-types/#_javax.jcr.node) or a [`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap). In the case of a workspace, the `technical` JCR root is not taken into account. The resultant JSON is an array (see example below).
+
+Combine with the [`down` method](#_down) if you want more than the direct children.
+
+#### [](#_method_signature)Method signature
+
+`JsonBuilder fromChildNodesOf(String workspaceName)`
+
+`JsonBuilder fromChildNodesOf(ContentMap node)`
+
+`JsonBuilder fromChildNodesOf(Node node)`
+
+#### [](#_argument_2)Argument
+
+|     |     |
+| --- | --- |
+| Argument | Description<br><br>fromChildNodesOf(workspaceName) |
+| `workspaceName` | **required**<br><br>The name of the workspace.<br><br>fromChildNodesOf(node) |
+| `node` | **required**<br><br>The node from which the child nodes should be taken into account. |
+
+#### [](#_example_2)Example
+
+${jsonfn\`\*\*\`.fromChildNodesOf("website")\`\*\*\`.down(2).allowOnlyNodeTypes("mgnl:page").add("title", "@path").print()}
+
+The example will collect all nodes of the type `mgnl:page` from the `website` workspace down to level 2*.*
+
+```js
+[ {
+  "us-comics" : {
+    "title" : "US comics",
+    "@path" : "/comics/us-comics"
+  },
+  "belgian-comics" : {
+    "title" : "Belgian comics",
+    "@path" : "/comics/belgian-comics"
+  },
+  "title" : "Best comics",
+  "@path" : "/comics"
+}, {
+  "Rock" : {
+    "title" : "Rock",
+    "@path" : "/vinyl/Rock"
+  },
+  "Disco" : {
+    "title" : "Disco",
+    "@path" : "/vinyl/Disco"
+  },
+  "title" : "Best vinyl",
+  "@path" : "/vinyl"
+} ]
+```
+
+### [](#_appendfrom)`appendFrom`
+
+Get JSON by a given [`Node`](../Templating-function-arguments-and-return-types/#_javax.jcr.node) or [`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap) and append it to a given JSON string. Further applied methods are only applied to the resultant JSON of the given node.
+
+#### [](#_method_signatures_2)Method signatures
+
+`JsonBuilder from(String json, Node node)`
+
+`JsonBuilder from(String json, ContentMap node)`
+
+#### [](#_arguments)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `json` | **required**<br><br>The JSON string to which the new json gets appended to. |
+| `node` | **required**<br><br>The node you want to work with. |
+
+#### [](#_example_3)Example
+
+```none
+[#assign damNode = cmsfn.contentByPath("/jolly-jumper", "dam") /]\
+[#assign `[`damJson`]{style="color: rgb(0, 128, 128);"}` = jsonfn.from(damNode).down(2).add("@name").allowOnlyNodeTypes("mgnl:asset").inline().print()]\
+[#assign websiteNode = cmsfn.contentByPath("/vinyl", "website") /]\
+[#assign `[`allJson`]{style="color: rgb(128, 0, 128);"}` = jsonfn.`**`appendFrom`**`(`[`damJson`]{style="color: rgb(0, 128, 128);"}`, websiteNode).down(1).add("@path").allowOnlyNodeTypes("mgnl:page").inline().print() /]\
+<script>\
+var damJson = '${`[`damJson`]{style="color: rgb(0, 128, 128);"}`}';\
+var allJson = '${`[`allJson`]{style="color: rgb(153, 51, 102);"}`}';\
+</script>
+```
+
+```xml
+<script>\
+var damJson = `[`'[{"@name":"jolly-jumper-black-and-white.png"}]`]{style="color: rgb(0, 128, 128);"}`';\
+var allJson = '`[`[{"@name":"jolly-jumper-black-and-white.png"},[{"@path":"/vinyl/rock"},{"@path":"/vinyl/disco"}]]`]{style="color: rgb(153, 51, 102);"}`';\
+</script>
+```
+
+## [](#_node_customizing_methods)Node customizing methods
+
+These methods impact the resulting node structure. The methods are applied on a [`JsonBuilder`](../Templating-function-arguments-and-return-types/#_jsonbuilder) object and return a JsonBuilder.
+
+### [](#_down)`down`
+
+Define the level of child nodes to get.
+
+#### [](#_method_signatures_3)Method signatures
+
+`JsonBuilder down(int level)`
+
+#### [](#_arguments_2)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `level` | **required**<br><br>An integer defining the level of child nodes to get. Choose values >=1. |
+
+#### [](#_example_4)Example
+
+\[#assign node = cmsfn.contentByPath("/", "website") /\]\\
+${jsonfn.from(node).add("@path").\`\*\*\`down(2)\`\*\*\`.allowOnlyNodeTypes("mgnl:page").print()}
+
+```js
+[ {
+  "us-comics" : {
+    "@path" : "/comics/us-comics"
+  },
+  "belgian-comics" : {
+    "@path" : "/comics/belgian-comics"
+  },
+  "@path" : "/comics"
+}, {
+  "rock" : {
+    "@path" : "/vinyl/rock"
+  },
+  "jazz" : {
+    "@path" : "/vinyl/jazz"
+  },
+  "disco" : {
+    "@path" : "/vinyl/disco"
+  },
+  "@path" : "/vinyl"
+} ]
+```
+
+### [](#_allowonlynodetypes)`allowOnlyNodeTypes`
+
+Allow only node types by a given parameter (or regular expression). The method is applied during the [`#print` method](#_print) and subnodes of excluded nodes go into the resulting JSON if not specifically excluded by the regular expression.
+
+#### [](#_method_signatures_4)Method signatures
+
+`JsonBuilder allowOnlyNodeTypes(String nodeTypesRegex)`
+
+#### [](#_arguments_3)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `nodeTypesRegex` | **required**<br><br>A regular expression that defines the wanted node types. |
+
+#### [](#_example_5)Example
+
+\[#assign damNode = cmsfn.contentByPath("/comics", "dam") /\]\\
+${jsonfn.from(damNode).down(2)\`\*\*\`.allowOnlyNodeTypes("mgnl:asset")\`\*\*\`.add("@nodeType", "@path").readNodeTypes("mgnl.\*").print()}
+
+```js
+[ {
+  "@nodeType" : "mgnl:asset",
+  "@path" : "/comics/9b6c2464fbcf7a371c573f2da26ff6f1._QL80_TTD_.jpg"
+}, {
+  "@nodeType" : "mgnl:asset",
+  "@path" : "/comics/ultra-comics.jpg"
+}, {
+  "@nodeType" : "mgnl:asset",
+  "@path" : "/comics/wuffle-comics-no-license-required.jpg"
+}, {
+  "@nodeType" : "mgnl:asset",
+  "@path" : "/comics/a-woman-talking-on-a-comic-scene_1020-627.jpg"
+} ]
+```
+
+### [](#_readnodetypes)`readNodeTypes`
+
+Allow only node types by a given parameter (or regular expression). The method is applied during input phase and node types that are not defined by the regular expression will not be read. As a consequence, a node’s subnodes are also skipped, even if they would have been allowed.
+
+Use this method to, for instance, ensure you do not read (and process) JCR history or repository permissions that are also stored in repository. The purpose of the method is to ensure that you do not waste time processing something that would be discarded anyway.
+
+#### [](#_method_signatures_5)Method signatures
+
+`JsonBuilder readNodeTypes(String nodeTypesRegex)`
+
+#### [](#_arguments_4)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `nodeTypesRegex` | **required**<br><br>A regular expression to match the allowed node types. |
+
+#### [](#_example_6)Example
+
+\[#assign damNode = cmsfn.contentByPath("/comics", "dam") /\]\\
+${jsonfn.from(damNode).down(2)\`\*\*\`.readNodeTypes("mgnl:asset")\`\*\*\`.add("@nodeType", "@path").readNodeTypes("mgnl.\*").print()}
+
+{
+  "@nodeType" : "mgnl:folder",
+  "9b6c2464fbcf7a371c573f2da26ff6f1.\_QL80\_TTD\_.jpg" : {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/comics/9b6c2464fbcf7a371c573f2da26ff6f1.\_QL80\_TTD\_.jpg/jcr:content"
+    },
+    "@path" : "/comics/9b6c2464fbcf7a371c573f2da26ff6f1.\_QL80\_TTD\_.jpg"
+  },
+  "wuffle-comics-no-license-required.jpg" : {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/comics/wuffle-comics-no-license-required.jpg/jcr:content"
+    },
+    "@path" : "/comics/wuffle-comics-no-license-required.jpg"
+  },
+  "ultra-comics.jpg" : {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/comics/ultra-comics.jpg/jcr:content"
+    },
+    "@path" : "/comics/ultra-comics.jpg"
+  },
+  "@path" : "/comics",
+  "a-woman-talking-on-a-comic-scene\_1020-627.jpg" : {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/comics/a-woman-talking-on-a-comic-scene\_1020-627.jpg/jcr:content"
+    },
+    "@path" : "/comics/a-woman-talking-on-a-comic-scene\_1020-627.jpg"
+  }
+}
+
+### [](#_childrenasarray)`childrenAsArray`
+
+Select parent nodes by a property and a value to display their children as an array. The child nodes are organized in an array (see example below).
+
+#### [](#_method_signatures_6)Method signatures
+
+`JsonBuilder childrenAsArray(String propertyName, String valueRegex)`
+
+#### [](#_arguments_5)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `propertyName` | **required**<br><br>The name of the property used to select the parent node. |
+| `valueRegex` | **required**<br><br>The value (or a regular expression matching the value) of the named `propertyName` property (first argument). |
+
+#### [](#_example_7)Example
+
+\[#assign damNode = cmsfn.contentByPath("/some-assets", "dam") /\]\\
+\[#assign jsbTmp = jsonfn.from(damNode).readNodeTypes("mgnl.\*").down(2).add("@nodeType", "@path") /\]\\
+${jsbTmp.print()}\\
+/\*\* below the children nodes of a mgnl:folder are organized within an array \*\*/\\
+${jsbTmp\`\*\*\`.childrenAsArray("@nodeType", "mgnl:folder")\`\*\*\`.print()}
+
+Line 3 renders the JSON without using arrays. Line 5 renders the child nodes of nodes of the type `mgnl:folder` as arrays.
+
+```js
+{
+  "@nodeType" : "mgnl:folder",
+  "iso-125" : {
+    "@nodeType" : "mgnl:folder",
+    "red.jpg" : {
+      "@nodeType" : "mgnl:asset",
+      "@path" : "/some-assets/iso-125/red.jpg"
+    },
+    "blue.jpg" : {
+      "@nodeType" : "mgnl:asset",
+      "@path" : "/some-assets/iso-125/blue.jpg"
+    },
+    "@path" : "/some-assets/iso-125"
+  },
+  "iso-400" : {
+    "@nodeType" : "mgnl:folder",
+    "kodachrome-400.jpg" : {
+      "@nodeType" : "mgnl:asset",
+      "@path" : "/some-assets/iso-400/kodachrome-400.jpg"
+    },
+    "fujifilm-400.jpg" : {
+      "@nodeType" : "mgnl:asset",
+      "@path" : "/some-assets/iso-400/fujifilm-400.jpg"
+    },
+    "@path" : "/some-assets/iso-400"
+  },
+  "@path" : "/some-assets"
+}
+/** below the children nodes of a mgnl:folder are organized within an array **/
+{
+  "@nodeType" : "mgnl:folder",
+  "iso-125" : [ {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/some-assets/iso-125/blue.jpg/jcr:content"
+    },
+    "@path" : "/some-assets/iso-125/blue.jpg"
+  }, {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/some-assets/iso-125/red.jpg/jcr:content"
+    },
+    "@path" : "/some-assets/iso-125/red.jpg"
+  } ],
+  "iso-400" : [ {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/some-assets/iso-400/kodachrome-400.jpg/jcr:content"
+    },
+    "@path" : "/some-assets/iso-400/kodachrome-400.jpg"
+  }, {
+    "@nodeType" : "mgnl:asset",
+    "jcr:content" : {
+      "@nodeType" : "mgnl:resource",
+      "@path" : "/some-assets/iso-400/fujifilm-400.jpg/jcr:content"
+    },
+    "@path" : "/some-assets/iso-400/fujifilm-400.jpg"
+  } ],
+  "@path" : "/some-assets"
+}
+```
+
+### [](#_insertcustom)`insertCustom`
+
+Replace JSON that is expected to be generated at a given path with given custom JSON.
+
+#### [](#_method_signatures_7)Method signatures
+
+`JsonBuilder insertCustom(String pathSuffix, String json)`
+
+#### [](#_arguments_6)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `pathSuffix` | **required**<br><br>The path to the node for which you want replace JSON. |
+| `json` | **required**<br><br>The JSON that replaces the regular JSON. |
+
+#### [](#_example_8)Example
+
+\[#assign websiteNodes = cmsfn.contentByPath("/vinyl", "website") /\]\\
+\[#assign regularJsonObjects = jsonfn.from(websiteNodes).down(2).readNodeTypes("mgnl:page").add( "@path", "title")/\]\\
+${regularJsonObjects.print()}\\
+/\*\* \*\*/\\
+${regularJsonObjects\`\*\*\`.insertCustom("/vinyl/jazz",'{"bluenotes":true, "mind-blowing" : "sometimes", "max-bpm" : 145}')\`\*\*\`.print()}
+
+Line 3 renders the `regular` JSON. On line 5, the JSON of the node with the path `/vinyl/jazz` is replaced with custom JSON.
+
+```js
+{
+  "rock" : {
+    "title" : "Rock",
+    "@path" : "/vinyl/rock"
+  },
+  "jazz" : {
+    "title" : "Jazz",
+    "@path" : "/vinyl/jazz"
+  },
+  "disco" : {
+    "title" : "Disco",
+    "@path" : "/vinyl/disco"
+  },
+  "title" : "Best vinyl",
+  "@path" : "/vinyl"
+}
+/** **/
+{
+  "rock" : {
+    "title" : "Rock",
+    "@path" : "/vinyl/rock"
+  },
+  "jazz" : {
+    "bluenotes" : true,
+    "mind-blowing" : "sometimes",
+    "max-bpm" : 145
+  },
+  "disco" : {
+    "title" : "Disco",
+    "@path" : "/vinyl/disco"
+  },
+  "title" : "Best vinyl",
+  "@path" : "/vinyl"
+}
+```
+
+\==
+
+## [](#_property_defining_methods)Property defining methods
+
+Specify which properties of the JCR node should go into the JSON object. Combine inclusionary and exclusionary methods. The resultant set of properties is applied to all nodes, subnodes and resolved nodes, if the node has a value for the property. The methods are applied on a [`JsonBuilder`](../Templating-function-arguments-and-return-types/#_jsonbuilder) object and return the JsonBuilder.
+
+### [](#_addall)`addAll`
+
+Add all properties.
+
+#### [](#_method_signatures_8)Method signatures
+
+`JsonBuilder addAll()`
+
+#### [](#_arguments_7)Arguments
+
+No arguments.
+
+#### [](#_example_9)Example
+
+\[#assign pageNode = cmsfn.contentByPath("/vinyl", "website") /\]\\
+${jsonfn.from(pageNode).\`\*\*\`addAll()\`\*\*\`.print()}
+
+```js
+{
+  "mgnl:created" : 1486441456877,
+  "@link" : "/vinyl-site/",
+  "mgnl:template" : "multisite-examples-lightmodule:pages/ms-page",
+  "jcr:created" : 1487604125855,
+  "mgnl:comment" : "",
+  "@depth" : 1,
+  "navigationTitle" : "Best vinyl",
+  "jcr:createdBy" : "admin",
+  "windowTitle" : "Best vinyl",
+  "jcr:uuid" : "17ac0768-4337-4dda-a8da-223c036d299d",
+  "title" : "Best vinyl",
+  "mgnl:lastActivatedBy" : "superuser",
+  "mgnl:lastModified" : 1490253448807,
+  "@nodeType" : "mgnl:page",
+  "@name" : "vinyl",
+  "mgnl:lastModifiedBy" : "superuser",
+  "hideInNav" : true,
+  "jcr:mixinTypes" : [ "mgnl:hasVersion" ],
+  "mgnl:lastActivated" : 1488435020565,
+  "mgnl:activationStatus" : true,
+  "mgnl:createdBy" : "superuser",
+  "jcr:primaryType" : "mgnl:page",
+  "@id" : "17ac0768-4337-4dda-a8da-223c036d299d",
+  "@path" : "/vinyl"
+}
+```
+
+### [](#_add)`add`
+
+Add the wanted properties. You can pass one or many arguments that can be regular expressions.
+
+#### [](#_method_signatures_9)Method signatures
+
+`JsonBuilder add(String…​ property)`
+
+#### [](#_arguments_8)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `property` | **required**<br><br>The property to be included or a regular expression pattern to match properties. |
+
+#### [](#_example_10)Example
+
+\[#assign pageNode = cmsfn.contentByPath("/vinyl", "website") /\]\\
+${jsonfn.from(pageNode).\`\*\*\`add("@.\*")\`\*\*\`.print()}\\
+/\*\* --- \*\*/\\
+${jsonfn.from(pageNode)\`\*\*\`.add("mgnl.\*", "title")\`\*\*\`.print()}
+
+```js
+{
+  "@nodeType" : "mgnl:page",
+  "@name" : "vinyl",
+  "@link" : "/vinyl-site/",
+  "@depth" : 1,
+  "@id" : "17ac0768-4337-4dda-a8da-223c036d299d",
+  "@path" : "/vinyl"
+}
+/** --- **/
+{
+  "mgnl:created" : 1486441456877,
+  "mgnl:template" : "multisite-examples-lightmodule:pages/ms-page",
+  "mgnl:comment" : "",
+  "mgnl:lastModifiedBy" : "superuser",
+  "mgnl:lastActivated" : 1488435020565,
+  "mgnl:activationStatus" : true,
+  "mgnl:createdBy" : "superuser",
+  "title" : "Best vinyl",
+  "mgnl:lastActivatedBy" : "superuser",
+  "mgnl:lastModified" : 1490253448807
+}
+```
+
+### [](#_exclude)`exclude`
+
+Exclude unwanted properties. You can pass one or many arguments that can be regular expressions.
+
+#### [](#_method_signatures_10)Method signatures
+
+`JsonBuilder exclude(String…​ property)`
+
+#### [](#_arguments_9)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `property` | **required**<br><br>The property to be excluded or a regular expression pattern to match properties you want to exclude. |
+
+#### [](#_example_11)Example
+
+\[#assign pageNode = cmsfn.contentByPath("/vinyl", "website") /\]\\
+${jsonfn.from(pageNode).addAll()\`\*\*\`.exclude("jcr.\*", "mgnl.\*")\`\*\*\`.print()}
+
+```js
+{
+  "@nodeType" : "mgnl:page",
+  "@name" : "vinyl",
+  "@link" : "/vinyl-site/",
+  "hideInNav" : true,
+  "@depth" : 1,
+  "navigationTitle" : "Best vinyl",
+  "windowTitle" : "Best vinyl",
+  "@id" : "17ac0768-4337-4dda-a8da-223c036d299d",
+  "title" : "Best vinyl",
+  "@path" : "/vinyl"
+}
+```
+
+\==
+
+## [](#_resolving_referenced_nodes_and_renditions)Resolving referenced nodes and renditions
+
+Resolve referenced nodes and image renditions. The methods are applied on a [`JsonBuilder`](../Templating-function-arguments-and-return-types/#_jsonbuilder) object and return the JsonBuilder.
+
+### [](#_expand)`expand`
+
+Resolve nodes which are referenced by a property value.
+
+#### [](#_method_signatures_11)Method signatures
+
+`JsonBuilder expand(String propertyName, String repository)`
+
+`JsonBuilder expand(String propertyNameRegex, String targetRepository, String targetPropertyName)`
+
+#### [](#_arguments_10)Arguments
+
+expand(propertyName, repository)
+
+| Argument | Description |
+| --- | --- |
+| `propertyName` | **required**<br><br>The name of the property which contains the reference to a node in another workspace. |
+| `repository` | **required**<br><br>The name of the repository which contains the node to be expanded.<br><br>expand(propertyNameRegex, targetRepository, targetPropertyName) |
+| `propertyNameRegex` | **required**<br><br>A regular expression that matches the name of the property which contains the reference to a node in another workspace. |
+| `targetRepository` | **required**<br><br>The name of the target repository which contains the node to be expanded. |
+| `targetPropertyName` | **required**<br><br>The name of the property of the referenced node. |
+
+#### [](#_example_12)Example
+
+\[#assign contentAppItemNode = cmsfn.contentByPath("/cameras/F3", "cameracollection") /\]\\
+/\*\* node with references to other nodes \*\*/\\
+${jsonfn.from(contentAppItemNode).add("name", "maker", "categories", "images").print()}\\
+/\*\* expanding the referenced categories, images and maker \*\*/\\
+${jsonfn.from(contentAppItemNode).add("@link", "name")\\
+\` \*\*\`.expand("maker", "cameracollection")\`\*\*\`\\
+\` \*\*\`.expand("categories", "category", "jcr:uuid")\`\*\*\`\\
+\` \*\*\`.expand("images", "dam")\`\*\*\`\\
+\` \*\*\`.expand("image", "dam")\`\*\*\`\\
+.print()}
+
+> **Note:** .expand("categor.*", "category", "jcr:uuid") could be replaced with .expand("categories", "category") in the above example.when expanding a property, it is not required to add it with the #add method.
+
+/\*\* node with references to other nodes \*\*/
+{
+  "images" : \[ "jcr:59325c09-0966-4810-bf36-329d742201e3", "jcr:fc1b30b2-4d38-45b8-9fba-944ea6084582" \],
+  "name" : "F3",
+  "maker" : "893a6375-41d9-4405-ab74-ee3b91f97839",
+  "categories" : \[ "a9b08e78-38f0-4390-b1b7-6f71087d4514", "13e84bb3-6335-4710-92a6-a7f3b27a2e08" \]
+}
+/\*\* expanding the referenced categories, images and maker \*\*/
+{
+  "images" : \[ {
+    "@link" : "/dam/jcr:59325c09-0966-4810-bf36-329d742201e3/Nikon\_F3\_with\_HP\_viewfinder.jpeg",
+    "name" : "Nikon\_F3with\_HP\_viewfinder"
+  }, {
+    "@link" : "/dam/jcr:fc1b30b2-4d38-45b8-9fba-944ea6084582/Nikon\_F3\_used.jpg",
+    "name" : "Nikon\_F3\_used"
+  } \],
+  "@link" : "/cameras/F3",
+  "name" : "F3",
+  "maker" : {
+    "image" : {
+      "@link" : "/dam/jcr:12e21c54-12fe-4cce-8e6a-021b598b187d/nikon-logo-square.jpg",
+      "name" : "nikon-logo-square"
+    },
+    "@link" : "/makers/Nikon",
+    "name" : "Nikon"
+  },
+  "categories" : \[ {
+    "@link" : "/camera-categories/format/24x36",
+    "name" : "24x36"
+  }, {
+    "@link" : "/camera-categories/general/analog",
+    "name" : "analog"
+  } \]
+}
+
+Compare the first and second JSON fragments to see how some properties have been expanded to include their referenced nodes:
+
+-   `#expand` can resolve a single reference from a `normal` field (see `maker`), as well as multiple nodes when the property stores multiple values from a multivalue field (see `categories` and `images`).
+
+-   The values in `categories` are the standard ``UUID`s of the referenced nodes. The values in `images`` are asset IDs (AssetProvider ID and a UUID). `#expand` resolves all their referenced nodes correctly.
+
+-   The expanded nodes from the property `images` has expanded nodes from the `dam` workspace, thus producing JSON from an asset. The `@link` property can be used to create an `<img />` tag.
+
+-   `#expand` can act on multiple levels:
+
+    -   `.expand("maker", "cameracollection")` expands a maker node which itself has the property `image`.
+
+    -   This is also expanded by the expression `.expand("image", "dam")`
+
+
+-   If the nodes represent assets, you can also try to get renditions if any are defined. See method `#binaryLinkRendition` below.
+
+
+### [](#_binarylinkrendition)`binaryLinkRendition`
+
+Add renditions for assets. This works only if the renditions ([image variations](../../../Theme/#_image_variations)) have been defined on the current [Theme](../../../Theme/).
+
+Each rendition is added as a property of the asset. The property name for a rendition follows this pattern: `@rendition_<rendition-name>`. The value is a link.
+
+If a rendition is not defined in the theme, the property is added, but the value points to the default link.
+
+#### [](#_method_signature_2)Method signature
+
+`JsonBuilder binaryLinkRendition(String…​ variation)`
+
+#### [](#_arguments_11)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `variation` | **required**<br><br>The image variation (rendition) name of the asset. |
+
+#### [](#_example_13)Example
+
+\[#assign contentAppItemNode = cmsfn.contentByPath("/comics/belgian-comics/morris/lucky-luke/jolly-jumper/main", "website") /\]\\
+${jsonfn.from(contentAppItemNode).down(2).allowOnlyNodeTypes("mgnl.\*")\\
+.add("@nodeType", "image", "@link")\\
+.expand("image", "dam")\\
+\`\*\*\`.binaryLinkRendition("default","960","foobar")\`\*\*\`\\
+.print()}
+
+This example renders a component node which contains an image (which is expanded) and includes its renditions.
+
+\[ {
+  "@nodeType" : "mgnl:component",
+  "image" : {
+    "@nodeType" : "mgnl:asset",
+    "@link" : "/dam/jcr:7e0c0a03-ef6f-4beb-be50-1feb6f71a042/jolly-jumper-black-and-white.png",
+    "@rendition\_default" : "/.imaging/default/dam/jolly-jumper/jolly-jumper-black-and-white.png/jcr:content.png",
+    "@rendition\_foobar" : "/.imaging/default/dam/jolly-jumper/jolly-jumper-black-and-white.png/jcr:content.png",
+    "@rendition\_960" : "/.imaging/mte/comics-theme/960/dam/jolly-jumper/jolly-jumper-black-and-white.png/jcr:content/jolly-jumper-black-and-white.png"
+  },
+  "@link" : "/comics-site/jollyjumper/main/0.html"
+} \]
+
+Note that there is no rendition *foobar* defined on the theme, therefor the property `@rendition_foobar` points to the default rendition.
+
+## [](#_formatting_i18n_and_print)Formatting, i18n and print
+
+### [](#_inline)`inline`
+
+Get the JSON string on one line.
+
+#### [](#_method_signature_3)Method signature
+
+`JsonBuilder inline()`
+
+#### [](#_arguments_12)Arguments
+
+none
+
+#### [](#_example_14)Example
+
+\[#assign pageNode = cmsfn.contentByPath("/vinyl", "website") /\]\\
+\[#assign jsonBuilder = jsonfn.fromChildNodesOf(pageNode).readNodeTypes("mgnl:page").down(2).add("title") /\]\\
+/\*\* multiline \*\*/\\
+${jsonBuilder.print()}\\
+/\*\* single-line \*\*/\\
+${jsonBuilder\`\*\*\`.inline()\`\*\*\`.print()}
+
+This example renders a component node which contains an image (which gets expanded) and includes its renditions.
+
+/\*\* multiline \*\*/
+\[ {
+  "title" : "Rock"
+}, {
+  "title" : "Disco"
+}, {
+  "title" : "Jazz"
+} \]
+/\*\* single-line \*\*/
+\[{"title":"Rock"},{"title":"Disco"},{"title":"Jazz"}\]
+
+### [](#_maskchar)`maskChar`
+
+Replace one char with another on property names.
+
+#### [](#_method_signature_4)Method signature
+
+`JsonBuilder maskChar(char what, char replace)`
+
+#### [](#_arguments_13)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `what` | **required**<br><br>The char to replace. |
+| `replace` | **required**<br><br>The replacement char. |
+
+#### [](#_example_15)Example
+
+\[#assign pageNode = cmsfn.contentByPath("/comics/belgian-comics/morris/lucky-luke/jolly-jumper/in-love", "website") /\]\\
+\[#assign jsonBuilder = jsonfn.from(pageNode).add("mgnl:last.\*x") /\]\\
+${jsonfn.from(pageNode).add("mgnl:lastA.\*").print()}\\
+/\*\* \*\*/\\
+${jsonfn.from(pageNode).add("mgnl:lastA.\*")\`\*\*\`.maskChar(':', '\_')\`\*\*\`.print()}
+
+{
+  "mgnl:lastActivated" : 1488452079969,
+  "mgnl:lastActivatedBy" : "superuser"
+}
+/\*\* \*\*/
+{
+  "mgnl\_lastActivated" : 1488452079969,
+  "mgnl\_lastActivatedBy" : "superuser"
+}
+
+### [](#_escapebackslash)`escapeBackslash`
+
+Escapes backslashes (`\`) in the JSON. Use with care and only if strictly necessary. Typically backslashes are already escaped!
+
+#### [](#_method_signature_5)Method signature
+
+`JsonBuilder escapeBackslash()`
+
+#### [](#_arguments_14)Arguments
+
+No arguments.
+
+#### [](#_example_16)Example
+
+\[#assign cameraNode = cmsfn.contentByPath("/cameras/X-Pro2", "cameracollection") /\]\\
+${jsonfn.from(cameraNode).add("description")\`\*\*\`.escapeBackslash()\`\*\*\`.print()}
+
+/\*\* not especially escaped \*\*/
+{
+  "description" : "<p>/\\\\ /\\\\ The Fujifilm X-Pro2 is a ...</p>\\n\\n<p> </p>\\n"
+}
+/\*\* escaped \*\*/
+{
+  "description" : "<p>/\\\\\\\\ /\\\\\\\\ The Fujifilm X-Pro2 is a ...</p>\\\\n\\\\n<p> </p>\\\\n"
+}
+
+The backslashes are already escaped.
+
+### [](#_wrapfori18n)`wrapForI18n`
+
+Ensures that localized values are available and the values of the properties are set according to the current locale.
+
+When the function is applied, the nodes are wrapped with info.magnolia.jcr.wrapper.I18nNodeWrapper.
+
+#### [](#_method_signature_6)Method signature
+
+`JsonBuilder wrapForI18n()`
+
+#### [](#_arguments_15)Arguments
+
+No arguments
+
+#### [](#_example_17)Example
+
+\[#assign cameraNode = cmsfn.contentByPath("/cameras/X-Pro2", "cameracollection") /\]\\
+${jsonfn.from(cameraNode).add("description")\`\*\*\`.wrapForI18n()\`\*\*\`.print()}
+
+### [](#_print)`print`
+
+The `print` methods returns the JSON as a string. Always call this method at the end when you want to render the JSON.
+
+#### [](#_method_signature_7)Method signature
+
+`JsonBuilder print()`
+
+#### [](#_arguments_16)Arguments
+
+No arguments
+
+#### [](#_example_18)Example
+
+\[#assign pageNode = cmsfn.contentByPath("/vinyl", "website") /\]\\
+${jsonfn.from(pageNode).addAll().exclude("mgnl.\*", "jcr.\*")\`\*\*\`.print()\`\*\*\`}

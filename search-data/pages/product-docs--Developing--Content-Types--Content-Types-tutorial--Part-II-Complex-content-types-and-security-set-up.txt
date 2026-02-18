@@ -1,0 +1,716 @@
+---
+title: "Part II - Complex content types and security set up"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Content-Types/Content-Types-tutorial/Part-II-Complex-content-types-and-security-set-up/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Content Types tutorial > Part II - Complex content types and security set up
+---
+
+# Part II - Complex content types and security set up
+
+> **Note:** Part I - My first content type is a prerequisite to Part II.
+
+This is the second part of the tutorial about how to use Magnolia content types.
+
+In this part, you will define relationships between different content types, try out the `multiple` property and learn to handle complex use cases using [submodels](../../Content-type-definition/Content-type-Model-definition/#_submodels). You will see how you can store data in different languages and how to set up security for a production environment.
+
+## [](#_extended_use_case)Extended use case
+
+In order to promote their tour guides, the travel agency *Magnolia Travels* decides to provide information about which office each tour guide works out of and what vehicles are available for tourists. For example, the tour office in Ho Chi Minh City currently owns five Yamaha Nuovo 135 bikes.
+
+In the first part of the tutorial, we created a content type for tour guides. In this part, we will define two additional content types in the same domain:
+
+-   Tour office
+
+-   Tour vehicle
+
+
+A tour office has one or more tour guides. In addition, each tour office has one or more tour vehicles available.
+
+In the next section, we will define content types and app descriptions for the tour vehicles and the tour offices. Later on, we will define the relationships between different content types and extend the content types.
+
+## [](#_adding_new_content_types_with_apps)Adding new content types with apps
+
+Add the content type definitions and app descriptors for the tour vehicles and the tour offices to the light module `content-type-examples`.
+
+The new content types require a `name` property; we will use the [automatically created name property](../Part-I-My-first-content-type/#_automatically_created_name_property) to define the name property.
+
+### [](#_tour_vehicles)Tour vehicles
+
+A tour vehicle has a name, vehicle type, number of seats and description.
+
+#### [](#_content_type_definition)Content Type definition
+
+/content-type-examples/contentTypes/tourVehicle.yaml
+
+```yml
+datasource:
+  $type: jcrContentTypeDatasource
+  workspace: tourvehicles
+  namespaces:
+    mt: https://www.magnolia-travel.com/jcr/1.0/mt
+  autoCreate: true
+
+model:
+  nodeType: mt:tourVehicle
+  properties:
+    - name: vehicleType
+      options:
+        - name: bicycle
+          value: bicycle
+          label: Bicycle
+        - name: motorbike
+          value: motorbike
+          label: Motorbike
+        - name: van
+          value: van
+          label: Van
+        - name: boat
+          value: boat
+          label: Boat
+        - name: car
+          value: car
+          label: Car
+        - name: other
+          value: other
+          label: Other
+    - name: numberOfSeats
+      type: Double
+    - name: description
+      type: richText
+```
+
+#### [](#_app_descriptor)App descriptor
+
+/content-type-examples/apps/tourVehicles-app.yaml
+
+```yml
+!content-type:tourVehicle
+name: tourVehicles-app
+```
+
+### [](#_tour_offices)Tour offices
+
+A tour office has a name, country, city and address. It may link to tour vehicles and to tour guides.
+
+#### [](#_content_type_definition_2)Content Type definition
+
+/content-type-examples/contentTypes/tourOffice.yaml
+
+```yml
+datasource:
+  $type: jcrContentTypeDatasource
+  workspace: touroffices
+  namespaces:
+    mt: https://www.magnolia-travel.com/jcr/1.0/mt
+  autoCreate: true
+
+model:
+  nodeType: mt:tourOffice
+  properties:
+    - name: city
+    - name: address
+    - name: country
+# - name: tourGuides
+# - name: allVehicles
+```
+
+The fields for the linked tour guides and vehicles are not properly defined yet, we will do this in the following sections.
+
+#### [](#_app_descriptor_2)App descriptor
+
+/content-type-examples/apps/tourOffices-app.yaml
+
+```yml
+!content-type:tourOffice
+name: tourOffices-app
+#
+subApps:
+  detail:
+    editor:
+      form:
+        tabs:
+          default:
+            fields:
+              - name: address
+                rows: 5
+```
+
+### [](#_light_module_file_structure)Light module file structure
+
+Your light module should now have the following structure:
+
+content-type-examples/
+├── apps/
+│ ├── tourGuides-app.yaml
+│ ├── tourOffices-app.yaml
+│ └── tourVehicles-app.yaml
+├── contentTypes/
+│ ├── tourGuide.yaml
+│ ├── tourOffice.yaml
+│ └── tourVehicle.yaml
+└── i18n
+    └── content-type-examples-backend\_en.properties
+
+### [](#_updating_the_i18n_file)Updating the i18n file
+
+Since you have created new apps, you also need new user interface labels. Update your messages file `/content-type-examples/i18n/content-type-examples-backend_en.properties` to use the following version:
+
+/content-type-examples/i18n/content-type-examples-backend\_en.properties
+
+\# APPS
+
+#
+# app "tourVehicles-app"
+#
+tourVehicles-app = Tour vehicles
+tourVehicles-app.default.label = Tour vehicle
+tourVehicles-app.default.name.label = Name
+tourVehicles-app.default.description.label = Description
+tourVehicles-app.numberOfSeats.label = Number of seats
+tourVehicles-app.vehicleType.label = Type
+# browser
+tourVehicles-app.browser.label = Tour vehicles
+# actionbar
+tourVehicles-app.browser.actionbar.sections.root.label=Vehicles
+tourVehicles-app.browser.actionbar.sections.folder.label=Folder
+tourVehicles-app.browser.actionbar.sections.item.label=Vehicle
+# actions
+tourVehicles-app.browser.actions.addItem.label=Add vehicle
+tourVehicles-app.browser.actions.editItem.label=Edit vehicle
+# details app
+tourVehicles-app.detail.label=Add vehicle
+
+#
+# app "tourOffices-app"
+#
+tourOffices-app = Tour offices
+tourOffices-app.browser.label = Tour offices
+tourOffices-app.default.label = Tour offices
+tourOffices-app.default.name.label = Name
+tourOffices-app.default.city.label = City
+tourOffices-app.default.country.label = Country
+tourOffices-app.default.address.label = Adress
+tourOffices-app.default.tourGuides.label = Guides
+tourOffices-app.default.allVehicles.label = All vehicles
+tourOffices-app.default.allVehicles.vehicleGroup.vehicle.label = Vehicle
+tourOffices-app.default.allVehicles.vehicleGroup.amount.label = Amount
+# actionbar
+tourOffices-app.browser.actionbar.sections.root.label=Office
+tourOffices-app.browser.actionbar.sections.folder.label=Folder
+tourOffices-app.browser.actionbar.sections.item.label=Office
+# actions
+tourOffices-app.browser.actions.addItem.label=Add office
+tourOffices-app.browser.actions.editItem.label=Edit office
+
+#
+# app "tourGuides-app"
+#
+tourGuides-app = Tour guides
+tourGuides-app.default.label =
+tourGuides-app.default.name.label = Name
+tourGuides-app.default.birthday.label = Birthday
+tourGuides-app.default.gender.label = Gender
+tourGuides-app.default.gender.options.female = Female
+tourGuides-app.default.gender.options.male = Male
+tourGuides-app.default.gender.options.other = Other
+tourGuides-app.default.shortBio.label = About
+tourGuides-app.browser.label = Tour guide
+# actionbar
+tourGuides-app.browser.actionbar.sections.root.label=Guides
+tourGuides-app.browser.actionbar.sections.folder.label=Folder
+tourGuides-app.browser.actionbar.sections.item.label=Guide
+# actions
+tourGuides-app.browser.actions.addItem.label=Add guide
+tourGuides-app.browser.actions.editItem.label=Edit guide
+
+### [](#_app_launcher_tiles)App launcher tiles
+
+Magnolia adds the tiles for the new apps to the App launcher automatically when registering the apps. To make the app tiles appear in the App launcher, you must first restart your Magnolia session once by logging out and logging in again. For further details see [App launcher layout](../../../../Administration/App-Launcher/App-launcher-layout/).
+
+## [](#_app_launcher_tiles_list)App launcher tiles list
+
+To see the list of the app tiles, click the app launcher icon to the right of the Magnolia logo.
+
+![App launcher tile](../../../../_images/appLauncherIcon.png)
+
+### [](#_checking_the_new_content_types_and_apps)Checking the new content types and apps
+
+Test the new apps work by creating some tour offices, tour guides and vehicles.
+
+## [](#_linking_content_types_and_adding_multiple_values)Linking content types and adding multiple values
+
+You can define relations between different content types. An item of type A can have zero to many links to items of type B. This is called a 0-n relationship.
+
+In this section we define a relation between tour offices and tour guides. An office may have one or many tour guides.
+
+We will also use the `multiple` property to make it possible to add more than one tour guide to a given office.
+
+### [](#_linking_tour_guides_to_offices)Linking tour guides to offices
+
+An office may have more than one tour guide. Edit the `model` property of the `tourOffice` content type:
+
+/content-type-examples/contentTypes/tourOffice.yaml (snippet)
+
+```yml
+model:
+  nodeType: mt:tourOffice
+  properties:
+    - name: city
+    - name: address
+    - name: country
+    - name: tourGuides
+      type: reference:tourGuide
+      multiple: true
+```
+
+-   Line 14: For the property `tourGuides`, we define its `type` as `reference:tourGuide`. This value is the name of an existing content type.
+
+-   Line 15: The `multiple` property with the value `true` makes it possible to add more than one tour guide.
+
+
+Open the `tourOffices-app` app with the app launcher tile and add a tour guide to a tour office.
+
+![Tour offices for Germany](../../../../_images/6-1-my1stContentType-tourOffices1.png)
+
+## [](#_creating_and_linking_submodels)Creating and linking submodels
+
+Submodels are useful whenever you need a group of fields more than once. A content type model definition can contain a list of submodel definitions within the [`subModels` property](#_submodels_property). Submodels can be used only within the content type where they have been defined.
+
+A submodel definition has the [same properties as a model](#_model_definition_properties), but a submodel cannot have additional submodels.
+
+The default `nodeType` for a submodels is `mgnl:contentNode`.
+
+We defined the content type for tour vehicles at the beginning of this part of the tutorial. A tour vehicle has the properties: name, vehicle type, number of seats and description.
+
+![Tour vehicles app](../../../../_images/6-1-my1stContentType-tourVehiclesApp.png)
+
+Now we will extend the tour office to make it possible to add tour vehicles to it. We need to be able to specify the number of different vehicles. For example, the tour office in Ho Chi Minh City currently owns five Yamaha Nuovo 135 bikes.
+
+To map this case, we add a submodel to the `tourOffice` content type.
+
+### [](#_defining_a_submodel)Defining a submodel
+
+Keep in mind that a [submodel definition](../../Content-type-definition/Content-type-Model-definition/#_submodels) is very similar to a [model definition](../../Content-type-definition/Content-type-Model-definition/) and that a model definition can contain a list of submodels.
+
+Here is a fragment which shows a submodel:
+
+/content-type-examples/contentTypes/tourOffice.yaml (snippet)
+
+```yml
+subModels:
+  - name: vehicleGroup
+    properties:
+      - name: vehicle
+        type: reference:tourVehicle
+      - name: amount
+        type: Double
+```
+
+-   There is one submodel named `vehicleGroup`.
+
+-   The submodel has two properties:
+
+    -   `vehicle` – Its type is `reference:tourVehicle`, which means that it is referring to the `tourVehicle` content type.
+
+    -   `amount` – A number to indicate how many different vehicles are available.
+
+
+
+### [](#_linking_to_the_submodel_from_a_model_property)Linking to the submodel from a model property
+
+After you define the submodel, you must add a property in the model with `type: <submodel-name>`.
+
+This is the updated `model` of the `tourOffice` content type definition with the submodel added:
+
+/content-type-examples/contentTypes/tourOffice.yaml (snippet)
+
+```yml
+model:
+  nodeType: mt:tourOffice
+  properties:
+    - name: city
+    - name: address
+    - name: country
+    - name: tourGuides
+      type: reference:tourGuide
+      multiple: true
+    - name: allVehicles
+      type: vehicleGroup
+      multiple: true
+  subModels:
+    - name: vehicleGroup
+      properties:
+        - name: vehicle
+          type: reference:tourVehicle
+        - name: amount
+          type: Double
+```
+
+-   Lines 19-25: The submodel definition.
+
+    -   Line 20: The submodel’s `name` is `vehicleGroup` (arbitrary).
+
+
+-   Lines 16-18: The model property `allVehicles`.
+
+    -   Line 17: `type` has the value `vehicleGroup`, which is the name of a submodel.
+
+    -   Line 18: `multiple` enables you to choose more than one of the submodel `vehicleGroup`.
+
+
+
+Now the tour offices app is ready to handle vehicles as described in the use case:
+
+![Tour vehicles country info ](../../../../_images/6-1-my1stContentType-tourOffices2.png)
+
+#### [](#_complete_touroffice_content_type_definition)Complete `tourOffice` content type definition
+
+/content-type-examples/contentTypes/tourOffice.yaml
+
+```yml
+datasource:
+  $type: jcrContentTypeDatasource
+  workspace: touroffices
+  namespaces:
+    mt: https://www.magnolia-travel.com/jcr/1.0/mt
+  autoCreate: true
+
+model:
+  nodeType: mt:tourOffice
+  properties:
+    - name: city
+    - name: address
+    - name: country
+    - name: tourGuides
+      type: reference:tourGuide
+      multiple: true
+    - name: allVehicles
+      type: vehicleGroup
+      multiple: true
+  subModels:
+    - name: vehicleGroup
+      properties:
+        - name: vehicle
+          type: reference:tourVehicle
+        - name: amount
+          type: Double
+```
+
+## [](#_linking_to_items_in_existing_content_apps)Linking to items in existing content apps
+
+We’ve looked at how to link from one content type to another. You can also link from a content type to an already existing app such as the [Magnolia Assets subapp](#dam-app:ROOT:developers/dam-app-jcr.adoc), which is *not* based on a content type definition.
+
+To demonstrate this, we will extend the tour guide content type (and its app) with a new `image` property to assign an asset (an image) to a tour guide.
+
+To do so:
+
+1.  Add a new property to the model definition of the content type. Give it an arbitrary name. Here we use `image`:
+
+    ```yml
+    model:
+      nodeType: mt:tourVehicle
+      properties:
+        - name: vehicleType
+        - name: numberOfSeats
+          type: Double
+        - name: description
+          type: richText
+        - name: image
+    ```
+
+2.  Override the defaults of the field that were generated for the property:
+
+    ```yml
+    !content-type:tourVehicle
+    name: tourVehicles-app
+    #
+    subApps:
+      detail:
+        editor:
+          form:
+            tabs:
+              default:
+                fields:
+                  - name: image
+                    fieldType: link
+                    targetWorkspace: dam
+                    appName: assets
+                    label: Select image
+                    identifierToPathConverter:
+                      class: info.magnolia.dam.app.assets.field.translator.AssetCompositeIdKeyTranslator
+                    contentPreviewDefinition:
+                      contentPreviewClass: info.magnolia.dam.app.ui.field.DamFilePreviewComponent
+    ```
+
+
+Setting the `fieldType` and defining a [Link field](../../../Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/) in the app descriptor is a feasible way to link to any content app.
+
+### [](#_linking_to_assets)Linking to assets
+
+To link to an asset, instead of defining the link field in the app descriptor (as showed above) - use `type: asset` in the content type definition. In this case there is no more need to override the field in the app descriptor.
+
+```yml
+model:
+  nodeType: mt:tourVehicle
+  properties:
+    - name: image
+      type: asset
+```
+
+This is what the adapted `tourVehicles-app` looks like:
+
+![Asset image in the Tour app](../../../../_images/6-2-my1stContentTYpe-assetImage.png)
+
+## [](#_localizing_content)Localizing content
+
+The properties of a content type item can be stored in multiple different languages.
+
+> **Tip:** If localization and internationalization (i18n) are completely new to you, we suggest you read the Language section of this documentation.
+
+Here is an overview of how you enable multilanguage content:
+
+1.  Enable multilanguage authoring.
+
+2.  Set `i18n=true` in the [properties of the model definition](../../Content-type-definition/Content-type-Model-definition/#_property_definition_properties).
+
+3.  Define locales in the site.
+
+
+To try out this feature, change the `tourVehicle` content type so that we can store the different language content for the `description` property.
+
+### [](#_enabling_multilanguage_authoring)Enabling multilanguage authoring
+
+To enable mulitlanguage content for content types, such as storing translations for the `description` property in the `tourVehicle` content type, configure the `I18NAuthoringSupport` interface. This enables the language selector in content apps.
+
+By default, the `magnolia-module-multisite-jcr` module provides:
+
+```xml
+<component>
+  <type>info.magnolia.ui.api.i18n.I18NAuthoringSupport</type>
+  <implementation>info.magnolia.multisite.i18n.MultiSiteI18nAuthoringSupport</implementation>
+  <scope>singleton</scope>
+</component>
+```
+
+This setup supports multilingual editing for content types, using locales defined in the site configuration. For more information, see [Language configuration](../../../../Administration/Language/Language-configuration/).
+
+> **Note:** By default, the Magnolia instance is already configured for the authoring property.
+
+### [](#_setting_the_i18n_property_in_model_properties)Setting the `i18n` property in model properties
+
+You must enable localization of content type items for *each* property.
+
+Here is an example showing only the `description` property enabled for multilanguage support:
+
+content-type-examples/contentTypes/tourVehicle.yaml (snippet)
+
+```yml
+datasource:
+# ...
+model:
+  nodeType: mt:tourVehicle
+  properties:
+    - name: vehicleType
+    - name: numberOfSeats
+      type: Double
+    - name: description
+      type: richText
+      i18n: true
+    - name: image
+```
+
+### [](#_defining_locales_in_site)Defining locales in site
+
+> **Tip:** If you are using the magnolia-community-demo-webapp as indicated in part I of the tutorial, your Magnolia instance already has a site with properly defined locales.
+
+If you have no site definition, configure a site where you define at least its `i18n` node as shown below.
+
+## [](#_how_to_define_locales_in_site)How to define locales in site
+
+Define the languages that editors should be able to choose as locales in the [site definition](../../../Templating/Site-definition/) under `<site>/i18n/locales`.
+
+**Example**: `en`, `de` and `cs` locales in an example `test` site definition.
+
+```yaml
+test:
+  i18n:
+    enabled: true
+    class: info.magnolia.cms.i18n.DefaultI18nContentSupport
+    fallbackLocale: en
+    defaultLocale: cs
+    locales:
+      cz:
+        country: CZ
+        language: cs
+        enabled: true
+      de:
+        country: DE
+        language: de
+        enabled: true
+```
+
+**Properties**
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables support for localized content. Used to rewrite URIs and getting nodes based on the current language.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Class that implements <span class="inlineBean">info.magnolia.cms.i18n.I18nContentSupport</span> such as:</p></div><div class="ulist"><ul><li><p>Implementations for a site organized into <a href="../../../../Administration/Language/Multilanguage-structure/#_single_tree" class="xref page">a single tree</a>, in which the locale prefix usually points to the root of a site.</p><div class="ulist"><ul><li><p><code>info.magnolia.cms.i18n.IetfI18nContentSupport</code>. This is the default implementation, which supports <a href="https://en.wikipedia.org/wiki/IETF_language_tag" target="_blank" rel="noopener">IETF BCP 47 language Tags</a>.</p><div class="listingblock"><div class="title">Example</div><div class="content"><pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">test:
+  i18n:
+    enabled: true
+    class: info.magnolia.cms.i18n.IetfI18nContentSupport
+    fallbackLocale: en
+    defaultLocale: cs
+    locales:
+      cz:
+        languageTag: cs-CZ
+        enabled: true</code></pre></div></div></li><li><p><code>info.magnolia.cms.i18n.DefaultI18nContentSupport</code>, which supports a language prefix such as <code>/en/*</code> in the URL and <a href="#_storing_and_serving_localized_content">stores localized content</a> in a node using the naming pattern <code>&lt;name&gt;_&lt;locale&gt;</code>, for example <code>subtitle_en</code>.</p><div class="paragraph"><p>Use this implementation if your site is organized into <a href="../../../../Administration/Language/Multilanguage-structure/#_single_tree" class="xref page">a single tree</a>, in which the locale prefix usually points to the root of a site.</p></div></li></ul></div></li><li><p><code>info.magnolia.cms.i18n.HierarchyBasedI18nContentSupport</code>, which stores and serves localized content in a hierarchical structure.</p><div class="paragraph"><p>Use this implementation if your site is organized into <a href="../../../../Administration/Language/Multilanguage-structure/#_multiple_trees" class="xref page">multiple trees</a>, in which site roots are usually named after the locales.<br></p></div></li><li><p><code>info.magnolia.cms.i18n.RequestLocaleAwareI18nContentSupport</code>, which reads the locale from the request.</p><div class="paragraph"><p>This implementation does not render language specific URLs.</p></div></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>fallbackLocale</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>en</code></em></p></div><div class="paragraph"><p>Content is served for the fallback locale if content is not available for the current locale.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultLocale</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>If no locale can be determined, the default locale will be set. If no default locale is defined, the fallback locale is used.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>locales</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;locale&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>An arbitrary locale ID. For example, one that consists of language and country such as <code>zh-TW</code> for traditional Chinese or <code>pt-BR</code> for Brazilian Portuguese.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>country</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, for configurations using the <code>language</code> property</p></div><div class="paragraph"><p>Country code such as <code>BR</code> for Brazil. See <a href="https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html">Java 8 locale IDs</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>language</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, unless a configuration with the <code>languageTag</code> property is used</p></div><div class="paragraph"><p>Language code such as <code>pt</code> for Portuguese. See <a href="https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html">Java 8 locale IDs</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>languageTag</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, unless a configuration with the <code>language</code> property is used</p></div><div class="paragraph"><p>An <a href="https://en.wikipedia.org/wiki/IETF_language_tag" target="_blank" rel="noopener">IETF BCP 47</a> language tag.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Available since Magnolia 6.2.45.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables the locale.</p></div></div></td></tr></tbody></table></div>
+
+> **Caution:** Configure locales for the fallback siteIf i18n is enabled in the configuration of your content app, you need to configure locales for the fallback site or extend a site definition with locales.Then, when editing structured content, the locales of the fallback site will be used while showing the language dropdown.
+
+### [](#_result)Result
+
+![Language dropdown](../../../../_images/6-1-my1stContentType-addi18n.png)
+
+## [](#_setting_up_security)Setting up security
+
+In this section, we look at how to set up security for content types and their apps in a production environment. We cover both JCR access security and app security.
+
+In a local development environment, you can use the `superuser` user. Superuser has the permissions required to manage the content types and related apps that you built during this tutorial. In a production environment, you should create users with specific roles and deactivate the superuser account.
+
+In this tutorial, we will create the `ct-examples-editor` role to edit the content type items on the author instance.
+
+### [](#_jcr_access_security)JCR access security
+
+The content type items are stored in the JCR.
+
+#### [](#_jcr_access_security_2)JCR access security
+
+JCR access security is a feature of the JCR standard (defined by JCR [JSR-170](https://www.jcp.org/en/jsr/detail?id=170) and [JSR-283](https://jcp.org/en/jsr/detail?id=283)). JCR access is granted per workspace on path level. It can grant **Read-only** or **Read/Write** permission. [Grant JCR access lists per role](../../../../Administration/IAM/Roles-and-access-control-lists/).
+
+#### [](#_creating_the_ct_examples_editor_role_on_the_author_instance)Creating the `ct-examples-editor` role on the author instance
+
+Add a role with read and write permissions for the JCR workspaces: `tourguides`, `touroffices` and `tourvehicles`.
+
+1.  Log in to the Magnolia author instance as a user (such as `superuser`) with permission to write on the `userroles` workspace.
+
+2.  Open the [Security app](../../../../Apps/List-of-apps/Security-app/) > [**Roles** subapp](../../../../Apps/List-of-apps/Security-app/#_roles).
+
+3.  Click **Add new role**.
+
+4.  Provide values for the fields in the **Role info** tab:
+
+    -   **Role name**: `ct-examples-editor`
+
+    -   **Full name**: Example role that can edit tourguides, touroffices and tourvehicles workspaces.
+
+
+5.  In the **Access control lists** tab, you see a list of all JCR workspaces visible to the current user.
+    Create an access control list (ACL) for the workspaces `tourguides`, `touroffices` and `tourvehicles`. with the following settings:
+
+    -   **Read/Write**
+
+    -   **Selected and subnodes**
+
+    -   **/** (in the last field)
+
+
+6.  Save the new role.
+
+
+> **Note:** The system automatically creates another ACL for the workspace userroles. This ACL makes sure that the new role can read its own role definition on the workspace which stores the roles.
+
+Here is a screenshot from the JCR ACLs for the `ct-examples-editor` role:
+
+![Access control lists](../../../../_images/6-1-complexContentTypesPII-ACL.png)
+
+#### [](#_assigning_the_ct_examples_editor_role_to_eric_the_editor)Assigning the `ct-examples-editor` role to `eric` the editor
+
+In a production environment, you have different users editing content such as tour guides, tour offices, tour vehicles and others. These users do not have the superuser role.
+
+The `magnolia-community-demo-webapp` we are using emulates a production environment. It already contains a user named `eric` that has several roles to edit different types of content.
+
+To assign the new `ct-examples-editor` role to `eric` the editor:
+
+1.  Log in to the Magnolia author instance as a user (such as `superuser`) with permission to write on the `userroles` workspace.
+
+2.  Open the [Security app](../../../../Apps/List-of-apps/Security-app/) > **Users** subapp.
+
+3.  Select `eric` and click **Edit user**.
+
+4.  Click the **Roles** tab. There is a [Twin-column field](../../../Templating/Dialog-definition/Field-definition/List-of-fields/Twin-column-field/).
+
+5.  Select the `ct-examples-editor` role in the left **Other available roles** column and move it using the `>>` button to the right **Granted roles** column.
+
+6.  Click **Save changes**.
+
+
+Log out and in again as the user `eric` with the password `eric`.
+
+Eric *cannot* see the app launcher tiles for the apps `tourGuides-app`, `tourOffices-app` and `tourVehicles-app` yet. You must enable the tour apps for Eric; you will learn how do this in the [App security](#_app_security) section.
+
+#### [](#_creating_a_role_to_read_specific_jcr_data_on_the_public_instance)Creating a role to read specific JCR data on the public instance
+
+In a production environment, you would also create a role to grant read access for the new workspaces `tourguides`, `touroffices` and `tourvehicles`. Read only access would be assigned to the special system user `anonymous`. This would make sure that anonymous website visitors on the public instance would see content, once rendered, from those workspaces.
+
+How to create this role and how to render the content types item on a website are not within the scope of this tutorial.
+
+### [](#_app_security)App security
+
+Without any further configuration, by default, only the `superuser` role is granted access to an app.
+
+The app descriptor, which defines an app, has a property named `permissions`. In this property, you can add a list of roles for which you want to [grant app access](../../../../Administration/IAM/App-permissions/).
+
+Add the following code snippet to the very bottom of the YAML files for the apps `tourGuides-app`, `tourOffices-app` and `tourVehicles-app`:
+
+```yml
+permissions:
+  roles: [ct-examples-editor]
+```
+
+/content-type-examples/apps/tourOffices-app.yaml
+
+```yml
+!content-type:tourOffice
+name: tourOffices-app
+# .-
+subApps:
+  detail:
+    editor:
+      form:
+        tabs:
+          default:
+            fields:
+              - name: address
+                fieldType: text
+                rows: 5
+# security
+permissions:
+  roles: [ct-examples-editor]
+```
+
+Log out and in again as the user `eric` (you assigned the role `ct-examples-editor` to Eric earlier).
+
+Eric the editor can now use all three apps: `tourGuides-app`, `tourOffices-app` and `tourVehicles-app`. He can add, edit and delete content items in the JCR workspaces: `tourguides`, `touroffices` and `tourvehicles`.
+
+Congratulations.
+
+You have built a complete set of content types including complex types with submodels. You have created the apps to manage the content items for these content types. You have defined relationships between content types and other, non content type-based apps. Finally, you have learned to properly adjust security settings.
+
+## [](#_next_steps)Next steps
+
+The next logical step would be to set up your Magnolia system to display the tour guides, the tour vehicles and the tour offices on your public instances for your website visitors. This could be done in different ways.
+
+* * *
+
+Some suggestions
+
+**Headless consumption of the content types**
+
+-   Define a REST endpoint (using the [Delivery API](#rest:api:delivery-endpoint.adoc)) for each of the three content types.
+
+-   Develop a static website that renders the data via REST delivery endpoints using [Angular](https://angular.io/), [ReactJS](https://reactjs.org/) or a similar JavaScript framework.
+
+-   Develop a mobile phone app to present the data consumed from Magnolia via REST using [PhoneGap](http://phonegap.com/), [Ionic](https://ionicframework.com/) or similar frameworks.
+
+
+**Embed content type items as components into pages**
+
+-   Develop some [component](../../../Templating/Template-definition/Component-definition/) and [page](../../../Templating/Template-definition/Page-definition/) templates to embed different content type items into pages (managed with the [Pages app](../../../../Apps/List-of-apps/Pages-app/)).

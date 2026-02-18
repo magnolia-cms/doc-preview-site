@@ -1,0 +1,247 @@
+---
+title: "DAM API"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/API/Java-server-APIs/DAM-API/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > API > Java Server APIs > DAM API
+---
+
+# DAM API
+
+The DAM API abstracts the storage location of assets, allowing you to work with assets regardless of where they are stored. You use the API in templating, templates, and models. It provides read-only access to assets managed in the [Magnolia Assets subapp](#dam-app:ROOT:developers/dam-app-jcr.adoc).
+
+The DAM API provides the following features:
+
+-   Clean, simple, and easy to use.
+
+-   Flexible, extendable, and user-friendly. You can extend the API and create your own [asset providers](#_assetprovider) for external systems.
+
+-   Generic and not tied to JCR.
+
+-   Connects to external asset providers such as Flickr, YouTube, and file systems.
+
+-   Supports industry-standard [media types](#_mediatype).
+
+-   Separates asset metadata from binaries.
+
+
+## [](#_architecture)Architecture
+
+The diagram provides an overview of how the main interfaces and classes of the DAM API relate.
+
+![API overview](../../../../../../dam/_images/api-overview.jpg)
+
+### [](#_interfaces)Interfaces
+
+-   info.magnolia.dam.api.AssetProviderRegistry is the main entry point. Given an `ItemKey` or [`MediaType`](#_mediatype), it’s responsible for finding the correct `AssetProvider` and `AssetRenderer`.
+
+-   info.magnolia.dam.api.AssetProvider: Exposes `Folders` and `Assets` from a particular source. Specifics of the storage of these items are left to implementations. While most provider implementations only use the `ItemKey.assetId` field of keys passed to the various `get` methods, the entire key object is passed for consistency and flexibility. This makes it possible to implement, for example, delegating and aggregating providers.
+
+-   info.magnolia.dam.api.PathAwareAssetProvider: Exposes specific operations for `AssetProviders` that are aware of paths, for example JCR, CMIS, File system etc. Not all providers need or want to implement these features. The term "path" is flexible. It can represent a single name or a relative path within the data source.
+
+-   info.magnolia.dam.api.AssetRenderer: Provides `AssetRenditions` by bridging an asset’s data and some type of converter. `AssetRenderers` can be provided by `AssetProviders` if the `AssetProvider` itself (or the underlying system) is capable of managing the conversion/translation, or via a `global` registry. `AssetProviderRegistry.getRendererFor(info.magnolia.dam.api.Asset, com.google.common.net.MediaType)` provides the entry point. It looks up in provider, then in its own registry, and bridges to other possible conversion mechanisms that are independent of Magnolia DAM.
+
+-   info.magnolia.dam.api.Asset: An `Asset` is a digital resource with associated metadata.
+
+-   info.magnolia.dam.api.Folder: A `Folder` represents a structural item holding `Assets`. Depending on the provider, this can be directly mapped to the concept of folders/directories (JCR, FileSystems and so on), and for other types, it may map to the concept of albums,playlists, sets, and so on.
+
+-   info.magnolia.dam.api.Item: Defines a common interface for `Asset` and `Folder`.
+
+-   info.magnolia.dam.api.AssetQuery: Represents a query to an `AssetProvider`. Use new `AssetQuery.Builder()…​build()` to construct instances.
+
+-   info.magnolia.dam.api.AssetRendition: An `AssetRendition` is a `view` on a asset for a specific [`MediaType`](#_mediatype). It can be a simple resize of an image or a document conversion.
+
+
+### [](#_enum)Enum
+
+-   info.magnolia.dam.api.AssetProviderCapability: Clients can ask a provider if they support a certain feature before attempting to use it. Typically, this would enable or disable certain UI features. In some cases, this also indicates that client code can cast to a specific interface (such as `PathAwareAssetProvider` for `hierarchical`). If support for write operations is added, this enum is extended with new capabilities.
+
+
+### [](#_classes)Classes
+
+-   info.magnolia.dam.api.AbstractAssetProvider: Convenient abstract base class for implementations. Enables configurations of `MediaType` that the implemented `AssetProvider` provides.
+
+-   info.magnolia.dam.api.AbstractItem: Common superclass for any DAM `Item`.
+
+-   `Builder`: A builder for `AssetQuery` that provides a fluent API.
+
+-   info.magnolia.dam.api.ItemKey: A composite key. In the DAM, every `Asset` and `Folder` is identified by its provider’s ID and its provider-specific ID (that is, the ID with which the provider can uniquely identify the asset).
+
+
+### [](#_metadata_interfaces)Metadata interfaces
+
+-   info.magnolia.dam.api.metadata.AssetMetadata: A common interface for asset metadata. Different types of metadata can be exposed through `Asset` by extending this interface. The `AssetProvider` should implement support for those. Specific metadata interfaces should expose methods with explicit names and return types, and ideally provide property descriptions in the Javadocs. Metadata is retrieved through an `Asset` by passing the specific type of metadata, that is, a class object that extends this interface.
+
+-   info.magnolia.dam.api.metadata.DublinCore: A collection of Dublin Core metadata names. Extends `AssetMetadata`. Methods: `getContributor`,`getCoverage`, `getCreated`, `getCreator`, `getDate`, `getDescription`, `getFormat`, `getIdentifier`, `getLanguage`, `getModified`, `getPublisher`, `getRelation`, `getRights`, `getSource`, `getSubject`, `getTitle`, `getType`.
+
+-   info.magnolia.dam.api.metadata.MagnoliaAssetMetadata: Defines Magnolia-specific metadata. Extends `AssetMetadata`. Methods: `getHeight`, `getWidth`.
+
+
+## [](#_asset_binary_management)Asset binary management
+
+In DAM 5 and later, Magnolia deprecates `Asset.getContentStream` in favor of `Asset.getBinaryReference`. This decouples asset binaries from Magnolia, making it easier to retrieve binaries outside the Magnolia instance.
+
+The `magnolia-dam-binary-api` module provides interfaces for binary management without dependencies on Magnolia modules. You can implement your own binary management solution with minimal effort.
+
+```java
+import info.magnolia.dam.binary.api.BinaryGetter;
+import info.magnolia.dam.binary.api.BinaryReference;
+import info.magnolia.dam.binary.api.Binary;
+
+public class MyClass {
+    @Inject
+    public MyClass(BinaryGetter binaryGetter) {
+        this.binaryGetter = binaryGetter;
+    }
+
+    public Optional<InputStream> binaryFromReference(BinaryReference binaryReference) {
+        return binaryGetter.getBinary(binaryReference)
+            .map(Binary::getInputStream);
+    }
+}
+```
+
+## [](#_assetprovider)AssetProvider
+
+-   `AssetProvider` has `capabilities` (info.magnolia.dam.api.AssetProviderCapability). Some implementations will not support all features. This can be used to drive a UI to enable/disable certain actions or UI elements. Implementations should still throw exceptions when those unsupported operations are called. However, this may not consistently be the case, for example when aggregating search results from different providers.
+
+-   `ItemKey` is a specific type (composed of `providerId` and `assetId`) rather than a `magic string`. It’s passed to most methods, rather than the `assetId` string. This allows for aggregation/delegation in specialized providers.
+
+
+`AssetProviders` are registered by configuration in the [DAM Core module](../../../../../../dam/developers/dam-core/).
+
+## [](#_items_assets_and_folders)Items, assets and folders
+
+-   `Item` is the main parent definition of a `Folder` and an `Asset`.
+
+-   `Asset` is the abstract representation of a binary document.
+
+-   `Folder` is the abstract representation of a folder that contains `Asset`.
+
+
+Implementation notes
+
+-   To some extent, `Items`, `Folders`, and `Assets` mimic the [JCR API](#_jcr_api), but there are subtle differences that are highlighted in the Javadocs.
+
+-   `Items`, `Folders`, and `Assets` are meant to be implemented lazily. Implementations will typically keep a reference to their provider. For example, the [JCR implementation](#_jcr_api) keeps a reference to the corresponding `Node` instance and delegates to it on demand.
+
+
+## [](#_assetrenditions_and_mediatypes)AssetRenditions and MediaTypes
+
+An `AssetRendition` is a transformation of an `Asset`. The `AssetRenderer` provides `AssetRenditions` by bridging an `Assets` dataand some type of converter.
+
+-   `AssetRenderer` can be provided by `AssetProvider` when the conversion or translation can be managed by the `AssetProvider` itself (or its underlying system), or via a `global` registry.
+
+-   \`AssetProviderRegistry.getRendererFor(Asset asset,MediaType mediaType)\`provides the entry point. It looks up in the provider then in its own registry, and bridges to other possible conversion mechanisms that are independent of the Magnolia DAM.
+
+
+`AssetRenderers` are registered by configuration in the [DAM Core module](../../../../../../dam/developers/dam-core/).
+
+## [](#_mediatype)MediaType
+
+In DAM 2.0 and later, the `com.google.common.net.MediaType` class is included in the [Google Guava](http://en.wikipedia.org/wiki/Google_Guava) library.
+
+Here’s the class description from the [Guava Javadoc](https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html).
+
+> Represents an [Internet Media Type](http://en.wikipedia.org/wiki/Internet_media_type) (also known as a MIME Type or Content Type). This class also supports the concept of media ranges [defined by HTTP/1.1](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.1). As such, the **character is treated as a wildcard and is used to represent any acceptable type or subtype value. A media type may not have wildcard type with a declared subtype. The** character has no special meaning as part of a parameter. All values for type, subtype, parameter attributes or parameter values must be valid according to RFCs [2045](http://www.ietf.org/rfc/rfc2045.txt) and [2046](http://www.ietf.org/rfc/rfc2046.txt).
+>
+> All portions of the media type that are case-insensitive (type, subtype, parameter attributes) are normalized to lowercase. The value of the `charset` parameter is normalized to lowercase, but all others are left as-is.
+>
+> Note that this specifically does **not** represent the value of the MIME `Content-Type` header and as such has no support for header-specific considerations such as line folding and comments.
+>
+> For media types that take a charset the predefined constants default to UTF-8 and have a `_UTF_8` suffix. To get a version without a character set, use [`withoutParameters()`](https://guava.dev/releases/snapshot-jre/api/docs/com/google/common/net/MediaType.html#withoutParameters\(\)).
+
+## [](#_jcr_api)JCR API
+
+The DAM JCR API classes reside in the DAM JCR module and implement the DAM API for JCR assets that are stored in the `dam` workspace and accessible in the Assets app.
+
+> **Caution:** In DAM 5 and later, the JCR API implementation changes to allow binaries to be stored outside of JCR. This means you may experience compatibility issues when upgrading from previous versions. We don’t recommend using the JCR API for any new development; use the DAM API instead.
+
+### [](#_jcr_classes)JCR classes
+
+-   info.magnolia.dam.jcr.JcrAssetProvider: `AssetProvider` that delivers assets for the `dam` workspace. Extends `AbstractAssetProvider` and implements `PathAwareAssetProvider`.
+
+-   info.magnolia.dam.jcr.AbstractJcrItem: JCR implementation of an `Item`. Extends `AbstractItem<JcrAssetProvider>`.
+
+-   info.magnolia.dam.jcr.JcrAsset: JCR implementation of the `Asset` definition. Extends `AbstractJcrItem`.
+
+-   info.magnolia.dam.jcr.JcrFolder: JCR implementation of the `Folder` definition. Extends `AbstractJcrItem`.
+
+-   info.magnolia.dam.jcr.AssetNodeTypes: Constants and convenience methods for asset node types.
+
+    -   `Asset`: Represents the node type `mgnl:asset`. Fields: `caption`, `comment`, `copyright`, `description`, `language`, `master`, `name`, `provider_type`, `subject`, `title`, `type`.
+
+    -   `AssetResource`: Represents the resource node bound to an `Asset`. Fields: `data`, `extension`, `filename`, `height`, `mimetype`, `name`, `ressource_name`, `size`, `width`.
+
+
+-   info.magnolia.dam.jcr.JcrItemNodeTypePredicate: Predicate filtering asset nodes (folders and assets) based on the following `Node.getPrimaryNodeType()`:
+
+    -   `AssetNodeTypes.Asset.NAME`
+
+    -   `NodeTypes.Folder.NAME`
+
+
+
+Extends `info.magnolia.jcr.predicate.AbstractPredicate<jakarta.jcr.Node>`.
+
+-   info.magnolia.dam.jcr.DamConstants: Defines commonly used constants for the DAM JCR module. Fields: `default_jcr_provider_id`, `workspace`.
+
+
+### [](#_custom_jcr_asset_properties)Custom JCR asset properties
+
+In order to access a custom property defined under a JCR Asset node, info.magnolia.dam.jcr.JcrAsset provides a public getter:
+
+```java
+/**
+    * JcrAsset specific implementation that lets you access a property value linked to an asset node.
+    * This requires an open session.
+        *
+       * @return property value Object if the property exists or null otherwise.
+       */
+
+    public Object getProperty(String propertyName) {
+        return PropertyUtil.getPropertyValueObject(getNode(), propertyName);
+    }
+```
+
+### [](#_jcr_metadata_classes)JCR metadata classes
+
+-   info.magnolia.dam.jcr.metadata.JcrDublinCore: JCR implementation of `DublinCore`. Fields: `dc_contributor`, `dc_coverage`, `dc_creator`, `dc_publisher`, `dc_relation`, `dc_source`, `dc_subject`, `dc_type`. Methods: `getContributor`, `getCoverage`, `getCreated`, `getCreator`, `getDate`, `getDescription`, `getFormat`, `getIdentifier`, `getLanguage`, `getModified`, `getPublisher`, `getRelation`, `getRights`, `getSource`, `getSubject`, `getTitle`, `getType`.
+
+-   info.magnolia.dam.jcr.metadata.JcrMagnoliaAssetMetadata: Base JCR implementation of the `MagnoliaAssetMetadata` definition. Methods: `getHeight`, `getWidth`.
+
+
+## [](#_accessing_the_dam_api)Accessing the DAM API
+
+To access `AssetProviderRegistry` from your custom module, adapt your `pom` and [module descriptor](../../../../Modules/Module-descriptor/) XML files to include a [dependency](../../../../Modules/Module-descriptor/#_module_dependencies). You can simply inject or use components to access `AssetProviderRegistry`.
+
+```java
+    private final AssetProviderRegistry providerRegistry;
+    // By Injection
+    @Inject
+    public MyFunctions(AssetProviderRegistry providerRegistry) {
+        this.providerRegistry = providerRegistry;
+    }
+    // Or using Components
+    public void myCustomMethod() {
+        this.providerRegistry = Components.getComponent(AssetProviderRegistry.class);
+    }
+```
+
+## [](#_dam_templating_functions)DAM templating functions
+
+As a template developer, have a look at [`damfn`](../../../../../../dam/developers/damfn/), a set of methods that can be used in FreeMarker scripts to easily access assets, asset renditions, and so on.
+
+Related topics
+
+-   [Digital asset management](../../../../use-cases/Digital-asset-management/)
+
+-   [`damfn` templating functions](../../../Templating/Template-scripts/Templating-functions/damfn/)
+
+-   [How to work with images using `damfn`](../../../Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)
+
+-   [Image Recognition](#image-recognition:ROOT:index.adoc)
+
+-   [Editing images](../../../../Authoring/Editing-images/)
+
+-   [Managing assets](../../../../Authoring/Managing-assets/)

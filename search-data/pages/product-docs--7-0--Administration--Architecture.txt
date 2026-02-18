@@ -1,0 +1,51 @@
+---
+title: "Architecture"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Architecture/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture
+---
+
+# Architecture
+
+Magnolia’s architecture is built around a monolithic Java Web application combined with a modular design, offering adaptability for various content-driven projects.
+
+It leverages key components such as the module system, UI framework, and JCR data-binding to provide a comprehensive platform for content delivery, with an emphasis on security and performance through global security measures and a built-in cache system.
+
+See the Architecture subpages in the navigation bar for details about the different components involved.
+
+![DX Core modular architecture diagram](../../_images/mgnl-architecture-diagram.png)
+
+## [](#_key_aspects)Key aspects
+
+### [](#_javajakarta_servlet_container)Java/Jakarta Servlet Container
+
+Magnolia operates as a [Java Web application](Webapp/), often deployed within a Jakarta Servlet Container, typically Tomcat. Containerization using Docker is a prevalent practice, enhancing scalability and deployment efficiency.
+
+### [](#_module_system)Module system
+
+The architecture incorporates a [module system](../../Modules/), enabling a modular monolith approach. This allows for the development and integration of distinct features and functionalities, providing a scalable and customizable foundation for different project requirements.
+
+### [](#_configuration_sources_and_registries)Configuration sources and registries
+
+Magnolia employs [configuration sources and registries](Configuration-management/), facilitating light development with live reload capabilities. This allows for real-time updates by detecting external file changes, streamlining the development process.
+
+### [](#_ui_framework_jcr_data_binding_and_persistency)UI framework, JCR data-binding, and persistency
+
+The [User Interface (UI) framework](../../Apps/Developing-an-app/General-aspects/UI-framework-and-development-pattern-changes-in-Magnolia-6/), coupled with [Java Content Repository (JCR)](Content-storage-and-structure/) data-binding and persistency mechanisms, is the backbone for both standard and bespoke applications. This architecture ensures efficient handling and management of content, supporting a variety of content delivery approaches.
+
+### [](#_content_delivery)Content delivery
+
+Magnolia is well-suited for content delivery across different projects and technologies, including Server-Side Rendering (SSR) and [Headless](../../Developing/headless/) implementations. Its adaptable architecture accommodates different content presentation strategies, making it a versatile choice for diverse web projects.
+
+### [](#_request_processing_flow)Request processing flow
+
+The [request processing flow](Request-processing-and-filters/) in a servlet environment defines how Magnolia handles incoming requests. This process ensures efficient and predictable handling of user interactions, providing a stable foundation for building web applications.
+
+### [](#_global_security)Global security
+
+Magnolia emphasizes [security](../Security/) as a built-in feature. The architecture incorporates robust global security measures, ensuring the protection of sensitive data and resources.
+
+### [](#_cache_mechanism)Cache mechanism
+
+The presence of a built-in [cache mechanism](../../Modules/List-of-modules/Cache-modules/) enhances performance by optimizing the retrieval and delivery of frequently accessed content. This contributes to a smoother user experience and improved system responsiveness.

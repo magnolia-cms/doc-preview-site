@@ -1,0 +1,37 @@
+---
+title: "Personas app"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/List-of-apps/Personas-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Personas app
+---
+
+# Personas app
+
+The Personas app allows you to create hypothetical visitors who represent the target audience. Use personas together with segmentation in the [Preview app](../Preview-app/) to test content variants.
+
+See [Personalization: Personas](../../../use-cases/Personalization/) for more information on how to use the app.
+
+> **Note:** The Personas app is available only in DX Core.
+
+## [](#_configuration)Configuration
+
+The Personas app is installed by the [Personalization module](../../../Modules/List-of-modules/Personalization-module/). The app is configured in `/personalization-personas-app/apps/personas-app.yaml`.
+
+### [](#_workspace)Workspace
+
+The Personas app operates on the `personas` workspace. The `personas` workspace stores the persona content.
+
+### [](#_node_types)Node types
+
+The Personas app operates on the custom `mgnl:persona` [node type](../../../Administration/Architecture/Node-types/) and on folders.
+
+Related topics
+
+-   [Personalization](../../../use-cases/Personalization/)
+
+-   [Personalization module](../../../Modules/List-of-modules/Personalization-module/)
+
+-   [Preview app](../Preview-app/)
+
+-   [Segments app](../Segments-app/)

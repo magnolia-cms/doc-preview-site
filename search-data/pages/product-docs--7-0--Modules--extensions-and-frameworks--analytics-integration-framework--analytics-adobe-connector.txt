@@ -1,0 +1,81 @@
+---
+title: "Adobe Analytics extension"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/extensions-and-frameworks/analytics-integration-framework/analytics-adobe-connector/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Analytics integration framework > Connecting > Adobe Analytics extension
+---
+
+# Adobe Analytics extension
+
+Once you have [installed the analytics integration framework](../Analytics-module/), you must connect to your data supplier. This page describes how to connect to a Adobe Analytics data supplier.
+
+You must have an appropriate account and credentials to connect to Adobe Analytics.
+
+## [](#_licensing)Licensing
+
+The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../Administration/License/).
+
+## [](#_accessing_adobe_client_credentials)Accessing Adobe Client Credentials
+
+To get your values for the credential parameters below:
+
+1.  Log into [https://developer.adobe.com/console/](https://developer.adobe.com/console/)
+
+2.  Select the **Project** tab at the top of the page and create new project.
+
+3.  Select the project you just created.
+
+4.  Go to **OAuth Server-to-Server** in the **Credentials** section on the left.
+
+5.  Take the values from this section and add them as values to the corresponding properties in your `adobeDataSupplier.yaml` configuration file.
+
+
+## [](#_connecting_adobe_analytics_as_your_data_supplier)Connecting Adobe Analytics as your data supplier
+
+Define the data suppliers for the charts to be displayed in the Analytics app dashboard. Marketers or editors can select the data suppliers you configure when they create dashboards and widgets in the Analytics app.
+
+Data suppliers are defined under: `/<module name>/dataSuppliers/<dataSupplierRegistryFile.yaml>`.
+
+/adobe-analytics/dataSuppliers/adobeDataSupplier.yaml
+
+```yml
+class: info.magnolia.analytics.adobe.datasource.AdobeDataSupplier (1)
+credentials: (2)
+  parameters:
+    serviceUrl: https://analytics.adobe.io/api/exchan213/reports
+    imsHost: https://ims-na1.adobelogin.com
+    imsExchange: https://ims-na1.adobelogin.com/ims/token/v3
+    companyId: <your companyId>
+    clientId: <your clientId>
+    clientSecret: <your clientSecret>
+    scope: <your scope>
+    orgId: <your orgId>
+    technicalAccountId: <your technicalAccountId>
+parameters:
+  rsid: emagmgnl
+  gFilterType: dateRange
+  startDate: '2020-01-01'
+  endDate: '2020-01-15'
+  metricId: metrics/revenue
+  dimension: variables/daterangeday
+```
+
+|     |     |
+| --- | --- |
+| **1** | You can find a specific example of this data supplier in [Configure your Magnolia Adobe Analytics IUX slot](../How-to-config-Adobe-IUX/#_configure_your_magnolia_adobe_analytics_iux_slot_for_the_use_cases_above). |
+| **2** | See [Migrating Adobe credentials](../Adobe-credentials-JWT-to-OAuth/) if you’re using credentials from JWT and want to migrate to OAuth Server-to-Server. |
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><caption class="title">Table 1. Properties</caption> <colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> <span class="inlineBean">info.magnolia.analytics.adobe.datasource.AdobeDataSupplier</span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>credentials</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>parameters</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>serviceUrl</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The URL of your Adobe Analytics service, which includes your <code>companyId</code> issued by Adobe when you register.</p></div><div class="paragraph"><p>For example: <a href="https://analytics.adobe.io/api/exchan213/reports" target="_blank" rel="noopener"><code>https://analytics.adobe.io/api/exchan213/reports</code></a> where <code>exchan213</code> is the <code>companyId</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>clientId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Your client ID.</p></div><div class="paragraph"><p>To find your client ID, see <a href="#_accessing_adobe_client_credentials">Accessing Adobe Client Credentials</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>clientSecret</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Client secret for your Adobe Analytics account or the path to the <a href="../../../../Apps/List-of-apps/Passwords-app/" class="xref page">Magnolia Passwords app</a>.</p></div><div class="paragraph"><p>To find your client secret, see <a href="#_accessing_adobe_client_credentials">Accessing Adobe Client Credentials</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>scope</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Scopes control the access and privileges an Adobe user grants authorization to a third-party application for.</p></div><div class="paragraph"><p>For example: <code>openid, AdobeID, additional_info.projectedProductContext</code></p></div><div class="paragraph"><p>See the Adobe <a href="https://developer.adobe.com/developer-console/docs/guides/authentication/UserAuthentication/IMS/#scopes" target="_blank" rel="noopener">OAuth scopes</a> documentation.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>companyId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Your Company ID issued by Adobe when you register.</p></div><div class="paragraph"><p>You can also use the Adobe swagger API to retrieve it (login required): <a href="https://adobedocs.github.io/analytics-2.0-apis/" class="bare" target="_blank" rel="noopener">https://adobedocs.github.io/analytics-2.0-apis/</a></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>orgId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Your Organization ID.</p></div><div class="paragraph"><p>To find your Organization ID, see <a href="#_accessing_adobe_client_credentials">Accessing Adobe Client Credentials</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>technicalAccountId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Your Technical Account ID.</p></div><div class="paragraph"><p>To find your Technical Account ID, see <a href="#_accessing_adobe_client_credentials">Accessing Adobe Client Credentials</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>imsHost</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Adobe IMS (Identity Management System) host URL typically refers to the base domain used for authentication and identity-related services within Adobe’s ecosystem.</p></div><div class="paragraph"><p>Currently it’s: <a href="https://ims-na1.adobelogin.com" class="bare" target="_blank" rel="noopener">https://ims-na1.adobelogin.com</a></p></div><div class="paragraph"><p>This is the host URL where OAuth token requests are directed.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>imsExchange</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Adobe IMS (Identity Management System) server URL used for authentication and authorization when integrating with Adobe services.</p></div><div class="paragraph"><p>Currently it’s: <a href="https://ims-na1.adobelogin.com/ims/token/v3" class="bare" target="_blank" rel="noopener">https://ims-na1.adobelogin.com/ims/token/v3</a></p></div><div class="paragraph"><p>This is the endpoint where OAuth requests are directed.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">In Analytics module 1.2, JWT authentication was used. In 1.3 and later, JWT credentials are no longer supported and must be replaced with OAuth Server-to-Server credentials. For information on how to migrate an existing project, see <a href="../Adobe-credentials-JWT-to-OAuth/" class="xref page">How to migrate Adobe credentials from JWT to OAuth Server-to-Server</a>. For information on how to configure a new project, see Accessing Adobe Client Credentials above.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>parameters</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The parameters used in the REST call to configure the JSON results retrieved. These parameters vary depending on the data supplier used.</p></div><div class="paragraph"><p>Each parameter is a key-value pair.</p></div><div class="paragraph"><p>All the parameters shown in the example are required:</p></div><div class="ulist"><ul><li><p><code>rsid</code> - Adobe Report Suite ID. To find this, see: <a href="https://webanalyticsfordevelopers.com/2013/05/14/finding-a-report-suite-id/" class="bare" target="_blank" rel="noopener">https://webanalyticsfordevelopers.com/2013/05/14/finding-a-report-suite-id/</a></p></li><li><p><code>gFilterType</code> - Global filter type (for example you want to see data in <code>dateRange</code> format or something else).</p></li><li><p><code>startDate</code>, <code>endDate</code> - Default date range configuration for data in the report. You can later change this in the chart displayed in the Analytics app using the date filters.</p></li><li><p><code>metricId</code> - Specifies which kind of report data you want to see. For more information, see <a href="https://experienceleague.adobe.com/docs/analytics/components/metrics/overview.html?lang=en" target="_blank" rel="noopener">Metrics overview</a>.</p></li><li><p><code>dimension</code> - Type of breakdown filter, such as <code>variables/daterangeday</code> or <code>variables/daterangehour</code>.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+## [](#_further_reading)Further reading
+
+-   Adobe Experience Cloud [https://experience.adobe.com/#/@magnoliaexchange/home](https://experience.adobe.com/#/@magnoliaexchange/home) This is the Adobe Analytics UI. It’s a little different from Google Analytics. You drag-and-drop metrics and filters (Adobe term for dimensions, but it’s really the same thing) to create reports/charts.
+
+-   Adobe metrics reference [https://experienceleague.adobe.com/docs/analytics/components/metrics/overview.html?lang=en](https://experienceleague.adobe.com/docs/analytics/components/metrics/overview.html?lang=en)
+
+-   Adobe dimensions reference [https://experienceleague.adobe.com/docs/analytics/components/dimensions/compatibility.html?lang=en](https://experienceleague.adobe.com/docs/analytics/components/dimensions/compatibility.html?lang=en)
+
+-   Adobe Swagger for querying the API [https://adobedocs.github.io/analytics-2.0-apis/](https://adobedocs.github.io/analytics-2.0-apis/) Use [rsid](https://developer.adobe.com/analytics-apis/docs/2.0/guides/endpoints/metrics/#get-multiple-metrics) value `emagmgnl`
+
+-   Adobe Analytics for GA users [https://experienceleague.adobe.com/docs/analytics/technotes/ga-to-aa/home.html?lang=en](https://experienceleague.adobe.com/docs/analytics/technotes/ga-to-aa/home.html?lang=en) Documentation that helps you to learn core concepts and workflows in Adobe Analytics, focusing on key similarities and differences between Adobe and other popular tools (GA). This guide is designed for analysts who are familiar with basic digital analytics concepts, but new to Adobe Analytics.

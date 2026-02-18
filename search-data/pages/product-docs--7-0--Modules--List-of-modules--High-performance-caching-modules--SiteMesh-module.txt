@@ -1,0 +1,118 @@
+---
+title: "SiteMesh module"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/High-performance-caching-modules/SiteMesh-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > High performance caching modules > SiteMesh module
+---
+
+# SiteMesh module
+
+[Operations](../../../../use-cases/operations/) Bundled: Extension
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MSITEMESH](https://magnolia-cms.atlassian.net/browse/MSITEMESH) |
+| Maven site | [SiteMesh](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fsitemesh%2Fmagnolia-module-sitemesh%2F3.0.0) |
+| Latest | 3.0.0 |
+
+The SiteMesh module integrates the SiteMesh 3 decoration and Web application integration framework with Magnolia. If you intend to use SiteMesh only as the **mechanism for** dynamic page caching you can skip this page after its installation and continue with [Advanced Dynamic Page Caching](../Advanced-Cache-Dynamic-Page-Caching/).
+
+> SiteMesh intercepts requests to any static or dynamically generated HTML page requested through the web-server, processes the content and then merges it with one or more decorators to build the final result.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.sitemesh</groupId>
+  <artifactId>magnolia-module-sitemesh</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_uninstalling)Uninstalling
+
+1.  Remove the `/server/filters/sitemesh` node.
+
+2.  Remove the `/server/rendering/engine/listeners/sitemesh` node.
+
+3.  Remove the `/modules/sitemesh` node and its subnodes.
+
+4.  Shut down Magnolia, remove the SiteMesh module JAR (`magnolia-module-sitemesh.jar`) from `WEB-INF/lib` and start up Magnolia again.
+
+
+> **Note:** Removing the mgnl:injecturi tagIf you want to remove the mgnl:injecturi tag, then:Remove the /server/rendering/engine/listeners/personalizedComponent.Set /modules/cache/config/contentCaching/defaultPageCache/cachePolicy@includePersonalizedDescendants to true.
+
+## [](#_filter)Filter
+
+SiteMesh filter processes by default only text/html but can be configured to process any text resources such as css or javascript:
+
+![SiteMesh filter configurtion](../../../../_images/ADVT-smesh-mod-filt.png)
+
+## [](#_decorators)Decorators
+
+> The decorator contains the common layout and style that should be applied to the pages in the web application.
+
+If you have samples and demo/project installed, you can find SiteMesh sample under /demo-features/modules/sitemesh-sample.html and its decorator under /demo-features/modules/sitemesh-sample/decorator.html. You can configure more than one decorator per path (and of course use regular expression for path). You can find the templates under *templates:/sitemesh-sample.*
+
+Decorator selector chooses the decorators for pages. [MetaTagBasedDecoratorSelector](http://javadox.com/org.sitemesh/sitemesh/3.0.0/org/sitemesh/config/MetaTagBasedDecoratorSelector.html) is used by default.
+
+![Decorator configuration](../../../../_images/ADVT-smesh-mod-dec.png)
+
+## [](#_content_processor)Content processor
+
+Processes the text content tag by tag. You can configure sets of rules under *tagRuleBundles.* You can use the bundles provided by [SiteMesh 3.0.0](http://javadox.com/org.sitemesh/sitemesh/3.0.0/org/sitemesh/content/tagrules/TagRuleBundle.html). Just use *info.magnolia.sitemesh.content.TagRuleBundleWrapper* as class, create node *wrapped* and set the bundle class as the property class:
+
+![Content processor ndoes](../../../../_images/ADVT-smesh-mod-proc.png)
+
+## [](#_tag_rule_bundles)Tag rule bundles
+
+Because the bundles provided by SiteMesh 3 are fixed sets of rules, Magnolia offers you also configurable *info.magnolia.sitemesh.content.MagnoliaTagRuleBundle.* You can dynamically add *info.magnolia.sitemesh.content.MagnoliaRules* to this bundle:
+
+![Tag rule bundles](../../../../_images/ADVT-smesh-mod-bund.png)
+
+> **Warning:** Magnolia 5.4.6+ / Sitemesh 1.0.3+. You can configure the baseURL in the InjectUriRule node.
+
+Set `/server/filters/sitemesh/decoratedFilter/contentProcessor/tagRuleBundles/magnolia/rules/InjectUriRule/tag/baseUrl` to `http://localhost:8080${contextPath}`, for example.
+
+-   Request: `https://demo.magnolia-cms.com/`.
+
+-   Fragment request: `https://localhost:8080/magnoliaPublic~mgnlArea=main~`.
+
+
+> **Warning:** Site-specific configurations are not taken into account.
+
+If `baseURL` is not set, the base URL of the current request is used:
+
+-   Request: `https://demo.magnolia-cms.com/`.
+
+-   Fragment request: `https://demopublic.magnolia-cms.com/~mgnlArea=main~`.
+
+
+### [](#_rules_tags)Rules & Tags
+
+Every *info.magnolia.sitemesh.content.MagnoliaRule* holds tag. *info.magnolia.sitemesh.content.AbstractTag* processes a html tag. You can implement for example a tag which replaces all occurrences of <b> with <s>. Set *includeInContent=true* on rule if you don’t want to replace the original tag but only append new content after it. Add content node named *tagTypes* to a tag to tell which [tag types](http://javadox.com/org.sitemesh/sitemesh/3.0.0/org/sitemesh/tagprocessor/Tag.Type.html#enum_constant_detail) you want to process. All types (open, close, …) will be processed if no *tagTypes* node will be added.
+
+![Rules & Tags configuration](../../../../_images/ADVT-smesh-mod-rules.png)
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><caption class="title">Table 1. Out of the box rules</caption> <colgroup><col style="width: 40%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Class</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.sitemesh.content.inject.InjectTag</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Tag for any text injection.</p></div><div class="dlist"><dl><dt class="hdlist1">Configurable fields (default)</dt><dd><p><code>contentToInject</code> (empty string)</p></dd></dl></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.sitemesh.content.inject.sample.InjectAdmincentralButtonTag</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Tag injects admincentral button to navigate to admincentral when accessing pages outside of admincentral.</p></div><div class="dlist"><dl><dt class="hdlist1">Configurable fields (default)</dt><dd><p>contentToInject (empty string)</p></dd></dl></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.sitemesh.content.inject.InjectUrlTag</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Tag for injection of content retrieved by URL specified as argument <em>target</em> of this tag.</p></div><div class="paragraph"><p><code>&lt;mgnl:includeurl target=http://somepage.html/&gt;</code></p></div><div class="dlist"><dl><dt class="hdlist1">Configurable fields (default)</dt><dd><p>readTimeout (600000)<br>connectTimeout (10000)<br>bufferSize (4096)</p></dd></dl></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>info.magnolia.sitemesh.content.inject.InjectUriTag</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Tag for injection of content retrieved by URI (that means a URI which points to the same webapp) specified as argument <em>target</em> of this tag. The current original request is used to create URL. Other arguments are set as request headers such as <code>X-Magnolia-Fragment</code> header which allows you to set time to live of this dynamic fragment.</p></div><div class="paragraph"><p><code>&lt;mgnl:injecturi target="/demo-project/about~mgnlArea=branding~" X-Magnolia-Fragment="ttlValue=0,CacheKeyGenerator=,"/&gt;</code></p></div><div class="dlist"><dl><dt class="hdlist1">Configurable fields (default)</dt><dd><div class="ulist"><ul><li><p><code>readTimeout</code> (<code>600000</code>)</p></li><li><p><code>connectTimeout</code> (<code>10000</code>)</p></li><li><p><code>bufferSize</code> (<code>4096</code>)</p></li><li><p><code>forceUriRequest</code> (<code>false</code>)</p></li></ul></div></dd></dl></div></div></td></tr></tbody></table></div>
+
+The `forceUriRequest` property (default is `false`) is an option to provide explicit control over whether fragment requests should be forcibly triggered in specific scenarios.
+
+-   When set to `true`, this property ensures that URI-based fragment requests are executed regardless of other conditions, overriding any default behavior that might skip them.
+
+-   If left in the default `false` setting, the system adheres to its standard logic for determining whether to process fragment requests: Requesting fresh fragments only if a page was retrieved from cache.
+
+
+The property is set to `true` on the author instance. Otherwise, the fragments would never be fetched because caching is disabled on the author instance. This allows testing the fragment request on the author instance.
+
+## [](#_fragment_injection_listener)Fragment Injection Listener
+
+![Fragment Injection Listener configuration](../../../../_images/ADVT-smesh-mod-frag.png)

@@ -1,0 +1,427 @@
+---
+title: "Magnolia Angular Editor"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/headless/spa-development/magnolia-front-end-sdk/magnolia-angular-editor/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development > Headless development guidelines > Magnolia front-end SDK > Magnolia Angular Editor
+---
+
+# Magnolia Angular Editor
+
+This page describes the installation, components and functions of the Magnolia Angular Editor — a lightweight, fully-featured library connecting Angular projects with the WYSIWYG authoring experience of the Magnolia Pages app.
+
+## [](#_installation)Installation
+
+To install the editor, open the command prompt and enter the following command.
+
+```none
+npm install @magnolia/angular-editor
+```
+
+> **Note:** is the latest version of the Magnolia Angular Editor.
+
+## [](#_reference)Reference
+
+### [](#_editable_component)`<editable-component>`
+
+The wrapping component for [components](../../../../Templating/Template-definition/Component-definition/).
+
+It can only be used inside the `customView` of the `editable-area`.
+
+The component determines which Angular component to render based on the `mgnl:template` value of the node and the `` componentMappings` `` supplied with the `editorContext.setComponentMapping`. Component dialog properties and areas are passed to the component as input properties.
+
+#### [](#_properties)Properties
+
+| Property | Description |
+| --- | --- |
+| `content` | Component content that is passed as part of area content. |
+
+### [](#_editable_page)`<editable-page>`
+
+The wrapping component for Magnolia-managed page content.
+
+It determines which Angular component to render based on the `mgnl:template` value of the `content` and the component mappings set in the `EditorContextService`.
+
+Page dialog properties and areas are passed to the component as input properties.
+
+In the editor view of Pages app, it will add the annotations that are required to render the green bars with the authoring UI. The annotations are added as HTML comments.
+
+#### [](#_properties_2)Properties
+
+| Property | Description |
+| --- | --- |
+| `content` | **required**<br><br>Page content response coming from Magnolia Delivery API.<br><br>Example endpoint definition<br><br>```yaml<br>$type: jcrDeliveryEndpoint_v2<br>workspace: website<br>limit: 100<br>systemProperties:<br>  - mgnl:template<br>depth: 10<br>nodeTypes:<br>  - mgnl:page<br>childNodeTypes:<br>  - mgnl:area<br>  - mgnl:component<br>```<br><br>An example response can be seen [here](http://ecommerce-headless-author.magnolia-cms-demo.com/.rest/delivery/pages/home). |
+| `magnoliaContext` | **required**<br><br>Introduced with [front-end SDK v2](../breaking-changes-in-front-end-sdk-v2/#_editor_context_changes), the property is used to determine the page mode (edit/preview).<br><br>It holds properties that support page rendering, such `nodePath`, `searchParams`, and others. For more details, see the current [list of these properties](https://gitlab.com/magnolia-ce/frontend-sdk/frontend-helpers-base/-/blob/main/src/types/MagnoliaContext.ts?ref_type=heads) and [the description below](#_magnoliacontext_object).<br><br>It replaces the previous iframe-based detection (`inEditor`, `inEditorAsync`). |
+
+#### [](#_example)Example
+
+```js
+import { Component } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { EditablePage, MagnoliaConfig } from '@magnolia/angular-editor';
+import {
+  EditorContextService,
+  IMagnoliaContext,
+  MgnlContent,
+  MgnlTemplateAnnotations,
+} from '@magnolia/frontend-helpers-base';
+import { environment } from '../environments/environment';
+import { config } from '../magnolia.config';
+import { NavigationComponent } from './components/Navigation/Navigation.component';
+import {
+  fetchPageContent,
+  fetchTemplateAnnotations,
+} from './services/magnolia.service';
+
+@Component({
+  templateUrl: './root.component.html',
+  standalone: true,
+  imports: [NavigationComponent, EditablePage],
+})
+export class RootComponent {
+  content?: MgnlContent;
+  templateAnnotations?: MgnlTemplateAnnotations;
+  magnoliaContext?: IMagnoliaContext;
+  magnoliaConfig: MagnoliaConfig;
+  nodeName: string;
+
+  constructor(private router: Router) {
+    this.magnoliaConfig = config;
+    this.nodeName = environment.appBase;
+
+    // refresh the content on navigation event
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.loadPageContent();
+      }
+    });
+  }
+
+  async loadPageContent() {
+    this.magnoliaContext = EditorContextService.getMagnoliaContext(
+      window.location.href,
+      this.nodeName,
+      environment.languages
+    );
+    const content = await fetchPageContent(
+      this.magnoliaContext,
+      environment.pageBase
+    );
+    const templateAnnotations = await fetchTemplateAnnotations(
+      this.magnoliaContext,
+      environment.templateAnnotationsBase
+    );
+
+    if (templateAnnotations) {
+      this.templateAnnotations = templateAnnotations;
+    }
+
+    this.content = content;
+  }
+
+  get containerStyle() {
+    return this.magnoliaContext?.isMagnoliaEdit
+      ? 'disable-a-pointer-events flex-grow'
+      : 'flex-grow';
+  }
+}
+```
+
+### [](#_editable_area_attribute_directive)`editable-area` attribute directive
+
+The wrapping component for [areas](../../../../Templating/Template-definition/Area-definition/).
+
+The component can only be used inside the Angular components that are instantiated by the `editorContext`. That is, the Angular component must be in the `componentMappings` object set with the `editorContext.setComponentMapping`.
+
+By default, the area directive loops over all of its child components.
+
+`editable-area` renders Angular components for each component node in its `content`. It determines which component to render based on the `mgnl:template` value of the node and the `` componentMappings` `` supplied with `editorContext.setComponentMapping`. The properties of each component and areas (if any) are passed as properties to the child components.
+
+The default behavior can be changed with `customView`.
+
+In the editor view of the Pages app, it will add the annotations that are required to render the green bars with the authoring UI. The annotations are added as HTML comments.
+
+#### [](#_properties_3)Properties
+
+| Property | Description |
+| --- | --- |
+| `content` | Area content that is passed as prop to the parent component where the `editable-area` is used.<br><br>```javascript<br>import { Component, Input } from '@angular/core';<br><br>@Component({<br>  template: `<div editable-area [content]="main"></div>`,<br>})<br><br>export class HomeComponent {<br>  @Input() main: any;<br>}<br>``` |
+| `parentTemplateId` | Required only when using `templateDefinitions`.<br><br>```javascript<br>import { Component, Input } from '@angular/core';<br><br>@Component({<br>  template: `<div editable-area [content]="main" [parentTemplateId]="metadata['mgnl:template']"></div>`,<br>})<br><br>export class HomeComponent {<br>  // main is area name as defined in page/component YAML definition<br>  // metadata is set of extra component information added by angular-editor<br>  @Input() main: any;<br>  @Input() metadata: any;<br>}<br>``` |
+| `customView` | Function to overwrite the default behavior of the `EditableArea`.<br><br>`customView` receives one variable with all area data passed as the `content` property.<br><br>```javascript<br>import { Component, Input } from '@angular/core';<br><br>@Component({<br>  template: `<br>    <div editable-area [content]="main" [customView]="customView"></div><br><br>    <ng-template #customView let-content let-components="components"><br>      <ng-container *ngFor="let childContent of components"><br>        <editable-component [content]="childContent"></editable-component><br>      </ng-container><br>    </ng-template><br>  `,<br>})<br><br>export class HomeComponent {<br>  @Input() main: any;<br>}<br>``` |
+
+### [](#_editorcontextservice)`EditorContextService`
+
+A set of helper functions.
+
+Example
+
+```javascript
+import { EditorContextService } from '@magnolia/angular-editor';
+
+export class AppComponent {
+  constructor(private editorContext: EditorContextService) {
+    // ...
+  }
+}
+```
+
+### [](#_editorcontextservice_iniframe)`EditorContextService.inIframe`
+
+Using [EditorContextHelper.getMagnoliaContext](#_editorcontexthelper_getmagnoliacontext) is the recommended approach.
+
+> **Note:** global.mgnlInPageEditor is deprecated and not necessary.
+
+### [](#_editorcontextservice_setcomponentmapping)`EditorContextService.setComponentMapping`
+
+A function to set a configuration object containing a component mappings object with mappings between the `mgnl:template` values and Angular components.
+
+Example
+
+```javascript
+import { EditorContextService } from '@magnolia/angular-editor';
+import { HomeComponent } from './pages/home.component';
+
+const config = {
+  componentMapping: {
+    'spa:pages/Home': HomeComponent,
+  },
+};
+
+export class AppComponent {
+  constructor(private editorContext: EditorContextService) {
+    this.editorContext.setComponentMapping(config.componentMapping);
+  }
+}
+```
+
+### [](#_editorcontextservice_setuseinputs)`EditorContextService.setUseInputs`
+
+Available since version `1.5` of the [@magnolia/angular-editor](https://www.npmjs.com/package/@magnolia/angular-editor), a function to set properties annotated with `Input`.
+
+#### [](#_usage_notes)Usage notes
+
+The distinction between *properties* and *inputs* is bypassed if all properties of a Magnolia node are set directly as properties on the corresponding Angular component.
+
+Version `1.5` introduces a check to determine whether a property is an *input*. If yes, the `setInput` method is used to properly set the property up as an input.
+
+The feature is disabled by default. You need to call the method to activate it. Use the `Input()` annotation in your components.
+
+/src/app/components/title.component.ts
+
+```js
+import { Component, Input } from "@angular/core";
+
+@Component({
+  template: `
+    <div>
+      <h2>{{ title }}</h2>
+    </div>
+  `,
+  standalone: true,
+})
+export class TitleComponent {
+  @Input() title: string;
+}
+```
+
+### [](#_editorcontextservice_settemplateannotations_or_editorcontextservice_settemplatedefinitions)`EditorContextService.setTemplateAnnotations` or `EditorContextService.setTemplateDefinitions`
+
+A function to set template information required for the Page Editor to create the authoring UI (the green bars).
+
+> **Caution:** The templateDefinitions methods and the associated endpoint have been deprecated. Using them can lead to unexpected issues.Please update your project to use the templateAnnotations methods and the template-annotations endpoint instead.See it, for example, in our minimal headless SPA demos.The template-annotations supports many features which the template-definitions does not:multi-language editingpersonalizationpublication status of componentslive copy
+
+-   `templateAnnotations` are fetched from
+
+    ```none
+    <MAGNOLIA_INSTANCE>/.rest/template-annotations/v1/<PAGE_PATH>
+    ```
+
+    Example
+
+    ```none
+    https://demo.magnolia-cms.com/.rest/template-annotations/v1/travel
+    ```
+
+-   `templateDefinitions` are fetched from
+
+    ```none
+    <MAGNOLIA_INSTANCE>/.rest/template-definitions/v1/<PAGE_TEMPLATE>
+    ```
+
+    Example
+
+    ```none
+    https://demo.magnolia-cms.com/.rest/template-definitions/v1/travel-demo:pages/home
+    ```
+
+    Example
+
+
+import { EditorContextService } from '@magnolia/angular-editor';
+import { HomeComponent } from './pages/home.component';
+
+const config = {
+  componentMapping: {
+    'spa:pages/Home': HomeComponent,
+  },
+};
+
+export class AppComponent {
+  constructor(private editorContext: EditorContextService) {
+    // ...
+  }
+
+  async getTemplateAnnotations() {
+    if (this.editorContext.inIframe()) {
+      const templateAnnotationsRes = await fetch(
+        'http://localhost:8080/.rest/template-annotations/v1/spa-home'
+      );
+      const templateAnnotations = await templateAnnotationsRes.json();
+
+      this.editorContext.setTemplateAnnotations(templateAnnotations);
+    }
+  }
+}
+
+### [](#_editorcontexthelper_getmagnoliacontext)`EditorContextHelper.getMagnoliaContext`
+
+A function that returns the `magnoliaContext` object.
+
+This function requires 3 parameters:
+
+  PropertyTypeDescription
+
+`requestUrl`
+
+**string**
+
+A full request/site URL (e.g., `https://foo.bar` or `https://foo.bar?mgnlPreview=false&mgnlChannel=desktop`).
+
+> **Tip:** For example, in a browser, it can be read with window.location.href. For other frameworks use the framework’s specific way of getting full URL.
+
+`spaRootNodePath`
+
+**string**
+
+Magnolia’s root node path of the SPA website e.g. `/foo` or `/foo/bar`.
+
+`languages`
+
+**array of strings**
+
+Website language(s) passed as an array of strings (e.g., `['en', 'de']`).
+
+> **Note:** The first language in the array is the default locale.
+
+#### [](#_magnoliacontext_object)`magnoliaContext` object
+
+  PropertyTypeDescription
+
+`isMagnolia`
+
+**boolean**
+
+Specifies whether the request comes from Magnolia app e.g. `Pages app`.
+
+`isMagnoliaEdit`
+
+**boolean**
+
+Specifies whether the request comes from Magnolia app in edit mode.
+
+`isMagnoliaPreview`
+
+**boolean**
+
+Specifies whether the request comes from Magnolia app in preview mode.
+
+`version`
+
+**string**
+
+The version number.
+
+> **Note:** This is only present if the request comes from the Magnolia app for a specific version.
+
+`nodePath`
+
+**string**
+
+Magnolia’s node path for requested content.
+
+`currentLanguage`
+
+**string**
+
+The language for requested content.
+
+`searchParams`
+
+**object**
+
+Object with search parameters of the `requestUrl` enriched with Magnolia’s specific parameters.
+
+`search`
+
+**string**
+
+String with search parameters of the `requestUrl` enriched with Magnolia’s specific parameters.
+
+#### [](#_example_2)Example
+
+```js
+import { EditorContextService } from '@magnolia/angular-editor';
+
+export class AppComponent {
+  constructor(private editorContext: EditorContextService) {
+    // ...
+  }
+
+  async getPage() {
+    const requestUrl = 'https://foo.bar/travel/?mgnlPreview=false&mgnlChannel=desktop';
+    const spaRootNodePath = '/home';
+    const languages = ['en', 'de'];
+    const magnoliaContext = this.editorContext.getMagnoliaContext(requestUrl, spaRootNodePath, languages);
+
+    /*
+    magnoliaContext = {
+      isMagnolia: true,
+      isMagnoliaEdit: true,
+      isMagnoliaPreview: false,
+      nodePath: /home/travel,
+      currentLanguage: 'en',
+      searchParams: { mgnlChannel: 'desktop', mgnlPreview: 'false', variants: 'all' },
+      search: '?mgnlPreview=false&mgnlChannel=desktop&variants=all&lang=en'
+    }
+    */
+
+    // Fetch page content
+    const pagesRes = await fetch(PAGES_API + magnoliaContext.nodePath + magnoliaContext.search);
+
+    // Fetch template annotations
+    if (magnoliaContext.isMagnolia) {
+      const templateAnnotationsRes = await fetch(TEMPLATE_ANNOTATIONS_API + magnoliaContext.nodePath);
+    }
+  }
+}
+```
+
+> **Note:** When using this function to determine isMagnolia* properties, such as isMagnolia being true, be sure to add magnoliaContext search parameters to all links, so that it ensures the correct behavior when navigating the website inside Magnolia’s app e.g. Pages app.
+
+## [](#_demo)Demo
+
+For headless SPA demos showcasing the Magnolia Angular Editor, see [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos).
+
+## [](#_changelog)Changelog
+
+A list of notable changes for any given version is available on the [changelog page](https://gitlab.com/magnolia-ce/frontend-sdk/angular-editor/-/blob/main/CHANGELOG.md).
+
+## [](#_known_issues)Known issues
+
+### [](#_lazy_component_loading_not_working_with_angular_v17_ssg)Lazy component loading not working with Angular v17+ SSG
+
+The prerendering (SSG) using the [application builder](https://v17.angular.io/guide/esbuild) (introduced in Angular v17) breaks the component lazy-loading feature of the Magnolia front-end library.
+
+**Workaround**
+
+Use the legacy `@angular-devkit/build-angular:prerender` instead.

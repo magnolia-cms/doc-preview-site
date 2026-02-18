@@ -1,0 +1,302 @@
+---
+title: "Java Server APIs"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/API/Java-server-APIs/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > API > Java Server APIs
+---
+
+# Java Server APIs
+
+The essential interfaces and classes in the backend API:
+
+![API framework overview](../../../_images/api/api-framework-overview.png)
+
+See also full API [Javadoc](../Javadoc/).
+
+## [](#_app_framework)App framework
+
+-   info.magnolia.ui.api.app.App. Main interface for apps. Apps are started and managed by info.magnolia.ui.api.app.AppController.
+
+-   info.magnolia.ui.api.app.AppDescriptor. Describes an app.
+
+-   info.magnolia.ui.api.app.SubApp. Represents a view open in a tab within an app.
+
+-   info.magnolia.ui.api.app.SubAppDescriptor. Describes a subapp.
+
+-   info.magnolia.ui.api.app.AppContext. Provides functionality used by an app to interact with the Magnolia shell.
+
+    -   `sendLocalMessage(Message message)`. Sends a message to the current user.
+
+    -   `sendUserMessage(String user, Message message)`. Sends a message to a named user.
+
+    -   `broadcastMessage(Message message)`. Sends a message to all users.
+
+
+-   info.magnolia.ui.api.app.SubAppContext. Provides functionality used by a sub app to interact with the Magnolia shell.
+
+-   info.magnolia.ui.api.app.AppContext. Extends the BaseApp with the ability to open a choose dialog.
+
+-   info.magnolia.ui.contentapp.browser.BrowserSubApp. Base implementation of a content subApp.
+
+-   info.magnolia.ui.contentapp.browser.BrowserSubAppDescriptor. Describes a browser subapp.
+
+-   info.magnolia.ui.contentapp.detail.DetailSubApp. Base implementation of an item subApp.
+
+-   info.magnolia.ui.contentapp.detail.DetailSubAppDescriptor. Descriptor for Item subApps. Holds the form definition to build a form and needed fields to create a new node.
+
+
+## [](#_ui_framework)UI framework
+
+The UI Framework is a collection of components for building the user interface in apps.
+
+### [](#_ui_context)UI context
+
+-   info.magnolia.ui.api.context.UiContext. Represents a UI context and allows components, views and presenters to interact with the context that contains them.
+
+
+### [](#_workbench)Workbench
+
+-   info.magnolia.ui.contentapp.configuration.WorkbenchDefinition. Defines a workbench. Contains all elements that define a workbench configuration.
+
+-   info.magnolia.ui.contentapp.configuration.ContentViewDefinition. Displays content in the workbench.
+
+-   info.magnolia.ui.contentapp.browser.TreePresenter. Responsible for creating, configuring and updating a tree of items according to the workbench definition.
+
+-   info.magnolia.ui.contentapp.browser.ListPresenter. Responsible for creating, configuring and updating a list of items according to the workbench definition.
+
+-   info.magnolia.ui.contentapp.browser.ThumbnailPresenter. Responsible for creating, configuring and updating a thumbnail grid of items according to the workbench definition.
+
+-   info.magnolia.ui.contentapp.configuration.column.ColumnDefinition. Defines a column in the workbench.
+
+
+### [](#_action)Action
+
+-   info.magnolia.ui.api.action.Action. An action is executed in response to user interaction with the UI. For instance clicking on an item in a menu.
+
+-   info.magnolia.ui.api.action.ActionDefinition. Action definitions are used to configure actions in many parts of the UI. The definition holds a name which is used to identify the action within a certain scope, for instance within a sub app.
+
+
+### [](#_action_bar)Action bar
+
+-   info.magnolia.ui.actionbar.definition.ActionbarDefinition. The definition for an action bar, made of sections and groups of actions.
+
+
+### [](#_form)Form
+
+-   info.magnolia.ui.editor.FormDefinition. Defines a form.
+
+-   info.magnolia.ui.framework.layout.TabDefinition. Defines a tab within a form. Holds a list of fields contained in this tab.
+
+-   info.magnolia.ui.field.FieldDefinition. Defines a field within a dialog.
+
+-   info.magnolia.ui.field.FieldFactory. Responsible for creating Vaadin fields based on their `FieldDefinition`.
+
+-   info.magnolia.ui.field.FieldValidatorDefinition. Defines a validator for field values.
+
+
+### [](#_location_and_navigation)Location and navigation
+
+-   info.magnolia.ui.api.location.Location. Represents a location within the application, such as the open view and the selected item.
+
+-   info.magnolia.ui.api.location.LocationController. Manages the user’s location in the application and controls location changes.
+
+
+### [](#_shell)Shell
+
+-   info.magnolia.ui.api.shell.Shell. Decouples the presenters and the Vaadin application. Provides methods to show messages and configuration dialogs.
+
+
+### [](#_message)Message
+
+-   info.magnolia.ui.api.message.Message. Models a message.
+
+-   info.magnolia.ui.framework.message.MessagesManager. Manages user messages.
+
+
+### [](#_event)Event
+
+-   info.magnolia.event.EventBus. Fires events to a set of registered handlers.
+
+-   info.magnolia.ui.api.event.ContentChangedEvent. Event fired when content is changed in a workspace. Holds an itemId of an item that is related to the changes made. If the change was a deletion the itemId is the parent of the deleted item. If something was added the itemId is for the new item.
+
+
+## [](#_context)Context
+
+Context is an abstraction layer representing the environment of the current process which can be a request process, a scheduled task or a command execution in the workflow. The context provides access to the most important components such as hierarchy managers jcr session, current user, context attributes and parameters, response object and so on. The context is initialized at the beginning of each process. Context attributes will have a different meaning based on the environment. In case of a request, the attributes are request attributes and request parameters. Magnolia implements context using a thread-local class.
+
+-   info.magnolia.context.MgnlContext. This static helper class is the programmer’s entry point to work with the current context.
+
+    -   `getInstance()` Returns the current context.
+
+    -   `getUser()` Returns the current user.
+
+    -   `getJCRSession(String workspacename)`. Returns a JCR session to the provided workspace.
+
+    -   `getAttribute(name)` Returns a named context attribute. In case of a request, this can be a request parameter, request attribute or session attribute.
+
+    -   `getWebContext()` Returns the Web context if the current thread is processing a request.
+
+    -   `getAggregationState()`.
+
+
+-   info.magnolia.context.WebContext. Context interface specialized for servlet requests; knows about HttpServletRequest and HttpServletResponse. Should be used as little as possible as it makes the calling code dependent on the servlet API. Use MgnlContext instead if possible.
+
+    -   `getRequest()` Returns the current servlet request object.
+
+    -   `getResponse()` Returns the current servlet response object.
+
+
+-   info.magnolia.cms.core.AggregationState. Contains information about the current request and rendering process. It is initialized by the [ContentTypeFilter](#3.1@rest:api:delivery-endpoint.adoc#_rest_delivery_endpoint_v2_filter_examples).
+
+    -   `getOriginalURI()` Original URI is the URI as requested by the client.
+
+    -   `getCurrentURI()` URI as mapped by Magnolia at a given point in processing. This value is for instance changed by the i18n filter, virtual URI mapping etc.
+
+    -   `getMainContentNode()` The content with which we start the rendering process. In general this is the page node.
+
+    -   `getCurrentContentNode()` The content that is processed at the moment. First this is typically the page, then a component and so on.
+
+
+
+## [](#_rendering_and_templating)Rendering and templating
+
+-   info.magnolia.rendering.engine.RenderingEngine. Entry point for the rendering.
+
+    -   `render(javax.jcr.Node content, OutputProvider out)`. Renders the content with its assigned template.
+
+    -   `render(javax.jcr.Node content, RenderableDefinition definition, Map<String,Object> contextObjects, OutputProvider out)`. Uses a specific RenderableDefinition to render the content and exposes the given context objects to the template script.
+
+
+-   info.magnolia.rendering.template.RenderableDefinition. Abstract rendering definition used for templates and components.
+
+    -   `getName()`. Name of the template definition.
+
+    -   `getRenderType()`. Defines the renderer to use (for instance, FreeMarker).
+
+
+-   info.magnolia.rendering.template.TemplateDefinition. A `RenderableDefinition` which supports editing in the page editor and can define their areas.
+
+    -   `getDialog()`
+
+
+-   info.magnolia.rendering.template.AreaDefinition
+
+-   info.magnolia.rendering.model.RenderingModel. The model used in the rendering process. It is instantiated for each rendering and ties the current content and rendering definition together. Concrete classes provide helper methods used in the template script. The `execute` method is executed before the rendering starts, a useful place to execute any business logic. The model is available in the template script under the named model.
+
+    -   `getParent()`. Parent model most often used for page rendering.
+
+    -   `getNode()`. The content node tied to this model.
+
+    -   `getContent()`. Map representation of the content node tied to this model.
+
+    -   `getDefinition()`. The renderable (template, area or component) tied to this model.
+
+    -   `execute()`. Called after all properties were set.
+
+
+-   info.magnolia.rendering.renderer.Renderer. Responsible for generating the actual response from request data and a template. You can bind a specific implementation to a template type.
+
+    -   `render(RenderingContext ctx, Map<String,Object> contextObjects)`. Called by `RenderingEngine` after it has setup the `RenderingContext`.
+
+
+-   info.magnolia.rendering.context.RenderingContext. Provides all information needed in the rendering process.
+
+-   info.magnolia.jcr.util.ContentMap. Map based representation of JCR content. This class is used in template scripts to allow notations like `content.<property name>`. It first tries to read a property with name (key) and, if not present, checks for the presence of a child node. Special property names map to JCR methods:
+
+    -   `@name`
+
+    -   `@id`
+
+    -   `@path`
+
+    -   `@level`
+
+    -   `@nodeType`
+
+
+-   [Templating functions](../../Templating/Template-scripts/Templating-functions/)
+
+    -   [catfn](../../Templating/Template-scripts/Templating-functions/catfn/)
+
+    -   [cmsfn](../../Templating/Template-scripts/Templating-functions/cmsfn/)
+
+    -   [damfn](../../Templating/Template-scripts/Templating-functions/damfn/)
+
+    -   [imgfn](../../Templating/Template-scripts/Templating-functions/imgfn/)
+
+    -   [jsonfn](../../Templating/Template-scripts/Templating-functions/jsonfn/)
+
+    -   [navfn](../../Templating/Template-scripts/Templating-functions/navfn/)
+
+    -   [resfn](../../Templating/Template-scripts/Templating-functions/resfn/)
+
+    -   [restfn](../../Templating/Template-scripts/Templating-functions/restfn/)
+
+    -   [searchfn](../../Templating/Template-scripts/Templating-functions/searchfn/)
+
+    -   [sitefn](../../Templating/Template-scripts/Templating-functions/sitefn/)
+
+    -   [tagfn](../../Templating/Template-scripts/Templating-functions/tagfn/)
+
+
+-   info.magnolia.templating.functions.TemplatingFunctions. An object that exposes methods useful for templates. The object is exposed to template scripts as `cmsfn`.
+
+    -   `children(javax.jcr.Node content)`
+
+    -   `parent(javax.jcr.Node content)`
+
+    -   `isEditMode()`
+
+    -   `isPublicInstance()`
+
+    -   `language()`
+
+
+-   info.magnolia.cms.util.LinkUtil. Utility methods for link transformations and handling.
+
+    -   `createLink(javax.jcr.Node node)`
+
+    -   `createAbsoluteLink(javax.jcr.Node node)`
+
+    -   `makePathRelative(String url, String absolutePath)`
+
+
+-   info.magnolia.module.site.Site. Site configuration Java bean. Default site configuration merged with the user-defined site.
+
+    -   `getI18n()`
+
+    -   `getTheme()`
+
+    -   `getVariations()`
+
+
+
+## [](#_commands)Commands
+
+-   info.magnolia.commands.CommandsManager
+
+-   info.magnolia.commands.chain.Command
+
+
+## [](#_filter_chain)Filter chain
+
+-   info.magnolia.cms.filters.MgnlFilter. Interface for filters managed by Magnolia, exposing support for the bypass mechanism.
+
+-   info.magnolia.cms.filters.AbstractMgnlFilter. A Magnolia filter configured in the `config` repository. This filter is bypassable.
+
+
+## [](#_module_management)Module management
+
+-   info.magnolia.module.ModuleRegistry. Holds instances and definitions of modules.
+
+-   info.magnolia.module.ModuleVersionHandler. Provides deltas to be applied to install/update/uninstall modules. A module that needs to handle its own install/updates should provide an implementation of this interface.
+
+-   info.magnolia.module.ModuleLifecycle. Manages the lifecycle of an installed instance of a Magnolia Module. Implementing this interface is optional.
+
+
+## [](#_jcr)JCR
+
+Magnolia relies on the [Apache Jackrabbit JCR API](http://jackrabbit.apache.org/jcr-api.html) to manage its data, with security handled by JCR.
+
+See the [JCR API](../Java-Server-APIs/JCR-API/) page for more details.

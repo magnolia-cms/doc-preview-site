@@ -1,0 +1,128 @@
+---
+title: "Release notes for Magnolia CMS 6.3.20"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.20/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.20
+---
+
+# Release notes for Magnolia CMS 6.3.20
+
+**Magnolia 6.3.20** is centered on AdminCentral stability and configuration clarity, highlighted by a new configurable limit for Vaadin’s DataCommunicator. This improvement prevents potential errors when handling large datasets in selection fields, ensuring a smoother experience when working with components like `twinColSelectField`.
+
+For developers, this release streamlines REST endpoint caching by deprecating the `timeToLive` property. Caching behavior for endpoints is now managed exclusively via the central Cache module, eliminating the risk of duplicated headers. We have also addressed multiple link management issues, ensuring correct link rewiring in *live copies* and offering a configurable approach for handling trailing slashes.
+
+Finally, with this update, CKEditor 4 is officially marked as deprecated and has entered maintenance mode.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.20.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.20/magnolia-dx-core-webapp-6.3.20.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.20.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.20/travel-demo-webapp-6.3.20.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.20.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.20/travel-demo-community-webapp-6.3.20.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.3.zip](../../_attachments/mtk2_3.0.3.zip) (*as a light module*)
+
+
+## [](#_improvements)Improvements
+
+-   [MGNLSITE-233](https://magnolia-cms.atlassian.net/browse/MGNLSITE-233) Facilitate CSP header configuration for projects
+
+    For more details, see [Content-Security-Policy (CSP) filter](../../Administration/Architecture/Request-processing-and-filters/csp/).
+
+-   [MGNLUI-9038](https://magnolia-cms.atlassian.net/browse/MGNLUI-9038) Add a property to configure Vaadin’s `DataCommunicator maximumAllowedRows`
+
+    You can now set the global property `magnolia.selectField.maximumAllowedRows` (default is `500`) to increase the limit of items fetched by selection fields.
+
+    This prevents `IllegalStateException` errors when displaying large datasets in AdminCentral components like `twinColSelectField`.
+
+
+### [](#_security_improvements)Security improvements
+
+[MAGNOLIA-9849](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9849), [MAGNOLIA-9881](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9881)
+
+#### [](#_breaking_change_anonymous_multipart_requests)Breaking change: Anonymous multipart requests
+
+Following the security improvements, all anonymous multipart form requests (such as public file uploads or contact forms) stop working by default after upgrading to Magnolia 6.3.20. To restore functionality for specific forms, you must update the `multiPartFormRequest` filter configuration to bypass the security check for specific URLs or fully bypass it if necessary. For detailed instructions on how to configure these bypasses, see [Anonymous multipart requests](../../Administration/Architecture/Request-processing-and-filters/Filters/#_anonymous_multipart_requests).
+
+We keep additional details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+
+## [](#_bug_fixes)Bug fixes
+
+-   [ADMINCTR-636](https://magnolia-cms.atlassian.net/browse/ADMINCTR-636) Incorrect filter order in publishing configuration causes failures
+
+-   [MAGNOLIA-9846](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9846) Configurable way to end links with slash
+
+-   [MAGNOLIA-9859](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9859) Link management – Transformer fails to create bean for node
+
+-   [MGNLUI-9349](https://magnolia-cms.atlassian.net/browse/MGNLUI-9349) Links inside the `compositeFields` aren’t correctly rewired on Livecopy creation
+
+
+## [](#_deprecations)Deprecations
+
+### [](#_ckeditor_4)CKEditor 4
+
+With this upgrade, the CKEditor 4 is deprecated and in maintenance mode only.
+
+-   [MGNLUI-9344](https://magnolia-cms.atlassian.net/browse/MGNLUI-9344) Mark CKEditor 4 as deprecated
+
+
+### [](#_timetolive_property_in_rest)`timeToLive` property in REST
+
+This release deprecates the `timeToLive` configuration property for REST delivery endpoints. Previously, using this property could result in duplicated `Cache-Control` headers.
+
+Caching behavior for endpoints should now be managed centrally via the [Cache modules](../../Modules/List-of-modules/Cache-modules/). To enable caching for REST endpoints, which often use URLs without file extensions, adjust the `emptyExtensionVote` property in your cache configuration.
+
+To cache REST endpoints, set the `emptyExtensionVote` property to `false` at the following configuration path:
+
+`/modules/cache/config/contentCaching/defaultPageCache/browserCachePolicy/policies/dontCachePages/voters/contentType`
+
+For more details, see [Cache control directives](../../Modules/List-of-modules/Cache-modules/Cache-core/#_cache_control_directives).
+
+-   [MGNLREST-896](https://magnolia-cms.atlassian.net/browse/MGNLREST-896) Deprecate the `timeToLive` config for delivery endpoints
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Admincentral `6.3.10`
+
+-   Community Edition `6.3.20`
+
+-   DX Core `6.3.20`
+
+-   Demo Projects `6.3.20`
+
+-   Magnolia `6.3.20`
+
+-   Publishing Transactional `2.0.3`
+
+-   Publishing `2.0.6`
+
+-   REST Framework `3.1.7`
+
+-   Site `2.0.3`
+
+-   Templating Essentials `3.0.3`
+
+-   Third-party library BOM for Extensions `6.3.20`
+
+-   Third-party library BOM `6.3.20`
+
+-   UI `6.3.20`
+
+-   Usage Metrics `2.1.1`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.3.19.
+
+-   [Campaign Manager](#4.0@campaign-manager:ROOT:changelog.adoc) `4.0.6`
+
+-   [Cloudinary External DAM](#2.1@cloudinary:ROOT:changelog.adoc) `2.1.6`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues.

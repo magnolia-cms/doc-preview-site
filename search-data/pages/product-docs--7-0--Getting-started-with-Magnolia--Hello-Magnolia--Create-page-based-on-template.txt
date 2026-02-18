@@ -1,0 +1,36 @@
+---
+title: "Creating a page based on the template"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Getting-started-with-Magnolia/Hello-Magnolia/Create-page-based-on-template/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Hello Magnolia > Creating a page based on the template
+---
+
+# Creating a page based on the template
+
+Hello Magnolia
+
+Now you can use the page template to create a page in the Author instance. After you’re done creating, you can publish the page to the Public instance and share it with others to see (but not modify).
+
+1.  Go to the App launcher and click the **Pages** tile to open the Pages app.
+
+2.  Click on **Add page** in the Action bar on the right-hand side.
+
+3.  In the dialog that appears, name your page `hello`. As a template, choose the `hello`, and click **Next**:
+    ![Add page dialog](../../../_images/hello-magnolia/HelloMagnolia-addPage.png)
+
+4.  In the Page properties dialog, enter `Hello Magnolia` into the Title and Window title fields. Don’t forget to click **Save changes**.
+
+5.  In the Pages app, select the Hello Magnolia page and click **Preview page** on the right to preview it.
+
+6.  Click **Publish**. You can then access the page on the Public instance of your Magnolia installation via the URL
+    [http://localhost:8080/magnoliaPublic/hello.html](http://localhost:8080/magnoliaPublic/hello.html).
+
+
+![Final page view](../../../_images/helloPublic_noComponent.png)
+
+Congratulations! You’ve created your first Magnolia page built on a page template.
+
+> **Note:** If you don’t see the page published on your public instance, you might have to accept the publication request first in the Magnolia four-eye workflow.
+
+Now, let’s enhance the content of the page by adding an editable custom-built `quotation` component to the area just below the "Hello Magnolia works!" heading.

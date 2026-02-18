@@ -1,0 +1,118 @@
+---
+title: "Content connector - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-apps-5-UI/App-configuration-5-UI/Content-connector-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content apps - 5 UI > App configuration - 5 UI > Content connector - 5 UI
+---
+
+# Content connector - 5 UI
+
+Deprecated
+
+> **Note:** Content connectors are based on the deprecated Vaadin 7, which has been replaced with Vaadin 8 since Magnolia 6.0. They are part of the Magnolia 5 UI framework.For Vaadin 8 data binding, see Data source definition and Item providers instead.
+
+The content you manage in Magnolia is typically stored in the JCR repository, but it doesn’t have to be. A content connector defines where the content resides. With a content connector you can decouple content management from content storage. You can store content in a database, cloud storage or a Web service. You can create a connector that lets authors choose image assets from Flickr, for example. Authors benefit as they can manage all content in familiar Magnolia [content apps](../../Parts-of-a-content-app-5-UI/). They don’t have to leave Magnolia just because the content resides somewhere else.
+
+![Content connector diagram](6.2@product-docs:ROOT:content-connector.png)
+
+## [](#_implementing_a_content_connector)Implementing a content connector
+
+In technical terms, a content connector is a bridge to a data source. It allows you to access content outside the JCR repository.
+
+The `ContentConnector` interface defines APIs that map arbitrary objects to three representations:
+
+1.  A unique identifier known as itemId.
+
+2.  A Vaadin [Item](https://vaadin.com/api/com/vaadin/data/Item.html) that you can use in a detail form, for example.
+
+3.  A unique String representation that the content app uses as a location fragment.
+
+
+A content app does not fetch data directly from the content connector but from a Vaadin [Container](https://vaadin.com/api/framework/com/vaadin/data/Container.html). In your content app you need to also provide content views (tree, list) that work with the container. These views and their presenter classes are configured in the [workbench definition](../Workbench-definition-5-UI/).
+
+If required, you can inject your own content connector in the constructor of your class. Content connector has its own provider: `info.magnolia.ui.contentapp.contentconnector.ContentConnectorProvider`. The provider creates one instance of a connector per subapp by default.
+
+The [Content app with non-JCR content](../../Content-app-with-non-JCR-content-5-UI/) tutorial explains how to implement a non-JCR content app, including a custom content connector.
+
+### [](#_content_connector_definition)Content connector definition
+
+A connector definition specifies the data source. In case of a JCR connector, the definition requires you to specify a workspace and a path in that workspace. Each content app subapp must provide its own content connector definition. If you implement your own connector, extend `info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition`.
+
+```yaml
+subapps:
+  browser:
+    contentConnector:
+      class: info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition
+      implementationClass: info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector
+```
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is `info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition`</em></p></div><div class="paragraph"><p>Definition class. Only needed if you implement your own, non-JCR content connector. If you store content in the JCR repository this property is not needed but you need to define a number of other properties. See the JCR content connector example below. The value must be a fully-qualified class name.</p></div><div class="paragraph"><p>Examples of definition classes:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.ui.vaadin.integration.contentconnector.ContentConnectorDefinition</code>: Basic content connector definition interface. Implement this in your custom definition class.</p></li><li><p><code>info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnectorDefinition</code>: Defines a connector that operates on the JCR repository.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>implementationClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>info.magnolia.ui.vaadin.integration.contentconnector.JcrContentConnector</code></em></p></div><div class="paragraph"><p>Implementation class that implements the <code>ContentConnector</code> interface. If you store content in the JCR repository this property is not needed. The value must be a fully-qualified class name.</p></div></div></td></tr></tbody></table></div>
+
+## [](#_example_jcr_content_connector)Example: JCR content connector
+
+JCR content apps have at least two subapps. A browser subapp displays items and a detail subapp edits them. Both subapps need their own connector definition.
+
+> **Note:** We highly recommend using the same rootPath in both the detail and browser sub-apps, to benefit from our standard set of actions provided out of the box.
+
+### [](#_browser_subapp)Browser subapp
+
+A JCR content connector definition introduces properties that identify a JCR workspace as a data source. It also defines the node types to operate on.
+
+```yaml
+subapps:
+  browser:
+    contentConnector:
+      defaultOrder: jcrName
+      includeProperties: false
+      rootPath: /
+      workspace: contacts
+      nodeTypes:
+        - name: mgnl:contact
+          icon: icon-user-public
+```
+
+| Property | Description |
+| --- | --- |
+| `nodeTypes` | **required**<br><br>List of node types the content connector operates on. For example, the connector in the [Contacts app](#6.2@product-docs:ROOT:Apps/List-of-apps/Contacts-app.adoc) displays contacts and folders. |
+| `<node‑type‑name>` | **required**<br><br>Arbitrary node name such as `contact` if you are displaying contacts in the browser. |
+| `name` | **required**<br><br>[Node type](#6.2@product-docs:ROOT:Administration/Architecture/Node-types.adoc) the connector operates on. These are Magnolia or JCR node types such as `mgnl:contact`. |
+| `icon` | **optional**, *default is none*<br><br>CSS class name of the icon displayed on the workbench. See the default [icons](#6.2@product-docs:ROOT:Apps/Developing-an-app/General-aspects/Designing-an-app/Icons.adoc) that ship with Magnolia or create your own. |
+| `strict` | **optional**<br><br>Specifies whether to include only the exact node type and ignore subtypes. |
+| `hideInList` | **optional**<br><br>Specifies whether to display the current node in list view. Use this property to, for example, exclude folders. |
+| `workspace` | **required**<br><br>A workspace in the `magnolia` repository that you want to browse. |
+| `defaultOrder` | **optional**<br><br>Default sort order for the content items in list views. The value is the name of the property you want to sort by, such as `jcrName`. |
+| `includeProperties` | **optional**, *default is `false`*<br><br>Displays also the JCR properties of the node when set to `true`. Only nodes and subnodes are displayed when `false`. |
+| `includeSystemNodes` | **optional**, *default is `false`*<br><br>Displays also nodes used by the system such as nodes internal to the operations of the JCR implementation. Set to `true` if you want to see image renditions in the `imaging` workspace for example. |
+| `rootPath` | **optional**, *default is `/` (root)*<br><br>Path configured as the root of the workspace. Only content below the path is operated on. |
+
+### [](#_detail_subapp)Detail subapp
+
+The connect definition for a detail subapp is much simpler. You only need to define the workspace.
+
+```js
+subapps:
+  detail:
+    contentConnector:
+      workspace: contacts
+```
+
+## [](#_example_non_jcr_content_connector)Example: non-JCR content connector
+
+This is an example content connector definition for a content app that manages files on the local file system. This is a simplified example.
+
+./apps/fs-browser-app/fs-browser.yaml
+
+```js
+subApps:
+  browser:
+    contentConnector:
+      class: info.magnolia.filesystembrowser.app.contentconnector.FSContentConnectorDefinition
+      rootFolder: /Users/jsmith/Documents/magnolia
+```
+
+Credits:
+
+-   [Database icon](http://thenounproject.com/term/database/15531/) by Anton Outkine from The Noun Project
+
+-   [Cloud icon](http://thenounproject.com/term/cloud/322/) by Edward Boatman from The Noun Project

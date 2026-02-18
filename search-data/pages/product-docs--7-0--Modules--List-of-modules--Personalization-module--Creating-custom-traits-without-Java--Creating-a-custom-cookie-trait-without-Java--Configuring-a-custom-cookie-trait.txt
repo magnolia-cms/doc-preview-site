@@ -1,0 +1,172 @@
+---
+title: "Configuring a custom cookie trait"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Creating-a-custom-cookie-trait-without-Java/Configuring-a-custom-cookie-trait/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Configuring a custom cookie trait
+---
+
+# Configuring a custom cookie trait
+
+This first step in creating a custom cookie trait is to add custom options and values to the preconfigured cookies trait in the [Personalization Traits module](../../../).
+
+The cookies trait is configured in `/modules/personalization-traits/traits/cookies` and the configuration includes a [rule](#_configuring_the_rule_field) and [value](#_configuring_the_value_field) field.
+
+This page of the tutorial shows you how to configure these fields for a cookie named ***visits***. Please read [Cookies trait configuration](../../Cookies-trait-configuration/) before you begin.
+
+You can [import](../../../../../../Administration/Importing-and-exporting-data/Importing-and-exporting-JCR-data-for-bootstrapping/) the XML files provided in the [Download configuration files](#_download_configuration_files) section if you prefer not to configure manually.
+
+## [](#_configuring_the_rule_field)Configuring the rule field
+
+The rule field defines values for the trait when you [choose an audience](../../../../../../use-cases/Personalization/). The input entered into the rule field(s) is used to construct a [voter](../../../../../../Administration/Voters/). The voter decides if the visitor or visit matches the rule. When the rule is met, Magnolia delivers personalized content.
+
+The rule field options display in the **Choose audience** dialog in the [Pages app](../../../../../../Apps/List-of-apps/Pages-app/). See [Personalizing a component](../../../../../../Features/Personalization/Component-personalization/#_personalizing_a_component) for how to access the dialog.
+
+There are two steps to configuring the rule field:
+
+1.  Add the new cookie as an option in the [switchable field](#_adding_the_switchable_field_option).
+
+2.  Add the new cookie options in the [select field](#_adding_the_select_field_options).
+
+
+### [](#_adding_the_switchable_field_option)Adding the switchable field option
+
+Options in the switchable field display in the **Choose audience** dialog when the user selects Visits in the Cookie field.
+
+To activate the switchable field, in the dialog click **Pick trait > Cookie** or **\+ > Cookie** (if an additional trait exists).
+
+To add the `visits` option in `/modules/personalization-traits/traits/cookies/ruleField/options`:
+
+1.  Add a new content node, `visits`. This is the internal name of the switchable field option.
+
+2.  Add two properties to the `visits` node:
+
+    1.  `label`\= `Visits`: The label displayed in the field.
+
+    2.  `value`\= `visits`: The option value stored in the repository.
+
+
+
+The configuration should look like this:
+
+```yaml
+  options:
+    visits:
+      label: Visits
+      value: visits
+```
+
+### [](#_adding_the_select_field_options)Adding the select field options
+
+Options in the select field display in the dropdown in the Visits field.
+
+To add the `visits` options, in `/modules/personalization-traits/traits/cookies/ruleField/fields` :
+
+1.  Add a `visits/options` node structure.
+
+2.  In the `/options` node:
+
+    1.  Add one content node for each option. Our options are `one`, `two`, `three`, `four` and `any`. These are the internal names of the options.
+
+    2.  Add two properties to each option node:
+
+        1.  `label`\= `<Option label>`: The label displayed in the field.
+
+        2.  `value`\= `<Option value>`: The option value stored in the repository.
+
+
+
+3.  Optionally, add a `sortOptions` property to `/visits` node and set the value to `false`. This ensures that the options render in configuration order and not alphabetically.
+
+
+The configuration should look like this:
+
+```yaml
+  fields:
+    visits:
+      class: info.magnolia.ui.form.field.definition.SelectFieldDefinition
+      label: Visits
+      sortOptions: false
+      options:
+        one:
+          label: One
+          value: 1
+        two:
+          label: Two
+          value: 2
+        three:
+          label: Three
+          value: 3
+        four:
+          label: Four
+          value: 4
+        any:
+          label: Any
+          value: any
+```
+
+## [](#_configuring_the_value_field)Configuring the value field
+
+The value field defines the options that display in the [Preview app](../../../../../../Apps/List-of-apps/Preview-app/). The field is used to preview [variants](../../../../../../use-cases/Personalization/) when testing personalized content delivery.
+
+The value field is an [Option group field](../../../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Option-group-field/). The option values should match the option configurations in the [rule field](#_configuring_the_rule_field).
+
+To add the value field options, in `/modules/personalization-traits/traits/cookies/valueField`:
+
+1.  Add one content node for each option configured in the rule field. These are the internal names of the options. The node name is arbitrary. Configure one option for each option configured in the [rule field](#_configuring_the_rule_field)
+
+2.  Add two properties to each option node:
+
+    1.  `label`\= `<Option label>`: The label displayed in the field.
+
+    2.  `value`\= `<Rule field name>:<Rule field option value>`: The option value stored in the repository.
+
+
+3.  Optionally, add a `sortOptions` property to `/valueField` node and set the value to `false`. This ensures that the options render in configuration order and not alphabetically.
+
+
+The configuration should look like this:
+
+```yaml
+valueField:
+  class: info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition
+  multiselect: false
+  sortOptions: false
+  options:
+    visitsAny:
+      label: 'Visit: Any'
+      value: visits=any
+    visitsOne:
+      label: 'Visits: One'
+      value: visits=1
+    visitsTwo:
+      label: 'Visits: Two'
+      value: visits=2
+    visitsThree:
+      label: 'Visits: Three'
+      value: visits=3
+    visitsFour:
+      label: 'Visits: Four'
+      value: visits=4
+```
+
+## [](#_download_a_configuration_file)Download a configuration file
+
+As an alternative to manual configuration, you can add the complete configuration to your light module.
+
+<light-module-name>/traits/cookies.yaml
+
+-   [cookies.yaml](../../../../../../_attachments/code/yaml/traits/cookies.yaml)
+
+
+Related topics
+
+-   [Creating custom traits without Java](../../)
+
+-   [Cookies trait configuration](../../Cookies-trait-configuration/)
+
+-   [Setting and reading a custom cookie](../Setting-and-reading-a-custom-cookie/)
+
+-   [Personalization](../../../../../../use-cases/Personalization/)
+
+-   [Component personalization](../../../../../../Features/Personalization/Component-personalization/)

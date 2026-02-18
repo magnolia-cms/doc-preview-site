@@ -1,0 +1,208 @@
+---
+title: "Synchronization module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Synchronization-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Synchronization module
+---
+
+# Synchronization module
+
+[Collaboration and workflow](../../../use-cases/collaboration-and-workflow/) Unbundled: Extension
+
+|     |     |
+| --- | --- |
+| Edition | DX Core |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLSYNC](https://magnolia-cms.atlassian.net/browse/MGNLSYNC) |
+| Maven site | [Synchronization](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fsynchronization%2Fmagnolia-synchronization%2F4.0.0) |
+| Latest | 4.0.0 |
+
+The Synchronization module synchronizes a target Magnolia instance with a source instance. The module allows you to publish a large amount of content selectively. Only previously published content is transferred to the target instance. You can use the module to add content to new public instances without shutting down existing instances and impacting their ability to serve content.
+
+The module traverses the node tree and publishes only previously published content. Content that was never published isn’t published during synchronization either. If content was versioned when it was published (Magnolia default behavior), the module publishes the last known version, making it possible to recover modified content.
+
+The Synchronization module installs the [Sync Instance app](../../../Apps/List-of-apps/Sync-Instance-app/) that allows you to manually synchronize content between author and one public instance.
+
+> **Caution:** Content publishing and content synchronizationAlways wait with content publishing actions until all content synchronization tasks have been finished.If you attempt to publish a page while the Synchronization module is mid-sync and hasn’t yet synchronized the page’s parent, the publishing process will fail.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.synchronization</groupId>
+  <artifactId>magnolia-synchronization</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+To be able to use the Sync Instance app, add also the following module:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.synchronization</groupId>
+  <artifactId>magnolia-synchronization-app</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_use_cases)Use cases
+
+### [](#_public_instance_failure)Public instance failure
+
+Imagine that you have two public Magnolia instances. Due to hardware failure, one of them is out of operation. As you try to publish content during the outage, [transactional publishing](../Publishing-Transactional-module/) tells you that the content can’t be published because one of the public instances is down.
+
+Since you really need to publish new content to the remaining public instance, you make a conscious decision to switch off the receiver that suffered the hardware failure. Now you can publish the content while waiting for the failed hardware to be replaced.
+
+A few days later hardware on the failed public instance has been replaced and the server is up again. You re-enable the receiver so that all new content is published to both public instances. But you still have a problem with what to do with all the content that was published while the instance was down. Your options are:
+
+-   Republish everything to both instances. This is a time-consuming process, generates high load, and slows down your site during publishing.
+
+-   If you kept a list of the published pages, you know exactly what to publish to get them on both instances. This works well for small deployments with infrequent updates and a single editor.
+
+-   Use the Synchronization module. Set the previously broken public instance as a synchronization receiver and Magnolia will take care of syncing the missing content.
+
+
+### [](#_public_instance_blackout)Public instance blackout
+
+All public instances are corrupted, broken or compromised. No instances exist to serve content. A small site can deal with this by creating a new public instance and publishing all content to it. This is difficult in large deployments that have many editors, where content has already been modified since the blackout took effect, and where some pages aren’t yet ready to be published across the site. Use the Synchronization module to publish any previously published versions of content, even if the content was modified further, and skip any pages that weren’t previously published.
+
+### [](#_high_load)High load
+
+You have a sudden high load on your site. You need to add a new public instance to deal with the load.
+
+-   You can’t shut down any of the existing public instances because you need them to deal with the load. This prevents taking a snapshot for cloning.
+
+-   You can’t publish all content from the author instance to public instances since this would unnecessarily flush the cache on them and increase load when the servers are already busy.
+
+
+The solution is to create a new empty public instance and use the Synchronization module to publish content only to that instance while the existing public instances keep serving content.
+
+## [](#_configuration)Configuration
+
+The Synchronization module is configured at **Configuration >** `/modules/synchronization-core`.
+
+Note that the `mgnlSystem` and `mgnlVersion` [workspaces](../../../Administration/Architecture/Workspaces/) can’t be synchronized using the Synchronization module or [Sync Instance](#_manual_synchronization) tool.
+
+### [](#_synchronization_command)Synchronization command
+
+Synchronization is controlled by info.magnolia.synchronization.commands.SynchronizationCommand, which extends `BaseActivationCommand` and is registered in `/modules/synchronization-core/commands/synchronization`.
+
+![Synchronization command](../../../_images/ADVT-sync-cmd.png)
+
+ PropertyDescription
+
+`syndicator`
+
+**optional**
+
+Registers the syndicator class.
+
+     `class`
+
+**required**
+
+`SilentXASyndicator` performs synchronization of content without update to metadata.
+
+     `recursive`
+
+**optional**, *default is `false`*
+
+Executes recursively when set to `true`.
+
+`receivers`
+
+**required**
+
+[Synchronization receivers](#_synchronization_receivers) configurations (see below).
+
+> **Note:** Publishing receivers are configured using MicroProfile Config. You must recopy the values used in the magnolia.publishing.receivers MicroProfile configuration.
+
+### [](#_synchronization_receivers)Synchronization receivers
+
+Configure the target instance as a [receiver](../../../Administration/Instances/Receivers/) under `/modules/synchronization-core/commands/synchronization/synchronize/receivers`.
+
+> **Note:** If you set the recursive option, the synchronize command checks all child node types. For custom node types, you must add a rule to the command to change the allowedTypes to synchronize nodes in custom workspaces, as shown in the example below.
+
+| Node name | Value |
+| --- | --- |
+| ⸬ receivers |     |
+| ⸬ magnoliaPublic |     |
+| ⬩ name | magnoliaPublic |
+| ⬩ url | [http://example.com/magnoliaPublic](http://example.com/magnoliaPublic) |
+| ⸬ class | info.magnolia.synchronization.commands.SynchronizationCommand |
+| ⬩ recursive | true |
+| ⸬ rule |     |
+| ⬩ class | info.magnolia.cms.util.Rule |
+| ⸬ allowedTypes |     |
+| ⬩ contentNode | <CUSTOM\_NODE\_TYPES> |
+
+## [](#_manual_synchronization)Manual synchronization
+
+The **Sync Instance** tool allows you to manually synchronize content between an author instance and a single public instance. The operation is performed asynchronously.
+
+To perform a manual synchronization:
+
+1.  Select the [workspace](../../../Administration/Architecture/Workspaces/).
+
+2.  Type the path to be published.
+
+3.  Optionally select:
+
+    1.  A date (content publishing date) which you want to synchronize from.
+
+    2.  The **Recursively synchronize subnodes** checkbox to publish all child nodes recursively
+
+
+4.  Click **Start**. Synchronization starts within one minute of execution.
+
+    You must wait for the job to start before starting another one. Otherwise you will overwrite the previous job.
+
+5.  Click **Refresh** to see the current status of the synchronization.
+
+
+![Manual synchronization](../../../_images/6-2-synchronizationModule.png)
+
+Path examples:
+
+|     |     |     |     |
+| --- | --- | --- | --- |
+| **Path** | **Repository** | **Recursive** | **Synchronizes** |
+| `/` | website | Yes | All website pages. |
+| `/travel/about/company` | website | No  | `company` page only. |
+| `/travel/about` | website | Yes | All pages under `about` page. |
+| `/admin/jsmith` | users | No  | User `jsmith` only. |
+| `/admin` | users | Yes | All admin level users. |
+
+## [](#_scheduling_synchronization)Scheduling synchronization
+
+You can schedule synchronization jobs using the [Scheduler](../Scheduler-module/) module. The purpose of scheduling isn’t to synchronize an instance repeatedly, because this leads to unnecessary flushing of the cache and increases load. The aim is to schedule the sync to occur at a convenient later time such as during low traffic volume.
+
+To configure a synchronization receiver, copy the `/modules/scheduler/config/jobs/demo` node and edit its properties.
+
+![Configuring synchronization receiver](../../../_images/ADVT-sync-schedule.png)
+
+| Property | Description |
+| --- | --- |
+| `<job name>` | **required**<br><br>Name of the job, `demo` in the example. |
+| `params` | **optional**<br><br>Parameters passed to the command. info.magnolia.synchronization.commands.SynchronizationCommand takes the following parameters: |
+| `path` | **required**<br><br>Path to the content, for example `/demo-project/about`. |
+| `recursive` | optional, *default is `false`*<br><br>Set to `true` to synchronize the node and subnodes. |
+| `repository` | **required**<br><br>Workspace where the content resides, for example `website`. |
+| `catalog` | **required**<br><br>Name of the [catalog](../../../Developing/Commands/) where the command resides. `SynchronizationCommand` resides in the `synchronization` folder. |
+| `command` | **required**<br><br>Name of the command definition node, `synchronize`. |
+| `cron` | **optional**<br><br>Schedule that indicates the execution time, written as a [CRON expression](http://en.wikipedia.org/wiki/CRON_expression). For example, `0 0 * * * *` runs the job every hour. |
+| `description` | **optional**<br><br>Job description. |
+| `enabled` | **optional**, *default is `true`*<br><br>Enables and disables the job. |
+
+> **Tip:** Test the synchronize command un-scheduled first. If it runs correctly, schedule it to publish to a new public instance after one minute (CRON expression: 0 * * * * ?). If this works correctly too, point the receiver configuration to the out-of-sync target instance and modify the CRON schedule as required.

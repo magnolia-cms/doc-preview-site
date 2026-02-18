@@ -1,0 +1,193 @@
+---
+title: "Known issues"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Troubleshooting/Known-issues/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > Known issues
+---
+
+# Known issues
+
+This page collects information about issues other than those listed as separate pages in the Troubleshooting tree.
+
+## [](#_issues_caused_by_modules_removed_in_magnolia_6_3)Issues caused by modules removed in Magnolia 6.3
+
+-   If you are using `rest-tools`
+
+    ```console
+    2024-10-07 04:21:03,057 SEVERE org.apache.catalina.core.StandardWrapperValve invoke Servlet.service() for servlet [default] in context with path [] threw exception
+    2024-10-07 04:21:07,550 ERROR info.magnolia.module.cache.filter.CacheFilter     : A request started to cache but failed with an exception (NullPointerException: Cannot invoke "javax.servlet.Servlet.service(javax.servlet.ServletRequest, javax.servlet.ServletResponse)" because "this.servlet" is null). [url=http://localhost:8080/.rest/status]
+    ```
+
+    **Solution**
+
+    Under `/server/filters/servlets/RestDispatcherServlet`, change the value of the `servletClass` property from `info.magnolia.rest.tools.SwaggerRestDispatcherServlet` to `info.magnolia.rest.RestDispatcherServlet`.
+
+    Either write an uninstall task handler or in the rescue mode (Groovy app), trigger a groovy script (see [below](#_example_groovy_script_to_clean_up_module_configs)) to clean up the configs.
+
+-   `magnolia-module-rssaggregator` removed
+
+    **Solution**
+
+    Either write an uninstall task handler or trigger the groovy script to remove `/server/filters/servlets/FeedSyndicationServlet`.
+
+-   `magnolia-dam-app-compatibility` removed
+
+    ```console
+    2024-10-08 04:10:13,836 WARN  agnolia.transformer.ClassPropertyBasedTypeResolver: Encountered the 'class' property but failed to resolved the type from its value: [info.magnolia.dam.app.ui.field.definition.DamUploadFieldDefinition]
+    2024-10-08T02:10:13.841654941Z java.lang.ClassNotFoundException: info.magnolia.dam.app.ui.field.definition.DamUploadFieldDefinition
+    ```
+
+    **Solution**
+
+    Either write an uninstall task handler or trigger the groovy script (see [below](#_example_groovy_script_to_clean_up_module_configs)) to clean up the configs.
+
+-   `magnolia-ldap removed` removed
+
+    ```console
+    2024-10-07 08:06:13,278 WARN  agnolia.transformer.ClassPropertyBasedTypeResolver: Encountered the 'class' property but failed to resolved the type from its value: [info.magnolia.jaas.sp.ldap.LDAPUserManager]
+    ```
+
+    **Solution**
+
+    Either write an uninstall task handler or trigger the groovy script (see [below](#_example_groovy_script_to_clean_up_module_configs)) to clean up the configs.
+
+
+### [](#_example_groovy_script_to_clean_up_module_configs)Example Groovy script to clean up module configs
+
+```groovy
+import info.magnolia.objectfactory.Components
+import info.magnolia.cms.security.SecuritySupport;
+
+// remove modules
+modules = ["slack-integration", "pages", "workflow-compatibility", "magnolia-now-ldap-integration",
+           "magnolia-now-configuration", "magnolia-now-sample", "workflow-extended-toolbox", "healthcheck", "dam-app"]
+
+modules.each{ name ->
+    removeModuleConfig(name)
+}
+
+// remove workflow commands
+remove("/server/filters/servlets/HealthCheckServlet")
+remove("/server/filters/servlets/FeedSyndicationServlet")
+
+
+// modify config
+modifyProperty("/server/filters/servlets/RestDispatcherServlet", "servletClass", "info.magnolia.rest.tools.SwaggerRestDispatcherServlet", "info.magnolia.rest.RestDispatcherServlet")
+modifyProperty("/modules/workflow-jbpm/tasks/publish", "parameterResolver", "info.magnolia.workflow.extended.toolbox.jbpm.humantask.DynamicPublicationTaskParameterResolver", "info.magnolia.module.workflow.jbpm.humantask.parameter.PublicationTaskParameterResolver")
+// save config changes
+ctx.getJCRSession("config").save();
+
+
+// remove permissions
+//roleManager = Components.getComponent(SecuritySupport.class).getRoleManager()
+//role = roleManager.getRole("rest-anonymous")
+//roleManager.removePermission(role, "uri", "/.rest/v1*", 63)
+
+
+def removeModuleConfig(String moduleName) {
+    String path = "/modules/" + moduleName
+    remove(path)
+}
+
+def remove(String path) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        session.getNode(path).remove()
+    }
+}
+
+def removeIfEmpty(String path) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        node = session.getNode(path)
+        if (!node.hasNodes()) {
+            node.remove()
+        }
+    }
+}
+
+def removeIfValue(String path, String property, String value) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        node = session.getNode(path)
+        if (!node.hasProperty(property) || value.equals(node.getProperty(property).getString())) {
+            node.remove()
+        }
+    }
+}
+
+def modifyProperty(String path, String property, String oldValue, String newValue) {
+    session = ctx.getJCRSession("config")
+    if (session.itemExists(path)) {
+        node = session.getNode(path)
+        if (node.hasProperty(property) && oldValue.equals(node.getProperty(property).getString())) {
+            node.setProperty(property, newValue)
+        }
+    }
+}
+```
+
+### [](#_example_versionhandler)Example VersionHandler
+
+```java
+register(DeltaBuilder.update("1.7", "").addTasks(updateTo_1_7()));
+
+  private List<Task> updateTo_1_7() {
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - slack-integration", "/modules/slack-integration"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - pages", "/modules/pages"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - workflow-compatibility", "/modules/workflow-compatibility"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - magnolia-now-ldap-integration", "/modules/magnolia-now-ldap-integration"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - magnolia-now-configuration", "/modules/magnolia-now-configuration"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - magnolia-now-sample", "/modules/magnolia-now-sample"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - workflow-extended-toolbox", "/modules/workflow-extended-toolbox"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - healthcheck", "/modules/healthcheck"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - dam-app", "/modules/dam-app"));
+        tasks.add(new RemoveNodeTask("Remove modules in configs for 6.3 - ldap", "/modules/ldap"));
+
+        tasks.add(new RemoveNodeTask("Remove the configs for 6.3 - /server/filters/servlets/HealthCheckServlet", "/server/filters/servlets/HealthCheckServlet"));
+        tasks.add(new RemoveNodeTask("Remove the configs for 6.3 - /server/filters/servlets/FeedSyndicationServlet", "/server/filters/servlets/FeedSyndicationServlet"));
+        tasks.add(new RemoveNodeTask("Remove the configs for 6.3 - /server/security/userManagers/external", "/server/security/userManagers/external"));
+
+        tasks.add(new CheckAndModifyPropertyValueTask("/server/filters/servlets/RestDispatcherServlet", "servletClass", "info.magnolia.rest.tools.SwaggerRestDispatcherServlet", "info.magnolia.rest.RestDispatcherServlet"));
+        tasks.add(new CheckAndModifyPropertyValueTask("/modules/workflow-jbpm/tasks/publish", "parameterResolver", "info.magnolia.workflow.extended.toolbox.jbpm.humantask.DynamicPublicationTaskParameterResolver", "info.magnolia.module.workflow.jbpm.humantask.parameter.PublicationTaskParameterResolver"));
+        return tasks;
+    }
+```
+
+## [](#_issues_with_the_backup_module_when_using_the_cli_or_rest)Issues with the Backup module when using the CLI or REST
+
+In the Magnolia 6.4.1 release, the `AUTO_SERVER=TRUE` setting was removed from the default H2 database configuration.
+
+If you experience issues with the [Backup module](../../../Modules/List-of-modules/Backup-module/) when using the CLI or REST, add `AUTO_SERVER=TRUE` to the value of the `url` parameters in the persistence manager of `jackrabbit-bundle-h2-search.xml`. This change configures H2 to run in server mode.
+
+```none
+<param name="url" value="jdbc:h2:${wsp.home}/db;AUTO_SERVER=TRUE" />
+
+<param name="url" value="jdbc:h2:${rep.home}/version/db;AUTO_SERVER=TRUE" />
+```
+
+> **Warning:** We don’t recommend using H2 for production environments.
+
+> **Caution:** Using the Backup module should mainly be reserved for specific cases such as cross-platform dumps and small databases. A cross-platform dump might be backing up on a Jackrabbit configuration and restoring on possibly another Jackrabbit configuration.For production environments, we recommend you use both database tools and file system copies (the contents of any file stored and optionally Lucene indexes) to have consistent and transaction-safe backups.
+
+For more details, see [MGNLCE-428](https://magnolia-cms.atlassian.net/browse/MGNLCE-428).
+
+## [](#_other_issues)Other issues
+
+-   [Ant: Malformed \\uxxxx encoding in a propertyfile task](../../../Modules/List-of-modules/Backup-module/#_ant_malformed_uxxxx_encoding_in_a_propertyfile_task) (Backup module)
+
+-   [Cannot upgrade to 6.3 from 6.2 with the existing 6.2 license](../../../Upgrading-to-Magnolia/#set-new-6-3-license-before-upgrading)
+
+-   [MgnlContext is not set for this thread](../../../Modules/List-of-modules/Cache-modules/Cache-Browser-app/#_mgnlcontext_is_not_set_for_this_thread) (Cache Browser app)
+
+-   [Missing CountryVoter](../../../Modules/List-of-modules/Personalization-module/#_missing_countryvoter) (Personalization module)
+
+-   [Missing VerticalFormLayoutDefinition](../../../Modules/extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-module/#_missing_verticalformlayoutdefinition) (Marketing Automation module)
+
+-   [Password module dependency](../../../Upgrading-to-Magnolia/#_password_module_dependency_in_marketing_automation_module) (Marketing Automation module)
+
+-   [Lazy component loading not working with Angular v17+ SSG](../../../Developing/headless/spa-development/magnolia-front-end-sdk/magnolia-angular-editor/#_lazy_component_loading_not_working_with_angular_v17_ssg) (Angular Editor)
+
+-   [Safari browser and application pop-ups](../../../Modules/List-of-modules/UI-module/#_safari_browser_and_application_pop_ups) (UI module)

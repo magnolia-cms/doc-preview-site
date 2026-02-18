@@ -1,0 +1,161 @@
+---
+title: "Release support and life cycle"
+url: https://docs.magnolia-cms.com/support/release-support-and-life-cycle/
+category: Support
+version: general
+breadcrumb: Magnolia Support documentation > Release support and life cycle
+---
+
+# Release support and life cycle
+
+This page details Magnolia’s support policies and life cycles for both client-hosted and DX cloud deployments. It covers release schedules, support procedures, end-of-life policies, and migration guidance. This guidance is relevant for DX Core customers and Community Edition customers transitioning to DX Core.
+
+## [](#_release_support)Release support
+
+All releases follow the same support life cycle as described in the [Release support life cycle](#_release_support_life_cycle) section.
+
+When a new major release becomes available, the previous release continues to receive support according to the standard life cycle timeline.
+
+Definitions
+
+Magnolia releases are numbered `x.y.z` (e.g. Magnolia `6.2.1`) whereby `x.y` denotes the major version and `z` the update release number. The final release with the highest major version number is referred to as the `current major version`. A release is final when it is no longer marked as Alpha, Beta, Developer Preview, Milestone or with similar indicators of a generally accepted, non-final state.
+
+Release notes
+
+The release notes contain a list of current and previous versions, including their product updates and the release dates.
+
+See our [release notes](../../product-docs/7.0/Releases/) for more details.
+
+### [](#_client_hosted_release_support_policy)Client-hosted release support policy
+
+Magnolia will provide product updates in source and binary form for the current major version of its software several times per year. These product updates for the current major version are available for the Community Edition as well as Magnolia DX Core.
+
+Product updates for previous major versions of Magnolia are available to Magnolia DX Core customers only (i.e. customers that have an active subscription to Magnolia DX Core). We don’t make product updates for the Community Edition of previous major versions.
+
+### [](#_dx_cloud_release_support_policy)DX Cloud release support policy
+
+Magnolia Cloud follows the same [support life cycle](#_actively_supported_product_updates) and support procedures as client-hosted deployments. Product updates for the current major version are made available to Magnolia Cloud customers shortly after they have been published for the client-hosted edition.
+
+The support procedures, definitions, and release notes process described in the [Client-hosted release support policy](#_client_hosted_release_support_policy) section apply equally to Cloud deployments.
+
+Cloud Cockpit
+
+There will only be one active and supported version of the Magnolia Cloud Cockpit. New versions are made available by Magnolia to all customers at the same time.
+
+## [](#_release_support_life_cycle)Release support life cycle
+
+This section provides an overview of Magnolia’s release support life cycle, showing which versions are currently maintained or have reached end-of-life, and which support features are available at each life cycle phase.
+
+### [](#_actively_supported_product_updates)Actively supported product updates
+
+We offer active support until the date specified for each release in the table below. In addition, we incorporate security fixes for a release for another year beyond the active support window.
+
+| Release | Release date | Active support until | Limited support until (EoL) |
+| --- | --- | --- | --- |
+| **[Magnolia 6.4](../../product-docs/7.0/Releases/)** | November 12, 2025 | November 2027 | November 2028[\*](#extended-support) |
+| **[Magnolia 6.3](#6.3@product-docs:ROOT:Releases.adoc)** | September 4, 2024 | September 2026 | September 2027[\*](#extended-support) |
+| **[Magnolia 6.2](#6.2@product-docs:ROOT:Releases.adoc)** | March 27, 2020 | September 2026 | September 2027[\*](#extended-support) |
+
+To inquire about extended support for your EoL version of Magnolia, contact [info@magnolia-cms.com](mailto:info@magnolia-cms.com). Support for EoL instances is provided only under special terms agreed with the client.
+
+### [](#_retired_releases)Retired releases
+
+| Release | Release date | End of life |
+| --- | --- | --- |
+| Magnolia `6.1` | 2019-06-26 | 2021-03-31 |
+| Magnolia `6.0` | 2018-11-30 | 2019-06-26 |
+| Magnolia `5.7` | 2018-06-25 | 2023-12-31 |
+| Magnolia `5.6` | 2017-11-17 | 2020-06-25 |
+| Magnolia `5.5` | 2016-11-15 | 2019-11-15 |
+| Magnolia `5.4` | 2015-07-03 | 2018-11-15 |
+| Magnolia `5.3` | 2014-06-23 | 2017-06-30 |
+| Magnolia `5.2` | 2013-11-22 | 2016-06-30 |
+| Magnolia `4.5` | 2012-03-13 | 2016-06-30 |
+| Magnolia `4.4` | 2010-11-30 | 2015-06-30 |
+
+### [](#_release_life_cycle_phases)Release life cycle phases
+
+-   **Beta**
+
+    This initial stage of a release is primarily for partners and may still undergo changes.
+
+-   **Release candidate** (RC)
+
+    A more mature release, the RC is not expected to have further changes. It is typically available for 2-3 weeks before becoming generally available.
+
+-   **General availability** (GA)
+
+    A GA software release means the product is thoroughly tested, is feature-complete, and officially released to the public for production environments. It is stable, documented, and supported, moving from release candidate to unrestricted availability.
+
+-   **Active support**
+
+    This phase corresponds to the first two years of the [support life cycle](#_actively_supported_product_updates), during which release support is provided for bug and security fixes. During this phase:
+
+    -   We don’t add new features to the release.
+
+    -   We do provide support, bug fixes and security fixes.
+
+    -   Access to artifacts (bundles, webapps, modules) in release life cycle requires a DX Core license.
+
+
+-   **Limited support**
+
+    This is the third year of the [support life cycle](#_actively_supported_product_updates), in which only security fixes are provided.
+
+-   **End-of-life** (EoL)
+
+    When the supported life of a version ends, we announce **end-of-life** (EoL) on this page. We do not provide formal support, bug fixes or security fixes for customers using an EoL version of Magnolia. However, we do our best to assist customers who encounter issues with EoL versions of Magnolia. DX Core customers who run an EoL version can use their support contract to verify issues, ask questions about the product, and get help with migration to a newer, supported version of the product.
+
+    Enterprise customers with a valid support contract can still use Magnolia support for questions and issues related to EoL versions.
+
+    End-of-life announcements:
+
+    -   Magnolia `6.1` reached end-of-life (EoL) on March 31, 2021. The 6.1 branch is no longer maintained.
+
+    -   Magnolia `6.0` reached end-of-life (EoL) on June 26, 2019. The 6.0 branch is no longer maintained.
+
+    -   Magnolia `5.7` reached end-of-life (EoL) on December 31, 2023. The 5.7 branch is no longer maintained.
+
+    -   Magnolia `5.6` reached end-of-life (EoL) on June 25, 2020. The 5.6 branch is no longer maintained.
+
+    -   Magnolia `5.5` reached end-of-life (EoL) on November 15, 2019. The 5.5 branch is no longer maintained.
+
+    -   Magnolia `5.4` reached end-of-life (EoL) on November 15, 2018. The 5.4 branch is no longer maintained.
+
+    -   Magnolia `4.5` reached end-of-life (EoL) on June 30, 2016. The 4.5 branch is no longer maintained.
+
+        Versions earlier than those listed above are also in end-of-life status.
+
+        We encourage you to upgrade your sites to the latest release of the [latest Magnolia branch](../../product-docs/7.0/Releases/).
+
+
+-   **Extended end-of-life** (EEoL)
+
+    During the **extended end-of-life** (EEoL) period, which is intended to support migration, we only address critical stability and security issues under special paying agreements. The start of this period is determined by Magnolia and announced in [Actively supported product updates](#_actively_supported_product_updates).
+
+    To get extended support for your EoL version of Magnolia, contact [info@magnolia-cms.com](mailto:info@magnolia-cms.com). Support for EoL instances is provided only under special terms agreed with the client.
+
+
+### [](#_what_type_of_support_is_there_in_each_phase)What type of support is there in each phase?
+
+| Release support phase | New features | Support | Bug fixes | Security fixes |
+| --- | --- | --- | --- | --- |
+| Next major release | Yes | Yes | Yes | Yes |
+| Active support | No  | Yes | Yes | Yes |
+| Limited support | No  | Yes | No  | Yes |
+| EoL | No  | Yes\[[1](#_footnotedef_1 "View footnote.")\] | No  | Yes |
+| EEoL | No  | Yes\[[1](#_footnotedef_1 "View footnote.")\] | No  | Yes |
+
+## [](#_get_help_and_next_steps)Get help and next steps
+
+### [](#_raising_issues_for_supported_versions)Raising issues for supported versions
+
+You can raise issues for supported versions of Magnolia at [https://magnolia-cms.atlassian.net/jira/](https://magnolia-cms.atlassian.net/jira/). Getting a fix may require upgrading to a version that includes the fix. Critical security fixes are backported to currently supported versions.
+
+### [](#_upgrading_to_a_supported_version)Upgrading to a supported version
+
+Magnolia International provides assistance upgrading your EoL version to a supported version. Contact [info@magnolia-cms.com](mailto:info@magnolia-cms.com) to get help. Our experienced Services team will help manage and implement a smooth migration.
+
+* * *
+
+[1](#_footnoteref_1). Support on a good-faith basis to facilitate migration to supported releases.

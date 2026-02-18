@@ -1,0 +1,19 @@
+---
+title: "SSO and OpenID login issues"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Troubleshooting/SSO-and-OpenID-login-issues/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Troubleshooting > SSO and OpenID login issues
+---
+
+# SSO and OpenID login issues
+
+## [](#_unable_to_log_in_with_an_ssoopenid_setup)Unable to log in with an SSO/OpenID setup
+
+In your Tomcat configuration, make sure that the `CookieProcessor` component doesn’t have the `sameSiteCookies` property set to `strict`. Instead, set the property to `Lax`:
+
+```xml
+<CookieProcessor sameSiteCookies="Lax" />
+```
+
+This supports [OpenID](https://en.wikipedia.org/wiki/OpenID) top-level redirects while maintaining decent protection against [Cross-Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery) (CSRF).

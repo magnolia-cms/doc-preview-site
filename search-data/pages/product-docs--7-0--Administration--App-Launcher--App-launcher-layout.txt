@@ -1,0 +1,344 @@
+---
+title: "App Launcher layout definition"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/App-Launcher/App-launcher-layout/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > App Launcher layout definition
+---
+
+# App Launcher layout definition
+
+The grouping and coloring in the App Launcher layout help you to identify apps based on your role (marketeer/editor vs. developer apps). All your apps are available at a glance after you log in. The `layout` property configures all the rows, groups, and apps.
+
+![App Launcher Modern layout](../../../_images/6-2_AppLauncherModern.png)
+
+The App Launcher layout includes different colored backgrounds:
+
+-   A `green` background indicates favorite apps
+
+-   A `gray` background indicates marketeer/editor apps
+
+-   A `white` background indicates developer apps
+
+
+> **Important:** You can only use YAML to configure the App Launcher for the layout property. Everything is defined in the config.yaml file, and you can’t configure anything using JCR.
+
+## [](#_example_definitions)Example definitions
+
+The App Launcher layout is a yaml-based module configuration. To modify the layout, you can decorate it runtime in one of your light modules: `<LIGHT_MODULE>/decorations/admincentral/config.yaml`. See [Example layout definition decorations](#_example_layout_definition_decorations) for more details.
+
+To see the final state of the configuration in memory after all decorations are applied, look in the Definitions app at this location: `/modules/admincentral/config/layout`. Selecting the layout node and clicking the **Show definition decorators** action lets you see which decorations were applied in which order.
+
+> **Caution:** Apps configured in the new App Launcher layout will cause entries to appear in the log. To keep the log tidy, we recommend adjusting your App Launcher layout configuration and removing any apps you don’t use.
+
+<LIGHT\_MODULE>/decorations/admincentral/config.yaml
+
+```yml
+layout:
+  defaultGroup: custom
+  hiddenApps:
+    contacts-v8: contacts-v8
+    dam-chooser: dam-chooser
+    preview: preview
+    assets: assets
+    categories: categories
+    notifications: notifications
+    tasks-app: tasks-app
+    personas: personas
+    tourCategories: tourCategories
+    pages: pages
+    segmentation: segmentation
+    ecommerce-category-chooser: ecommerce-category-chooser
+    ecommerce-connection-chooser: ecommerce-connection-chooser
+    ecommerce-product-chooser: ecommerce-product-chooser
+  groups:
+    - name: content
+      apps:
+        - name: pages-app
+        - name: dam
+        - name: stories
+        - name: tours
+        - name: contacts
+    - name: marketing
+      apps:
+        - name: analytics
+        - name: campaigns
+        - name: marketing-tags
+        - name: abn-testing
+    - name: personalisation
+      apps:
+        - name: personas-app
+        - name: segmentation-app
+        - name: preview-app
+    - name: categorisation
+      apps:
+        - name: content-tags
+        - name: categories-app
+    - name: translation
+      apps:
+        - name: pages-translation
+    - name: development
+      apps:
+        - name: jcr-browser-app
+        - name: marketing-tags
+        - name: content-tags
+        - name: backup
+        - name: mail
+        - name: cacheTools
+        - name: logTools
+        - name: publishing
+        - name: tools
+        - name: jcr-tools
+        - name: pages-translation
+        - name: messages
+        - name: groovy
+        - name: sample
+        - name: graphql
+        - name: restclient
+        - name: resources
+        - name: site
+        - name: configuration
+        - name: definitions-app
+    - name: admin
+      apps:
+        - name: security
+        - name: password-manager
+        - name: visitors
+        - name: cookies
+        - name: about
+        - name: ecommerce
+        - name: rssAggregator
+    - name: custom
+      apps: []
+  rows: (1)
+    - name: one
+      cssClass: editor
+      groups:
+        content: content
+        marketing: marketing
+    - name: two
+      cssClass: editor
+      groups:
+        - personalisation
+        - categorisation
+        - translation
+    - name: three
+      cssClass: editor
+      groups:
+        - custom
+    - name: four
+      cssClass: developer
+      groups:
+        - development
+        - admin
+```
+
+|     |     |
+| --- | --- |
+| **1** | Notice that the `rows` section does not list any apps in the new layout definition, as shown in the example YAML above. |
+
+![App Launcher Modern layout](../../../_images/6-2_AppLauncherModern.png)
+
+Migrating from Magnolia 6.2?
+
+You must configure the layout property according to the example definition below.
+
+```yml
+layout:
+    defaultGroup: custom
+    hiddenApps:
+        - contacts-v8
+        - dam-chooser
+        - preview
+        - assets
+        - categories
+        - notifications
+        - tasks-app
+        - personas
+        - tourCategories
+        - pages
+        - segmentation
+        - ecommerce-category-chooser
+        - ecommerce-connection-chooser
+        - ecommerce-product-chooser
+    rows: (1)
+        - cssClass: editor
+          groups: (2)
+            - name: content
+              apps:
+                - pages-app
+                - dam
+                - stories
+                - tours
+                - ecommerce
+                - contacts
+            - name: marketing
+              apps:
+                - analytics
+                - campaigns
+                - marketing-tags
+                - abn-testing
+        - cssClass: editor
+          groups:
+            - name: personalisation
+              apps:
+                - personas-app
+                - segmentation-app
+                - preview-app
+            - name: categorisation
+              apps:
+                - content-tags
+                - categories-app
+            - name: translation
+              apps:
+                - pages-translation
+        - cssClass: editor
+          groups:
+            - name: custom
+        - cssClass: developer
+          groups:
+            - name: configuration
+              apps:
+                - jcr-browser-app
+                - marketing-tags
+                - content-tags
+                - backup
+                - mail
+                - cacheTools
+                - logTools
+                - publishing
+                - tools
+                - jcr-tools
+                - pages-translation
+                - messages
+                - groovy
+                - sample
+                - graphql
+                - restclient
+                - resources
+                - site
+                - configuration
+                - definitions-app
+            - name: admin
+              apps:
+                - security
+                - password-manager
+                - visitors
+                - cookies
+                - about
+                - ecommerce
+                - rssAggregator
+```
+
+|     |     |
+| --- | --- |
+| **1** | The layout definition uses the keyword `layout` followed by `rows` indented. |
+| **2** | One `groups` line corresponds to a row in the layout (defined under the `rows` property). The number of items listed in a group defines how many columns are displayed per row. |
+
+> **Note:** While the layout approach shown above allows you to see the definition easily, it is challenging to decorate. For instance, if you want to move the personalisation group from the second to the third row, you must define its apps again. In addition, you have to use the correct row number shown in the Definitions app below.layout:
+>   rows:
+>     1:
+>       groups: !override
+>         - name: categorisation
+>         - name: translation
+>     2:
+>       groups: !override
+>         - name: personalisation
+>           apps:
+>             - personas-app
+>             - segmentation-app
+>             - preview-app The updated layout definition makes decorations easier.
+
+## [](#_app_launcher_properties)App Launcher properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultGroup</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>custom</code></em></p></div><div class="paragraph"><p>Defines the group where a new app is added automatically, provided the app has not been added to another group of the App Launcher.</p></div><div class="paragraph"><p>During installation, Magnolia sets the value of the <code>defaultGroup</code> property to <code>custom</code>. During an update, it is set to <code>custom</code> only if the property has not been set already.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>hiddenApps</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of apps to be hidden in the App Launcher.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;app-name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Name of an app that should not be shown in the App Launcher. The name of the property is arbitrary and specified as a key-value pair such as <code>tasks-app: tasks-app</code>.</p></div><div class="paragraph"><p>&nbsp;<br></p></div><div class="paragraph"><p><strong>Example</strong>:</p></div><div class="paragraph"><p>Change <code>pages</code> to <code>pages-app</code> to fall back to the compatibility changes in the App Launcher.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groups</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>List of app groups.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;group‑name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>App group name. For example, a group called content is specified by <code>name: content</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>label</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>App group label. The label defined here is displayed in the App Launcher. An example of labeling a group <code>MY CONTENT GROUP</code> is given below.</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">groups:
+  - name: content
+    label: MY CONTENT GROUP
+    apps:
+      - name: pages-app
+      - name: dam</code></pre></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>apps</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>List of apps in the group.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;app‑name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of an app that belongs to the group. The name must match the name given in the <a href="../../../Apps/App-configuration/App-descriptor/" class="xref page">app configuration</a> (for example, <code>pages</code>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>permissions</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Defines which users can see the group in the App Launcher. This allows you to provision the group to a limited number of users in your organization. Two examples are given below and more information about app permissions can be found <a href="../../IAM/App-permissions/#_app_group" class="xref page">here</a>.</p></div><div class="tabset is-loading"><div class="ulist tabs"><ul><li><p><a id="tabset1_example-definition"></a>Example definition</p></li><li><p><a id="tabset1_example-definition-with-voters"></a>Example definition with voters</p></li></ul></div><div class="content"><div class="tab-pane" aria-labelledby="tabset1_example-definition"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">- name: admin
+  apps:
+    - name: security
+    - name: password-manager
+    - name: visitors
+    - name: cookies
+    - name: about
+    - name: ecommerce
+    - name: rssAggregator
+  permissions:
+    roles:
+      - editor</code></pre></div></div></div><div class="tab-pane" aria-labelledby="tabset1_example-definition-with-voters"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">- name: admin
+  apps:
+    - name: security
+    - name: password-manager
+    - name: visitors
+    - name: cookies
+    - name: about
+    - name: ecommerce
+    - name: rssAggregator
+  permissions:
+    class: info.magnolia.cms.security.operations.VoterBasedConfiguredAccessDefinition
+    voters:
+      allowedRoles:
+        class: info.magnolia.voting.voters.RoleBaseVoter
+        roles:
+          travel-demo-editor: travel-demo-editor
+          travel-demo-publisher: travel-demo-publisher
+      roles:
+        - editor</code></pre></div></div></div></div></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>For <a href="../../../Developing/Content-Types/Content-Types-tutorial/Part-I-My-first-content-type/" class="xref page">content apps based on a content type</a>, <code>superuser</code> is the default user. Consequently, editors with sufficient group permissions might not see the app in AdminCentral. This occurs if the role specified within the app launcher’s <code>permissions</code> property definition isn’t a member of the editor’s group roles. To resolve this, add <code>superuser</code> to the respective roles via the Security app.</p></div><div class="paragraph collapse"><p>Expand to see the editors' group</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="imageblock zoom"><div class="content"><img src="../../../_images/security-app/group-role-members_6-3.png" alt="Editors group - Assigned roles" width="600"></div></div></div></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>rows</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The rows in the App Launcher layout are named <code>one</code>, <code>two</code>, <code>three</code>, <code>four</code>, and so forth for your convenience. Furthermore, they are specified after the groups. Inside each row, the <code>groups</code> belonging to it are listed (see <a href="#_example_definitions">Example definitions</a>).</p></div><div class="paragraph"><p>The number of groups defines how many columns are displayed per row. The column spacing is calculated automatically based on those definitions. You can only include, at most, four groups in a row. In case more groups are defined, the extra groups are discarded.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;row‑name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Row name. For example, the first row is named <code>one</code>, and is specified as <code>name: one</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>cssClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Defines a group’s background color. There are two possible values: <code>editor</code> and <code>developer</code>. Editor groups have a gray background, while developer groups have a white background (see <a href="#_example_definitions">Example definitions</a>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>displayed</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>It is possible to hide a row by setting the displayed property to false: <code>displayed: false</code>.</p></div></div></td></tr></tbody></table></div>
+
+## [](#_example_layout_definition_decorations)Example layout definition decorations
+
+The App Launcher layout definition can take advantage of many decorations. Below we provide some use cases that enable you to configure your App Launcher layout using [decorations](../../../Developing/Definition-decoration/).
+
+> **Note:** You must put decorations in a decorations folder inside one of your modules in the light-modules folder. The config.yaml file belongs in an admincentral folder directly under the decorations folder.
+
+-   *Moving an app from one group to another*: for example, the YAML decoration below would move the `bookshelf-app` from the `custom` group to the `marketing` group.
+
+    ```yml
+    layout:
+      groups:
+        - name: marketing
+          apps:
+          - name: bookshelf-app
+    ```
+
+-   *Hiding apps using the `hiddenApps` property*: for example, the configuration app is hidden in the YAML decoration below.
+
+    ```yml
+    layout:
+      hiddenApps:
+        configuration: configuration
+    ```
+
+-   *Removing a row from the layout*: such as taking away the first row `one` in the decoration below.
+
+    ```yml
+    layout:
+      rows:
+        - name: one
+          displayed: false
+    ```
+
+-   *Splitting two groups in one row over two rows*: for instance, separating the `admin` and `developer` groups over two rows using `!override` instead of the default placement, as shown below.
+
+    ```yml
+    layout:
+      rows:
+        - name: four
+          groups: !override
+            development: development
+        - name: five
+          cssClass: developer
+          groups:
+            admin: admin
+    ```
+
+
+Related topics
+
+-   [App Launcher](../../../Authoring/App-Launcher/)
+
+-   [Admincentral module](../../../Modules/List-of-modules/Admincentral-module/)
+
+-   [Decorating](../../../Modules/Module-configuration/#decorating)

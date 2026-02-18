@@ -1,0 +1,128 @@
+---
+title: "searchfn"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Template-scripts/Templating-functions/searchfn/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > searchfn
+---
+
+# searchfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`searchfn` templating functions allow you to search pages - or more generally content - returning collections of [ContentMap](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap) objects.
+
+The results are sorted by `jcr:score()`, descending. A text excerpt may be available in the returned ContentMap depending on how Jackrabbit search is configured. Magnolia checks the current user’s permissions before adding a result to the collection.
+
+## [](#_searching_pages)Searching pages
+
+The `searchPages` function searches pages for a given query string and start path. This function searches only nodes of type `mgnl:page` in the `website` JCR workspace, not all types of content. The returned items of the collection are of type `ContentMap`. Use this function with the mandatory arguments if you want to render the results with pagination.
+
+### [](#_method_signature)Method signature
+
+`Collection<[ContentMap](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)> searchPages(String queryString, String startPath)`
+
+`Collection<[ContentMap](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)> searchPages(String queryString, String startPath, long limit, long offset)`
+
+### [](#_arguments)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `queryString` | **required**<br><br>The search term such as `beach`. |
+| `startPath` | **required**<br><br>Absolute path in the website workspace such as `/` or `/travel`. |
+| `limit` | **optional**<br><br>The maximal number of items to be returned. Use together with `offset`. |
+| `offset` | **optional**<br><br>The offset (`starting point`) of the complete result set. Use together with `limit`. |
+
+### [](#_returns)Returns
+
+`Collection<ContentMap>`
+
+Collection of page nodes as `ContentMap` items.
+
+### [](#_usage)Usage
+
+`searchfn.searchPages('foo', '/somepath')` or `searchfn.searchPages('foo', '/somepath', 10, 21)`
+
+\[#assign searchResults = searchfn.searchPages('hello', '/home') /\]
+
+\[#if searchResults?has\_content\]
+    \[#list searchResults as item\]
+        <a href="${cmsfn.link(item)}">
+            <h4>${item.title!}</h4>
+            <p>${item.excerpt!}</p>
+        </a>
+    \[/#list\]
+\[/#if\]
+
+## [](#_searching_all_content)Searching all content
+
+The `searchContent` function searches all content for a given query string, start path and node type in any workspace. If you don’t specify a node type the function searches for the most basic type `nt:base`. The returned items of the collection are of type `ContentMap`. Use this function with the optional arguments (limit, offset) if you want to render the results with pagination.
+
+### [](#_method_signature_2)Method signature
+
+`Collection<[ContentMap](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)> searchContent(String workspace, String queryString, String startPath, String returnItemType)`
+
+`Collection<[ContentMap](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)> searchContent(String workspace, String queryString, String startPath, String returnItemType, long limit, long offset)`
+
+### [](#_arguments_2)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `workspace` | **required**<br><br>The name of the workspace to search in. |
+| `queryString` | **required**<br><br>The search term such as `travel`. |
+| `startPath` | **required**<br><br>Absolute path in the specified workspace such as `/` or `/home/about/`. |
+| `itemType` | **required**<br><br>The node type. |
+| `limit` | **optional**<br><br>The maximal number of items to be returned. Use together with `offset`. |
+| `offset` | **optional**<br><br>The offset (`starting point`) of the complete result set. Use together with `limit`. |
+
+### [](#_returns_2)Returns
+
+`Collection<ContentMap>`
+
+Collection of nodes as `ContentMap` items.
+
+### [](#_usage_2)Usage
+
+`searchfn.searchContent("website", "Ansel Adams", "/home", "mgnl:component")`
+
+`searchfn.searchContent("dam", "jpg", "/photos", "mgnl:asset", 10, 0)`
+
+\[#assign searchResults = searchfn.searchContent("website", "Ansel Adams", "/home", "mgnl:component") /\]
+
+\[#if searchResults?has\_content\]
+    \[#list searchResults as item\]
+        \[#if item.quotation??\]
+            <div class="found-component">
+            ${item.quotation}
+            </div>
+        \[/#if\]
+    \[/#list\]
+\[/#if\]
+
+\[#assign searchResults = searchfn.searchContent("dam", "Christoph Meier", "/photos", "") /\]
+
+\[#if searchResults?has\_content\]
+    \[#list searchResults as item\]
+        \[#if item.publisher??\]
+            ${item.publisher} -
+            \[#assign myAsset = damfn.getAsset("jcr", cmsfn.asJCRNode(item).getPath())!\]
+            \[#assign url=damfn.getRendition(myAsset, "small-square").getLink()\]
+            <img src="${url}"/>
+        \[/#if\]
+    \[/#list\]
+\[/#if\]
+
+Related topics
+
+-   [Search](../../../../../use-cases/search-and-discovery/)
+
+-   [Solr module](../../../../../Modules/List-of-modules/Solr-module/)
+
+    -   [Creating a sitemap with Solr](https://wiki.magnolia-cms.com/display/WIKI/Step+by+step+integrating+Solr+in+Magnolia+and+generating+custom+sitemap) (Community Wiki)
+
+
+-   [About templating functions](../)
+
+-   [Arguments and return types](../Templating-function-arguments-and-return-types/)
+
+-   info.magnolia.templating.functions.SearchTemplatingFunctions Javadoc

@@ -1,0 +1,66 @@
+---
+title: "imgfn"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Template-scripts/Templating-functions/imgfn/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > imgfn
+---
+
+# imgfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`imgfn` templating functions provide useful functions for handling image resources stored in any workspace. They are commonly used to resolve [image variations](../../../Theme/#_image_variations).
+
+`imgfn` templating functions are provided by the [Imaging module](../../../../../Modules/List-of-modules/Imaging-module/).
+
+Magnolia recommends you store images in the DAM workspace and use [`damfn`](../damfn/) templating functions instead to benefit from the [DAM API](../../../../API/Java-Server-APIs/DAM-API/) (see [How to work with images using `damfn`](../../How-to-work-with-images/How-to-work-with-images-using-damfn/)).
+
+## [](#_get_image_variation_link)Get image variation link
+
+Retrieves a link to an image variation from binary content.
+
+### [](#_method_signature)Method signature
+
+`String getImageVariationLinkFromBinary(` [`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)`binaryContent, String variation)`
+
+or
+
+`String getImageVariationLinkFromBinary(` [`Node`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)`binaryContent, String variation)`
+
+#### [](#_arguments)Arguments
+
+| Argument | Description |
+| --- | --- |
+| `binaryContent` | **required**<br><br>Either the ContentMap or the Node of the binary you want to render. |
+| `variation` | **optional**<br><br>An image variation defined in the site [theme](../../../Theme/).<br><br>`original` if you want the original size of the image. |
+
+#### [](#_returns)Returns
+
+`String`
+
+A link to an image variation.
+
+#### [](#_usage)Usage
+
+`imgfn.getImageVariationLinkFromBinary(binaryContent, variation)`
+
+\[#assign binaryNode = cmsfn.asJCRNode(content).getNode('binaryNodeName')\]
+\[#assign imgLink = imgfn.getImageVariationLinkFromBinary(binaryNode,'original')\]
+\[#assign imgLink240 = imgfn.getImageVariationLinkFromBinary(binaryNode,'240')\]
+
+The example above assumes that you have defined an image variation named `240` in your [theme](../../../Theme/).
+
+`binaryNodeName` is the default name of the subnode that contains the file binary and related information. Use [cmsfn](../Templating-function-arguments-and-return-types/) to transform this node into a JCR node that can be used in templating function arguments.
+
+Related topics
+
+-   [Templating functions](../)
+
+-   [Arguments and return types](../Templating-function-arguments-and-return-types/)
+
+-   Javadoc info.magnolia.imaging.functions.ImagingTemplatingFunctions
+
+-   [How to work with images using `imgfn`](../../How-to-work-with-images/How-to-work-with-images-using-imgfn/)
+
+-   [Imaging module](../../../../../Modules/List-of-modules/Imaging-module/)

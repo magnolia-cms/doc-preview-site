@@ -1,0 +1,122 @@
+---
+title: "Attaching a SPA project to Magnolia"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/headless/spa-development/attaching-an-SPA-project-to-magnolia/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Headless docs > SPA development > Attaching a SPA project to Magnolia
+---
+
+# Attaching a SPA project to Magnolia
+
+This page describes how you can attach a Single-Page Application (SPA) project to Magnolia so that its content could be edited in the author instance of Magnolia.
+
+The SPA project used as an example on this page is called `angular-sample` and is assembled from two page templates provided by a light module `angular-lm`, which is part of the project.
+
+We only showcase a project built in the Angular framework. However, a similar result could also be achieved with the ReactJS and Vue frameworks, the other two front-end frameworks currently supported by Magnolia [SPA front-end helper libraries](../magnolia-front-end-sdk/).
+
+## [](#_prerequisites)Prerequisites
+
+### [](#_node_js_npm_and_magnolia)Node.js, npm and Magnolia
+
+For development and testing, you need to install:
+
+-   Node.js
+
+-   npm
+
+-   Java (JRE or JDK)
+
+-   Magnolia
+
+
+If you haven’t installed them yet, go to the page [Installing Magnolia through npm CLI (dx-core documentation)](../../../../Getting-started-with-Magnolia/Installing-Magnolia/Installing-Magnolia-through-npm-CLI/) and complete the steps described there.
+
+> **Warning:** For now, skip the step asking you to start Magnolia by entering the mgnl start command.
+
+### [](#_angular_npm_cli)Angular npm CLI
+
+Make sure that the `@angular/cli` npm package is installed as well. If it is not, you can install it by executing the following command:
+
+`sudo npm install -g @angular/cli`
+
+### [](#_creating_an_angular_workspace)Creating an Angular workspace
+
+Create a folder called `dev`, preferably at the same level as the `magnolia` directory. Change to the new folder and create the `angular-sample` workspace in it by copying the `/frontend-helpers-v1/samples/angular-sample/` folder from our `frontend-helpers-v1` repository:
+
+`git clone https://gitlab.com/magnolia-ce/frontend-sdk/frontend-helpers-v1.git`
+
+### [](#_linking_the_light_modules_folder_to_magnolia)Linking the light-modules folder to Magnolia
+
+The workspace contains the `light-modules` folder, which you need to link up with the Magnolia installation.
+
+1.  Go to the `magnolia` folder, where you installed Magnolia.
+
+2.  Delete the existing `light-modules` folder.
+
+3.  Create a symbolic link to the `/dev/angular-sample/light-modules` folder. On a Linux machine, the command to do this would be:
+
+    `ln -s /home/<user-name>/dev/angular-sample/light-modules /home/<user-name>/magnolia/light-modules`
+
+
+## [](#_configuration)Configuration
+
+### [](#_setting_server_url_for_the_application_environment)Setting server URL for the application environment
+
+In the `dev` folder, navigate to `angular-sample/src/environments` and in the `environments.ts` file, check that the `HOST` and `CONTEXT_PATH` variables are set to `http://localhost:8080` and `/magnoliaAuthor`, respectively.
+
+### [](#_granting_the_anonymous_user_rest_access)Granting the anonymous user REST access
+
+In Magnolia, you must allow anonymous access to `/.rest/*`.
+
+1.  Start Magnolia by executing `mgnl start`.
+
+2.  Login to the Magnolia author instance.
+
+3.  In the App launcher, open the Security app.
+
+4.  Under the **Roles** tab, highlight the `anonymous` user and click **Edit role** in the Action bar.
+
+5.  Under **Web access**, add a new `/.rest/` **access path and click \*Save changes**:
+    ![ACl/web access dialog for anonymous role](../../../../_images/headless/6-2-AttachingAnSPApagetoMagnolia_restWebAccess.png)
+
+
+## [](#_installing_and_building_the_project)Installing and building the project
+
+In this step, you install all of the dependencies that are listed in the project’s `package.json`, then build the project and serve it through a local Angular server.
+
+1.  In the `/dev/angular-sample/` folder, enter the following commands:
+
+    `npm install`
+    `npm run build`
+
+
+2.  In the same location, start the local Angular server by executing the `ng serve` command.
+
+
+## [](#_sample_page_content)Sample page content
+
+To access an example SPA page utilizing the project’s templates:
+
+1.  Open the Pages app.
+
+2.  Use the **Import** action of the Action bar to import page content from the `website.angular-sample.yaml` file. You can find it in the `sample-content` subfolder of the `angular-sample` workspace.
+
+3.  You should now see two new pages in the Pages app:
+
+    -   `angular-sample`
+
+    -   `two-columns`
+
+
+
+To view the result SPA page **in Magnolia**, highlight the `angular-sample` page and click the **Preview** action.
+
+To view the page **as served by the `ng` server**, open a new browser window and enter `localhost:4200`.
+
+Related topics
+
+Some topics below may take you to a different part of the docs site and away from the current **product-docs** section.
+
+-   [Single-page applications](../../../../Features/Single-page-applications/)
+
+-   [Pages module](../../../../Modules/List-of-modules/Pages-module/)

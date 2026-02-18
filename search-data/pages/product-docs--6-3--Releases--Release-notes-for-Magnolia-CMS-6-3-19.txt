@@ -1,0 +1,160 @@
+---
+title: "Release notes for Magnolia CMS 6.3.19"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.19/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.19
+---
+
+# Release notes for Magnolia CMS 6.3.19
+
+[LTS release](../../../../support/) • Delivered on January 13, 2026 • Changelog: [22262](https://magnolia-cms.atlassian.net/issues/?filter=22262)
+
+**Magnolia 6.3.19** is a maintenance release centered on enhancing search performance, system stability, and administrative efficiency. This update prioritizes optimizations to the underlying repository structure and resolves specific interface latencies to ensure a smoother experience for operators and developers.
+
+The release optimizes indexing by offering lighter full-text search configurations and removing document merge limits, alongside a new configuration for trailing slashes in multisite setups. Notable fixes include resolving asset chooser latency, fixing H2 repository startup hangs on macOS, and correcting ordering inconsistencies in multi-link fields.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.19/magnolia-dx-core-webapp-6.3.19.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.19/travel-demo-webapp-6.3.19.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.19/travel-demo-community-webapp-6.3.19.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+
+
+## [](#_improvements)Improvements
+
+-   [MAGNOLIA-9746](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9746) Offer lighter full-text search index configurations
+
+-   [MAGNOLIA-9825](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9825) Remove `maxMergeDocs` limit from the `configuration` workspace
+
+    For more, see [Indexing performance](../../Administration/Architecture/Workspaces/workspace-configuration/#_performance).
+
+-   [MGNLUI-9312](https://magnolia-cms.atlassian.net/browse/MGNLUI-9312) Check file headers when uploading an image using `DamUploadField`
+
+-   [MULTISITE-227](https://magnolia-cms.atlassian.net/browse/MULTISITE-227) A configurable way to end links with a slash
+
+    For more, see [Link management](../../Administration/Architecture/configuration-management/link-management/).
+
+
+### [](#_security_improvements)Security improvements
+
+[BUILD-1501](https://magnolia-cms.atlassian.net/browse/BUILD-1501), [BUILD-1502](https://magnolia-cms.atlassian.net/browse/BUILD-1502), [BUILD-1506](https://magnolia-cms.atlassian.net/browse/BUILD-1506), [MGNLGQL-202](https://magnolia-cms.atlassian.net/browse/MGNLGQL-202), [MGNLGQL-203](https://magnolia-cms.atlassian.net/browse/MGNLGQL-203), [MGNLREST-885](https://magnolia-cms.atlassian.net/browse/MGNLREST-885)
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](../../../../support/) if you need more information.
+
+#### [](#_security_hardening_in_the_graphql_module)Security hardening in the GraphQL module
+
+This release introduces query complexity analysis and depth limiting to the [GraphQL module](../../Modules/List-of-modules/GraphQL-module/), protecting instances against potential denial-of-service (DoS) attacks. Existing queries continue to function with the new conservative default limits.
+
+What’s new:
+
+-   Query complexity limiting: By default, queries are limited to a maximum of `200` fields.
+
+-   Query depth limiting: The maximum depth of a query is now `15` levels by default.
+
+-   Field duplication detection: Duplicate fields in a query now count toward the complexity limit.
+
+
+You can adjust these limits through the module’s configuration.
+
+Additionally, client applications now receive more accurate HTTP response status codes, distinguishing between client-side and server-side errors. This change improves the debugging experience and aligns with REST/HTTP best practices.
+
+| Scenario | HTTP code before | HTTP code now |
+| --- | --- | --- |
+| `ValidationError` (for example, `DuplicateDirectiveName`, `FieldUndefined`, `UnusedVariable`) | `500` | `400` |
+| Query batching (JSON array format) | `500` | `400` |
+| Malformed JSON in request body | `500` | `400` |
+
+## [](#_bug_fixes)Bug fixes
+
+-   [MGNLCE-428](https://magnolia-cms.atlassian.net/browse/MGNLCE-428) H2 repository hangs during startup on macOS after sleep due to `AUTO_SERVER=TRUE` triggering reverse DNS lookup
+
+-   [MGNLDAM-2029](https://magnolia-cms.atlassian.net/browse/MGNLDAM-2029) Asset chooser slowness
+
+    Investigation into asset chooser slowness led to the reopening of [MGNLDAM-1860](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1860) regarding the display of dimension information for TIFF images.
+
+-   [MGNLUI-8663](https://magnolia-cms.atlassian.net/browse/MGNLUI-8663) **Show versions** action always displays the latest version on custom content apps
+
+-   [MGNLUI-9123](https://magnolia-cms.atlassian.net/browse/MGNLUI-9123) Selected item isn’t scrolled into view when sorting
+
+-   [MGNLUI-9262](https://magnolia-cms.atlassian.net/browse/MGNLUI-9262) `jcrMultiLinkField` doesn’t maintain the order in which the nodes were selected
+
+-   [MGNLUI-9327](https://magnolia-cms.atlassian.net/browse/MGNLUI-9327) `JcrSelectFieldSupport` is no longer public
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MGNLTOMCAT-67](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-67) Update `org.apache.tomcat:tomcat` version to `9.0.113`
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Admincentral `6.3.9`
+
+-   Barebones Tomcat Bundle `1.2.43`
+
+-   Community Edition `6.3.19`
+
+-   Content Editor `3.0.6`
+
+-   DAM `4.0.13`
+
+-   DX Core `6.3.19`
+
+-   Demo Projects `6.3.19`
+
+-   GraphQL `2.0.2`
+
+-   Magnolia `6.3.19`
+
+-   Multiple Pages Apps `2.0.1`
+
+-   Multisite `3.0.2`
+
+-   Pages `6.3.10`
+
+-   Personalization `3.0.11`
+
+-   Publishing `2.0.5`
+
+-   REST Framework `3.1.6`
+
+-   Repository Tools `2.0.2`
+
+-   Third-party library BOM for Extensions `6.3.19`
+
+-   Third-party library BOM `6.3.19`
+
+-   UI `6.3.19`
+
+-   Vaadin Compatibility Addons `1.3.22`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.3.18.
+
+-   [DAM](#5.0@dam:ROOT:changelog.adoc#_changelog) `5.0.1`
+
+-   [DAM app](#5.0@dam-app:ROOT:changelog.adoc#_changelog) `5.0.1`
+
+-   [Cloudinary External DAM](#2.1@cloudinary:ROOT:changelog.adoc) `2.1.5`
+
+-   [Frontify DAM connector](#2.0@frontify-dam-connector:ROOT:index.adoc#_changelog) `2.0.5`
+
+-   [Image focal](#1.0@image-focal:ROOT:changelog.adoc#_changelog) `1.0.1`
+
+-   [Siteimprove](#2.1@siteimprove:ROOT:index.adoc#_changelog) `2.1.0`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.
+
+Thanks a mill!
+
+Special thanks go out to Tom Duffey.

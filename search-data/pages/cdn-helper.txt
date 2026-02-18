@@ -1,0 +1,33 @@
+---
+title: "CDN Helper module"
+url: https://docs.magnolia-cms.com/cdn-helper/
+category: Modules
+version: modules
+breadcrumb: CDN Helper module
+---
+
+# CDN Helper module
+
+[Operations](../product-docs/7.0/use-cases/operations/) [Tier 1](../incubator-modules/incubator-module-list/#_tier_1_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/cdn-helper) [CDNHELPER](https://magnolia-cms.atlassian.net/browse/CDNHELPER) [Magnolia 6.4](../product-docs/7.0/) compatible
+
+|     |     |
+| --- | --- |
+| Issues | [CDNHELPER](https://magnolia-cms.atlassian.net/browse/CDNHELPER) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/cdn-helper) |
+| Latest | 3.0.0 |
+
+The **CDN Helper module** provides an extension to the current browser cache policy to support the `private` attribute that tells external systems like a CDN to exclude content from their cache.
+
+> **Warning:** This module is at the INCUBATOR level.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.cdn</groupId>
+  <artifactId>magnolia-cdn-helper</artifactId>
+  <version>3.0.0</version>
+</dependency>
+```

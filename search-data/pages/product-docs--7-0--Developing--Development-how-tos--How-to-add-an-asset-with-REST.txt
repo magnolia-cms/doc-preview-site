@@ -1,0 +1,219 @@
+---
+title: "How to add an asset with REST"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Development-how-tos/How-to-add-an-asset-with-REST/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Development how-tos > How to add an asset with REST
+---
+
+# How to add an asset with REST
+
+This page explains how you can add assets such as images to the Magnolia [Digital asset management](../../../use-cases/Digital-asset-management/) (DAM) through REST.
+
+## [](#_understanding_the_basics)Understanding the basics
+
+Magnolia provides a digital asset management system which stores data in the `dam` JCR [workspace](../../../Administration/Architecture/Workspaces/). The assets can be managed with the [Magnolia Assets app](../../../Apps/List-of-apps/Assets-app/), but you can also use REST’s [Nodes endpoint](../../API/Nodes-and-properties-APIs/Nodes-API/) to add them to the workspace or update them there.
+
+### [](#_using_rest_to_add_nodes)Using REST to add nodes
+
+The [Nodes API](../../API/Nodes-and-properties-APIs/Nodes-API/) provides methods to create, update, and delete nodes in any Magnolia JCR workspace, which makes it suitable for asset management.
+
+> **Warning:** You can add only one node per request. You cannot put nested nodes.
+
+We recommend that you first take a look at the [Nodes API](../../API/Nodes-and-properties-APIs/Nodes-API/) documentation.
+
+### [](#_security)Security
+
+When using REST in a production environment, you should be also familiar with [REST security](../../../Modules/List-of-modules/REST-module/REST-security/). In the following [example](#_adding_an_asset), we use the `superuser` to add an asset to the Magnolia `author` instance. In a production environment, you should use another user who you have to grant the required permissions. Please see [REST security](../../../Modules/List-of-modules/REST-module/REST-security/) to set up the security accordingly.
+
+Below we use [cURL](https://en.wikipedia.org/wiki/CURL) to send the REST requests. The requests contain the user name (*superuser*) and the password, which is a crude way of authentication. Do this only if you send the requests via SSL using the `https` protocol.
+
+### [](#_structure_of_asset_nodes_in_the_dam_workspace)Structure of asset nodes in the `dam` workspace
+
+The Magnolia DAM stores assets in the following manner:
+
+| Node name | Value | Node type |
+| --- | --- | --- |
+| ⸬ my-asset |     | mgnl:asset |
+| ⬩ name | logo |     |
+| ⸬ jcr:content |     | mgnl:resource |
+| ⬩ jcr:data | iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAY…​ |     |
+
+The node scheme above is simplified in that it omits some properties. Please note the following things:
+
+-   The main node of the asset is of the `mgnl:asset` node type.
+
+-   The main node has a direct subnode of the `mgnl:resource` type.
+
+-   The subnode contains the `jcr:data` property which stores the binary data. The binary data is stored in the [Base64](https://en.wikipedia.org/wiki/Base64) format. (The value has been truncated for better readability.)
+
+
+## [](#_adding_an_asset)Adding an asset
+
+In this example, let’s add the following image to the root directory of the workspace.
+
+![Noodle soup image](../../../_images/noodle-soup.png)
+
+To add it, you have to accomplish the following tasks:
+
+1.  Add a node of the `mgnl:asset` type to the desired path in the `dam` workspace. The node must contain all the properties which you want to add as metadata.
+
+2.  Add another node as a subnode of the first node.
+
+    1.  Node type: `mgnl:resource`.
+
+    2.  Node name: `jcr:content`.
+
+        > **Caution:** Before the release of Magnolia 6.2.18, the REST module (version 2.2.11 and earlier) stored node names called jcr:content incorrectly as jcr-content.For more details about this issue, see MGNLREST-349.If you tried to create a node name containing an invalid character (listed in JCR v2.0 Specification: 3 Repository Model), the endpoint would not create the node and return the Invalid path message.
+
+    3.  With the `jcr:data` property, which must contain binary data in the Base64 format.
+
+
+
+This means you have to send at least two requests to add an asset.
+
+### [](#_adding_the_mgnlasset_node_with_the_metadata)Adding the `mgnl:asset` node with the metadata
+
+Create a new asset `noodle-soup` in `dam` root
+
+```js
+curl http://localhost:8080/magnoliaAuthor/.rest/nodes/v1/dam \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -X PUT \
+  --user superuser:superuser \
+  --data \
+'{
+  "name": "noodle-soup",
+  "type": "mgnl:asset",
+  "path": "/noodle-soup",
+  "properties": [
+    {
+      "name": "name",
+      "type": "String",
+      "multiple": false,
+      "values": [
+        "noodle-soup"
+      ]
+    },
+    {
+      "name": "type",
+      "type": "String",
+      "multiple": false,
+      "values": [
+        "png"
+      ]
+    },
+    {
+      "name": "title",
+      "type": "String",
+      "multiple": false,
+      "values": [
+        "I love noodle soup"
+      ]
+    }
+  ]
+}'
+```
+
+You can check the upload of the metadata using the Magnolia Assets subapp. If you run a Magnolia instance locally, you can use the following URL to go to the asset directly: [http://localhost:8080/magnoliaAuthor/.magnolia/admincentral#app:dam:jcrBrowser;/noodle-soup](http://localhost:8080/magnoliaAuthor/.magnolia/admincentral#app:dam:jcrBrowser;/noodle-soup).
+
+> **Note:** There is no binary data added to the asset so far.
+
+### [](#_adding_the_mgnlresource_node_with_the_binary_data)Adding the `mgnl:resource` node with the binary data
+
+Create a subnode with the png as a child of `/noodle-soup`
+
+```js
+curl http://localhost:8080/magnoliaAuthor/.rest/nodes/v1/dam/noodle-soup \
+  -H "Accept: application/json" \
+  -H "Content-Type: application/json" \
+  -X PUT \
+  --user superuser:superuser \
+  --data \
+'{
+  "name": "jcr:content",
+  "type": "mgnl:resource",
+  "path": "/noodle-soup/jcr:content",
+  "properties": [
+    {
+      "name": "jcr:data",
+      "type": "Binary",
+      "multiple": false,
+      "values": [ "iVBORw0KGgoAAAANSUhEUgAAADEAAAAtCAAAAAAi49wgAAADyklEQVRIx83W2VPaVxQHcNv/oP9CHzp97ENnOtOnPnQmL51OZzpOW9e6gWs1hlSJuLRalyg6uGQo7pW4i2FRROuowUiCBjdAwAVRQDaNgmwC99uHTFJwSfAt9+33m/uZ+d1zzj3nF4PbrpgPRRC965ZC2JDhv5U4S/FT3LcSfcsLPHgr0q3RCnueM9ULzpJMFK1gKx8/h7zVme6IUpiLzbSQnepiqKM9R8NOuT5AM/RPRnvy/ep1Ngan5UwSrSjfTT1VVR1ke98TXeK0W+3nBNC0TIlPU00U6zvyYZcPlMdmPKhj1dHzfin8WfODt0L1x8aNVWIdz6meFbK233z0Us/fVV+NDfNvqkR9DeOlD4cU7sfZC14ACOUsl+4UyZJ/e0muE65HNfsAXqXyqznJnV90DPFmhwZpmrS1LI+zv8RyVRipawB8m3nanfzuJym8ex+NLX0tjv9sPl4LwJgvvyyMmTbA3PXjJ4t7deZM8SuKpGdRLizmcWr6cpu0BN6/FiOFl2qHg1Wh9sSqjs6OjcqZ+p/G/Dbp6Kdlvzth7CzQwl9oiBACKaRZOgDqIfbD5vZhmYWYKh/MqA6VU8W1eliquvymonBBEnxctg/Evm90wS0AAHOunBmblh7PWtkt7bvAHN1TaQkTztJxLsFCUt0/HPrdpfYuhcIE4jMDgEnEILOHgIIxrggTju9KQpCxBTn3FHAN9GxOT2t8hg2ZdEXtfBtMwfeyMOGJ2QfYa1TP8TcEuBOEpTa7WzQ7zR9ffSsuvl0PE6EvlcBcb3926gJ8wjagdPPpn413Egt+PTl7/ri5TWgFzj7Xh8fqfpwHhJ/cwR9pTJwKAGuxTb2dLXGSkIoqXjfsr+hAmmI84YJfW+FrOvIb1Fq7S1qfQDGFrLJBCr9fTIiRTu8LuslAc2FEPvZYy3cV6WKDcYOTJHF4zwkArNLWxpwzo7yx9oRZ1sizicgqoZ4d5I3M9bY+0YQMiVQGs5VZlNS2lbGVMq/Tbe/OZylAO44USyMIStN5ttcJDZzsbelWevKMNTuA52nOsBvaR5cqMUC1AgFFbeGUzgMAHczuST3B0YG0puDfcyCQb7tc7bv0IAC4N7klWZWdvAnJ5Dj3YWZh94vXjU0gvHqjRNz/e/OBVrWu0u45Qm/eqEqDVwVpEd3Yg3Zyz6+758GWweD1YD339PrOEOKVnVyz/2K0yn1j99GkzfgvAxV1OvSOOeifjJs4Dnv2Lt/vPH7P5PQ+K8sdkG9bHXajUlKdOXESzax1qSW9jfUNHP6q7QP+A4hY/wG4cLbAswvBqAAAAABJRU5ErkJggg==" ]
+    },
+    {
+      "name": "height",
+      "type": "Long",
+      "multiple": false,
+      "values": [
+        "5"
+      ]
+    },
+    {
+      "name": "width",
+      "type": "Long",
+      "multiple": false,
+      "values": [
+        "5"
+      ]
+    },
+    {
+      "name": "extension",
+      "type": "String",
+      "multiple": false,
+      "values": [
+        "png"
+      ]
+    },
+    {
+      "name": "fileName",
+      "type": "String",
+      "multiple": false,
+      "values": [
+        "noodle-soup.png"
+      ]
+    },
+    {
+      "name": "size",
+      "type": "Long",
+      "multiple": false,
+      "values": [
+        "1027"
+      ]
+    },
+    {
+      "name": "jcr:mimeType",
+      "type": "String",
+      "multiple": false,
+      "values": [
+        "image/png"
+      ]
+    }
+  ]
+}'
+```
+
+After this step, you should be able to see the `noodle-soup` image in the Magnolia Assets browser:
+
+![Noodle-soup.png image in the Magnolia Assest browser](../../../_images/6-2-24-noodleSoupPngInMagnoliaAssetsBrowser.png)
+
+## [](#_requirements)Requirements
+
+To use the [Nodes endpoint API](../../API/Nodes-and-properties-APIs/Nodes-API/), your Magnolia bundle must contain the [REST module](#rest:ROOT:index.adoc), particularly the [magnolia-rest-services](#rest:ROOT:index.adoc#_rest_services) module. [Preconfigured Magnolia webapps](../../Bundles-and-webapps/#_list_of_webapps_v) already contain the Magnolia REST modules. If you need to install the modules, see [REST module - Installing](#rest:ROOT:index.adoc#_installing_with_maven).
+
+## [](#_image_credits)Image credits
+
+[https://www.flaticon.com/free-icon/noodles\_94375](https://www.flaticon.com/free-icon/noodles_94375)
+
+Related topics
+
+-   [Digital asset management](../../../use-cases/Digital-asset-management/)
+
+-   [Assets app](../../../Apps/List-of-apps/Assets-app/)
+
+-   [Nodes API](../../API/Nodes-and-properties-APIs/Nodes-API/)
+
+-   [Getting started with REST](../../../Getting-started-with-Magnolia/Getting-started-with-REST/)
+
+-   [REST security](../../../Modules/List-of-modules/REST-module/REST-security/)

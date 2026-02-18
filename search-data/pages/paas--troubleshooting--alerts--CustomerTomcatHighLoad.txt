@@ -1,0 +1,101 @@
+---
+title: "Tomcat is showing high load or slow requests"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/alerts/CustomerTomcatHighLoad/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > Tomcat is showing high load or slow requests
+---
+
+# Tomcat is showing high load or slow requests
+
+## [](#_symptom)Symptom
+
+`CustomerTomcatHighLoad` and/or `CustomerTomcatSlowRequests` alerts are firing.
+
+> **Note:** CustomerTomcatHighLoad and CustomerTomcatSlowRequests alerts are sent to subscribers via email.
+
+## [](#_observations)Observations
+
+> **Note:** The Magnolia author or public slow response may be active at the same time as a CustomerTomcatHighLoad alert. Both alerts are general indicators of slow Magnolia performance.
+
+The Tomcat high load and slow requests alerts can indicate a Magnolia instance on the verge of being overwhelmed.
+
+The Tomcat configuration set by the Magnolia Helm chart is:
+
+```none
+    <Executor maxThreads="300" (1)
+              minSpareThreads="50"
+              name="{{ .name }}ThreadPool"
+              namePrefix="{{ .name }}-http--" />
+
+    <Connector acceptCount="100" (2)
+               connectionTimeout="20000" (3)
+               executor="{{ .name }}ThreadPool"
+               maxKeepAliveRequests="32" (4)
+               port="8080"
+               protocol="org.apache.coyote.http11.Http11NioProtocol"
+               redirectPort="40168"
+               URIEncoding="UTF-8" />
+    <!-- https connector for author and SSL/TLS in general -->
+    <Connector acceptCount="100"
+               connectionTimeout="20000"
+               executor="{{ .name }}ThreadPool"
+               maxKeepAliveRequests="32"
+               port="8443"
+               protocol="org.apache.coyote.http11.Http11NioProtocol"
+               secure="true"
+               scheme="https"
+               proxyPort="443"
+               URIEncoding="UTF-8" />
+```
+
+|     |     |
+| --- | --- |
+| **1** | Tomcat has up to `300` threads for serving requests to Magnolia and will queue up to `300` requests. |
+| **2** | Tomcat will accept up to `100` simultaneous connections. |
+| **3** | Tomcat will time out connections after `20` seconds. |
+| **4** | Tomcat will accept up to `32` keep alive connections. |
+
+A high request rate plus a slow Magnolia response time can rapidly exhaust the Tomcat thread pool leading Tomcat to wait for a thread from the thread pool and Magnolia unable to keep up with incoming and queued requests.
+
+In this situation, the average response as measured by the ingress, the average response time for misses/passes by the CDN or the origin latency as measured by the CDN (e.g., Fastly) will also greatly increase.
+
+### [](#_alert_customertomcathighload)Alert: CustomerTomcatHighLoad
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>avg_over_time(tomcat_thread_count[5m]) &gt; 200</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>5</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>source</code></p></li><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>pod</code></p></li><li><p><code>instance</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+### [](#_alert_customertomcatslowrequests)Alert: CustomerTomcatSlowRequests
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>avg_over_time(tomcat_threads_busy[5m]) &gt; 100</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>5</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>source</code></p></li><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>pod</code></p></li><li><p><code>instance</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+### [](#_check_the_request_rate_to_magnolia)Check the request rate to Magnolia
+
+The request rate is shown in the [Standard / Magnolia: Filter Chain](https://grafana.magnolia-platform.com/d/KUE-IGzizv2/magnolia-filter-chain) dashboard. Select the customer data source and the Magnolia instance noted in the alert.
+
+The request rate is also shown in the [Operations / Response overview](https://grafana.magnolia-platform.com/d/1Zg4Cu6nk/response-overview) dashboard.
+
+A high request rate is anything over 5 requests / second.
+
+### [](#_check_the_filter_chain_response_time)Check the filter chain response time
+
+The average response time by quantile (50%, 90%, 95%, 99%) is shown in the [Standard / Magnolia: Filter Chain](https://grafana.magnolia-platform.com/d/KUE-IGzizv2/magnolia-filter-chain) dashboard. Select the customer data source and the Magnolia instance noted in the alert.
+
+The 95% filter chain response is also shown in the [Operations / Response overview](https://grafana.magnolia-platform.com/d/1Zg4Cu6nk/response-overview) dashboard.
+
+A slow filter chain response time for 95% of requests is 500 milliseconds or greater.
+
+### [](#_check_the_ingress_and_cdn_average_response_times)Check the ingress and CDN average response times
+
+Check if the ingress average response time or the CDN average response time are much greater (more than 2x) than the 95% filter response time.
+
+## [](#_solutions)Solutions
+
+This section provides solutions that should help resolve the issue in most cases.
+
+### [](#_analyze_magnolia_implementation)Analyze Magnolia implementation
+
+In general Magnolia performance issues are due to the project implementation rather than an infrastructure problem.
+
+If the Magnolia instance is a production public instance, check the incoming requests from the CDN (*e.g., Fastly*) for suspicious activity such as a high volume of requests from one or a few IPs; this could be load testing or an ongoing DDoS attack.
+
+Restarting Magnolia instances may clear backlogged connection requests, but it won’t necessarily fix slow request processing by Magnolia and it is likely that conditions leading to the `CustomerTomcatHighLoad` alert will continue to occur.

@@ -1,0 +1,89 @@
+---
+title: "Fallback site"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Site-definition/How-to-use-Multisite/Fallback-site/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Site definition > How to use Multisite > Fallback site
+---
+
+# Fallback site
+
+The Multisite module provides a fallback site. The fallback site is a special site definition that is used when no site matches the request. Think of it as a default.
+
+> **Tip:** Creating a fallback.yaml file in a light module’s sites folder overrides the default fallback definition. A fallback definition is created automatically by info.magnolia.multisite.sites.MultiSiteManager#createDefaultFallbackSite if no fallback exists (file-based or in the JCR).
+
+> **Caution:** In Magnolia 6.2, a fallback site could be a folder. In Magnolia 6.3, it has to be a node.
+
+## [](#_choosing_a_fallback_site_definition)Choosing a fallback site definition
+
+When using multisite, it is common to have one main site and some additional sites. It generally makes sense to adapt the fallback site so that it extends your main site. Use the `inherit` property to reference a complete site definition.
+
+For example, the Magnolia Travel Demo has two sites: travel-demo and sportstation. When the demo modules are installed, you can change the fallback definition to extend travel-demo site.
+
+> **Note:** The fallback definition filename must be named fallback.yaml.
+
+-   Full qualified fallback configuration
+
+-   Fallback config inherited from travel-demo
+
+
+<my-light-module>/sites/fallback.yaml example definition
+
+```yaml
+templates:
+  class: info.magnolia.module.site.templates.ReferencingPrototypeTemplateSettings
+  prototypeId: your-module:pages/default-prototype-of-all-page-templates
+
+theme:
+  name: default-theme
+
+i18n:
+  class: info.magnolia.cms.i18n.DefaultI18nContentSupport
+  enabled: true
+  fallbackLocale: en
+  locales:
+    en:
+      country: ''
+      enabled: true
+      language: en-US (1)
+    fr:
+      country: ''
+      enabled: true
+      language: fr (2)
+```
+
+|     |     |
+| --- | --- |
+| **1** | A region-based locale `en-US.` |
+| **2** | A language-based locale `fr`. It’s possible to use language-only or region-based locales. |
+
+The overrides in the example site definition below only make sense if you’ve installed the [travel-demo](../../../../../Getting-started-with-Magnolia/Demo/).
+
+<my-light-module>/sites/fallback.yaml example definition
+
+```yaml
+!inherit:travel (1)
+mappings: !override (2)
+domains: !override (2)
+i18n: !override (2)
+  class: info.magnolia.cms.i18n.IetfI18nContentSupport (3)
+  enabled: true
+  fallbackLocale: fr
+  locales: (4)
+    fr:
+      country: ''
+      enabled: true
+      languageTag: fr-FR (5)
+    cs:
+      country: ''
+      enabled: true
+      languageTag: cs-CZ (5)
+```
+
+|     |     |
+| --- | --- |
+| **1** | This fallback definition includes another site definition, `travel`, which contains the properties mappings, domains, and i18n. |
+| **2** | The `mappings`, `domains`, and `i18n` properties are overridden. |
+| **3** | The language property’s class follows the IETF BCP 47 standard. |
+| **4** | A new `locales` property is defined. |
+| **5** | [IETF BCP 47 language tags](../../../../../Administration/Language/Language-configuration/#_define_locales_for_the_site). |

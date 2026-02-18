@@ -1,0 +1,76 @@
+---
+title: "Search in Magnolia"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Authoring/Search/Searching-for-content/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Authoring > Searching for content
+---
+
+# Search in Magnolia
+
+At the core of the Magnolia UI, the Find Bar offers powerful full-text search capabilities across all your content. Additionally, you can target your search by using the in-app search functionality within content apps.
+
+Precise [filters](../Search-filters/) are provided to optimize content discovery in all search entry points. These filters can be customized by your administrator to align with your specific requirements. Moreover, seamless search functionality across content stored outside of Magnolia is achievable by integrating any REST-compliant data source.
+
+## [](#_full_text_search_across_all_content)Full-text search across all content
+
+The Find Bar allows you to search across all content inside and outside Magnolia. The search covers all Magnolia and custom-content apps, assets, and pages. Developers can integrate external datasets using the API.
+
+Start typing in the Find Bar to see search results appear in real-time (from three characters on). Results are organized by app and by type of content (such as app, page, asset, or tour).
+
+> **Tip:** Use the ↑ and ↓ arrow keys to move through search results. Press Enter to open the highlighted result.
+
+## [](#_targeted_search_within_content_apps)Targeted search within content apps
+
+The in-app search feature makes it easier to find specific content. As a rule of thumb, it searches text fields such as those in the Name or Title columns when you type in the search bar.
+
+This functionality works seamlessly with [filters](../Search-filters/), enabling you to quickly locate relevant results in large content collections.
+
+![Assets app with all filters added](../../../_images/authoring/assets-app-all-filters.png)
+
+> **Tip:** Search results are displayed in a flat list view for content apps.
+
+### [](#_search_in_chooser_dialogs)Search in chooser dialogs
+
+Search is also available in chooser dialogs of apps that use a JCR-based data source.
+
+![Asset chooser search](../../../_images/inAppSearch-fullText.png)
+
+> **Note:** In Asset Chooser dialogs, filtering isn’t available. Use the full-text search field to quickly find the items you need.
+
+## [](#_search_commands)Search commands
+
+The Find Bar automatically recognizes certain commands. For example, if you want to open the pages app, type `open Pages app` in the Find Bar and press **Enter**. You must use the exact app name, as it appears in the App Launcher.
+
+Other useful commands are `find *(app name)* about *(content)*` (for example `find *Pages* about *travel*`) to find content within an app, and `find *(node)(app name)*` (for example, `find *tour-type Page*`) to find a given node in a specific app.
+
+## [](#_search_for_a_specific_path)Search for a specific path
+
+You can also use the Find Bar to search for a specific path. This allows you to reach a target node more quickly than by checking an app’s node tree or by browsing search results returned for a less specific keyword or phrase.
+
+![Searching for a specific path](../../../_images/authoring/find-bar-path-search.png)
+
+## [](#_search_result_ranking)Search result ranking
+
+Search results are ranked in the following order:
+
+1.  Last used content
+
+    If you’ve recently searched for something and clicked on a result, that result is prioritized and appears higher up in your search results the next time you perform a search.
+
+2.  Most used content
+
+    If no recent results are found, the system prioritizes content that you’ve interacted with frequently in the past. For example, if you previously clicked on a search result for a page titled `Swiss-cheese` multiple times, then it’s displayed at the top of the search results when you search for the word 'Swiss'.
+
+3.  User group-based recommendations
+
+    If neither recent nor frequently used content is available, the system considers recommendations from users in your user group (such as the 'editors' group). For example, if other editors have interacted with a page titled `Swiss-watch`, it’s displayed as the top result when you search for 'Swiss' for the first time.
+
+
+Related topics
+
+-   [Filtering](../Search-filters/)
+
+-   [Periscope module](../../../Modules/List-of-modules/Periscope-module/)
+
+-   [User Result Ranker module](../../../Modules/List-of-modules/User-result-ranker-module/)

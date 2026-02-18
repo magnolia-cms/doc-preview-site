@@ -1,0 +1,245 @@
+---
+title: "Webapp deployment"
+url: https://docs.magnolia-cms.com/paas/deployment/webapp_deployment/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Webapp deployment
+---
+
+# Webapp deployment
+
+A Java Web Application (webapp) is a collection of servlets, other Java classes, static resources (*such as HTML pages*), other resources, and meta information that describes the webapp bundled together.
+
+The Java webapp in DX Cloud has a typical structure.
+
+Webapp structure example
+
+```text
+custom
+├── .gitignore
+├── .gitlab-ci.yml (1)
+├── .m2
+│   └── settings.xml
+├── README.md
+├── custom-webapp
+│   ├── Dockerfile
+│   ├── pom.xml
+│   ├── src
+│   └── target
+├── pom.xml
+└── values.yml (2)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `.gitlab-ci.yml` file ensures your development changes are automatically picked up. |
+| **2** | The `values.yml` file ensures your DX Cloud application is deployed to the your cluster. |
+
+## [](#_the_pipeline)The pipeline
+
+When DX Cloud is set up with GitLab, changes in your project automatically trigger your pipeline via what is configured in your `.gitlab-ci.yml` file.
+
+This way, changes are picked up automatically and you don’t have to worry about it. However, the final *deployment* step is sometimes manual and you’ll need to make a deploy action to finish the process. This is typically done by clicking a button manually in GitLab.
+
+![gitlab manual deploy action](../../_images/deployment/gitlab-manual-deploy-action.jpg)
+
+## [](#_the_gitlab_ci_yml_file)The `.gitlab-ci.yml` file
+
+It’s important that you configure the `.gitlab-ci.yml` file correctly so that your development changes are picked up and deployed. If you are using a different CI/CD pipeline, you can use this file as a blueprint.
+
+> **Note:** Magnolia automatically picks up the changes when using this approach.
+
+.`gitlab-ci.yml`
+
+```yaml
+# Use the latest Maven version
+
+stages:
+  - build
+  - push
+  - deploy
+
+variables:
+  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+
+# Build the Maven project.
+build-magnolia: (1)
+  image: maven:3.6-jdk-11-slim
+  stage: build
+  cache:
+    key: "$CI_JOB_NAME"
+    paths:
+      - $CI_PROJECT_DIR/.m2/repository
+  before_script:
+    - mkdir -p $CI_PROJECT_DIR/.m2
+  script:
+    - mvn $MAVEN_CLI_OPTS package
+    - ls -Fahl base-webapp/target
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - base-webapp/target/*.war
+
+# Build docker images based on artifacts from the build stage.
+push-docker-image: (2)
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  stage: push
+  dependencies:
+    - build-magnolia
+  before_script:
+    - export WEBAPP_IMAGE=${CI_REGISTRY_IMAGE}/magnolia-webapp
+    - export GIT_TAG=$CI_COMMIT_SHORT_SHA (3)
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json (4)
+  script:
+    - cd base-webapp
+    - /kaniko/executor --context . --dockerfile ./Dockerfile --destination "$WEBAPP_IMAGE:$GIT_TAG"
+
+.deploy: (5)
+  image: registry.gitlab.com/mironet/helm-kubectl-gomplate:v0.0.5
+  stage: deploy
+  before_script:
+    - export GIT_TAG=$CI_COMMIT_SHORT_SHA
+    - helm repo add mironet https://charts.mirohost.ch/
+    - export HELM_CHART_VERSION=1.17.2
+    - export KUBECONFIG=$KUBE_CONFIG (6)
+    - chmod 600 $KUBE_CONFIG (6)
+
+deploy-dev: (7)
+  extends: .deploy
+  script:
+    - export DEPLOYMENT=dev
+    - export LE_ENVIRONMENT=letsencrypt-prod
+    - cat values.yml | gomplate > ${DEPLOYMENT}.yml
+    - cat ${DEPLOYMENT}.yml
+    - kubectl create namespace ${DEPLOYMENT} --dry-run=client -o yaml | kubectl annotate --local -f - field.cattle.io/projectId=`kubectl get namespace default --output="jsonpath={.metadata.annotations.field\.cattle\.io/projectId}"` -o yaml  | kubectl apply -f - (8)
+    - |
+      sleep 2
+      until kubectl get namespace ${DEPLOYMENT}; do
+        echo "Waiting for namespace ${DEPLOYMENT} to be created..."
+        sleep 2
+      done
+    - helm upgrade -i ${DEPLOYMENT} mironet/magnolia-helm --version ${HELM_CHART_VERSION} -f ${DEPLOYMENT}.yml -n ${DEPLOYMENT} (9)
+    - kubectl -n default get secret gitlab -o json | jq 'del(.metadata.annotations,.metadata.labels,.metadata.namespace,.metadata.resourceVersion,.metadata.uid,.metadata.namespace,.metadata.creationTimestamp)' | kubectl apply -n ${DEPLOYMENT}  -f - (10)
+    - kubectl -n default get secret s3-backup-key -o json | jq 'del(.metadata.annotations,.metadata.labels,.metadata.namespace,.metadata.resourceVersion,.metadata.uid,.metadata.namespace,.metadata.creationTimestamp)' | kubectl apply -n ${DEPLOYMENT}  -f - (10)
+  environment:
+    name: dev (11)
+  when: manual (12)
+
+deploy-uat: (7)
+  extends: .deploy
+  script:
+    - export DEPLOYMENT=uat
+    - export LE_ENVIRONMENT=letsencrypt-prod
+    - cat values.yml | gomplate > ${DEPLOYMENT}.yml
+    - cat ${DEPLOYMENT}.yml
+    - kubectl create namespace ${DEPLOYMENT} --dry-run=client -o yaml | kubectl annotate --local -f - field.cattle.io/projectId=`kubectl get namespace default --output="jsonpath={.metadata.annotations.field\.cattle\.io/projectId}"` -o yaml  | kubectl apply -f - (8)
+    - |
+      sleep 2
+      until kubectl get namespace ${DEPLOYMENT}; do
+        echo "Waiting for namespace ${DEPLOYMENT} to be created..."
+        sleep 2
+      done
+    - helm upgrade -i ${DEPLOYMENT} mironet/magnolia-helm --version ${HELM_CHART_VERSION} -f ${DEPLOYMENT}.yml -n ${DEPLOYMENT} (9)
+    - kubectl -n default get secret gitlab -o json | jq 'del(.metadata.annotations,.metadata.labels,.metadata.namespace,.metadata.resourceVersion,.metadata.uid,.metadata.namespace,.metadata.creationTimestamp)' | kubectl apply -n ${DEPLOYMENT}  -f - (10)
+    - kubectl -n default get secret s3-backup-key -o json | jq 'del(.metadata.annotations,.metadata.labels,.metadata.namespace,.metadata.resourceVersion,.metadata.uid,.metadata.namespace,.metadata.creationTimestamp)' | kubectl apply -n ${DEPLOYMENT}  -f - (10)
+  environment:
+    name: dev (11)
+  when: manual (12)
+```
+
+<div class="joplin-table-wrapper"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>In the <code>build-magnolia</code> stage, the web app is built using maven, as with any Magnolia project. If using <a href="#6.3@product-docs:ROOT:index.adoc" class="xref unresolved">Magnolia 6.3</a>, you need Java 17 under <code>build-magnolia.image</code>.<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">build-magnolia:
+  image: maven:3.8-openjdk-17-slim</code></pre></div></div></td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>In the <code>push-docker-image</code> stage, the Docker image is built and pushed to the Docker registry (<em>in this case the GitLab registry</em>), using the <code>Dockerfile</code> located in the webapp folder.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>The <code>GIT_TAG</code> is used to set the tag for the created Docker image.</td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td>The environment variables are set automatically by GitLab if the GitLab registry is used for the project.<div class="admonitionblock note best"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>We recommend that you use GitLab.</p></div><div class="ulist"><div class="title"><code>env</code> variables</div><ul><li><p><code>$CI_REGISTRY_USER</code></p></li><li><p><code>$CI_REGISTRY_PASSWORD</code></p></li><li><p><code>$CI_REGISTRY</code></p></li></ul></div></td></tr></tbody></table></div></td></tr><tr><td><i class="conum" data-value="5"></i><b>5</b></td><td>The general <code>deployment</code> stage defines the helm chart repo and the version of the Helm chart to be used in the actual deployments.</td></tr><tr><td><i class="conum" data-value="6"></i><b>6</b></td><td>The <code>KUBE_CONFIG</code> CI/CD variable should be defined as type <code>File</code> and hold KubeConfig of the cluster the deployment should go to. The same variable can be defined in different environment scopes (see <code>11</code>). The <code>chmod</code> command changes the access to the file to avoid warnings.</td></tr><tr><td><i class="conum" data-value="7"></i><b>7</b></td><td>The actual <code>deployment</code> stages define the namespace and prefix for the deployment. These stages can be duplicated for different namespaces (<em>so that deployments can run in parallel on the cluster</em>) and for different clusters (see <code>11</code>).</td></tr><tr><td><i class="conum" data-value="8"></i><b>8</b></td><td>This commands creates a namespace for the deployment and adds to the Rancher <code>default</code> project. A loop is integrated to ensure that the namespace exists before continuing. If the namespace already exists, the command is executed without errors.</td></tr><tr><td><i class="conum" data-value="9"></i><b>9</b></td><td>Helm is using the <a href="https://gitlab.com/mironet/magnolia-helm" target="_blank" rel="noopener">Mironet Helm Chart</a> to deploy the Magnolia App and the corresponding databases using the provided values.yml file (see <a href="#values-yaml-helm">Helm Values</a>) to the defined namespace.</td></tr><tr><td><i class="conum" data-value="10"></i><b>10</b></td><td>The needed secrets are copied over from the <code>default</code> namespace to the newly created namespace.</td></tr><tr><td><i class="conum" data-value="11"></i><b>11</b></td><td>The environment name corresponds to the environment scope (<code>dev</code> or <code>prod</code>) defined in the <code>Deployments</code> section. In different environments the same variable names can be used.</td></tr><tr><td><i class="conum" data-value="12"></i><b>12</b></td><td>The <code>deployment</code> must be triggered manually.</td></tr></tbody></table></div>
+
+## [](#_the_values_yml_file)The `values.yml` file
+
+The `values.yml` file holds the configuration used by the DX Cloud Helm Chart in the process of deploying the application to the cluster. Properties like `DEPLOYMENT` must be the same as in the `.gitlab-ci.yml` file.
+
+Typically, you will have a values.yml file for both prod and non-prod as the values will be different depending on if the deployment is intended for testing or production. We encourage you to have separate files for this purpose.
+
+**For example**:
+
+-   **test** = `values.yml`
+
+-   **prod** = `values-prod.yml`
+
+
+Cert-manager
+
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: 512m
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `cert-manager` is automatically created by us. However, you can use your own. If you choose to do this, please contact the [DX Cloud Helpdesk](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13). |
+
+For full details, see our DX Cloud [Helm Values reference](../helm-values/) page.
+
+## [](#_clone_secrets_with_rancher_2_6)Clone Secrets with Rancher 2.6
+
+Before Rancher `2.6`, you could create a ("project-unbound") secret in the `All` namespace. Rancher made those secrets available to all `projects` and `namespaces`.
+
+> **Important:** This feature was deprecated deprecated with Rancher 2.6 for a good reason, as it breaks recommended namespace isolation.
+
+To achieve this same goal:
+
+1.  Copy the secrets using the Rancher UI:
+
+2.  Then **clone** the desired secret and into the target namespace (ie. namespace `uat`).
+
+    ![clonesecret 1blur](../../_images/rancher/clonesecret_1blur.png)
+
+    ![clonesecret 2blur](../../_images/rancher/clonesecret_2blur.png)
+
+
+### [](#_values_yml)values.yml
+
+This is good to know when needed in the `values.yml` file under the `useExistingSecret` field as it will provide the `activation key` secret for the target environment.
+
+```yaml
+...
+magnoliaAuthor:
+  replicas: 1
+  restartPolicy: Always
+  redeploy: true
+  contextPath: /author
+  webarchive:
+    repository: {{ .Env.CI_REGISTRY_IMAGE }}/magnolia-webapp
+    tag: "{{ .Env.GIT_TAG | quote }}"
+  bootstrap:
+    password: "<password>"
+  activation:
+    useExistingSecret: True (1)
+    secret:
+      name: activation-key
+      key: activation-secret
+...
+magnoliaPublic:
+  replicas: 2
+  restartPolicy: Always
+  contextPath: /
+  webarchive:
+    repository: {{ .Env.CI_REGISTRY_IMAGE }}/magnolia-webapp
+    tag: "{{ .Env.GIT_TAG | quote }}"
+  bootstrap:
+    password: "<password>"
+  activation:
+    useExistingSecret: True (1)
+    secret:
+      name: activation-key
+      key: activation-secret
+...
+```
+
+|     |     |
+| --- | --- |
+| **1** | The activation key is handled by the bootstrapper container. This keeps `magnoliaAuthor` and `magnoliaPublic` in sync. |

@@ -1,0 +1,194 @@
+---
+title: "Templating function arguments and return types"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > Templating function arguments and return types
+---
+
+# Templating function arguments and return types
+
+When using a templating function you pass some parameters and get something back. The types of these arguments and returned objects are the same in many methods, and it is helpful to know these types. Read the Javadoc of typical templating function return types even if you do not know Java. The Javadoc gives you an idea what else you could do with the returned objects.
+
+## [](#_node_and_contentmap)`Node` and `ContentMap`
+
+Some functions require [Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html), whereas others ask for info.magnolia.jcr.util.ContentMap.
+
+### [](#_javax_jcr_node)javax.jcr.Node
+
+The type from the [JCR API](../../../../API/Java-Server-APIs/JCR-API/). Since JCR is a tree oriented data structure, this type is useful when you want to find other nodes above (parent, ancestors) or below (children) the current node.
+
+### [](#_info_magnolia_jcr_util_contentmap)info.magnolia.jcr.util.ContentMap
+
+This Magnolia type is a wrapper for the above mentioned JCR node. ContentMap provides easy access to the node properties and is useful when you want to render these properties.
+
+```xml
+<h1>${content.title}</h1>
+```
+
+### [](#_contentmap_and_node_rendering_context_objects)ContentMap and Node rendering context objects
+
+-   The rendering context object [`content`](../../Rendering-context-objects/#_content) provides the current content node of the context as `info.magnolia.jcr.util.ContentMap`.
+
+-   The rendering context object `model.node` provides the current content node of the context as `javax.jcr.Node`, see [model](../../Rendering-context-objects/#_model). If you have no model but need this type, use `cmsfn(content)`.
+
+
+[`cmsfn`](../cmsfn/) provides methods to convert `javax.jcr.Node` to info.magnolia.jcr.util.ContentMap and vice versa.
+
+### [](#_node_and_contentmap_collections)Node and ContentMap collections
+
+Both types java.util.List and java.util.Collection either with Node or with ContentMap items might be required as arguments.
+
+-   `java.util.List<info.magnolia.jcr.util.ContentMap>`
+
+-   `java.util.List<javax.jcr.Node>`
+
+-   `java.util.Collection<javax.jcr.Node>`
+
+-   `java.util.Collection<info.magnolia.jcr.util.ContentMap>`
+
+
+Keep in mind that [`List`](http://docs.oracle.com/javase/7/docs/api/java/util/List.html) extends [`Collection`](http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html). This means that if a Collection is required, you can pass a List, but this does not work the other way round.
+
+[`cmsfn`](../cmsfn/) provides methods to convert Collection<Node> to List<ContentMap> and from Collection<ContentMap> to List<Node>.
+
+Example: Get the children nodes of the node of the current nodes, convert the returned list of nodes into list of contentMap items and iterate over the list of contentMap items.
+
+\[#assign currentNode = cmsfn.asJCRNode(content)\]
+\[#assign childrenNodesAsContentMaps = cmsfn.asContentMapList(cmsfn.children(currentNode, "mgnl:page"))\]
+\[#list childrenNodesAsContentMaps as child \]
+    <li>${child.title}</li>
+\[/#list\]
+
+## [](#_item_asset_folder_map_of_an_asset_assetrendition)`Item`, `Asset`, `Folder`, `Map` (of an asset), `AssetRendition`
+
+### [](#_itemkey_of_an_asset)itemKey of an asset
+
+Some methods in [`damfn`](../damfn/) require a String argument called `itemKey`. An item key uniquely identifies an asset among different asset providers.
+
+When JCR is used as asset provider, the item key is composed of `jcr:<node-UUID>`, for instance `jcr:20d6e4e3-fe53-4b23-8d64-6e67a1c1667f`. Typically you need to get the item key from a content node that is created when a component is saved in the JCR.
+
+**Example**: A component node contains a reference to an image.
+
+![Component node with image reference](../../../../../_images/ADVT-temp-fcnt-arg.png)
+
+In a Java context, if you have an asset and want to know its item key as a String, use:
+
+```java
+asset.getItemKey().asString()
+```
+
+In a FreeMarker context, if you have an asset and want to know its item key as a String, use:
+
+\[#assign itemKey = myAsset.getItemKey().asString()\]
+
+### [](#_info_magnolia_dam_api_item)info.magnolia.dam.api.Item
+
+info.magnolia.dam.api.Item is the common supertype of Asset and Folder. Some methods of the [damfn](../damfn/) will return Item.
+
+### [](#_info_magnolia_dam_api_asset)info.magnolia.dam.api.Asset
+
+An asset is a digital resource with associated metadata. This interface provides many methods that you may want to call directly within your script.
+
+Example:
+
+\[#assign myAsset = damfn.getAsset("jcr", "/photos/dilbert.jpg")!\]
+get the link of an asset to display an image <img src="${myAsset.getLink()}"/> - when the asset is an image
+or a download link: <a href="${myAsset.getLink()}">Link to the asset</a>
+
+### [](#_info_magnolia_dam_api_folder)info.magnolia.dam.api.Folder
+
+A Folder represents a structural item holding [Assets](#_info.magnolia.dam.api.asset). Depending on the provider, this can be directly mapped to the concept of folders/directories (JCR, FileSystems, and so on); for others this might map to the concept of albums, playlists, sets, and so on.
+
+Example:
+
+\[#assign photosFolder = damfn.getFolder("jcr", "/photos")\]
+The folder ${photosFolder.name} contains the following images:
+<ul>
+\[#list photosFolder.getChildren() as item\]
+    <li>${item.getName()}</li>
+\[/#list\]
+</ul>
+
+### [](#_map_of_an_asset_and_its_metadata)Map of an asset and its metadata
+
+The DAM templating functions ([damfn](../damfn/)) provide a method which returns a `java.util.Map` containing all the bean properties of the asset.
+
+\[#assign myAsset = damfn.getAsset("jcr", "photos/pool.jpg")!\]
+\[#assign myAssetMap = damfn.getAssetMap(myAsset)\]
+fileSize: ${myAssetMap.fileSize}
+folder: ${myAssetMap.caption?string}
+name: ${myAssetMap.name}
+title: ${myAssetMap.title}
+caption: ${myAssetMap.caption}
+copyright: ${myAssetMap.copyright}
+
+See info.magnolia.dam.api.Asset for all public methods indicating the available properties.
+
+Additionally, the map may contain further nested maps with the properties of classes implementing info.magnolia.dam.api.metadata.AssetMetadata. The metadata sub maps are collected under the key `metadata`.
+
+If the asset is provided by info.magnolia.dam.jcr.JcrAssetProvider (that is, if the asset is derived from the JCR workspace `dam`), the following submaps are provided on the asset map:
+
+| Metadata class | Key | Composed key | Example |
+| --- | --- | --- | --- |
+| `info.magnolia.dam.api.metadata.DublinCore` | `dc` | `metadata.dc` | `myAssetMap.metadata.dc.format` |
+| `info.magnolia.dam.api.metadata.MagnoliaAssetMetadata` | `mgnl` | `metadata.mgnl` | `myAssetMap.metadata.mgnl.width` |
+
+\[#assign myAsset = damfn.getAsset("jcr", "photos/pool.jpg")!\]
+\[#assign myAssetMap = damfn.getAssetMap(myAsset)\]
+width: ${myAssetMap.metadata.mgnl.width}
+format: ${myAssetMap.metadata.dc.format}
+
+### [](#_info_magnolia_dam_api_assetrendition)info.magnolia.dam.api.AssetRendition
+
+info.magnolia.dam.api.AssetRendition is a `variation` on a asset, for a specific MimeType.
+
+The renditions are defined per Theme in the [Site](../../../Site-definition/). For instance the node `/modules/site/config/themes/examples-theme/imaging/variations/small-square` defines in the theme `examples-theme` a rendition named `small-square`.
+
+## [](#_site_and_theme)`Site` and `Theme`
+
+### [](#_info_magnolia_module_site_site)info.magnolia.module.site.Site
+
+The info.magnolia.module.site.Site object gives access to its appendant theme (if a theme is defined on the site) and some other objects as linked domains, mappings, and so on.
+
+Example:
+
+\[#assign mySite=sitefn.site()\]
+
+### [](#_info_magnolia_module_site_theme_theme)info.magnolia.module.site.theme.Theme
+
+info.magnolia.module.site.theme.Theme provides access to lists with CSS and JavaScript files which belong to the theme.
+
+Example:
+
+\[#assign myTheme=sitefn.theme(sitefn.site())\]
+
+## [](#_templatedefinition)`TemplateDefinition`
+
+Read [Template definition](../../../Template-definition/) to get an idea of what a template definition is. Some templating functions require a info.magnolia.rendering.template.TemplateDefinition object as a parameter.
+
+At least the template definition of the current template is always available as context object - see [rendering context object `def`](../../Rendering-context-objects/#_def).
+
+## [](#_jsonbuilder)`JsonBuilder`
+
+A `JsonBuilder` object is a builder for converting JCR nodes into JSON. The class offers many public methods to adapt the node structure and properties. `JsonBuilder` is the return types of all methods of [`jsonfn`](../jsonfn/) (`JsonTemplatingFunctions`) and of most of the methods of `JsonBuilder`. The `#print` method returns JSON as a string.
+
+## [](#_using_public_method_of_returned_objects)Using public method of returned objects
+
+If you know the type of the returned object of a templating function, you can apply the public methods to the object to retrieve the return value of these methods. This works in almost every case but not for maps such as info.magnolia.jcr.util.ContentMap.
+
+Example:
+
+```numberLines
+[#assign currentNode = cmsfn.asJCRNode(content)]
+<i>The path of the underlying jcr node in this context is ${currentNode.getPath()}.</i>
+```
+
+Notes:
+
+-   Line 1: Assign an object of type javax.jcr.Node to the variable `currentNode`.
+
+-   Line 2: Use the `getPath()` method which is a public method defined in javax.jcr.Node. It returns a String.
+
+
+The script will print for instance: *The path of the underlying jcr node in this context is /home/products.*

@@ -1,0 +1,54 @@
+---
+title: "Field definition - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI
+---
+
+# Field definition - 5 UI
+
+Deprecated
+
+> **Note:** This field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Field definition for Magnolia 6 UI instead.
+
+A field is an HTML form element that allows a user to perform a task such as enter text, upload an image or select a date. Magnolia ships with a number of fields that should fulfill most needs.
+
+## [](#_example)Example
+
+This form has four [text fields](List-of-fields-5-UI/Text-field-5-UI/) and one [checkbox field](List-of-fields-5-UI/Checkbox-field-5-UI/):
+
+![Text field](6.2@product-docs:ROOT:text-field.png)
+
+To add a field on your [form](../Form-definition-5-UI/), define the field inside a tab (see example below). At minimum, a field definition must contain a `class` or a `fieldType` property which tells Magnolia what type of field it should render. Set the property value to a valid [field definition class name](#_field_types) (for `class`) or to a valid field alias name (for `fieldType`). All fields support further [common properties](#_common_field_properties) for defining things such as labels and descriptions.
+
+<module name>/dialogs/<dialog name>.yaml
+
+```yml
+form:
+  tabs:
+    - name: tabMain
+      label: Text
+      fields:
+        - name: title
+          fieldType: text
+          label: pages.pageProperties.title.label
+          description: pages.pageProperties.title.description
+          i18n: true
+          required: true
+          type: string
+```
+
+## [](#_common_field_properties)Common field properties
+
+You can use these properties with any field unless specified otherwise.
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-field-properties-5-UI.adoc\[\]
+
+## [](#_field_types)Field types
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Field-definition-classes-5-UI.adoc\[\]
+
+## [](#_transformer_classes)Transformer classes
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Transformer-classes-5-UI.adoc\[\]

@@ -1,0 +1,46 @@
+---
+title: "Editor definition - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-apps-5-UI/App-configuration-5-UI/Editor-definition-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content apps - 5 UI > App configuration - 5 UI > Editor definition - 5 UI
+---
+
+# Editor definition - 5 UI
+
+Deprecated
+
+> **Note:** Editor definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.Its configuration is now partly integrated into DetailDescriptor in Subapp descriptor for Magnolia 6 UI.
+
+Unresolved include directive in modules/ROOT/pages/Content-apps-5-UI/App-configuration-5-UI/Editor-definition-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_What-is-an-editor.adoc\[\]
+
+```yaml
+detail:
+  editor:
+    nodeType:
+      icon: icon-node-content
+      name: mgnl:contact
+    actions:
+      - name: commit
+      - name: cancel
+    form:
+      tabs:
+        - name: personal
+          # field definitions
+```
+
+| Property | Description |
+| --- | --- |
+| `nodeType` | **required**<br><br>A [node type](#6.2@product-docs:ROOT:Administration/Architecture/Node-types.adoc) that this editor component can edit and save. |
+| `name` | **required**<br><br>A Magnolia or JCR node type such as `mgnl:page` or `mgnl:contact`. |
+| `icon` | **optional**<br><br>CSS class that identifies an icon displayed on the items in the workbench. |
+| `actions` | **required**<br><br>Actions available in the editor. Define the actions in separate [action definitions](../../../Dialog-definition-5-UI/Dialog-action-definition-5-UI/) and reference them here by name. |
+| `<action-name>` | **required**<br><br>Name of a primary action. Typically you need at least `commit` and `cancel`. |
+| `actionArea` | **optional**<br><br>A secondary action area in the bottom left corner of the editor. Contains the action area configuration.<br><br>For an example, see [Configuring secondary actions](../../../Dialog-definition-5-UI/#_configuring_secondary_actions). |
+| `secondaryActions` | **optional**<br><br>Add subnodes to match the secondary actions defined in the `actions` node. The order of the subnodes defines the sequence in which they are rendered. A ctions configured under `secondaryActions` are rendered on the left and other actions are on the right side. |
+| `<actionName>` | **required**<br><br>Name of a secondary action. |
+| `actionRenderers` | **optional**<br><br>Define a subnode for each action which requires its own renderer. |
+| `<actionName>` | **required**<br><br>Name of the secondary action. |
+| `rendererClass` | **required**<br><br>A renderer class if the secondary action requires one. Must implement `ActionRenderer`. |
+| `form` | **optional**<br><br>A [form definition](../../../Dialog-definition-5-UI/Form-definition-5-UI/) if this editor is used to edit form-like data. |
+| `wide` | **optional**, *default is `false`*<br><br>`true` opens the editor in wide mode using all available horizontal space.<br><br>Click the expand/collapse button in the top right corner to toggle between the wide and normal (720px) modes. |

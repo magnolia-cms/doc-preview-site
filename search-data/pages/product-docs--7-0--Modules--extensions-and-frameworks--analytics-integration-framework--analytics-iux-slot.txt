@@ -1,0 +1,74 @@
+---
+title: "Displaying analytics in an IUX slot"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/extensions-and-frameworks/analytics-integration-framework/analytics-iux-slot/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Analytics integration framework > IUX slot for analytics
+---
+
+# Displaying analytics in an IUX slot
+
+In addition to viewing analytics charts in the Analytics app, you can display them next to the content they apply to in IUX (Integrated User eXperience) slots.
+
+IUX slots are extension panels in the browser subapp. The panel allows you to configure a list of extension views in the [workbench](../../../../Apps/App-configuration/Workbench-definition/) and replaces info.magnolia.ui.workbench.contenttool.ContentToolDefinition of [Magnolia 5 UI](../../../../Apps/Developing-an-app/General-aspects/UI-framework-and-development-pattern-changes-in-Magnolia-6/).
+
+The first slot, introduced in Magnolia 6.2, is a wide horizontal slot at the top of content apps such as the Pages app.
+
+## [](#_configuring_the_workbench)Configuring the workbench
+
+Use decoration to configure the:
+
+-   Extension panel in the Pages app (see [`extensionViews`](../../../../Apps/App-configuration/Workbench-definition/) for configuration and properties).
+
+-   Charts to be displayed.
+
+-   Data suppliers providing the analytics data.
+
+
+> **Tip:** Use the  Refresh button in the Analytics app dashboard to clear the cache of the data supplier providing the data displayed in the IUX slot.
+
+Three slot configurations are described in this section.
+
+-   [Adobe Analytics](../How-to-config-Adobe-IUX/)
+
+-   [Google Analytics 4](../analytics-iux-slot-ga4-example/)
+
+-   [Matomo](../analytics-iux-slot-matomo-example/)
+
+
+## [](#_iux_slot_configuration_in_the_browser_subapp)IUX slot configuration in the browser subapp
+
+At a technical level, the IUX slot is an extension panel in the browser subapp. The panel allows you to configure a list of extension views in the [workbench](../../../../Apps/App-configuration/Workbench-definition/) - see [`extensionViews`](../../../../Apps/App-configuration/Workbench-definition/#extensionViews) for configuration and properties.
+
+Any view implementing `UiFrameworkView` could be inserted into the slot. You can create a view for displaying data that would benefit from value context and can switch data whenever the selected item changes. The following is an example view for displaying page titles, with `valueContext.observe` triggering an update whenever selection changes.
+
+```java
+package info.magnolia.ui.framework.app.extension;
+import info.magnolia.ui.contentapp.browser.context.ValueContext;
+import info.magnolia.ui.framework.ConfiguredViewDefinition;
+import info.magnolia.ui.framework.UiFrameworkView;
+import jakarta.inject.Inject;
+import javax.jcr.Node;
+import com.machinezoo.noexception.Exceptions;
+import com.vaadin.ui.Composite;
+import com.vaadin.ui.Label;
+/**
+ * Complex data view :).
+ */
+public class DataView extends Composite implements UiFrameworkView {
+    @Inject
+    public DataView(ValueContext<Node> valueContext) {
+        Label pageTitle = new Label();
+        valueContext.observe(() -> {
+            Node node = valueContext.getSingleOrThrow();
+            pageTitle.setValue(Exceptions.wrap().get(node::getName));
+        });
+        setCompositionRoot(pageTitle);
+    }
+    private static class Definition extends ConfiguredViewDefinition<DataView> {
+        public Definition() {
+            setImplementationClass(DataView.class);
+        }
+    }
+}
+```

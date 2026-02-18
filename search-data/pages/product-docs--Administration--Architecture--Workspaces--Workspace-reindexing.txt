@@ -1,0 +1,60 @@
+---
+title: "Reindexing a workspace"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Architecture/Workspaces/Workspace-reindexing/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Workspaces > Reindexing a workspace
+---
+
+# Reindexing a workspace
+
+Reindexing a workspace in Magnolia CMS rebuilds the search index to ensure content is searchable, typically after configuration changes or repository issues. Follow these steps to reindex a workspace.
+
+> **Note:** This page describes the manual way of reindexing on a self-hosted instance. In DX Cloud, it can be done with the Delete indexes action in the Cockpit. For more information, see Delete indexes and workloads after restore.
+
+## [](#_procedure)Procedure
+
+1.  **Locate the workspace directory**
+
+    Navigate to the workspace folder at `/<CATALINA_HOME>/webapps/<contextPath>/repositories/magnolia/workspaces/<workspace_name>`, where `<workspace_name>` is the specific workspace (`website`, `contacts`, and so on). Each workspace contains a `workspace.xml` file that configures indexing settings.
+
+2.  **Create a full backup of the instance**
+
+    Before reindexing, create a full backup of the instance. For more information about this, see [Backing up and restoring instances](../../../Instances/Backing-up-instances/).
+
+3.  **Shut down the Magnolia instance**
+
+4.  **Delete the `index` subfolder**
+
+    -   Delete the `index` subfolder in the specific workspace directory (`/<CATALINA_HOME>/webapps/<contextPath>/repositories/magnolia/workspaces/<workspace_name>/index`).
+
+
+5.  **Optional: Update indexing configuration**
+
+    -   For more details, see [Search](#performance-tuning:ROOT:Search-and-indexing/Search-index-configuration-file.adoc#_search) and [Custom configuration file](#performance-tuning:ROOT:Search-and-indexing/Search-index-configuration-file.adoc#_custom_configuration_file).
+
+
+6.  **Restart Magnolia**
+
+    Start the Magnolia instance. The system automatically rebuilds the index for the workspace upon startup. Reindexing time depends on the amount of data in the workspace.
+
+7.  **Check for errors**
+
+    Monitor the startup process for errors. If the repository is corrupted, reindexing may fail, and you may need to address the underlying issues.
+
+
+## [](#_additional_notes)Additional notes
+
+-   The `onWorkspaceInconsistency` parameter
+
+    If a workspace performs a re-indexing on startup and finds an inconsistency, the re-indexing process will fail.
+
+    Add the `OnWorkspaceInconsistency` parameter in the `workspace.xml` file to prevent the failure. The process will just log the inconsistency.
+
+    ```xml
+    <param name="onWorkspaceInconsistency" value="log"/>
+    ```
+
+-   Ensure the Magnolia instance has sufficient resources, as reindexing large datasets can be resource-intensive.
+
+-   For complex setups, contact and consult our [Magnolia DX Core support](../../../../../support/).

@@ -1,0 +1,80 @@
+---
+title: "Types of translatable text"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Language/Types-of-translatable-text/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Language > Types of translatable text
+---
+
+# Types of translatable text
+
+You should make all text displayed to website visitors and editors translatable. This page explains what text in Magnolia is translatable and where it is stored.
+
+There are three major groups of translatable text:
+
+| Translatable text | Audience | Stored in |
+| --- | --- | --- |
+| 1\. [Editorial content](#_editorial_content) | Visitors | JCR |
+| 2\. [User interface labels](#_user_interface_labels) | Editors | Message bundle for user interface labels |
+| 3\. [Template labels](#_template_labels) | Visitors | Message bundle for template labels |
+
+**Best practice**
+
+Avoid hard-coded strings exposed to visitors, editors or administrators. Always allow localization of texts displayed on the website and in Magnolia Shell.
+
+## [](#_editorial_content)Editorial content
+
+Editorial content is the biggest group of translatable text. It is the main content of your website, aimed at site visitors.
+
+Editors write editorial content in the [Pages app](../../../Apps/List-of-apps/Pages-app/) and other content apps. All editorial content is stored in JCR, mainly in the `website` workspace, but apps can also store content in a custom workspace. All editorial content can be translated as part of the content creation process. If your website serves visitors from several countries and languages, this is the bulk of your translation effort.
+
+**Example**: Editorial content on an article page
+
+![Editorial content on an article page](../../../_images/6-2-translatable-editorial.png)
+
+## [](#_user_interface_labels)User interface labels
+
+UI labels is the second largest group of translatable text. Labels are displayed to editors and administrators in the Magnolia Shell (AdminCentral). This group includes:
+
+-   Field [labels and descriptions](../../../Developing/Templating/Dialog-definition/Field-definition/#_common_simple_field_properties)
+
+-   [Messages](../../../Apps/Developing-an-app/Specific-aspects/Messages/) (alerts, warnings, information)
+
+-   App UI elements such as [workbenches](../../../Apps/App-configuration/Workbench-definition/), [columns](../../../Apps/App-configuration/Column-definition/), [forms](../../../Developing/Templating/Dialog-definition/Form-definition/) and [actions](../../../Apps/App-configuration/Action-definition/).
+
+-   Buttons in the page editor in edit mode, used to open dialogs
+
+
+We sometimes refer to this text as `dialog labels` but it is not limited to dialogs. You also find labels in actions and other UI elements. 99% of all text you see in the Magnolia Shell belongs to this group.
+
+User interface labels are stored in message bundles. Magnolia provides translated UI labels for its native apps. You should make your own app translatable too.
+
+We run the internationalization effort as a community project so please check out the [Language Bundles project in JIRA](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20LANG) and help out!
+
+> **Note:** The languages exposed to the website visitors may be different from the languages editors and administrators use in Magnolia Shell (AdminCentral). For this reason, editorial content and UI labels are stored in a different places using different mechanisms.
+
+**Example**: User interface labels
+
+![User interface labels](../../../_images/6-2-translatable-ui-labels.png)
+
+## [](#_template_labels)Template labels
+
+Template labels is the smallest group of translatable text. This rare kind of text is displayed to visitors but it is not editable by Magnolia editors. Examples of template labels are the cookie crumb label \`\`You are here'' and login and logout links.
+
+You should store your template labels in their own message bundle, not in the same bundle as user interface labels. This text is aimed at site visitors, not at editors, so it has the same localization requirements as content. Template labels need to be translated to the same languages as the public website.
+
+**Example**: Template labels on an article page
+
+![Template labels on an article page](../../../_images/6-2-translatable-template-labels.png)
+
+**Best practice**
+
+## [](#_separate_message_bundles)Separate message bundles
+
+Create separate message bundles for user interface labels and template labels. Don’t store these two groups of text in the same properties files or message bundles. They are aimed at different audiences and have different localization requirements.
+
+**Example**: Message files in the Travel Demo
+
+-   [`module-travel-demo-backend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (user interface labels)
+
+-   [`module-travel-demo-frontend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (template labels)

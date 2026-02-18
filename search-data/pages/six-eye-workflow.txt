@@ -1,0 +1,67 @@
+---
+title: "Six Eye Workflow module"
+url: https://docs.magnolia-cms.com/six-eye-workflow/
+category: Modules
+version: modules
+breadcrumb: Six Eye Workflow module
+---
+
+# Six Eye Workflow module
+
+[Collaboration and workflow](../product-docs/7.0/use-cases/collaboration-and-workflow/) [Tier 2](../incubator-modules/incubator-module-list/#_tier_2_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/services/six-eye-workflow) [SERVICESWF](https://magnolia-cms.atlassian.net/browse/SERVICESWF) [Magnolia 6.4](../product-docs/7.0/) compatible\[[1](#_footnotedef_1 "View footnote.")\]
+
+The **Six-Eye Workflow** module adds a second approval layer to the out-of-the-box Magnolia [four eye workflow](#product-docs:ROOT:Modules/List-of-modules/Workflow-module/Magnolia-four-eye-workflow). This second layer is another independent group of reviewers specialized in some aspect of the page.
+
+Example: Legal implications
+
+Upon legal approval, the page is then pushed to the second review step which may be for other web related requirements.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.workflow</groupId>
+  <artifactId>magnolia-workflow-six-eye</artifactId>
+  <version>5.7</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+The workflow is configured in series. First is the "preview" step, followed by the "review for publication" step.
+
+> **Note:** The preview step offers the same possibilities for action: approve, reject, abort. Assuming the user approves the content the Six Eye workflow calls the Four Eye workflow.
+
+### [](#_configuration)Configuration
+
+The module installs two configurations. You will need to make some changes to get the Six Eye workflow setup.
+
+#### [](#_preview_task)Preview task
+
+The preview task is the new human task added to the overall workflow. You will need to set the group(s) which should be notified for this step in the workflow.
+
+The preview task extends from the publish task in the workflow-jbpm module. The groups configuration is overridden so that you can configure the groups for the task. For example, all content needs to go through a legal review before the final review and publish step. Create a new group called legal in the [Security app](../product-docs/7.0/Apps/List-of-apps/Security-app/). Next add the legal group to the list of groups for the preview task.
+
+> **Tip:** When creating new groups it might be a good idea to make sure the superuser is a part of it.
+
+![preview task](_images/preview-task.jpg)
+
+#### [](#_workflow)Workflow
+
+The configuration for the six eye workflow will be bootstrapped on installation. In order to call the workflow you will need to update the activate command to call it. For example, I want all page publications to go through the six eye review.
+
+Update the workflow module to call `sixEyeReviewForPublication`.
+
+![workflow activate](_images/workflow-activate.jpg)
+
+## [](#_changelog)Changelog
+
+| Version | Notes |
+| --- | --- |
+| `5.7` | Initial release of the module. |
+
+* * *
+
+[1](#_footnoteref_1). Denotes latest Magnolia compatibility. Also compatible with 6.3 and 6.2 as well as legacy versions 6.1 and 5.7.

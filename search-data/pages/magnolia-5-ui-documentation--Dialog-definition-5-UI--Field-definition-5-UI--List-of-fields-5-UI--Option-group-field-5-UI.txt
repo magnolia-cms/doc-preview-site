@@ -1,0 +1,67 @@
+---
+title: "Option group field - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Option-group-field-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > List of fields - 5 UI > Option group field - 5 UI
+---
+
+# Option group field - 5 UI
+
+Deprecated
+
+> **Note:** This option group field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Option group field for Magnolia 6 UI instead.
+
+`OptionGroupFieldDefinition` renders radio buttons or checkboxes depending on how the `multiselect` property is set.
+
+class: `info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition`
+
+fieldType: `optionGroup`
+
+**Example**: In the screenshot below:
+
+-   `multiselect=true`: Options are displayed as checkboxes. More than one can be selected.
+
+-   `multiselect=false`: Options are displayed as radio buttons. Only one can be selected.
+
+
+![Option group dialog](6.2@product-docs:ROOT:option-group-field.png)
+
+## [](#_option_group_properties)Option group properties
+
+Simple option field definition:
+
+```js
+form:
+  tabs:
+    - name: tabTitle
+      label: Title
+      fields:
+        - name: titleSelect
+          fieldType: optionGroup
+          multiselect: true
+          type: String
+          label: Title to use
+          options:
+            - name: pageTitle
+              label: Page title
+              selected: true
+            - name: navigationTitle
+              label: Navigation title
+              value: navigationTitle
+            - name: none
+              label: None
+              value: none
+```
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Option-group-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Referencing-fields-shortcut-info-5-UI.adoc\[\]
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Option-group-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-select-field-properties-5-UI.adoc\[\]
+
+| Property | Description |
+| --- | --- |
+| `<field name>` | Name of field. |
+| `layout` | **optional**, *default is \`vertical\`*<br><br>Alternatively use `horizontal`. |
+| `multiselect` | **optional**, *default is `false`*<br><br>When set to `true`, options are rendered as checkboxes. When set to `false`, options are rendered as radio buttons. |
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Option-group-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-field-properties-5-UI.adoc\[\]

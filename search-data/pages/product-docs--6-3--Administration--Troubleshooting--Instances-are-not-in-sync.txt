@@ -1,0 +1,22 @@
+---
+title: "Instances are not in sync"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Troubleshooting/Instances-are-not-in-sync/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Troubleshooting > Instances are not in sync
+---
+
+# Instances are not in sync
+
+If the author and public instances are not using the same time, you may see the following error when you publish content:
+
+```none
+Activation refused due to request arriving too late or time not synced between author and public instance.
+Please contact your administrator to ensure server times are synced or the tolerance is set high enough to counter the differences.
+```
+
+The error is coming from info.magnolia.publishing.command.PublicationCommand when using the [Publishing module](../../../Modules/List-of-modules/Publishing-module/).
+
+To resolve this issue, check the system time (server time) on both instances. Configure the servers to use Network Time Protocol (NTP) so that they could use the same time and stay in sync.
+
+If you’re still getting the error, then configure a higher value for the `publicationDelayTolerance` property on your public instance(s). The property allows for a time difference between the instances. The default value is `30000` (milliseconds).

@@ -1,0 +1,67 @@
+---
+title: "JCR Tools app"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/List-of-apps/JCR-Tools-app/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > List of apps > JCR Tools app
+---
+
+# JCR Tools app
+
+The JCR Tools app includes four subapps that allow you to work with JCR content:
+
+-   **Queries**: Execute JCR queries in any workspace.
+
+-   **Dumper**: Create a dump of any workspace.
+
+-   **Exporter**: Export JCR content to XML or YAML.
+
+-   **Importer**: Import JCR content from XML or YAML.
+
+
+> **Note:** The JCR Tools app replaces three pre-5.4.6 legacy apps and combines them into a single app.JCR Queries appExport appImport app
+
+## [](#_configuration)Configuration
+
+The JCR Tools app is configured in `/modules/jcr-tools/apps`. The **Tools app** group that the app belongs to is only available to the `superuser` role. This is configured in the [app launcher layout](../../../Administration/App-Launcher/App-launcher-layout/).
+
+## [](#_query_subapp)Query subapp
+
+The Query subapp allows you to run JCR queries. The tool is a good place to test queries. You can write queries in SQL-2, SQL and XPath and run them on any workspace**.** See the Community Wiki [JCR Query Cheat Sheet](https://magnolia-cms.atlassian.net/wiki/spaces/WIKI/pages/839943460/JCR+Query+Cheat+Sheet) for example queries.
+
+![Query subapp](../../../_images/apps/jcr-tools/query-subapp.jpg)
+
+> **Note:** The Query subapp only returns lists of nodes. While you can specify columns in your queries, these are discarded and only paths will be returned.A query like SELECT title, foo FROM [mgnl:category] will return results like:/tour-types/active/tour-types/ecotourism…​
+
+## [](#_dumper_subapp)Dumper subapp
+
+The Dumper subapp allows you to create a dump of any Magnolia workspace. You can set the base path and path level from which to dump the data.
+
+![Dumper subapp](../../../_images/apps/jcr-tools/dumper-subapp.jpg)
+
+## [](#_exporter_subapp)Exporter subapp
+
+The Exporter subapp allows you to export files from all workspaces, including those where the Export action isn’t available in the workspace-specific app, for example in the [Security](../Security-app/) app. You can export in XML or YAML format and compress to GZIP or ZIP format.
+
+![Exporter subapp](../../../_images/apps/jcr-tools/exporter-subapp.jpg)
+
+> **Tip:** Magnolia offers a number of ways to export data, see Importing and exporting JCR data for bootstrapping for more and instructions on using the tool.
+
+## [](#_importer_subapp)Importer subapp
+
+The Importer subapp allows you to import XML or YAML files into any Magnolia workspace, including those where the Import action isn’t available in the workspace-specific app, for example in the [Security](../Security-app/) app. You can set the base path and behavior for the imported data. Behavior options are:
+
+-   Only import if no existing node.
+
+-   Generate a new id for imported nodes (XML only).
+
+-   Remove existing nodes with the same id (XML only).
+
+-   Replace existing nodes with the same id (XML only).
+
+
+![Exporter subapp](../../../_images/apps/jcr-tools/importer-subapp.jpg)
+
+> **Tip:** Magnolia offers a number of ways to import data, see Importing and exporting JCR data for bootstrapping for more and instructions on using the tool.
+
+> **Note:** Ensure you have copied any necessary templates from light module folders when importing pages into the website workspace. Without the templates referenced in the imported pages, the pages can’t be displayed or edited.

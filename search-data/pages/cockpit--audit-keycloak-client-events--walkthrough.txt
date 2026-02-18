@@ -1,0 +1,24 @@
+---
+title: "Keycloak client event logs deep dive"
+url: https://docs.magnolia-cms.com/cockpit/audit-keycloak-client-events/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# Keycloak client event logs deep dive
+
+## [](#_log_chart)Log chart
+
+The chart visualizes authentication and authorization events over time, showing successful events (green), warnings (yellow), and errors (red). Click any bar to filter logs to that specific time period.
+
+## [](#_filters)Filters
+
+Use these filter controls to narrow down the events you want to view. You can filter by event type, user, client application, time ranges, and operation outcomes. Click the reset button to clear all active filters and return to viewing all events.
+
+## [](#_log_count)Log count
+
+This displays the total number of event entries that match your currently applied filters. When events are available, a download button appears here, allowing you to export the filtered results for further analysis.
+
+## [](#_details_table)Details table
+
+The table shows individual event entries with detailed information about each authentication activity, including timestamp, event type, user identity, client application, IP address, and outcome. Click any row to open a detailed drawer with complete event details and context information.

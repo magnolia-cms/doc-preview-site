@@ -1,0 +1,355 @@
+---
+title: "Creating a minimal webapp with Maven"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/Creating-a-minimal-webapp-with-Maven/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Bundles and webapps > Creating a custom webapp with Maven > Creating a minimal webapp with Maven
+---
+
+# Creating a minimal webapp with Maven
+
+This tutorial page explains how you can create a minimalistic Magnolia headless webapp from a Magnolia Maven archetype. If you’d like to try creating a full-featured DX Core webapp, see [Creating a DX Core webapp with Maven](../Creating-a-DX-Core-webapp-with-Maven/). For a general overview page, please refer to [Creating a custom webapp with Maven](../).
+
+> **Note:** To complete this tutorial, you need to install Maven and configure the Maven setup.
+
+## [](#_introduction)Introduction
+
+Using Maven to create a webapp allows you to customize your webapp through the POM files, which can be tracked with a [version control system](https://en.wikipedia.org/wiki/Version_control) like [Git](https://en.wikipedia.org/wiki/Git). A tailored webapp makes building and deploying faster and has a positive impact on the performance of your instances.
+
+In the steps below, you use the `magnolia-empty-webapp` as the base and add the following modules to it:
+
+-   [Magnolia Rest modules](#rest:ROOT:index.adoc)
+
+-   [Magnolia Assets subapp](#dam-app:ROOT:developers/dam-app-jcr.adoc), which also brings in other modules from the Magnolia [DAM](../../../../../dam/developers/install/) and [DAM App](#dam-app:ROOT:developers/install.adoc) modules
+
+-   [Site module](#site:ROOT:index.adoc)
+
+-   [jsonfn](../../../Templating/Template-scripts/Templating-functions/jsonfn/)
+
+
+The resulting webapp could be used to run Magnolia in a headless approach.
+
+This set of modules is just an example. We cannot guarantee that the given module composition is best practice for a headless bundle. With the exception of the jsonfn module, dependency management and versioning of all the other modules on the list is already handled by [the `dependencyManagement` section](../#_inherited_dependency_management) of the webapp’s parent POM file. The dependency of the jsonfn module has to be set manually.
+
+## [](#_creating_the_webapp_skeleton)Creating the webapp skeleton
+
+Start by running [the Magnolia Maven archetype command](../#_the_archetype_command) to create a [skeleton](../#_generated_skeleton) of your webapp.
+
+1.  Create and switch to a directory where you want to create the new webapp, for example `~/dev/repo/magnolia`.
+
+2.  Open a shell and enter the following Maven command:
+
+    mvn archetype:generate -DarchetypeGroupId=info.magnolia.maven.archetypes -DarchetypeArtifactId=magnolia-project-archetype -DarchetypeVersion=RELEASE
+
+3.  When prompted to supply values for archetype parameters, enter the following:
+
+    ```console
+    groupId: com.example
+    artifactId: custom-project-minimal
+    version: 1.0-SNAPSHOT
+    package: com.example
+    magnolia-bundle-version: {magnolia-latest-version}
+    project-name: custom-project-minimal
+    ```
+
+4.  Confirm the configuration by entering `Y`.
+
+
+The Maven archetype script creates this webapp skeleton:
+
+```numberLines
+custom-project-minimal
+├── custom-project-minimal-webapp
+│ ├── pom.xml
+│ └── src
+└── pom.xml
+```
+
+-   Line 3: The webapp POM.
+
+-   Line 5: The parent POM.
+
+
+In the next two steps, you edit the two `pom.xml` files.
+
+## [](#_editing_the_parent_pom)Editing the parent POM
+
+1.  Edit the `properties` section. Add a new property called `jsonfnVersion` and give it the value `1.0.8`.
+
+    ```xml
+    <jsonfnVersion>1.0.8</jsonfnVersion>
+    ```
+
+2.  Edit the `dependencyManagement` section.
+
+    -   Remove the commented *Option B*.
+
+    -   Add a dependency section for the jsonfn module:
+
+        ```xml
+        <dependency>
+          <groupId>info.magnolia.templating</groupId>
+          <artifactId>magnolia-jsonfn</artifactId>
+          <version>${jsonfnVersion}</version>
+        </dependency>
+        ```
+
+
+3.  Remove the other commented sections, as well as the sections that you do not need right now.
+
+
+Here is the resultant parent POM:
+
+custom-project-minimal/pom.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>custom-project-minimal</artifactId>
+  <name>custom-project-minimal (parent pom)</name>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <magnoliaBundleVersion>{magnolia-latest-version}</magnoliaBundleVersion>
+    <javaVersion>{base-java-version}</javaVersion>
+    <jsonfnVersion>1.0.8</jsonfnVersion>
+  </properties>
+
+  <!-- Fill the following in, so you can use the release plugin -->
+
+  <scm>
+    <connection/>
+    <developerConnection/>
+    <url/>
+  </scm>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <!-- Option A -->
+      <!-- Importing dependencyManagement of CE bundle. -->
+      <dependency>
+        <groupId>info.magnolia.bundle</groupId>
+        <artifactId>magnolia-bundle-parent</artifactId>
+        <version>${magnoliaBundleVersion}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>info.magnolia.templating</groupId>
+        <artifactId>magnolia-jsonfn</artifactId>
+        <version>${jsonfnVersion}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>${javaVersion}</source>
+          <target>${javaVersion}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+
+    <!-- default resources configuration which will filter your module descriptors -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>META-INF/magnolia/*</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>magnolia.public</id>
+      <url>https://nexus.magnolia-cms.com/repository/public</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>vaadin-addons</id>
+      <url>https://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+  </repositories>
+
+<modules> <module>custom-project-minimal-webapp</module>
+  </modules>
+</project>
+```
+
+## [](#_editing_the_webapp_pom)Editing the webapp POM
+
+In the webapp POM, you have to modify the `dependencies` section.
+
+1.  Remove the commented *option ii* and *option iii*. Keep the *option i*, which imports the empty webapp.
+
+2.  Add the Magnolia REST module dependencies:
+
+    ```xml
+    <dependency>
+      <groupId>info.magnolia.rest</groupId>
+      <artifactId>magnolia-rest-integration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.rest</groupId>
+      <artifactId>magnolia-rest-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.rest</groupId>
+      <artifactId>magnolia-rest-content-delivery</artifactId>
+    </dependency>
+    ```
+
+3.  Add the Assets app dependency:
+
+    ```xml
+    <dependency>
+      <groupId>info.magnolia.dam</groupId>
+      <artifactId>magnolia-dam-app</artifactId>
+    </dependency>
+    ```
+
+    Note that the `magnolia-dam-app` itself has other dependencies. However, you do not have to add them to the POM file. Maven resolves the dependencies while building the project and adds them to the webapp.
+
+4.  Add a dependency for the Site module:
+
+    ```xml
+    <dependency>
+      <groupId>info.magnolia.site</groupId>
+      <artifactId>magnolia-site-app</artifactId>
+    </dependency>
+    ```
+
+5.  Add a dependency for the jsonfn module:
+
+    ```xml
+    <dependency>
+      <groupId>info.magnolia.templating</groupId>
+      <artifactId>magnolia-jsonfn</artifactId>
+    </dependency>
+    ```
+
+
+Resultant webapp POM:
+
+custom-project-minimal/custom-project-minimal-webapp/pom.xml
+
+```xml
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.example</groupId>
+    <artifactId>custom-project-minimal</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>custom-project-minimal-webapp</artifactId>
+  <name>custom-project-minimal: webapp</name>
+  <packaging>war</packaging>
+  <dependencies>
+    <!--
+     Add your project specific dependencies here:
+     A custom webapp typically is based on a magnolia webapp. The most simple and reduced bundle to start with is the "magnolia-empty-webapp" (see "option i" below).
+     => Please just use one of the four below listed options!
+     Make sure to use the appropriate option (A or B) in the parent pom
+    -->
+
+    <!-- option i - magnolia-empty-webapp -->
+    <!-- Dependencies versions are already imported by parent pom. Requires "Option A" in the parent pom. -->
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-empty-webapp</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-empty-webapp</artifactId>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.rest</groupId>
+      <artifactId>magnolia-rest-integration</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.rest</groupId>
+      <artifactId>magnolia-rest-services</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.rest</groupId>
+      <artifactId>magnolia-rest-content-delivery</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.dam</groupId>
+      <artifactId>magnolia-dam-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.site</groupId>
+      <artifactId>magnolia-site-app</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.templating</groupId>
+      <artifactId>magnolia-jsonfn</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <!-- exclude jars copied "physically" from the webapp overlay - so we only get those resolved by Maven's dependency management -->
+          <dependentWarExcludes>WEB-INF/lib/*.jar</dependentWarExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+In the next and final step you build your webapp.
+
+## [](#_building_the_webapp)Building the webapp
+
+First, change into the root directory of the webapp project. Then, run the `mvn` command with the tasks `clean` and `install`:
+
+cd custom-project-minimal
+mvn clean install
+
+The Maven command should finish with the `BUILD SUCCESS` message.
+
+You can find the webapp in the `custom-project-minimal/custom-project-minimal-webapp/target` folder.
+
+> **Tip:** TipIf you switch to the custom-project-minimal-webapp directory, you can run the Maven dependency tree command to see all modules and libraries which went into the webapp:  mvn dependency:tree
+
+Congratulations. You’ve built your own custom webapp based on the Magnolia empty webapp.
+
+Related topics
+
+-   [Creating a custom webapp with Maven](../)
+
+-   [Creating a DX Core webapp with Maven](../Creating-a-DX-Core-webapp-with-Maven/)
+
+-   [Bundles and webapps](../../)
+
+-   [Apache Maven](https://maven.apache.org/)
+
+-   [Maven setup](../../../Development-environment/Maven/)

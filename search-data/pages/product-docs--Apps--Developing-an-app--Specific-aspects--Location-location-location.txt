@@ -1,0 +1,195 @@
+---
+title: "Magnolia URLs and location tracking"
+url: https://docs.magnolia-cms.com/product-docs/Apps/Developing-an-app/Specific-aspects/Location-location-location/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > Magnolia URLs and location tracking
+---
+
+# Magnolia URLs and location tracking
+
+On this page we look at typical Magnolia URLs and learn how the fragment part of a URL makes location tracking possible. With fragments you can pinpoint detailed locations in the system. Users can bookmark their favorite apps, pages and nodes.
+
+## [](#_parts_of_a_url)Parts of a URL
+
+A typical URL in the Magnolia back-end looks like this:
+
+![A typical URL in the Magnolia back-end](../../../../_images/url-admincentral.png)
+
+Parts of a URL:
+
+-   **Protocol**: `http` or `https`.
+
+-   **Domain**: Domain name as mapped in the site definition.
+
+-   **Port**: Port number.
+
+-   **Context path**: In a Magnolia URL the context path represents a Web application such as `magnoliaAuthor` or `magnoliaPublic`.
+
+-   **[Servlet mapping](#_servlet_mapping)** : Identifies the servlet that should respond to the request.
+
+-   **[Fragment](#_fragment)** : Keeps track of an app’s internal state. Identifies the name of the app, the subapp, and optionally a path.
+
+
+### [](#_servlet_mapping)Servlet mapping
+
+A servlet responds to a request. Servlets are mapped in the [servlet filter chain](../../../../Administration/Architecture/Request-processing-and-filters/Filters/). By convention, a Magnolia servlet mapping starts with the dot character, for example `/.magnolia/admincentral` for AdminCentral resources or `/.rest` for REST resources.
+
+A [REST](#rest:api:delivery-endpoint.adoc) URL is a good example of complex servlet mapping. The URL requests the page `/travel/about`. The servlet mapping part contains detailed information about the requested resource.
+
+![URL with the servlet mapping part marked](../../../../_images/url-rest.png)
+
+Parts of a servlet mapping:
+
+-   **Servlet**: The first part of the mapping identifies the servlet, in this case `/.rest`.
+
+-   **Endpoint**: Identifies the REST [endpoint](#rest:api:delivery-endpoint.adoc) where the request is issued: `nodes`, `properties` or `commands`.
+
+-   **Version**: REST Web services are versioned. The version number is built into the service URL.
+
+-   **Workspace**: Identifies which [workspace](../../../../Administration/Architecture/Workspaces/) in the `magnolia` repository has the requested content.
+
+-   **Node path**: Location of the content in the workspace.
+
+
+## [](#_fragment)Fragment
+
+Fragment is the part of the URL that starts with the hash character `#`. In AdminCentral URLs, the fragment keeps track of an app’s internal state. It identifies the name of the app, the subapp that is open, and optionally a path to the content that is operated on. In public URLs the fragment identifies an anchor.
+
+The parts that come after the hash are separated with a colon `:`
+
+**Example**: This fragment identifies the [Contacts app](../../../List-of-apps/Contacts-app/). The detail subapp is currently open. The user is viewing version 1.0 of the node `/vvangogh`
+
+![image](../../../../_images/url-fragment-content-app.png)
+
+Parts of a fragment:
+
+-   **App type**: The type is `app` for normal apps and `shell` for the special Shell apps: App Launcher, Tasks and Messages. For your own apps, this part will always be `app`.
+
+-   **App name**: Name of the app as configured in the [app descriptor](../../../App-configuration/App-descriptor/). Apps are named in a predictable way: Pages is `pages`, Assets is `assets` and so on. Magnolia uses the app name to identify the app across the system.
+
+-   **[Subapp ID](#_subapp_id_and_its_parameters)**: ID of the subapp as configured in the [subapp descriptor](../../../App-configuration/Subapp-descriptor/). Subapps are displayed to users as tabs. Every app has at least one subapp. In a content app, subapps are called `browser` and `detail`. In custom apps, you can name your subapps as you want. Magnolia recommends that you name your main subapp `main` for consistency. The `main` subapp can be the only subapp if the app does not provide any other subapps.
+
+-   **Node path**: Path to the node being operated on.
+
+-   **View type**: `edit`, `view` (preview), `treeview`, `listview`, `thumbnailview` or `searchview`.
+
+-   **Version**: Version of the node.
+
+
+### [](#_example_fragments)Example fragments
+
+App launcher shell app.
+
+#shell:applauncher
+
+Pages app with the browser subapp open. The `/travel/about` page is currently selected in the treeview.
+
+#app:pages:browser;/travel/about:treeview
+
+Pages app with an detail subapp open. The `/travel/about` page is being edited.
+
+#app:pages:detail;/travel/about:edit
+
+Pages app with a detail subapp open. The `/travel/about` page is being previewed. The `view` parameter instructs the app to display the page in preview mode.
+
+#app:pages:detail;/travel/about:view
+
+### [](#_subapp_id_and_its_parameters)Subapp ID and its parameters
+
+The subapp ID part of the fragment holds the subapp’s name and optional parameters. Each subapp ID is unique within the app. This allows the system to recognize a tab that is already open and bring that tab into focus rather than open a duplicate. For example, when the Pages app opens a detail subapp it assigns the subapp a unique ID consisting of the subapp name (`detail`) and the path to the page (`/travel/about`). If the user already has the page open the app brings the tab into focus when it is requested.
+
+#app:pages:detail;/travel/about
+
+A node path is the most common example of a parameter. The path identifies the node being viewed or edited, for example `/travel/about`. The subapp ID and the node path are separated with a semicolon. We cannot use the colon character here as it would break the token.
+
+### [](#_custom_parameters_inside_the_fragment)Custom parameters inside the fragment
+
+Here is an example of custom parameters in the fragment. The [Preview app](../../../List-of-apps/Preview-app/) is being used to preview personalized content.
+
+![Fragment in the URL](../../../../_images/url-fragment-custom-parameters.png)
+
+Parameters:
+
+-   `previewPersona` assigns a [persona](../../../../Getting-started-with-Magnolia/Glossary/#_persona) who represents the target audience.
+
+-   `previewDate` assigns a date.
+
+
+Here’s what the Preview app looks like in the browser.
+
+![Preview app in the browser](../../../../_images/6-2-personalization-preview-parameters.png)
+
+### [](#_selectors)Selectors
+
+A selector is a part of a URI between the first selector delimiter `~` (tilde) and the last selector delimiter.
+
+![Selector marked in the URL](../../../../_images/selector.png)
+
+Selectors are similar to query parameters in that they allow you to pass information to a servlet. The difference is that a query parameter sends input to be processed whereas a selector describes how you want to receive the requested resource. In this respect selectors are like extensions. The extension `.html` specifies that you want to receive the resource as an HTML document. The selector `Culture` specifies that you want a list of tours about culture. It is still the same resource (tours list page) but instead of all tours you want it filtered by the category Culture.
+
+For more on request parameters vs. selectors see [Selectors and Request Parameters: Getting it Straight](https://web.archive.org/web/20190105132341/http://www.olsondigital.com/blog/technology/apache-sling-selectors-and-request-parameters-getting-it-straight#) (page snapshot at archive.org).
+
+Magnolia uses the tilde character `~` as a selector delimiter. In other systems such as Apache Sling you may see the dot character `.` used as a delimiter. We can’t use the dot in Magnolia because the [JCR specification](https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/3_Repository_Model.html#3.2.2%20Local%20Names) allows dots in node names, and consequently in URIs, with the single limitation that a dot cannot be the first character. This means a page `page.one`, a document `magnolia.flyer.pdf`, an a JavaScript file `jquery.tabtree` are all perfectly valid node names and must work in URIs.
+
+The info.magnolia.cms.core.Path class sets `~` (tilde) as the delimiter in the `SELECTOR_DELIMITER` constant (String).
+
+#### [](#_splitting_selectors)Splitting selectors
+
+The whole selector can be split into several selectors separated from each other by the same delimiter `~` (tilde):
+
+![A selector split into several selectors](../../../../_images/selector-multiple.png)
+
+-   Whole selector: `Culturea=1b=2`
+
+-   Selector 1: `Culture`
+
+-   Selector 2: `a=1`
+
+-   Selector 3: `b=2`
+
+
+#### [](#_getting_and_setting_selectors)Getting and setting selectors
+
+A selector can also be in the form `name=value`. For example in `/mypagefoo=bar.html` where `foo=bar` is a name-value selector.
+
+Name-value selectors are exposed by `MgnlContext.getAttribute(selectorName)` and have a `local` scope similar to HttpServletRequest scope. In the example, `MgnlContext.getAttribute("foo")` will return the String `bar` whereas `MgnlContext.getAttribute("foo", Context.SESSION_SCOPE)` or `MgnlContext.getAttribute("foo", Context.APPLICATION_SCOPE)` will return null.
+
+#### [](#_aggregationstate)AggregationState
+
+This class exposes some methods to set and get selectors.
+
+-   `setSelector(String selector)` is currently used by `info.magnolia.cms.filters.RepositoryMappingFilter` where the request URI is parsed and the selector part extracted.
+
+-   `String getSelector()` returns the whole selector. I.e given the URI `[http://myserver/mypage](http://myserver/mypage)xfoo=bar~.html` this method will return the String *x~foo=bar*
+
+-   `String[] getSelectors()` returns the selector split into its discrete elements. I.e given the URI `[http://myserver/mypage](http://myserver/mypage)xfoo=bar~.html` this method will return an array of two elements containing the `x` and the `foo=bar` String(s)
+
+
+#### [](#_selectorutil)SelectorUtil
+
+SelectorUtil is a utility class that provides two methods which are basically shortcuts to the getters in `AggregationState`:
+
+-   `String getSelector()`
+
+-   `String getSelector(int index)`
+
+
+#### [](#_caching_of_selector_uris)Caching of selector URIs
+
+Magnolia caches URIs that have selectors by default. Selectors are not a performance constraint. However, when a request parameter is present the URI is excluded from the cache.
+
+-   `/mypagecategory=Culture.html` is cached
+
+-   `/mypage.html?category=Culture` is not cached
+
+
+## [](#_creating_a_browsing_history_with_fragments)Creating a browsing history with fragments
+
+The URL fragment can pinpoint very fine-grained locations in the system such as a particular page or configuration node. This makes it possible to build a detailed browsing history. Navigating a browsing history via fragments is not a unique concept. We adopted it from the [Google Web Toolkit (GWT)](https://developers.google.com/web-toolkit/doc/latest/DevGuideCodingBasicsHistory):
+
+> For each page that is to be navigable in the history, the application should generate a unique history token. A token is simply a string that the application can parse to return to a particular state. This token will be saved in browser history as a URL fragment (in the location bar, after the `#`), and this fragment is passed back to the application when the user goes back or forward in history, or follows a link.
+
+## [](#_moving_back_and_forward_in_browser_history)Moving back and forward in browser history
+
+This is how modern Web applications should work: rather than prevent the user from clicking the Back and Forward buttons, let them do what feels intuitive. If clicking Back seems like the right thing to do to get to the previous state then the application should support that feeling. Using the URL fragment allows the user to use the browser’s own back and forward functionality.

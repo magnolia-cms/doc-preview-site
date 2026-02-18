@@ -1,0 +1,272 @@
+---
+title: "Form definition"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Templating/Dialog-definition/Form-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Dialog definition > Form definition
+---
+
+# Form definition
+
+Forms define fields and similar components as well as their layout. Form definition is used in dialogs and the detail subapps of content apps.
+
+> **Note:** This form definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.editor.FormDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+form:
+  properties:
+    salutation:
+      label: Salutation
+      $type: textField
+      i18n: true
+    firstName:
+      label: First name
+      $type: textField
+      required: true
+    lastName:
+      label: Last name
+      $type: textField
+      required: true
+    email:
+      label: Email
+      $type: textField
+      required: true
+      validators:
+        email:
+          $type: emailValidator
+    phone:
+      label: Phone
+      $type: textField
+      required: true
+```
+
+## [](#_form_properties)Form properties
+
+| Property | Description |
+| --- | --- |
+| `properties` | **required**<br><br>List of editor property definition items (typically, a list of fields).<br><br>See [Field definition](../Field-definition/) for more information. |
+| `layout` | **optional**, *default is `info.magnolia.ui.framework.layout.FormLayoutDefinition`*<br><br>Defines the form layout. The value must be a subtype of `info.magnolia.ui.framework.layout.LayoutDefinition`.<br><br>See [Layout types](#_layout_types) for more information. |
+
+## [](#_layout_types)Layout types
+
+| $type | class |
+| --- | --- |
+| `declarativeLayout` | `info.magnolia.ui.framework.layout.DeclarativeLayoutDefinition` |
+| `defaultEditorActionLayout` | `info.magnolia.ui.dialog.layout.DefaultEditorActionLayoutDefinition` |
+| `form` | `info.magnolia.ui.framework.layout.FormLayoutDefinition` |
+| `horizontal` | `info.magnolia.ui.framework.layout.HorizontalLayoutDefinition` |
+| `stacked` | `info.magnolia.ui.framework.layout.StackedLayoutProducer` |
+| `tabbedForm` | `info.magnolia.ui.editor.TabWithFieldsFormDefinition` |
+| `tabbedLayout` | `info.magnolia.ui.framework.layout.TabbedLayoutDefinition` |
+
+### [](#_default_layout)Default layout
+
+info.magnolia.ui.framework.layout.FormLayoutDefinition (`form`) is the default layout. Use this layout when there is no need for customization.
+
+### [](#_tab_layout)Tab layout
+
+With info.magnolia.ui.framework.layout.TabbedLayoutDefinition (`tabbedLayout`), you can organize components into tabs.
+
+Example definition
+
+```yml
+form:
+  layout:
+    $type: tabbedLayout
+    tabs:
+      personal:
+        fields:
+          - name: salutation
+          - name: firstName
+          - name: lastName
+      details:
+        fields:
+          - name: email
+          - name: phone
+```
+
+Alternatively, you can use info.magnolia.ui.editor.TabWithFieldsFormDefinition (`tabbedForm`) to configure fields in tabs. This form comes with a tab layout, which is similar to how a form is defined by default in *Magnolia 5 UI*.
+
+Example definition
+
+```yml
+form:
+  $type: tabbedForm
+  tabs:
+    firstTab:
+      fields:
+        foo:
+          label: foo
+          $type: textField
+    secondTab:
+      fields:
+        bar:
+          label: bar
+          $type: textField
+          required: true
+```
+
+> **Note:** i18n keys from Magnolia 5 UI are not compatible with tabbedForm and must be reconfigured. Both myLightModule.myDialog.myTextField[.label] and fields.myTextField[.label] are generated for the following Magnolia 6 UI definitions:myLightModule/dialogs/myDialog.yamlform:
+>   properties:
+>     myTextField:
+>       $type: textFieldmyLightModule/dialogs/myDialog.yamlform:
+>   $type: tabbedForm
+>   tabs:
+>     tabMain:
+>       fields:
+>         myTextField:
+>           $type: textField
+
+### [](#_stacked_layout)Stacked layout
+
+With info.magnolia.ui.framework.layout.StackedLayoutProducer (`stacked`), you can arrange components vertically. Any captions are placed above the respective components, which means that more horizontal space is allocated to the components themselves. This is the default layout for [composite fields](../Field-definition/List-of-fields/Composite-field/).
+
+Example definition
+
+```yml
+form:
+  properties:
+    composite:
+      $type: compositeField
+      layout:
+        $type: stacked
+      itemProvider:
+        $type: currentItemProvider
+      properties:
+        first:
+          $type: textField
+        second:
+          $type: textField
+```
+
+### [](#_horizontal_layout)Horizontal layout
+
+With info.magnolia.ui.framework.layout.HorizontalLayoutDefinition (`horizontal`), you can arrange components horizontally. To disable spacing between components, set the `spacing` property to `false`. Use this layout mainly for [composite fields](../Field-definition/List-of-fields/Composite-field/).
+
+Example definition
+
+```yml
+form:
+  properties:
+    composite:
+      $type: compositeField
+      layout:
+        $type: horizontal
+      itemProvider:
+        $type: currentItemProvider
+      properties:
+        first:
+          $type: textField
+        second:
+          $type: textField
+```
+
+### [](#_declarative_layout)Declarative layout
+
+With info.magnolia.ui.framework.layout.DeclarativeLayoutDefinition (`declarativeLayout`), you can create form entries in an arbitrary Vaadin component container using the [Vaadin declarative syntax](https://vaadin.com/docs/framework/application/application-declarative.html). Use this layout for full customization.
+
+Example definition
+
+```yml
+form:
+  layout:
+    $type: declarativeLayout
+    template: /contacts/layouts/edit-contact.html
+```
+
+To render the layout, a `template` property is **required**. Because the Vaadin declarative syntax is used to design custom layouts, the declarative template has to be an HTML document.
+
+In the template, the tag of a component element can have one of the following prefixes:
+
+-   `vaadin-`: Vaadin core component.
+
+-   `mgnl-`: Magnolia predefined or user-defined component. To define a mapping between a tag prefix and the Java package of the component, see the **Component Prefix to Package Mapping** section of [Designing UIs Declaratively](https://vaadin.com/docs/framework/application/application-declarative.html). The following Magnolia predefined components are available:
+
+    -   `<mgnl-separator/>`: horizontal line to separate content.
+
+    -   `<mgnl-group caption="">`: group header with a `caption` attribute to separate content.
+
+
+-   `form-`: Magnolia property as defined in YAML.
+
+
+You can always use Magnolia predefined or user-defined components and Magnolia properties with Vaadin core components.
+
+Example template
+
+```xml
+<html>
+    <head>
+        <meta name="package-mapping"
+              content="custom:info.magnolia.contacts.layout"/>
+    </head>
+    <body>
+
+        <custom-vertical-layout spacing="false">
+            <vaadin-vertical-layout spacing="false" style-name="my-container">
+                <vaadin-label width-auto>Hello declarative layout</vaadin-label>
+                <mgnl-separator/>
+                <vaadin-label width-auto>${i18n.get("contacts.label")}</vaadin-label>
+            </vaadin-vertical-layout>
+
+            <mgnl-group caption='${i18n.get("contacts.personal")}'>
+                <vaadin-form-layout>
+                    <form-salutation/>
+                    <form-firstName/>
+                    <form-lastName/>
+                </vaadin-form-layout>
+            </mgnl-group>
+
+            <mgnl-group caption="Details">
+                <vaadin-form-layout>
+                    <form-email/>
+                    <form-phone/>
+                </vaadin-form-layout>
+            </mgnl-group>
+
+            <mgnl-group caption="Address">
+                <vaadin-form-layout>
+                    <form-streetAddress/>
+                    <form-postalCode/>
+                    <form-city/>
+                    <form-country/>
+                </vaadin-form-layout>
+            </mgnl-group>
+
+        </custom-vertical-layout>
+
+    </body>
+</html>
+```
+
+It is recommended that Magnolia properties be nested inside a `<vaadin-form-layout>` tag. If you insert a Magnolia property inside a `<vaadin-vertical-layout>` tag, the component will not be rendered as nicely.
+
+src/main/resources/info/magnolia/contacts/layout/my-style.css
+
+```css
+.my-container {
+    background-color: #93bbc4;
+}
+```
+
+src/main/java/info/magnolia/contacts/layout/VerticalLayout.java
+
+```java
+package info.magnolia.contacts.layout;
+
+import com.vaadin.annotations.StyleSheet;
+
+@StyleSheet("my-style.css")
+public class VerticalLayout extends com.vaadin.ui.VerticalLayout {
+}
+```
+
+If `VerticalLayout.java` is stored in `src/main/java/info/magnolia/contacts/layout`, `my-style.css` should be added to `src/main/resources/info/magnolia/contacts/layout`.
+
+### [](#_action_layout)Action layout
+
+With info.magnolia.ui.dialog.layout.DefaultEditorActionLayoutDefinition (`defaultEditorActionLayout`), you can define an action area in both dialogs and the detail subapps of content apps. This is the default layout for footers and includes predefined primary and secondary actions.
+
+To learn about the layout properties, see [`footerLayout`](../#_footerLayout).

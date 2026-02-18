@@ -1,0 +1,110 @@
+---
+title: "Structured content"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Features/structured-content/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Magnolia DXP > Structured content
+---
+
+# Structured content
+
+Structured content refers to information organized in a predefined, consistent format, enabling efficient management, reuse, and delivery across multiple platforms and channels.
+
+## [](#_benefits)Benefits
+
+-   **Reusability**: Centrally managed content updates all frontends automatically, reducing duplication.
+
+-   **Headless delivery**: Structured content is delivered via APIs (such as REST, Delivery API) as JSON, supporting SPAs, mobile apps, or other channels without presentation markup.
+
+-   **Authoring efficiency**: Content apps provide form-based interfaces for consistent data entry. Magnolia supports a balance of structured and semi-structured content for flexible content management.
+
+-   **Multichannel support**: Content is "future-proof," adapting to new devices or platforms (for example, smart speakers, social media) without format constraints.
+
+
+Structured content is modular, predictable and presentation-independent, unlike unstructured content such as blog posts with mixed HTML. This separation supports modern, multichannel experiences.
+
+## [](#_how_structured_content_works_in_general)How structured content works in general
+
+Below is a generalized YAML definition example for structured content, illustrating how information can be organized into specific fields or properties within a content model.
+
+### [](#_content_model)Content model
+
+A content model is a structured framework that defines the organization and types of data fields, such as names or prices, used to store and manage content in a system. It ensures consistency and enables efficient content creation, storage, and retrieval.
+
+While not usable as-is anywhere in Magnolia (for Magnolia, see [*content types* further below](#_create_content_types_and_content_type_apps)), this example represents a content model for a product catalog, which includes fields like product names and prices.
+
+```yaml
+content_model:
+  name: product
+  fields:
+    - name: id
+      type: string
+    - name: name
+      type: string
+    - name: price
+      type: number
+```
+
+#### [](#_model_properties_defined)Model properties defined
+
+-   `name`\- Specifies the model name, indicating it represents a product.
+
+-   `fields`\- Lists the properties defining the structure:
+
+    -   `id` - A string field for a unique product identifier.
+
+    -   `name` - A string field for the product name.
+
+    -   `price` - A number field for the product price.
+
+
+    Each field includes a `type` property specifying the data type.
+
+
+### [](#_content_instance)Content instance
+
+A sample data entry that utilizes the model, with values for `id`, `name`, and `price`.
+
+!["Example instance of structured content](../../_images/features/structuredContentInstance_product.png)
+
+## [](#_creating_and_managing_structured_content_in_magnolia)Creating and managing structured content in Magnolia
+
+In Magnolia, this can be achieved in several ways.
+
+### [](#_create_content_types_and_content_type_apps)Create content types and content type apps
+
+By defining [content types](../Content-Types/) and using them to create content type based apps.
+
+### [](#_create_and_use_content_editor_based_apps)Create and use Content Editor based apps
+
+By creating apps based on the [Content Editor](../../Modules/List-of-modules/Content-Editor-module/) module, an example of which is Magnolia’s [Stories app](../../Apps/List-of-apps/Stories-app/).
+
+The [Stories app](../../Apps/List-of-apps/Stories-app/) allows **semi-structured content** for flexibility, blending fixed fields in the story **header** with free-form [**blocks**](../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/Developing-and-rendering-custom-content-blocks/):
+
+-   Each block itself represents structured content, yet it’s semi-structured because the author can choose which blocks to add and in what order.
+
+-   Each story is introduced using **the header**, which is a type of structured content, with well-defined fields and their properties.
+
+
+### [](#_create_content_using_the_pages_app)Create content using the Pages app
+
+The [Pages app](../../Apps/List-of-apps/Pages-app/) is a key visual editor in Magnolia, offering a semi-structured approach similar to the Stories app. Components within the Pages app represent structured content, allowing authors to flexibly choose and arrange components while ensuring content is consumable by any frontend.
+
+## [](#_using_external_data_in_magnolia_content_apps)Using external data in Magnolia content apps
+
+Magnolia enables seamless integration and management of structured content from external sources within its UI. You can surface, link to, and even edit external data directly in your content apps, enhancing flexibility and streamlining workflows.
+
+The integration happens mainly through **Extensions** and **REST clients**:
+
+-   [**Extensions**](../../Modules/#_list_of_modules): Pre-built integrations for popular systems, simplifying access to external data.
+
+-   **REST clients**: Configure REST clients as data sources for subapps to fetch and work with JSON data from external APIs. For more details, see [JSON data source](../../Modules/List-of-modules/REST-Client-module/JSON-data-source/) and [UI Framework REST Extensions module](../../Modules/List-of-modules/UI-Framework-REST-Extensions-module/).
+
+
+## [](#_see_our_tutorials_for_structured_content)See our tutorials for structured content
+
+-   [My first content app](../../Apps/Developing-an-app/My-first-content-app/)
+
+-   [Developing a custom content editor app](../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/)
+
+-   [page-editor-apps:ROOT:guides/how-to-provision-a-custom-page-editor-app.adoc](#page-editor-apps:ROOT:guides/how-to-provision-a-custom-page-editor-app.adoc)

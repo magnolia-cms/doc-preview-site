@@ -1,0 +1,187 @@
+---
+title: "Pods restarting"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/general/pods-restarting/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > Pods restarting
+---
+
+# Pods restarting
+
+## [](#_symptom)Symptom
+
+The pods are unexpectedly and frequently restarting.
+
+## [](#_observations)Observations
+
+You may receive an alert notification when a Magnolia pod is restarted like these:
+
+-   Magnolia `<pod namespace>/<pod>` OOMKilled on `<cluster>`.
+
+-   Magnolia instance `<pod>` on `<cluster>` is crashlooping.
+
+
+Kubernetes can restart a Magnolia pod for a variety of reasons, but the most common reasons are:
+
+-   The Magnolia pod has exceeded its memory limit (*also known as a "Out of Memory Kill" or "oomkill" for short*).
+
+-   The Magnolia pod has not responded to its liveness or readiness checks.
+
+
+> **Tip:** You can determine how many times a Magnolia pod has been restarted by visiting the Rancher console and viewing your Magnolia pods or by using kubectl:
+
+-   Rancher
+
+-   kubectl
+
+
+The Rancher console below displays the total number of Magnolia pods, `40` restarts for `prod-magnolia-helm-public` since there are two Magnolia public pods.
+
+![Pod restarts](../../../_images/troubleshooting/rancher-pod-restarts.png)
+
+The `kubectl` output shows the number of times each individual pod has been restarted.
+
+```sh
+$ kubectl -n <namespace> get pods
+NAME                             READY   STATUS    RESTARTS   AGE
+prod-magnolia-helm-author-0      2/2     Running   0          21d
+prod-magnolia-helm-author-db-0   2/2     Running   0          78d
+prod-magnolia-helm-public-0      2/2     Running   20         21d
+prod-magnolia-helm-public-1      2/2     Running   20         21d
+prod-magnolia-helm-public-db-0   2/2     Running   0          78d
+prod-magnolia-helm-public-db-1   2/2     Running   0          78d
+```
+
+You can also see why the pod was restarted with `kubectl`:
+
+```sh
+$ kubectl -n <namespace> describe pods <pod>
+<lots of info>
+```
+
+Look for the `Containers:` section in the output:
+
+```sh
+Containers:
+  prod:
+    Container ID:   docker://98f35fdc444d5a440c6240fe4fdcdf36d2512f9eb900fb9664ce412a07ffcb6e74
+    Image:          tomcat:9.0-jre11-temurin
+    Image ID:       docker-pullable://tomcat@sha256:5561f39723432f5f09ce4a7d3428dd3f96179e68c2035ed07988e3965
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Tue, 06 Sep 2022 22:04:02 +0200
+    Last State:     Terminated (1)
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Tue, 06 Sep 2022 21:20:15 +0200
+      Finished:     Tue, 06 Sep 2022 22:04:02 +0200
+    Ready:          True
+    Restart Count:  20
+    Limits:
+      memory:  12Gi
+    Requests:
+      memory:  12Gi
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `Last State` field notes when (`Tue, 06 Sep 2022 21:20:15 +0200`) and why (`OOMKilled`) the pod was restarted. |
+
+## [](#_next_steps_out_of_memory_kills)Next steps: Out of memory kills
+
+If your Magnolia pod is being *oomkilled*, you can reduce the maximum heap memory for the JVM or limit the direct (*off heap*) memory used by the JVM.
+
+Oomkills are often caused by off heap memory usage, reducing the maximum heap memory for the JVM will leave more memory for use by the JVM.
+
+Increasing the memory available to the Magnolia instance and reducing the memory used by the JVM heap can prevent oomkills.
+
+Specifying the maximum direct memory used by the JVM will limit off heap memory used by Magnolia and prevent the total heap memory and off heap memory used by Magnolia from exceeding the pod’s memory limit and being oomkilled.
+
+### [](#_setting_pod_memory_limits)Setting pod memory limits
+
+Setting a higher memory limit for the Magnolia can reduce oomkills.
+
+You can specify the memory limit for a Magnolia author or public instance in the Helm chart values by setting the value for `magnoliaAuthor.resources.limits.memory` or `magnoliaPublic.resources.limits.memory`.
+
+We recommend:
+
+-   at least `6Gi` for the memory limit for Magnolia public instances
+
+-   at least `8Gi` for the memory limit for the Magnolia author instance
+
+
+> **Tip:** For more on these helm value references, see the Helm values page.
+
+### [](#_setting_the_jvm_maximum_heap)Setting the JVM maximum heap
+
+The max heap size of the Magnolia JVM is a percentage of the pod’s memory limit. Setting a lower max heap percentage can reduce or eliminate oomkills by allowing more off-heap memory for use by the Magnolia pod.
+
+You can set the percentage in the Helm chart values values with `magnoliaAuthor.setenv.memory.maxPercentage` or `magnoliaPublic.setenv.memory.maxPercentage`.
+
+The default value is `80` percent. If your Magnolia instances are being oomkilled, we recommend reducing the max heap percentage to between `50` percent and `60` percent.
+
+> **Note:** We recommend you set the maxPercentage so there is at least 2gb memory unused by the JVM heap maximum if not setting a direct memory limit for the JVM (see below).
+
+### [](#_pod_memory_versus_jvm_maximum_heap)Pod memory versus JVM maximum heap
+
+The pod memory limit and the JVM maximum heap affect each other. Increasing or decreasing one will affect the other. So choose the pod memory limit and the JVM maximum heap percentage so that:
+
+-   At least 6 gb of memory for a Magnolia public instance and at least 8 gb of memory for a Magnolia author instance
+
+-   At least 2 gb of memory not used by the JVM heap
+
+
+For example, for a Magnolia public instance, you could set:
+
+-   pod memory limit: `6Gi`
+
+-   maxHeapPercentage: `50`
+
+
+The Magnolia instance would have a maximum of 3 gb for the JVM heap and 3 gb of memory for off heap use.
+
+If 3 gigabytes for the JVM heap is not enough, you could set:
+
+-   pod memory limit: `8Gi`
+
+-   maxHeapPercentage: `50`
+
+
+The Magnolia instance would have a maximum of 4 gb for the JVM heap and 4 gb of memory for off heap use.
+
+If adjusting the memory limit and the max heap percentage do not stop oomkills of your Magnolia pods, we recommend setting a direct memory limit for the JVM.
+
+## [](#_next_steps_readiness_and_liveness_checks_failures)Next steps: readiness and liveness checks failures
+
+Kubernetes monitors Magnolia public pods and will restart a pod if it fails a readiness or liveness check.
+
+The readiness and liveness checks are performed several times and Kubernetes will only restart a Magnolia pod if fails several consecutive checks.
+
+Here’s a sample configuration for the liveness check for the Magnolia public instance:
+
+```yaml
+magnoliaPublic:
+  #...
+  livenessProbe:
+    port: 8765 # The default used by the bootstrapper.
+    failureThreshold: 4
+    initialDelaySeconds: 120
+    timeoutSeconds: 10
+    periodSeconds: 30
+```
+
+You can adjust these values in your Helm chart values to:
+
+-   Allow more time for Magnolia to start up (liveness check only): `initialDelaySeconds`
+
+-   Allow more failures of the liveness or readiness checks before restarting: `failureThreshold`
+
+-   Allow more time for a liveness or readiness check to be performed: `timeoutSeconds`
+
+-   Allow more time between liveness or readiness checks to be performed: `periodSeconds`
+
+
+You can adjust these values to make liveness and readiness checks more lenient, but this will not necessarily stop Kubernetes from restarting a Magnolia pod.
+
+Before changing the readiness and liveness checks, you should investigate why Magnolia isn’t starting up fast enough to satisfy the `initialDelaySeconds` threshold or is not responding to checks within the `timeoutSecond` threshold or is not responding over a period of time controlled by the `failureThreshold` and `periodSeconds` thresholds.

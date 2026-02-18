@@ -1,0 +1,148 @@
+---
+title: "Template prototype"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Templating/Site-definition/Template-prototype/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Site definition > Template prototype
+---
+
+# Template prototype
+
+Template prototype is like a master page template. Anything you configure in the prototype is applied to all page templates. The prototype makes configuration efficient as you only need to do it once. For example, add an area to the prototype to make it available on all pages. You can override the prototype at the [page definition](../../Template-definition/Page-definition/) level if needed.
+
+**Best practice**
+
+Put commonly used things in the template prototype. If most pages on your site have the same areas then define those areas in the prototype.
+
+## [](#_do_i_need_a_prototype)Do I need a prototype?
+
+No, it is not necessary to use a prototype. You can configure a separate [page definition](../../Template-definition/Page-definition/) for each page template instead. This works fine if you have a small number of templates that are very different from each other.
+
+Prototype is an optional templating mechanism that offers a number of benefits:
+
+-   Ensures uniformity across templates
+
+-   Avoids repeating and duplicating configuration
+
+-   Creates similar templates quickly
+
+
+## [](#_prerequisites)Prerequisites
+
+-   [Site module](#site:ROOT:index.adoc). You need to install the Site module and configure a [site definition](../) in order create a prototype.
+
+
+## [](#_configuring_a_prototype)Configuring a prototype
+
+The prototype definition is a [page template definition](../../Template-definition/Page-definition/) that must use the info.magnolia.module.site.templates.PrototypeTemplateDefinition class.
+
+> **Tip:** You can use all the page template properties.
+
+You can configure a prototype in:
+
+-   [JCR](#_configuring_a_prototype_in_jcr): In a [site definition](../).
+
+-   [YAML](#_configuring_a_prototype_in_yaml): In any module.
+
+
+If you have the [Multisite module](../../../../Modules/List-of-modules/Multisite-module/) (DX Core) you can configure a different prototype for each site or use the same prototype for all sites.
+
+### [](#_configuring_a_prototype_in_jcr)Configuring a prototype in JCR
+
+In the site definition, configure the prototype in the `/templates/prototype` node.
+
+### [](#_configuring_a_prototype_in_yaml)Configuring a prototype in YAML
+
+While it is not possible to configure a site definition completely in YAML, you can configure the prototype in YAML and reference it in the site definition. The prototype definition can reside in any module.
+
+To configure the prototype in YAML:
+
+1.  In the site definition:
+
+    1.  Set the:
+
+        1.  `class` property to `info.magnolia.module.site.templates.ReferencingPrototypeTemplateSettings`. *This class allows you to use a prototype defined in YAML.*
+
+        2.  `prototypeId` to the location of the YAML prototype definition in the `<module name>:<relative path to definition>` format, for example, `travel-demo:pages/prototype`.
+
+
+
+2.  Remove the `prototype` node, if it exists.
+
+    **Example**: `travel` site definition.
+
+    /<module-name>/sites/travel.yaml
+
+    ```yaml
+    templates:
+      class: info.magnolia.module.site.templates.ReferencingPrototypeTemplateSettings
+      prototypeId: travel-demo:pages/prototype
+      availability:
+        class: com.example.myModule.site.CustomTemplateAvailability
+    theme:
+      name: travel-demo-theme
+    i18n:
+      class: info.magnolia.cms.i18n.DefaultI18nContentSupport
+      enabled: true
+      fallbackLocale: en
+      locales:
+        en:
+          enabled: true
+          language: en
+        de:
+          enabled: true
+    ```
+
+3.  Create the prototype YAML file in the location defined in the `prototypeId` property and set the class property to `info.magnolia.module.site.templates.PrototypeTemplateDefinition` (or a subclass).
+
+    [https://bitbucket.org/magnolia-cms/travel-demo](https://bitbucket.org/magnolia-cms/travel-demo)
+
+
+### [](#_prototype_template_properties)Prototype template properties
+
+Prototype is a info.magnolia.rendering.template.TemplateDefinition, which means it supports the same properties as [page definition](../../Template-definition/Page-definition/), including [Template definition](../../Template-definition/). However, typically you don’t use them all. Here are the typical use cases:
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>areas</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Common areas such as footer or navigation that are used on most pages.</p></div><div class="paragraph"><p>Each child node is an <a href="../../Template-definition/Area-definition/" class="xref page">area definition</a>. Define the areas in the prototype so you don’t have to repeat them in each <a href="../../Template-definition/Page-definition/" class="xref page">page definition</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>templateScript</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>The <code>templateScript</code> property allows you to define a common page <a href="../../Template-scripts/" class="xref page">template script</a> for the whole site. For a page to inherit its template script from the prototype you must also define <code>renderType=site</code> in the <a href="../../Template-definition/" class="xref page">template definition</a>.</p></div><div class="paragraph"><p>A page template script typically starts with an opening <code>&lt;html&gt;</code> element and ends with the closing <code>&lt;/html&gt;</code> element when rendering HTML output.</p></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">See <a href="https://bitbucket.org/magnolia-cms/travel-demo" target="_blank" rel="noopener"><code>main.ftl</code> file</a> in the Travel Demo.</td></tr></tbody></table></div><div class="dlist"><dl><dt class="hdlist1">Example</dt><dd><p>The <a href="../../../../Getting-started-with-Magnolia/Demo/" class="xref page">Travel Demo</a> defines a template script in the prototype. This common script is used for all pages.</p></dd></dl></div><div class="paragraph"><p>It is also the reason why no YAML page definition in the demo has an explicit <code>templateScript</code> property. The page definitions set <code>renderType=site</code> to inherit the script from the prototype, see <a href="https://bitbucket.org/magnolia-cms/travel-demo" target="_blank" rel="noopener">home.yaml</a> for example in the travel demo repository.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, if the <code>class</code> property is not defined in the template definition.</p></div><div class="paragraph"><p>An alias specifying the type of the prototype.</p></div><div class="paragraph"><p>Use the following values:</p></div><div class="ulist"><ul><li><p><code>prototype</code> for ordinary prototypes.</p></li><li><p><code>spaPrototype</code> for SPA-based prototypes.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>A custom definition class that extends <span class="inlineBean">info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition</span> (an implementation of <span class="inlineBean">info.magnolia.rendering.template.TemplateDefinition</span>). You only need a custom class if you want to add your own nodes and properties in the prototype. Implement corresponding methods to operate on those properties in the definition class.</p></div><div class="dlist"><dl><dt class="hdlist1">Example</dt><dd><p><code>PageTemplateDefinition</code> is a custom definition class used in the Travel Demo. It adds support for a <code>jsFiles</code> node, which allows you to define JavaScript files in the prototype the same way a <a href="../../Theme/" class="xref page">theme</a> defines them.</p></dd></dl></div></div></td></tr></tbody></table></div>
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+## [](#_merging_a_prototype_with_a_page_definition)Merging a prototype with a page definition
+
+When a user requests a page Magnolia merges the prototype with a [page definition](../../Template-definition/Page-definition/). The result is a merged template definition which is then used to render the page.
+
+The merged definition is virtual. You won’t find its configuration anywhere. It is created dynamically at the time of rendering. However, you can access the merged definition in a template script using the `def` [rendering context object](../../Template-scripts/Rendering-context-objects/#_def).
+
+**Example**: Merging a prototype (configured in JCR) with a home page definition (configured in [YAML](../../../YAML/))
+
+1.  Prototype defines the `main` [area type](../../Template-definition/Area-definition/) as `list`. Page definition adds `availableComponents` for the area. The result contains both.
+
+2.  Prototype defines a `templateScript`. Page definition says nothing about script. The result is that the home page uses the script defined in the prototype.
+
+3.  Prototype defines the `footer` area as not editable. Page definition overrides this decision by allowing footer editing on the home page. The result is that the footer can be edited on the home page only.
+
+
+-   Prototype
+
+-   Page template definition
+
+-   Merged template definition
+
+
+![Prototype definition](../../../../_images/ADVT-tempprot-proto.png)
+
+home.yaml
+
+```js
+renderType: site
+areas:
+  footer:
+    editable: true
+  main:
+    availableComponents:
+      textImage:
+        id: mtk2:components/textImage
+      teaserInternal:
+        id: mtk2:components/teaser
+```
+
+![Merged template definition](../../../../_images/ADVT-tempprot-merged.png)

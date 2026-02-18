@@ -1,0 +1,101 @@
+---
+title: "Publishing Transactional module"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Publishing-Transactional-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Publishing Transactional module
+---
+
+# Publishing Transactional module
+
+[Collaboration and workflow](../../../use-cases/collaboration-and-workflow/) Bundled: DX Core
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [EEPUBLISH](https://magnolia-cms.atlassian.net/browse/EEPUBLISH) |
+| Maven site | [Publishing Transactional](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fpublishing%2Fmagnolia-publishing-transactional-core%2F3.0.0) |
+| Latest | 3.0.0 |
+
+The Publishing Transactional module ensures synchronization of content between multiple public instances. The module extends the single-receiver, Community Edition’s [Publishing module](../Publishing-module/) by providing parallel publishing to up to 10 receivers (public instances).
+
+> **Caution:** Content publishing and content synchronizationAlways wait with content publishing actions until all content synchronization tasks have been finished.If you attempt to publish a page while the Synchronization module is mid-sync and hasn’t yet synchronized the page’s parent, the publishing process will fail.
+
+## [](#_module_structure)Module structure
+
+The parent reactor’s artifactID is `magnolia-publishing-transactional-parent`. The module consists of the following submodules:
+
+|     |     |
+| --- | --- |
+| `core` | Extends functionality of the `magnolia-publishing-core` submodule. |
+| `sender` | Handles send operations to multiple public instances. |
+| `receiver` | Handles receive requests on multiple public instances. |
+| `app` | Extends the functionality of the `magnolia-publishing-app` submodule by adding the *clean MgnlWorkspace* function (only on public instance). |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.publishing</groupId>
+  <artifactId>magnolia-publishing-transactional-core</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.publishing</groupId>
+  <artifactId>magnolia-publishing-transactional-sender</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.publishing</groupId>
+  <artifactId>magnolia-publishing-transactional-receiver</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.publishing</groupId>
+  <artifactId>magnolia-publishing-transactional-app</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+Content is published transactionally automatically when the Publishing Transactional module is installed. No configuration is required.
+
+Publishing content to all receivers in a single transaction means that if one of the public instances is down, content will not be published to any of them. The user is notified of the situation in an error message. To resume publishing in such a case, an administrator has to either bring the affected receiver back online, disable it, or remove it from the list of receivers. When they later enable such a receiver, it is strongly recommended to completely republish all content to the affected receiver.
+
+Transactional publishing works the same way also for unpublishing and the same way whether invoked directly or via an approval workflow.
+
+While it is possible to have more than 10 receivers (public instances), the module can only publish content to up to 10 receivers in parallel.
+
+Related topics
+
+-   [Publishing overview](../../../Administration/Architecture/Publishing/)
+
+-   [Publishing module](../Publishing-module/)

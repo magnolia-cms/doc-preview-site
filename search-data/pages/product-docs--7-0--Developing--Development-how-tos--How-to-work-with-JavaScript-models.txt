@@ -1,0 +1,514 @@
+---
+title: "How to work with JavaScript models"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Development-how-tos/How-to-work-with-JavaScript-models/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Development how-tos > How to work with JavaScript models
+---
+
+# How to work with JavaScript models
+
+This page explains in detail how to use JavaScript models for templates. JavaScript models can be done via [Light development](../../Light-development-in-Magnolia/), thus enabling fast development and deployment without the need for Java, Maven or WAR deployment. JavaScript models represent a type of Magnolia [Resources](../../Resources/).
+
+If you want to use JavaScript models, make sure that your bundle contains the `magnolia-module-javascript-models` module. For further information see [JavaScript Models module - Installing](#javascript-models:ROOT:index.adoc).
+
+## [](#_defining_referencing_and_using_a_javascript_model)Defining, referencing and using a JavaScript model
+
+### [](#_base_recipe_using_a_convention_for_naming_and_location_of_the_model)Base recipe: Using a convention for naming and location of the model
+
+1.  Set the model class property in the template definition.
+
+
+rhino.yaml
+
+```yaml
+class: info.magnolia.module.jsmodels.rendering.ConfiguredJavascriptTemplateDefinition
+templateScript: /your-light-module/templates/pages/rhino.ftl
+renderType: freemarker
+modelClass: info.magnolia.module.jsmodels.rendering.JavascriptRenderingModel
+```
+
+2.  Create the model file in the same location as the template definition and give it the name `<template-name>.js`. Create a JavaScript `class` with properties and methods in the file and create an instance at the end of the file.
+
+
+rhino.js
+
+```js
+var Dumbo = function () {
+    this.name = "John";
+    this.getRandomNumber = function () {
+        return Math.ceil(100 * Math.random());
+    }
+};
+new Dumbo();
+```
+
+3.  Use the model in the template script.
+
+
+rhino.ftl
+
+```xml
+<div>Hey ${model.name}, your happiness level is at ${model.getRandomNumber()}%.</div>
+```
+
+Reference the `model` in the script and use the properties or methods defined within the model.
+
+Files involved
+
+your-light-module/
+└── templates
+    └── pages
+        ├── rhino.ftl
+        ├── rhino.js
+        └── rhino.yaml
+
+This recipe works for both page and component templates.
+
+### [](#_using_the_modelpath_and_class_property)Using the modelPath and class property
+
+With this approach you do not have to follow the naming convention. This can be handy to use the same model among multiple templates.
+
+Instead of the property `modelClass`, you must set the properties `class` and `modelPath`. The value for the former must be `info.magnolia.module.jsmodels.rendering.JavascriptTemplateDefinition` and for the latter the path to the JavaScript model.
+
+rhino.yaml
+
+```yaml
+templateScript: /your-light-module/templates/pages/rhino.ftl
+renderType: freemarker
+class: info.magnolia.module.jsmodels.rendering.JavascriptTemplateDefinition
+modelPath: /your-light-module/templates/common/baseModel.js
+```
+
+## [](#_nashorn_javascript_and_the_java_api)Nashorn, JavaScript and the Java API
+
+When you write a JavaScript model, you obviously write a JavaScript code. However, you will encounter objects which come from the Java world. For instance this is true when you work with Magnolia’s built-in [rendering context objects](#_rendering_context_objects) or when using [templating functions](#_templating_functions).
+
+> **Tip:** When using objects originating in Java within a JavaScript model, it is helpful to know their public methods, which you can also use within the JavaScript code. To get familiar with these objects, it helps to have a look at the Java API pages which list the public methods and the corresponding return types. On this page you will find many links to Java docs. Follow the links to get an understanding of these Java-origin objects.
+
+Examples: info.magnolia.cms.core.AggregationState (for the `state` object), info.magnolia.jcr.util.ContentMap (for the `content` object) and info.magnolia.i18nsystem.SimpleTranslator (for the `i18n` object).
+
+Most context objects are [JavaBeans](http://en.wikipedia.org/wiki/JavaBeans), which means you can access their properties with the `dot` operator or a getter method in a template script or in a JavaScript model. Both expressions are valid and return the same value.
+
+```js
+state.channel.name;
+state.getChannel().getName();
+```
+
+Both the lines above have the same meaning.
+
+## [](#_using_built_in_rendering_context_objects)Using built-in rendering context objects
+
+In this section we take a look at the Magnolia built-in objects `model`, `content`, `def`, `ctx`, `state` and `i18n`. These objects can be used directly within a template script. Below you will see how to access their properties within a JavaScript model.
+
+> **Note:** The code snippets starting with var are in JavaScript and are intended to be used within JavaScript models.
+
+### [](#_model)`model`
+
+The `model` itself provides the following built-in properties:
+
+-   `parent`: Model of the parent component or template.
+
+-   `root`: Top root model of the rendering process.
+
+-   `content`: Content node bound to the model in the rendering context provided as a [ContentMap](../../Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_node_and_content_map).
+
+-   `node`: Content node bound to the model in the rendering context provided as a [Node](../../Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_node_and_content_map).
+
+-   `definition`: The renderable definition (template, area or component) bound to the model. Same as [`def`](#_def).
+
+
+These properties can referenced like this:
+
+model.root
+model.node
+
+The probably most handy property is `parent`. Parent points to the parent model, its meaning depends on the case. If you have for instance a component template with a model and a page template with a model - the parent model of the component template is the model of the page template. Via parent you can access all built in properties of the parent model like this:
+
+model.parent.definition
+model.parent.content
+
+**Example**: Asking a model for a URL and a title, then building a link.
+
+\[#assign linkURL = model.url!\]
+\[#assign linkText = model.title!\]
+
+<a href="${linkURL}">${linkText}</a>
+
+> **Note:** There’s no reason to use content properties of a model (model.content, model.parent.content, and so on).The correct and secure way to render content in templating is through ${content…​}. The info.magnolia.rendering.renderer.AbstractRenderer makes sure that content nodes are always wrapped using the wrapNodeForTemplate method for their exposure in template scripts.    protected Node wrapNodeForTemplate(Node content) {
+>         content = wrapWithChannelVisibilityWrapper(content);
+>         content = wrapWithI18NWrapper(content);
+>         content = wrapWithHTMLEscapingWrapper(content);
+>         return content;
+>     }
+
+Within a FreeMarker template script, you reference this property as follows:
+
+\[#assign parentTemplateDefintion = model.parent.definition /\]
+
+Combining a method of the parent model (`#getPageInfo`) and built-in model properties:
+
+ ${model.parent.getPageInfo(model.parent.content)}
+
+In a JavaScript model class, you must use `this` instead of `model` :
+
+```js
+var parentTemplateDefintion = this.parent.definition;
+```
+
+[built-in-model-properties.js](https://gitlab.magnolia-platform.com/pd/lightmodules/javascript-model-samples/-/blob/master/templates/components/built-in-model-properties.js)
+
+Note the usage of the `parent` property, which is a handy pointer to the parent model. With `parent` you have access to all properties and methods defined on the parent model as well as to the built-in properties.
+
+### [](#_content)`content`
+
+Current content node in the rendering context provided as info.magnolia.jcr.util.ContentMap.
+
+In a page template, current node is the page node (`mgnl:page`). In a component template, current node is the component node (`mgnl:component`). It is the contextual `root` content node. The current node is exposed as a [ContentMap](../../Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap) object, which means it carries the properties of the underlying [Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html).
+
+**Example**: Rendering a page title. Here the current node is a page node.
+
+```xml
+<h1>${content.title!""}</h1>
+```
+
+example
+
+```js
+var pageTitle = content.title;
+var nodePrimaryType = content["jcr:primaryType"];
+var nodeType = content["@nodeType"]; // same as above)
+var name = content["@name"];
+var id = content["@id"];
+var path = content["@path"];
+var depth = content["@depth"];
+```
+
+The `content` object is a `map`. You can access its properties via the `dot notation'' (line 1) or the ``brackets notation` (line 2). The latter is required if the property’s name contains a colon or a dot.
+
+The `content` object also maps some always-existing properties with the spacial delimiter `@`. These properties are `@name`, `@id` (same as jcr:uuid), `@path`, `@depth`, and `@nodeType` (same as jcr:primaryType).
+
+### [](#_def_template_definition)`def` – template definition
+
+Current info.magnolia.rendering.template.RenderableDefinition. Use `def` to access the properties of the template definition such as title or use [custom parameters](../../Templating/Template-definition/). It is a JavaBean, which means you can access its properties with the `dot` operator or a getter method.
+
+**Example**: Getting a CSS class name from [custom parameters](../../Templating/Template-definition/) and assigning it to a variable.
+
+\[#assign cssClass=def.parameters.cssClass\]
+
+example
+
+```js
+var templateTitle = def.title;
+var myColor = (def.parameters && def.parameters.color && ""!=def.parameters.color) ? def.parameters.color : "red";
+```
+
+### [](#_ctx_context)`ctx` – context
+
+Context represents the environment in which the current process runs. The type is info.magnolia.context.Context. It is info.magnolia.context.WebContext when the script is executed from a Web page and info.magnolia.context.SimpleContext, for instance, when the script generates a mail from within a workflow or scheduled job.
+
+The info.magnolia.context.Context interface provides access to:
+
+-   `user`
+
+-   `locale` ([java.util.Locale](https://docs.oracle.com/javase/7/docs/api/java/util/Locale.html))
+
+    Please note that `${ctx.locale}` is different from `${cmsfn.language()}`, the former referring to the locale currently used by the user, the latter to the locale currently used by the site. See also [AdminCentral and public locales](../../../Administration/Language/AdminCentral-and-public-locales/).
+
+
+In addition, info.magnolia.context.WebContext provides access to:
+
+-   `AggregationState`
+
+-   `contextPath` (current context path)
+
+-   `request` ([`javax.servlet.http.HttpServletRequest`](https://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletRequest.html))
+
+
+Any `ctx` attributes (request, session or application scoped) listed under `config:server/rendering/engine/protectedAttributes` are not exposed.
+
+```yml
+'protectedAttributes':
+  'servletContext': 'servletContext'
+```
+
+WebContext properties are null if the execution is not a Web page request.
+
+**Example**: Getting a search query from a request parameter.
+
+\[#assign queryStr = ctx.getParameter('queryStr')!?html\]
+
+example
+
+```js
+var userName = ctx.user.name;
+var locale = ctx.locale;
+var contextPath = ctx.contextPath;
+var servletContext = ctx.servletContext;
+```
+
+### [](#_state_aggregation_state)`state` – aggregation state
+
+The current info.magnolia.cms.core.AggregationState. Only set if ctx is of type WebContext. (See above.) It is a shortcut for `ctx.aggregationState`.
+
+Provides access to many properties such as:
+
+-   `channel`
+
+-   `originalURI`
+
+-   `currentURI`
+
+-   `queryString`
+
+-   `mainContentNode` ([javax.jcr.Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html))
+
+    This property returns the node (of type `Node`) that contains the main content. For example, if a child node [inherits](../../Reusing-configuration/YAML-inherit-and-include/#_yaml_inherit) content from another component and `state.mainContentNode` was applied to the child node, it is the child node’s main content that would be returned.
+
+    A use case for this is shown below. Since the type returned by `state.mainContentNode` is `Node`, the function [cmsfn.asContentMap](../../Templating/Template-scripts/Templating-functions/cmsfn/#_convert_node_to_content_map) converts that node to a `ContentMap`, providing access to its properties. Finally, the [cmsfn.page](../../Templating/Template-scripts/Templating-functions/cmsfn/#_page_by_content) function returns the page to which the content belongs.
+
+    ```yaml
+    [#local currentPage = (cmsfn.page(cmsfn.asContentMap(state.mainContentNode)))!{}]
+    ```
+
+-   `templateName`
+
+-   `locale` (same as `ctx.locale`)
+
+
+> **Tip:** Check out info.magnolia.cms.core.AggregationState for all properties.
+
+Please note that the values of all the properties are HTML-escaped by default. Should you need it, the raw (unescaped) data can still be accessed in the following manner:
+
+`${state.unwrap().originalURI}`
+
+However, be warned that this may expose your webapp to XSS attacks.
+
+example
+
+```js
+var currentURI = state.currentURI;
+var queryString = state.queryString;
+var channelName = state.channel.name;
+```
+
+### [](#_i18n_simple_translator_for_localized_content)`i18n` – simple translator for localized content
+
+`i18n` is an object of the info.magnolia.i18nsystem.SimpleTranslator type. It provides access to all the [message bundles](../../../Administration/Language/i18n-API/) that have been loaded into the system. Use the `#translate` method to get a localized value identified by a key. You can provide more String arguments to the method in order to replace the placeholders (`{}`) in the translation.
+
+Example:
+
+message-bundle snippet
+
+javascript-model-samples.frontend.footer.arbitraryWisdom = You make your own luck
+javascript-model-samples.frontend.footer.happinessLevel = Random happiness level: {0}%
+
+JavaScript model snippet
+
+```js
+var localizedText = i18n.translate("javascript-model-samples.frontend.footer.arbitraryWisdom");
+var localizedText2 = i18n.translate("javascript-model-samples.frontend.footer.happinessLevel", "95");
+```
+
+## [](#_enabling_and_using_templating_functions_for_js_models)Enabling and using templating functions for JS models
+
+[Templating functions](../../Templating/Template-scripts/Templating-functions/) were built mainly to be used within template scripts directly, but they can also be very handy within JavaScript models. In the default configuration of `magnolia-module-javascript-models`, templating functions are not enabled.
+
+> **Tip:** To give more power to your JavaScript models, enable the templating functions to access and search JCR content, such as cmsfn, damfn, searchfn and similar.
+
+### [](#_enabling_templating_functions)Enabling templating functions
+
+Edit the configuration of the module with the [Configuration app](../../../Apps/List-of-apps/Configuration-app/). For each templating function you want to use, add an entry at `/modules/javascript-models/config/engineConfiguration/exposedComponents`.
+
+![Templating function in the Configuration app](../../../_images/ADVT-HTjs-templ.png) The stock configuration of the module shows just the version of the module. You have to create the subtree starting with the folder `/modules/javascript-models/config`.
+
+### [](#_using_templating_functions_in_a_javascript_model)Using templating functions in a JavaScript model
+
+Once a templating function is enabled, use it in the JavaScript code of the model.
+
+**Example: Breadcrumb navigation using `cmsfn#ancestors`**
+
+JS snippet from the model class
+
+[samplesPage.js](https://gitlab.magnolia-platform.com/pd/lightmodules/javascript-model-samples/-/blob/master/templates/pages/samplesPage.js)
+
+The method `#renderBreadcrumbs` expects a page node as the argument.
+
+Here is the method call within a page template script:
+
+```cnd
+<div class="breadcrumbs">
+  ${model.renderBreadcrumbs(content)}
+</div>
+```
+
+## [](#_creating_a_custom_form_processor_with_javascript)Creating a custom form processor with JavaScript
+
+JavaScript can also be used for processing forms created by Magnolia’s [Form Module](../../../Modules/List-of-modules/Form-module/) (see also [Form module creating a custom form processor](../../../Modules/List-of-modules/Form-module/)). Below is the form definition and the JavaScript based form processor for a form in order to create a new contact in the `contacts` workspace.
+
+The complete example is available on [GitLab](https://gitlab.magnolia-platform.com/pd/lightmodules/javascript-model-samples/-/tree/master).
+
+**YAML definition of the form component:**
+
+/javascript-model-samples/raw/templates/components/form.yaml
+
+[form.yaml](https://gitlab.magnolia-platform.com/pd/lightmodules/javascript-model-samples/-/blob/master/templates/components/form.yaml)
+
+Notes:
+
+-   Line 12: The `class` property must have the value `info.magnolia.module.jsmodels.form.JavascriptFormProcessor`, this definition class enables the usage of a JavaScript based form processor (whose path is defined on the next line).
+
+-   Line 13: The `formProcessorScriptPath` property contains the path to the JavaScript of the processor.
+
+
+**JavaScript-based form processor:**
+
+/javascript-model-samples/raw/templates/js/formProcessors/saveContact.js
+
+[saveContact.js](https://gitlab.magnolia-platform.com/pd/lightmodules/javascript-model-samples/-/blob/master/templates/js/formProcessors/saveContact.js)
+
+## [](#_loading_scripts_to_the_model)Loading scripts to the model
+
+You can load other JavaScript files in the Javascript model file. This is handy when reusing JavaScript classes in several models. There are two possibilites to load a script. In both cases, load the script at the top of model file.
+
+### [](#_loading_a_script_as_a_magnolia_resource_with_loadscript)Loading a script as a Magnolia resource with `loadScript`
+
+We recommend using `loadScript` if the JavaScript is a [Magnolia resource](../../Resources/). It can then load it independently of its [origin](../../Resources/). When referencing the script, the path is absolute and has to start with the module name.
+
+Example:
+
+loadScript("/javascript-model-samples/templates/js/utils.js");
+
+### [](#_loading_a_script_from_the_filesystem_with_load)Loading a script from the filesystem with `load`
+
+A Nashorn built-in feature, `load` can be used to load a script with `http`. When using it for files of Magnolia modules, both the JavaScript model file and the file to be included must be available on the filesystem. Combine it with the built-in `*PATH*` variable, which is the absolute path to the parent directory of the current model file.
+
+Examples:
+
+load(\_\_PATH\_\_ + "/../js/utils.js");
+load("https://cdnjs.cloudflare.com/ajax/libs/validate.js/0.11.1/validate.min.js");
+
+### [](#_a_complete_example)A complete example
+
+Below is a complete example showing how to use the included script.
+
+**Example:**
+
+The file to be loaded:
+
+```js
+var Utils = function () {
+
+    this.formatDate = function (calendarObject) {
+        var date = new Date(calendarObject.getTimeInMillis());
+        var datestring = date.getFullYear() + "-" +
+            ("0" + (date.getMonth() + 1)).slice(-2) + "-" +
+            ("0" + date.getDate()).slice(-2) + "-" +
+            ("0" + date.getHours()).slice(-2) + ":" +
+            ("0" + date.getMinutes()).slice(-2);
+
+        return datestring;
+    }
+}
+```
+
+The model which is loading and using the above script:
+
+```js
+loadScript("/javascript-model-samples/templates/js/utils.js");
+
+var MyModel = function () {
+    var utils = new Utils();
+
+    this.getPageInfo = function (pageNode) {
+        var pageCreator = pageNode["mgnl:createdBy"];
+        var modificationDate = utils.formatDate(pageNode["mgnl:lastModified"]);
+        return i18n.translate("javascript-model-samples.frontend.footer.pageInfo.label", pageCreator, modificationDate);
+    };
+
+};
+new MyModel();
+```
+
+-   Line 1: Load the external script with a JavaScript class.
+
+-   Line 4: Create an instance of the external script’s class.
+
+-   Line 8: Use the instance method of the external class.
+
+
+## [](#_exposing_other_components)Exposing other components
+
+You can expose any other component in the same way as [enabling the templating functions](#_enabling_templating_functions), see [JavaScript Models module - Exposing components](#javascript-models:ROOT:index.adoc). A component is a Java class (or an interface for which a type mapping exists within the framework) having a default constructor that can be resolved and instantiated by the IoC framework.
+
+> **Warning:** This is a very powerful mechanism and should be used carefully. Fortunately, its power can be limited by restricting access to the Java API.
+
+## [](#_restricting_access_to_the_java_api)Restricting access to the Java API
+
+The module provides two ways to limit the `power` of a JavaScript model.
+
+### [](#_disabling_nashorn_extensions_and_java_syntax_extensions)Disabling Nashorn extensions and Java syntax extensions
+
+There are two Nashorn engine options to limit the power:
+
+-   `--no-java` turns off Java specific syntax extensions like `Java`, `Packages`, etc.
+
+-   `--no-syntax-extensions` makes sure that only standard ECMAScript syntax is supported, disabling the [Nashorn extensions](https://wiki.openjdk.java.net/display/Nashorn/Nashorn-extensions).
+
+
+![Disabling Nashorn extensions and Java syntax extensions in the Configuration app](../../../_images/ADVT-HTjs-nash.png)
+
+### [](#_using_class_filter_to_exclude_instantiation_of_some_java_classes)Using class filter to exclude instantiation of some Java classes
+
+To interpret JavaScript, Nashorn creates a compiled version of a JS model. When the script is executed, Nashorn instantiates Java classes. With a class filter you can exclude Java classes which you do *not* want to be instantiated. The class filter must implement [`dk.nashorn.api.scripting.ClassFilter`](https://docs.oracle.com/javase/8/docs/jdk/api/nashorn/jdk/nashorn/api/scripting/ClassFilter.html).
+
+The filter is applied when you explicitly use the types in the Nashorn code, for instance, with the expression `Java.type("myType")`. The filter is not applied when you assign an object to a Nashorn variable without explicitly mentioning the type.
+
+If the filter prevents the usage of a class – technically speaking, if the filter returns `false` – Nashorn then handles this case as a `java.lang.ClassNotFoundException` which leads to a `java.lang.RuntimeException`.
+
+![Using class filter to exclude instantiation of some Java classes](../../../_images/ADVT-HTjs-classf.png)
+
+**Example:**
+
+Java class filter code:
+
+[MyFilter.java](https://git.magnolia-cms.com/projects/DOCUMENTATION/repos/nashorn-class-filter/raw/src/main/java/info/magnolia/documentation/nashorn/filter/MyFilter.java?at=master)
+
+Nashorn code:
+
+```js
+this.test = function () {
+    var sytemTime = Java.type("java.lang.System").currentTimeMillis();
+    return sytemTime;
+};
+
+this.test2 = function (myObject) {
+    if (myObject instanceof Java.type("java.util.GregorianCalendar")) {
+        return utils.formatDate(myObject)
+    }else{
+        return myObject;
+    }
+};
+this.test3 = function (workspaceName) {
+    var jcrSession = ctx.getJCRSession(workspaceName);
+    return
+};
+```
+
+-   The filter is applied when calling the `#test` and `#test2` methods (see lines 2, 7 in the Nashorn code above).
+
+-   The filter is *not* applied when calling the `#test3` method, although on line 14 Nashorn assigns an object of the type javax.jcr.Session.
+
+
+## [](#_further_reading)Further reading
+
+-   [JavaScript Model Samples](https://gitlab.magnolia-platform.com/pd/lightmodules/javascript-model-samples)
+
+-   [Nashorn Java API](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/api.html)
+
+-   [Nashorn extensions](https://wiki.openjdk.java.net/display/Nashorn/Nashorn+extensions)
+
+
+Related topics
+
+-   [JavaScript Models module](#javascript-models:ROOT:index.adoc)

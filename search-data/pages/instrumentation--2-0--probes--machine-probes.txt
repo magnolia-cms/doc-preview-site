@@ -1,0 +1,224 @@
+---
+title: "Machine probes"
+url: https://docs.magnolia-cms.com/instrumentation/2.0/probes/machine-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > Machine probes
+---
+
+# Machine probes
+
+Machine probes can measure system usage metrics, including:
+
+-   available processors
+
+-   system load average
+
+-   committed virtual memory size
+
+-   total swap space size
+
+-   free swap space size
+
+-   JVM process CPU time used
+
+-   free physical memory size
+
+-   total physical memory size
+
+-   system CPU load
+
+-   process CPU load
+
+-   number of open file descriptors
+
+-   maximum number of file descriptors
+
+
+With these metrics, you can get some idea how the machine that is running Magnolia is doing. These metrics depend on what JVM is running: if you are using a Hotspt-based JVM or not:
+
+Hotspot JVM
+
+all metrics are available.
+
+non-Hotspot JVM
+
+only available processors and system load average can be measured.
+
+> **Note:** You can still configure and collect all metrics in Magnolia running on a non-Hotspot JVM, however, the measured values for non-supported metrics will be -1.
+
+## [](#_collecting_machine_metrics)Collecting machine metrics
+
+You have two options for collecting machine usage metrics:
+
+Use OSProbe (`info.magnolia.services.instrumentation.probes.environment.OSProbe`) to collect machine metrics. OSProbe will create separate metrics for each system usage characteristic. OSProbe is configured as an instrumentation module probe and the metrics will be measured when Prometheus collects all metrics from Magnolia.
+
+Use OSProbeCommand (`info.magnolia.services.instrumentation.probes.commands.OSProbeCommand`) to collect metrics. OSProbeCommand is a Magnolia command that collects the configured metrics when executed. Executions of OSProbeCommand can be scheduled with the Scheduler Module. You can also execute the OSProbeCommand through the command REST endpoint, see the [rest:ROOT:index.adoc](#rest:ROOT:index.adoc). OSProbeCommand will store its measurements as a single metric with the metric labels identifying what was measured.
+
+Use OSProbeCommand when
+
+-   you want to measure machine more frequently or less frequently than the collection of metrics from Magnolia
+
+-   you want a single metric for all measurements
+
+-   you want to invoke the collection of machine metrics remotely
+
+
+Use OSProbe when
+
+-   you want separate metrics for each machine attribute
+
+
+## [](#_osprobe)OSProbe
+
+The OSProbe records how the machine running Magnolia is being used: system load, memory and swap usage and file usage.
+
+OSProbe is an instrumentation module probe and is configured in the instrumentation module.
+
+### [](#_configuration_properties)Configuration properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 60%;"> <col style="width: 10%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th><th class="tableblock halign-left valign-top">Required</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Should be <code>info.magnolia.services.instrumentation.probes.commands.OSProbeCommand</code>.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The probe name.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The probe name is not used as the metric name.</td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>metrics</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>A list of metric names (info.magnolia.services.instrumentation.probes.environment.OSMetricName) to collect.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Only the named metrics will be collected.</td></tr></tbody></table></div><div class="paragraph"><p>The valid metric names are:</p></div><div class="ulist"><ul><li><p><code>AvailableProcessors</code></p></li><li><p><code>SystemLoadAverage</code></p></li><li><p><code>CommittedVirtualMemorySize</code></p></li><li><p><code>TotalSwapSpaceSize</code></p></li><li><p><code>FreeSwapSpaceSize</code></p></li><li><p><code>ProcessCpuTime</code></p></li><li><p><code>FreePhysicalMemorySize</code></p></li><li><p><code>TotalPhysicalMemorySize</code></p></li><li><p><code>SystemCpuLoad</code></p></li><li><p><code>ProcessCpuLoad</code></p></li><li><p><code>OpenFileDescriptorCount</code></p></li><li><p><code>MaxFileDescriptorCount</code></p></li></ul></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The named metric will be added as the value of the "metric" label in a measurement.</td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr></tbody></table></div>
+
+### [](#_metrics)Metrics
+
+ MetricDescription
+
+`AvailableProcessors`
+
+The number of processors available to the Java virtual machine.
+
+`SystemLoadAverage`
+
+The system load average for the last minute. The system load average is the sum of the number of runnable entities queued to the available processors and the number of runnable entities running on the [available processors](https://docs.oracle.com/javase/8/docs/api/java/lang/management/OperatingSystemMXBean.html#getAvailableProcessors--) averaged over a period of time. The way in which the load average is calculated is operating system specific but is typically a damped time-dependent average. If the load average is not available, the metric value is -1.
+
+> **Note:** This method is designed to provide a hint about the system load and may be queried frequently. The load average may be unavailable on some platform where it is expensive to implement this method.
+
+`CommittedVirtualMemorySize`
+
+The amount of virtual memory that is guaranteed to be available to the running process in bytes, or -1 if this metric is not supported.
+
+`TotalSwapSpaceSize`
+
+The total amount of swap space in byte, or -1 if this metric is not supported.
+
+`FreeSwapSpaceSize`
+
+The amount of free swap space in bytes, or -1 if this metric is not supported.
+
+`ProcessCpuTime`
+
+The "recent cpu usage" for the Java Virtual Machine process. This value is a double in the \[0.0,1.0\] interval. A value of 0.0 means that none of the CPUs were running threads from the JVM process during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running threads from the JVM 100% of the time during the recent period being observed. Threads from the JVM include the application threads as well as the JVM internal threads. All values betweens 0.0 and 1.0 are possible depending of the activities going on in the JVM process and the whole system.
+
+> **Note:** If the Java Virtual Machine recent CPU usage is not available, the metric value is -1.
+
+`FreePhysicalMemorySize`
+
+The amount of free physical memory in bytes, or -1 if this metric is not supported.
+
+`TotalPhysicalMemorySize`
+
+The total amount of physical memory in bytes, or -1 if this metric is not supported.
+
+`SystemCpuLoad`
+
+The "recent cpu usage" for the whole system. This value is a double in the \[0.0,1.0\] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on in the system.
+
+> **Note:** If the system recent cpu usage is not available, the metric value is -1.
+
+`ProcessCpuLoad`
+
+The "recent cpu usage" for the Java Virtual Machine process. This value is a double in the \[0.0,1.0\] interval. A value of 0.0 means that none of the CPUs were running threads from the JVM process during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running threads from the JVM 100% of the time during the recent period being observed. Threads from the JVM include the application threads as well as the JVM internal threads. All values betweens 0.0 and 1.0 are possible depending of the activities going on in the JVM process and the whole system.
+
+> **Note:** If the Java Virtual Machine recent CPU usage is not available, the metric value is -1.
+
+`OpenFileDescriptorCount`
+
+The number of open file descriptors, or -1 if the metric is not supported.
+
+`MaxFileDescriptorCount`
+
+The maximum number of file descriptors, or -1 if the metric is not supported.
+
+### [](#_example)Example
+
+![OSProbe sample config](../../_images/probes/OSProbe-sample-config.jpg)
+
+## [](#_osprobecommand)OSProbeCommand
+
+The OSProbeCommand records how the machine running Magnolia is being used: system load, memory and swap usage and file usage.
+
+Unlike other probes, OSProveCommand is a Magnolia command. OSProbeCommand only measures its metrics when executed as a command. You will have to arrange for the execution of OSProbeCommand in order to measure its metrics, say with the Scheduler module or the REST command endpoint.
+
+The OSProbeCommand properties `metrics`, `probeName` and `probeDescription` can be specified in the command parameters passed during execution and will override the configured values of the properties.
+
+> **Tip:** See Commands for more on Magnolia commands.
+
+### [](#_configuration_properties_2)Configuration properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 60%;"> <col style="width: 10%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th><th class="tableblock halign-left valign-top">Required</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Should be <code>info.magnolia.services.instrumentation.probes.commands.OSProbeCommand</code>.</p></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The probe name.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The probe name is not used as the metric name.</td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>metrics</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>A list of metric names (info.magnolia.services.instrumentation.probes.environment.OSMetricName) to collect.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Only the named metrics will be collected.</td></tr></tbody></table></div><div class="paragraph"><p>The valid metric names are:</p></div><div class="ulist"><ul><li><p><code>AvailableProcessors</code></p></li><li><p><code>SystemLoadAverage</code></p></li><li><p><code>CommittedVirtualMemorySize</code></p></li><li><p><code>TotalSwapSpaceSize</code></p></li><li><p><code>FreeSwapSpaceSize</code></p></li><li><p><code>ProcessCpuTime</code></p></li><li><p><code>FreePhysicalMemorySize</code></p></li><li><p><code>TotalPhysicalMemorySize</code></p></li><li><p><code>SystemCpuLoad</code></p></li><li><p><code>ProcessCpuLoad</code></p></li><li><p><code>OpenFileDescriptorCount</code></p></li><li><p><code>MaxFileDescriptorCount</code></p></li></ul></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The named metric will be added as the value of the "metric" label in a measurement.</td></tr></tbody></table></div></div></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong><span class="icon"><i class="fa fa-check"></i></span></strong></p></td></tr></tbody></table></div>
+
+### [](#_labels)Labels
+
+In addition to the common labels instance and job, the following labels are available:
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 20%;"> <col style="width: 20%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Label</th><th class="tableblock halign-left valign-top">Metric</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>metricName</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;probe-name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The metric name, one of</p></div><div class="ulist"><ul><li><p><code>AvailableProcessors</code></p></li><li><p><code>SystemLoadAverage</code></p></li><li><p><code>CommittedVirtualMemorySize</code></p></li><li><p><code>TotalSwapSpaceSize</code></p></li><li><p><code>FreeSwapSpaceSize</code></p></li><li><p><code>ProcessCpuTime</code></p></li><li><p><code>FreePhysicalMemorySize</code></p></li><li><p><code>TotalPhysicalMemorySize</code></p></li><li><p><code>SystemCpuLoad</code></p></li><li><p><code>ProcessCpuLoad</code></p></li><li><p><code>OpenFileDescriptorCount</code></p></li><li><p><code>MaxFileDescriptorCount</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+### [](#_metrics_2)Metrics
+
+ MetricDescription
+
+`AvailableProcessors`
+
+The number of processors available to the Java virtual machine.
+
+`SystemLoadAverage`
+
+The system load average for the last minute. The system load average is the sum of the number of runnable entities queued to the available processors and the number of runnable entities running on the [available processors](https://docs.oracle.com/javase/8/docs/api/java/lang/management/OperatingSystemMXBean.html#getAvailableProcessors--) averaged over a period of time. The way in which the load average is calculated is operating system specific but is typically a damped time-dependent average. If the load average is not available, the metric value is -1.
+
+> **Note:** This method is designed to provide a hint about the system load and may be queried frequently. The load average may be unavailable on some platform where it is expensive to implement this method.
+
+`CommittedVirtualMemorySize`
+
+The amount of virtual memory that is guaranteed to be available to the running process in bytes, or -1 if this metric is not supported.
+
+`TotalSwapSpaceSize`
+
+The total amount of swap space in byte, or -1 if this metric is not supported.
+
+`FreeSwapSpaceSize`
+
+The amount of free swap space in bytes, or -1 if this metric is not supported.
+
+`ProcessCpuTime`
+
+The "recent cpu usage" for the Java Virtual Machine process. This value is a double in the \[0.0,1.0\] interval. A value of 0.0 means that none of the CPUs were running threads from the JVM process during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running threads from the JVM 100% of the time during the recent period being observed. Threads from the JVM include the application threads as well as the JVM internal threads. All values betweens 0.0 and 1.0 are possible depending of the activities going on in the JVM process and the whole system.
+
+> **Note:** If the Java Virtual Machine recent CPU usage is not available, the metric value is -1.
+
+`FreePhysicalMemorySize`
+
+The amount of free physical memory in bytes, or -1 if this metric is not supported.
+
+`TotalPhysicalMemorySize`
+
+The total amount of physical memory in bytes, or -1 if this metric is not supported.
+
+`SystemCpuLoad`
+
+The "recent cpu usage" for the whole system. This value is a double in the \[0.0,1.0\] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on in the system.
+
+> **Note:** If the system recent cpu usage is not available, the metric value is -1.
+
+`ProcessCpuLoad`
+
+The "recent cpu usage" for the Java Virtual Machine process. This value is a double in the \[0.0,1.0\] interval. A value of 0.0 means that none of the CPUs were running threads from the JVM process during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running threads from the JVM 100% of the time during the recent period being observed. Threads from the JVM include the application threads as well as the JVM internal threads. All values betweens 0.0 and 1.0 are possible depending of the activities going on in the JVM process and the whole system.
+
+> **Note:** If the Java Virtual Machine recent CPU usage is not available, the metric value is -1.
+
+`OpenFileDescriptorCount`
+
+The number of open file descriptors, or -1 if the metric is not supported.
+
+`MaxFileDescriptorCount`
+
+The maximum number of file descriptors, or -1 if the metric is not supported.

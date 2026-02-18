@@ -1,0 +1,425 @@
+---
+title: "Release notes for Magnolia CMS 6.3.1"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.1/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.1
+---
+
+# Release notes for Magnolia CMS 6.3.1
+
+[LTS release](../../../../support/) • Delivered on November 8, 2024 • Page updated on December 10, 2024 • Changelog: [13181](https://magnolia-cms.atlassian.net/issues/?filter=13181)
+
+> **Warning:** Do not upgrade to this version of Magnolia. We strongly recommend you wait for the next release.ReasonAssets can’t be loaded or served because of the upgrade to the commons-io library to version 2.17.0, where the AutoCloseInputStream constructor changed....
+> public AutoCloseInputStream(InputStream in) {
+>     super(ClosedInputStream.ifNull(in));
+> }
+> ...WorkaroundDowngrade the commons-io library to version 2.16.1.Until the Jackrabbit library is released as version 2.22.1 (BUILD-1297), the workaround is implemented in the upcoming Magnolia releases (BUILD-1299).
+
+**Magnolia CMS 6.3.1** is the first maintenance release in the 6.3 branch. This update focuses on improving search experience in apps, enhancing workflow, UX, and publishing actions, as well as on fixing bug and security issues.
+
+> **Warning:** This minor release introduces changes that aren’t backward-compatible. See the section on search improvements below.
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.1.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.1/magnolia-dx-core-webapp-6.3.1.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.1.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.1/travel-demo-webapp-6.3.1.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.1.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.1/travel-demo-community-webapp-6.3.1.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.0.zip](../../_attachments/mtk2_3.0.0.zip) (*as a light module*)
+
+
+## [](#_announcements)Announcements
+
+### [](#_modules)Modules
+
+-   **CLI version 5**, a plugin-based version, was released on October 16, 2024.
+
+    Whether it’s FreeMarker or headless projects, version 5 simplifies project setup, automates tasks, and speeds up your workflow. In version 5, you can also create your own CLI plugins and framework prototypes.
+
+    For more information, see [Magnolia CLI](#magnolia-cli:ROOT:index.adoc).
+
+
+### [](#_extensions)Extensions
+
+-   **Live Copy** `4.0.1` was released on October 16, 2024.
+
+    For more information, see the [4.x changelog](#live-copy:ROOT:changelog.adoc).
+
+-   **SSO** `4.0.1` was released on October 18, 2024.
+
+
+## [](#_improvements)Improvements
+
+### [](#_search_experience)Search experience
+
+> **Note:** The search experience improvements introduce potentially breaking changes.
+
+We continue to improve the Magnolia search experience by propagating in-app search to all apps. The `$type: “filteringWorkbench”` property on the `workbench` configuration, introduced in 6.3.0 for the Pages and Assets apps, is deprecated in 6.3.1 and later.
+
+In 6.3.1 and later, [in-app search and filter functionality](../../Administration/Configuring-search/#_inapp_filters_anchor) becomes the default for all browser subapps as part of the standard workbench definition.
+
+**This change has the following impact on your browser subapps:**
+
+-   The search field is *enabled by default* in all apps. If your custom browser subapp doesn’t support search, [disable the search field](../../Administration/Configuring-search/#disable-search-anchor) by setting the `searchEnabled` property to `false`.
+
+-   If you *don’t* have workbench `filters` configured, the system:
+
+    -   Converts [combobox fields](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Combobox-field/) used as filters in column headers into dropdown filters.
+
+    -   Converts all [text fields](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) into the default search field. For example, in the Pages app the **Name** (previously Page) and **Title** column fields become searchable using the default search field.
+
+        ![Pages app conversion of column headers to search and filters](../../_images/release-notes/search-conversion-6.3.1.png)
+
+
+-   If you have workbench `filters` defined and an existing `filterComponent` definition in a column definition, the column filter remains as it is. No conversion is executed. Column filter and workbench filter definitions can be defined and used at the same time for the time being even though the `filterComponent` is deprecated.
+
+-   Only one [view type](../../Apps/App-configuration/Content-view-definition/) can be displayed in a browser subapp.
+
+    The search field and filters are applied to the first view type configured in your app. The view type switcher disappears. If you want to change the view displayed, change the order of the view types defined in your .yaml config (or remove the view types you don’t want).
+
+-   The **Name** column has changed: the `titleColumn` column type is replaced by `componentColumn` (info.magnolia.ui.contentapp.configuration.column.ComponentColumnDefinition) that supports two rows in the column. Therefore content type-based apps are automatically created with the `componentColumn` type.
+
+    -   No default or fallback icon is provided anymore for nodes.
+
+    -   The icon configuration has changed.
+
+        Click to see examples of configuration updates for displaying icons in columns
+
+        Example of a custom Events app `events.yaml`
+
+        ```yaml
+               contentViews:
+                tree:
+                  columns:
+                    name:
+        # new in 6.3.1+:
+                      nodeTypeToComponents:
+                        mgnl:folder:
+                          icon: icon-folder
+                          showPath: true
+                        event:
+                          icon: icon-datepicker
+                          showPath: true
+        #  6.2.x and 6.3.0:
+                      #nodeTypeToIcon:
+                        #event: icon-datepicker
+        ```
+
+        Example of the Marketing Tags app `marketing-tags/apps/marketing-tags.yaml`
+
+        ```yaml
+        # new in 6.3.1+:
+                  columns:
+                    name:
+                      nodeTypeToComponents:
+                        mgnl:marketing-tag:
+                          icon: icon-tag
+                          showPath: true
+
+        # 6.2.x and 6.3.0:
+                   #columns:
+                     #name:
+                      #nodeTypeToIcon:
+                         #mgnl:marketing-tag: icon-tag
+                 #list:
+                   #columns:
+                     #name:
+                       #nodeTypeToIcon:
+                         #mgnl:marketing-tag: icon-tag
+        ```
+
+
+-   If you have customized browser subapps, you must adapt your configuration by updating your custom data provider for search to function.
+
+    Below is an example (migration of the Resource Files app) of how to adapt your configuration.
+
+    1.  In the info.magnolia.resources.app.data.ResourceFilteringDataProvider class, the filtering logic is unwrapped.
+
+        Click to see the link to a GitHub diff
+
+        [https://github.com/magnolia-cms/doc-migration-example-631/commit/11ceb8ac31c6f2121ca7ea0ba1e462fa1a27aad9](https://github.com/magnolia-cms/doc-migration-example-631/commit/11ceb8ac31c6f2121ca7ea0ba1e462fa1a27aad9)
+
+    2.  In the `resources/resources-app/apps/resources.yaml` definition, shown in the tabs, the `filterComponent` properties under `contentViews` are removed and replaced by `filters` under `workbench`.
+
+        Click to see the tabs
+
+        -   6.3 Resource Files app definition
+
+        -   6.2 Resource Files app definition
+
+
+        ```yaml
+        ...
+            workbench:
+              filters:
+                - name: overridden
+                  icon: icon-logs-settings
+                  $type: dropdown
+                  visible: true
+                  datasource:
+                    $type: optionListDatasource
+                    options:
+                      true:
+                        value: true
+                      false:
+                        value: false
+                - name: origin
+                  icon: icon-language-app
+                  $type: dropdown
+                  filterOperator: STARTS_WITH
+                  textInputAllowed: true
+                  emptySelectionAllowed: true
+                  visible: true
+                  datasource:
+                    class: info.magnolia.resources.app.data.ResourceOriginDataSourceDefinition
+                - name: status
+                  icon: icon-spinner-full
+                  $type: dropdown
+                  filterOperator: STARTS_WITH
+                  textInputAllowed: true
+                  emptySelectionAllowed: true
+                  visible: true
+                  datasource:
+                    $type: optionListDatasource
+                    options:
+                      - name: 0
+                        label: Not activated
+                        value: 0
+                      - name: 1
+                        label: Modified
+                        value: 1
+                      - name: 2
+                        label: Activated
+                        value: 2
+              contentViews:
+                - name: views
+                  $type: treeView
+                  rowStyleGenerator: info.magnolia.resources.app.row.ResourceStatusRowStyleGenerator
+                  multiSelect: false
+                  columns:
+                    name:
+                      class: info.magnolia.resources.app.column.ResourceNameColumnDefinition
+                    overridden:
+                      class: info.magnolia.resources.app.column.IsOverridingColumnDefinition
+                      editor:
+                        field:
+                          $type: checkBoxField
+                    origin:
+                      class: info.magnolia.resources.app.column.ResourceOriginColumnDefinition
+                    type:
+                      class: info.magnolia.resources.app.column.ResourceTypeColumnDefinition
+                    status:
+                      class: info.magnolia.resources.app.column.ResourceStatusColumnDefinition
+        ...
+        ```
+
+        ```yaml
+        ...
+            workbench:
+              contentViews:
+                - name: views
+                  $type: treeView
+                  rowStyleGenerator: info.magnolia.resources.app.row.ResourceStatusRowStyleGenerator
+                  multiSelect: false
+                  columns:
+                    name:
+                      class: info.magnolia.resources.app.column.ResourceNameColumnDefinition
+                      filterComponent:
+                        $type: textField
+                    overridden:
+                      class: info.magnolia.resources.app.column.IsOverridingColumnDefinition
+                      editor:
+                        field:
+                          $type: checkBoxField
+                      filterComponent:
+                        $type: checkBoxField
+                    origin:
+                      class: info.magnolia.resources.app.column.ResourceOriginColumnDefinition
+                      filterComponent:
+                        $type: comboBoxField
+                        emptySelectionAllowed: true
+                        textInputAllowed: true
+                        filteringMode: STARTSWITH
+                        datasource:
+                          class: info.magnolia.resources.app.data.ResourceOriginDataSourceDefinition
+                    type:
+                      class: info.magnolia.resources.app.column.ResourceTypeColumnDefinition
+                      filterComponent:
+                        $type: textField
+                    status:
+                      class: info.magnolia.resources.app.column.ResourceStatusColumnDefinition
+                      filterComponent:
+                        $type: comboBoxField
+                        emptySelectionAllowed: true
+                        datasource:
+                          $type: optionListDatasource
+                          options:
+                            - name: 0
+                              label: Not activated
+                              value: 0
+                            - name: 1
+                              label: Modified
+                              value: 1
+                            - name: 2
+                              label: Activated
+                              value: 2
+        ...
+        ```
+
+    3.  Don’t forget to add the i18n properties for your filters.
+
+        Click to see an example
+
+        ```properties
+        ...
+        # filters
+        resources.browser.filters.overridden.label = Overrides
+        resources.browser.filters.overridden.options.true = True
+        resources.browser.filters.overridden.options.false = False
+        resources.browser.filters.origin.label = Origin
+        resources.browser.filters.status.label = Status
+        ...
+        ```
+
+
+
+> **Note:** Magnolia has adapted the customized Definitions, JCR Browser, Marketing Tags, and Resource Files apps to use the default configuration. The following 5UI-based apps remain unchanged: Campaign Publisher, Content Translation, Groovy, Configuration, and Passwords apps.
+
+-   [CFGUI-196](https://magnolia-cms.atlassian.net/browse/CFGUI-196) Migrate Definitions app to use updated search and filters
+
+-   [MGNLDAM-1561](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1561) Adjust Assets app to no longer use deprecated `filteringWorkbench`
+
+-   [MGNLRES-418](https://magnolia-cms.atlassian.net/browse/MGNLRES-418) Migrate Resource Files app to use updated search and filters
+
+-   [MGNLUI-8963](https://magnolia-cms.atlassian.net/browse/MGNLUI-8963) Migrate content type apps to use updated search and filters
+
+-   [MGNLUI-9034](https://magnolia-cms.atlassian.net/browse/MGNLUI-9034) Migrate JCR content apps to use updated search and filters
+
+-   [MGNLTAGS-126](https://magnolia-cms.atlassian.net/browse/MGNLTAGS-126) Migrate Marketing Tags app to use updated search and filters
+
+-   [PAGES-1657](https://magnolia-cms.atlassian.net/browse/PAGES-1657) Adjust Pages app to no longer use deprecated `filteringWorkbench`
+
+
+### [](#_better_workflow)Better workflow
+
+This release continues to improve and homogenize the deletion workflow as part of our ongoing efforts to improve user experience.
+
+-   [MGNLWORKFLOW-505](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW-505) In the four-eye workflow, rename the **Delete permanently action** label to **Request permanent deletion**
+
+-   [MGNLWORKFLOW-512](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW-512) Unify in one step and improve the narrative of the deletion workflow
+
+-   [MGNLWORKFLOW-513](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW-513) In the four-eye workflow, add a success notification popup after deletion requests
+
+
+### [](#_default_columns)Default columns
+
+The Assets app and External DAM apps now display additional default columns. These default columns also appear in the asset chooser dialog to provide more context to users when they’re selecting items. A search box is also available in the chooser dialog.
+
+-   [MGNLDAM-1517](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1517) Add default columns in the Assets app and asset chooser dialog
+
+
+### [](#_other_improvements)Other improvements
+
+-   [EEPUBLISH-73](https://magnolia-cms.atlassian.net/browse/EEPUBLISH-73) Enhance logs with publishing UUID for tracking purposes
+
+-   [PUBLISHING-342](https://magnolia-cms.atlassian.net/browse/PUBLISHING-342) Add ability to detect and counter linkerD proxy connection failures
+
+-   [PUBLISHING-345](https://magnolia-cms.atlassian.net/browse/PUBLISHING-345) Enhance logs with content node UUID or publish UUID for tracking purposes
+
+
+## [](#_bug_fixes)Bug fixes
+
+-   [MAGNOLIA-9468](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9468) Microprofile configuration not picked up
+
+-   [MAGNOLIA-9473](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9473) Audit log doesn’t log when a page template is changed
+
+-   [MGNLCACHE-383](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-383) Cache miss when using `ServeUntilRecachedCachePolicy`
+
+-   [MGNLCACHE-386](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-386) Cached redirects not working with redirect template
+
+-   [MGNLCACHE-392](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-392) Concurrent requests with the same cache key can block the cache
+
+-   [MGNLUI-8961](https://magnolia-cms.atlassian.net/browse/MGNLUI-8961) App with two browsers pointing to the same workspace holds onto selection state
+
+-   [PAGES-1653](https://magnolia-cms.atlassian.net/browse/PAGES-1653) `JcrPagesDeliveryEndpoint` ignores logged user ACLs
+
+-   [PUBLISHING-350](https://magnolia-cms.atlassian.net/browse/PUBLISHING-350) Publishing error notifications are not meaningful when displayed to the editor
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MGNLEE-863](https://magnolia-cms.atlassian.net/browse/MGNLEE-863) Remove **Report an issue** feature in About app
+
+-   [MGNLPER-250](https://magnolia-cms.atlassian.net/browse/MGNLPER-250) Support `StartsWith` criteria in search queries
+
+-   [MGNLTOMCAT-47](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-47) Update org.apache.tomcat:tomcat to `9.0.96`
+
+
+## [](#_third_party_library_updates)Third-party library updates
+
+This release comes with a number of third-party library updates, see the [Magnolia Third-party library BOM 6.3.1](https://gitlab.magnolia-platform.com/pd/build/boms/-/blob/magnolia-bom-6.3.1/pom.xml?ref_type=tags).
+
+### [](#_notable_updates)Notable updates
+
+-   [BUILD-1267](https://magnolia-cms.atlassian.net/browse/BUILD-1267) Update protobuf-java to `3.25.5`
+
+-   [BUILD-1285](https://magnolia-cms.atlassian.net/browse/BUILD-1285) Update xstream to `1.4.21`
+
+
+## [](#_updated_modules)Updated modules
+
+-   Admincentral `6.3.1`
+
+-   Barebones Tomcat Bundle `1.2.31`
+
+-   Cache `6.0.1`
+
+-   Community Edition `6.3.1`
+
+-   Content Editor `3.0.1`
+
+-   Content Types `2.0.1`
+
+-   DAM `4.0.1`
+
+-   DX Core `6.3.1`
+
+-   Definitions App `3.0.1`
+
+-   Demo Projects `6.3.1`
+
+-   Magnolia `6.3.1`
+
+-   Marketing Tags Manager `3.0.1`
+
+-   Pages `6.3.1`
+
+-   Periscope `2.0.1`
+
+-   Personalization `3.0.1`
+
+-   Publishing Transactional `2.0.1`
+
+-   Publishing `2.0.1`
+
+-   Resources `4.0.1`
+
+-   SiteMesh `2.0.1`
+
+-   Third-party library BOM for Extensions `6.3.1`
+
+-   Third-party library BOM `6.3.1`
+
+-   UI `6.3.1`
+
+-   Vaadin Compatibility Addons `1.3.18`
+
+-   Workflow `7.0.1`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release.

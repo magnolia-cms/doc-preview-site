@@ -1,0 +1,526 @@
+---
+title: "Form module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Form-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Form module
+---
+
+# Form module
+
+[Content management](../../../use-cases/content-management/) Bundled: Extension
+
+| Edition | CE  |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLFORM](https://magnolia-cms.atlassian.net/browse/MGNLFORM) |
+| Maven site | [Form](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fform%2Fmagnolia-form%2F3.0.0) |
+| Latest | 3.0.0 |
+| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | No  |
+
+The Form module allows you to create Web forms that visitors can fill in. The module provides components for easy creation of standard forms, like contact forms. You can group related form elements such as address fields together visually. Form data can be validated using configurable validators. By default, submitted form data is sent by email. You can process form data with pluggable data processors which allow customization without changing the Magnolia core system. Magnolia forms are fully HTML5 compliant.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.form</groupId>
+  <artifactId>magnolia-form</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+### [](#_compatibility_module)Compatibility module
+
+We have been gradually removing the old Content API from our modules since Magnolia 5.6. If you have custom code relying on classes from the old Form module, you must do one of two things:
+
+-   Update your code for the [new version of the Form module](https://magnolia-cms.atlassian.net/browse/MGNLFORM-294).
+
+-   Use the `magnolia-form-compatibility` module together with the `magnolia-core-compatibility` module.
+
+
+Add the following snippet to your POM file:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.form</groupId>
+  <artifactId>magnolia-form-compatibility</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_configuration_overview)Configuration overview
+
+The Form module has two complementary layers of configuration:
+
+-   Template configuration - developers expose the pre-configured `form` component, set up processors, and enable mail/logging so you can use a form in a template.
+
+-   Pages app UI configuration - editors use the Form module UI to assemble the form on a page once the component is available.
+
+
+Complete [Template configuration](#_template) first so that editors can immediately continue in [Pages app UI configuration](#_pages_app_ui_configuration).
+
+## [](#_template_configuration)Template configuration
+
+Follow the configuration in this section when you update template YAML or the `/modules/form` configuration. They make the `form` component available in the Pages app and predefine how processors, mail, and logging behave for each template. After publishing the template, hand the page over to editors so they can proceed with [Pages app UI configuration](#_pages_app_ui_configuration).
+
+### [](#_template)Template
+
+Add a [form component](#_form_components) to any area of a new or existing [template](../../../Developing/Templating/Template-definition/). This exposes the pre-configured property id in the Pages app so editors can insert the component when [creating the form](#_creating_a_form).
+
+**Example**: Adding the `form` component to the `main` area of a new template.
+
+/my-module/templates/pages/form.yaml
+
+```yml
+templateScript: /my-module/templates/pages/form-page-template.ftl
+renderType: freemarker
+visible: true
+title: Form Template
+dialog: my-module:pages/form
+areas:
+  main:
+    availableComponents:
+      form:
+        id: form:components/form (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Pre-configured property id for the form module. This component dialog is required for the [Pages app UI configuration](#_pages_app_ui_configuration) experience. |
+
+### [](#_mail)Mail
+
+The Form module uses the [Mail module](../Mail-module/) to send form data in emails. See [Configuring SMTP](../Mail-module/Mail/#_configuring_smtp) to enable mail sending for the processors defined below.
+
+### [](#_form_processors)Form processors
+
+Form processors configured in the module are responsible for sending submitted form data by email. The processors are executed when the [form](#_creating_a_form) is submitted. The email content corresponds with the [settings configured](#_configuring_form_settings) in the relevant tabs of the form component.
+
+Processors are configured in `/modules/form/templates/components/form/formProcessors`.
+
+![Processors configuration](../../../_images/ADVT-form-mod-proc.png)
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>formProcessors</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Form processor node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;form processor name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the form processor.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="ulist"><ul><li><p><code>info.magnolia.module.form.processors.SendContactEMailProcessor</code>: Sends form data in email to the address specified in the <strong>To</strong> field. The processor extracts values from the <strong>From</strong>, <strong>To</strong>, <strong>Subject</strong> and <strong>Text</strong> fields and creates an email message in plain text or HTML format depending on <a href="#_configuring_form_settings">form settings</a>. Any uploaded files are sent as attachments.</p></li><li><p><code>info.magnolia.module.form.processors.SendConfirmationEMailProcessor</code>: Sends a confirmation email. The processor first verifies if the <strong>Send confirmation</strong> checkbox is checked and sends a message to the address specified in the <strong>To</strong> field. By default, this processor is not enabled. This is the case even if the <strong>Send confirmation</strong> checkbox is checked in <a href="#_configuring_form_settings">form settings</a>. To enable it, add an <code>enabled</code> property under the processor and set the value to <code>true</code>.</p></li><li><p><code>info.magnolia.module.form.processors.TrackEmailProcessor</code>: Writes the content of the submitted form to the <code>magnolia-form.log</code> file if the <strong>Track mail</strong> checkbox is checked. By default, this processor is not enabled. This is the case even if the <strong>Track mail</strong> checkbox is checked in <a href="#_configuring_form_settings">form settings</a>. To enable it, add an <code>enabled</code> property under the processor and set the value to <code>true</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables and disables the processor</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>loggerName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The logger name. Only relevant for the <code>trackEmail</code> processor.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_personal_data_form_processors)Personal data form processors
+
+To implement GDPR-ready form functions, the `magnolia-privacy` module provides the following form processors:
+
+-   info.magnolia.privacy.form.processor.AddConsentFormProcessor: Updates a visitor’s consent.
+
+    -   info.magnolia.privacy.form.processor.JcrStoreFormProcessor: Extends the functionality of the AddConsentFormProcessor processor. It also stores the data into a JCR workspace. The data is stored in an intermediate workspace so that the data cannot be used unless the visitor confirms consent. Under the processor define:
+
+        -   `workspace` - the name of the intermediate workspace.
+
+        -   `nodeNameProperty` - the node name of the data to be stored.
+
+        -   `nodeType` - the node type of the data to be stored.
+
+        -   `rootPath` - the path to the node (default is `/`).
+
+
+    -   info.magnolia.privacy.form.processor.JcrMoveFormProcessor: Moves data from the intermediate workspace to the target workspace. Configure the intermediate and target workspaces under the processor using the `sourceWorkspace` and `targetWorkspace` properties.
+
+
+-   info.magnolia.privacy.form.processor.ConfirmConsentFormProcessor: Confirms a visitor’s consent.
+
+-   info.magnolia.privacy.form.processor.GetVisitorDataFormProcessor: Collects all data belonging to a visitor and provides a weblink where the visitor can download this data.
+
+-   `DeleteVisitorFormProcessor`: Requests the deletion of all a visitor’s data (via a `deletionId`).
+
+-   info.magnolia.privacy.form.processor.ConfirmVisitorDeletionFormProcessor: Confirms the deletion request.
+
+
+See [GDPR and forms](../Privacy-module/GDPR-and-forms/) too, and then let editors follow the steps in [Pages app UI configuration](#_pages_app_ui_configuration) for [personal-data forms](#_creating_forms_for_handling_personal_data).
+
+### [](#_creating_a_custom_form_processor)Creating a custom form processor
+
+The three example form processors above send the form data in email, but you can write a custom form processor to do almost anything. If you need to store the data in a database or process it in another way, write your own form processor. You can also try the [Form2DB App](https://magnolia-cms.atlassian.net/wiki/spaces/WIKI/pages/839943893/Form2DB+App) that is a community developed app that saves form data via form processor into the JCR and allows for export to XLS.
+
+Create a new form component definition for your custom processor. If you simply add the custom processor to the default component definition it is executed for all forms.
+
+For more examples, see [form processors in the PUR module](https://nexus.magnolia-cms.com/repository/magnolia.public.sites/modules/magnolia-module-public-user-registration/2.5.1/magnolia-module-public-user-registration/apidocs/info/magnolia/module/publicuserregistration/processors/package-summary.html).
+
+You can also [create a form processor with server-side JavaScript](../../../Developing/Development-how-tos/How-to-work-with-JavaScript-models/#_creating_a_custom_form_processor_with_javascript).
+
+### [](#_form_components)Form components
+
+The form components are configured in `/modules/form/templates/components`.
+
+![Form components configuration](../../../_images/ADVT-form-mod-comp.png)
+
+> **Note:** The escapeHtml property escapes any HTML code entered in a form input field. This is a security feature that prevents XSS attacks. The default is true for all form fields.info.magnolia.module.form.templates.components.AbstractFormModel ensures that pages with forms are not cached.
+
+### [](#_logging_form_data)Logging form data
+
+To log data sent in the contact form:
+
+1.  In the [form component](#_configuring_form_settings), check the **Track mail** checkbox in the **Submit settings** tab.
+
+2.  Enable the `trackEmail` [form processor](#_form_processors).
+
+3.  Submit a form.
+
+4.  To view the log:
+
+    -   Go to **Tools** > **Log viewer**, select `magnolia-form.log` and click **View**. OR
+
+    -   Open `/webapps/<webappName>/logs/magnolia-form.log` in the file system.
+
+
+
+Related topics
+
+-   [GDPR and forms](../Privacy-module/GDPR-and-forms/)
+
+
+## [](#_pages_app_ui_configuration)Pages app UI configuration
+
+Once the template exposes the Form component, editors configure the live form directly in the Pages app. Use the following sections while working in the Form module dialog; jump back to [Template configuration](#_template_configuration) whenever a component or processor is missing from the template.
+
+### [](#_creating_a_form)Creating a form
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+> **Note:** See an example form on the Contact page of the Travel Demo.The Travel Demo uses several GDPR-ready form components. The (GDPR) Store data form in the Travel Demo is equivalent to the form component below.
+
+To create a form:
+
+1.  Create a new page based on the template that contains the form component (created above in the [template configuration](#template-configuration-template)).
+
+2.  Open the page, add the form component and [configure the form settings](#_configuring_form_settings). Form settings define the title and name of the form and where the collected information should be submitted.
+    ![Form](../../../_images/6-1-formModule-formDialog.png)
+
+3.  Add a [field set](#_field_sets) to the form.
+    ![Field set](../../../_images/6-1-formModule-addFieldset.png)
+
+    You can have multiple field sets in one form. This helps group them visually (for example, contact details in one set and feedback messages in another).
+
+4.  Add [fields](#_fields) inside the field set.
+    ![Type of component dropdown](../../../_images/6-1-formModule-addField.png)
+
+5.  View the form.
+    ![Form preview](../../../_images/6-1-formModule-formPreview.png)
+
+
+### [](#_creating_forms_for_handling_personal_data)Creating forms for handling personal data
+
+With Magnolia, you can create forms for the purpose of [handling personal data](../../../Features/Data-privacy/) such as for the requirements of General Data Protection Regulation (GDPR).
+
+> **Note:** Make sure the relevant processors described in Personal data form processors are enabled at the template level before configuring these UI steps.
+
+Magnolia provides the following pre-configured GDPR-related form templates as samples you can build on:
+
+  Sample formUsed to createProvided by
+
+Store data form, Confirm data form
+
+Double opt-in forms.
+
+> **Note:** See an example of creating a form with double opt-in functionality on the Creating a GDPR-compliant form page.
+
+[`privacy-sample`](../Privacy-module/) module
+
+Get visitor data form
+
+Forms where the user can request a zipped report listing their personal data stored by the site.
+
+[`privacy-form`](../Privacy-module/) module
+
+Forget me form
+
+Forms where the user can request deletion of their personal data.
+
+[`privacy-form`](../Privacy-module/) module
+
+Delete visitor form
+
+Forms where the user can confirm a request for deletion of the user’s personal data
+
+[`privacy-form`](../Privacy-module/) module
+
+### [](#_creating_a_multistep_form)Creating a multistep form
+
+> **Note:** See an example multistep form on the Book your tour page of the Travel Demo.
+
+Splitting a large form into multiple steps allows the visitor to focus on one step at a time. The substeps are detected automatically. Visitors can move forward and backwards between steps without losing entered data. Each step is validated individually. The form module also allows users to upload files, but the upload field should only be included as the last step of the process.
+
+1.  Add a [form step component](#_form_components) to an area of a [template](../../../Developing/Templating/Template-definition/).
+    **Example**: Adding the `formStep` component to the `main` area in a new template.
+
+    /my-module/templates/pages/form.yaml
+
+    ```yml
+    templateScript: /my-module/templates/pages/formStep-page-template.ftl
+    renderType: freemarker
+    visible: true
+    title: Form Step Template
+    dialog: my-module:pages/form
+    areas:
+      main:
+        availableComponents:
+          form:
+            id: form:components/formStep
+    ```
+
+2.  Create a new page based on a template that contains the [form component](#_creating_a_form). This is the first page of the form.
+
+    1.  Configure the [form settings](#_configuring_form_settings).
+
+    2.  Add a [field set](#_field_sets) component
+
+    3.  Add [fields](#_fields) inside the field set. The **Submit button** field will automatically navigate to the next step. [Conditional steps](#_conditional_steps) can be set in the next step condition component.
+
+        ![Conditional steps](../../../_images/6-0-formMOdule-bookTourmain.png)
+
+
+3.  Create subpages based on the template that contains the form step component (created above) for the subsequent steps of the form.
+
+    1.  Add [field sets](#_field_sets) and [fields](#_fields) to the substep forms. The **Submit button** field will automatically navigate to subsequent or [conditional steps](#_conditional_steps), and the final button will submit the form.
+        ![Meal example form](../../../_images/6-0-formModule-meal.png) ![Personal details example form](../../../_images/6-0-formModule-personalDetails.png) ![Form review](../../../_images/6-0-formModule-review.png)
+
+
+
+### [](#_configuring_form_settings)Configuring form settings
+
+Form settings are configured in the form component.
+
+**Form tab**
+
+| **Field** | **Description** |
+| --- | --- |
+| Title | Title displayed above the form. For example, `Contact Us`. |
+| Form name | Internal name that allows you to reference the form by name, for example from JavaScript. |
+| Text | Introductory text displayed below the form title. |
+| Marker for required fields | Character displayed next to required fields. Asterisk by default. |
+| Text for required symbol | Text that explains what the required marker means, displayed near the top of the form. For example, `Required fields`. |
+| Step-by-step navigation | When checked displays step-by-step breadcrumb navigation that allows the user to navigate the steps of [multistep forms](#_creating_a_multistep_form). |
+
+**Submit settings tab**
+
+ **Field****Description**
+
+Error title
+
+Title displayed when an error occurs. For example, `There was a problem with your booking`.
+
+Success title
+
+Title displayed when the form is submitted successfully. For example, `Your tour is booked`.
+
+Text
+
+Text displayed when the form is submitted successfully. For example, `Details are on their way to your inbox`.
+
+Page displayed after submission
+
+Select a page to display after submission. If no page is selected, the user stays on the current page and the success title and text are displayed instead.
+
+Track mail
+
+Logs the information submitted in the form to the `magnolia-form.log` file.
+
+> **Warning:** Make sure the trackEMail form processor is also enabled. See Logging form data.
+
+**Email tab**
+
+| **Field** | **Description** |
+| --- | --- |
+| From | Email address displayed in the **From** field of the outgoing message. This can be any address as it is not the account used to send the mail. The mail is sent using the account in [SMTP configuration](../Mail-module/Mail/#_configuring_smtp). |
+| To  | Email address the data is sent to. You can use form field names with Freemarker tags. Typically you would ask the submitting user for their email address on the form and repeat it here with a Freemarker tag such as `${email}` assuming the email field is named `email`.<br><br>If you enter multiple email addresses, separate them using a semicolon `;` as a delimiter. |
+| Subject | Email subject line. You can use form field names with Freemarker tags such as `${subject}`. |
+| Available fields for Freemarker syntax | Form field names that can be used in Freemarker tags. |
+| Type | Radio button to select the message type for the email body. |
+| text | Displays a [text field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) to compose the email template. You can use form field names with Freemarker tags such as `${subject}` and `${message}` to write the data collected on the form into the message. |
+| html | Displays a [rich text field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/) to compose the email template. You can use markup that is escaped. |
+
+**Confirmation email tab**
+
+ **Field****Description**
+
+Send confirmation
+
+Sends a confirmation mail to the submitting user.
+
+> **Warning:** Make sure the SendConfirmationEMailProcessor form processor is also enabled.
+
+From
+
+Email address displayed in the **From** field of the outgoing message. You might want to use a customer support address here in case the user has further questions or a no-reply address. You can use form field names with Freemarker tags.
+
+To
+
+Email address the data is sent to. You can use form field names with Freemarker tags such as `${email}`.
+
+If you enter multiple email addresses, separate them using a semicolon `;` as a delimiter.
+
+Subject
+
+Email subject line, for example `We have received your feedback`. You can use form field names with Freemarker tags such as `${subject}`.
+
+Available fields for Freemarker syntax
+
+Form field names that can be used in Freemarker tags.
+
+Mail type
+
+Radio button to select the message type. For code and text you can use form field names with Freemarker tags such as `${subject}` and `${message}` to write the data collected on the form into the message. This can be a simple acknowledgement that data was submitted or you can summarize the collected data.
+
+Type: code
+
+Displays a [code field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Code-field/) (includes syntax highlighting) to compose the email template.
+
+Type: text
+
+Displays a [text field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) to compose the email template.
+
+Type: page
+
+This option means that the content of a page is sent to the user. The internal process reads the page content, pastes the content in the body of the email, and sends the mail to the user.
+
+The page itself, however, does not need to be available to the visitor.
+
+### [](#_field_sets)Field sets
+
+The purpose of a field set is to group fields that logically belong together:
+
+-   Before you can add any fields to the form, you need to add at least one field set component.
+
+-   You can add as many field sets as necessary.
+
+-   Use the **Title** field to distinguish field sets or include introductory text.
+
+-   Individual [field components](#_fields) are added as subcomponents in a field set.
+
+-   Component definition: `formGroupFields`
+
+
+![Field sets](../../../_images/6-0-formModule-fieldsetscrop.png)
+
+#### [](#_fields)Fields
+
+Field components are added within a [field set](#_field_sets).
+
+**Available fields:**
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 20%;"> <col style="width: 80%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Field</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Input</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Single line text input or text area.</p></li><li><p>Maximum input length option.</p></li><li><p>Component definition: <code>formEdit</code>.</p></li></ul></div><div class="paragraph"><p><strong>Advanced options:</strong> Not all input types and attributes are supported in all browsers.</p></div><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 20%;"> <col style="width: 50%;"> <col style="width: 30%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Types</th><th class="tableblock halign-left valign-top">HTML5-compliant input type</th><th class="tableblock halign-left valign-top"></th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Color</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = color&gt;</code>. To select a color from a pop-up color picker.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-color.png" alt="Color field" height="66"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Email</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = email&gt;</code>. Email field. Most browsers automatically validate content. Additionally, you can use an email <a href="#_field_validators">validator</a>.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-email.png" alt="Email field" height="73"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Password</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = password&gt;</code>. Password field. The characters are masked with asterisks or circles.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-password.png" alt="Password field" height="49"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Search</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = search&gt;</code>. Search field. Behaves like a regular text field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Text</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = text&gt;</code>. Standard text field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Url</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = url&gt;</code>. For fields that should contain a URL address. Most browsers validate automatically.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-url.png" alt="URL field" height="71"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Attributes</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Placeholder</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Hint that describes the expected value.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-placeholder.png" alt="Placeholder field" height="55"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Pattern</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Regular expression that the input value is checked against. For example, <code>[A-Za-z]{3}</code> for a three-letter country code.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">Please note that this attribute has no effect at this time. We are aware of this issue and working on a bugfix for this: <a href="https://magnolia-cms.atlassian.net/browse/MGNLFORM-296" target="_blank" rel="noopener">MGNLFORM-296</a>.</td></tr></tbody></table></div><div class="paragraph"><p>As a temporary workaround, you can configure the regex expression as a separate validator for the field under <code>/modules/form/config/validators</code>.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-regex.png" alt="Pattern field" height="70"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Pattern description</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Use the field description to help guide the user instead.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Read only</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean attribute that sets the field as read-only. User cannot enter input but can tab to it, highlight it, and copy from it.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Disabled</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean attribute that disables the input field. The field is unusable and unclickable. Typically used to prevent the user from entering input until another condition is met.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-disabled.png" alt="Disabled field" height="55"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Autofocus</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean attribute that places the cursor in the focused field on page load.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Autocomplete</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Enables autocomplete which allows the browser to predict the value based on earlier typed values. Submit information and then reload the page to test.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-inputField-autocomplete.png" alt="Autocomplete field" height="83"></span></p></div></div></td></tr></tbody></table></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Number or date</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Number or date field.</p></li><li><p>Maximum input length option.</p></li><li><p>Component definition: <code>formNumber</code> (extends <code>formEdit</code>).</p></li></ul></div><div class="paragraph"><p><strong>Advanced options:</strong> Not all input types and attributes are supported in all browsers.</p></div><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 20%;"> <col style="width: 50%;"> <col style="width: 30%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Types</th><th class="tableblock halign-left valign-top">HTML5-compliant input type</th><th class="tableblock halign-left valign-top"></th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = date&gt;</code>. To enter or select a date.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-dateField-date.png" alt="Date field" height="64"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Datetime</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = datetime&gt;</code>. To enter or select a date and time with a timezone.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p>This type is no longer supported by the latest HTML standards. See <a href="https://html.spec.whatwg.org/dev/input.html#the-input-element" target="_blank" rel="noopener">html.spec.whatwg.org/dev/input.html</a> and <a href="https://www.w3.org/TR/html5/sec-forms.html#the-input-element" target="_blank" rel="noopener">www.w3.org/TR/html5/sec-forms.html</a>.</p></div></td></tr></tbody></table></div><div class="paragraph"><p>Modern browsers may differ in how they render this type, most of them displaying a simple text field instead.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/date-time-input-type.png" alt="Datetime field"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Datetime-local</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = datetime-local&gt;</code>. To enter or select a date and time (no time zone).</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-dateField-datetimelocal.png" alt="Datetime local field" height="67"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Month</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = month&gt;</code>. To enter or select a month and year.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-dateField-month.png" alt="Month field" height="68"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Number</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = number&gt;</code>. To enter or select a numeric value.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-dateField-number.png" alt="Number field" height="53"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Phone number</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = tel&gt;</code>. For fields that should contain telephone numbers. Only supported in Safari 8.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Range</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = range&gt;</code>. For fields that should contain a value within a range.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-dateField-range.png" alt="Range field" height="45"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Time</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = time&gt;</code>. To select a time (no time zone).</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-dateField-time.png" alt="Time field" height="65"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Week</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>&lt;input type = url&gt;</code>. To select a week and year.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="image zoom"><img src="../../../_images/6-0-formModule-dateField-week.png" alt="Week field" height="53"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Attributes</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Read only</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>See Input field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Disabled</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>See Input field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Autofocus</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>See Input field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Autocomplete</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>See Input field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Minimum</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Minimum value for the field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Maximum</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Maximum value for the field.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Step</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Number intervals for the field. For example, if step=<code>3</code>, legal numbers could be <code>-3</code>, <code>0</code>, <code>3</code>, <code>6</code>, etc.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr></tbody></table></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Text field group</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Groups text fields next to each other.</p></li><li><p>The <strong>Group</strong> dialog has a single field that does not appear on the page. Assign this name to reference the group with FreeMarker tags.</p></li><li><p>The subcomponents are text fields, i.e.&nbsp;input fields without advanced options.</p></li><li><p>Component definition: <code>formGroupEdit</code> that nests <code>formGroupEditItem</code> components.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Selection</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Checkbox, select and radio buttons.</p></li><li><p>Multiple selection, default value and orientation options.</p></li><li><p>Component definition: <code>formSelection</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>File</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Upload file component.</p></li><li><p>In multistep forms, this is only available in the last step.</p></li><li><p>Component definition: <code>formFile</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Submit button</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Submits the form.</p></li><li><p>Can be labeled as <strong>required</strong>.</p></li><li><p><strong>Cancel</strong> button and <strong>Back</strong> button options (in multistep forms).</p></li><li><p>The component should be added at the end of the form.</p></li><li><p>Component definition: <code>formSubmit</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Hidden</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Single hidden line input or text area.</p></li><li><p>Does not appear on the page.</p></li><li><p>Used to pass on values to form processors in the same way as data entered by a user.</p></li><li><p>Component definition: <code>formHidden</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Honeypot</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>This is an invisible field that you can add to the page to intercept bot attacks.</p></li><li><p>Component definition: <code>formHoneypot</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Form summary</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>Displays a table with parameters and/or values of the steps in a <a href="#_creating_a_multistep_form">multistep form</a>.</p></li><li><p>Component definition: <code>formSummary</code>.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+> **Note:** Users are allowed to enter HTML-like characters such as & into fields. Use the noHTML validator to prevent this. You can control HTML escaping with the escapeHtml property in the component definition.
+
+### [](#_conditional_steps)Conditional steps
+
+The condition list component provides optional, additional business logic to a [multistep form](#_creating_a_multistep_form).
+
+-   The component is added automatically after the [**Submit button** field](#_fields) as an optional area.
+
+-   It allows you to set conditions for subsequent steps in a multistep form.
+
+-   It lets you define the page the user is directed to based on what they previously entered.
+
+
+### [](#_field_validators)Field validators
+
+Validators are used to ensure that form data is entered in the correct format. For example, an email address should follow established syntax where a local part is followed by the `@` character and a domain (`john.doe@example.com`).
+
+Choose a validator for appropriate fields in the **Validation** field.
+
+![Input field tab in edit mode](../../../_images/6-0-formModule-validator.png)
+
+When field validation passes, the value is submitted. When field validation fails, the field is highlighted in red; when the user attempts to submit the form, a notification message identifies the problem.
+
+![Validator example](../../../_images/6-0-formModule-validatorExec.png)
+
+Validators are configured in `/modules/form/config/validators/`:
+
+![Validator configuration](../../../_images/ADVT-form-mod-val.png)
+
+| Property | Description |
+| --- | --- |
+| `validators` | **required**<br><br>Validator configuration node |
+| `<validator name>` | **required**<br><br>Name of the validator. |
+| `class` | **required**<br><br>Validator class that performs the validation. |
+| `<validator properties>` | **required/optional**<br><br>Available properties depend on the validator class. |
+
+**Validator configurations:**
+
+ PropertyDescription
+
+`email`
+
+Value needs to be a valid email address.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.form.validators.RegexValidator` |
+| `expression` | **required**<br><br>Validity is checked with regular expression `(^([a-zA-Z0-9_\.\-+])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$)`. |
+
+`number`
+
+Value needs to be a number, specifically an integer. No decimals separated with period or comma or fractions are accepted.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.form.validators.RegexValidator` |
+| `expression` | **required**<br><br>Validity is checked with regular expression `^[0-9]*$`. |
+
+`noHTML`
+
+Value cannot any have HTML markup. This ensures that users can only enter plain text. Creating links and formatting text are not allowed.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.form.validators.NoHTMLValidator`<br><br>Custom class that checks for the presence of angle brackets (`<` `>`). |
+
+`password`
+
+Validates that the passwords entered into two password fields match. Used to eliminate typos.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.form.validators.PasswordValidator`<br><br>The fields should be named `password` and `passwordConfirmation`. |
+
+`fileUpload`
+
+Validates against a list of allowed MIME types and a maximum file size.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.form.validators.FileUploadValidator` |
+| `maxFileSize` | **optional**, *default is `10485760`*<br><br>Maximum file upload size. |
+| `allowedMimeTypes` | **optional**<br><br>Content node for a list of allowed MIME types. Add a property for each additional type. By default, `application/pdf`, `image/gif`, `image/jpeg`, `image/jpg` and `image/png` are allowed. |
+
+`empty`
+
+No validation. Used for the honeypot field only.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.form.validators.RegexValidator` |
+| `expression` | **required**<br><br>`-` (dash/null) |
+
+`username`
+
+Verifies that the entered username does not exist in the system. This validator is added by the [Public User Registration (PUR)](../Public-User-Registration-module/) module.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.publicuserregistration.validators.UsernameValidator` |
+
+`uniqueEmail`
+
+Verifies that the entered email does not exist in the system. This validator is added by the [Public User Registration (PUR)](../Public-User-Registration-module/) module.
+
+|     |     |
+| --- | --- |
+| `class` | **required**<br><br>`info.magnolia.module.publicuserregistration.validators.UniqueEmailValidator` |

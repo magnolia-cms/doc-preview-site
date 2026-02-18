@@ -1,0 +1,83 @@
+---
+title: "Personalize content with CDN caching"
+url: https://docs.magnolia-cms.com/paas/configuration/cache/personalization-with-cdn-cache/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Cache > Personalize content with CDN caching
+---
+
+# Personalize content with CDN caching
+
+When using Magnolia’s personalization features (traits and variants) with CDN caching enabled, special configuration is required to ensure cached content respects user traits.
+
+## [](#_the_problem)The problem
+
+Magnolia DX Core allows you to create content variants that display different content based on user traits. However, when CDN caching is enabled:
+
+-   **Without caching**: Users see personalized content correctly based on their traits.
+
+-   **With caching**: All users see the same cached version (the first response the CDN cached), regardless of their traits.
+
+
+This happens because CDNs treat all requests to the same URL as identical. The CDN caches the first response and serves it to everyone, ignoring trait differences.
+
+## [](#_the_solution)The solution
+
+Personalized content can be cached correctly by configuring the CDN to:
+
+1.  Extract trait information from incoming requests
+
+2.  Normalize trait values into a small set of categories
+
+3.  Create separate cache entries for each trait category using the `Vary` header
+
+
+> **Important:** Trait normalization is critical for cache performance. Normalizing traits into a small set of categories (for example, 3-5 device types) maintains good cache efficiency. Too many unique trait values create excessive cache entries, reducing cache performance significantly.
+
+## [](#_implementation_approach)Implementation approach
+
+The configuration works in three stages of the CDN request lifecycle:
+
+1.  **Request received**: Extract trait data (such as device type from User-Agent headers) and normalize it into categories
+
+2.  **Backend response received**: Configure the `Vary` header to create separate cache entries for each trait category
+
+3.  **Response delivered**: Clean up internal headers before sending the response to the client
+
+
+Common personalization traits that work well with this approach include:
+
+-   Device type (mobile, tablet, desktop)
+
+-   Geographic region (continent or country-level)
+
+-   User segments with limited categories
+
+
+> **Caution:** Cookie-based traits often have too many unique values for effective caching. If you need cookie-based personalization, contact Magnolia Support to discuss whether caching is appropriate for your use case.
+
+## [](#_getting_personalization_with_caching_configured)Getting personalization with caching configured
+
+CDN configuration for personalized content caching is managed by Magnolia Support for DX Cloud projects.
+
+To request this configuration:
+
+1.  Contact [DX Cloud support](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13).
+
+2.  Provide details about your personalization requirements:
+
+    -   Which traits you want to use (device type, location, etc.)
+
+    -   Expected trait values and categories
+
+    -   Which pages or content types require personalization
+
+
+3.  Support will work with you to implement the appropriate CDN configuration.
+
+
+## [](#_related_topics)Related topics
+
+-   [Personalization in Magnolia DX Core](../../../../product-docs/7.0/use-cases/Personalization/)
+
+-   [Fastly: VCL best practices](https://www.fastly.com/documentation/guides/full-site-delivery/fastly-vcl/vcl-best-practices/)

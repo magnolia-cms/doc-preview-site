@@ -1,0 +1,130 @@
+---
+title: "My first content app Part III"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/Developing-an-app/My-first-content-app/Part-III---Fine-tuning-a-basic-content-app/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > Developing an app > My first content app > My first content app Part III
+---
+
+# My first content app Part III
+
+## [](#_fine_tuning_a_basic_content_app)Fine-tuning a basic content app
+
+This is the third and final part of the [My first content app](../) tutorial.
+
+As you have seen in the previous part, a content type allows you to define the actual content model. Even though Magnolia then creates an editing interface automatically, you can still customize every aspect of that interface even further to meet the requirements of the project. This third page describes exactly that.
+
+### [](#_fine_tune_the_app_descriptor)Fine-tune the app descriptor
+
+First, modify the app descriptor to:
+
+-   Add an app icon.
+
+-   Tailor the properties.
+
+
+Open the app descriptor file, located in the `bookshelf` light module `apps` folder, edit it as follows and save it:
+
+bookshelf-app.yaml (app descriptor)
+
+```yml
+!content-type:book
+name: bookshelf-app
+icon: icon-content-app (1)
+subApps:
+  detail:
+    form:
+      properties:
+        ed: (2)
+           $type: checkBoxField
+        title: (3)
+          rows: 2
+        description: (4)
+          rows: 5 (5)
+          maxLength: 5000
+        publish_date: (6)
+           $type: dateField
+        isbn13: (7)
+          maxLength: 13
+          validators:
+            - name: isbn13
+              $type: regexpValidator
+              pattern: '97(8|9)[0-9]{9}(\d|X)'
+```
+
+**1**You assign the Bookshelf app a new [icon](../../General-aspects/Designing-an-app/Icons/) called `icon-content-app`, which symbolizes a bookshelf.
+
+> **Note:** The icon-content-app is one of the icons we provide as part of the UI framework and you can see them all here: https://dev.magnolia-cms.com/svg-app-icons-gallery/.
+
+**2**Change the `ed` property.
+
+> **Note:** You change the field type of this property from the default text to the checkbox field type.
+
+**3**Set the height of the field for the `title` property. You set the `rows` field property of the `title` content type property to `2`.
+
+> **Note:** Some book titles are longer and in most cases a two-row text field allows the user to read the whole title compared to just a one-row field.
+
+**4**Define the height and maximum length of the field for the `description` property.**5**Set the number of rows for the `description` property to `5`.**6**Change the `publish_date` property. Set the field type to [date](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Date-field/) to help the user find a book publication date with a pull-down calendar.**7**Length setting and a validator related to the `isbn13` property.
+
+> **Note:** You set the maxLength property to 13 characters to provide the user with a digit counter for entering the ISBN-13 number. You then add a regex-based field validator for the name: isbn13 field. This validation makes sure that the number entered complies with the basic syntax of ISBN-13 numbers.
+
+### [](#_adding_an_i18n_message_bundle)Adding an i18n message bundle
+
+Now add and polish the [i18n](../../../../Administration/Language/Internationalization/) labels and descriptions for the elements of the app’s UI.
+
+Since you’ve assigned a new name (`bookDetailsTab`) to the `default` tab in the detail subapp, you have to create new labels even for the message keys that supply label values from the `magnolia-ui-framework` module.
+
+In the `i18n` subfolder, open the `bookshelf-messages_en.properties` file and save it with the following content:
+
+```properties
+# App label
+bookshelf-app=Bookshelf
+
+# Book browser subapp labels.
+bookshelf-app.browser.label=Book Browser
+bookshelf-app.browser.actionbar.sections.root.label=Actions
+bookshelf-app.browser.actionbar.sections.item.label=Actions
+bookshelf-app.browser.actionbar.sections.folder.label=Actions
+bookshelf-app.browser.actionbar.sections.deletedItem.label=Actions
+bookshelf-app.browser.actionbar.sections.deletedFolder.label=Actions
+bookshelf-app.browser.actions.addItem.label=Add book
+bookshelf-app.browser.actions.confirmMarkDeletion.label=Delete book
+bookshelf-app.browser.actions.editItem.label=Edit book data
+bookshelf-app.browser.actions.rename.label=Rename book
+bookshelf-app.browser.actions.addFolder.label=Add shelf
+bookshelf-app.browser.actions.confirmDeleteFolder.label=Delete shelf
+bookshelf-app.browser.actions.editFolder.label=Rename shelf
+bookshelf-app.browser.actions.moveFolder=Move shelf
+bookshelf-app.browser.actions.confirmDeleteFolder.confirmationHeader=Delete {0,choice,1#this shelf|1< these {1} shelves}?
+bookshelf-app.browser.actions.confirmDeleteFolder.confirmationMessage={0,choice,1# This shelf|1< These {1} shelves} and all {1,choice,1#its|1< their} sub-items will be marked for deletion.
+bookshelf-app.browser.views.treeview.name.label=Shelf name or book cataloging name
+bookshelf-app.browser.views.listview.name.label=Cataloging name
+bookshelf-app.browser.views.listview.path.label=Bookshelf location
+
+# Book detail subapp labels and descriptions.
+bookshelf-app.detail.label=Book Details
+bookshelf-app.name.label=Cataloging name
+bookshelf-app.name.description=This field is required. Its value is used to create a hyphenated book cataloging name which is visible in the BOOK BROWSER subapp and under which the book is stored in the <i>books</i> workspace.
+bookshelf-app.authors.label=Author(s)
+bookshelf-app.ed.label=Author(s) in editorial role
+bookshelf-app.ed.buttonLabel=
+bookshelf-app.ed.description=Check off the box if the primary role of the "Author(s)" is editorial.
+bookshelf-app.title.label=Full title
+bookshelf-app.description.label=Description
+bookshelf-app.publisher.label=Publisher
+bookshelf-app.publish_date.label=Publication date
+bookshelf-app.publish_date.description=If you know just the year of publication, enter the date as YYYY-01-01.
+bookshelf-app.isbn13.label=ISBN-13
+bookshelf-app.isbn13.description=If an ISBN-13 is available for the book, enter it without hyphens or spaces.
+bookshelf-app.isbn13.validation.errorMessage=The ISBN-13 number has 13 characters. The first 12 characters can only be numerals, the last character can be either a numeral or "X". The number has to begin with either 978 or 979.
+bookshelf-app.detail.actions.cancel=Cancel
+bookshelf-app.detail.actions.commit=Save Book Data
+```
+
+To apply the new labels and descriptions, reload the Bookshelf app.
+
+Congratulations! The Bookshelf is now ready for use.
+
+You can tweak the app’s configuration further to expand its capabilities.
+
+> **Tip:** If you would like to see some book data in the app, you may either add it yourself or download it as a sample file called books.My-Good-Reads.xml from the _sampleContent folder in the bookshelf repository. For downloading, open the sample data in the browser, then copy and paste it to a local file. Import the file to the Bookshelf app using the Import action in the Book browser subapp.

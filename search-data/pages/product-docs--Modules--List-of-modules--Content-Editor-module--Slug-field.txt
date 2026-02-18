@@ -1,0 +1,44 @@
+---
+title: "Slug field"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Content-Editor-module/Slug-field/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Content Editor module > Slug field
+---
+
+# Slug field
+
+info.magnolia.editor.field.SlugFieldDefinition is a special type of [text field](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) provided by the [Content Editor module](../). It creates an editable text field that allows you to adjust the URL of a Content Editor story to a more human-readable form, for example from
+
+`example.com/stories/flying-grand-canyon-and-southwest.html`
+
+to
+
+`example.com/stories/fly-grand-canyon`
+
+The same can be achieved with [URI mapping](../../../../Administration/URI-mapping/), which is a more generic solution. For more details, see the section [A user-friendly path vs full path](../../../../Administration/URI-mapping/#_a_user_friendly_path_vs_full_path).
+
+> **Note:** The slug field can only be used in the context of the Content Editor module.
+
+## [](#_example_definition)Example definition
+
+(Excerpted from the [Stories app](../../../../Apps/List-of-apps/Stories-app/) configuration.)
+
+/stories-app/apps/stories.yaml
+
+```yml
+datesAndUrl:
+...
+  properties:
+...
+    jcrName:
+      $type: slugField
+      label: URL slug
+      placeholder: Add URL slug...
+```
+
+Since the field extends `TextFieldDefinition`, you can use the [text field properties](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/#_field_properties) to configure the field.
+
+Related topics
+
+-   [URI mapping](../../../../Administration/URI-mapping/)

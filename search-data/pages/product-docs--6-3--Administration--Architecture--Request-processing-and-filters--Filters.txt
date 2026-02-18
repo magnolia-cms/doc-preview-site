@@ -1,0 +1,858 @@
+---
+title: "Filters"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Architecture/Request-processing-and-filters/Filters/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Architecture > Request processing and filters > Filters
+---
+
+# Filters
+
+[Java filters](http://www.oracle.com/technetwork/java/filters-137243.html) were introduced in the Java Servlet specification version 2.3. A filter intercepts requests and responses to transform or use the information. Filters typically don’t create responses themselves but instead provide universal functions that can be `attached` to any type of servlet page.
+
+Since the filter chain is responsible for request handling in Magnolia, the default chain illustrates how filters are used to process requests. This page provides minimal information on filters. For more information, see [Request processing and filters](../) and the `filters` package.
+
+> **Caution:** Don’t change the filter orderMagnolia handles incoming requests to display a page through its own filter chain. Filters in the chain are executed in the order in which they are declared until a filter decides that it can fulfill the request.Be carefulWhen editing properties in the filter chain be careful. Always test the changes on test environment before applying it to production.For instance, if you add a info.magnolia.voting.Voter to a filter with an erroneous regular expression, you won’t be able to access AdminCentral anymore. In such a case, you have to use the Groovy Rescue app.
+
+## [](#_context)Context
+
+The first filter in the filter chain is the info.magnolia.cms.filters.ContextFilter. This filter initializes `MgnlContext` and configures [MDC logging](http://www.javacodegeeks.com/2013/01/effective-logging-in-javajee-mapped-diagnostic-context.html). `MgnlContext` is local to the request and available on every further filter. The context provides a lot of useful functions, see info.magnolia.context.MgnlContext for details.
+
+## [](#_content_type)Content type
+
+The job of the `ContentTypeFilter` is to initialize info.magnolia.cms.core.AggregationState.
+
+It’s created and populated with:
+
+-   Character encoding
+
+-   Original URI
+
+-   Original URL
+
+-   Extension
+
+-   Query string
+
+
+The `AggregationState` is accessible using `MgnlContext.getAggregationState()`.
+
+The `Content-Type` header is not set by `ContentTypeFilter` anymore. The MIME type was incorrectly set according to the request extension. It is now the responsibility of renderers/servlets to set the correct content type. For instance, info.magnolia.rendering.renderer.FreemarkerRenderer sets the content type.
+
+Content type filter can be configured to [match requests to content types](../../../MIME-type-mapping/#_matching_requests_to_content_types). See [Restricting responses to configured MIME types](../../../MIME-type-mapping/#_restricting_responses_to_configured_mime_types).
+
+## [](#_cookies_detector)Cookies detector
+
+info.magnolia.personalization.cookie.CookiesDetectorFilter is a [personalization](../../../../use-cases/Personalization/) filter that detects request cookies and adds them as traits to the aggregation state.
+
+## [](#_date)Date
+
+info.magnolia.personalization.date.system.DateDetectorFilter is a simple date [trait](../../../../use-cases/Personalization/) filter for [personalization](../../../../use-cases/Personalization/) that stores the current system time in the `TraitCollector`.
+
+## [](#_country)Country
+
+info.magnolia.personalization.geoip.CountryDetectorFilter is a GeoIP [trait](../../../../use-cases/Personalization/) filter that detects the user’s country using the IP address of the request for [personalization](../../../../use-cases/Personalization/). It adds the country to the aggregation state as a trait. If a GET parameter `Country#REQUEST_PARAMETER` with an IP address is supplied, this address is used to resolve the country, which is stored in the `TraitCollector`.
+
+## [](#_visitor)Visitor
+
+info.magnolia.personalization.visitor.VisitorDetectorFilter is a visitor [trait](../../../../use-cases/Personalization/) filter that detects the type of visitor based on the current user and cookies for [Personalization](../../../../use-cases/Personalization/).
+
+`visitorCookies` can be configured for returning and registered users.
+
+/server/filters/visitor/
+
+```yaml
+class: info.magnolia.personalization.visitor.VisitorDetectorFilter
+returning:
+  level: 5
+  name: VISITOR
+  value: returning
+registered:
+  name: VISITOR
+  value: registered
+new:
+  maxAge: 86400
+  name: NEW_VISITOR
+  value: new
+```
+
+**Additional Properties**
+
+Additional properties are applicable to the cookie *name* nodes, that is, to `returning`, `registered` and `new` in the examples above.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpOnlyCookie</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>A security setting that prevents cookies from being read by potentially malicious code.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>secureCookie</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is not set</em></p></div><div class="paragraph"><p>Determines whether the CSRF cookie is marked as secure.</p></div><div class="paragraph"><p>Default behavior (when not set): The secure flag mirrors the security of an incoming request. The cookie is only marked as secure if the request is received over HTTPS. This behavior is consistent with how a container handles session cookies.</p></div><div class="paragraph"><p>Explicit control:</p></div><div class="ulist"><ul><li><p>Set to <code>true</code> to always mark the cookie as secure.</p></li><li><p>Set to <code>false</code> to prevent the cookie from being marked as secure.</p></li></ul></div><div class="paragraph"><p>This property can also be configured in the <code>magnolia.properties</code> file using <code>magnolia.cookie.csrf.secure</code>. For example, to force secure cookies regardless of the request protocol:</p></div><div class="listingblock"><div class="title">microprofile-config.properties</div><div class="content"><pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">magnolia.cookie.csrf.secure=false</code></pre></div></div><div class="exampleblock"><div class="content"></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>sameSite</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>Strict</code></em></p></div><div class="paragraph"><p>Controls whether cookies are sent with cross-site requests to protect against cross-site attacks.</p></div><div class="ulist"><ul><li><p><code>Strict</code> sends cookies only for same-site requests. They aren’t sent, for example, when a user follows an external link to the origin site.</p></li><li><p><code>Lax</code> sends cookies for same-site requests and when following a link to the origin site.</p></li><li><p><code>None</code> sends cookies in both first-party and cross-origin requests.</p></li><li><p><code>Omitted</code> omits the <code>SameSite</code> attribute from the cookie entirely.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+## [](#_multipart_request)Multipart request
+
+info.magnolia.cms.filters.MultipartRequestFilter is a filter that determines if a `HttpServletRequest` contains multipart content (for example, files or fields) and, if so, parses it into a request attribute for further processing.
+
+You can configure the maximum number of files and fields allowed per request using the `fileCountMax` parameter. The total number of files and fields written in the request must be less than the value of `fileCountMax`. By default, the maximum is `100`. However, `fileCountMax` doesn’t apply to publication requests because they’re authenticated internally. Each file has a maximum size in bytes, which you can configure using the `maxFileSize` parameter. The parameter defaults to `2000000000` (two gigabytes).
+
+|     |     |
+| --- | --- |
+| 📁 server |     |
+| 📁 filters |     |
+| 📁 multipartRequest |     |
+| ⬩ class | info.magnolia.cms.filters.MultipartRequestFilter |
+| ⬩ fileCountMax | 100 |
+| ⬩ maxFileSize | 2000000000 |
+
+### [](#_anonymous_multipart_requests)Anonymous multipart requests
+
+The `MultipartRequestFilter` can be triggered by anonymous users on both author and public instances. When triggered, uploaded files are temporarily stored in the system temp directory and cleared after the request completes.
+
+To mitigate unexpected anonymous uploads, the default configuration adds a `notAuthenticatedOrInDevelopMode` bypass voter set under the `multipartRequest` filter. This voter set bypasses the `MultipartRequestFilter` when all of the following conditions are true:
+
+1.  The request is from an anonymous user.
+
+2.  The instance isn’t running in develop mode.
+
+3.  The request isn’t a signed publication (activation) request.
+
+
+This protects public and non-develop instances from anonymous multipart uploads while still allowing:
+
+-   Signed activation requests to pass through the filter
+
+-   Multipart handling for authenticated users or in develop mode
+
+
+For more about voters, see [Voters](../../Configuration-management/#_voters).
+
+ PropertyDescription
+
+`notAuthenticatedOrInDevelopMode`
+
+Voter set that defines when `MultipartRequestFilter` is bypassed for anonymous multipart requests. All nested voters must evaluate to `true` for the filter to be skipped.
+
+     `isAnonymousUser`
+
+*default is `false`*
+
+Evaluates whether the current user is authenticated.
+
+If set to `true`, the result is inverted so the voter matches anonymous users.
+
+     `isNotDevelopMode`
+
+*default is `false`*
+
+Compares a property value. In particular, the `property` to read (for example, `magnolia.develop`) and the `value` to compare against (for example, `false`).
+
+     `isNotSignedPublicationRequest`
+
+Groups publication-related voters so that regular, unsigned requests are blocked while signed activation traffic is allowed.
+
+> **Note:** You can set enabled to false under isNotSignedPublicationRequest on public instances to block publication requests entirely.
+
+         `isActivationEndpoint`
+
+*default is `true`*
+
+Matches the start of the request URI. In particular, for URI prefixes that match the `pattern` (for example, `/.magnolia/activation`).
+
+         `isSigned`
+
+*default is `true`*
+
+Evaluate whether the request is signed.
+
+| Node name | Value |
+| --- | --- |
+| ⸬ notAuthenticatedOrInDevelopMode |     |
+| ⬩ op | AND |
+| ⬩ class | info.magnolia.voting.voters.BoolVoterSet |
+| ⸬ voters |     |
+| ⸬ isAnonymousUser |     |
+| ⬩ not | true |
+| ⬩ class | info.magnolia.voting.voters.AuthenticatedVoter |
+| ⸬ isNotDevelopMode |     |
+| ⬩ property | magnolia.develop |
+| ⬩ value | false |
+| ⬩ class | info.magnolia.voting.voters.PropertyVoter |
+| ⸬ isNotSignedPublicationRequest |     |
+| ⬩ class | info.magnolia.voting.voters.BoolVoterSet |
+| ⬩ op | AND |
+| ⬩ not | true |
+| ⸬ voters |     |
+| ⸬ isActivationEndpoint |     |
+| ⬩ pattern | /.magnolia/activation |
+| ⬩ class | info.magnolia.voting.voters.URIStartsWithVoter |
+| ⸬ isSigned |     |
+| ⬩ class | info.magnolia.publishing.receiver.voters.SignedRequestVoter |
+
+## [](#_unicode_normalization)Unicode Normalization
+
+info.magnolia.cms.filters.UnicodeNormalizationFilter normalizes the current URI to the NFC form that is used internally.
+
+## [](#_registration)Registration
+
+info.magnolia.enterprise.registration.RegistrationFilter checks the validity of the registration of a DX Core installation and delegates to the registration form so that the user can enter the license key. The license is also checked in other parts of the code.
+
+> **Note:** If you need to remove the X-Magnolia-Registration header added by this filter, do it at the level of a proxy, load balancer, or CDN.
+
+## [](#_login)Login
+
+info.magnolia.cms.security.auth.login.LoginFilter handles incoming login requests and delegates to [login handlers](../Login-handlers/). The handlers are configured under this filter.
+
+The Login filter verifies that user credentials are authenticated so that only authenticated users can be made into active users. Magnolia uses [JAAS](http://en.wikipedia.org/wiki/Java_Authentication_and_Authorization_Service) for authentication. For more information, see [Security](../../../Security/).
+
+> **Important:** Redirecting via the mgnlReturnTo request parameter after login is only permitted for relative URLs or for URLs explicitly added to the info.magnolia.cms.security.auth.login.LoginFilter configuration.To whitelist URLs, add the UrlPattern instances of all allowed redirects to server/filter/login/allowedRedirects.
+
+## [](#_gzip)GZip
+
+To improve site performance, info.magnolia.module.cache.filter.GZipFilter replaces text type responses with the gzipped response. This filter passes a `ResponseWrapper` instead of the response object it got in the `doFilter(..)` call to the filter chain. After all the following filters have been executed, content is extracted from the `ResponseWrapper`, gzipped and written to the original response.
+
+## [](#_channel)Channel
+
+info.magnolia.cms.filters.MultiChannelFilter resolves the channel to use by considering variations of the set channel. The resulting site gets set in info.magnolia.module.site.ExtendedAggregationState.
+
+## [](#_multisite)Multisite
+
+info.magnolia.multisite.filters.MultiSiteFilter is a DX Core filter. It detects which site definition should be used. The filter makes site-related properties available in info.magnolia.cms.core.AggregationState.
+
+## [](#_trusted_proxy_headers)Trusted proxy headers
+
+info.magnolia.module.site.filters.TrustedProxyHeadersFilter is a CE and DX Core servlet filter used to enforce security policies on HTTP requests based on headers commonly used by proxies.
+
+```yaml
+server:
+  filters:
+...
+    trustedProxyHeaders:
+      class: info.magnolia.module.site.filters.TrustedProxyHeadersFilter
+      jcr:primaryType: mgnl:content
+      enabled: true (1)
+...
+```
+
+|     |     |
+| --- | --- |
+| **1** | Default filter setting is `false`. It disables the filter, no header checking is done. |
+
+### [](#_configuration)Configuration
+
+The filter allows you to configure permitted header values and can enforce these policies based on whether forwarding through a proxy is enabled or disabled.
+
+-   If *enabled*, it checks whether the incoming request headers match the allowed values. If a header does not match the allowed values, the request is blocked.
+
+-   If *disabled*, the presence of any configured headers in the request will cause the request to be blocked since their presence is unexpected.
+
+
+`TrustedProxyHeadersFilter` reads configuration from a site configuration. Each site can have a specific configuration. For configuration details, see the `trustedProxyConfig` node description in [Site module: Configuration](#2.0@site:ROOT:index.adoc#_configuration).
+
+## [](#_site_merge)Site merge
+
+info.magnolia.module.site.filters.SiteMergeFilter merges channel variations with the site definition. Configurations under this filter override configuration done in the site definition. The filter sets the site definition in the aggregation state.
+
+In the Community Edition, this filter sets the site in the aggregation state. In DX Core, the multisite filter can also set the site.
+
+## [](#_logout)Logout
+
+info.magnolia.cms.security.LogoutFilter checks to see if the logout attribute `mgnlLogout` is set as a request parameter. If this flag is found, the user is logged out and the filter chain restarts with the first filter.
+
+## [](#_security_callback)Security callback
+
+info.magnolia.cms.security.SecurityCallbackFilter handles 401 and 403 HTTP response codes and `AccessDeniedExceptions`. The filter renders an appropriate `login form` that can consist of a redirect or anything else.
+
+Multiple `HttpClientCallbacks` with different configuration and behavior can be configured for this filter.
+
+Here is the client callback configuration for the Travel Demo members area redirect and login form.
+
+/server/filters/securityCallback/
+
+```yml
+class: info.magnolia.cms.security.SecurityCallbackFilter
+clientCallbacks:
+  travel-demo-pur:
+    class: info.magnolia.cms.security.auth.callback.RedirectClientCallback
+    location: /travel/members/login.html
+    originalUrlPattern:
+      class: info.magnolia.cms.util.SimpleUrlPattern
+      patternString: (*|travel)/members/(profile-update|protected)*
+  form:
+    class: info.magnolia.cms.security.auth.callback.FormClientCallback
+    loginForm: /defaultMagnoliaLoginForm/login.html
+```
+
+> **Warning:** Both callback classes implement the info.magnolia.cms.security.auth.callback.HttpClientCallback interface and support their own configuration properties. A custom callback should implement this interface.
+
+Classes
+
+-   info.magnolia.cms.security.auth.callback.FormClientCallback renders a login form using FreeMarker and the template configured with `loginForm`.
+
+-   info.magnolia.cms.security.auth.callback.RedirectClientCallback redirects to a configured path or URL. This is useful, for example, in a single sign-on (SSO) context where the login screen is handled by a different application, or to hide the login form from a public instance using a fronting server configuration.
+
+    #### Redirection of *unauthorized* and *forbidden* requests to `404`
+
+    Using the `sendError` property in the `RedirectClientCallback`, you can redirect `401` and `403` errors to a specific error page.
+
+    With the following example configuration, the login form will only be displayed when `/.magnolia/admincentral` is requested. All the other unauthorized requests are redirected to the default `404` page.
+
+    /server/filters/securityCallback/
+
+    ```yml
+    clientCallbacks:
+      form:
+        originalUrlPattern:
+          class: info.magnolia.cms.util.SimpleUrlPattern
+          patternString: /.magnolia/admincentral
+        class: info.magnolia.cms.security.auth.callback.FormClientCallback
+        loginForm: /defaultMagnoliaLoginForm/login.html
+      redirectUnauthorized:
+        class: info.magnolia.cms.security.auth.callback.RedirectClientCallback
+        sendError: 404
+    ```
+
+    > **Note:** It is the container itself that handles the redirect to the appropriate error page through the <error-code> configuration.
+
+-   info.magnolia.cms.security.auth.callback.AbstractHttpClientCallback provides a number of filtering capabilities:
+
+    -   `url`. Current request URL decoded and without the context path.
+
+    -   `urlPattern`
+
+    -   `originalUrl`. Original request URL decoded and without the context path, but not modified by any filter.
+
+    -   `originalUrlPattern`
+
+    -   `hostPattern`
+
+    -   `voters`
+
+        For example, in a [multisite](../../../../Developing/Templating/Site-definition/How-to-use-Multisite/) installation for the request [`http://demo.magnolia-cms.com/travel/about.html`](http://demo.magnolia-cms.com/travel/about.html):
+
+    -   `url` is `/about.html`
+
+    -   `originalUrl` is `/travel/about.html`
+
+        The Multisite filter removes the first-level node name from the URL.
+
+        > **Tip:** The methods provided by AbstractHttpClientCallback are also provided by the info.magnolia.cms.util.UrlPatternDelegate utility class.
+
+
+
+## [](#_csrf_security)CSRF security
+
+### [](#_csrfsecurityfilter)`CsrfSecurityFilter`
+
+info.magnolia.cms.security.CsrfSecurityFilter checks the HTTP [HTTP\_referer](http://en.wikipedia.org/wiki/HTTP_referer) header to ensure that the request is not a [cross-site request forgery](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html) attack. When a possible CSRF attack is detected, the browser returns a 400 Bad Request error and Magnolia logs a security warning to the [audit log](../../../Monitoring/Audit/).
+
+`CsrfSecurityFilter` causes a request to fail if:
+
+-   The referer header is empty.
+
+    ```yml
+    Host: mysite.com/.magnolia/pages/adminCentral.html
+    Referer:
+    ```
+
+-   The host part of the referer header does not match the requested host.
+
+    ```yml
+    Host: mysite.com/.magnolia/pages/adminCentral.html
+    Referer: hackersite.io
+    ```
+
+
+> **Note:** If you access Magnolia with a script, set the referer header in your script to ensure the script can access Magnolia. Similarly, if you embed Magnolia content into a different website, disable CsrfSecurityFilter or add a voter that bypasses the CSRF filter for any requests coming from the trusted URL.
+
+#### [](#_bypassing_csrfsecurityfilter)Bypassing `CsrfSecurityFilter`
+
+You can bypass the CSRF security filter using a voter. By default, info.magnolia.cms.security.CsrfSecurityFilter is bypassed if:
+
+-   The requested URL does not start with `/.magnolia`. Only AdminCentral URLs are vulnerable to CSRF attacks; other URLs are not checked.
+
+-   The user is not authenticated for AdminCentral access. Only authenticated requests are vulnerable to CSRF attacks.
+
+-   The request does not have query parameters.
+
+-   The requested resource is somewhere in AdminCentral. Vaadin has its own CSRF protection, so Magnolia hands the responsibility over to Vaadin.
+
+
+You can create your own whitelist of referer domains or URIs using a voter. The filter is bypassed for the whitelisted referers. In the following example, the filter is bypassed for any requests referred by `http://www.example.com`.
+
+/server/filters/csrfSecurity/
+
+```yaml
+class: info.magnolia.cms.security.CsrfSecurityFilter
+bypasses:
+  whitelist:
+    class: info.magnolia.voting.voters.RequestHeaderPatternSimpleBoolVoter
+    headerName: referer
+    pattern: http://wwww.example.com
+```
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;voter node&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Voter node. Name the node, for example, <code>whitelist</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Fully qualified voter class name. Available classes:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.voting.voters.RequestHeaderPatternSimpleBoolVoter</span> checks for a URL pattern that complies with <span class="inlineBean">info.magnolia.cms.util.SimpleUrlPattern</span> (for example, <code><a href="http://www.example.*" class="bare">http://www.example.*</a></code>).</p></li><li><p><span class="inlineBean">info.magnolia.voting.voters.RequestHeaderPatternRegexBoolVoter</span> checks for a regular expression pattern.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>headerName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Header you want to check (for example, <code>referer</code>).</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The <a href="http://en.wikipedia.org/wiki/HTTP_referer#Origin_of_the_term_referer">spelling of the word <em>referer</em> is intentional</a>.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>pattern</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Domain or URL pattern that complies with <span class="inlineBean">info.magnolia.cms.util.SimpleUrlPattern</span>. The pattern must be present in the header for the filter to be bypassed.</p></div></div></td></tr></tbody></table></div>
+
+#### [](#_csrfsecurityfilter_and_internet_explorer)`CsrfSecurityFilter` and Internet Explorer
+
+Some builds of Internet Explorer don’t send the HTTP [referer](https://en.wikipedia.org/wiki/HTTP_referer) header when submitting a form or when opening a popup. If the referer is not in the HTTP header, `CsrfSecurityFilter#handlePossibleCsrf` interprets the request as a potential CSRF attack, which forces the user to log in on the popup. To overcome this issue, add info.magnolia.voting.voters.UserAgentVoter as a voter class to bypass `CsrfSecurityFilter` for Internet Explorer.
+
+/server/filters/csrfSecurity/
+
+```yaml
+bypasses:
+  userAgent:
+    class: info.magnolia.voting.voters.UserAgentVoter
+    allowed:
+      IE11: .*Trident/7.0; rv:11.0.*
+```
+
+Under the `allowed` node, you can add a list of regular expressions to match the `userAgent` HTTP header. In the example above, Internet Explorer 11 is bypassed.
+
+To ensure the filter is bypassed, make sure to have at least one property under the `allowed` node with a value that matches the `userAgent` of the browser for which you want to bypass the filter.
+
+For [Internet Explorer 11](https://docs.microsoft.com/en-gb/archive/blogs/ieinternals/internet-explorer-11s-many-user-agent-strings), `userAgent` might be `Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko`.
+
+> **Warning:** Always test changes on a test environment before applying them to a production system. If you add an erroneous regular expression, you will not be able to access AdminCentral anymore. In that case, you will have to use the Groovy Rescue app.
+
+### [](#_csrfcookietokenfilter_and_csrfsessiontokenfilter)`CsrfCookieTokenFilter` and `CsrfSessionTokenFilter`
+
+The info.magnolia.cms.security.CsrfCookieTokenFilter and info.magnolia.cms.security.CsrfSessionTokenFilter filter classes define a CSRF token strategy that exposes methods for creating, validating and renewing tokens. The default strategy is info.magnolia.cms.security.HmacCsrfToken.
+
+-   `CsrfCookieTokenFilter` implements a stateless technique called [Double Submit Cookie](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#double-submit-cookie) to prevent [login CSRF attacks](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#login-csrf).
+
+    Configured at `/server/filters/csrfTokenSecurity/csrfLogin`.
+
+-   `CsrfSessionTokenFilter` implements a stateful technique called [Synchronizer Token Pattern](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#synchronizer-token-pattern) to prevent CSRF attacks on authenticated users.
+
+    Configured at `/server/filters/csrfTokenSecurity/csrfAuthenticated`.
+
+
+> **Note:** You can also set the secure and httpOnly attributes on the CSRF cookie. Set these through AdminCentral at /server/filters/csrfTokenSecurity/csrfLogin.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpOnlyCookie</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>A security setting that prevents cookies from being read by potentially malicious code.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>secureCookie</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is not set</em></p></div><div class="paragraph"><p>Determines whether the CSRF cookie is marked as secure.</p></div><div class="paragraph"><p>Default behavior (when not set): The secure flag mirrors the security of an incoming request. The cookie is only marked as secure if the request is received over HTTPS. This behavior is consistent with how a container handles session cookies.</p></div><div class="paragraph"><p>Explicit control:</p></div><div class="ulist"><ul><li><p>Set to <code>true</code> to always mark the cookie as secure.</p></li><li><p>Set to <code>false</code> to prevent the cookie from being marked as secure.</p></li></ul></div><div class="paragraph"><p>This property can also be configured in the <code>magnolia.properties</code> file using <code>magnolia.cookie.csrf.secure</code>. For example, to force secure cookies regardless of the request protocol:</p></div><div class="listingblock"><div class="title">microprofile-config.properties</div><div class="content"><pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">magnolia.cookie.csrf.secure=false</code></pre></div></div><div class="exampleblock"><div class="content"></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>sameSite</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>Strict</code></em></p></div><div class="paragraph"><p>Controls whether cookies are sent with cross-site requests to protect against cross-site attacks.</p></div><div class="ulist"><ul><li><p><code>Strict</code> sends cookies only for same-site requests. They aren’t sent, for example, when a user follows an external link to the origin site.</p></li><li><p><code>Lax</code> sends cookies for same-site requests and when following a link to the origin site.</p></li><li><p><code>None</code> sends cookies in both first-party and cross-origin requests.</p></li><li><p><code>Omitted</code> omits the <code>SameSite</code> attribute from the cookie entirely.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+#### [](#_configuring_the_csrf_token_strategy)Configuring the CSRF token strategy
+
+You can configure the token strategy properties, including the token renewal interval, at the following locations:
+
+-   `/server/filters/csrfTokenSecurity/csrfLogin/csrfTokenStrategy`
+
+-   `/server/filters/csrfTokenSecurity/csrfAuthenticated/csrfTokenStrategy`
+
+
+**Example configurations**
+
+-   csrfLogin
+
+-   csrfAuthenticated
+
+
+/server/filters/csrfTokenSecurity/csrfLogin
+
+```yaml
+csrfLogin:
+  class: info.magnolia.cms.security.CsrfSessionTokenFilter
+  csrfTokenStrategy:
+    class: info.magnolia.cms.security.HmacCsrfToken
+    macAlgorithm: HmacSHA256
+    tokenRenewalIntervalMinutes: 30
+  httpOnlyCookie: true
+  secureCookie: true
+```
+
+/server/filters/csrfTokenSecurity/csrfAuthenticated
+
+```yaml
+csrfAuthenticated:
+  class: info.magnolia.cms.security.CsrfSessionTokenFilter
+  bypasses: {}
+  csrfTokenStrategy:
+    class: info.magnolia.cms.security.HmacCsrfToken
+    macAlgorithm: HmacSHA256
+    tokenRenewalIntervalMinutes: 30
+```
+
+**Configuration properties**
+
+ PropertyDescription
+
+`class`
+
+**optional**, *default is `info.magnolia.cms.security.HmacCsrfToken`*
+
+The CSRF token strategy implementation class.
+
+`macAlgorithm`
+
+**optional**, *default is `HmacSHA256`*
+
+The MAC algorithm used for token generation.
+
+`tokenRenewalIntervalMinutes`
+
+**optional**, *default is `30`*
+
+The interval in minutes after which the CSRF token is renewed.
+
+> **Important:** When configuring tokenRenewalIntervalMinutes, you must set the same value for both csrfLogin and csrfAuthenticated filters. Using different values between the two filters can result in 403 Forbidden errors.
+
+#### [](#_bypassing_csrfcookietokenfilter_and_csrfsessiontokenfilter)Bypassing `CsrfCookieTokenFilter` and `CsrfSessionTokenFilter`
+
+You can bypass the CSRF security filter via a [voter](../../../Voters/). By default, both info.magnolia.cms.security.CsrfCookieTokenFilter and info.magnolia.cms.security.CsrfSessionTokenFilter are bypassed if:
+
+-   In REST, the URL starts with `/.rest`.
+
+-   In Activation, the URL starts with `/.magnolia/activation`.
+
+-   In Vaadin heartbeat, the URL starts with `/.magnolia/admincentral/HEARTBEAT`.
+
+-   In Vaadin, the URL starts with `/.magnolia/admincentral/UIDL`.
+
+-   In Vaadin on Magnolia 5 AdminCentral, the URL starts with `/.magnolia/admincentral-m5/UIDL`.
+
+-   In DAM, the URL starts with `/.dam`.
+
+-   In Imaging, the URL starts with `/.imaging`.
+
+-   In Resources, the URL starts with `/.resources`.
+
+-   In GraphQL, the URL starts with `/.graphql`.
+
+
+In addition, `CsrfSessionTokenFilter` is bypassed by default if in AdminCentral, the URL starts with `/.magnolia/admincentral`.
+
+### [](#_json_content_type_validation_in_vaadin)JSON Content-Type validation in Vaadin
+
+Vaadin intentionally accepts JSON requests without requiring the `application/json` header. Security doesn’t rely on this header but on mandatory CSRF tokens.
+
+For more about this topic, see [JSON Content-Type validation](../../../Troubleshooting/JSON-Content-Type-validation/).
+
+## [](#_ip_security)IP security
+
+You can configure or whitelist IP addresses to control access to author or public instances using info.magnolia.cms.security.IPSecurityFilter. Only pre-approved IP addresses are granted access. Any other IP addresses attempting access receive a 403 forbidden response. See [IP and HTTP permissions](../../../Security/IP-and-HTTP-permissions/) for more information on how to configure this filter in Magnolia.
+
+| Node name | Value |
+| --- | --- |
+| 📁 ipSecurity |     |
+| ⬩ class | info.magnolia.cms.security.IPSecurityFilter |
+
+## [](#_cross_site_security)Cross-site security
+
+info.magnolia.multisite.filters.CrossSiteSecurityFilter grants or denies permission to a site when the site is requested through a particular domain name. When a user tries to access one site’s content through another site’s domain name, the system displays a HTTP 404 error (page not found). See [Cross-site security](../../../Security/Cross-site-security/)
+
+## [](#_uri_security)URI security
+
+info.magnolia.cms.security.URISecurityFilter checks to see if the active user has permission to access the requested URI. In DX Core, the info.magnolia.multisite.filters.SiteUriSecurityFilter of the [Multisite module](../../../../Modules/List-of-modules/Multisite-module/) extends `UriSecurityFilter` to provide site-aware functionality.
+
+The following constraints are considered in finding the permissions of the user:
+
+-   URI ACLs of the user’s roles
+
+-   URI ACLs of the user’s groups' roles
+
+
+If the user doesn’t have permission to access the URI, JAAS provides a login form. This default behavior of the URI security filter can be changed in the [JAAS configuration](#master@magnolia-sso:ROOT:index.adoc#_configuring_jaas).
+
+You can configure a custom login form in the URI security filter to replace the default Magnolia login form. The form is configured in `/server/filters/securityCallback/clientCallbacks`.
+
+| Node name | Value |
+| --- | --- |
+| ⸬ form |     |
+| ⬩ class | info.magnolia.cms.security.auth.callback.FormClientCallback |
+| ⬩ loginForm | /defaultMagnoliaLoginForm/login.html |
+
+> **Tip:** If you don’t grant permission to the custom login form path, a standard Magnolia login form is displayed, usually on the author instance.
+
+## [](#_range)Range
+
+info.magnolia.cms.filters.RangeSupportFilter adds support for ranged requests. Ranged requests are used by iPhone and some other clients to stream videos. In contrast to Android phones, iPhone doesn’t support any other method of streaming videos.
+
+## [](#_i18n_content_support)i18n content support
+
+info.magnolia.cms.i18n.I18nContentSupportFilter detects the requested locale and sets the locale in the aggregation state. The filter rewrites the internal current URI, whether virtual or not. It doesn’t rewrite the URI displayed to the user, however. For more information, see [Language](../../../Language/).
+
+## [](#_cache)Cache
+
+info.magnolia.module.cache.filter.CacheFilter manages the Magnolia cache.
+
+The cache filter checks if a requested resource is already stored in the cache to avoid recreation of the resource. If the resource is in the cache, then it’s written to the response and the filter chain stops. If the resource is not found in the cache, then a `ResponseWrapper`, which not only writes to the `standard` response but also saves the response, is passed to the chain. After the filters that follow have been executed (and the requested resource created), the content is extracted from the response wrapper and stored in the cache.
+
+The cache filter is part of [Cache core](../../../../Modules/List-of-modules/Cache-modules/Cache-core/) and the respective configuration is in the module configuration.
+
+## [](#_cors)CORS
+
+info.magnolia.cors.SelfConfiguredCorsFilter and info.magnolia.module.site.filters.SiteAwareCorsFilter (Magnolia 6.2.4+) handle simple and pre-flight requests for cross-origin resource sharing (CORS). For more details, see the [CORS](../CORS/) page.
+
+## [](#_content_security_policy_csp)Content Security Policy (CSP)
+
+The CSP filter adds the `Content-Security-Policy` header to the response, helping prevent Cross-Site Scripting (XSS) and other code-injection attacks. For more details, see [Content-Security-Policy (CSP) Filter](../csp/).
+
+## [](#_virtual_uri)Virtual URI
+
+info.magnolia.virtualuri.VirtualUriFilter checks if the requested URI matches a configured URI pattern and executes the [URI mapping](../../../URI-mapping/).
+
+## [](#_servlets_filter_chain)Servlets filter chain
+
+The servlets configured in modules are installed in Magnolia’s servlets filter chain using info.magnolia.cms.filters.ServletDispatchingFilter as the implementing filter class. If the servlet mapping matches the URI, then the `service(..)` method of the servlet is called. See [Registering a servlet](../Registering-a-servlet/) for more.
+
+## [](#_cms_filter_chain)CMS filter chain
+
+Finally, we arrive at the filter chain which does the page rendering and delivery. The filters are grouped in this filter chain so they share a co-bypass definition.
+
+### [](#_repository_mapping)Repository mapping
+
+info.magnolia.cms.filters.RepositoryMappingFilter handles access to different [workspaces](../../Workspaces/). By default, Magnolia is connected with the `website` workspace. Therefore a request URI is interpreted as the path to a node in the `website` workspace. If you want to address nodes in other workspaces you need to specify a repository mapping in `/server/URI2RepositoryMapping`.
+
+### [](#_content_security)Content security
+
+While the [URI security](#_uri_security) filter checks permissions on the URI, info.magnolia.cms.security.ContentSecurityFilter checks if the current user has permission to access the requested content resource. The following constraints are considered in finding the permissions of the user:
+
+-   Workspace-specific ACLs of the user’s roles
+
+-   Workspace-specific ACLs of the user group’s roles
+
+
+If the user doesn’t have permission for the resource, then JAAS provides a login form. This default behavior of the content security filter can be changed in JAAS configuration.
+
+### [](#_aggregator)Aggregator
+
+info.magnolia.cms.filters.AggregatorFilter analyzes the request and stores the results in info.magnolia.cms.core.AggregationState. After this filter, every value the aggregation state can have is known.
+
+| Target | Information collected |
+| --- | --- |
+| Page | \* Content node of the requested page \* Template |
+| NodeData | \* `NodeData` object of the requested data \* Template if a template is connected with the `NodeData` |
+
+### [](#_variant_resolver)Variant resolver
+
+info.magnolia.personalization.filter.VariantResolverFilter is a [personalization](../../../../use-cases/Personalization/) filter that wraps [variant nodes](../../../../use-cases/Personalization/). The filter tries to resolve a variant from the current node (from `AggregationState`) using all available traits stored in the `TraitCollector` and wraps it accordingly, if required. It only uses `PersonalizationNodeWrapper` if a variant is resolved. Non-variants are not wrapped.
+
+/server/filters/cms/variantResolver/
+
+```yml
+wrapOnlyPersonalizedNodes: true
+```
+
+| Property | Description |
+| --- | --- |
+| `wrapOnlyPersonalizedNodes` | **optional**, *default is `false`*<br><br>If set to `true`, only page variants are wrapped. |
+
+### [](#_model_execution)Model execution
+
+info.magnolia.rendering.model.ModelExecutionFilter executes the component model before template rendering. The filter looks for a request parameter containing the UUID of the component to execute. The model can send output in which case page rendering is skipped, or return a URI prefixed by `redirect`, `permanent` or `forward`.
+
+### [](#_rendering)Rendering
+
+Finally, info.magnolia.rendering.engine.RenderingFilter is responsible for delivering the requested resource. If the requested resource is data, such as a file, then the data is just copied to the response.
+
+The rendering filter is terminal, meaning it ends the filter chain and filtering process. If no filter before it has been able to fulfill the request and the rendering filter cannot find the page either, then a 404 page not found error is returned. This is the default behavior.
+
+You can change the behavior by adding a `terminateChain` property under the rendering filter and setting it to `false`. When a request for a page such as `/home/some/page` is received and no such page exists in the JCR, your own servlets can have a go at fulfilling the request. The default value for the `terminateChain` property is true.
+
+#### [](#_restricting_node_type_rendering)Restricting node type rendering
+
+You can configure rendering restrictions by URL of specific node types on public instances. Once a node is restricted, attempting to render it (or its subnodes) on a public instance returns a `404 Not Found` response. Rendering requests from cached fragments are exempt and proceed.
+
+> **Note:** In Personalization module 2.1.17 (Magnolia 6.2.58) and later, public instances prevent direct rendering by URL of specific node types, such as mgnl:variant, by default. This configuration enhances security by blocking direct URL access to restricted nodes.
+
+To edit or add restrictions:
+
+1.  Open the Configuration app.
+
+2.  Under `/server/filters/cms/rendering/bypasses`, create or edit the `notAllowed` node.
+
+3.  Add the `nodeTypes` you want to restrict.
+
+    The example below shows the default configuration in Magnolia 6.3.8 and later:
+
+    |     |     |
+    | --- | --- |
+    | ⸬ bypasses |     |
+    | ⸬ notAllowed |     |
+    | ⸬ directRender |     |
+    | ⬩ class | info.magnolia.personalization.filter.voters.DirectRenderVoter |
+    | ⸬ nodeTypes |     |
+    | ⸬ forbidden |     |
+    | ⬩ variant | mgnl:variant |
+    | ⬩ class | info.magnolia.personalization.filter.voters.NodeTypesVoter |
+    | ⬩ op | AND |
+
+    -   The info.magnolia.personalization.filter.voters.DirectRenderVoter voter identifies direct rendering requests, such as displaying content directly via URL.
+
+    -   The info.magnolia.personalization.filter.voters.NodeTypesVoter voter checks if the node type is in the forbidden list. In the example above, `mgnl:variant` is in the forbidden list.
+
+
+
+If you needed a restriction for components, you would add the following to the `nodeTypes` subtree:
+
+|     |     |
+| --- | --- |
+| ⸬ forbidden |     |
+| ⬩ component | mgnl:component |
+| ⬩ class | info.magnolia.personalization.filter.voters.NodeTypesVoter |
+
+To disable the restriction, you can either remove the `notAllowed` voter and subnodes entirely, or add an `enabled` property under `notAllowed` and set its value to `false`.
+
+For more information on voters, see [Voters](../../Configuration-management/#_voters).
+
+## [](#_restricting_access_to_resources)Restricting access to resources
+
+Access to resources is defined in the `/modules/resources/config/resourceFilter` filter. By default, the filter allows access to resources as follows:
+
+-   `byType`
+
+    -   `css, map, js, htm(l), ico, woff(2), ttf, svg, gif, jp(e)g, tiff, bmp`
+
+
+-   `byLocation`
+
+    -   when located in the `webresources` directory.
+
+
+
+## [](#_adding_http_headers)Adding HTTP headers
+
+You can add and configure any header in the `/server/filters` folder in the `Configuration` app. The info.magnolia.cms.filters.AddHeadersFilter implementation class allows configuration of a filter for adding HTTP headers to enable, for example, [CORS](https://developer.mozilla.org/en-US/docs/Glossary/CORS). The parameters configured in this filter are added to the HTTP header if the filter is triggered. You can restrict the filter’s scope by adding and configuring a `bypasses` node to it. For details, see the [Magnolia main filter](../#_magnolia_main_filter) page.
+
+**Example configuration for CORS**
+
+> **Warning:** Since Magnolia 6.2.4, you can use the cors filter to handle CORS requests.
+
+The example allows CORS with header types `X-Requested-With`, `Content-Type`, `Accept`, with the `GET` method, and from any origin:
+
+|     |     |
+| --- | --- |
+| 📁 server |     |
+| 📁 filters |     |
+| 📁 HeaderFilterOne |     |
+| ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
+| ⬩ enabled | true |
+| 📁 headers |     |
+| ⬩ Access-Control-Allow-Headers | X-Requested-With, Content-Type, Accept |
+| ⬩ Access-Control-Allow-Methods | GET |
+| ⬩ Access-Control-Allow-Origin | \*  |
+
+> **Caution:** The position of a filter within the filter chain matters. The appropriate position depends on the use case.When using this filter to enable cross-origin resource sharing (CORS) - place it after uriSecurity filter.
+
+Properties used in the example:
+
+| Property | Description |
+| --- | --- |
+| `enabled` | **required,** *default is `false`*<br><br>Enables or disables the filter. |
+| `class` | **required**<br><br>Class that implements info.magnolia.cms.filters.AddHeadersFilter. |
+| `Access-Control-Allow-Headers` | **optional**<br><br>Headers allowed for the request. |
+| `Access-Control-Allow-Methods` | **optional**<br><br>The HTTP verbs that are allowed to make the request.<br><br>See: [RFC 7231, section 4: Request methods](http://tools.ietf.org/html/7231#section-4) and [RFC 5789, section 2: Patch method](http://tools.ietf.org/html/5789#section-2). |
+| `Access-Control-Allow-Origin` | **optional**<br><br>The origin of the request (URL/host).<br><br>The wildcard `*` is used to allow any origin. |
+
+### [](#_http_headers_and_security_best_practices)HTTP headers and security best practices
+
+In this subsection, we provide some ideas how you can improve security through select HTTP headers.
+
+#### [](#_content_security_policy_csp_header)Content Security Policy (CSP) header
+
+Content Security Policy governs what a web browser (or a user agent, in general) is allowed to load as part of a page. Setting a CSP header allows the creator of a page to control what other resources might be loaded by the underlying HTML or JavaScript code. This is a powerful way to mitigate many Cross-site scripting (XSS) and clickjacking attacks.
+
+> **Important:** CSP configuration is mandatory for production deployments. You should configure a restrictive CSP on all HTML resources before deploying to production.CSP Level 2 is supported by all major browsers and should be used for production deployments.
+
+You should list, as part of the header value, the origin and all the endpoints required for the page to function. However, if you allow any endpoint that is not within your control, you are opening a hole through which an attack might be staged.
+
+If necessary, we recommend you customize the header to define your own whitelist.
+
+There are two ways to configure the Content Security Policy header:
+
+-   **Per-site configuration (recommended)**: This approach provides more granular control over your security policies. You can configure CSP for each site directly within its site definition. See [Content-Security-Policy (CSP) Filter](../csp/) for detailed instructions and examples.
+
+-   **Global configuration**: You can configure a global CSP header by creating a new filter in the [Configuration app](../../../../Apps/List-of-apps/Configuration-app/). This approach is less flexible than the per-site configuration but can help apply a single policy to all sites.
+
+    An example configuration could look similar to the one below. The path `server/filters/HeaderFilterOne` is only a suggestion. When adding CSP headers, you only need to place the header values into the `Content-Security-Policy` property.
+
+    |     |     |
+    | --- | --- |
+    | 📁 server |     |
+    | 📁 filters |     |
+    | 📁 HeaderFilterOne |     |
+    | ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
+    | ⬩ enabled | true |
+    | 📁 headers |     |
+    | ⬩ Content-Security-Policy | default-src \`self' \`unsafe-inline' \`unsafe-eval' [https://ga-dev-tools.appspot.com](https://ga-dev-tools.appspot.com) [https://apis.google.com](https://apis.google.com) [https://www.google.com](https://www.google.com) [https://content.googleapis.com](https://content.googleapis.com) [https://ajax.googleapis.com](https://ajax.googleapis.com) ; img-src \`self' data:; |
+
+
+> **Note:** The Vaadin framework performs the CSP check explicitly instead of relying on browser to do so as part of policy execution. You can see official Vaadin statement here.
+
+##### [](#_strong_csp_level_2_policy_example)Strong CSP level 2 policy example
+
+For production deployments, use a restrictive CSP Level 2 policy such as the example one below.
+
+```text
+Content-Security-Policy: default-src 'none'; script-src 'nonce-r4nd0mN0nce'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; report-uri https://cspreport.example.com/log
+```
+
+This policy:
+
+-   `default-src 'none'` - Blocks all resources by default
+
+-   `script-src 'nonce-r4nd0mN0nce'` - Only allows scripts with the specified nonce
+
+-   `frame-ancestors 'none'` - Prevents the page from being embedded in frames (clickjacking protection)
+
+-   `base-uri 'self'` - Restricts base element URLs to same origin
+
+-   `form-action 'self'` - Restricts form submissions to same origin
+
+-   `report-uri` - Sends violation reports to the specified endpoint
+
+
+##### [](#_development_configuration)Development configuration
+
+During development, you can enable reporting of violations without blocking content by using the `Content-Security-Policy-Report-Only` header instead of `Content-Security-Policy`. This allows you to test and refine your policy before enforcing it in production.
+
+##### [](#_json_requests_are_processed_when_content_type_is_textplain)JSON requests are processed when Content-Type is text/plain?
+
+This does not present a security vulnerability in Vaadin. Vaadin doesn’t enforce `Content-Type: application/json` because it doesn’t rely on it for security.
+
+Requests with an incorrect `Content-Type` fail if the content is malformed. This ensures compatibility with technologies like Portlets. For more details, see [Advanced Vaadin Topics: Content Type Incorrectly Stated](https://vaadin.com/docs/latest/flow/security/advanced-topics/frequent-issues#content-type-incorrectly-stated).
+
+Vaadin secures requests using CSRF tokens, not `Content-Type` validation.
+
+##### [](#_csp_evaluation_and_testing)CSP evaluation and testing
+
+Use the [CSP Evaluator tool](https://csp-evaluator.withgoogle.com/) to test and validate your Content Security Policy configuration. This tool helps identify potential security issues and provides recommendations for improving your policy.
+
+See also
+
+-   [github.com: Insufficient Content-Type: application/json Validation](https://github.com/vaadin/framework/issues/9492#issuecomment-306716024)
+
+-   [Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
+
+-   [MDN: Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
+
+
+#### [](#_strict_transport_security_sts_header)`Strict-Transport-Security` (STS) header
+
+The STS header informs the browser that a page should only be accessed over the HTTPS protocol. The browser will use this knowledge and set all future requests for the same domain to go through HTTPS automatically, thus preventing the extra round trip that might be required otherwise.
+
+Using HTTPS instead of HTTP enables traffic encryption between the page and the client, preventing anyone from intercepting the communication. Using this header is considered more secure than using the 301 redirect on the server when an attempt for the over-the-HTTP access is made.
+
+See also:
+
+-   [HSTS - Web Security Best Practices](https://www.checkbot.io/guide/security/hsts/)
+
+-   [MDN: Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
+
+
+#### [](#_x_content_type_options_xcto_header)`X-Content-Type-Options` (XCTO) header
+
+XCTO is a marker header that tells the client that the media types (MIME types) advertized as part of the Content-Type headers should be strictly followed and not changed. This helps avoid *MIME Type Sniffing*.
+
+See also:
+
+-   [MDN: X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options)
+
+
+#### [](#_x_frame_options_xfo_header)`X-Frame-Options` (XFO) header
+
+Setting the XFO header tells the browser that the given page is not allowed to be embedded in another page. This header setting helps mitigate stealing content, *clickjacking* (UI redress attack) or allowing malicious sites to pose as the regular ones and fool the users to not check the URLs closely but think instead that they are on a safe page when they are actually not.
+
+See also:
+
+-   [Current best practices to restrict framing in the browser](https://pragmaticwebsecurity.com/articles/securitypolicies/preventing-framing-with-policies.html)
+
+-   [MDN: X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
+
+
+## [](#_custom_filters)Custom filters
+
+If you need a custom filter, see [Custom filters](../Custom-filters/).

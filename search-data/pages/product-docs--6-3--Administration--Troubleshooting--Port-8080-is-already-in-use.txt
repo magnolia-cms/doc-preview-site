@@ -1,0 +1,52 @@
+---
+title: "Port 8080 is already in use"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Troubleshooting/Port-8080-is-already-in-use/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Troubleshooting > Port 8080 is already in use
+---
+
+# Port 8080 is already in use
+
+Port `8080` is the default port for Tomcat. You can see it at the end of the default address `http://localhost:8080`. If another application on the computer is already using the same port, you may need to change it.
+
+1.  Open `<CATALINA_HOME>/conf/server.xml` in a text editor. This file is under your Magnolia installation directory.
+
+2.  Find the following section and set the value of `port` to something other than `8080` (for example, `8090`):
+
+    ```xml
+    <!-- Define a non-SSL HTTP/1.1 Connector on port 8080 -->
+    <Connector port="8090" maxHttpHeaderSize="8192"
+               maxThreads="150" minSpareThreads="25" maxSpareThreads="75"
+               enableLookups="false" redirectPort="8443" acceptCount="100"
+               connectionTimeout="20000" disableUploadTimeout="true" />
+    ```
+
+
+Change the `defaultBaseUrl` property, which is used to create absolute links in emails or other external systems. To do this, you need to now access Magnolia at the new `8090` port.
+
+1.  Log into the author instance at `http://localhost:8090/magnoliaAuthor/.magnolia`.
+
+2.  Go to **Configuration**.
+
+3.  Set the `/server/defaultBaseUrl` property to `http://localhost:8090/magnolia/`.
+
+4.  Log into the public instance at `http://localhost:8090/magnoliaPublic/.magnolia`.
+
+5.  Go to **Configuration**.
+
+6.  Set the `/server/defaultBaseUrl` property to `http://localhost:8090/magnolia/`.
+
+
+> **Note:** Now the Welcome page at http://localhost:8090 has the correct URLs too.
+
+The port also needs to be updated in the publishing configuration. Otherwise, publishing changes from the author to the public instance would fail.
+
+1.  On the author instance, go to **Configuration > modules > publishing-core > config > receivers**.
+
+2.  Under the `magnoliaPublic8080` receiver, set the `URL` property to `http://localhost:8090 magnoliaPublic`.
+
+3.  Rename the receiver to `magnoliaPublic8090`. Publish the modified receiver including its subnodes.
+
+
+If you want to run two different Tomcats simultaneously, you need to change other ports too. This is useful if you want to run different versions of Magnolia at the same time. In `<CATALINA_HOME>/conf/server.xml`, change the port numbers for the shutdown and AJP sections and any custom sections you have enabled.

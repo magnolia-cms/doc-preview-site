@@ -1,0 +1,125 @@
+---
+title: "Internal linking best practices"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Best-practices/internal-linking/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Best practices > Internal linking best practices
+---
+
+# Internal linking best practices
+
+Implementing internal links in Magnolia involves deciding how to resolve and handle links between nodes in the JCR repository. Each approach, `JcrNodeToPathConverter`, `JcrNodeToIdConverter`, or relying on the Magnolia core templating functions, offers unique advantages and trade offs depending on project requirements.
+
+## [](#_jcrnodetopathconverter)JcrNodeToPathConverter
+
+This utility converts a `javax.jcr.Node` to its absolute path in the JCR repository (for example, to `/path/to/node`).
+
+Ideal for
+
+-   Sites where content rarely changes location.
+
+-   Simpler content structures with stable paths.
+
+
+-   Pros
+
+-   Cons
+
+
+-   **Human-Readable Paths:** Paths are easily understood and debugged.
+
+-   **Direct URI Resolution:** You can map the JCR path directly to a URL via URI mapping, making it ideal for sites with simple content structures.
+
+-   **Consistency Across Environments:** If the repository structure remains the same across environments, paths can reliably resolve to the same content.
+
+
+-   **Breakage Risk on Relocation:** Moving a node to a different path will break links unless URI mappings or redirection mechanisms are in place.
+
+-   **Environment Dependency:** Absolute paths must match between environments (for example, `development`, `staging`, `production`), which can complicate deployments.
+
+-   **Performance Impact:** Resolving content based on path might be slower in large repositories due to traversal.
+
+
+## [](#_jcrnodetoidconverter)JcrNodeToIdConverter
+
+Ideal for
+
+-   Sites where content frequently moves or changes.
+
+-   Complex repositories with dynamic content structures.
+
+
+This utility converts a `javax.jcr.Node` to its unique identifier (UUID) in the JCR repository.
+
+-   Pros
+
+-   Cons
+
+
+-   **Resilience to Relocation:** UUIDs remain consistent even if a node is moved or renamed, making them robust for linking content.
+
+-   **Environment-Agnostic:** UUIDs are unique across the repository and don’t depend on the path, easing migration between environments.
+
+-   **Performance Benefits:** Fetching a node by UUID is more efficient than resolving a path, especially in large repositories.
+
+
+-   **Non-Human-Readable:** UUIDs aren’t intuitive for debugging or direct URI mapping.
+
+-   **Mapping Overhead:** Requires additional logic to map the UUID back to a URL or content path for presentation.
+
+
+## [](#_magnolia_core_templating_functions)Magnolia core templating functions
+
+Magnolia’s core templating module provides built-in functions such as [Link functions](../../Templating/Template-scripts/Templating-functions/cmsfn/#_links) for resolving and generating links. These functions are part of the templating foundation, available by default in Magnolia.
+
+Ideal for
+
+-   Projects aligned with Magnolia’s standard templating approach.
+
+-   Developers who prefer leveraging existing templating functions for internal link management.
+
+
+-   Pros
+
+-   Cons
+
+
+-   **Convenience and Abstraction:** Simplifies link handling by providing ready-to-use functions for internal and external links.
+
+-   **Consistency:** Ensures links adhere to the templating and content delivery rules of Magnolia.
+
+-   **Ease of Use:** Reduces boilerplate code by relying on established patterns.
+
+
+-   **Reduced Flexibility:** May not cover edge cases or custom requirements.
+
+-   **Dependency on Core Templates**: If your project uses custom templates diverging from standard Magnolia practices, extending or overriding default behavior might require additional customization.
+
+
+## [](#_recommendation_based_on_requirements)Recommendation based on requirements
+
+| Requirement | Preferred Approach |
+| --- | --- |
+| Stable paths, simple structure | `JcrNodeToPathConverter` |
+| Dynamic content or relocations | `JcrNodeToIdConverter` |
+| Large repositories, performance | `JcrNodeToIdConverter` |
+| Core templating functionality | `Core Templating Functions` |
+| Multilingual support | `Core Templating Functions (or custom logic with i18n)` |
+
+## [](#_suggested_strategy)Suggested strategy
+
+-   **Start with MTK:** For most standard projects using Magnolia’s templating system, MTK provides a robust and efficient approach.
+
+-   **Switch to UUIDs if Necessary:** If your project requires dynamic structures or frequent node relocations, consider using JcrNodeToIdConverter for resilience.
+
+-   **Use Paths for Simplicity:** For small, static sites or cases where debugging human-readable paths is critical, JcrNodeToPathConverter may suffice.
+
+
+## [](#_additional_considerations)Additional considerations
+
+-   **Environment Consistency:** Ensure UUIDs or paths align across environments to avoid breakage during deployment.
+
+-   **SEO Implications:** Paths may be more SEO-friendly compared to UUID-based links. Consider how links will be rendered in the final output.
+
+
+By balancing project requirements with these pros and cons, you can select the most appropriate approach for their use case.

@@ -1,0 +1,201 @@
+---
+title: "Content Editor module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Content-Editor-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Content Editor module
+---
+
+# Content Editor module
+
+[Content management](../../../use-cases/content-management/) Bundled: DX Core
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [CONTEDIT](https://magnolia-cms.atlassian.net/browse/CONTEDIT) |
+| Maven site | [Content Editor](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Feditor%2Fmagnolia-content-editor%2F4.0.0) |
+| Latest | 4.0.0 |
+
+The Content Editor module provides a platform for handling well-defined blocks of content in Magnolia.
+
+The core of the platform is the Magnolia Content Editor submodule, implemented as the `stories-app` submodule, which allows editors to create and edit stories in the Author instance using the [Stories app](../../../Apps/List-of-apps/Stories-app/).
+
+> **Note:** Compatibility noteCustom content editor and block definitions created in the Magnolia 5 UI framework must be migrated.
+
+## [](#_module_structure)Module structure
+
+| artifactID |     |
+| --- | --- |
+| `content-editor-parent` | Parent reactor. |
+| `magnolia-content-editor` | Provides a free-form content editor. |
+| `magnolia-content-editor-widgetset-v2` | Provides a custom widgetset for the Content Editor. |
+| `stories-app` | Provides the [Stories app](../../../Apps/List-of-apps/Stories-app/), the default Magnolia editor implementation.<br><br>The app is not bundled with preconfigured Magnolia webapps. |
+| `magnolia-block-api` | Provides a basic API for the *blocks* (content sections). |
+| `magnolia-block-templating` | Provides the functionality to render the blocks. |
+| `magnolia-link-unfurl` | Provides utilities for unfurling external web links.<br><br>*Unfurling* means fetching and displaying metadata for a given URL, for example, a preview image, a title and description. |
+
+## [](#_installing)Installing
+
+> **Note:** Demo modules decorate the stories-app.
+
+If you want to build your own custom implementation, add this dependency to your webapp:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.editor</groupId>
+  <artifactId>magnolia-content-editor</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+If you intend to build custom blocks, add this dependency to your webapp:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.block</groupId>
+  <artifactId>magnolia-block-templating</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+Want to create your own custom content blocks?
+
+To define a custom block, use a [YAML definition file](../../../Developing/YAML/#_yaml_in_the_context_of_magnolia) and apply the `BlockDefinition` class of the Content editor module.
+
+1.  Create a YAML file in the `blocks` folder of your module and add the following required definition elements.
+
+    ```yaml
+    class: info.magnolia.block.BlockDefinition (1)
+    templateId: <module-name>:<the-path-to-the-block-relative-to-the-module> (2)
+    icon: <icon-name>
+    label: <i18n-label>
+    block: (3)
+      itemProvider:
+        $type: jcrBlockGetIndexedChildNode
+      properties:
+        field1:
+          <field1-property1>
+          <field1-property2>
+        field2:
+          <field2-property1>
+          <field2-property2>
+          etc.
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | The `info.magnolia.block.BlockDefinition` class. |
+    | **2** | The `templateId` of your block. |
+    | **3** | A `block` node, with a list of fields the content block consists of. Use the properties in the same way as the properties for the `[CompositeFieldDefinition](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Composite-field/)`. |
+
+2.  Provide a template definition file and a template script for your block in the `templates/blocks` subfolder of your module.
+
+3.  Optionally, in the `i18n` folder of your module, provide a file with `i18n` keys for labels and descriptions of the block’s fields.
+
+
+> **Note:** See Developing and rendering custom content blocks for more details on custom blocks.
+
+## [](#_content_i18n_and_migration_to_version_2_1_and_higher)Content i18n and migration to version 2.1 (and higher)
+
+[Internationalization](../../../Administration/Language/Internationalization/) (i18n) of content is supported since version `2.1` of the Content Editor module.
+
+If you are upgrading from Magnolia 6.2 or from a 1.x version of the Content Editor, please mind the migration procedures below to enable i18n in the Stories app, as well as in other Content Editor based apps you may have.
+
+### [](#_compatibility_of_content_and_block_definitions)Compatibility of content and block definitions
+
+Block definitions and data structures created in the older versions of the module must be migrated.
+
+#### [](#_flat_vs_nested_content_structure)Flat vs nested content structure
+
+The data model has changed for internationalized stories. Whereas in versions `1.3.x` and `2.0.x` of the module, the `mgnl:block` elements are stored in a flat node structure,
+
+stories
+└── story1
+    ├── 0
+    └── 1
+
+in the i18n-supported version (`2.1` and higher), the nodes are locale-nested under intermediate nodes of type `mgnl:contentNode`, named `blocks_de` and `blocks` in this example:
+
+stories
+└── story1
+    └── blocks\_de
+    │   ├── 0\_de
+    │   └── 1\_de
+    └── blocks
+        ├── 0
+        └── 1
+
+This must be reflected in your `[MultiJcrBlockDefinition](Multi-JCR-block/)`, where you need to add and enable the `i18n` property.
+
+Instead of the `CurrentItemProvider`, the `CompatibleBlockProvider` is set as the default provider, which can resolve both flat and nested block nodes. You do not need to declare it in your block definition.
+
+Example definition
+
+```yml
+blocks:
+  label: Blocks
+  $type: multiJcrBlock
+  i18n: true
+  blocks:
+    - text
+```
+
+> **Note:** This applies only to the 2.0.x block definitions. Block definitions created for version 1.3.x (5 UI) of the module are not compatible with the 2.1 version and must be fully migrated.
+
+#### [](#_migrating_content)Migrating content
+
+There are two ways you can migrate the non-i18n blocks to the i18n-compatible hierarchy: using a version handler or a Groovy script.
+
+> **Caution:** We strongly recommend you have the latest version of the Content Editor before migrating your content.In versions prior to 2.1.3, the MigrateBlockToIntermediateParentTask doesn’t preserve the order of nodes when migrating to the latest version. Running this task can actually reorder the nodes to an incorrect state.
+
+##### [](#_version_handler)Version handler
+
+When upgrading the Stories app submodule to version `2.1` or higher, all block nodes in the `stories` workspace will be moved to intermediate nodes, see the `MigrateBlockToIntermediateParentTask` task.
+
+##### [](#_groovy_script)Groovy script
+
+You can run the migration task in the [Groovy app](../../../Apps/List-of-apps/Groovy-app/), especially in case a block node is stored in another workspace.
+
+Example Groovy script
+
+```groovy
+import info.magnolia.editor.setup.MigrateBlockToIntermediateParentTask
+import info.magnolia.module.InstallContextImpl
+import info.magnolia.module.ModuleRegistryImpl
+import info.magnolia.objectfactory.Components
+import javax.jcr.Session
+
+
+Session session =  MgnlContext.getJCRSession("stories");
+task = new MigrateBlockToIntermediateParentTask("stories", "/", "blocks");
+task.execute(Components.newInstance(InstallContextImpl.class));
+session.save();
+```
+
+The parameters in the `MigrateBlockToIntermediateParentTask`:
+
+-   `stories` - workspace name
+
+-   `/` - path
+
+-   `blocks` - name of the intermediate node, the name of the `multiJcrBlock` field.
+
+
+Related topics
+
+-   [Content editor](./)
+
+-   [Stories app](../../../Apps/List-of-apps/Stories-app/)
+
+-   [Developing a custom content editor app](../../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/)
+
+-   [Developing and rendering custom content blocks](../../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/Developing-and-rendering-custom-content-blocks/)

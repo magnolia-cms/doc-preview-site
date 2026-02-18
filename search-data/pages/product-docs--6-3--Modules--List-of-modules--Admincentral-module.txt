@@ -1,0 +1,154 @@
+---
+title: "Admincentral module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Admincentral-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Admincentral module
+---
+
+# Admincentral module
+
+[Content management](../../../use-cases/content-management/) Bundled: Community edition
+
+|     |     |
+| --- | --- |
+| Edition | CE  |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLUI](https://magnolia-cms.atlassian.net/browse/MGNLUI) |
+| Maven site | [UI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fadmincentral%2Fmagnolia-admincentral%2F6.3.7) |
+| Latest | 6.3.7 |
+
+The Admincentral module allows you to customize certain functional aspects of the [Find Bar](#_configuring_find_bar_search_results), namely configuration of search filters and sizes of search result collections.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.admincentral</groupId>
+  <artifactId>magnolia-admincentral</artifactId>
+  <version>6.3.7</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Note:** The UI Admincentral is a different module. Its groupId is info.magnolia.ui, and its artifactId is magnolia-ui-admincentral. You can use it to configure, for example, the availability and layout of apps in the App launcher.
+
+## [](#_configuring_find_bar_search_results)Configuring Find Bar search results
+
+You can configure how many search results are displayed. To do so, use the [definition decoration](../../../Developing/Definition-decoration/) mechanism.
+
+For example, the following light module configuration updates the `defaultCountPerSupplier` to `3`, allowing you to see only up to 3 search results.
+
+<my-module>/decorations/admincentral/config.yaml
+
+```yaml
+findBar:
+   defaultCountPerSupplier: 3
+```
+
+### [](#_configurable_properties_for_find_bar_search)Configurable properties for Find Bar search
+
+The table below lists properties in the [Admincentral module](./) that affect how search results appear.
+
+ PropertyDescription
+
+`defaultCountPerSupplier`
+
+**optional**, *default is `10`*
+
+Integer defining the maximum number of search results shown from any single search supplier.
+
+`editorRoles`
+
+**optional**
+
+List of user roles allowed in the **Last editor** search filter:
+![List of authorized user roles](../../../_images/6-1-admincentralModule-lastEditor.png)
+
+All users are available unless specified otherwise.
+
+> **Warning:** By allowing all user roles in editorRoles, you may experience performance issues, especially when a large number of public users are registered in a shared user repository on the author instance and you open a Find Bar filter.
+
+`minimumSearchLength`
+
+**optional**, *default is `3`*
+
+Configure the minimum number of necessary characters that are shown in a text hint in the find bar to help the user understand how to use the search feature.
+![Findbar with text hint](../../../_images/findbar-enter-min-characters.png)
+
+`suppliers`
+
+**optional**
+
+List of search result suppliers. If undefined, it defaults to all suppliers provided by the [Periscope module](../Periscope-module/).
+
+See also [Search result suppliers](../Periscope-module/#_search_result_suppliers).
+
+`supplierOrder`
+
+**optional**, *default is `apps, pages, stories, assets, tours`*
+
+List defining the ordering of search result groups.
+
+## [](#_global_password_policy_validation)Global password policy validation
+
+The Admincentral module provides global password policy validation for all password fields via the ValidatingPasswordFieldDefinition class. This validation is configured in the `ui-framework-core` module and enforces password strength requirements across the system.
+
+The default password policy requires:
+
+-   Minimum 12 characters in length
+
+-   At least one uppercase English letter
+
+-   At least one lowercase English letter
+
+-   At least one digit
+
+-   At least one special character from the set: `#?!@$%^&*-`
+
+
+This policy is automatically applied to password fields in the [Security app](../../../Apps/List-of-apps/Security-app/) and any other location where password validation is needed.
+
+### [](#_configure_the_password_policy_pattern)Configure the password policy pattern
+
+You can customize the password policy by decorating the `ui-framework-core` module configuration. The `pattern` property uses a regular expression to define password requirements.
+
+To modify the password policy, create a decoration file in your module:
+
+ui-framework-core/config.yaml
+
+```yaml
+...
+  info.magnolia.ui.field.ValidatingPasswordFieldDefinition$BcryptedPasswordFieldDefinition:
+    policy:
+      class: info.magnolia.ui.field.RegexpValidatorDefinition
+      # Password policy regular expression below:
+      ## Password has a minimum of 12 characters in length. Adjust it by modifying {12,}
+      ## At least one uppercase English letter. You can remove this condition by removing (?=.*?[A-Z])
+      ## At least one lowercase English letter. You can remove this condition by removing (?=.*?[a-z])
+      ## At least one digit. You can remove this condition by removing (?=.*?[0-9])
+      ## At least one special character. You can remove this condition by removing (?=.*?[#?!@$%^&*-])
+      pattern: ^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$
+```
+
+You can customize the pattern by:
+
+-   Changing the minimum length by modifying `{12,}` to your desired number
+
+-   Removing character type requirements by deleting the corresponding `(?=.*?[…​])` groups
+
+-   Adding additional special characters to the character set `[#?!@$%^&*-]`
+
+
+For more details about password field configuration, see [Password field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Password-field/).
+
+Related topics
+
+-   [App Launcher layout](../../../Administration/App-Launcher/App-launcher-layout/)
+
+-   [App Launcher](../../../Authoring/App-Launcher/)

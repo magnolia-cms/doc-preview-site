@@ -1,0 +1,305 @@
+---
+title: "Feed components configuration"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Authoring-content-config/Feed-component-configuration/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Authoring content configuration > Feed components configuration
+---
+
+# Feed components configuration
+
+The feed components are configured in `/modules/rssaggregator/templates/components`.
+
+![Feed components configuration](../../../_images/ADVT-feeds.png)
+
+-   `combinedFeedsParagraph`: Combines all feeds in a channel and displays them sequentially. Editors can set the number, sort order and character limit of the entries. Use with standard or planet feeds.
+    ![Combined feeds paragraph](../../../_images/6-1-Feeds-exampleCombined.png)
+
+-   `feedListParagraph`: Displays a defined number of entries for each feed in the channel. The external feed title is used if no internal title is set. Editors can set the number, sort order and character limit of the entries. Use with standard or planet feeds.
+
+-   `planetFeeds`: Displays the entries of all feeds in a channel with the latest appearing first. Uses the HTML of the source entry. This means that images and links are preserved and displayed. Allows pagination. Use with planet feeds only.
+
+-   `feedSyndication`: Uses [planet statistics data](#_planet_statistics_storage) to display a list of authors with feed subscription icons and links to the external website. Author list is ordered by post frequency with top contributors appearing first. Editors can set a title and subtitle, define the number of authors to include, and whether links and the post count should be included. Use with planet feeds only.
+
+-   `feedStatistics`: Displays Atom and RSS subscription icons and links that allow users to subscribe to the feed on your site. Editors can add a title and select a planet feed. Use with planet feeds only.
+
+
+## [](#_creating_a_custom_component)Creating a custom component
+
+The model class and template script are the important properties that determine content in the different components. All RSS model classes extend info.magnolia.module.rssaggregator.templates.components.AbstractFeedModel, which provides the business logic to retrieve a defined feed and its data from the `rss` workspace and supports:
+
+-   Entry sorting by title or publication data.
+
+-   Ascending and descending entry sorting.
+
+-   Maximum results property. *Default is \`20\`*.
+
+-   Search capabilities
+
+
+Any custom model class should extend `AbstractFeedModel`.
+
+## [](#_adding_components_to_templates)Adding components to templates
+
+You can add the [feed components](#_feed_components) to any template.
+
+**Example**: Template definition with all feed components in `main` area.
+
+/my-module/templates/pages/myTemplate.yaml
+
+```js
+templateScript: /my-module/templates/pages/my-script.ftl
+renderType: freemarker
+visible: true
+title: My template
+areas:
+  main:
+    availableComponents:
+      combinedFeeds:
+        id: rssaggregator:components/combinedFeedsParagraph
+      feedList:
+        id: rssaggregator:components/feedListParagraph
+      planetFeeds:
+        id: rssaggregator:components/planetFeeds
+      feedStatistics:
+        id: rssaggregator:components/feedStatistics
+      feedSyndication:
+        id: rssaggregator:components/feedSyndication
+```
+
+## [](#_configuring_automated_reports)Configuring automated reports
+
+### [](#_setting_automated_imports_for_all_feeds)Setting automated imports for all feeds
+
+You can schedule automated imports for all feeds in the Configuration app. The global settings can be [overridden](_setting_automated_imports_for_single_feeds) for single feeds.
+
+1.  **Periodic import**:
+
+    1.  **Disabled**: Automated imports are disabled by default. You can switch off them off at any time.
+
+    2.  **Import every**: Quick option to set imports for a specified number of minutes, hours or days.
+
+    3.  **Use cron time/date defintion**: Define a [Quartz Cron Pattern](http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html) to create a suitable import schedule.
+
+        For example, the pattern `0 0 6 * * *` imports data daily at 6 a.m. See [Cron Maker](http://www.cronmaker.com/) for help.
+
+
+2.  **Fetcher**: Substitute the default feed fetcher class if necessary.
+
+
+See Properties table below for options.
+
+![Feed configuration](../../../_images/6-2-feeds-configuration.png)
+
+The imports are stored in `/modules/rssaggregator/config`.
+
+![Feeds in the Configuration app](../../../_images/ADVT-feeds-sched.png)
+
+| Property | Description |
+| --- | --- |
+| `config` | **required**<br><br>Module configuration node. |
+| `automatedImport` | **required**, *default is `false`*<br><br>Enables and disables automated imports. |
+| `cron` | **required**<br><br>The cron pattern for scheduled imports. |
+| `fetcherClass` | **required**<br><br>info.magnolia.module.rssaggregator.importhandler.FastRSSFeedFetcher retrieves RSS feed content over HTTP. Fetches all feed channels defined in an aggregate feed. You can use info.magnolia.module.rssaggregator.importhandler.SimpleRSSFeedFetcher as an alternative. This is a simple, single-threaded fetcher that reduces server load and is suitable when you don’t have many feed channels and you don’t import often. |
+| `importTimingSetter` | **required**<br><br>Utility used to build the cron expression. |
+
+### [](#_setting_automated_imports_for_single_feeds)Setting automated imports for single feeds
+
+You can configure automated import settings for each feed in the Import Settings tab of the edit dialog.
+
+> **Caution:** These setting override the global settings.
+
+1.  **Periodic import**:
+
+    1.  Select **This feed has different import settings** to override the global settings.
+
+    2.  **Disabled**: Stops any scheduled automated imports for the individual feed and the global settings take over.
+
+    3.  **Import every**: Quick option to set imports for a specified number of minutes, hours or days.
+
+    4.  **Use cron time/date defintion**: Define a [Quartz Cron Pattern](http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html) to create a suitable import schedule.
+
+        For example, the pattern `0 0 6 * * *` imports data daily at 6 a.m. See [Cron Maker](http://www.cronmaker.com/) for help.
+
+
+2.  **Fetcher**: Substitute the default feed fetcher class if necessary.
+
+
+See Properties table above for options.
+
+![Automated imports in Feeds](../../../_images/6-2-feeds-importSettings.png)
+
+## [](#_feed_data_storage)Feed data storage
+
+Feed data is stored in the `rss` [workspace](../../Architecture/Workspaces/).
+
+Structure
+
+| Name | Description |
+| --- | --- |
+| `<RSS aggregator name>` |     |
+| `data` | Data retrieved from the Internet.<br><br>The content of this folder is that same for standard and planet feeds. This content is used for standard feed [components](#_feed_components) `(combinedFeedsParagraph` and `feedListParagraph`) but not by the `planetFeed` component. See [Generating planet data](#_generating_planet_data) for more. |
+| `channel-<number>` | A channel is created for each RSS feed. |
+| `entry-<number>` | One entry in the feed such as one blog post. |
+| `author` |     |
+| `channelTitle` |     |
+| `content` |     |
+| ….  |     |
+| `description` | Feed properties retrieved from the internet. |
+| `link` |     |
+| ….  |     |
+| `automatedImport` | Internal feed properties. |
+| `cron` |     |
+| ….  |     |
+
+## [](#_generating_planet_data)Generating planet data
+
+### [](#_planet_commands)Planet commands
+
+The module includes two custom commands to generate planet data.
+
+The commands are configured in `/modules/rssaggregator/commands/planet/`.
+
+![Feed Planet data in the Configuration app](../../../_images/ADVT-feeds-planet.png)
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>planet</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Planet commands node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>generatePlanetData</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Generate planet data command node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><span class="inlineBean">info.magnolia.module.rssaggregator.generator.PlanetDataGenerator</span>:</p></div><div class="ulist"><ul><li><p>Generates data for a planet feed.</p></li><li><p>Processes all feeds in the channel and creates an archive of feed items if the feed is marked as a planet feed.</p></li><li><p>Stores individual feed items in the planet archive and assigns <code>author</code>, <code>channelTitle</code>, <code>title</code>, <code>content</code> and <code>description</code> properties. Posts without these properties are not stored in the archive</p></li><li><p>Builds <a href="http://en.wikipedia.org/wiki/Checksum" target="_blank" rel="noopener">checksums</a> to eliminate duplicates. New items are only added if they don’t already exist in the archive.</p></li><li><p>Ensures that the maximum nodes allowed under a single node is not exceeded.</p></li><li><p>Respects any filters set.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>collectPlanetStatistics</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Collect planet statistics command node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><span class="inlineBean">info.magnolia.module.rssaggregator.generator.CollectStatisticsCommand</span>:</p></div><div class="ulist"><ul><li><p>Collects and generates statistics from feeds in a <a href="#_planet_data_storage">Planetdatastorage</a>.</p></li><li><p>Stores the collected statistics in the JCR tree.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+### [](#_scheduling_planet_updates)Scheduling planet updates
+
+Use the [Scheduler module](../../../Modules/List-of-modules/Scheduler-module/) to execute the [planet commands](#_planet_commands) to generate planet data and schedule regular updates.
+
+Two jobs are preconfigured in `/modules/scheduler/config/jobs`:
+
+![Scheduling updates seen in Configuration app](../../../_images/ADVT-feeds-planetsched.png)
+
+| Property | Description |
+| --- | --- |
+| `jobs` | **required**<br><br>Node for scheduled jobs |
+| `<job name>` | **required**<br><br>Name of job. |
+| `params` | **required/optional**<br><br>Parameters passed to the command. |
+| `repository` | **required**<br><br>Workspace where the content item resides. |
+| `active` | **required**<br><br>Enables and disables the job. Set to `true` to run. |
+| `catalog` | **required**<br><br>Name of the [catalog](../../../Developing/Commands/#_catalogs) where the command resides |
+| `command` | **required**<br><br>Name of the command. |
+| `cron` | **required**<br><br>[CRON expression](https://en.wikipedia.org/wiki/Cron#CRON_expression) that sets the scheduled execution time. You can use the pattern `0 0/5 * 1/1 * ? *` to generate the initial data five minutes after changing the settings. [Cronmaker](http://www.cronmaker.com/) is a useful tool for building expressions |
+| `description` | **optional**<br><br>Description of the job. |
+
+### [](#_planet_data_storage)Planet data storage
+
+Planet data is used in [planet components](#_Feedco). The data is stored in the `planetData` folder in the `rss` workspace. View the data in your [custom JCR](#_feed_data_storage).
+
+Structure:
+
+| `<aggregator name>` |     |
+| --- | --- |
+| `planetData` | The `GeneratePlanetData` [command](#_planet_commands) reads feed data and stores it here. |
+| `posts-<number>` | All posts from all feeds. First all entries from the first feed, newest entry first. Then all posts from the second feed, and so on. |
+| `entry-<number>` | One entry in the feed such as one blog post. |
+| `author` |     |
+| `authorLink` |     |
+| `channelTitle` |     |
+| `checksum1/2` | The module uses [checksums](http://en.wikipedia.org/wiki/Checksum) to handle duplicate entries. Because feed data is deleted and recreated on every run, there is a high probability that a subsequent run will include entries that were contained in a previous run. Some entries may only have changed slightly, for example a different publication date. To avoid duplicates, the `PlanetDataGenerator` command uses checksums for each entry. Two `checksum` properties are generated. If an archive node with one of the checksums exists, no data is stored for the new item and an INFO level entry is written in the logs. |
+| `description` |     |
+| `hidden` |     |
+| `link` |     |
+| `pubDate` |     |
+| `rssLink` |     |
+| `title` |     |
+
+### [](#_planet_statistics_storage)Planet statistics storage
+
+Planet statistics are generated from [planet data](#_planet_data_storage) and stored in the `statistics` folder in the `rss` workspace. View the data in your [custom JCR](#_feed_data_storage).
+
+Structure:
+
+| `<aggregator name>` |     |
+| --- | --- |
+| `statistics` | The `CollectPlanetStatistics` [command](#_planet_commands) extracts statistics from the `/planetData` node. This node is deleted and recreated on every run of the command. |
+| `authors` | All authors from all feeds. |
+| `author-<number>` | Each author is allocated a number. |
+| `counted-posts` | Each child node is a reference to a post in the feed. |
+| `<post UUID>` |     |
+| ….  |     |
+| `author` |     |
+| `blogLink` |     |
+| `feedLink` |     |
+| `postCount` | Number of posts by this author in the aggregate feed. |
+
+### [](#_configuring_how_long_to_keep_planet_data)Configuring how long to keep planet data
+
+Planet data is generated and stored for the last 3 months by default. You can configure the time period for which the data is retained in `/modules/rssaggregator/config/planetOptions`.
+
+![Configuring how long to keep planet data](../../../_images/ADVT-feeds-planetdata.png)
+
+| Property | Description |
+| --- | --- |
+| `planetOptions` | **required**<br><br>Planet options |
+| `lastMonthsIncluded` | **required**, *default is \`3\`*<br><br>Number of months. |
+
+## [](#_feed_generators)Feed generators
+
+Feed generators generate RSS feeds from Magnolia content and imported content stored in the `rss` workspace.
+
+Four feed generators are registered in `/modules/rssaggregator/config/feedGenerators`.
+
+![Feed generators in Configuration app](../../../_images/ADVT-feeds-gen.png)
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>feedGenerators</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Feed generators node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;generator name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Generator name.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Generator class:</p></div><div class="ulist"><ul><li><p><code>rss</code>: <span class="inlineBean">info.magnolia.module.rssaggregator.generator.RSSModuleFeedGenerator</span> generates a <code>SyndFeed</code> based on <a href="#_creating_an_aggregate_feed">standard</a> aggregation feeds.</p></li><li><p><code>planet</code>: <span class="inlineBean">info.magnolia.module.rssaggregator.generator.PlanetFeedGenerator</span> generates a <code>SyndFeed</code> based on <a href="#_creating_an_aggregate_feed">planet</a> aggregation feeds.</p></li><li><p><code>category</code>: <span class="inlineBean">info.magnolia.module.categorization.syndication.CategorySyndicator</span> is registered by the <a href="../../../Modules/List-of-modules/Categorization-module/" class="xref page">Categorization module</a>. It generates a <code>SyndFeed</code> based on articles tagged with categories.</p></li><li><p><code>templateContent</code>: <span class="inlineBean">info.magnolia.module.rssaggregator.generator.PageSyndicator</span> generates a <code>SyndFeed</code> based on template <a href="../../../Developing/Templating/Template-definition/Page-definition/" class="xref page">types and subtypes</a>.</p></li></ul></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content"><div class="paragraph"><p>Custom generators should extend the convenience base class <span class="inlineBean">info.magnolia.module.rssaggregator.generator.AbstractSyndFeedGenerator</span>. Subclasses need to implement the template methods <code>loadFeedEntries()</code> and <code>setFeedInfo(SyndFeed)</code>.</p></div></td></tr></tbody></table></div></div></td></tr></tbody></table></div>
+
+## [](#_feed_syndication_servlet)Feed syndication servlet
+
+The feed syndication servlet writes an XML feed to the response.
+
+The servlet is registered in `/server/filters/servlets/FeedSyndicationServlet`.
+
+![Feed syndication servlet in Configuration app](../../../_images/ADVT-feeds-servlet.png)
+
+| Property | Description |
+| --- | --- |
+| `FeedSyndicationServlet` | **required**<br><br>Feed syndication servlet node. |
+| `servletClass` | **required** info.magnolia.module.rssaggregator.servlet.FeedSyndicationServlet writes an XML feed to the response. Based on the request parameters, the `feedGenerators` [configuration](#_feed_generators) is resolved and used to generate the XML feed. The content of the feed is written to the response with the appropriate character encoding. |
+
+### [](#_virtual_uri_mapping)Virtual URI mapping
+
+Syndication components use [virtual URI mappings](../../URI-mapping/#_virtual_uri_mapping) to redirect generated feeds. The mappings use [regular expressions](http://en.wikipedia.org/wiki/Regular_expression) and are called by the [feed generator](#_feed_generators) classes to render appropriate content in the XML feed.
+
+Mappings are configured in `/modules/rssaggregator/virtualURIMappings`.
+
+![Virtual URI mappings in Configuration app](../../../_images/ADVT-feeds-uri.png)
+
+| Property | Description |
+| --- | --- |
+| `virtualURIMapping` | **required**<br><br>Virtual URI mapping node |
+| `<mapping name>` | **required**<br><br>Name of mapping. |
+| `class` | **required**<br><br>info.magnolia.cms.beans.config.RegexpVirtualURIMapping allows you to specify a regular expression pattern that matches a sequence of characters. |
+| `fromURI` | **required**<br><br>Pattern to match in the requested URI. |
+| `toURI` | **required**<br><br>Concrete URI where the request is mapped to. |
+
+## [](#_security)Security
+
+### [](#_public_users)Public users
+
+The [anonymous role](../../IAM/Default-permissions/#_anonymous_role_public_instance) does not have permissions to the `rss` workspace on the author or public instance. Public users cannot see the feed content by default.
+
+The RSS Aggregator module installs the `rss-aggregator-base` role that provides read permissions to the `rss` workspace.
+
+|     |     |     |     |
+| --- | --- | --- | --- |
+| **Workspace** | **Permission** | **Scope** | **Path** |
+| Rss | Read only | Selected and sub nodes | /   |
+
+To provide public access to feed content, assign the `rss-aggregator-base` role to the `anonymous` systems user on the public instance.
+
+### [](#_app_access)App access
+
+By default only `superuser` can access the Feeds app and work with feeds because the `superuser` role includes read/write permissions to the `rss` and `config` workspaces.
+
+Here’s how to grant permissions for various feed tasks:.
+
+-   **App launcher access**: The Feeds app is in the Setup group and editors typically cannot access this group. Move the app to the Edit group to grant access in the app launcher. See [App launcher layout](../../App-Launcher/App-launcher-layout/) for more. This allows the user to open the app but not view the content.
+
+-   **Read only access**: Assign the `rss-aggregator-base` role to give read only access to feed content. This allows the user to view the list of feeds in the app, select feeds in components and view feed content on pages.
+
+-   **Read/write access**: Create a new role granting read/write access to the `rss` workspace and assign it to the user. This allows the user to create new feeds in the Feeds app, but they cannot access the Configuration subapp.
+
+-   **Configuration app access**: Create a new role granting read/write access in the `config` workspace to `/modules/rssaggregator` to allow the user to [schedule automated feed imports](#_scheduling_automated_feed_imports) in the Configuration subapp.

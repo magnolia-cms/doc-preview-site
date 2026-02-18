@@ -1,0 +1,32 @@
+---
+title: "Backup app"
+url: https://docs.magnolia-cms.com/product-docs/Apps/List-of-apps/Backup-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Backup app
+---
+
+# Backup app
+
+The Backup app allows you to:
+
+-   Create manual backups.
+
+-   Schedule automatic backups.
+
+-   Manage existing backup tasks in `/modules/backup/config/tasks`.
+
+
+![Backup app tab](../../../_images/6-2-backupModule.png)
+
+## [](#_configuration)Configuration
+
+The [Backup module](../../../Modules/List-of-modules/Backup-module/) installs the Backup app. Access to the app is restricted to the `superuser` role in the app configuration and the [app launcher’s](../../../Administration/App-Launcher/App-launcher-layout/) group permissions. The app is configured in `/modules/backup/apps/backup`.
+
+## [](#_usage)Usage
+
+See [Backup module](../../../Modules/List-of-modules/Backup-module/).
+
+Related topics
+
+-   [Backup module](../../../Modules/List-of-modules/Backup-module/)

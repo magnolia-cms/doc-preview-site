@@ -1,0 +1,87 @@
+---
+title: "Advanced Cache Dynamic Page Caching"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-Dynamic-Page-Caching/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > High performance caching modules > Advanced Cache Dynamic Page Caching
+---
+
+# Advanced Cache Dynamic Page Caching
+
+[Operations](../../../../use-cases/operations/) Bundled: Extension
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLADVCACHE](https://magnolia-cms.atlassian.net/browse/MGNLADVCACHE) |
+| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache-dpc%2F4.0.0) |
+| Latest | 4.0.0 |
+
+Dynamic Page Caching allows you to cache static content on an otherwise dynamic page. You can mark which areas and components are dynamic. Magnolia will cache all static content and only renders the dynamic components per request. You can also set a different time-to-live on the dynamic components.
+
+## [](#_prerequisites)Prerequisites
+
+Dynamic page caching requires modules:
+
+-   [Advanced cache modules](../../Advanced-cache-modules/)
+
+    -   [Advanced Cache Policies module](../../Advanced-cache-modules/Advanced-Cache-Policies-module/)
+
+    -   Advanced Cache Dynamic Page Caching module (described on this page)
+
+
+-   [SiteMesh module](../SiteMesh-module/)
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.advancedcache</groupId>
+  <artifactId>magnolia-advanced-cache-dpc</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_uninstalling)Uninstalling
+
+Shut down Magnolia, remove `magnolia-advanced-cache-dpc.jar` from `WEB-INF/lib` and start up Magnolia again.
+
+## [](#_dynamic_page_caching)Dynamic page caching
+
+The module brings *info.magnolia.module.advancedcache.rendering.DynamicFragmentDefinition.* If you want to mark an area/component as a dynamic one, just add it to its template definition:
+
+![Dynamic page caching](../../../../_images/ADVT-ACDPC-mod.png)
+
+Apart from the *dynamic* property you can set also time to live (ttl) in seconds. The zero means that this component can’t be cached. *Mechanism* is a tool such as [SiteMesh](../SiteMesh-module/) which inserts dynamic content into a dynamic page. This mechanism will replace injection tags created by [Fragment Injection Listener](#_fragment_injection_listener) with fresh content of dynamic components.
+
+### [](#_fragment_injection_listener)Fragment injection listener
+
+info.magnolia.module.advancedcache.rendering.FragmentInjectionListener is a rendering listener which surrounds all dynamic areas/components with injection tags. Rendering listeners are configured under `config:/server/rendering/engine/listeners`.
+
+Configurable fields in FragmentInjectionListener:
+
+| Field | Description | Available values | Default value |
+| --- | --- | --- | --- |
+| `before` | A text to be injected before dynamic components. Occurrences of *\\({targetPath}\* will be replaced with the JCR path to this component. Occurrences of \*\\){TTL}* will be replaced with *DynamicFragmentDefinition#getTtl*. | any string | \-  |
+| `after` | A text to be injected after dynamic components. Occurrences of *\\({targetPath}\* will be replaced with the JCR path to this component. Occurrences of \*\\){TTL}* will be replaced with *DynamicFragmentDefinition#getTtl*. | any string | \-  |
+| `targetPath` | The URI format of dynamic components. | RELATIVE\_TO\_SERVER\_ROOT RELATIVE\_TO\_CONTEXT\_ROOT RELATIVE\_TO\_CURRENT\_PAGE | RELATIVE\_TO\_CONTEXT\_ROOT |
+| `skipRendering` | Skip rendering of dynamic components if **true**, otherwise renders current content of the component. Rendering of current content of dynamic components (which will be stored in cache and can be obsolete later) could be useful as fallback if fresh content of this component can’t be retrieved because of an error. | true, false | false |
+
+### [](#_performance)Performance
+
+The main goal of dynamic page caching is improving of performance thanks to the ability of caching pages with a dynamic content. Here are few points to remember:
+
+-   Every dynamic component needs to be requested separately. That means: more dynamic component = more time to render.
+
+-   Keep in mind that rendering of a cached page with huge amount of dynamic components could be slower than excluding that page from cache!
+
+-   Although recursive dynamic fragments (a dynamic component inside of other dynamic component) are supported, it doesn’t make sense to use this feature unless you need to cache them with different TTL.
+
+-   Try to group dynamic components which are located next to each other into one dynamic component/area.

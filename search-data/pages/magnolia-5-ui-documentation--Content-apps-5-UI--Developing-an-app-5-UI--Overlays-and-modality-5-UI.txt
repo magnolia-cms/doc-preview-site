@@ -1,0 +1,166 @@
+---
+title: "Overlays and modality - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-apps-5-UI/Developing-an-app-5-UI/Overlays-and-modality-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content apps - 5 UI > Developing an app - 5 UI > Overlays and modality - 5 UI
+---
+
+# Overlays and modality - 5 UI
+
+Deprecated
+
+> **Note:** Overlays and modality have been deprecated since Magnolia 6.0. They are part of the Magnolia 5 UI framework.For the updated implementation, see the light property in Dialog definition for Magnolia 6 UI instead.
+
+Information requiring the input from a user is presented in an overlay. Overlays are the container for standard dialogs and messages. Typically, overlays display a [view](../Model-view-presenter-pattern-5-UI/). The key benefit of the overlay framework is that it allows a user to work in multiple dialogs in different locations simultaneously. For example, a user editing a component on a page can open another component dialog on a different page without closing the first dialog.
+
+## [](#_modality)Modality
+
+A modal dialog is one that blocks interaction with other parts of the interface. The user is in the `mode` of the interface that is requesting information and is forced to close it before moving on to other tasks. The rest of the interface remains non-functional while the modal dialog is open.
+
+### [](#_domain)Domain
+
+There are three modality domains. The domains represent what will be blocked by the opened dialog:
+
+-   **Shell** overlay prevents interaction with the entire UI. Dialogs relevant to the entire AdminCentral interface are modal to the shell.
+
+-   **App** overlay prevents interaction with the app. Users can still work with other apps and the shell. Used to display a settings pertaining to the app.
+
+-   **Subapp** overlay prevents interaction with the subapp. Users can still interact with other subapps and other apps. Used in the page editor.
+
+
+![Domain structure](6.2@product-docs:ROOT:6-1-OverlaysAndModality-domain.png)
+
+### [](#_level)Level
+
+Overlays can present their modality in three ways.
+
+**Strong**: The overlay has a dark curtain behind it that blocks interaction with the part of the interface it covers. Standard [dialogs](../../../Dialog-definition-5-UI/) use this.
+
+![Import form](6.2@product-docs:ROOT:6-1-overlaysAndModality-strong.png)
+
+**Light**: The overlay has a light wide border and a light or invisible curtain behind it that blocks interaction with the part of the interface it covers. [Light dialogs](../../../Dialog-definition-5-UI/Dialog-types-5-UI/#_light_dialog) and [alerts](#6.2@product-docs:ROOT:Apps/Developing-an-app/Specific-aspects/Messages/Message-types.adoc#_alerts) use this.
+
+![Rename contact form](6.2@product-docs:ROOT:6-1-overlaysAndModality-light.png)
+
+**Non-modal**: The overlay has no curtain and does not block interaction with the part of the interface it covers. [Pop-ups](#6.2@product-docs:ROOT:Apps/Developing-an-app/Specific-aspects/Messages/Message-types.adoc#_pop_ups) use this.
+
+![Publication failed pop-up](6.2@product-docs:ROOT:6-1-overlaysAndModality-nonmodal.png)
+
+## [](#_usage)Usage
+
+Classes that can host overlays implement the [`OverlayLayer`](https://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git;a=blob;f=magnolia-ui-api/src/main/java/info/magnolia/ui/api/overlay/OverlayLayer.java;h=7cb59aac67fb3d972b6ec1f82ae4b4c0c5b81575;hb=HEAD) interface. The interface provides methods to open overlays. `OverlayLayer` is implemented by the contexts: shell, app and subapp.
+
+> **Warning:** Each implementor sets the modality domain to the appropriate level for its context.
+
+### [](#_opening_an_overlay)Opening an overlay
+
+```none
+subAppContext.openOverlay(myView);
+```
+
+You probably do not need to call `openOverlay` yourself because there are convenience methods for [showing messages](#6.2@product-docs:ROOT:Apps/Developing-an-app/Specific-aspects/Messages/Showing-notifications.adoc):
+
+-   `OverlayLayer.openAlert(…​);`
+
+-   `OverlayLayer.openConfirmation(…​);`
+
+-   `OverlayLayer.openNotification(…​);`
+
+
+These methods take a `view` that allows an implementor to add any Vaadin component to the overlay. For example you could add a form. The most common use case is to simply provide a string.
+
+Callbacks enable code to take action based on user interaction in the overlay:
+
+-   `openConfirmation` takes a `ConfirmationCallback` with methods:
+
+    -   `onSuccess()`
+
+    -   `onCancel()`
+
+
+-   `openAlert` takes an `AlertCallback` with an optional implementation of method `onOk()`.
+
+-   `openNotification` takes an optional `NotificationCallback` with method `onLinkClick()`.
+
+
+Other classes take an `OverlayLayer` implementor as a parameter so that they can open an `Overlay` in the proper modality domain.
+
+-   [Choose dialogs](../../../Dialog-definition-5-UI/Choose-dialog-5-UI/) can be opened on a [content app](../../Parts-of-a-content-app-5-UI/) with `openChooseDialog()`.
+
+-   [Dialogs](../../../Dialog-definition-5-UI/) are opened with `FormDialogPresenter` with `start()`.
+
+
+### [](#_getting_an_overlaylayer_implementor)Getting an OverlayLayer implementor
+
+To display an overlay you need an `OverlayLayer` implementor. The one you use determines the modality domain of your overlay. You can get a `Shell`, `AppContext` or `SubAppContext` via dependency injection.
+
+The [`UiContext`](https://git.magnolia-cms.com/gitweb/?p=magnolia_ui.git;a=blob;f=magnolia-ui-api/src/main/java/info/magnolia/ui/api/context/UiContext.java;h=c6ee942ba053ce611aec161cd954cdde45b2e712;hb=HEAD) interface provides a way to get an `OverlayLayer`. `UiContext` extends `OverlayLayer`. A class with an injected `UiContext` always contains the context in which the class was created. In a class, if you are unsure in which context you should create the overlay, inject the `UiContext`. For example, the `BasicUploadFieldBuilder` gets the `UiContext` injected because the field could be created in an app or in a subapp, the code does not know this.
+
+## [](#_examples)Examples
+
+Here are a few code examples that you can adapt to suit.
+
+**Example 1**
+
+Overlay in subapp context
+
+```java
+View myView = new View() {
+
+    @Override
+    public Component asVaadinComponent() {
+        return new Button("Look ma, no hands!");
+    }
+};
+
+OverlayCloser myOverlay = subAppContext.openOverlay(myView);
+```
+
+**Example 2**
+
+Closing the overlay with a button
+
+```java
+final Button myComponent = new Button("Look ma, no hands!");
+    View myView = new View() {
+        @Override
+        public Component asVaadinComponent() {
+            return myComponent;
+        };
+    };
+
+    final OverlayCloser myOverlay = subAppContext.openOverlay(myView);
+
+    myComponent.addClickListener( new Button.ClickListener() {
+        @Override
+        public void buttonClick(ClickEvent event) {
+            myOverlay.close();
+        };
+    });
+```
+
+**Example 3**
+
+To display a modal dialog with a different modality level, you can specify a `ModalityLevel` as the second parameter:
+
+-   `myOverlay = subAppContext.openOverlay(myView,ModalityLevel.STRONG);`
+
+-   `myOverlay = subAppContext.openOverlay(myView,ModalityLevel.LIGHT);`
+
+-   `myOverlay = subAppContext.openOverlay(myView,ModalityLevel.NON_MODAL);`
+
+
+Light modality level in subapp context
+
+```java
+View myView = new View() {
+
+    @Override
+    public Component asVaadinComponent() {
+        return new Button("Look ma, no hands!");
+    }
+};
+
+OverlayCloser myOverlay = subAppContext.openOverlay(myView,ModalityLevel.LIGHT);
+```

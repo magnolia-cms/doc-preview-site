@@ -1,0 +1,268 @@
+---
+title: "LDAP Connector module"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/LDAP-Connector-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > LDAP Connector module
+---
+
+# LDAP Connector module
+
+[Security and authentication](../../../use-cases/security-and-authentication/) Unbundled: Extension
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLLDAP](https://magnolia-cms.atlassian.net/browse/MGNLLDAP) |
+| Maven site | [LDAP](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmagnolia-ldap%2F2.0.0) |
+| Latest | 2.0.0 |
+
+Magnolia LDAP Connector is a [JAAS](http://java.sun.com/products/jaas/) login module that connects to any LDAP v3 directory service. The LDAP Connector is used in intranet environments where an enterprise user management infrastructure already exists. With JAAS you can meet single sign-on (SSO) requirements or connect to legacy LDAP servers.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>magnolia-ldap</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_module_configuration)Module configuration
+
+Since module version 1.9, the configuration of the following is done directly in the [User Manager](#_user_manager):
+
+-   `allowPartialResults`
+
+-   `ignoreGroupsWithIllegalName`
+
+-   `pageSize`
+
+-   `envPropertiesPredicate`
+
+
+## [](#_ldap_configuration)LDAP configuration
+
+An LDAP configuration file tells Magnolia where to find your LDAP directory server. The file also says whether Magnolia should resolve users, groups, or both from the directory.
+
+The [LDAP Connector module bundle](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/magnolia-ldap-bundle/) provides two sample files in the `configuration-samples` folder:
+
+-   `ldap.properties` defines an LDAP server.
+
+-   `ad.properties` defines an Active Directory server.
+
+
+### [](#_properties_ldap_andor_active_directory)Properties (LDAP and/or Active Directory)
+
+Properties used in the **`ldap.`**`properties` and/or **`ad.`**`properties` file(s):
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 16.6666%;"> <col style="width: 25%;"> <col style="width: 58.3334%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">File(s)</th><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.naming.provider.url</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>URL of the LDAP/AD service provider.</p></div><div class="paragraph"><p>Example: <code>ldap://ldap.example.com/</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.naming.security.principal</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is the LDAP provider’s default</em></p></div><div class="paragraph"><p>User or program doing the authentication. Use an appropriate DN/CN for your server.</p></div><div class="paragraph"><p>Example: <code>CN=Administrator,CN=Users,dc=example,dc=com</code></p></div><div class="paragraph"><p>Originally interchangeable with the now deprecated <code>adminUserDN</code> property but takes precedence if both are specified in the file.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.naming.security.credentials</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Password or encrypted data such as a digital certificate that the implementation uses to authenticate the client.</p></div><div class="paragraph"><p>Originally interchangeable with the now deprecated <code>adminUserPassword</code> property but takes precedence if both are specified in the file.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.naming.security.authentication</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is `none`</em></p></div><div class="paragraph"><p>Authentication mechanism (password encryption) used. Possible values are <code>none</code>, <code>simple</code>, or a specific authentication mechanism such as <code>DIGEST-MD5</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.naming.referral</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is `ignore`</em></p></div><div class="paragraph"><p>Indicates to the service provider how to handle <a href="http://docs.oracle.com/javase/jndi/tutorial/ldap/referral/overview.html" target="_blank" rel="noopener">referrals</a>. Valid values are <code>ignore</code>, <code>follow</code> and <code>throw</code>.</p></div><div class="paragraph"><p>If the LDAP/AD service provider receives a referral despite you having set the property to <code>ignore</code>, it throws a <code>PartialResultException</code> to indicate that more results may be coming if the referral was followed. In this case, the server doesn’t support the Manage Referral control and supports referral updates in some other way. See <a href="http://docs.oracle.com/javase/jndi/tutorial/ldap/referral/jndi.html" target="_blank" rel="noopener">Oracle: Referrals in the JNDI</a>. Windows Active Directory is an example of a directory service which doesn’t support Manage Referral control.</p></div><div class="paragraph"><p>To deal with the <code>PartialResultException</code>, create a property in <strong>Configuration</strong> &gt; <code>/modules/ldap/config/allowPartialResults</code> and set it to <code>true</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.naming.factory.initial</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (but recommended)</p></div><div class="paragraph"><p>The class name of the initial context. The class must implement the <code>jakarta.naming.directory.DirContext</code> interface or LDAP requests from Magnolia fail.</p></div><div class="paragraph"><p>The default value for <code>java.naming.factory.initial</code> depends on your container or Java configuration. For example, the default configuration for Apache Tomcat specifies the class <code>org.apache.naming.SelectorContext</code>, which doesn’t implement the <code>java.naming.directory.DirContext</code> interface. When running in Tomcat, the class <code>com.sun.jndi.ldap.LdapCtxFactory</code> can be used.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>initialSearchAttributes</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Defines the initial connect point to the directory service.</p></div><div class="paragraph"><p>Example: <code>initialSearchAttributes</code>=<code>CN=Users,dc=example,dc=com</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>Organization\ OrganizationUnit\ CommonName\ Surname\ GivenName\ uid\ dn\ mail\ Password\ Language</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name mapping(s) taking the form <code>&lt;property&gt;=&lt;value&gt;</code>, for example:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-ldif hljs" data-lang="ldif">CommonName=cn
+mail=mail
+Password=pass
+Language=language</code></pre></div></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">The properties shown on the left are just a few examples. If necessary, more (custom) properties may be created to allow smooth mapping of names.</td></tr></tbody></table></div><div class="paragraph"><p>See also: <a href="#_accessing_properties_from_ldap">Accessing properties from LDAP</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>userSearchFilter</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>When searching a user from a wide <code>initialSearchAttribute</code>, a custom filter may be useful. Be aware that attribute used for resolving <code>LDAP_USER_ID</code> needs to be same as mapped <code>uid</code> attribute (see mappings above).</p></div><div class="paragraph"><p>Example: <code>userSearchFilter=(&amp;(objectClass=user)(sAMAccountName=LDAP_USER_ID))</code></p></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">It’s also possible to reuse the mapped <code>uid</code> attribute from the configuration above: <code>allUsersSearchFilter=(&amp;(objectClass=user)(UID_ATTRIBUTE=LDAP_USER_ID))</code></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>userSearchFilter</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>A custom filter can be used also when searching all users from a wide <code>initialSearchAttribute</code>.</p></div><div class="paragraph"><p>Example: <code>allUsersSearchFilter=(objectClass=user)</code></p></div><div class="paragraph"><p>ADUserManager default users search filter is: <code>(&amp;(objectCategory=person)(objectClass=user))</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupResolverClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (if <code>roleResolverClass</code> is not used)</p></div><div class="paragraph"><p>The value is a class responsible for resolving groups assigned to a user. The class must implement the <span class="inlineBean">info.magnolia.jaas.sp.ldap.resolver.NameResolver</span> interface.</p></div><div class="paragraph"><p>Implementations:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.jaas.sp.ldap.resolver.OpenLDAPGroupResolver</span> resolves groups from any LDAP directory.</p></li><li><p><span class="inlineBean">info.magnolia.jaas.sp.ldap.resolver.ADGroupResolver</span> resolves groups from Active Directory.</p></li><li><p><span class="inlineBean">info.magnolia.jaas.sp.ldap.resolver.MagnoliaGroupResolver</span> resolves groups from Magnolia.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>roleResolverClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (if <code>groupResolverClass</code> is not used)</p></div><div class="paragraph"><p>A class responsible for resolving roles assigned to a user. The class must implement the <span class="inlineBean">info.magnolia.jaas.sp.ldap.resolver.NameResolver</span> interface. Roles can’t be maintained in LDAP, they must be in Magnolia.</p></div><div class="paragraph"><p>Implementation:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.jaas.sp.ldap.resolver.MagnoliaRoleResolver</span> resolves roles from Magnolia.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ad.</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>ssoSlave</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, default is <em><code>false</code></em></p></div><div class="paragraph"><p>Set <code>ssoSlave=true</code> if this Magnolia instance is a slave server in a single sign-on (SSO) environment.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ad.</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>userMembershipAttribute</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (only if <code>ADGroupResolver</code> is used)</p></div><div class="paragraph"><p>The name of the user attribute which specifies the groups the user is a member of.</p></div><div class="paragraph"><p>Example: <code>userMembershipAttribute=memberOf</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ldap.</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupSearchFilter</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (if <code>OpenLDAPGroupResolver</code> is used)</p></div><div class="paragraph"><p>A filter used to find groups the user is a member of.</p></div><div class="paragraph"><p>Example: <code>groupSearchFilter=(&amp;(objectClass=groupOfNames)(member=MEMBERSHIP_VALUE))</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">ldap.</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembershipAttributeValue</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (if <code>OpenLDAPGroupResolver</code> is used)</p></div><div class="paragraph"><p>The value of the <code>dn</code> attribute to be passed to MEMBERSHIP_VALUE in <code>groupSearchFilter</code>.</p></div><div class="paragraph"><p>Example: <code>groupMembershipAttributeValue=dn</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupIdAttribute</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (only if either <code>OpenLDAPGroupResolver</code> or <code>ADGroupResolver</code> is used)</p></div><div class="paragraph"><p>The name of the group ID attribute in LDAP/AD.</p></div><div class="paragraph"><p>Example: <code>groupIdAttribute=cn</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupSearchContext</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (only if either <code>OpenLDAPGroupResolver</code> or <code>ADGroupResolver</code> is used)</p></div><div class="paragraph"><p>A subtree for groups in the LDAP/AD structure if groups are managed in a different subtree than the users. If not set, then the <code>initialSearchAttributes</code> is used.</p></div><div class="paragraph"><p>Example: <code>groupSearchContext=cn=groups,dc=example,dc=com</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupsSearchFilter</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (only if either <code>OpenLDAPGroupResolver</code> or <code>ADGroupResolver</code> is used), <em>default values are</em>:</p></div><div class="ulist"><ul><li><p>For the LDAP resolver: <code>(&amp;(objectClass=groupOfNames)GROUP_IDS_SUBSTITUTION)</code></p></li><li><p>For the AD resolver: <code>(&amp;(objectClass=group)GROUP_IDS_SUBSTITUTION)</code></p></li></ul></div><div class="paragraph"><p>A filter for searching groups in LDAP/AD.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">both</p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>groupMembershipAttribute</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (only if either <code>OpenLDAPGroupResolver</code> or <code>ADGroupResolver</code> is used)</p></div><div class="paragraph"><p>The name of the group attribute which specifies the members belonging to the group.</p></div><div class="paragraph"><p>Example: <code>groupMembershipAttribute=member</code></p></div><div class="paragraph"><p>Deprecated properties:</p></div><div class="ulist"><ul><li><p><code>adminUserDN</code></p></li><li><p><code>adminUserPassword</code></p></li></ul></div><div class="paragraph"><p>Instead, use <code>java.naming.security.principal</code> and <code>java.naming.security.credentials</code> properties respectively.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_magnolia_properties)`magnolia.properties`
+
+Put the `ldap.properties` or `ad.properties` file inside your Magnolia webapp, for example in `/<CATALINA_HOME>/webapps/<contextPath>/WEB-INF/config`.
+
+Reference the file location from a [magnolia.properties](../../../Administration/Architecture/Configuration-management/) file using the `jndi.ldap.config` property.
+
+Set the value to an absolute or relative path inside the webapp. You can also use the `${magnolia.home}` variable.
+
+`magnolia.properties`
+
+```properties
+jndi.ldap.config=WEB-INF/config/ldap.properties
+```
+
+### [](#_configuring_multiple_directory_servers)Configuring multiple directory servers
+
+To configure multiple LDAP and AD directories, use the pattern `jndi.ldap.config.<realmName>` where `realmName` corresponds to a realm name in the [User Manager](#_user_manager).
+
+Example: Configuring multiple directory servers in `magnolia.properties`.
+
+```properties
+jndi.ldap.config.ad=WEB-INF/config/ad.properties (1)
+jndi.ldap.config.ldap=WEB-INF/config/ldap.properties (2)
+jndi.ldap.config=WEB-INF/config/default-ldap.properties (3)
+```
+
+|     |     |
+| --- | --- |
+| **1** | A user manager with realm name `ad` uses an Active Directory property file defined under the `jndi.ldap.config.ad` key. |
+| **2** | A user manager with realm name `ldap` uses an LDAP property file defined under the `jndi.ldap.config.ldap` key. |
+| **3** | A user manager with realm name `external` uses the default LDAP property file defined under the `jndi.ldap.config` key since no specific property file is configured for this realm. |
+
+Corresponding [User Manager](#_user_manager) configuration:
+
+![User manager configuration](../../../_images/ADVT-ldap-mod-1.png)
+
+### [](#_a_custom_configuration_resolver)A custom configuration resolver
+
+From LDAP Connector module 1.9+, you can write your own configuration resolver in JAVA. Add the following component to your module descriptor:
+
+```xml
+<components>
+ <id>main</id>
+ <component>
+  <type>info.magnolia.jaas.sp.ldap.config.ConfigResolver</type>
+  <implementation>your-own-resolver-class</implementation>
+ </component>
+</components>
+```
+
+Change the implementation class accordingly, and make sure that your module depends on (that is, it’s loaded after) the LDAP Connector module.
+
+## [](#_jaas_login_configuration)JAAS login configuration
+
+Magnolia uses the Java Authentication and Authorization Service (JAAS) to authenticate users. When you store users in a directory outside of Magnolia, configure the directory as a `LoginModule`.
+
+You can list several `LoginModules`. Authentication proceeds down the module list in the order you specify with flags, see [javax.security.auth.login.Configuration](http://docs.oracle.com/javase/8/docs/api/javax/security/auth/login/Configuration.html).
+
+Depending on the servlet container you use, the configuration for JAAS is slightly different.
+
+For more information, see \* [JAAS security setup](../../../Administration/Security/JAAS-security-setup/).
+
+### [](#_jaas_config_for_tomcat)`jaas.config` for Tomcat
+
+For the Tomcat application server, create a `jaas.config` file and list the `LoginModules` in the following format:
+
+`jaas.config syntax`
+
+```java
+magnolia {
+   <LoginModule> <flag> <options>;
+   <LoginModule> <flag> <options>;
+   <LoginModule> <flag> <options>;
+   };
+```
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>LoginModule</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>A class that implements the desired authentication technology.</p></div><div class="paragraph"><p>Implementations:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.jaas.sp.jcr.JCRAuthenticationModule</span> authenticates against Magnolia.</p></li><li><p><span class="inlineBean">info.magnolia.jaas.sp.ldap.LDAPAuthenticationModule</span> authenticates against any LDAP directory.</p></li><li><p><span class="inlineBean">info.magnolia.jaas.sp.ldap.ADAuthenticationModule</span> authenticates against Active Directory.</p></li><li><p><span class="inlineBean">info.magnolia.jaas.sp.jcr.JCRAuthorizationModule</span> retrieves the user’s ACLs.</p></li></ul></div><div class="paragraph"><p>Set also the <code>groupResolverClass</code> and <code>roleResolverClass</code> properties in <a href="#_ldap_configuration"><code>ldap.properties</code></a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>flag</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The flag indicates whether success of the preceding <code>LoginModule</code> is <code>required</code>, <code>requisite</code>, <code>sufficient</code>, or <code>optional</code>. If you only have one <code>LoginModule</code> then the flag must be <code>required</code>.</p></div><div class="paragraph"><p>See the <code>flag</code> values in <a href="http://docs.oracle.com/javase/8/docs/api/javax/security/auth/login/Configuration.html" target="_blank" rel="noopener">javax.security.auth.login.Configuration</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>options</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Options is a space-separated list of <code>LoginModule</code>-specific values which are passed directly to the <code>LoginModule</code>. The options are defined by the <code>LoginModule</code> itself, and control its behavior.</p></div><div class="paragraph"><p>Options for <code>JCRAuthenticationModule</code> module:</p></div><div class="ulist"><ul><li><p><code>realm</code>: Restrict the login to a certain realm.</p><div class="paragraph"><p>Valid values: <code>system</code>, <code>external</code>, <code>admin</code>, <code>public</code>.</p></div></li><li><p><code>use_realm_callback</code>: Allow the client to define the realm they log into.</p><div class="paragraph"><p>Values: <code>true</code>, <code>false</code>. Default is <code>false</code>.</p></div></li><li><p><code>skip_on_previous_success</code>: A Magnolia-specific option to define if this module needs to be skipped based on previous (in JAAS module chain) module status.</p><div class="paragraph"><p>Values: <code>true</code>, <code>false</code>. If <code>true</code> this module is skipped if the previous module did a successful login.</p></div><div class="dlist"><dl><dt class="hdlist1">Example 1</dt><dd><p>Authenticate against Magnolia on Tomcat</p><div class="listingblock"><div class="title"><code>jaas.config</code></div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">magnolia {
+   info.magnolia.jaas.sp.jcr.JCRAuthenticationModule requisite;
+   info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required;
+   };</code></pre></div></div></dd><dt class="hdlist1">Example 2</dt><dd><p>Authenticate against LDAP on Tomcat</p><div class="listingblock"><div class="title"><code>jaas.config</code></div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">magnolia {
+   info.magnolia.jaas.sp.jcr.JCRAuthenticationModule optional; <i class="conum" data-value="1"></i><b>(1)</b>
+   info.magnolia.jaas.sp.ldap.LDAPAuthenticationModule requisite skip_on_previous_success=true; <i class="conum" data-value="2"></i><b>(2)</b>
+   info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required; <i class="conum" data-value="3"></i><b>(3)</b>
+   };</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td><code>JCRAuthenticationModule</code> authenticates users who are stored only in Magnolia such as <code>superuser</code> and <code>anonymous</code>. <code>optional</code> means the module isn’t required to succeed. Authentication proceeds to the next module whether the user is found or not.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><code>LDAPAuthenticationModule</code> authenticates users who are stored in LDAP. <code>requisite</code> means that if the login module succeeds, authentication continues down the list. If the module fails, authentication doesn’t proceed down the list. This module is skipped if the previous module was successful. This module could also be <span class="inlineBean">info.magnolia.jaas.sp.ldap.ADAuthenticationModule</span>.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td><code>JCRAuthorizationModule</code> is <code>required</code> to succeed.</td></tr></tbody></table></div></dd></dl></div></li></ul></div></div></td></tr></tbody></table></div>
+
+## [](#_user_manager)User manager
+
+You must also configure an external `UserManager`.
+
+> **Warning:** Make sure your external UserManager is placed before the admin but after the system user managers. Any other order may result in 401 errors (authentication failed) during publishing and unpublishing of content.
+
+![User manager node](../../../_images/ADVT-ldap-mod-2.png)
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>allowCrossRealmDuplicateNames</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Allows duplicate usernames in different realms. Only applicable to <code>admin</code> realm.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>A class that implements the <span class="inlineBean">info.magnolia.cms.security.UserManager</span> interface.</p></div><div class="paragraph"><p>Implementations:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.cms.security.MgnlUserManager</span> manages users stored in Magnolia.</p></li><li><p><span class="inlineBean">info.magnolia.cms.security.ExternalUserManager</span> manages JAAS users.</p></li><li><p><span class="inlineBean">info.magnolia.cms.security.HierarchicalUserManager</span> is a variation of <code>MgnlUserManager</code> that stores users hierarchically using the structure <code>/&lt;path&gt;/&lt;first letter of username&gt;/&lt;first two letters of username&gt;</code> such as <code>/public/j/js/jsmith</code>.</p></li><li><p><span class="inlineBean">info.magnolia.cms.security.DelegatingUserManager</span> retrieves the user’s ACLs.</p></li><li><p><span class="inlineBean">info.magnolia.cms.security.SystemUserManager</span> manages system users such as <code>anonymous</code> and <code>superuser</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>disableCache</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Allows to disable caching if set to <code>true</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>realmName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Realm name corresponding to JAAS login configuration.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>allowPartialResults</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Indicates what methods are used to deal with the <code>PartialResultException</code> exception thrown by the LDAP service provider (see the <code>java.naming.referral</code> property).</p></div><div class="ulist"><ul><li><p><code>true</code> uses the <code>hasMoreElements()</code> and <code>nextElement()</code> methods.</p></li><li><p><code>false</code> uses the <code>hasMore()</code> and <code>next()</code> methods.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>connectionFactory</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>A subnode that allows you to specify a custom <code>connectionFactory</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The class that implements the <code>connectionFactory</code>.</p></div><div class="paragraph"><p>The default class used is <span class="inlineBean">magnolia.jaas.sp.ldap.connection.DefaultConnectionFactory</span>.</p></div><div class="paragraph"><p>Two additional implementations are available:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">magnolia.jaas.sp.ldap.connection.JavaBeanBasedConnectionFactory</span></p><div class="paragraph"><p>This implementation supports defining properties <code>securityPrincipal</code> and <code>securityCredentials</code>. For usage please see Apache’s <a href="https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#Generic_JavaBean_Resources" target="_blank" rel="noopener">Generic JavaBean Resources</a>.</p></div></li><li><p><span class="inlineBean">magnolia.jaas.sp.ldap.connection.JNDIResourceConnectionFactory</span></p><div class="paragraph"><p>This is a JNDI resource based factory. It can be used with <code>com.sun.jndi.ldap.LdapCtxFactory</code> or with <span class="inlineBean">magnolia.jaas.sp.ldap.connection.jndiresources.MagnoliaLdapContextFactory</span>. For usage please see Apache’s <a href="https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#Adding_Custom_Resource_Factories" target="_blank" rel="noopener">Adding Custom Resource Factories</a>.</p></div></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>envPropertiesPredicate</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>A subnode that specifies the <code>envPropertiesPredicate</code>.</p></div><div class="paragraph"><p>If not defined explicitly, then the predicate accepts anything within the following namespaces:</p></div><div class="ulist"><ul><li><p><code>java.naming.*</code> (except <code>credentials</code> and <code>principal</code>)</p></li><li><p><code>com.sun.jndi.ldap.*</code></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The class that implements the <code>envPropertiesPredicate</code>.</p></div><div class="paragraph"><p>The default class is <span class="inlineBean">magnolia.jaas.sp.ldap.connection.EnvPropertiesDefaultPredicate</span>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>passwordDecoder</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>A subnode that defines the decoding method of the admin password used by the <code>connectionFactory</code>.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">The decoder is available only with the <code>DefaultConnectionFactory</code> and <code>JavaBeanBasedConnectionFactory</code> connection classes. However, you can also write your own password decoder.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The decoder is available in three implementations:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">magnolia.jaas.sp.ldap.connection.password.NoOpPasswordDecoder</span></p><div class="paragraph"><p>This implementation returns a password without any decoding.</p></div></li><li><p><span class="inlineBean">magnolia.jaas.sp.ldap.connection.password.ActivationKeyBasedPasswordDecoder</span></p><div class="paragraph"><p>This implementation uses the same set of keys as activation. To get an encoded password, use the <code>SecurityUtil.encrypt("password")</code> method.</p></div></li><li><p><span class="inlineBean">magnolia.jaas.sp.ldap.connection.password.PasswordManagerBasedPasswordDecoder</span></p><div class="paragraph"><p>This implementation loads the admin’s LDAP password from the <a href="../Password-Manager-module/" class="xref page">Password Manager module</a>.</p></div></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageSize</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>500</code></em></p></div><div class="paragraph"><p>Specifies the number of objects to be returned in a single search result.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_user_managers_and_caching)User managers and caching
+
+By default, the `ad` and `ldap` user managers use a basic cache ([Cache modules](../Cache-modules/)) to avoid repeated calls to LDAP/AD. If [Ehcache](../Cache-modules/Ehcache-3-module/) is used, then the default configuration is automatically bootstrapped into `/modules/cache/config/cacheFactory/caches/ldap-user-manager-cache`. You can disable caching by adding the `disableCache` property to the manager’s node and setting it to `true`, for example.
+
+![User managers and caching node](../../../_images/ADVT-ldap-mod-3.png)
+
+### [](#_accessing_properties_from_ldap)Accessing properties from LDAP
+
+If you need to access more user properties than name, full name and language, extend info.magnolia.jaas.sp.ldap.LDAPAuthenticationModule#setEntity to push the desired properties into the `Entity` object, and the info.magnolia.cms.security.ExternalUserManager / info.magnolia.cms.security.ExternalUser pair to expose it.
+
+### [](#_same_name_users_in_different_realms)Same-name users in different realms
+
+If you are resolving roles or groups, add the `allowCrossRealmDuplicateNames` property under `/server/security/userManagers/admin` and set its value to `true`. This property allows you to create users with the same name in different realms when replicating LDAP/AD users in the repository. By default, Magnolia doesn’t allow the same user name to be repeated.
+
+![Same-name users in different realms](../../../_images/ADVT-ldap-mod-4.png)
+
+See also: [Configuring multiple directory servers](#_configuring_multiple_directory_servers).
+
+## [](#_groups_and_roles)Groups and roles
+
+LDAP typically mirrors the organization structure. If your company has a Marketing department, then create a `marketing` group in the LDAP directory and assign employees to the group. Magnolia also organizes users into groups.
+
+Magnolia also has [roles](../../../Administration/IAM/Roles-and-access-control-lists/). A role grants a user permission to do something. For example, the `editor` role grants the user permission to edit content. Permissions are configured using [access control lists](../../../Administration/IAM/Roles-and-access-control-lists/). A role can be assigned directly to a user or to a group.
+
+![Groups and roles diagram](../../../_images/roles-groups-users.png)
+
+When you authenticate users against an LDAP directory, a *resolver class* finds the groups and roles the user belongs to. This process is called *resolving*. Since the role is the element that grants the user permission to do something, you must resolve at least roles. You can optionally also resolve groups.
+
+### [](#_group_resolving)Group resolving
+
+A `groupResolverClass` configured in [`ldap.properties`](#_ldap_configuration) finds groups in the LDAP directory and matches them to groups in Magnolia. The group names must match exactly.
+
+Choose a resolver depending on where the groups are stored:
+
+-   info.magnolia.jaas.sp.ldap.resolver.MagnoliaGroupResolver resolves groups from Magnolia.
+
+-   info.magnolia.jaas.sp.ldap.resolver.OpenLDAPGroupResolver resolves groups from any LDAP directory.
+
+-   info.magnolia.jaas.sp.ldap.resolver.ADGroupResolver resolves groups from Active Directory.
+
+
+**Best practice**
+
+When you store groups in LDAP, create one matching group per role in Magnolia. Assign roles to the group in Magnolia to grant users the permissions they need. This minimizes the number of groups you need to create in Magnolia.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 25%;"> <col style="width: 25%;"> <col style="width: 25%;"> <col style="width: 25%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top" colspan="2">Magnolia</th><th class="tableblock halign-left valign-top" colspan="2">LDAP</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Roles</strong></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Groups</strong></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Groups</strong></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>Users</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>editor</code></p></li><li><p><code>workflow-base</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>editors</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>editors</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>jsmith</code></p></li><li><p><code>eallen</code></p></li><li><p><code>cappleton</code></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>publisher</code></p></li><li><p><code>workflow-base</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>publishers</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>publishers</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>bleroy</code></p></li><li><p><code>dmillet</code></p></li><li><p><code>vrobbins</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+> **Warning:** When creating a group name, make sure that it doesn’t contain an illegal character. See also the ignoreGroupsWithIllegalName property in module configuration.
+
+### [](#_role_resolving)Role resolving
+
+A `roleResolverClass` configured in [`ldap.properties`](#_ldap_configuration) finds roles. Roles must always be stored in Magnolia, they cannot be stored in the LDAP directory. The reason is that the ACLs that grant permissions are attached to roles.
+
+Magnolia provides one role resolver:
+
+-   info.magnolia.jaas.sp.ldap.resolver.MagnoliaRoleResolver resolves roles from the `userroles` workspace in Magnolia.
+
+
+### [](#_implementing_your_own_resolver)Implementing your own resolver
+
+Magnolia doesn’t provide ready-made resolver classes for every possible LDAP product but you can write your own class. Implement the info.magnolia.jaas.sp.ldap.resolver.NameResolver interface and the methods to fetch group names from the directory.
+
+## [](#_testing_and_validating_ldap_configuration)Testing and validating LDAP configuration
+
+You can use the `magnolia-ldap-tester`, a standalone module for testing ldap/ad configuration outside of Magnolia. The module is available from Magnolia Nexus: [magnolia-ldap-tester-2.0.0.jar](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/magnolia-ldap-tester/2.0.0/magnolia-ldap-tester-2.0.0.jar)
+
+Use the following command to execute the jar:
+
+```bash
+java -jar magnolia-ldap-tester-2.0.0.jar <LoginModule class name> <config.properties> <username> <password>
+```
+
+`<LoginModule class name>` should be either info.magnolia.jaas.sp.ldap.LDAPAuthenticationModule or info.magnolia.jaas.sp.ldap.ADAuthenticationModule, depending on which one you’re using in `jaas.config` (or `login-config.xml` with JBoss).
+
+The tool simulates a user login with the given credentials and configuration, outputs the main results, and logs everything else in `magnolia-ldap-tester.log`.
+
+A successful login attempt looks like this in the log:
+
+```bash
+INFO i.m.jaas.sp.ldap.ConnectionFactory - Trying to log in as
+   cn=jsmith,dc=example,dc=com with a password.
+DEBUG i.m.jaas.sp.ldap.ConnectionFactory - Login succeeded.
+DEBUG i.m.j.s.l.Tester$MockSecuritySupport - Getting user jsmith from realm admin
+INFO info.magnolia.ldap.tool.LDAPTester - Login result: true
+INFO info.magnolia.ldap.tool.LDAPTester - Commit result: true
+DEBUG info.magnolia.ldap.tool.LDAPTester - Subject:
+DEBUG info.magnolia.ldap.tool.LDAPTester - User: null
+INFO info.magnolia.ldap.tool.LDAPTester -
+   Properties: {title=jsmith,
+   email=john.smith@example.com,
+   name=jsmith,
+   fullName=jsmith,
+   password=secret}
+DEBUG info.magnolia.ldap.tool.LDAPTester -
+   State: {groupNames=[],
+   statusValue=1,
+   roleNames=[]}
+INFO info.magnolia.ldap.tool.LDAPTester - Group names: (none)
+INFO info.magnolia.ldap.tool.LDAPTester - Role names: (none)
+DEBUG info.magnolia.ldap.tool.LDAPTester - AttributesMap
+```
+
+Don’t expect to see any groups or roles assigned. The tester tool doesn’t connect to Magnolia in any way. It connects to the LDAP. It’s normal for group assignments handled in Magnolia to not show up.

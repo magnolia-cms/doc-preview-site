@@ -1,0 +1,401 @@
+---
+title: "How to get content as JSON - an overview"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Development-how-tos/How-to-get-content-as-JSON-an-overview/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Development how-tos > How to get content as JSON - an overview
+---
+
+# How to get content as JSON - an overview
+
+This page provides an overview of the different ways of retrieving JSON for JCR-based content in Magnolia as well as listing their respective advantages and disadvantages.
+
+## [](#_magnolia_delivery_api)Magnolia Delivery API
+
+The `delivery` API is a Magnolia REST resource introduced with version 2.0 of the Magnolia REST modules. We recommend you use [Delivery API](#rest:api:delivery-endpoint.adoc) to benefit from all the latest features.
+
+This REST resource is highly customizable. You can define multiple endpoint configurations to serve different needs. Each configured endpoint is accessed through a distinct [`endpointPath`](#rest:api:delivery-endpoint.adoc#_endpointpath) and provides two sub-resources. The sub-resources can be called with HTTP GET both to read a node (and its subnodes) by a given path and to query nodes.
+
+**Example:** Find a tour with the word `Japan` in its description. Return only the variant in the German language:
+
+curl -g -G 'http://localhost:8080/magnoliaAuthor/.rest/tours' --data-urlencode "description\[like\]=%Japan%" \\
+ -H "Accept-Language: de-DE" -u superuser:superuser
+
+```js
+{
+  "results": [
+    {
+      "@name": "Kyoto",
+      "@path": "/magnolia-travels/Kyoto",
+      "@id": "b475f27e-2929-427b-9517-815118a3b36e",
+      "@nodeType": "mgnl:content",
+      "body": "<p>Erleben Sie die Schönheit, die Kyoto durchdringt und umgibt. Kyoto ist berühmt für viele Dinge, darunter unzählige <a href=\"http://www.japan-guide.com/e/e2058.html\" target=\"_blank\">Tempel</a>, <a href=\"http://www.japan-guide.com/e/e2059.html\" target=\"_blank\">Schreine</a> und andere faszinierende historische Bauwerke.</p>\n<p>Kommen Sie mit uns auf einen Besuch der Stadt der zehntausend Schreine. Wir besuchen To-ji, Ginkaku-ji, Kōzan-ji und ihre bemerkenswerten Gärten, bevor wir einen Abstecher zu den Bergen in der Umgebung der Stadt machen. Sie werden es genießen, einen Tag im grünen Miyama und einen Tag mit Wandern in Shizuhara zu verbringen. Sie werden nie wieder wie bisher über Japan denken.</p> ",
+      "name": "Kyoto",
+      "description": "Die natürliche Seite Japans",
+      "destination": [
+        "7ec72c48-c33f-418e-b2ff-44cfb4bbb1f2"
+      ],
+      "location": "Kyoto, Japan",
+      "tourTypes": [
+        "d2245867-ecaa-4b4e-8743-e0c939be68b7",
+        "415025c6-e4b5-4506-9384-34f428a52104"
+      ],
+      "author": "Magnolia Travels",
+      "duration": "7",
+      "image": "jcr:44689d29-5966-4d41-8fd4-2dc7da783528",
+      "@nodes": []
+    }
+  ]
+}
+```
+
+This result is returned for the endpoint called `ep` with the following configuration:
+
+```yaml
+$type: jcrDeliveryEndpoint_v2
+workspace: tours
+```
+
+### [](#_pros)Pros
+
+-   Convenient and simple to use JSON structure.
+
+-   Supports RESTful URLs.
+
+-   Highly configurable via YAML file in a [light module](../../../Modules/Light-modules/) or in the JCR `configuration` workspace.
+
+-   Supports multiple endpoint configurations to serve different needs.
+
+-   Provides a fine-grained security.
+
+-   Supports [localization](#rest:api:Requesting-localized-content-with-the-delivery-endpoint.adoc).
+
+-   Supports [personalization](#rest:api:Requesting-personalized-content-with-the-delivery-endpoint.adoc).
+
+-   Can [resolve referenced nodes](#rest:api:Resolving-references-with-the-delivery-endpoint.adoc) from other workspaces, including image renditions, within one request.
+
+
+### [](#_cons)Cons
+
+-   Read-only.
+
+
+## [](#_magnolia_nodes_and_properties_endpoints_legacy_way)Magnolia nodes and properties endpoints (legacy way)
+
+Magnolia endpoints for `nodes` and `properties` have been available since version 1.0 of the Magnolia REST modules.
+
+**Example:** Read JCR content of the `/magnolia-travels/Kyoto` tour from the Tours content app in the [demo](../../../Getting-started-with-Magnolia/Demo/).
+
+```bash
+curl -H "Accept: application/json" http://localhost:8080/magnoliaAuthor/.rest/nodes/v1/tours/magnolia-travels/Kyoto \
+  -u superuser:superuser
+```
+
+For more information and examples, see their API pages:
+
+-   [Nodes API](../../API/Nodes-and-properties-APIs/Nodes-API/)
+
+-   [Properties API](../../API/Nodes-and-properties-APIs/Properties-API/)
+
+
+### [](#_pros_2)Pros
+
+-   Complete API to create, read, update and delete (CRUD) JCR data.
+
+-   Supports RESTful URLs.
+
+-   Provides a fine-grained security.
+
+
+### [](#_cons_2)Cons
+
+-   Can only fetch content from one workspace per single request.
+
+-   Rigid and verbose JSON structure.
+
+-   Poor localization support.
+
+-   Cannot fetch personalized variants of pages or components (see [personalization](../../../use-cases/Personalization/)).
+
+
+## [](#_custom_java_endpoints)Custom Java endpoints
+
+Create a custom REST endpoint depending on your needs.
+
+The following example snippet is taken from the [`CameraCollectionEndpoint`](https://bitbucket.org/magnolia-cms/camera-collection).
+
+```java
+    @Path("/allCameras")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Get all cameras.", notes = "Returns json for the list of all a camera objects.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = STATUS_MESSAGE_OK, response = List.class),
+            @ApiResponse(code = 401, message = STATUS_MESSAGE_UNAUTHORIZED),
+            @ApiResponse(code = 404, message = STATUS_MESSAGE_NODE_NOT_FOUND),
+            @ApiResponse(code = 500, message = STATUS_MESSAGE_ERROR_OCCURRED)
+    })
+    public List<Camera> getAllCameras() {
+        List<Camera> result = null;
+        try {
+            result = cameraCollectionPojoService.getAllCameras();
+        } catch (RepositoryException e) {
+            log.warn("Could not compute the list of all cameras.");
+        }
+        return result;
+    }
+```
+
+> **Tip:** To explore the complete example, clone the camera-collection module from git.Also read How to create a custom Java-based REST endpoint.
+
+### [](#_pros_3)Pros
+
+-   Highly configurable.
+
+-   Provides a fine-grained security.
+
+-   When using `com.wordnik.swagger.annotations.*`, endpoints are automatically exposed in the Swagger tool for testing (see [Swagger API explorer](#rest:ROOT:index.adoc#_api_base_path)).
+
+-   Delivery of personalized variants of pages or components is possible (see [personalization](../../../use-cases/Personalization/)).
+
+
+### [](#_cons_3)Cons
+
+-   Requires Java skills.
+
+-   Must be deployed in a Maven module.
+
+
+## [](#_freemarker_template)FreeMarker template
+
+You can implement a custom JSON provider in a FreeMarker template script. Use [templating functions](../../Templating/Template-scripts/Templating-functions/) such as [`cmsfn`](../../Templating/Template-scripts/Templating-functions/cmsfn/), [`damfn`](../../Templating/Template-scripts/Templating-functions/damfn/) and others to read data from JCR and render JSON in your preferred manner.
+
+### [](#_approaches_a_pure_json_provider_or_an_html_mixed_one)Approaches: A pure JSON provider or an HTML-mixed one
+
+#### [](#_pure_json)Pure JSON
+
+You can write a FreeMarker template in a way that its response is pure JSON. This is what we consider as a template script based or FreeMarker based JSON provider. To go for this approach, do the following:
+
+1.  Create a page template. A dialog is not required.
+
+2.  Write FreeMarker code that renders JSON.
+
+3.  Create a page with this new template.
+
+4.  Request the new page to get JSON in the response.
+
+
+Step 2 can go from very simple to very complex.
+
+#### [](#_mixed_with_html)Mixed with HTML
+
+You also can write a template that renders HTML and assigns JSON to JavaScript variables:
+
+```xml
+<!DOCTYPE html>
+<html xml:lang="${cmsfn.language()}" lang="${cmsfn.language()}">
+  <head>
+    [@cms.page /]
+    <meta charset="utf-8" />
+    [#assign pageNode = cmsfn.contentByPath("/magnolia-travels/Kyoto", "tours")]
+    <script>
+    var someJson = '${jsonfn.from(pageNode).add("@path", "name", "description").wrapForI18n().inline().print()}';
+    </script>
+  </head>
+  <body class="mixed ${cmsfn.language()}">
+
+    <div class="container ">
+      <h1>Find a better title later on ;-)</h1>
+    </div>
+  </body>
+</html>
+```
+
+See line 8 where JSON is assigned to a JavaScript variable.
+
+### [](#_assembling_json_manually)Assembling JSON manually
+
+Here is a simple example of how you can assemble JSON structure in FreeMarker:
+
+```java
+[#assign pageNode = cmsfn.contentByPath("/magnolia-travels/Kyoto", "tours")]
+{
+"path" : "${pageNode.@path}",
+"name" : "${pageNode.name}",
+"description" : "${pageNode.description}"
+}
+```
+
+When assembling JSON manually, you have maximal freedom to define the JSON structure, but this approach also requires a high coding effort.
+
+The sample project [`camera-collection`](https://bitbucket.org/magnolia-cms/camera-collection) provides a more sophisticated FreeMarker-based JSON provider.
+
+### [](#_assembling_json_with_jsonfn)Assembling JSON with `jsonfn`
+
+[`jsonfn`](../../Templating/Template-scripts/Templating-functions/jsonfn/) templating functions generate JSON from JCR nodes in any workspace. `jsonfn` helps you assemble JSON within a FreeMaker template script and provides powerful methods to generate JSON in a flexible way. It can resolve references to nodes of other workspaces and it also provides links to renditions of assets in one request. See [resolving referenced nodes and renditions](../../Templating/Template-scripts/Templating-functions/jsonfn/#_resolving_referenced_nodes_and_renditions).
+
+To achieve the same JSON as in *Assembling JSON manually* above, write the following code:
+
+```java
+[#assign pageNode = cmsfn.contentByPath("/magnolia-travels/Kyoto", "tours")]
+${jsonfn.from(pageNode).add("@path", "name", "description").print()}
+```
+
+`jsonfn` templating functions are not bundled with preconfigured Magnolia bundles or webapps.
+
+### [](#_setting_the_proper_content_type_of_the_response)Setting the proper content type of the response
+
+If your FreeMarker template acts as a pure JSON provider, you may want to set the content type of the response to `application/json`. You cannot set the content type directly in the [template definition](../../Templating/Template-definition/). Instead you have to define a new renderer and reference this renderer in the template definition with the `renderType` property.
+
+However, having the `proper` content type may not be required. In many use cases it is sufficient to use the FreeMarker `renderType` that responds with `text/html`.
+
+#### [](#_renderer_configuration)Renderer configuration
+
+See [Renderers](../../Templating/Renderers/) for more on configuring renderers.
+
+#### [](#_template_definition)Template definition
+
+```yaml
+title: jsonprovider0815
+templateScript: /ftl-json-provider/templates/pages/jsonprovider0815.ftl
+renderType: json
+#renderType: freemarker
+visible: true
+```
+
+### [](#_turning_a_template_based_json_provider_into_a_restful_api_with_virtualurimapping)Turning a template-based JSON provider into a RESTful API with virtualURIMapping
+
+You can create a template that accepts request parameters to specify the JSON content to be returned. In the example below, you can specify the `workspace` and the `path` of the node.
+
+\[#assign path = ctx.path!"undefined" /\]
+\[#assign workspace = ctx.workspace!"tours" /\]
+
+\[#assign response = '{ "error" : "Missing path parameter." }' /\]
+
+\[#if path!="undefined"\]
+  \[#assign contentNode = cmsfn.contentByPath(path, workspace)\]
+  \[#assign response = jsonfn.from(contentNode).add("@path", "name", "description").wrapForI18n().print() /\]
+\[/#if\]
+
+${response}
+
+Create the page with the JSON-providing template at `/getjson`. You can call it with the following URL:
+
+http://localhost:8080/magnoliaAuthor/getjson? \`\[\*\*\`workspace\`\*\*\`=tours\`\]{style="color: rgb(153, 51, 102);"} \`& \`\[\*\*\`path\`\*\*\`=/magnolia-travels/Kyoto\`\]{style="color: rgb(51, 102, 255);"} \`
+
+If you want to use a RESTful URL instead:
+
+http://localhost:8080/magnoliaAuthor/getjson/\`\[\`tours\`\]{style="color: rgb(153, 51, 102);"}\` \`\[\`/magnolia-travels/Kyoto\`\]{style="color: rgb(51, 102, 255);"} \`
+
+Add the following virtual URI mapping:
+
+![Virtual URI mapping](../../../_images/ADVT-HTjson-redconfig.png)
+
+### [](#_pros_4)Pros
+
+-   Highly configurable.
+
+    -   Fully customizable when assembling JSON manually.
+
+    -   Decent customizable when using jsonfn.
+
+
+-   No Java required.
+
+-   Localization support.
+
+-   Delivery of personalized variants of pages or components is possible (see [personalization](../../../use-cases/Personalization/)).
+
+
+### [](#_cons_4)Cons
+
+-   Security cannot be set per workspace and path, but only generally for the page that acts as the JSON provider.
+
+-   Methods beyond `GET` (such as `PUT`, `POST` or `DELETE`) cannot be implemented using just FreeMarker.
+
+
+## [](#_getting_localized_json)Getting localized JSON
+
+If your content is localized, you can also get localized JSON output. See [enabling multi-language content](../../../Administration/Language/Language-configuration/) about how to create localized content.
+
+Depending on the technique applied to get JSON, you may have to force getting the localized version or you will get a JSON version of the default locale.
+
+### [](#_with_the_delivery_api)With the delivery API
+
+With the [Delivery API](#rest:api:delivery-endpoint.adoc), you can configure multiple endpoints with full content localization support.
+
+To request a specific single language variant, do one of the following:
+
+-   Set the [Accept-Language](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language) header. For example: `Accept-Language: de-DE`
+
+-   Set the ``lang`query parameter. For example: `lang=de-DE``
+
+
+If both are set, the lang parameter takes priority. If neither is set, the decision is delegated to [the I18nContentSupport interface](../../../Administration/Language/AdminCentral-and-public-locales/#_the_i18ncontentsupport_interface).
+
+To return all language variants:
+
+-   Set the `lang` query parameter to all: `lang=all`
+
+
+> **Tip:** You can use both the Accept-Language header and the lang query parameter for both sub-resources Read node and Query nodes.
+
+See [Requesting localized content with the delivery endpoint](#rest:api:Requesting-localized-content-with-the-delivery-endpoint.adoc).
+
+### [](#_with_default_endpoints_for_nodes_and_properties)With default endpoints for nodes and properties
+
+Localized properties must be read as `<property-name>_<LOCALE>`. For example, `description_de` for the property named `description`. The default endpoints do not take the client’s locale into account. When JSON is generated, the nodes are not wrapped with info.magnolia.jcr.wrapper.I18nNodeWrapper. It is impossible to tell which language is default.
+
+### [](#_with_custom_java_endpoints)With custom JAVA endpoints
+
+In a custom endpoint, you typically fetch `javax.jcr.Node` objects (Java objects representing JCR nodes) that you transform into JSON later on. Make sure you wrap the node with info.magnolia.jcr.wrapper.I18nNodeWrapper before producing JSON. The following shows a method wrapping a node to make sure it is localized (copied from info.magnolia.templating.functions.TemplatingFunctions, which is the underlying Java class of `cmsfn`):
+
+```java
+public Node wrapForI18n(Node content) {
+    return content != null?new I18nNodeWrapper(content):null;
+}
+```
+
+Here the `I18nNodeWrapper` causes the values to be returned in their localized form.
+
+### [](#_in_a_freemarker_template)In a FreeMarker template
+
+In a FreeMarker template, it is the `wrapForI18n` method that makes sure the values are returned in their localized form.
+
+#### [](#_with_manually_assembled_json)With manually assembled JSON
+
+Use `cmsfn.wrapForI18n` to get a localized version of a content node:
+
+\[#assign pageNode\_notLocalized = cmsfn.contentByPath("/travel/about", "website")\]\\
+\[#assign pageNode\_localized = \`\*\*\`cmsfn.wrapForI18n\`\*\*\`(pageNode\_notLocalized)\]
+
+#### [](#_with_jsonfn)With `jsonfn`
+
+When using `jsonfn`, add the `wrapForI18n` method before calling the `print` method.
+
+\[#assign pageNode = cmsfn.contentByPath('/magnolia-travels/Kyoto', 'tours') /\]\\
+${jsonfn.from(pageNode).add("title").\`\*\*\`wrapForI18n()\`\*\*\`.print()}
+
+![Content node default language](../../../_images/content-default-lang.png)
+
+![The same content node in German](../../../_images/content_DE.png)
+
+## [](#_the_same_origin_policy_problem)The same-origin policy problem
+
+According to the same-origin policy
+
+> (…) a web browser permits scripts contained in a first web page to access data in a second web page, but only if both web pages have the same *origin*.
+>
+> [Wikipedia](https://en.wikipedia.org/wiki/Same-origin_policy)
+
+Therefore, if your application resides within a domain that is different from the domain that hosts your data, the web browser will actively prevent accessing content stored under the host domain.
+
+An elegant solution to solve the same-origin policy without changing Apache configuration is the Magnolia [Add HTTP Headers](../../../Administration/Architecture/Request-processing-and-filters/Filters/) filter. This filter is available out-of-the-box; you only need to configure it.
+
+Related topics
+
+-   [jsonfn](../../Templating/Template-scripts/Templating-functions/jsonfn/)
+
+-   [Delivery API](#rest:api:delivery-endpoint.adoc)
+
+-   [Headless docs](../../headless/)

@@ -1,0 +1,164 @@
+---
+title: "Reports"
+url: https://docs.magnolia-cms.com/paas/cockpit/sections/reports/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Manage > Cockpit sections > Reports
+---
+
+# Reports
+
+> **Note:** The Reports feature is temporarily unavailable due to maintenance to improve the feature. The feature may still be visible on the Cockpit for some users, but it is currently not functioning as expected. Please bear with us while we work hard to improve DX Cloud for you.
+
+The DX Cloud **Reports** section contains important information about your deployment’s SLAs.
+
+> **Note:** The thresholds defined for SLAs may vary from customer to customer.
+
+## [](#_select_desired_cluster)Select desired cluster
+
+Select your desired cluster from the dropdown menu at the top of the Cockpit.
+
+![select cluster id](../../_images/select-cluster-id.jpg)
+
+The **Reports** section contains a **Subscription Overview** tab that contains the following reports:
+
+-   [Uptime](#_uptime)
+
+-   [Traffic](#_traffic)
+
+-   [Round trip](#_round_trip)
+
+-   [CPU](#_cpu)
+
+-   [Memory](#_memory)
+
+-   [Storage](#_storage)
+
+-   [Backup](#_backup)
+
+-   [Domain](#_domain)
+
+
+* * *
+
+## [](#_uptime)Uptime
+
+Uptime is the measurement of your DX Cloud website’s availability to your end users. This is calculated by `(total availability of the site * 100)/time = uptime`. Currently, you can view the uptime for your CDN, Ingresses, and Magnolia itself.
+
+-   CDN availability
+
+-   Ingress availability
+
+-   Magnolia availability
+
+
+At the **CDN level**, the percentage of HTTP requests failed with a `502 (Bad Gateway)` or `503 (Service Unavailable)` compared to the total number of requests.
+
+![cdn uptime](../../_images/reports/cdn-uptime.jpg)
+
+At the **Ingress level**, the percentage of HTTP requests failed with a `502 (Bad Gateway)` or `503 (Service Unavailable)` compared to the total number of requests.
+
+![ingress uptime](../../_images/reports/ingress-uptime.jpg)
+
+At the **Magnolia level**, the percentage of HTTP requests failed with a `502 (Bad Gateway)` or `503 (Service Unavailable)` compared to the total number of requests.
+
+![magnolia uptime](../../_images/reports/magnolia-uptime.jpg)
+
+## [](#_traffic)Traffic
+
+The Traffic subtab displays the sum of the bytes sent for all HTTP requests for both the CDN and Ingress level.
+
+![traffic](../../_images/reports/traffic.jpg)
+
+## [](#_round_trip)Round trip
+
+The Round trip subtab displays the average (in `milliseconds`) of the round trip for all HTTP requests for both the CDN and Ingress level.
+
+![round trip](../../_images/reports/round-trip.jpg)
+
+## [](#_cpu)CPU
+
+The CPU subtab displays several items:
+
+-   Total nodes
+
+-   Production nodes
+
+-   Non-production nodes
+
+-   Total CPU
+
+-   CPU on Production
+
+-   CPU on Non-production
+
+-   CPU over time
+
+    > **Tip:** The CPU over time graph allows you to select a more specific part of the already selected range. You can do this by hovering over the chart and clicking the area you want to analyze more closely.
+
+
+View from the Cockpit
+
+![cpu](../../_images/reports/cpu.jpg)
+
+## [](#_memory)Memory
+
+The Memory subtab displays several items:
+
+-   Total nodes
+
+-   Production nodes
+
+-   Non-production nodes
+
+-   Total Memory
+
+-   Memory on Production
+
+-   Memory on Non-production
+
+-   Memory over time
+
+    > **Tip:** The Memory over time graph allows you to select a more specific part of the already selected range. You can do this by hovering over the chart and clicking the area you want to analyze more closely.
+
+
+View from the Cockpit
+
+![memory](../../_images/reports/memory.jpg)
+
+## [](#_storage)Storage
+
+The Storage subtab displays several items shown below. In this case, *Storage* refers to both system storage as well as any [PersistentVolumeClaims](https://kubernetes.io/docs/concepts/storage/persistent-volumes/).
+
+-   Total nodes
+
+-   Production nodes
+
+-   Non-production nodes
+
+-   Total Memory
+
+-   Storage on Production
+
+-   Storage on Non-production
+
+-   Storage over time
+
+    > **Tip:** The Storage over time graph allows you to select a more specific part of the already selected range. You can do this by hovering over the chart and clicking the area you want to analyze more closely.
+
+
+View from the Cockpit
+
+![storage](../../_images/reports/storage.jpg)
+
+## [](#_backup)Backup
+
+The Backup subtab displays both the total amount of backup storage (in `GB`) as well as the backup storage over time (`GB` per day).
+
+![backup](../../_images/reports/backup.jpg)
+
+## [](#_domain)Domain
+
+The Domain subtab displays the total number of domains associated with your DX Cloud deployment.
+
+![domains](../../_images/reports/domains.jpg)

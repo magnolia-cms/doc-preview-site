@@ -1,0 +1,40 @@
+---
+title: "Deploying Magnolia as WAR file"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Deploying/Deploying-Magnolia-as-WAR-file/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Deploying WAR files > Deploying Magnolia as WAR file
+---
+
+# Deploying Magnolia as WAR file
+
+## [](#_what_is_a_war_file)What is a WAR file
+
+[WAR](https://en.wikipedia.org/wiki/WAR_%28file_format%29) means *Web Application Archive*. A WAR file is a zipped Java web application containing all the resources such as JAR files, Java classes, static resources and configuration data.
+
+Since a WAR file is one single file, it is the easiest way to deploy a Java Web application to an application server. Many vendors support WAR file deployment in different ways. Please read the manual of your application server.
+
+Remember that every Magnolia instance (author or public) is its own Java Web application. Deploy one WAR file per instance. Magnolia provides preconfigured WAR files for Community Edition or DX Core. When using [custom webapps](../../../Developing/Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/), use Maven to build the WAR file of your custom bundle webapp.
+
+**Preconfigured Magnolia WAR files**
+
+| Application server | DX Core | Community Edition | Deployment instructions |
+| --- | --- | --- | --- |
+| Tomcat | [WAR](http://files.magnolia-cms.com/) | [WAR](http://sourceforge.net/projects/magnolia/files/magnolia/) | [Deploying a WAR on Apache Tomcat](Deploying-a-WAR-on-Apache-Tomcat/) |
+
+Since the release of Magnolia 6.2.4, support for the following webapps has been deprecated and compatibility modules are in maintenance mode:
+
+-   `magnolia-dx-core-weblogic-webapp`
+
+-   `magnolia-dx-core-websphere-webapp`
+
+-   `magnolia-dx-core-wildfly-webapp`
+
+    We no longer provide these webapps for Magnolia 6.2. For documentation about deploying Magnolia to Weblogic, Websphere or Wildfly, see [Deploying Magnolia as WAR file](https://wiki.magnolia-cms.com/display/WIKI/Deploying+Magnolia+as+WAR+file) on our Community Wiki.
+
+
+## [](#_deploying_a_war_file_as_a_public_instance)Deploying a WAR file as a public instance
+
+If you make no changes to the webapp before deployment, it will automatically be deployed as an author instance. If you change the name of the webapp to `magnoliaPublic` by for example renaming the WAR file to `magnoliaPublic.war`, it will be automatically deployed as a public instance. The name of the webapp folder determines the configuration that will be used. This is discussed in detail in [WAR file with multiple configurations](../WAR-file-with-multiple-configurations/).
+
+If you are not familiar with these procedures, use a [standalone installation](../../../Getting-started-with-Magnolia/Installing-Magnolia/) that ships with an application server.

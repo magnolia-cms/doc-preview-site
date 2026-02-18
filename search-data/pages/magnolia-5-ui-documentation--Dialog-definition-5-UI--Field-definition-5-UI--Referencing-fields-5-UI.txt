@@ -1,0 +1,74 @@
+---
+title: "Referencing fields - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/Referencing-fields-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > Referencing fields - 5 UI
+---
+
+# Referencing fields - 5 UI
+
+Deprecated
+
+> **Note:** This way of referencing fields has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see the $type property in Field definition for Magnolia 6 UI instead.
+
+This page describes how to define the type of a field in a [form](../../Form-definition-5-UI/), using one of the following:
+
+-   `fieldType` property.
+
+-   `class` property (used until Magnolia 5.7).
+
+
+When creating a form for a [dialog](../../) tab, you typically want it to contain some fields. The fields are the core building blocks of the form’s functionality for user tasks such as entering a text and sending it to a server after the user hits the form’s submit button.
+
+Fields are defined using a [field definition](../), which must contain at least one property telling Magnolia what type of field it should render in the dialog.
+
+## [](#_using_the_fieldtype_property_and_short_field_names)Using the `fieldType` property and short field names
+
+Use the `fieldType` property for better legibility, ease of development, and to make field names easier to remember. Provide the field’s name as the value of the `fieldType` property. Refer to the [Short field names](#_short_field_names) table for a list of field names. You do not need to specify the field type using a fully qualified class name.
+
+An example of configuration using the short `fieldType` property:
+
+```yaml
+form:
+  tabs:
+    - name: tabText
+      fields:
+        - name: title
+          fieldType: text
+```
+
+To check you are using the correct short field names, look at the [Definitions app](#6.2@product-docs:ROOT:Apps/List-of-apps/Definitions-app.adoc):
+
+![Definitions app](6.2@product-docs:ROOT:6-1-referencingFields-defApp.png)
+
+## [](#_relevance_for_custom_fields_extending_or_decorating_magnolia_fields)Relevance for custom fields extending or decorating Magnolia fields
+
+Short field naming affects:
+
+-   **The origin of the definition.** The fields are defined from YAML files. (They were previously JCR nodes under `/modules/<module-name>/fieldTypes` folders.)
+    Example showing the `damUpload` YAML definition:
+    ![damUpload YAML definition](6.2@product-docs:ROOT:6-1-referencingFields-damUpload.png)
+
+-   **The file names.** If a field was previously defined in a YAML file, the file’s name has changed to the new short name. For example, the definition of the [Expanding text field](../List-of-fields-5-UI/Expanding-text-field-5-UI/) is: `/content-editor/fieldTypes/expandingText.yaml`.
+    (Was previously `/content-editor/fieldTypes/expandingTextField.yaml.`)
+
+
+> **Warning:** If you have custom fields which reuse an existing Magnolia configuration via YAML include, YAML inherit, JCR extends or by decoration, your custom definition may be broken if you reference a field which has changed its name.
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/Referencing-fields-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Field-names-shortening-5-UI.adoc\[\]
+
+## [](#_using_the_class_property)Using the `class` property
+
+Until Magnolia 5.7, the only way to specify the type of a field was to state its fully qualified class name. For example, to create a simple [text field](../List-of-fields-5-UI/Text-field-5-UI/) named `title` in a dialog’s tab called `tabText`, you had to create the following configuration:
+
+```yaml
+form:
+  tabs:
+    - name: tabText
+      fields:
+        - name: title
+          class: info.magnolia.ui.form.field.definition.TextFieldDefinition
+```
+
+> **Warning:** If your project uses the older class property in many places, you can continue to use the class. The feature is backward compatible. The Short field names list shows which fields are affected.

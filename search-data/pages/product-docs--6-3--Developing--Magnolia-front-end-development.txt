@@ -1,0 +1,68 @@
+---
+title: "Magnolia front-end development"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Magnolia-front-end-development/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Magnolia front-end development
+---
+
+# Magnolia front-end development
+
+With Magnolia *front-end development* we are referring to the most common task on most web projects: developing templates to generate the actual HTML, CSS and JS of the projects - and enabling authors to populate them with content.
+
+Many [Magnolia projects](../../Getting-started-with-Magnolia/Magnolia-project-overview/) involve both front-end and back-end developers. To help you all work together in parallel, Magnolia supports both java-based modules and light modules in a single project.
+
+A light module is just a directory of files. By relying only on simple files, the Magnolia light development approach mirrors front-end development. Front-end developers can get started right away using the tools and methodologies they already know. While back-end Java developers work on integrations and custom business logic, front-end development teams can work on templates, web resources and javascript frameworks. Front-end developers are not dependent on Java developers to integrate their work and teams can work efficiently in parallel.
+
+-   The [Get started](#_get_started) section below provides a simple introduction to working with Magnolia specifically as a front-end developer, from concepts to a little hands-on learning.
+
+-   The [Go further](#_go_further) section provides some links to access in-depth information on the different subjects introduced.
+
+
+## [](#_get_started)Get started
+
+Start here to learn the essentials about working in Magnolia as a front-end developer:
+
+[Magnolia basics for front-end developers](Magnolia-basics-for-front-end-developers/): Learn the basics about modules, templating and how to handle resource files in Magnolia.
+
+[Install Magnolia](Install-Magnolia/): Quickly install Magnolia using the CLI to prepare for the tutorial.
+
+[Hello Magnolia for front-end developers](Hello-Magnolia-for-front-end-developers/): Use a simple template in Magnolia and make some changes to it.
+
+> **Tip:** You should also check out the new front-end developer training courses offered by Magnolia!
+
+## [](#_video_resources)Video resources
+
+## [](#_go_further)Go further
+
+### [](#_understand)Understand
+
+[Light development in Magnolia](../Light-development-in-Magnolia/): Learn how to work with Magnolia without Java programming skills.
+
+[Modules](../../Modules/): Magnolia projects are built out of modules, learn about the different kinds of modules and their structure.
+
+[YAML](../YAML/): Learn about using YAML to configure Magnolia. Spaces are important.
+
+[Templating](../Templating/): Magnolia templating mechanism explained.
+
+### [](#_learn)Learn
+
+[How to work with images](../Templating/Template-scripts/How-to-work-with-images/): Learn how to handle images with Magnolia.
+
+### [](#_develop)Develop
+
+[Magnolia CLI](#magnolia-cli:ROOT:index.adoc): Magnolia command line interface (CLI) is an [npm](https://www.npmjs.com/) package providing a CLI tool to setup and facilitate light development with Magnolia.
+
+[Web resources](../Resources/#_referencing_resources): Access CSS, JS and other web resources.
+
+[Themes](../Templating/Theme/): Configure your site’s visual identity.
+
+[Magnolia templating kit](../../Modules/List-of-modules/MTE-module/MTK-module/): Use these templates as they are or to gain inspiration to create your own.
+
+[Define template definitions](../Templating/Template-definition/): Define your blueprints for creating pages, areas and components.
+
+[Scripts](../Templating/Template-scripts/) and [functions](../Templating/Template-scripts/Templating-functions/): Write template scripts and work with templating functions.
+
+[Define dialogs](../Templating/Dialog-definition/): Define the editable content properties of your templates.
+
+[Bootstrap content](../../Modules/List-of-modules/Content-Importer-module/): Add XMLs to the JCR.

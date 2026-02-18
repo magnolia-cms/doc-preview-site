@@ -1,0 +1,291 @@
+---
+title: "Magnolia React Editor"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/headless/spa-development/magnolia-front-end-sdk/magnolia-react-editor/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development > Headless development guidelines > Magnolia front-end SDK > Magnolia React Editor
+---
+
+# Magnolia React Editor
+
+This page describes the installation, components and functions of the Magnolia React Editor — a lightweight, fully-featured library connecting React projects with the WYSIWYG authoring experience of the Magnolia Pages app.
+
+## [](#_installation)Installation
+
+To install the editor, open the command prompt and enter the following command.
+
+```none
+npm install @magnolia/react-editor
+```
+
+> **Note:** is the latest version of the Magnolia React Editor.
+
+## [](#_reference)Reference
+
+### [](#_editablearea)`<EditableArea>`
+
+The wrapping component for [areas](../../../../Templating/Template-definition/Area-definition/).
+
+The component can be used only inside the React components that are instantiated by `EditablePage`. That is, the React component must be in the `componentMappings` object supplied to the `EditablePage` via its `config` parameter.
+
+By default, the area component loops over all of its child components.
+
+`EditableArea` renders React components for each component node in its `content`. It determines which component to render based on the `mgnl:template` value of the node and the `componentMappings` supplied to the `EditablePage config` property. The properties of each component and areas (if any) are passed as props to the child components.
+
+The default behavior can be changed with `customView`.
+
+In the editor view of the Magnolia Pages app, it will add the annotations that are required to render the green bars with the authoring UI. The annotations are added as HTML comments.
+
+#### [](#_properties)Properties
+
+| Property | Description |
+| --- | --- |
+| `content` | Area content that is passed as a property to the parent component where the `EditableArea` is used.<br><br>Example<br><br>```javascript<br>import React from 'react';<br>import { EditableArea } from '@magnolia/react-editor';<br><br>function Home(props) {<br>  // main is area name as defined in page/component YAML definition<br>  const { main } = props;<br><br>  return (<br>    <><br>      {main && <EditableArea content={main} />}<br>    </><br>  );<br>}<br><br>export default Home;<br>``` |
+| `parentTemplateId` | Required only when using `templateDefinitions`.<br><br>```javascript<br>import React from 'react';<br>import { EditableArea } from '@magnolia/react-editor';<br><br>function Home(props) {<br>  // main is area name as defined in page/component YAML definition<br>  // metadata is set of extra component informations added by react-editor<br>  const { main, metadata } = props;<br><br>  return (<br>    <><br>      {main && <EditableArea content={main} parentTemplateId={metadata['mgnl:template']} />}<br>    </><br>  );<br>}<br><br>export default Home;<br>``` |
+| `elementType` | `EditableArea` wraps its children components in a single `div` element. The wrapping element can be changed by passing a new element type with `elementType`, which must be a valid DOM element passed as `string`.<br><br>Example<br><br>```javascript<br><EditableArea content={main} /><br>/*<br><div><br>  ...children<br></div><br>*/<br><br><EditableArea content={main} elementType='ul' /><br>/*<br><ul><br>  ...children<br></ul><br>*/<br>``` |
+| `className` | Used to add CSS classes to **EditableArea** wrapping element.<br><br>```javascript<br><EditableArea content={main} className='foo' /><br>/*<br><div class="foo"><br>  ...children<br></div><br>*/<br>``` |
+| `customView` | Function to overwrite the default behavior of the `EditableArea`.<br><br>`customView` receives one variable with all area data passed as the `content` property.<br><br>```javascript<br>import React from 'react';<br>import { EditableArea, EditableComponent } from '@magnolia/react-editor';<br><br>function myCustomView({ content }) {<br>  return (<br>    <><br>      {content['@nodes'].map((nodeName) => (<br>        <EditableComponent key={content[nodeName]['@id']} content={content[nodeName]} /><br>      ))}<br>    </><br>  );<br>}<br><br>function Home(props) {<br>  // main is area name as defined in page/component YAML definition<br>  const { main } = props;<br><br>  return (<br>    <><br>      {main && <EditableArea content={main} customView={myCustomView} />}<br>    </><br>  );<br>}<br><br>export default Home;<br>``` |
+
+### [](#_editablecomponent)`<EditableComponent>`
+
+The wrapping component for [components](../../../../Templating/Template-definition/Component-definition/).
+
+`EditableComponent` component can only be used inside the `customView` of the `EditableArea`.
+
+The component determines which React component to render based on the `mgnl:template` value of the `content` and the `componentMappings` supplied to the `EditablePage config` property. Component dialog properties and areas are passed to the component as props.
+
+#### [](#_properties_2)Properties
+
+| Property | Description |
+| --- | --- |
+| `content` | Component content that is passed as part of area content. |
+
+### [](#_editablepage)`<EditablePage>`
+
+The wrapping component for Magnolia-managed page content.
+
+It determines which React component to render based on the `mgnl:template` value of the `content` and the `componentMappings` supplied to the `EditablePage config` property. Page dialog properties and areas are passed to the component as props.
+
+In the editor view of the Pages app, it will add the annotations that are required to render the green bars with the authoring UI. The annotations are added as HTML comments.
+
+#### [](#_properties_3)Properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Page content response coming from Magnolia Delivery API.</p></div><div class="dlist"><dl><dt class="hdlist1">Example endpoint definition</dt></dl></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">$type: jcrDeliveryEndpoint_v2
+workspace: website
+limit: 100
+systemProperties:
+  - mgnl:template
+depth: 10
+nodeTypes:
+  - mgnl:page
+childNodeTypes:
+  - mgnl:area
+  - mgnl:component</code></pre></div></div><div class="paragraph"><p>An example response can be seen <a href="http://ecommerce-headless-author.magnolia-cms-demo.com/.rest/delivery/pages/home" target="_blank" rel="noopener">here</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>config</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Configuration object containing the <code>componentMappings</code> object with mappings between the <code>mgnl:template</code> values and React components.</p></div><div class="dlist"><dl><dt class="hdlist1">Example</dt></dl></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">import Home from './pages/Home';
+
+const config = {
+  componentMappings: {
+    'spa:pages/Home': Home,
+  },
+};</code></pre></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>templateAnnotations</code></p><p class="tableblock">or</p><p class="tableblock"><code>templateDefinitions</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content"><div class="paragraph"><p>The <code>templateDefinitions</code> methods and the associated endpoint have been deprecated. Using them can lead to unexpected issues.</p></div><div class="paragraph"><p>Please update your project to use the <code>templateAnnotations</code> methods and the <code>template-annotations</code> endpoint instead.</p></div><div class="paragraph"><p>See it, for example, in our <a href="https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos" target="_blank" rel="noopener">minimal headless SPA demos</a>.</p></div><div class="paragraph"><p>The <code>template-annotations</code> supports many features which the <code>template-definitions</code> does not:</p></div><div class="ulist"><ul><li><p>multi-language editing</p></li><li><p>personalization</p></li><li><p>publication status of components</p></li><li><p>live copy</p></li></ul></div></td></tr></tbody></table></div><div class="paragraph"><p>Template information required for the Page Editor to create the authoring UI (the green bars).</p></div><div class="ulist"><ul><li><p><code>templateAnnotations</code> are fetched from</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs">&lt;MAGNOLIA_INSTANCE&gt;/.rest/template-annotations/v1/&lt;PAGE_PATH&gt;</code></pre></div></div><div class="dlist"><dl><dt class="hdlist1">Example</dt><dd><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs">https://demo.magnolia-cms.com/.rest/template-annotations/v1/travel</code></pre></div></div></dd></dl></div></li><li><p><code>templateDefinitions</code> are fetched from</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs">&lt;MAGNOLIA_INSTANCE&gt;/.rest/template-definitions/v1/&lt;PAGE_TEMPLATE&gt;</code></pre></div></div><div class="dlist"><dl><dt class="hdlist1">Example</dt><dd><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs">https://demo.magnolia-cms.com/.rest/template-definitions/v1/travel-demo:pages/home</code></pre></div></div></dd></dl></div></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnoliaContext</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Introduced with <a href="../breaking-changes-in-front-end-sdk-v2/#_editor_context_changes" class="xref page">front-end SDK v2</a>, the property is used to determine the page mode (edit/preview).</p></div><div class="paragraph"><p>It holds properties that support page rendering, such <code>nodePath</code>, <code>searchParams</code>, and others. For more details, see the current <a href="https://gitlab.com/magnolia-ce/frontend-sdk/frontend-helpers-base/-/blob/main/src/types/MagnoliaContext.ts?ref_type=heads" target="_blank" rel="noopener">list of these properties</a> and <a href="#_magnoliacontext_object">the description below</a>.</p></div><div class="paragraph"><p>It replaces the previous iframe-based detection (<code>inEditor</code>, <code>inEditorAsync</code>).</p></div></div></td></tr></tbody></table></div>
+
+#### [](#_example)Example
+
+```javascript
+import { EditorContextService } from '@magnolia/frontend-helpers-base';
+import { EditablePage } from '@magnolia/react-editor';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import Navigation from './app/components/Navigation';
+import {
+  fetchPageContent,
+  fetchPageNav,
+  fetchTemplateAnnotations,
+} from './app/services/magnolia-service';
+import { environment } from './environments/environment';
+import magnoliaConfig from './magnolia.config';
+
+export default function App() {
+  const [pageLoaderProps, setPageLoaderProps] = useState({});
+  const location = useLocation();
+  const nodeName = environment.appBase;
+  useEffect(() => {
+    async function loadPageContent(path) {
+      const props = {};
+      props.nodeName = nodeName;
+
+      const ctx = EditorContextService.getMagnoliaContext(
+        path,
+        nodeName,
+        environment.languages
+      );
+      props.magnoliaContext = ctx;
+      props.page = await fetchPageContent(ctx, environment.pageBase);
+      props.pagenav = await fetchPageNav(nodeName, environment.navBase);
+      props.templateAnnotations = await fetchTemplateAnnotations(
+        ctx,
+        environment.templateAnnotationsBase
+      );
+      setPageLoaderProps(props);
+    }
+    loadPageContent(location.pathname + location.search);
+  }, [nodeName, location]);
+
+  return (
+    <div
+      className={
+        pageLoaderProps.magnoliaContext?.isMagnoliaEdit
+          ? 'disable-a-pointer-events flex-grow'
+          : 'flex-grow'
+      }
+    >
+      {pageLoaderProps.pagenav && (
+        <Navigation
+          content={pageLoaderProps.pagenav}
+          nodeName={nodeName}
+          currentLanguage={pageLoaderProps.magnoliaContext.currentLanguage}
+          isMagnoliaEdit={pageLoaderProps.magnoliaContext.isMagnoliaEdit}
+        />
+      )}
+      {pageLoaderProps.page && (
+        <EditablePage
+          templateAnnotations={pageLoaderProps.templateAnnotations || {}}
+          content={pageLoaderProps.page}
+          magnoliaContext={pageLoaderProps.magnoliaContext}
+          config={magnoliaConfig}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+### [](#_editorcontexthelper_iniframe)`EditorContextHelper.inIframe`
+
+Using [EditorContextHelper.getMagnoliaContext](../magnolia-angular-editor/#_editorcontexthelper_getmagnoliacontext) is the recommended approach.
+
+> **Note:** global.mgnlInPageEditor is deprecated and not necessary.
+
+### [](#_editorcontexthelper_getmagnoliacontext)`EditorContextHelper.getMagnoliaContext`
+
+A function that returns the `magnoliaContext` object.
+
+This function requires 3 parameters:
+
+  PropertyTypeDescription
+
+`requestUrl`
+
+**string**
+
+A full request/site URL (e.g., `https://foo.bar` or `https://foo.bar?mgnlPreview=false&mgnlChannel=desktop`).
+
+> **Tip:** For example, in a browser, it can be read with window.location.href. For other frameworks use the framework’s specific way of getting full URL.
+
+`spaRootNodePath`
+
+**string**
+
+Magnolia’s root node path of the SPA website e.g. `/foo` or `/foo/bar`.
+
+`languages`
+
+**array of strings**
+
+Website language(s) passed as an array of strings (e.g., `['en', 'de']`).
+
+> **Note:** The first language in the array is the default locale.
+
+#### [](#_magnoliacontext_object)`magnoliaContext` object
+
+  PropertyTypeDescription
+
+`isMagnolia`
+
+**boolean**
+
+Specifies whether the request comes from Magnolia app e.g. `Pages app`.
+
+`isMagnoliaEdit`
+
+**boolean**
+
+Specifies whether the request comes from Magnolia app in edit mode.
+
+`isMagnoliaPreview`
+
+**boolean**
+
+Specifies whether the request comes from Magnolia app in preview mode.
+
+`version`
+
+**string**
+
+The version number.
+
+> **Note:** This is only present if the request comes from the Magnolia app for a specific version.
+
+`nodePath`
+
+**string**
+
+Magnolia’s node path for requested content.
+
+`currentLanguage`
+
+**string**
+
+The language for requested content.
+
+`searchParams`
+
+**object**
+
+Object with search parameters of the `requestUrl` enriched with Magnolia’s specific parameters.
+
+`search`
+
+**string**
+
+String with search parameters of the `requestUrl` enriched with Magnolia’s specific parameters.
+
+#### [](#_example_2)Example
+
+```js
+import { EditorContextHelper } from '@magnolia/react-editor';
+
+const requestUrl = 'https://foo.bar/travel/?mgnlPreview=false&mgnlChannel=desktop';
+const spaRootNodePath = '/home';
+const languages = ['en', 'de'];
+const magnoliaContext = EditorContextHelper.getMagnoliaContext(requestUrl, spaRootNodePath, languages);
+
+/*
+magnoliaContext = {
+  isMagnolia: true,
+  isMagnoliaEdit: true,
+  isMagnoliaPreview: false,
+  nodePath: /home/travel,
+  currentLanguage: 'en',
+  searchParams: { mgnlChannel: 'desktop', mgnlPreview: 'false', variants: 'all' },
+  search: '?mgnlPreview=false&mgnlChannel=desktop&variants=all&lang=en'
+}
+*/
+
+// Fetch page content
+const pagesRes = await fetch(PAGES_API + magnoliaContext.nodePath + magnoliaContext.search);
+
+// Fetch template annotations
+if (magnoliaContext.isMagnolia) {
+  const templateAnnotationsRes = await fetch(TEMPLATE_ANNOTATIONS_API + magnoliaContext.nodePath);
+}
+```
+
+> **Note:** When using this function to determine isMagnolia* properties, such as isMagnolia being true, be sure to add magnoliaContext search parameters to all links, so that it ensures the correct behavior when navigating the website inside Magnolia’s app e.g. Pages app.
+
+## [](#_demo)Demo
+
+For headless SPA demos showcasing the Magnolia React Editor, see [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos).
+
+## [](#_changelog)Changelog
+
+A list of notable changes for any given version is available on the [changelog page](https://gitlab.com/magnolia-ce/frontend-sdk/react-editor/-/blob/main/CHANGELOG.md).

@@ -1,0 +1,66 @@
+---
+title: "External configuration for publishing receivers"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Architecture/Configuration-management/microprofile-config/external-configuration-for-publishing-receivers/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Configuration management > MicroProfile Config > External configuration for publishing receivers
+---
+
+# External configuration for publishing receivers
+
+Publishing receivers are configured using MicroProfile Config. You can supply MicroProfile configurations using:
+
+-   properties files
+
+-   YAML files
+
+-   system properties or environment variables (and more)
+
+
+To point to your config file, you must pass the `magnolia.config.locations` as a system property (for example, using Tomcat VM options in the `setenv.sh` configuration file), pointing to the directory where your config file resides (for example `-Dmagnolia.config.locations=/opt/magnolia/mounted-config`).
+
+-   microprofile-config.properties
+
+-   microprofile-config.yaml
+
+
+```properties
+magnolia.publishing.receivers[0].name=magnoliaPublic-0
+magnolia.publishing.receivers[0].url=http://dev-magnolia-helm-public-0-svc:8080
+magnolia.publishing.receivers[1].name=magnoliaPublic-1
+magnolia.publishing.receivers[1].url=http://dev-magnolia-helm-public-1-svc:8080
+```
+
+```yaml
+magnolia:
+  publishing:
+    receivers:
+      - name: magnoliaPublic-0
+        url: http://dev-magnolia-helm-public-0-svc:8080
+      - name: magnoliaPublic-1
+        url: http://dev-magnolia-helm-public-1-svc:8080
+```
+
+> **Note:** The default receiver for local development (magnoliaPublic8080) has been removed.Receiver example for local developmentmagnolia.publishing.receivers[0].name=magnoliaPublic
+> magnolia.publishing.receivers[0].url=http://{host}:{port}/magnoliaPublic (1)
+> magnolia.publishing.receivers[0].enabled=true1Put the path magnoliaPublic in the URL for local development.
+
+## [](#_previous_magnolia_6_2_definition_in_jcr)Previous (Magnolia 6.2) definition in JCR
+
+In Magnolia 6.2, publishing receivers were configured in JCR, under the `publishing-core` module. This made it difficult to provision instances across multiple environments and configure receivers during installation or startup through various JCR *bootstrapping* techniques.
+
+| Node name | Value |
+| --- | --- |
+| 📁 modules |     |
+| 📁 publishing-core |     |
+| 📁 config |     |
+| ⸬ receivers |     |
+| ⸬ magnoliaPublic8080 |     |
+| ⬩ url | [http://localhost:8080/magnoliaPublic](http://localhost:8080/magnoliaPublic) |
+| ⬩ enabled | true |
+
+Related topics
+
+-   [SmallRye documentation](https://smallrye.io/docs/)
+
+-   [Configuration for MicroProfile](https://github.com/eclipse/microprofile-config) (`github.com/eclipse/microprofile-config`)

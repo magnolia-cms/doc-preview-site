@@ -1,0 +1,128 @@
+---
+title: "Page definition"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Template-definition/Page-definition/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Template definition > Page definition
+---
+
+# Page definition
+
+> **Tip:** Light developers can use the create-page command in the Magnolia CLI to create page templates.
+
+Pages are based on page templates. A page definition knows which script should be used to render a page. It may also define areas. You can configure a template in a [YAML file or a JCR node](../../../../Modules/Module-configuration/#_configuration_data).
+
+## [](#_page_template_properties)Page template properties
+
+You can use [common template properties](../#_common_template_properties) and the following properties in a page definition:
+
+example/templates/pages/home.yaml
+
+```yml
+renderType: freemarker
+templateScript: /my-module/templates/pages/home.ftl
+dialog: my-module:pages/homePageProperties
+# areas:
+visible: true
+class: com.example.templates.CustomTemplateDefinition
+modelClass: com.example.templates.HomePageModel
+```
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+Properties specific to page template definition:
+
+ PropertyDescription
+
+`visible`
+
+**optional**, *default is `true`*
+
+`true` makes the template available to editors.
+
+When `visible` is set to `false`, the template is not available. However, the opposite is not always true. There are more ways to control [page template availability](../../Template-availability/#_page_template_availability).
+
+`type`
+
+**optional**, *default is `content`*
+
+Assigns a [type](#_page_subtypes) to the template. Types control template availability in the page hierarchy. For example type `home` is available at the site root level, `section` at level 2, and `content` at level 3. See [Page template availability](../../Template-availability/#_page_template_availability) on how to use the `type` property.
+
+This property is different from the `type` property in [Area definition](../Area-definition/#_area_properties).
+
+`subtype`
+
+**optional**
+
+Assigns a [subtype](#_page_subtypes) to the template. You can use subtypes to aggregate content. For example, aggregate all content pages of subtype `news` into a teaser component. There are no default values and you can use arbitrary values to categorize your templates in any way you like.
+
+`autoPopulateFromRequest`
+
+**optional**, *default is `true`*
+
+The population of request parameters is typically enabled globally in `/server/rendering/engine`. Add this property and set to `false` to override the global setting. See [Populating the rendering model with request parameters](../../Rendering-content/#_populating_the_rendering_model_with_request_parameters) for more.
+
+`areas`
+
+**optional**
+
+[Area definitions](../Area-definition/).
+
+`containerElements`
+
+**optional**
+
+A list of HTML element names.
+
+Green bars for editors are placed inside the elements listed (by default done for the `div` element).
+
+Configuring this property can be useful where custom HTML elements can have different names. In those cases `containerElements` ensures that the green bars appear in the best location.
+
+Example
+
+```yml
+renderType: freemarker
+templateScript: /my-module/templates/pages/main.ftl
+containerElements:
+  - ui-cms-grid-element
+  - other-element
+```
+
+> **Note:** Once set, the attribute applies to the whole page.
+
+## [](#_location_of_page_definitions)Location of page definitions
+
+Put your page definitions here:
+
+-   YAML file: `$magnolia.resources.dir/<module-name>/templates/pages`
+
+-   JCR node: `/modules/<module-name>/templates/pages`
+
+
+## [](#_page_subtypes)Page subtypes
+
+The optional `subtype` property is useful for aggregating related page templates. For example, you could use this property to aggregate the latest news articles and then create a component that displays a list of excerpts that point to the news pages.
+
+There are no default values and you can use arbitrary values to categorize your templates in any way you like.
+
+## [](#_adding_page_areas)Adding page areas
+
+Page area definitions are added in the `areas` node of a page template.
+
+How to configure area definitions is covered in [Area definition](../Area-definition/).
+
+This example configuration adds two areas to a page template.
+
+<module name>/templates/pages/<page template name>.yaml
+
+```yml
+areas:
+  area-1:
+    # area-1 configuration
+  area-2:
+    #area-2 configuration
+```
+
+Related topics
+
+-   [Security aspects: Web Cache Poisoning](../../../../Modules/List-of-modules/Cache-modules/Cache-core/#_web_cache_poisoning)

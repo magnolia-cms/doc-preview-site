@@ -1,0 +1,576 @@
+---
+title: "Action definition"
+url: https://docs.magnolia-cms.com/product-docs/Apps/App-configuration/Action-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > App configuration > Action definition
+---
+
+# Action definition
+
+Action definitions configure actions in the UI. They are used in apps, forms and dialogs. The action name is the definition content node name.
+
+Each action has an action definition class that implements the info.magnolia.ui.api.action.ActionDefinition interface. Some [definition classes](#_general_action_definition_classes) allow for additional properties and call more classes to execute logic.
+
+> **Tip:** You can reuse existing Magnolia actions in your own app. Many actions are so basic that you can just copy their definitions. For actions that have their own properties, you may need to set the properties for the actions to work.
+
+> **Note:** These action definitions are part of the Magnolia 6 UI framework.
+
+## [](#_general_actions)General actions
+
+Here are `addNodeAction` and `markAsDeletedAction` definitions. A user can execute the actions in the action bar or the action popup.
+
+```yml
+subApps:
+  browser:
+    class: info.magnolia.ui.contentapp.configuration.BrowserDescriptor
+    actions:
+      addFolder:
+        $type: addNodeAction
+        icon: icon-add-folder
+        nodeType: mgnl:folder
+        availability:
+          root: true
+          nodeTypes:
+            - mgnl:folder
+      delete:
+        $type: markAsDeletedAction
+        command: markAsDeleted
+        datasourceRefreshBehavior: items (1)
+        availability:
+          writePermissionRequired: true
+```
+
+|     |     |
+| --- | --- |
+| **1** | Optional By default, the entire datasource is refreshed after an action is performed. Set to `items` to only [refresh affected items](#datasourceRefreshBehavior). |
+
+You can use the following properties for all actions.
+
+### [](#_general_action_properties)General action properties
+
+ PropertyDescription
+
+`<action name>`
+
+**required**
+
+Name of the action. The name is used in [action bar definition](../Action-bar-definition/).
+
+     `class`
+
+**required** (unless `$type` is used)
+
+[Action definition class](#_general_action_definition_classes) that reads the configuration properties and can supply additional properties to the action. The class must implement the info.magnolia.ui.api.action.ActionDefinition interface. Set the value to the fully qualified class name.
+
+     `$type`
+
+You can use this as a shortcut for `class` if the definition class is annotated with `info.magnolia.ui.api.action.ActionType`. The proper value is defined by the annotation.
+
+Example class annotation
+
+```java
+@ActionType("addNodeAction")
+public class AddNodeActionDefinition extends ConfiguredActionDefinition {
+...
+}
+```
+
+To use the `$type` property in YAML, see [General actions](#_general_actions).
+
+     `label`
+
+**required**
+
+Label displayed to users in the action bar or context menu.
+
+     `implementationClass`
+
+**required**
+
+Implementation class that executes the action. A default implementation class is typically hard-coded in the definition class. You only need to add this property if you want to override the default implementation.
+
+> **Caution:** You can’t configure this property through YAML but it can be used in your Java code.
+
+     `icon`
+
+**optional**
+
+CSS class that identifies an icon used for the action. For available names, see [Icons](../../Developing-an-app/General-aspects/Designing-an-app/Icons/).
+
+     `availability`
+
+**optional**
+
+Defines whether the action is permitted on the selected item.
+
+> **Note:** For more information, see Action availability.
+
+     `datasourceRefreshBehavior`
+
+**optional**, *default is `all`*
+
+Defines the default behavior for when the datasource is refreshed.
+
+By default, the entire datasource is refreshed when an action is performed. To improve performance for actions where some items are just modified (not created or deleted), set the property to `items` so that only modified items are refreshed after an action is performed.
+
+> **Note:** Some action definition classes support additional properties such as appName, subAppName, dialogId and nodeType.
+
+### [](#_general_action_definition_classes)General action definition classes
+
+You can use these common classes in general action definition. They all implement the info.magnolia.ui.api.action.ActionDefinition interface.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 30%;"> <col style="width: 40%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">class</th><th class="tableblock halign-left valign-top">$type</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.dialog.actions.OpenDialogActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>openDialogAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Opens a dialog. Uses the <code>dialogId</code> property.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p><code>info.magnolia.ui.editor.FormView</code> is automatically populated whenever <span class="inlineBean">info.magnolia.ui.dialog.actions.OpenDialogActionDefinition</span> is configured. This can trigger exceptions in <a href="../../../Developing/Templating/Dialog-definition/Field-definition/" class="xref page">fields</a> with defined <code>defaultValue</code>. To disable this behavior, set the <code>populate</code> property in <code>OpenDialogActionDefinition</code> to <code>false</code>.</p></div><div class="paragraph"><p>When you open many dialogs, the dialog box you want to use might overlap with another one. Setting the property <code>alwaysOnTop</code> to <code>true</code> will keep the associated dialog box at the front.</p></div><div class="paragraph"><p>Here is an <code>openDialogAction</code> definition from the <a href="../../List-of-apps/Resource-Files-app/" class="xref page">Resource Files app</a>:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">addFile:
+  icon: icon-add-file
+  $type: openDialogAction
+  populate: false
+  dialogId: resources-app:addFile
+  alwaysOnTop: true
+  availability:
+    root: true
+    rules:
+      IsResourceFolderRule: &amp;isResourceFolder
+        implementationClass: info.magnolia.resources.app.availability.IsResourceFolderRule</code></pre></div></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.ConfirmationActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>confirmationAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Opens a dialog to confirm a previous action.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.DeleteNodesConfirmationActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>deleteNodesConfirmationAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Opens a dialog to confirm deleting an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.ChooseActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>chooseAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Selects an item in a dialog.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.MoveActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>moveAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Moves an item in a dialog.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.CommitActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>commitAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Saves and closes a dialog.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.CloseActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>closeAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Cancels and closes a dialog.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.OpenDetailSubappActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>openDetailSubappAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Opens the detail subapp.</p></div><div class="paragraph"><p>Different <code>viewTypes</code> are available:</p></div><div class="ulist"><ul><li><p><code>add</code></p></li><li><p><code>version</code> (read only)</p></li><li><p><code>view</code> (read only)</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.detail.action.SaveDetailSubAppActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>N/A</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Saves and closes the detail subapp and selects the edited item in the browser (useful when creating new items).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.OpenLocationActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>N/A</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Opens a location in Admincentral.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.ShowVersionActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>showVersionAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Shows the selected version of an item.</p></div><div class="paragraph"><p>Different <code>viewTypes</code> are available:</p></div><div class="ulist"><ul><li><p><code>add</code></p></li><li><p><code>version</code> (read only)</p></li><li><p><code>view</code> (read only)</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.RestoreJcrVersionActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>restoreJcrVersionAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Restores the selected version of an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.ShowPreviousJcrVersionActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>showPreviousJcrVersionAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Shows the previous version of an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.RestorePreviousJcrVersionActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>restorePreviousJcrVersionAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Restores the previous version of an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.RecursiveRestorePreviousJcrVersionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>recursiveRestorePreviousJcrVersionAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Restores the previous version of an item and its children.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.AddNodeActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>addNodeAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Adds an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.DuplicateNodeActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>duplicateNodeAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Duplicates an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.clipboard.CopyContentActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>copyContentAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Copies an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.clipboard.CutContentActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>cutContentAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Cuts an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.clipboard.PasteContentActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>pasteContentAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Pastes an item.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.ChainedActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>chainedAction</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Defines a chain of actions.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.ui.contentapp.action.SetDataFilterActionDefinition</span></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>N/A</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Sets a data filter.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_custom_commit_actions)Custom commit actions
+
+To access the inner fields of a [complex field](../../../Developing/Templating/Dialog-definition/Field-definition/#_common_complex_field_properties), you can create `CustomCommitAction` as an implementation class that extends `CommitAction`:
+
+```java
+public class CustomCommitAction<T> extends CommitAction<T> {
+
+    @Inject
+    public CustomCommitAction(CommitActionDefinition definition, CloseHandler closeHandler, ValueContext<T> valueContext, EditorView<T> form, Datasource<T> datasource, DatasourceObservation.Manual datasourceObservation) {
+        super(definition, closeHandler, valueContext, form, datasource, datasourceObservation);
+    }
+
+    @Override
+    protected void write() {
+        getForm().validate().stream()
+                .flatMap(binderValidationStatus -> binderValidationStatus.getBinder().getFields())
+                .filter(AbstractSingleSelect.class::isInstance)
+                .map(HasValue::getValue)
+                .filter(Option.class::isInstance)
+                .map(Option.class::cast)
+                .findFirst()
+                .ifPresent(switcherValue -> {
+                    if ("foo".equals(switcherValue.getValue())) {
+                        // processing the switcher value
+                    }
+                });
+
+    }
+
+    public static class Definition extends CommitActionDefinition {
+        public Definition() {
+            setImplementationClass(CustomCommitAction.class);
+        }
+    }
+}
+```
+
+## [](#_command_actions)Command actions
+
+For more complicated tasks, an action can trigger a [command](../../../Developing/Commands/). For example, the `publish` command publishes content from the author instance to public instances and versions the content.
+
+Each command action used in the UI has its own action definition class that extends info.magnolia.ui.api.action.CommandActionDefinition. To implement your own command, create an [action definition class](#_general_action_definition_classes) that extends info.magnolia.ui.api.action.CommandActionDefinition and an action implementation class that extends info.magnolia.ui.contentapp.action.CommandAction.
+
+Commands can perform tasks within Magnolia or connect to external resources. Commands may run for a long time; additional properties allow you to control whether command actions are run asynchronously without blocking the UI.
+
+Here is a `jcrCommandAction` definition from the [Magnolia DAM JCR implementation](../../../../dam/developers/dam-jcr/).
+
+```yml
+browser:
+  actions:
+    activate:
+      icon: icon-publish
+      $type: jcrCommandAction
+      command: publish
+      catalog: versioned
+```
+
+You can use the following properties as well as [general action properties](#_general_action_properties) for command actions.
+
+### [](#_command_action_properties)Command action properties
+
+ PropertyDescription
+
+`<action name>`
+
+**required**
+
+Name of the action.
+
+     `command`
+
+**required**
+
+Name of the command.
+
+     `catalog`
+
+**optional**, *default is `default`*
+
+Name of the [catalog](../../../Developing/Commands/#_catalogs) where the command resides. You only need this property if you implement a command that has the same name as an existing command such as `publish`.
+
+     `asynchronous`
+
+**optional**, *default is `false`*
+
+Runs a command asynchronously in the background, which is useful for long-running actions. To run a command asynchronously, set the property to `true`.
+
+> **Note:** For more information, see Asynchronous actions.
+
+> **Note:** Some command action definition classes support additional properties such as recursive, modifiedOnly and parentNodeTypeOnly.In the context of configuring publishing for changes only, you must declare recursive and modifiedOnly under the params node, as shown in the following YAML excerpt....
+>       publishRecursive:
+>         icon: icon-publish-incl-sub
+>         $type: jcrCommandAction
+>         command: publish
+>         asynchronous: true
+>         params:
+>           recursive: true
+>           modifiedOnly: true
+> ...
+
+### [](#_command_action_definition_classes)Command action definition classes
+
+You can use these common classes in command action definition. They all implement the info.magnolia.ui.api.action.ActionDefinition interface.
+
+| class | $type | Description |
+| --- | --- | --- |
+| info.magnolia.ui.contentapp.action.JcrCommandActionDefinition | `jcrCommandAction` | Delegates the action to a named command. |
+| info.magnolia.ui.contentapp.action.MarkAsDeletedCommandActionDefinition | `markAsDeletedAction` | Marks an item as deleted. Uses the `markAsDeleted` command. |
+| info.magnolia.ui.contentapp.action.JcrExportActionDefinition | `exportAction` | Exports an item and its children to XML or YAML. |
+| info.magnolia.ui.contentapp.action.JcrImportActionDefinition | `importAction` | Imports an XML or YAML file. Uses the `import` command. |
+
+### [](#_asynchronous_actions)Asynchronous actions
+
+Setting the `asynchronous` property to `true` allows you to run a command action asynchronously in the background. Use this feature for long-running actions that would otherwise block the UI and prevent the user from continuing their work.
+
+When a user launches an asynchronous action, Magnolia starts to execute the action immediately. If the action isn’t completed within five seconds, the system notifies the user that the action will take a while to complete. The execution continues in the background, allowing the user to work on something else, and the system informs the user when the action succeeds or fails. In case of failure, a message in the [Notifications app](../../List-of-apps/Notifications-app/) may refer to a log file for more details.
+
+Actions such as recursive `publish` and `delete` should be run asynchronously because these actions involve content versioning, and can be time-consuming.
+
+## [](#_action_availability)Action availability
+
+Action availability defines whether the action is permitted on the selected item.
+
+For example, the `addNodeAction` definition below is permitted when:
+
+-   The action is at the workspace root level (you can create a category without selecting an item).
+
+-   The selected item is a category (you can create subcategories).
+
+-   The selected item is a folder.
+
+-   The selected item is not marked for deletion.
+
+
+> **Important:** Action availability is different from action bar section availability. Section availability defines whether the actions configured within a section are displayed in the action bar. If the section is displayed, action availability will be checked for each action in the section.
+
+You can add multiple availability rule classes. The `rules` parent node contains subnodes, one for each rule. The rules are combined with a logical `AND` operator.
+
+```yml
+actions:
+  addCategory:
+    availability:
+      nodes: true
+      root: true
+      nodeTypes:
+        - mgnl:category
+        - mgnl:folder
+      rules:
+        - name: isNotDeletedRule
+          $type: jcrIsDeletedRule
+          negate: true
+        - name: anotherRule
+          class: com.your.customapp.app.action.availability.AnotherAvailabilityRuleDefinition
+```
+
+You can also restrict an action by [role](../../../Administration/IAM/Roles-and-access-control-lists/). Here is an `OpenPublicationDialogActionDefinition` that only the `editor` and `publisher` roles are permitted to execute.
+
+```yml
+actions:
+  activate: !override &activate
+    class: info.magnolia.module.workflow.action.OpenPublicationDialogActionDefinition
+    dialogName: workflow:publish
+    icon: icon-publish
+    catalog: website
+    command: activate
+    label: Request to Publish
+    availability:
+      writePermissionRequired: true
+      access:
+        roles:
+          editor: editor
+          publisher: publisher
+      rules:
+        IsPublishableRule:
+          implementationClass: info.magnolia.ui.framework.availability.IsPublishableRule
+          name: IsPublishableRule
+```
+
+### [](#_action_availability_properties)Action availability properties
+
+ PropertyDescription
+
+`<action name>`
+
+**required**
+
+Name of the action.
+
+     `availability`
+
+**required**
+
+Defines the availability configuration for the action.
+
+         `access`
+
+**optional**
+
+Action is available if the current user has one of the listed roles.
+
+             `roles`
+
+**required**
+
+Action is available to users assigned the list of [roles](../../../Administration/IAM/Roles-and-access-control-lists/).
+
+                 `<role>`
+
+**required**
+
+Name of the [role](../../../Administration/IAM/Roles-and-access-control-lists/) that is permitted to execute the action. Add one property for each role.
+
+         `nodes`
+
+**optional**, *default is `true`*
+
+Action is available if the selected item is a node.
+
+         `nodeTypes`
+
+**optional**
+
+Action is available if the selected item is one of the node types listed.
+
+             `<node type>`
+
+**required**
+
+Valid [node type](../../../Administration/Architecture/Node-types/) such as `mgnl:folder`.
+
+         `rules`
+
+**optional**
+
+Action is available if the selected item matches every availability rule class.
+
+             `<rule name>`
+
+**required**
+
+It gives the node a name that describes the rule class. One node for each rule, and the node name is arbitrary.
+
+                 `class`
+
+**required** (unless `$type` is used)
+
+[Action availability definition class](#_action_availability_definition_classes). The class must implement the info.magnolia.ui.api.availability.AvailabilityDefinition interface. Set the value to the fully qualified class name.
+
+                 `$type`
+
+You can use this as a shortcut for `class` if the definition class is annotated with info.magnolia.ui.api.availability.AvailabilityRuleType. The proper value is defined by the annotation.
+
+                 `implementationClass`
+
+**required**
+
+The class that contains custom logic to check if the action is permitted on the selected item and implements info.magnolia.ui.availability.rule.AvailabilityRule. Your custom class must extend info.magnolia.ui.availability.rule.AbstractAvailabilityRule. A default implementation class is typically hard-coded in the definition class. You only need to add this property if you want to override the default implementation.
+
+         `root`
+
+**optional**
+
+Action is available at the workspace root level if `true`.
+
+         `folder`
+
+**optional**, *default is `null`*
+
+Action is available for folders only if `true`, and for non-folder content only if `false`. When this property is not specified, the action is available for both folders and non-folder content.
+
+> **Note:** This option is for CDS content and is not supported for JCR content. Please see the nodeTypes option and use mgnl:folder node type to specify availability for folders in JCR.
+
+         `properties`
+
+**optional**, *default is `false`*
+
+Action is available if the selected item is a property.
+
+         `multiple`
+
+**optional**, *default is `false`*
+
+Defines whether the action is available for multiple items.
+
+For more information, see [Actions on multiple items](#_actions_on_multiple_items).
+
+         `writePermissionRequired`
+
+**optional**, *default is `false`*
+
+Set to `true` if the action requires write permission on the currently selected node. The action will be disabled if the user does not have write permission.
+
+### [](#_action_availability_definition_classes)Action availability definition classes
+
+  class$typeDescription
+
+info.magnolia.ui.availability.rule.JcrNodeRuleDefinition
+
+N/A
+
+Returns `true` if the item is a node.
+
+info.magnolia.ui.availability.rule.JcrNodeTypeRuleDefinition
+
+N/A
+
+Returns `true` if the item is a node of any of the listed types.
+
+info.magnolia.ui.availability.rule.JcrIsDeletedRuleDefinition
+
+`jcrIsDeletedRule`
+
+Returns `true` if the item is a node of the `mgnl:deleted` [mixin type](../../../Administration/Architecture/Node-types/#_mixin_node_types).
+
+info.magnolia.ui.availability.rule.JcrPropertyRuleDefinition
+
+N/A
+
+Returns `true` if the item is a property.
+
+info.magnolia.ui.contentapp.action.clipboard.CanCopyContentRuleDefinition
+
+`canCopyContentRule`
+
+Returns `true` if the item can be copied.
+
+info.magnolia.ui.contentapp.action.clipboard.CanPasteContentRuleDefinition
+
+`canPasteContentRule`
+
+Returns `true` if the item can be pasted.
+
+info.magnolia.ui.availability.rule.CanMoveRuleDefinition
+
+N/A
+
+Returns `true` if the item can be moved.
+
+> **Note:** CanMoveRuleDefinition uses info.magnolia.ui.contentapp.browser.drop.AlwaysTrueDropConstraintDefinition by default. To learn about the class, see dropConstraint.With CanMoveRuleDefinition, you can configure dropConstraint for any move action.Example definitionactions:
+>   choose:
+>     $type: chooseAction
+>     availability:
+>       rules:
+>         CanMoveRuleDefinition: &canMoveRule
+>           class: info.magnolia.ui.availability.rule.CanMoveRuleDefinition
+>           dropConstraint:
+>             implementationClass: info.magnolia.ui.contentapp.drop.JcrDropConstraint
+>             primaryNodeType: mgnl:asset
+>           dropLocation: ON_TOP # default value in CanMoveRuleDefinition
+>   above:
+>     $type: chooseAction
+>     availability:
+>       rules:
+>         CanMoveRuleDefinition: *canMoveRule
+>           dropLocation: ABOVE
+>   below:
+>     $type: chooseAction
+>     availability:
+>       rules:
+>         CanMoveRuleDefinition: *canMoveRule
+>           dropLocation: BELOW
+
+info.magnolia.ui.availability.rule.JcrPublishableRuleDefinition
+
+`jcrPublishableRule`
+
+Returns `true` if the item can be published.
+
+info.magnolia.ui.availability.rule.JcrPublishedRuleDefinition
+
+`jcrPublishedRule`
+
+Returns `true` if the item is published.
+
+info.magnolia.ui.availability.rule.JcrHasChildrenRuleDefinition
+
+`jcrHasChildrenRule`
+
+Returns `true` if the item has child nodes.
+
+info.magnolia.ui.availability.rule.JcrHasVersionsRuleDefinition
+
+`jcrHasVersionsRule`
+
+Returns `true` if the item has versions.
+
+info.magnolia.ui.availability.rule.JcrDepthRuleDefinition
+
+`jcrDepthRule`
+
+Returns `true` if the item is within the specified depth range.
+
+info.magnolia.ui.availability.rule.IsValidFormRuleDefinition
+
+N/A
+
+Returns `true` if the form where the action is defined is valid.
+
+info.magnolia.ui.availability.rule.AccessGrantedRuleDefinition
+
+N/A
+
+Returns `true` if access can be granted to the item.
+
+info.magnolia.ui.availability.rule.MultipleItemsRuleDefinition
+
+N/A
+
+Returns `true` if the action can be applied to multiple items.
+
+info.magnolia.ui.availability.rule.JcrRootRuleDefinition
+
+N/A
+
+Returns `true` if the action is at the workspace root level.
+
+info.magnolia.ui.availability.rule.JcrWritePermissionRuleDefinition
+
+N/A
+
+Returns `true` if the user has write permission for the item.
+
+### [](#_actions_on_multiple_items)Actions on multiple items
+
+Action availability defines whether an action can be executed on multiple items. `delete`, `move`, `publish` and `unpublish` are examples of actions that can be executed on multiple items.
+
+Here is a `jcrCommandAction` definition supporting multiple items.
+
+```yml
+actions:
+  activate:
+    catalog: versioned
+    $type: jcrCommandAction
+    command: publish
+    icon: icon-publish
+    availability:
+      multiple: true
+```
+
+For a more detailed availability check (such as verifying that all items are at the same level or have the same parent), use [action availability rules](#_action_availability_definition_classes).
+
+When you program an action that supports multiple items, you are responsible for handling the items in the correct order and solving dependencies. For example, when deleting multiple nodes where one node is a child of another, delete the nodes in the correct order to avoid exceptions. An action is also responsible for informing the user about the result whether it has successfully processed all the items or failed on some of them.

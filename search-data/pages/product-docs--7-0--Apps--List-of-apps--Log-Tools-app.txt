@@ -1,0 +1,63 @@
+---
+title: "Log Tools app"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/List-of-apps/Log-Tools-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Log Tools app
+---
+
+# Log Tools app
+
+The Log Tools app includes three subapps to help system administrators monitor Magnolia. You can find the app within the Tools menu of AdminCentral.
+
+-   **Log List**: View log files such as `magnolia-debug.log` or `magnolia-error.log`.
+
+-   **Log Viewer**: This subapp works with the Log List subapp so users can view log files from within Magnolia (up to certain limits).
+
+-   **Log Level**: Change the logging level of any class which has logging statements embedded.
+
+
+> **Caution:** Apps configured in the new App Launcher layout will cause entries to appear in the log. To keep the log tidy, we recommend adjusting your App Launcher layout configuration and removing any apps you don’t use.
+
+## [](#_log_list_and_log_viewer_subapps)Log List and Log Viewer subapps
+
+In the Log List subapp you can find all the available log files provided by Magnolia. The actual locations of these log files on the server is determined by the `magnolia.logs.dir` property, which is set in the [properties file](../../../Administration/Architecture/Configuration-management/#_defining_properties). You can view the location of this directory from the Config info subapp of the [About Magnolia app](../About-Magnolia-app/).
+
+![Log list subapp](../../../_images/6-2-logToolsApp-browser.png)
+
+### [](#_viewing_and_downloading_log_files)Viewing and downloading log files
+
+From the Log List subapp, a user can select one or multiple files at a time. With log files selected click either the View or Download button.
+
+Clicking the View button spawns a Viewer subapp for each log file selected. It should be noted that the Viewer subapp only shows the most recent log entries. Larger log files should be downloaded and viewed in an external viewer. In such cases the subapp informs you that only a part of the log file is shown.
+
+Clicking the Download button triggers the download dialog of your browser. In the case of multiple files Magnolia zips everything together to make downloading more convenient.
+
+## [](#_log_levels_subapp)Log Levels subapp
+
+Also available is the Log Levels subapp. This subapp can be used to adjust the log levels of any class which has logging statements embedded within its source code. Changes made here stay in effect until Magnolia is shutdown. If you want to make permanent changes to your logging configuration then you must modify the [log4j2.xml file](../../../Administration/Monitoring/).
+
+![Log levels subapp](../../../_images/6-2-logToolsApp-logLevels.png)
+
+### [](#_viewing_and_setting_log_levels)Viewing and setting log levels
+
+In the Log Levels subapp it is possible to view and change log levels for classes and packages. This is a transient change to the configuration. Upon restart of the server all settings go back to their originals.
+
+To filter the list with a specific [logging level](https://logging.apache.org/log4j/2.x/log4j-api/apidocs/org/apache/logging/log4j/Level.html), open the Level drop-down menu in the top right corner of the subapp and select the appropriate logging level.
+
+> **Tip:** You can always reset the display to show all levels by changing the drop-down back to the empty option.
+
+To filter classes by name, use the Name text box. As you type, the system offers suggestions.
+
+By default, there are only a few classes and packages listed. However, you can always add another logger configuration using the Logger name field at the bottom of the Log Levels subapp. For example, let’s turn on ERROR for the cache filter.
+
+1.  In the Logger name field enter the value `info.magnolia.module.cache.filter.CacheFilter`.
+
+2.  Click the Add Logger Config button to add the new entry.
+
+3.  Double click the Level column to adjust the setting to ERROR.
+    ![Add Logger configuration](../../../_images/6-2-logToolsApp-addLogger.png)
+
+4.  Make some page requests.
+
+5.  View the debug log file from the Log List subapp

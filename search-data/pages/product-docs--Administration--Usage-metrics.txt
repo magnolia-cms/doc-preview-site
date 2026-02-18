@@ -1,0 +1,142 @@
+---
+title: "Usage metrics"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Usage-metrics/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Usage metrics
+---
+
+# Usage metrics
+
+This privacy policy covers the information we collect through Magnolia CMS as you use the product.
+
+## [](#_what_information_we_collect)What information we collect
+
+We collect **anonymous non-personal** usage statistics when you use Magnolia CMS. We collect the information using analytics techniques that exclude any information that might identify you or your organization.
+
+Examples of information we collect and store include:
+
+-   Magnolia version
+
+-   Magnolia edition
+
+-   Instance type (author, public)
+
+-   Module names and versions
+
+
+### [](#_site_information)Site information
+
+-   `List<Site> sites`
+
+    -   `String defaultLocale`
+
+    -   `String fallbackLocale`
+
+    -   `List<String> locales`
+
+
+
+### [](#_module_information)Module information
+
+-   `List<Module> modules`
+
+    -   `String name`
+
+    -   `String version`
+
+
+
+#### [](#_graphql)GraphQL
+
+-   `Integer numberOfExecutions`
+
+
+#### [](#_package_manager)Package Manager
+
+-   `Map<String, Object> metricsMap`
+
+    -   `"numberOfUniqueUsers", int numberOfUniqueUsers`
+
+    -   `"uniqueUserRoles", List<String> uniqueUserRoles`
+
+    -   `"countAllPackages", int countAllPackages`
+
+    -   `"countByDraftStatus", int countByDraftStatus`
+
+    -   `"countByBuiltStatus", int countByBuiltStatus`
+
+    -   `"countByInstalledStatus", int countByInstalledStatus`
+
+    -   `"countByErrorStatus", int countByErrorStatus`
+
+
+
+### [](#_configuration_information)Configuration information
+
+-   `String uuid`
+
+-   `String magnoliaVersion`
+
+-   `String instanceFallBackLocale`
+
+-   `String osName`
+
+-   `String osVersion`
+
+-   `String osArch`
+
+-   `String javaVendor`
+
+-   `String javaVersion`
+
+-   `String javaRuntimeVersion`
+
+-   `String serverInfo`
+
+-   `boolean isAuthor`
+
+-   `boolean utf8`
+
+-   `boolean develop`
+
+
+## [](#_how_we_use_the_information)How we use the information
+
+We use the information to make product decisions where knowing real-life usage is helpful:
+
+-   Should we continue to support module X?
+
+-   Is anybody using connector Y?
+
+-   How many clients are on the latest major release?
+
+
+We want to make informed decisions and dedicate resources to features that benefit as many users as possible.
+
+## [](#_we_dont_share_the_information)We don’t share the information
+
+We don’t share the information with any other party. It stays within Magnolia.
+
+## [](#_disabling_information_collection)Disabling information collection
+
+Administrators can disable the collection of information with a setting in the Magnolia UI. The feature is enabled by default when you install Magnolia. If you wish to switch it off, you can either go to the App Launcher and look for the **About Magnolia** app in the Tools section.
+
+1.  In the About Magnolia app, scroll down to the **Usage Metrics** section
+
+2.  Uncheck the checkbox there.
+
+
+> **Note:** If you want to disable or enable usage metrics, you must manually toggle the Usage metrics checkbox on all author and public instances.
+
+## [](#_disabling_information_collection_2)Disabling information collection
+
+Administrators can disable the collection of information with a setting in the Magnolia UI. The feature is enabled by default when you install Magnolia. If you wish to switch it off, you can either go to the App Launcher and look for the **About Magnolia** app in the Tools section, or type "about magnolia" in the Global Search.
+
+1.  In the About Magnolia app, scroll down to the **Usage Metrics** section
+
+2.  Uncheck the box.
+
+    ![Unchecking the Usage Metrics box gif](../../_images/admincentral/administration/disable-usage-metrics-from-admincentral.gif)
+
+    > **Note:** If you want to disable or enable usage metrics, you must manually toggle the Usage metrics checkbox on all author and public instances.

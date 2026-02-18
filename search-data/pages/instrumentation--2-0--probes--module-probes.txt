@@ -1,0 +1,89 @@
+---
+title: "Module probes"
+url: https://docs.magnolia-cms.com/instrumentation/2.0/probes/module-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > Module probes
+---
+
+# Module probes
+
+Module probes collect information about the modules (Java and light modules) installed in Magnolia. They can be used to discover what modules are present and their versions.
+
+Module probes are configured in the instrumentation module.
+
+There are two system probes:
+
+-   ModulesProbe
+
+-   ModuleVersionsProbe
+
+
+> **Note:** Both probes capture the same information - the installed modules and their versions - but in slightly different forms as metric labels.
+
+The module probes are configured in the Instrumentation module. Module probes should be added in /modules/instrumentation/config/probes and specify the class property (required) and enabled property (optional). Module probes defined in the instrumentation module are created or modified when the instrumentation module is restarted or changed.
+
+## [](#_modulesprobe)ModulesProbe
+
+The ModulesProbe records the installed modules in Magnolia and their versions.
+
+The ModulesProbe records the modules installed in Magnolia like ModuleVersionsProbe. Unlike ModuleVersionsProbe, ModulesProbes records each installed module as a separate measurement with set labels (moduleName and moduleVersion).
+
+### [](#_configuration_properties)Configuration properties
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.environment.ModulesProbe`. |     |
+| `name` | The metric name stored by Prometheus. Taken as the node name when configured. |     |
+| `enabled` | **Default** = `true` |     |
+| `description` | A description of the metric. |     |
+
+### [](#_metrics)Metrics
+
+ MetricDescription
+
+`<metric-name>`
+
+The configured metric name.
+
+> **Note:** The value of the metric will always be 1.
+
+### [](#_labels)Labels
+
+| Label | Metric | Description |
+| --- | --- | --- |
+| `moduleName` | `<metric-name>` | The name of an installed Magnolia module. |
+| `moduleVersion` | `<metric-name>` | The current version of the module. |
+
+### [](#_example)Example
+
+![ModulesProbe example config](../../_images/probes/ModulesProbe-example-config.jpg)
+
+## [](#_moduleversionsprobe)ModuleVersionsProbe
+
+The ModuleVersionProbe records the modules installed in Magnolia like ModulesProbe. Unlike ModulesProbe, ModuleVersionsProbes records each installed module as a label with the module name as the label name and the module version as the label value.
+
+The modules and versions recorded by ModuleVersionsProbe may be more convenient to work than separate measurements for each module recorded by ModulesProbe.
+
+### [](#_configuration_properties_2)Configuration properties
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.environment.ModuleVersionsProbe`. |     |
+| `name` | The metric name stored by Prometheus. Taken as the node name when configured. |     |
+| `enabled` | **Default** = `true` |     |
+| `description` | A description of the metric. |     |
+
+### [](#_metrics_2)Metrics
+
+ MetricDescription
+
+`<metric-name>`
+
+The configured metric name with installed Magnolia modules and their current versions as labels.
+
+> **Note:** The value of the metric will always be 1.
+
+### [](#_example_2)Example
+
+![ModuleVersionsProbe example config](../../_images/probes/ModuleVersionsProbe-example-config.jpg)

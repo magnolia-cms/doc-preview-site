@@ -1,0 +1,65 @@
+---
+title: "DAM upload field - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/DAM-upload-field-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > List of fields - 5 UI > DAM upload field - 5 UI
+---
+
+# DAM upload field - 5 UI
+
+Deprecated
+
+> **Note:** This DAM upload field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see DAM upload field for Magnolia 6 UI instead.
+
+`DamUploadFieldDefinition` renders a field that is used by the [Assets app](../../../../Content-apps-5-UI/List-of-apps-5-UI/Assets-app-5-UI/) for uploading assets to the DAM workspace. It extends the [basic upload field](../Basic-upload-field-5-UI/) as follows:
+
+-   The uploaded file is mapped to a media type based on its MIME type.
+
+-   Default field labels are overridden by media-type labels such as **Upload new image**.
+
+-   Actions for [editing images](#6.2@product-docs:ROOT:Authoring/Editing-images.adoc) in the media editor.
+
+-   Actions for previewing images.
+
+-   Thumbnail preview.
+
+
+It is possible to configure `DamUploadFieldDefinition` in dialogs or other apps, but keep in mind that the file will be placed in the workspace for which the field has been configured. For example, if you use the field in a dialog for a component template, that file (when uploaded using the field) will be stored in the website, not the DAM, workspace. It is best practice to keep your assets in the DAM whenever possible and link to them using a [link field](#Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Link-field+-+5+UI).
+
+class: `info.magnolia.dam.app.ui.field.definition.DamUploadFieldDefinition`
+
+fieldType: `damUpload`
+
+## [](#_dam_upload_field_properties)DAM upload field properties
+
+Simple DAM upload field definition:
+
+```yml
+form:
+  tabs:
+    - name: tabUpload
+      label: Upload
+      fields:
+        - name: upload
+          fieldType: damUpload
+          label: Upload asset
+          binaryNodeName: jcr:content
+          editFileName: true
+```
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/DAM-upload-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Referencing-fields-shortcut-info-5-UI.adoc\[\]
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/DAM-upload-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-upload-field-properties-5-UI.adoc\[\]
+
+Caption properties specific to the DAM upload field:
+
+| Property | Description |
+| --- | --- |
+| `<field name>` | **required**<br><br>Name of the field. |
+| `editFileCaption`# | **optional**, *default is \`Edit image …​\`*<br><br>Text displayed as a tooltip when you hover over the edit action icon. |
+| `lightboxCaption`# | **optional**, *default is \`View in lightbox …​\`*<br><br>Text displayed as a tooltip when you hover over the preview action icon. |
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/DAM-upload-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-field-properties-5-UI.adoc\[\]
+
+> **Tip:** When using the basic upload field in a composite field, use DelegatingCompositeFieldTransformer. The other transformer classes do not work.

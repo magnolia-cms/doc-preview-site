@@ -1,0 +1,108 @@
+---
+title: "Content staging"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Instances/Content-staging/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Instances > Content staging
+---
+
+# Content staging
+
+Content staging is the practice of publishing content to an intermediate instance ([staging site](https://en.wikipedia.org/wiki/Staging_site)) for review and test. Once the content is approved, it is published forward to production instances. Staging is useful when you need to publish large amounts of content such as a campaign that consists of many pages and assets. You can also use staging as workflow step when content needs to be user acceptance tested or reviewed for compliance.
+
+Create a new staging instance between the author and public instance. Publish content first to this staging instance, then to production.
+
+![Publishing diagram](../../../_images/content-staging.png)
+
+## [](#_creating_a_staging_instance)Creating a staging instance
+
+To create a staging instance:
+
+1.  Stop Magnolia.
+
+2.  [Copy an existing public instance](../Creating-a-new-public-instance/) to create a new instance. See best practice below.
+
+3.  Rename the copied instance folder so that you can identify it as staging, for example `magnoliaStaging`.
+
+4.  Copy the `magnolia-activation-keypair.properties` file from the author instance to the staging instance and all other public instances. The keypair file contains the private and public [activation keys](../../Security/Publishing-security/). This ensures that the staging instance can publish content forward. The file is in `${magnolia.home}/WEB-INF/config/default/` by default.
+
+5.  Start Magnolia.
+
+
+![Staging instane folder](../../../_images/magnoliaStaging-folder.png)
+
+**Best practice**
+
+Configure your content staging instance as a *public* instance so that users cannot edit pages on it. The Pages app does not display the green edit bars on public instances. You typically don’t want reviewers to change content on the staging instance. While reviewers may need permission to log into the AdminCentral to review functionality such as new apps, they should not edit pages. The staging instance is intended for testing and approving only. If something is not correct, fix it on the author instance and publish again to staging for another test.
+
+## [](#_configuring_staging_as_a_receiver_of_the_author_instance)Configuring staging as a receiver of the author instance
+
+Publishing receivers are configured using [MicroProfile Config](../../Architecture/configuration-management/microprofile-config/).
+
+This allows for easier provisioning and environment-specific setups without relying on JCR bootstrapping.
+
+1.  Set the `magnolia.config.locations` system property to point to the directory containing your MicroProfile configuration files. For example, in a Tomcat `setenv.sh`:
+
+    \-Dmagnolia.config.locations=/opt/magnolia/mounted-config
+
+2.  In your configuration file (for example, `microprofile-config.properties` or `microprofile-config.yaml` in the specified location), define the staging receiver using the `magnolia.publishing.receivers` prefix.
+
+
+Example in properties file
+
+```properties
+magnolia.publishing.receivers[0].name=magnoliaStaging8080
+magnolia.publishing.receivers[0].url=http://localhost:8080/magnoliaStaging
+magnolia.publishing.receivers[0].enabled=true
+```
+
+Example in YAML file
+
+```yaml
+magnolia:
+  publishing:
+    receivers:
+      - name: magnoliaStaging8080
+        url: http://localhost:8080/magnoliaStaging
+        enabled: true
+```
+
+To verify the configuration, use the Config info tab in the About app to view the resolved properties.
+
+## [](#_configuring_production_as_a_receiver_of_the_staging_instance)Configuring production as a receiver of the staging instance
+
+1.  Log into the staging instance. It’s a public instance but you can find AdminCentral at `http://localhost:8080/magnoliaStaging/.magnolia/admincentral`.
+
+2.  Similarly, set the `magnolia.config.locations` system property on the staging instance (for example, in `setenv.sh`).
+
+3.  In the configuration file for the **staging** instance, define the production receiver.
+
+
+Example in properties file
+
+```properties
+magnolia.publishing.receivers[0].name=magnoliaPublic8080
+magnolia.publishing.receivers[0].url=http://localhost:8080/magnoliaPublic
+magnolia.publishing.receivers[0].enabled=true
+```
+
+Example in YAML file
+
+```yaml
+magnolia:
+  publishing:
+    receivers:
+      - name: magnoliaPublic8080
+        url: http://localhost:8080/magnoliaPublic
+        enabled: true
+```
+
+Normally public instances don’t have any receivers but the staging instance is a special case. This instance will display the publishing status of content but the status is only synchronized with the public receivers in front of it, not with the author behind it.
+
+## [](#_unpublishing_and_deleting_content)Unpublishing and deleting content
+
+> **Note:** Handle unpublishing and deleting of content carefully. Make sure that you unpublish content from the public instances before unpublishing it from staging. Unpublishing does not ripple backwards in the chain automatically.
+
+## [](#_content_staging_is_not_code_staging)Content staging is not code staging
+
+Content staging is not the same as code staging. In a code staging environment, developers test application code and verify deployment procedures. A code staging environment should mirror the production environment as closely as possible. This ensures that when the code is production ready it can be deployed to production without issues. This page is about creating a content staging instance for reviewing content.

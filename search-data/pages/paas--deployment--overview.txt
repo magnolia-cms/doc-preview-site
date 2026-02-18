@@ -1,0 +1,15 @@
+---
+title: "The pipeline"
+url: https://docs.magnolia-cms.com/paas/deployment/overview/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > The pipeline
+---
+
+# The pipeline
+
+When DX Cloud is set up with GitLab, changes in your project automatically trigger your pipeline via what is configured in your `.gitlab-ci.yml` file.
+
+This way, changes are picked up automatically and you don’t have to worry about it. However, the final *deployment* step is sometimes manual and you’ll need to make a deploy action to finish the process. This is typically done by clicking a button manually in GitLab.
+
+![gitlab manual deploy action](../../_images/deployment/gitlab-manual-deploy-action.jpg)

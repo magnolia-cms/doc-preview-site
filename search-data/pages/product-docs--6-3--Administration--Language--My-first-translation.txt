@@ -1,0 +1,196 @@
+---
+title: "My first translation"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Language/My-first-translation/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Language > My first translation
+---
+
+# My first translation
+
+In this tutorial, you translate the user interface (UI) of a Magnolia app to another language by creating a new i18n properties file for the language and adding the file to the app. Don’t worry if you’re not a developer. You don’t need a development environment – all you need is language skills and Magnolia.
+
+The app whose UI labels and messages you are going to translate is the Bookshelf app, created in the [My first content app](../../../Apps/Developing-an-app/My-first-content-app/) tutorial. The labels and messages are in English and in this tutorial you [internationalize](../Internationalization/) the app for Spanish-speaking users.
+
+## [](#_prerequisites)Prerequisites
+
+The Bookshelf app is meant to be run as an app in Magnolia, so first you must install Magnolia. Before installing Magnolia, check that the following system components are already installed on your system.
+
+> **Note:** The CLI installation steps are based on Magnolia CLI v4.
+
+## [](#_get_java)Get Java
+
+Magnolia needs at least a **Java Runtime Environment (JRE)** to run. Check if there’s a version of Java already installed on your computer by opening the terminal or command prompt and typing `java -version`. If the system reports a version number, Java is installed on your computer.
+
+> **Important:** See Certified stack to confirm that the version installed is supported.For local development, use 17.0.12-zulu. Example installation using SDKMAN:sdk install java 17.0.12-zulu
+
+-   Windows
+
+-   Mac
+
+-   Linux
+
+
+On Windows, you need a Java SE *Development* Kit (JDK). The Java *Runtime* Environment (JRE) is not enough because the Tomcat application server does not recognize it.
+
+-   JRE is for users who run Java programs on their computers.
+
+-   JDK is for developers who write Java-based applications.
+
+
+[Download](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and install JDK. By default, JDK is installed at `C:\Program Files\Java\jdk-<version>\`.
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 27.2727%;"> <col style="width: 72.7273%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top"></th><th class="tableblock halign-left valign-top">Instructions</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Check for <code>JAVA_HOME</code></strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="olist arabic"><ol class="arabic"><li><p>Open the command prompt.</p></li><li><p>Type <code>set</code> and press <code>ENTER</code>.</p></li><li><p>Find <code>JAVA_HOME</code> in the command output and verify that the path points to your JDK installation directory, for example, <code>C:\Program Files\Java\jdk-&lt;version&gt;&gt;.xx</code>.</p></li><li><p>If <code>JAVA_HOME</code> is missing or it points to the wrong directory, see <strong>Set JAVA_HOME</strong>.</p></li></ol></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Set <code>JAVA_HOME</code></strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="olist arabic"><ol class="arabic"><li><p>Open the Command Prompt as an administrator.</p></li><li><p>Set the path for <code>JAVA_HOME</code>.</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">setx /m JAVA_HOME "path\to\Java\jdk" <i class="conum" data-value="1"></i><b>(1)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Where <code>path\to\Java\jdk</code> is where your Java Development Kit is saved.</td></tr></tbody></table></div></li></ol></div><div class="paragraph"><p>The <code>set</code> command creates the <code>JAVA_HOME</code> environment variable and sets its value to the JDK directory. The command is executed when Magnolia starts.</p></div></div></td></tr></tbody></table></div>
+
+For Mac, you need to download or update to Java `17` or higher. After reviewing and agreeing to the terms of the license agreement, download the file, then double-click it to launch the installation wizard and follow the installation instructions.
+
+The installation directory varies from one Linux system to another. On Debian-based distributions, JREs or JDKs are usually installed in `/usr/lib/jvm/`.
+
+## [](#_get_node_js)Get node.js
+
+Magnolia CLI is an [npm](https://www.npmjs.com/) package providing a command line interface (CLI) tool to set up and facilitate light development with Magnolia. The Magnolia CLI tool runs on [Node.js](https://nodejs.org/). If you do not have Node.js installed, go to [Node.js](https://nodejs.org/) and download and install the latest LTS version.
+
+To check the version of your node installation, run the following command in a shell:
+
+node -v
+
+Unresolved include directive in modules/ROOT/pages/Administration/Language/My-first-translation.adoc - include::magnolia-cli:ROOT:partial$p\_get-magnolia-cli.adoc\[\]
+
+### [](#_git)Git
+
+In this tutorial, you need [Git](https://git-scm.com/) to clone the Bookshelf app from our repository into your local Magnolia installation. You can check that Git is installed on your system by executing the `git --version` command. If it is not installed, go to [https://git-scm.com/downloads](https://git-scm.com/downloads) page and install it.
+
+## [](#_installing_and_starting_magnolia)Installing and starting Magnolia
+
+Now install Magnolia.
+
+Unresolved include directive in modules/ROOT/pages/Administration/Language/My-first-translation.adoc - include::magnolia-cli:ROOT:partial$p\_install-magnolia-with-npm-cli-short.adoc\[\]
+
+## [](#_starting_magnolia_with_cli_mgnl_start)Starting Magnolia with CLI mgnl start
+
+Use the `mgnl start` command to start Magnolia. In the parent directory of `light-modules`, enter:
+
+mgnl start
+
+The command installs and starts Magnolia. This is complete when you see a message like `Server startup in 112737 ms`. You can then access the UI of the Author instance.
+
+### [](#_log_into_the_author_instance)Log into the Author instance
+
+Go to `[http://localhost:8080/magnoliaAuthor](http://localhost:8080/magnoliaAuthor)` and log in to the Author instance with:
+
+-   Username: `superuser`
+
+-   Password: `superuser`
+
+
+## [](#_installing_the_bookshelf_app)Installing the Bookshelf app
+
+1.  Go to the `dev/light-modules/` directory.
+
+2.  Clone the `bookshelf` Git repository:
+
+    ```sh
+    git clone -b release/6.2 --single-branch https://bitbucket.org/magnolia-cms/bookshelf.git
+    ```
+
+3.  The app should now appear in the Apps **Edit** group.
+    ![App Launcher with the Bookshelf icon](../../../_images/6-2-29-my1stTrans-Bookshelf-app.png)
+
+4.  In [your user profile](../../IAM/Users/#_editing_user_profile), set the language preference to Spanish. Log out and into Magnolia again. Open the Bookshelf app. Only some of the labels are shown in Spanish. These are typically the more generic message and label keys coming from the UI framework:
+    ![Bookshelf app labels shown in Spanish](../../../_images/6-0-my1stTrans-browserApp-es_locale-rbox.png)
+
+
+## [](#_translating_the_app_ui_to_spanish)Translating the app UI to Spanish
+
+In the steps below, you add the missing Spanish translations:
+
+1.  Go to the `dev/light-modules/booshelf/i18n/` subfolder. The `bookshelf-messages_en.properties` file contains the English values for the app labels and messages.
+
+2.  Make a copy of the file and name it `bookshelf-messages_`**`es`**`.properties`.
+
+3.  In the new file, translate the values from English to Spanish and save your work.
+
+    > **Note:** We suggest you translate in an external text editor.If you open the file in the internal editor of the Resource files app, the resource becomes a copy in the JCR workspace that is prioritized by Magnolia over the original file on the file system. If you make subsequent changes to the file on the file system, your changes will not be taken into account. JCR configuration overrides file system configuration.
+
+    Example translation:
+
+    bookshelf-messages\_es.properties
+
+
+```java
+# App label
+bookshelf-app=Estantería
+
+# Book browser subapp labels.
+bookshelf-app.browser.label=Navegador de libros
+bookshelf-app.browser.actionbar.sections.root.label=Acciones
+bookshelf-app.browser.actionbar.sections.item.label=Acciones
+bookshelf-app.browser.actionbar.sections.folder.label=Acciones
+bookshelf-app.browser.actionbar.sections.deletedItem.label=Acciones
+bookshelf-app.browser.actionbar.sections.deletedFolder.label=Acciones
+bookshelf-app.browser.actions.addItem.label=Añadir libro
+bookshelf-app.browser.actions.confirmMarkDeletion.label=Borrar
+bookshelf-app.browser.actions.editItem.label=Editar
+bookshelf-app.browser.actions.rename.label=Renombrar
+bookshelf-app.browser.actions.addFolder.label=Añadir estante
+bookshelf-app.browser.actions.confirmDeleteFolder.label=Borrar
+bookshelf-app.browser.actions.editFolder.label=Renombrar
+bookshelf-app.browser.actions.moveFolder=Mover
+bookshelf-app.browser.actions.confirmDeleteFolder.confirmationHeader=¿Borrar {0,choice,1#estante|1< {1} estantes}?
+bookshelf-app.browser.actions.confirmDeleteFolder.confirmationMessage={0,choice,1# Se borrará el estante selectionado.|1< Se borrarán los estantes selectionados.}
+bookshelf-app.browser.actions.confirmMarkDeletion.confirmationHeader=¿Borrar {0,choice,1#libro|1< {1} libros}?
+bookshelf-app.browser.actions.confirmMarkDeletion.confirmationMessage={0,choice,1#Se borrará el libro selectionado.|1< Se borrarán los libros selectionados.}
+bookshelf-app.browser.actions.confirmDeleteFolder.proceedLabel=Sí, borrar
+bookshelf-app.browser.actions.confirmDeleteFolder.cancelLabel=No
+bookshelf-app.browser.actions.duplicate=Duplicar
+bookshelf-app.browser.actions.move=Mover
+bookshelf-app.browser.actions.copy=Copiar
+bookshelf-app.browser.actions.paste=Pegar
+bookshelf-app.browser.views.treeview.name.label=Nombre del estante o Nombre de catalogación del libro
+bookshelf-app.browser.views.listview.name.label=Nombre de catalogación
+bookshelf-app.browser.views.listview.path.label=Localización del libro
+
+# Book detail subapp labels and descriptions.
+bookshelf-app.bookDetailsTab.label=Detalles del libro
+bookshelf-app.bookDetailsTab.name.label=Nombre de catalogación
+bookshelf-app.bookDetailsTab.name.description=Éste campo es obligatorio. Su valor se utiliza para crear un nombre único de catalogación de libro, el cual será visible en la subapp NAVEGADOR DE LIBROS y almacenado en el <i>books</i> workspace.
+bookshelf-app.bookDetailsTab.authors.label=Autor(es)
+bookshelf-app.bookDetailsTab.ed.label=Autor(es) en función editorial
+bookshelf-app.bookDetailsTab.ed.buttonLabel=
+bookshelf-app.bookDetailsTab.ed.description=Marque la casilla si la función principal de "Autor(es)" es editorial.
+bookshelf-app.bookDetailsTab.title.label=Título completo
+bookshelf-app.bookDetailsTab.description.label=Descripción
+bookshelf-app.bookDetailsTab.publisher.label=Editor
+bookshelf-app.bookDetailsTab.publish_date.label=Fecha de publicación
+bookshelf-app.bookDetailsTab.publish_date.description=Si solo conoce el año de publicación, introduzca la fecha en formato AAAA-01-01.
+bookshelf-app.bookDetailsTab.isbn13.label=ISBN-13
+bookshelf-app.bookDetailsTab.isbn13.description=Si hay un ISBN-13 disponible para el libro, introduzcalo sin guiones ni espacios.
+bookshelf-app.bookDetailsTab.isbn13.validation.errorMessage=El número ISBN-13 contiene 13 caracteres. Los 12 primeros caracteres solo pueden ser númeréricos, el último carácter puede ser un número o "X". El número tiene que comenzar con 978 o 979.
+bookshelf-app.detail.actions.cancel=Cancelar
+bookshelf-app.detail.actions.commit=Guardar datos
+
+# Other messages and button labels
+ui-admincentral.dateField.timeZone.description=AAAA-MM-DD
+ui-framework.actions.copyItem.successOneItemCopied=El elemento ha sido copiado.
+ui-framework.actions.copyItem.successManyItemsCopied={0} elementos han sido copiados.
+ui-framework.actions.pasteItem.success={0} {0,choice,1#elemento ha sido pegado|1< elementos han sido pegados} en {1}.
+confirmation.delete.yes=Sí, borrar
+confirmation.no=No
+confirmation.delete.modified.message=<b>Aviso</b> <br/>Los siguientes subnodos han sido modificados pero no publicados. Si se han movido de localization, no se eliminarán correctamente de las instancias públicas. <br/> <br/> Subnodos modificados:
+```
+
+\+ Note that the `# Other messages and button labels` section contains additional Spanish message keys. These have been added because they are defined in other Magnolia modules and affect the action, field, and button labels in the Bookshelf app.
+
+## [](#_testing_the_translation)Testing the translation
+
+When you save the file, Magnolia immediately detects the change. Refresh your browser to see the new app labels.
+
+![Bookshelf browser in Spanish](../../../_images/6-0-bookshelf-browserEs.png)
+
+Related topics
+
+-   [My first content app](../../../Apps/Developing-an-app/My-first-content-app/)
+
+-   [Internationalization](../Internationalization/)
+
+-   [Content Types](../../../Features/Content-Types/)

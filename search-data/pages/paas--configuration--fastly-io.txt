@@ -1,0 +1,43 @@
+---
+title: "Fastly Image Optimizer"
+url: https://docs.magnolia-cms.com/paas/configuration/fastly-io/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Fastly Image Optimizer
+---
+
+# Fastly Image Optimizer
+
+DX Cloud uses Fastly’s Image Optimizer (IO) to optimize assets.
+
+Fastly’s Image Optimizer (IO) works with images and caches optimized versions of those images. It interacts with the **fetch node** in the **shield Point of Presence (POP)** . Since images and variations of images are handled within Fastly instead of within Magnolia itself, it helps minimize any lag or heavy lifting from the Magnolia side of things.
+
+If you want to know more, check out Fastly’s dedicated [IO documentation](https://developer.fastly.com/reference/io/).
+
+![fastly io flow](../../_images/cdn/image-optimization/fastly-io-flow.jpg)
+
+## [](#_implement_fastly_io)Implement Fastly IO
+
+### [](#_prerequisites)Prerequisites
+
+-   You must have the [dam-jcr-fastly:ROOT:index.adoc](#dam-jcr-fastly:ROOT:index.adoc) in your DX Cloud bundle.
+
+-   You should be familiar with the [DAM API](../../../product-docs/7.0/Developing/API/Java-Server-APIs/DAM-API/).
+
+-   You should have a general understanding of [asset renditions](../../../product-docs/7.0/Developing/API/Java-Server-APIs/DAM-API/#_assetrenditions_and_mediatypes).
+
+
+Unresolved include directive in modules/ROOT/partials/cdn/p\_implement-fastly-io.adoc - include::dam-jcr-fastly:ROOT:partial$r\_configuration.adoc\[\]
+
+## [](#_fastly_io_parameters_reference)Fastly IO parameters reference
+
+Fastly IO allows you to apply variations to your images through query parameters. Within DX Cloud, you can configure these variations directly in the `config.yaml` file as shown in the [\[Configuration\]](#Configuration) section.
+
+We won’t put an exhaustive list here as you can reference those directly through Fastly’s [query parameters reference documentation](https://developer.fastly.com/reference/io/#query-parameters). However, to give you an idea, here are a few common query parameters used to make variations to images.
+
+| Parameter | Description | Example |
+| --- | --- | --- |
+| `blur` | Applies a blur filter to the image.<br><br>For more on this parameter, see [`blur`](https://developer.fastly.com/reference/io/blur/). | `?blur=50` |
+| `crop` | Crops the image to the desired parameters.<br><br>For more on this parameter, see [`crop`](https://developer.fastly.com/reference/io/crop/). | `?crop=16:9` |
+| `optimize` | Applies optimal quality compression<br><br>For more on this parameter, see [`optimize`](https://developer.fastly.com/reference/io/optimize/). | `?optimize=medium` |
+| `width` | Applies the desired width of the output image.<br><br>For more on this parameter, see [`width`](https://developer.fastly.com/reference/io/width/). | `?width=200` |

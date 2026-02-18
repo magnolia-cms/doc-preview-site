@@ -1,0 +1,64 @@
+---
+title: "CDN statistics deep dive"
+url: https://docs.magnolia-cms.com/cockpit/cdn-statistics/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# CDN statistics deep dive
+
+## [](#_sidebar_filters)Sidebar filters
+
+The sidebar filters allow you to refine your view by selecting specific criteria.
+
+-   **Date Range**: Select the time period using preset ranges or the calendar picker for custom dates.
+
+-   **Memory Unit**: Choose how to display data volumes (KB, MB, GB, or TB).
+
+-   **Hosts**: Filter by specific hostnames or domains (supports multiple selections).
+
+
+Click **Apply filters** to update the view.
+
+## [](#_purge_cdn_cache)Purge CDN cache
+
+Use this action to purge cached content across the CDN. You can:
+
+-   Purge All CDN Cache
+
+-   Purge CDN Cache for URL
+
+
+For more details, see [Magnolia Docs: Purge URL](https://docs.magnolia-cms.com/paas/cockpit/sections/content-delivery/#_cdn_statistics).
+
+## [](#_availability)Availability
+
+View overall CDN availability. The average availability summarizes the period, while the time series shows changes over time.
+
+## [](#_cache)Cache
+
+Inspect cache hit ratio and coverage to understand how effectively the CDN is serving from cache. Drill into cache status distribution for more detail.
+
+## [](#_origin)Origin
+
+Explore metrics broken down by geographic zones. Switch the selector to view requests, round-trip time, average response time, traffic, or error ratio per zone.
+
+## [](#_requests)Requests
+
+See total and per-interval request volumes. Use the protocol breakdown to understand HTTP/HTTPS usage.
+
+## [](#_round_trip)Round trip
+
+Analyze round-trip time (RTT) including averages and distribution to identify network latency trends.
+
+## [](#_duration)Duration
+
+Review response-time duration, including averages per cache status, to spot slow paths or backend issues.
+
+## [](#_traffic)Traffic
+
+Monitor overall and per-interval traffic volumes and rates to understand throughput patterns.
+
+## [](#_http_statuses)HTTP statuses
+
+Examine status code distributions, error ratios, and 3xx/4xx/5xx trends to diagnose client or server issues.

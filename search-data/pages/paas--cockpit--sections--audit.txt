@@ -1,0 +1,124 @@
+---
+title: "Audit"
+url: https://docs.magnolia-cms.com/paas/cockpit/sections/audit/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Manage > Cockpit sections > Audit
+---
+
+# Audit
+
+The DX Cloud **Audit** section in the Cockpit displays Keycloak event logs.
+
+## [](#_select_desired_cluster)Select desired cluster
+
+Select your desired cluster from the dropdown menu at the top of the Cockpit.
+
+![select cluster id](../../_images/select-cluster-id.jpg)
+
+## [](#_keycloak_event_logs)Keycloak event logs
+
+DX Cloud stores Keycloak client event logs. Audit logs show different actions triggered by your team while they navigate and use the Cockpit. These actions range from logins to those performing backup operations.
+
+Generally, we keep logs for **30 days**. However, for your deployment, you may configure a different duration.
+
+> **Note:** You can select up to the last 7 days for this filter.
+
+In addition to the guidance here, there is embedded help available directly in the Cockpit.
+
+### [](#_keycloak_client_event_logs)Keycloak client event logs
+
+From **Audit > Keycloak client events**:
+
+View from the Cockpit
+
+![audit keycloak client events](../../_images/logs/audit-keycloak-client-events.jpg)
+
+1.  First, select your [desired cluster](#_select_desired_cluster).
+
+2.  View the chart (histogram) to see the logs such as Success (green), Client errors (yellow), and Server errors (red).
+
+3.  In the Filters section, you can update the following:
+
+    -   **Date range**: Use the calendar picker for a selected range or select one of the options (e.g., Last 15 minutes).
+
+    -   **Operation type**: Click one or many operation types to filter by (e.g., CLIENT\_LOGIN, CLIENT\_LOGOUT, REFRESH\_TOKEN).
+
+    -   **Usernames**: Enter usernames to filter by (e.g., `service-account-uptime-kuma`, `admin`).
+
+    -   **Client IDs**: Enter Keycloak client IDs to filter by (e.g., `uptime-kuma`, `magnolia-cockpit`).
+
+    -   **IPs**: Enter an IP address to filter by (e.g., `109.71.102.68`).
+
+
+
+#### [](#_details_table)Details table
+
+You can view log details in the Log Details table. Click **Download logs (CSV)** to download the logs locally. To view a specific log, click the log in the table. This triggers a detailed view of the log.
+
+View from the Cockpit
+
+![audit keycloak client events table](../../_images/logs/audit-keycloak-client-events-table.jpg)
+
+| Column | Description | Example |
+| --- | --- | --- |
+| **Date** | The timestamp when the event occurred, in ISO 8601 format (UTC). | `2025-10-30T13:30:48Z` |
+| **Operation type** | The type of Keycloak client operation that was performed. | `CLIENT_LOGIN` |
+| **Username** | The username or service account that performed the operation. | `service-account-uptime-kuma` |
+| **Client ID** | The Keycloak client identifier associated with the event. | `uptime-kuma` |
+| **IP** | The IP address from which the operation originated. | `109.71.102.68` |
+| **Details JSON** | Additional event metadata in JSON format, including token IDs, grant types, scopes, and other operation-specific details. | `\{"token_id":"trrtcc:8d3d7471-15f2-0249-aa30-4bf3006c52b9","grant_type":"client_credentials","scope":…\}` |
+
+### [](#_keycloak_admin_event_logs)Keycloak admin event logs
+
+DX Cloud stores Keycloak admin event logs. Audit logs show administrative actions performed by your team in Keycloak, such as user management, client configuration, realm settings, and role assignments.
+
+From **Audit > Keycloak admin events**:
+
+View from the Cockpit
+
+![audit keycloak admin events](../../_images/logs/audit-keycloak-admin-events.jpg)
+
+1.  First, select your [desired cluster](#_select_desired_cluster).
+
+2.  View the chart (histogram) to see the logs such as Success (green), Client errors (yellow), and Server errors (red).
+
+3.  In the Filters section, you can update the following:
+
+    -   **Date range**: Use the calendar picker for a selected range or select one of the options (e.g., Last 15 minutes).
+
+    -   **Operation type**: Click one or many operation types to filter by (e.g., CREATE, UPDATE, DELETE, ACTION).
+
+    -   **Usernames**: Enter usernames to filter by (e.g., `admin`, `service-account-cockpit`).
+
+    -   **IPs**: Enter an IP address to filter by (e.g., `109.71.102.68`).
+
+    -   **Auth realms**: Enter authentication realm names to filter by (e.g., `magnolia`, `master`).
+
+    -   **Auth client IDs**: Enter the client ID of the authenticated client to filter by (e.g., `magnolia-cockpit`, `admin-cli`).
+
+    -   **Resource paths**: Enter resource paths to filter by (e.g., `users/abc123`, `clients/xyz789`).
+
+    -   **Resource types**: Enter resource types to filter by (e.g., `USER`, `CLIENT`, `REALM`, `GROUP`, `ROLE`).
+
+
+
+#### [](#_details_table_2)Details table
+
+You can view log details in the Log Details table. Click **Download logs (CSV)** to download the logs locally. To view a specific log, click the log in the table. This triggers a detailed view of the log.
+
+View from the Cockpit
+
+![audit keycloak admin events table](../../_images/logs/audit-keycloak-admin-events-table.jpg)
+
+| Column | Description | Example |
+| --- | --- | --- |
+| **Date** | The timestamp when the admin event occurred, in ISO 8601 format (UTC). | `2025-10-30T13:30:48Z` |
+| **Operation type** | The type of administrative operation that was performed (e.g., CREATE, UPDATE, DELETE, ACTION). | `UPDATE` |
+| **Username** | The username or service account that performed the administrative operation. | `admin` |
+| **IP** | The IP address from which the administrative operation originated. | `109.71.102.68` |
+| **Auth realm** | The Keycloak realm in which the administrator was authenticated. | `magnolia` |
+| **Auth client ID** | The client ID used for authentication when performing the admin operation. | `magnolia-cockpit` |
+| **Resource path** | The path to the specific resource that was affected by the operation. | `users/a1b2c3d4-e5f6-7890-abcd-ef1234567890` |
+| **Resource type** | The type of Keycloak resource that was modified (e.g., USER, CLIENT, REALM, GROUP, ROLE). | `USER` |
+| **Details JSON** | Additional event metadata in JSON format, including the representation of changes, error messages, and other operation-specific details. | `\{"id":"a1b2c3d4-e5f6-7890-abcd-ef1234567890","username":"john.doe","email":"[john.doe@example.com](mailto:john.doe@example.com)"…\}` |

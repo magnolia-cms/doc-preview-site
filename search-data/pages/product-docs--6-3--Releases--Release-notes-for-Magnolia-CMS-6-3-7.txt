@@ -1,0 +1,118 @@
+---
+title: "Release notes for Magnolia CMS 6.3.7"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.7/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.7
+---
+
+# Release notes for Magnolia CMS 6.3.7
+
+[LTS release](../../../../support/) • Delivered on April 8, 2025 • Changelog: [16909](https://magnolia-cms.atlassian.net/issues/?filter=16909)
+
+**Magnolia 6.3.7** is primarily a bug-fixing and security release that delivers critical security fixes and also a breaking change in the SPA template annotations endpoint. We keep the details of the security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.7.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.7/magnolia-dx-core-webapp-6.3.7.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.7.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.7/travel-demo-webapp-6.3.7.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.7.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.7/travel-demo-community-webapp-6.3.7.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+
+
+## [](#_breaking_changes)Breaking changes
+
+### [](#_removal_of_the_bypassworkspaceacls_property)Removal of the `bypassWorkspaceAcls` property
+
+For security reasons, we’ve removed the `bypassWorkspaceAcls` property from the [template annotations endpoint](../../Developing/API/SPA-templating-API/#_spa_template_annotations_endpoint).
+
+To maintain the ability to edit your SPA project, you can implement several solutions. The recommended one is the following:
+
+1.  First, create a user in Magnolia specifically for the purpose of making requests from your frontend.
+
+2.  Then, assign it a role with write access to the `website` repository.
+
+3.  Finally, update the frontend project to include the username and password via basic authentication when it makes requests to the Magnolia endpoints.
+
+
+For the other solutions, see the [`bypassWorkspaceAcls` property](../../Developing/API/SPA-templating-API/#_bypassworkspaceacls_property).
+
+We also suggest enhancing the security of the author instance through additional measures, such as restricting access to specific IP addresses (through `/server/IPConfig`) or placing it behind a firewall.
+
+[PAGES-1698](https://magnolia-cms.atlassian.net/browse/PAGES-1698)
+
+## [](#_improvements)Improvements
+
+-   [MGNLIMG-408](https://magnolia-cms.atlassian.net/browse/MGNLIMG-408) Provide a mechanism to limit the number of concurrent requests and the amount of memory used during image processing. For more information, see [Image throttling](../../Modules/List-of-modules/Imaging-module/#_image_throttling).
+
+-   [MGNLIMG-414](https://magnolia-cms.atlassian.net/browse/MGNLIMG-414) Subsample images before loading them into memory for later processing. For more information, see [Image subsampling](../../Modules/List-of-modules/Imaging-module/#_image_subsampling).
+
+
+## [](#_bug_fixes)Bug fixes
+
+-   [MAGNOLIA-9527](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9527) Copy/Paste action doesn’t fill the `lastModified` and `lastModifiedBy` properties
+
+-   [MAGNOLIA-9552](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9552) Magnolia not dealing properly with Japanese characters at various places
+
+-   [MAGNOLIA-9636](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9636) `JcrDataStoreHealthCheck#getDataStoreStatus` should unwrap the test node from `MgnlVersioningNodeWrapper`
+
+-   [MGNLRESTCL-231](https://magnolia-cms.atlassian.net/browse/MGNLRESTCL-231) Decoration of a REST client configuration no longer possible
+
+-   [MGNLUI-9073](https://magnolia-cms.atlassian.net/browse/MGNLUI-9073) Find Bar search can throw errors on the results when searching through many content pages
+
+-   [MGNLUI-9178](https://magnolia-cms.atlassian.net/browse/MGNLUI-9178) `LazyThumbnail` fails to set image URL when updated from a `push` operation
+
+
+## [](#_third_party_library_updates)Third-party library updates
+
+This release comes with third-party library updates, see the [Magnolia Third-party library BOM 6.3.7](https://gitlab.magnolia-platform.com/pd/build/boms/-/blob/magnolia-bom-6.3.7/pom.xml?ref_type=tags).
+
+### [](#_notable_updates)Notable updates
+
+-   [BUILD-1340](https://magnolia-cms.atlassian.net/browse/BUILD-1340) Update `webp-imageio` to `0.9.0`
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Community Edition `6.3.7`
+
+-   DX Core `6.3.7`
+
+-   Demo Projects `6.3.7`
+
+-   Imaging `4.0.3`
+
+-   Magnolia `6.3.7`
+
+-   Multisite `3.0.1`
+
+-   Pages `6.3.5`
+
+-   REST Client `3.0.3`
+
+-   REST Framework `3.0.2`
+
+-   Third-party library BOM for Extensions `6.3.7`
+
+-   Third-party library BOM `6.3.7`
+
+-   UI `6.3.7`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.3.6.
+
+-   [Content Recommender](#recommender:ROOT:index.adoc#_changelog) `3.0.0`
+
+-   [Frontify DAM connector](../../../../frontify-dam-connector/#_changelog) `2.0.1`
+
+-   [Image Recognition](#image-recognition:ROOT:changelog.adoc) `2.0.2`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.

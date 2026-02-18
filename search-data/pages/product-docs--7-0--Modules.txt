@@ -1,0 +1,160 @@
+---
+title: "Modules"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules
+---
+
+# Modules
+
+Magnolia has a modular architecture. A module can perform a task, package content, or provide specialized functionality. Modules can be project specific or reused across different projects. You should use the module mechanism to package and deploy your own site’s configuration and functionality.
+
+In Magnolia documentation, the terms *module* and *project module* always refer to a Magnolia module.
+
+What makes a Magnolia module are files specific to Magnolia in a particular folder. You can add such a Magnolia module folder directly into the webapp of your Magnolia instance.
+
+You can define a Magnolia module with one file, with its [Module descriptor](Module-descriptor/). Typically, the descriptor resides either in a Maven module or within a light module together with other files.
+
+> **Note:** When you are creating a website project, you should have one module for templates, another module for content, a third for a theme, and so on.
+
+-   Maven module
+
+-   Light module
+
+
+[Maven](http://maven.apache.org/) also uses the term module but it means something different. For this, we explicitly write *Maven module*. You can make the Magnolia module folder [part of a Maven module](Module-structure/). In that case you would build a JAR file and deploy it to your webapp.
+
+You don’t need to know Java or Maven to create a perfectly valid Magnolia module. Put your project files into a file-system directory to create a light module.
+
+This enables light development, a development style which does not require Java skills or a Java development environment. It’s a straightforward way to get started with Magnolia development and works well for front-end developers. The [Hello Magnolia](../Getting-started-with-Magnolia/Hello-Magnolia/) tutorial uses light development to create a fully-functional template module.
+
+> **Tip:** Store your light modules outside of the apache-tomcat directory so that the modules you add can be accessed by any Magnolia instance. If you already have a light modules directory you want to use, edit the magnolia.resources.dir property in your magnolia.properties file to point to it.
+
+## [](#_module_types)Module types
+
+Some modules are bundled as part of the standard Core offering. This means the module is automatically installed as part of your project.
+
+All other modules are unbundled. For these modules, you can pick and choose the modules you want to add to your project. Note that additional licenses may be required.
+
+| Type | Description |
+| --- | --- |
+| Core | **Core Magnolia modules**<br><br>These modules comprise the foundation of Magnolia and its functionality.<br><br>Requires standard license and is bundled as part of that license.<br><br>This includes Community Edition (CE) modules which are free and open-source. |
+| Extension | **Extension modules**<br><br>These modules extend the functionality of Magnolia and meet certain use-cases.<br><br>May require an additional license and typically, the module is unbundled. This means there is likely additional installation required.<br><br>See individual modules for details. |
+| Framework | **Framework modules**<br><br>These modules provide frameworks to use extensions.<br><br>May require an additional license and typically, the module is unbundled. This means there is likely additional installation required.<br><br>See individual modules for details. |
+| Incubator | **Incubator modules**<br><br>These modules are provided by Magnolia Professional Services. They are offered in incubator mode and are supported by Magnolia Professional Services on commercially reasonable efforts only, meaning Magnolia is not bound to fix any bug or issue right away.<br><br>Included in standard DX Core core license and the module is unbundled. This means there is likely additional installation required.<br><br>See individual modules for details. |
+
+## [](#_list_of_modules)List of modules
+
+| Module | Type | Bundled | License | Latest |
+| --- | --- | --- | --- | --- |
+| **[About App module](List-of-modules/About-App-module/)** | Core |     | CE  | `6.4.0` |
+| **[A/B/n Testing](List-of-modules/ABn-testing/)** | Extension |     | Special | `3.0.0` |
+| **[Admincentral module](List-of-modules/Admincentral-module/)** | Core |     | CE  | `6.4.0` |
+| **[Adobe Marketo extension](extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-module/#_marketo_connection_configuration)** | Extension |     | Special | `3.0.0` |
+| **[Advanced cache modules](List-of-modules/Advanced-cache-modules/)** | Core |     | DX Core | `4.0.0` |
+| **[Analytics integration framework](extensions-and-frameworks/analytics-integration-framework/)** | Framework |     | DX Core | `3.0.0` |
+| **[Adobe analytics extension](extensions-and-frameworks/analytics-integration-framework/Analytics-module/#_adobe_analytics)** | Extension |     | Special | `3.0.0` |
+| **[Google analytics extension](extensions-and-frameworks/analytics-integration-framework/Analytics-module/#_google_analytics_4)** | Extension |     | Special | `3.0.0` |
+| **[Matomo analytics extension](extensions-and-frameworks/analytics-integration-framework/Analytics-module/#_matomo)** | Extension |     | Special | `3.0.0` |
+| **[AWS S3 extension](extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_aws_s3_connection_configuration) Deprecated** | Extension |     | Special | `3.0.0` |
+| **[Backup module](List-of-modules/Backup-module/)** | Extension |     | DX Core | `2.5.1` |
+| **[Blossom module](List-of-modules/Blossom-module/)** | Extension |     | CE  | `5.0.0` |
+| **[cdp-integration-framework:bsi:index.adoc](#cdp-integration-framework:bsi:index.adoc)** | Extension |     | Special | `{magnolia-customer-data-platform-parent-64}` |
+| **[Bynder extension](extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_bynder_connection_configuration)** | Extension |     | Special | `3.0.0` |
+| **[Cache modules](List-of-modules/Cache-modules/)** | Core |     | CE  | `7.0.0` |
+| **[campaign-manager:ROOT:index.adoc](#campaign-manager:ROOT:index.adoc)** | Extension |     | DX Core | `5.0.0` |
+| **[Campaign Publisher](List-of-modules/Campaign-Publisher/)** | Extension |     | DX Core | `5.0.0` |
+| **[CAS module](List-of-modules/CAS-module/)** | Extension |     | DX Core | `1.3.2` |
+| **[Categorization module](List-of-modules/Categorization-module/)** | Core |     | CE  | `4.0.0` |
+| **[CDN Helper module](../../../cdn-helper/)** | Incubator |     | DX Core | `{magnolia-cdn-helper-64}` |
+| **[cdp-integration-framework:ROOT:index.adoc](#cdp-integration-framework:ROOT:index.adoc)** | Framework |     | DX Core | `{magnolia-customer-data-platform-parent-64}` |
+| **[Cloudinary External DAM module](../../../cloudinary/1.3/)** | Extension |     | Special | `3.0.0` |
+| **[Commerce integration framework](#ecommerce:ROOT:index.adoc)** | Framework |     | DX Core | `3.0.0` |
+| **[Commerce Adobe extension](#ecommerce:ROOT:config/config-adobe.adoc)** | Extension |     | Special | `3.0.0` |
+| **[Commerce commercetools extension](#ecommerce:ROOT:config/config-commercetools.adoc)** | Extension |     | Special | `3.0.0` |
+| **[Commerce Salesforce extension](#ecommerce:ROOT:config/config-salesforce.adoc)** | Extension |     | Special | `3.0.0` |
+| **[Commerce SAP extension](#ecommerce:ROOT:config/config-sap.adoc)** | Extension |     | Special | `3.0.0` |
+| **[Configuration Framework module](List-of-modules/Configuration-Framework-module/)** | Core |     | CE  | `7.0.0` |
+| **[Contacts module](List-of-modules/Contacts-module/) Deprecated** | Extension |     | CE  | `3.0.0` |
+| **[Content Dependencies module](List-of-modules/Content-Dependencies-module/)** | Core |     | DX Core | `4.0.0` |
+| **[Content Editor module](List-of-modules/Content-Editor-module/)** | Core |     | DX Core | `4.0.0` |
+| **[Content Importer module](List-of-modules/Content-Importer-module/)** | Core |     | CE  | `3.0.0` |
+| **[Content Tags module](List-of-modules/Content-Tags-module/)** | Core |     | DX Core | `4.0.0` |
+| **[Content Translation Support module](List-of-modules/Content-Translation-Support-module/)** | Extension |     | DX Core | `4.0.0` |
+| **[content-types:ROOT:index.adoc](#content-types:ROOT:index.adoc)** | Core |     | CE  | `3.0.` |
+| **[Content Translation Extended module](../../../content-translation-support-ext/)** | Framework |     | DX Core | `5.0.0` |
+| **[CTSX DeepL Translator](../../../content-translation-support-ext/deepl/)** | Extension |     | DX Core | `5.0.0` |
+| **[CTSX ChatGPT Translator](../../../content-translation-support-ext/chatgpt/)** | Incubator |     | DX Core | `5.0.0` |
+| **[Definitions App module](List-of-modules/Definitions-App-module/)** | Core |     | CE  | `4.0.0` |
+| **[Device Detection module](List-of-modules/Device-Detection-module/)** | Extension |     | CE  | `1.0.3` |
+| **[Diff module](List-of-modules/Diff-module/)** | Core |     | DX Core | `4.0.0` |
+| **[DAM module (Digital Asset Management)](../../../dam/)** | Core |     | CE  | `5.0.0` |
+| **[Dynamic Form module](../../../dynamic-form/)** | Incubator |     | DX Core | `{magnolia-form-reactor-64}` |
+| **[External DAM integration framework](extensions-and-frameworks/external-dam-integration-framework/)** | Framework |     | DX Core | `3.0.0` |
+| **[Form module](List-of-modules/Form-module/)** | Extension |     | CE  | `4.0.0` |
+| **[Frontify DAM connector](../../../frontify-dam-connector/)** | Incubator |     | DX Core | `3.0.0` |
+| **[GraphQL module](List-of-modules/GraphQL-module/)** | Extension |     | DX Core | `3.0.0` |
+| **[Groovy module](List-of-modules/Groovy-module/)** | Extension |     | CE  | `5.0.0` |
+| **[High performance caching modules](List-of-modules/High-performance-caching-modules/)** | Extension |     | DX Core | `multiple (see modules)` |
+| **[image-focal:ROOT:index.adoc](#image-focal:ROOT:index.adoc)** | Extension |     | DX Core | `{magnolia-image-focal-64}` |
+| **[image-recognition:ROOT:index.adoc](#image-recognition:ROOT:index.adoc)** | Extension |     | DX Core | `3.0.0` |
+| **[imaging:ROOT:index.adoc](#imaging:ROOT:index.adoc)** | Core |     | CE  | `5.0.0` |
+| **[Instrumentation module](../../../instrumentation/2.0/)** | Incubator |     | DX Core | `{magnolia-instrumentation-64}` |
+| **[javascript-models:ROOT:index.adoc](#javascript-models:ROOT:index.adoc)** | Core |     | CE  | `4.0.0` |
+| **[ui-framework-javascript:ROOT:index.adoc](#ui-framework-javascript:ROOT:index.adoc)** | Extension |     | DX Core | `4.0.0` |
+| **[JCR Tools module](List-of-modules/JCR-Tools-module/)** | Core |     | CE  | `3.0.0` |
+| **[LDAP Connector module](List-of-modules/LDAP-Connector-module/) Deprecated** | Extension |     | DX Core | `2.0.0[[1](#_footnotedef_1 "View footnote.")]` |
+| **[Live Copy module](#live-copy:ROOT:index.adoc)** | Extension |     | Special | `5.0.0` |
+| **[Log Tools module](List-of-modules/Log-Tools-module/)** | Core |     | CE  | `3.0.0` |
+| **[Mail module](List-of-modules/Mail-module/)** | Extension |     | CE  | `7.0.0` |
+| **[Magnolia Answers *powered by ai12z*](#ai12z:ROOT:index.adoc)** | Extension |     | Special |     |
+| **[Marketing automation integration framework](extensions-and-frameworks/marketing-automation-integration-framework/)** | Framework |     | DX Core | `3.0.0` |
+| **[Marketing Tags module](List-of-modules/Marketing-Tags-module/)** | Core |     | DX Core | `4.0.0` |
+| **[Messages App module](List-of-modules/Messages-App-module/)** | Core |     | CE  | `6.4.0` |
+| **[MTK module](List-of-modules/MTE-module/MTK-module/)** | Extension |     | CE  | `4.0.0` |
+| **[MTE module](List-of-modules/MTE-module/)** | Extension |     | CE  | `4.0.0` |
+| **[Multisite module](List-of-modules/Multisite-module/)** | Core |     | DX Core | `4.0.0` |
+| **[Observation module](List-of-modules/Observation-module/)** | Extension |     | CE  | `5.0.0` |
+| **[ai-accelerator:ROOT:index.adoc](#ai-accelerator:ROOT:index.adoc)** | Extension |     | Special | `3.0.0` |
+| **[Pages module](List-of-modules/Pages-module/)** | Core |     | CE  | `6.4.0` |
+| **[Password Manager module](List-of-modules/Password-Manager-module/)** | Extension |     | CE  | `3.0.0` |
+| **[Periscope module](List-of-modules/Periscope-module/)** | Framework |     | CE  | `3.0.0` |
+| **[Personalization module](List-of-modules/Personalization-module/)** | Core |     | DX Core | `4.0.0` |
+| **[Privacy module](List-of-modules/Privacy-module/)** | Extension |     | DX Core | `3.0.0` |
+| **[Public User Registration module](List-of-modules/Public-User-Registration-module/)** | Extension |     | CE  | `4.0.0` |
+| **[Publishing module](List-of-modules/Publishing-module/)** | Core |     | CE  | `3.0.0` |
+| **[Publishing Transactional module](List-of-modules/Publishing-Transactional-module/)** | Core |     | DX Core | `3.0.0` |
+| **[Resources module](List-of-modules/Resources-module/)** | Core |     | CE  | `5.0.0` |
+| **[REST Client module](List-of-modules/REST-Client-module/)** | Core |     | CE  | `4.0.0` |
+| **[3.1@rest:ROOT:index.adoc](#3.1@rest:ROOT:index.adoc)** | Framework |     | CE  | `4.0.0` |
+| **[rest-proxy:ROOT:index.adoc](#rest-proxy:ROOT:index.adoc)** | Framework |     | DX Core | `3.0.0` |
+| **[Salesforce Sales Cloud extension](extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-module/#_salesforce_connection_configuration)** | Extension |     | Special | `3.0.0` |
+| **[RSS Aggregator module](List-of-modules/RSS-Aggregator-module/) Deprecated** | Core |     | CE  | `2.6.6[[2](#_footnotedef_2 "View footnote.")]` |
+| **[Scheduler module](List-of-modules/Scheduler-module/)** | Core |     | CE  | `4.0.0` |
+| **[Security app module](List-of-modules/Security-App-module/)** | Core |     | CE  | `4.0.0` |
+| **[cdp-integration-framework:segment:index.adoc](#cdp-integration-framework:segment:index.adoc)** | Extension |     | Special | `{magnolia-customer-data-platform-parent-64}` |
+| **[Siteimprove module](../../../siteimprove/)** | Extension |     | Special | `1.2.1` |
+| **[Site module](#site:ROOT:index.adoc)** | Core |     | CE  | `3.0.0` |
+| **[Soft Locking module](List-of-modules/Soft-Locking-module/)** | Core |     | DX Core | `5.0.0` |
+| **[Solr module](List-of-modules/Solr-module/)** | Extension |     | DX Core | `10.0.0` |
+| **[magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc)** | Extension |     | DX Core | `5.0.0` |
+| **[Swift publication module](List-of-modules/Swift-publication-module/Swift-publication-module/)** | Extension |     | DX Core | `3.0.0-beta` |
+| **[Synchronization module](List-of-modules/Synchronization-module/)** | Extension |     | DX Core | `4.0.0` |
+| **[Text Classification module](List-of-modules/Text-Classification-module/)** | Extension |     | DX Core | `3.0.0` |
+| **[Tools module](List-of-modules/Tools-module/)** | Core |     | DX Core | `3.0.0` |
+| **[User Result Ranker module](List-of-modules/User-result-ranker-module/)** | Core |     | DX Core | `3.0.0` |
+| **[UI Framework REST Extensions module](List-of-modules/UI-Framework-REST-Extensions-module/)** | Core |     | DX Core | `3.0.0` |
+| **[UI module](List-of-modules/UI-module/)** | Core |     | CE  | `6.4.0` |
+| **[UI Media Editor module](List-of-modules/UI-module/UI-Media-Editor-module/)** | Core |     | CE  | `6.4.0` |
+| **[URL Translation Module](../../../url-translation/)** | Incubator |     | DX Core | `{magnolia-url-translation-parent-64}` |
+| **[Virtual URI module](List-of-modules/Virtual-URI-module/)** | Core |     | CE  | `7.0.0` |
+| **[VWO AB Testing module](../../../vwo-abtesting/1.0/)** | Incubator |     | DX Core | `1.0.1` |
+| **[webhooks:ROOT:index.adoc](#webhooks:ROOT:index.adoc)** | Core |     | DX Core | `3.0.0` |
+| **[Workflow module](List-of-modules/Workflow-module/)** | Core |     | DX Core | `8.0.0` |
+
+* * *
+
+[1](#_footnoteref_1). 6.3 compatible version; module not available in 7.0
+
+[2](#_footnoteref_2). 6.3 compatible version; module not available in 7.0

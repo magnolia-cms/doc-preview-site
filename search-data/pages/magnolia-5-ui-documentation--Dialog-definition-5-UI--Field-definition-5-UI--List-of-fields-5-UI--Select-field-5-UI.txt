@@ -1,0 +1,142 @@
+---
+title: "Select field - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Select-field-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Field definition - 5 UI > List of fields - 5 UI > Select field - 5 UI
+---
+
+# Select field - 5 UI
+
+Deprecated
+
+> **Note:** This select field definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Select field for Magnolia 6 UI instead.
+
+`SelectFieldDefinition` renders a dropdown list.
+
+class: `info.magnolia.ui.form.field.definition.SelectFieldDefinition`
+
+fieldType: `select`
+
+## [](#_example_select_field_definition)Example select field definition
+
+```yml
+form:
+  tabs:
+    - name: tabLink
+      label: Link
+      fields:
+        - name: listStyle
+          fieldType: select
+          label: List style
+          options:
+            - name: bullet
+              value: bullet
+              selected: true
+              label: Bullet
+            - name: ordered
+              value: ordered
+              label: Ordered
+            - name: inline
+              value: inline
+              label: Inline
+```
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Select-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Referencing-fields-shortcut-info-5-UI.adoc\[\]
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Select-field-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_Common-select-field-properties-5-UI.adoc\[\]
+
+### [](#_additional_properties)Additional properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>textInputAllowed</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>When <code>true</code>, the user can type into the select field to filter the available options. The <code>filteringMode</code> property defines how the options are filtered.</p></div><div class="paragraph"><p>When <code>false</code>, the field behaves like a standard select field where the user cannot enter text. Clicking the field opens the dropdown with options.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">This property does not make it possible to enter new values into the field. The user can only choose from existing options.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>filteringMode</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is `off`</em></p></div><div class="paragraph"><p>Vaadin <a href="https://vaadin.com/api/com/vaadin/shared/ui/combobox/class-use/FilteringMode.html"><code>FilteringMode</code></a>. Available values are <code>contains</code> and <code>startswith</code>.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">To enable filtering, you must also:</td></tr></tbody></table></div><div class="ulist"><ul><li><p>Set the <code>pageLength</code> property to a value greater than <code>0</code>.</p></li><li><p>Set the <code>textInputAllowed</code> property to <code>true</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageLength</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>0</code></em></p></div><div class="paragraph"><p>To enable paging and filtering, value must be an integer greater than <code>0</code>. Value of <code>0</code> disables paging and filtering.</p></div></div></td></tr></tbody></table></div>
+
+See also [Common field properties](../../#_common_field_properties).
+
+## [](#_filtered_select_field)Filtered select field
+
+Here is an example select field that uses the `startswith` filtering mode and 10 options per page.
+
+YAML file JCR node
+
+```yml
+form:
+  tabs:
+    - name: tabAddress
+      fields:
+        - name: country
+          fieldType: select
+          label: Country
+          filteringMode: startswith
+          pageLength: 10
+          textInputAllowed: true
+          options:
+            - name: afghanistan
+              value: afghanistan
+            - name: argentina
+              value: argentina
+            - name: australia
+              value: australia
+            - name: austria
+              value: austria
+            - name: belgium
+              value: belgium
+            - name: brazil
+              value: brazil
+            - name: bulgaria
+              value: bulgaria
+            - name: canada
+              value: canada
+            - name: chad
+              value: chad
+            - name: chile
+              value: chile
+            - name: china
+              value: china
+            - name: cuba
+              value: cuba
+            - name: czech-republic
+              value: czech-republic
+            - name: denmark
+              value: denmark
+```
+
+| Node name | Value |
+| --- | --- |
+| form |     |
+| tabs# |     |
+| tabAddress# |     |
+| fields# |     |
+| country# |     |
+| options# |     |
+| afghanistan# |     |
+| value# | afghanistan |
+| argentina# |     |
+| value# | argentina |
+| australia# |     |
+| value# | australia |
+| austria# |     |
+| value# | austria |
+| belgium# |     |
+| value# | belgium |
+| brazil# |     |
+| value# | brazil |
+| bulgaria# |     |
+| value# | bulgaria |
+| canada# |     |
+| value# | canada |
+| chad# |     |
+| value# | chad |
+| chile# |     |
+| value# | chile |
+| china# |     |
+| value# | china |
+| cuba# |     |
+| value# | cuba |
+| czech-republic# |     |
+| value# | czech-republic |
+| denmark# |     |
+| value# | denmark |
+| fieldType# | select |
+| filteringMode# | startswith |
+| pageLength# | 10  |
+| textInputAllowed# | true |

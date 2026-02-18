@@ -1,0 +1,218 @@
+---
+title: "Travel Demo for developers"
+url: https://docs.magnolia-cms.com/product-docs/Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Demo > Travel Demo for developers
+---
+
+# Travel Demo for developers
+
+The Travel Demo project is a great use case to understand how Magnolia projects are put together. Have a look at the [Hello Magnolia](../../Hello-Magnolia/) tutorial first for an introduction to basic templating. This tutorial begins by guiding you through installing a Community Edition version of Magnolia., which this page is based on.
+
+This page is based on the Community Edition version of the demo. The main difference in DX Core is the use of the [Multisite module](../../../Modules/List-of-modules/Multisite-module/).
+
+## [](#_clone_project)Clone project
+
+Use Git to get a copy of the Travel Demo code.
+
+```none
+git clone --single-branch --branch release/1.6 https://bitbucket.org/magnolia-cms/travel-demo.git
+```
+
+## [](#_project_organization)Project organization
+
+The project comprises three Maven modules
+
+| **Module** | **Description** |
+| --- | --- |
+| `magnolia-travel-demo-parent` | A parent project for the other two modules. Specifies dependencies and their versions. |
+| `magnolia-travel-demo` | A simple page-based website. |
+| `magnolia-travel-tours` | Tour and Tour Categories content apps, and templating components that make use of them. Depends on `magnolia-travel-demo`. |
+
+## [](#_component_template)Component template
+
+[Component templates](../../../Developing/Templating/Template-definition/Component-definition/) are the `bread and butter` of a typical Magnolia project. Let’s take a look at the TourType Teaser Row component which is used under the carousel on the home page to show some hand-picked Tour Category content items. Familiarize yourself with the component by logging into AdminCentral, opening the travel page, and editing the component contents. Remove or add a tour type.
+
+Open `magnolia-travel-tours/src/main/resources/tours`. This is the key directory for the module where templates, dialogs, web resources and c
+
+![Key directory](../../../_images/demo-developer-component-travel-tours.png)
+
+### [](#_component_template_definition)Component template definition
+
+YAML files in the `templates` directory are interpreted as [template definitions](../../../Developing/Templating/Template-definition/), the master file for any template. Template definitions specify all the configuration, classes, files and i18n information.
+
+Open `/templates/components/tourTypeTeaserRow.yaml`
+
+```js
+templateScript: /tours/templates/components/tourTypeTeaserRow.ftl
+dialog: tours:components/tourTypeTeaserRow
+modelClass: info.magnolia.demo.travel.tours.model.TourTeaserModel
+
+renderType: freemarker
+```
+
+### [](#_component_template_script)Component template script
+
+Take a look at the referenced `templateScript`, in the same directory: `/templates/components/tourTypeTeaserRow.ftl`.
+
+The assignment, `[#assign tours = model.tours]`, loads the `tours` variable with the result of the `getTours` method in the `modelClass` defined in the template definition. The content expressions, like `${content.title!}` pull values directly from the content entered by editors in the dialog.
+
+### [](#_component_dialog_definition)Component dialog definition
+
+YAML files in the dialog directory are interpreted as [dialog definitions](../../../Developing/Templating/Dialog-definition/). The dialog definition referenced in the [template definition](#_Templ) is in `/dialogs/components/tourTypeTeaserRow.yaml`.
+
+The definition specifies the dialog that is opened when an author edits the component on a page. The most important part of a dialog is the field list. This dialog has three fields: `title`, `body` and `tourTypes`. `tourTypes` is a sophisticated
+
+which can store multiple [`Linkfields`](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/) that link to the TourType items.
+
+> **Warning:** The name of the field in the dialog definition is the name of the node property that is stored in the website workspace when the editor saves their changes.
+
+### [](#_component_model)Component model
+
+A [model](../../../Developing/Templating/Rendering-content/Model/) is a Java class that can hold business logic and can interact with the rest of the Magnolia system. For Java developers, models are a good way to keep templates clean and logic in Java where you can benefit from IDE tooling and testing possibilities. Models are also good for projects with more sophisticated integrations.
+
+For non-Java developers and projects, the same [templating functions](../../../Developing/Templating/Template-scripts/Templating-functions/) used by models are available directly to the templates via context attributes like [`cmsfn`](../../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/), [`damfn`](../../../Developing/Templating/Template-scripts/Templating-functions/damfn/), [`catfn`](../../../Developing/Templating/Template-scripts/Templating-functions/catfn/), [`searchfn`](../../../Developing/Templating/Template-scripts/Templating-functions/searchfn/) and [`navfn`](../../../Developing/Templating/Template-scripts/Templating-functions/navfn/). Logic can also be modularized in templates with the use of [includes](../../../Developing/YAML/) and [macros](../../../Developing/Templating/Template-scripts/Directives/). Models are optional - use them if they fit your team and project.
+
+The model for this template is `info.magnolia.demo.travel.tours.model.TourTeaserModel`.
+
+## [](#_page_template)Page template
+
+[Page templates](../../../Developing/Templating/Template-definition/Page-definition/) are very similar to [component templates](#_component_template), and can have the same [template properties](../../../Developing/Templating/Template-definition/), but they describe an entire page.
+
+Page templates are automatically registered in Magnolia and are [available](../../../Developing/Templating/Template-availability/) for selection in the Pages app when creating a new page or changing the template of an existing page.
+
+Lets take a look at the home page template in the `magnolia-travel-demo` module.
+
+Open `magnolia-travel-demo/src/main/resources/travel-demo`. Further paths are relative to this directory.
+
+![Travel demo directory](../../../_images/demo-developer-page-travel-demo.png)
+
+### [](#_page_template_definition)Page template definition
+
+Open `/templates/pages/home.yaml`
+
+As with the component template definition, the page template definition is the master file for the template.
+
+### [](#_page_template_script)Page template script
+
+Page templates can also have a `templateScript` property, but `home.yaml` does not explicitly define one. This is because the [template prototype](#_template_prototype) references the `travel-demo/templates/pages/main.ftl` script which the home template inherits.
+
+A page template must include the `[@cms.page /]` [directive](../../../Developing/Templating/Template-scripts/Directives/) to support editing.
+
+### [](#_areas_and_component_availability)Areas and component availability
+
+All templates can contain [areas](../../../Developing/Templating/Template-definition/Area-definition/), which are usually containers for components. In the template script, you can see several area [directives](../../../Developing/Templating/Template-scripts/Directives/), such as `[@cms.area name="main"/]`.
+
+An area definition within the page template definition lists which components it can contain. In the `home.yaml` template definition, note the three templates listed under the `main/availableComponents` item. When an editor adds a component in `main` area, these templates are available in the **Add component** dialog.
+
+### [](#_definition_decoration)Definition decoration
+
+The [definition decoration](../../../Developing/Definition-decoration/) mechanism allows you to change the properties and subdefinitions of an *existing* definition.
+
+Open `magnolia-travel-tours/src/main/resources/tours/decorations/travel-demo/templates/pages/home.areas.main.availableComponents.yaml`.
+
+This definition decorates the `main/availableComponents` node of the `home.yaml` definition in the `travel-demo module` and makes three additional components available to editors in the **Add component** dialog.
+
+## [](#_site_definition)Site definition
+
+The [site definition](../../../Developing/Templating/Site-definition/) contains configuration relevant for the entire site.
+
+You can configure a site definition in the `sites` folder of any module using YAML. See, for example, the following site definition:
+
+-   `[travel.yaml](https://bitbucket.org/magnolia-cms/travel-demo)`
+
+
+A DX Core instance can contain [multiple site definitions.](../../../Developing/Templating/Site-definition/How-to-use-Multisite/)
+
+### [](#_template_availability)Template availability
+
+A site can explicitly define which [page templates are available](../../../Developing/Templating/Template-availability/) when a page is created in the Pages app.
+
+In your site definition, expand `templates/availability`:
+
+-   `/templates` lists the available page template.
+
+-   `/enableAllWithRenderType` makes all configured FreeMarker templates available in addition.
+
+
+**Example**
+
+/<module-name>/sites/travel.yaml
+
+```yaml
+...
+templates:
+  class: info.magnolia.module.site.templates.ReferencingPrototypeTemplateSettings
+  prototypeId: travel-demo:pages/prototype
+  availability:
+    templates:
+      home:
+        id: travel-demo:pages/home
+      standard:
+        id: travel-demo:pages/standard
+      searchResultPage:
+        id: travel-demo:pages/searchResultPage
+      pur:
+        id: travel-demo:pages/pur
+    enableAllWithRenderType:
+      freemarker: freemarker
+      spa: spa
+...
+```
+
+> **Warning:** If the availability node does not exist, then ALL templates configured in Magnolia will be available for selection in the Pages app by default.
+
+You can customize page availability rules with your own Java class. For example, you could define which templates are available as a child of a specific template, rather than for the whole site.
+
+### [](#_template_prototype)Template prototype
+
+The [template prototype](../../../Developing/Templating/Site-definition/Template-prototype/) sets a default configuration for every page template in the site. By adding configuration to a prototype you avoid repeating configuration in each page template definition.
+
+This configuration is in a YAML file in `/templates/pages/prototype.yaml` that is referenced in the site definition `templates`.
+
+![Image showing folder structure for template prototype](../../../_images/ADVT-Demo-proto.png)
+
+### [](#_content_languages)Content Languages
+
+The site defines in which [languages](../../../Administration/Language/) (`locales`) content can be entered on a page of the site. In the Travel demo, you can enter content in English and German in the Pages app.
+
+This configuration is in `i18n`.
+
+![Image showing folder structure content languages](../../../_images/ADVT-Demo-lang.png)
+
+## [](#_web_resources)Web resources
+
+Traditional web [resources](../../../Developing/Resources/) like CSS, JavaScript, fonts and the like can be accessed via a `.resources` URL. The `.resources` path makes files in the `src/main/resources` directory of a Maven module available.
+
+For example, see: `/magnolia-travel-demo/src/main/resources/travel-demo/templates/pages/areas/footer.ftl`
+
+An image resource is loaded via, for example,
+
+```cnd
+<img src="${ctx.contextPath}/.resources/${theme.name}/img/logo-white.png" alt=""/>
+```
+
+The [theme](../../../Developing/Templating/Theme/) name is `travel-demo-theme`, so this URL will serve the file at `/magnolia-travel-demo/src/main/resources/travel-demo-theme/img/logo-white.png`
+
+## [](#_configuration_and_content_bootstraps)Configuration and content bootstraps
+
+The modules contain additional configuration and content that is loaded to the JCR repository when the module is installed. The XML format of these files is specific to JCR repositories and is not easy read or edit by hand. These files are created by editing configuration in AdminCentral and exporting them. These files are stored in two directories in a module, `mgnl-bootstrap` and `mgnl-bootstrap-samples`.
+
+![Developer bootstraps for demo](../../../_images/demo-developer-bootstraps.png)
+
+`mgnl-bootstrap`
+
+Files in this directory will be loaded when the module is installed. This is the place for all configuration required for the module to function.
+
+For example, this file stores the configuration of the site definition:
+
+`/magnolia-travel-demo/src/main/resources/mgnl-bootstrap/travel-demo/config.modules.travel-demo.config.travel.xml`
+
+`mgnl-bootstrap-samples`
+
+Files in this directory are also loaded when the module is installed, but only if the `magnolia.bootstrap.samples` property is set to `true` in the magnolia.properties file for the instance. This is the place for the actual content of your project, or sample content to demonstrate how a module works. In this project, the categories, tours, assets and website content are stored here.
+
+For example, this file stores the content of the site pages.
+
+`/magnolia-travel-demo/src/main/resources/mgnl-bootstrap-samples/travel-demo/website.travel.xml`

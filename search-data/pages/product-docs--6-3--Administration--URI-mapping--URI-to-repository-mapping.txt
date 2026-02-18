@@ -1,0 +1,115 @@
+---
+title: "URI to repository mapping"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/URI-mapping/URI-to-repository-mapping/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > URI mapping > URI to repository mapping
+---
+
+# URI to repository mapping
+
+This type of URI mapping determines which repository node should be served when a particular URI is requested.
+
+## [](#_how_uri_to_repository_mapping_works)How URI to repository mapping works
+
+Magnolia’s info.magnolia.cms.beans.config.URI2RepositoryMapping is used to map a requested URL to one of the [workspaces](../../Architecture/Workspaces/). The most common use case is mapping a URI to the `website` repository, but other repositories can be addressed as well. The mechanism allows finetuning the mapping of the requests through prefixes (handles). If a prefix such as `dam` is detected in the request the requested asset is served from the repository given in the `repository` property. A handle can be used to build the URI. For example, if the requested URL contains `/travel` alone, the system can be configured to map the request to the website workspace (in the context of a [Site definition](../../../Developing/Templating/Site-definition/)). On the other hand, if the request contains `/travel/docs` it could be mapped to the `dam` workspace.
+
+### [](#_mapping_managers_and_magnolia_editions)Mapping managers and Magnolia editions
+
+In order to know where to configure a URI mapping rule, you should understand how the URI-to-repository managers deal with this type of mapping.
+
+URI to repository mapping in Magnolia is handled by two different managers depending on the edition you use:
+
+| Edition | URI2Repository manager class |
+| --- | --- |
+| Community | `info.magnolia.cms.beans.config.URI2RepositoryManager` |
+| DX Core | `info.magnolia.multisite.MultiSiteURI2RepositoryManager` |
+
+The Community Edition allows only one site, hence its manager searches for and applies the mapping configurations defined directly at the server level (`/server/URI2RepositoryMapping/mappings/`).
+
+In DX Core, the manager first searches for mapping configuration for each site stored under the `mappings` node in the `multisite` module and applies a mapping rule if it finds one. If not, it defaults to the mapping configuration(s) set at the server level (`/server/URI2RepositoryMapping/mappings/`), in the same way as the manager of the Community Edition.
+
+## [](#_configuring_the_mappings)Configuring the mappings
+
+### [](#_configuration_properties)Configuration properties
+
+The key configuration properties for URI to repository mappings are:
+
+-   `URIPrefix`
+
+-   `handlePrefix`
+
+-   `repository`
+
+
+#### [](#_uriprefix)URIprefix
+
+The `URIPrefix` property is used to inject a path into a URL in order to shorten it. Shorter URLs are easier to remember, quicker to type, take less space in print ads, and are ranked more favorably by search engines than content deep down in the site hierarchy.
+
+**Example**: Your marketing campaign content resides deep in the site hierarchy at `/travel/marketing/campaigns/2016/winter`. First, set `handlePrefix` to this path so that content is served from the right place. Next, shorten the URL by setting `URIPrefix` to `/winter` in the same mapping configuration. Visitors who access the site at `www.example.com/winter` are served content from `/travel/marketing/campaigns/2016/winter` but the URL is short and friendly.
+
+In Magnolia 5.5.2+, the default values of the `URIPrefix` properties in `/server/URI2RepositoryMapping/mappings/` come with a trailing slash, for example `/contacts/` instead of just `/contacts`, to prevent URI mapping conflicts with root-level pages that have the same name as the URI prefix.
+
+#### [](#_handleprefix)handlePrefix
+
+The `handlePrefix` property defines where content should be served from. In the `travel` demo website the handle is `/travel` and in the `sportstation` website the handle is `/sportstation`. These are the respective root nodes of the sites. The handle prefix is useful when you point it to a node deeper in the site hierarchy.
+
+**Example**: You have campaign content in `/travel/campaigns/winter`. Setting `handlePrefix` to this path will apply the site definition to that subtree only. Now content for the site will be served from the subtree. In the same site definition you could define a custom winter theme for the campaign and assign a vanity URL such as `winter.example.com`. Visitors who access the URL are served content from `/travel/campaigns/winter`, not from the site root, and they see the campaign specific theme.
+
+#### [](#_repository)repository
+
+The `repository` property defines the name of the target repository for the requested content.
+
+### [](#_where_to_configure)Where to configure
+
+#### [](#_community_edition_and_dx_core)Community Edition and DX Core
+
+The mappings for repositories such as `dam` or `resources` are usually set **in the configuration of the server** at `/server/URI2RepositoryMapping/mappings/`. Each repository may use a specific mapping class. Magnolia comes with the following repository-specific classes:
+
+| Repository | Class |
+| --- | --- |
+| `dam` | `info.magnolia.dam.core.link.DamURI2RepositoryMapping` |
+| `resources` | `info.magnolia.module.resources.mapping.URI2ResourcesRepositoryMapping` |
+
+The `website` repository has a pre-configured mapping at the server level.
+
+#### [](#_dx_core_only)DX Core only
+
+DX Core can host multiple sites and allows you to configure URI to repository mappings separately for each of the sites. Typically, this is done for the `website` repository, but other repositories are not excluded. The configuration takes place **in the `multisite` module**:
+
+-   `/modules/multisite/config/sites/<site1-name>/mappings/`
+
+-   `/modules/multisite/config/sites/<site2-name>/mappings/`
+
+-   `/modules/multisite/config/sites/<site2-name>/mappings/`
+
+-   \[etc.\]
+
+
+#### [](#_configuration_examples)Configuration examples
+
+##### [](#_community_edition)Community Edition
+
+![Community Edition configuration](../../../_images/ADVT-urirepo-CE.png)
+
+##### [](#_dx_core)DX Core
+
+###### [](#_server_part)Server part
+
+![DX Core Server part configuration](../../../_images/ADVT-urirepo-DX.png)
+
+###### [](#_multisite_module_default_configuration)`multisite` module (default configuration)
+
+![DX Core multisite module configuration](../../../_images/ADVT-urirepo-multi.png)
+
+(The `fallback` node extends the `travel` site.)
+
+![The fallback node that extends the travel site](../../../_images/ADVT-urirepo-fb.png)
+
+![The fallback node that extends the sportstation site](../../../_images/ADVT-urirepo-SS.png)
+
+Related topics
+
+-   [URI mapping](../)
+
+-   [Virtual URI mapping](../Virtual-URI-mapping/)

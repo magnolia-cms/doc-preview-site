@@ -1,0 +1,473 @@
+---
+title: "Text Classification module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Text-Classification-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Text Classification module
+---
+
+# Text Classification module
+
+[Content management](../../../use-cases/content-management/) Unbundled: Extension
+
+| Download | [Multiple submodules](#Installing with maven) |
+| --- | --- |
+| Edition | DX Core |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [TXTREC](https://magnolia-cms.atlassian.net/browse/TXTREC) |
+| Maven site | [Text Classification](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fai%2Ftext%2Fmagnolia-text-classification%2F2.0.0) |
+| Latest | 2.0.0 |
+
+The Text Classification module uses the Amazon Comprehend service to analyze and tag your text content. Amazon Comprehend is a natural language processing (NLP) service that uses machine learning to find insights and relationships in text. Magnolia uses the AWS [Key Phrases service](https://docs.aws.amazon.com/comprehend/latest/dg/how-key-phrases.html) (BatchDetectKeyPhrases) to detect key phrases in your content during the classification process.
+
+> A *key phrase* is a string containing a noun phrase that describes a particular thing. It generally consists of a noun and the modifiers that distinguish it. For example, `day` is a noun; `a beautiful day` is a noun phrase that includes an article (`a`) and an adjective (`beautiful`). Each key phrase includes a score that indicates the level of confidence that Amazon Comprehend has that the string is a noun phrase. You can use the score to determine if the detection has high enough confidence for your application.
+
+## [](#_module_structure)Module structure
+
+| artifactID | Description |
+| --- | --- |
+| `magnolia-text-classification-parent` | Parent reactor. |
+| `magnolia-text-classification` | Provides the text classification module and service. |
+| `magnolia-text-classification-api` | Provides an API to classify text. |
+| `magnolia-amazon-text-classification` | Provides functionality to classify text via [Amazon Comprehend](https://aws.amazon.com/comprehend/). |
+| `magnolia-pages-content-tags-integration` | Provides functionality to integrate [content tags](../Content-Tags-module/) and the text classification service using [decorations](../../../Developing/Definition-decoration/) in the Pages app. |
+| `magnolia-pages-content-tags-integration-compatibility` | Magnolia 6.2 compatibility submodule that provides the `CompatibilityPageTextAggregator`. This text aggregator gathers texts according to both old and new API dialogs of page areas and components. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai.text</groupId>
+  <artifactId>magnolia-text-classification</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai.text</groupId>
+  <artifactId>magnolia-text-classification-api</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai.text</groupId>
+  <artifactId>magnolia-amazon-text-classification</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai.text</groupId>
+  <artifactId>magnolia-pages-content-tags-integration</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai.text</groupId>
+  <artifactId>magnolia-pages-content-tags-integration-compatibility</artifactId>
+  <version>2.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_configuration)Configuration
+
+When using our out-of-the-box solution:
+
+-   The `pages-content-tags-integration` submodule brings the content-tags functionality to the Pages app and handles aggregating text from the `website` workspace.
+
+-   The `magnolia-amazon-text-classification` submodule provides an out-of-the-box implementation to use Amazon Comprehend.
+
+
+High-level configuration steps:
+
+-   Once the correct permissions are granted, configure the connection to the Amazon Comprehend classification service.
+
+-   Configure the `aggregateDefinition` for the Pages app (`website` workspace) to specify:
+
+    -   The field types to be aggregated.
+
+    -   Any terms you want to exclude. For example, you may want to filter out your company name.
+
+
+-   Adjust the `minConfidence` property to change the classification confidence score.
+
+
+If you so require, you can also write:
+
+-   Your own text aggregator implementation to run text classification on a custom content app.
+
+-   Your own text classifier implementation to use another third-party text classification service to classify and tag your content.
+
+
+### [](#_aws_iam_policy)AWS IAM Policy
+
+Make sure that you have acquired appropriate permissions for the service in the [AWS IAM Management Console](https://console.aws.amazon.com/iam/home?region=us-east-2#/users).
+
+![AWS IAM Policy](../../../_images/aws-aim-console-users-focus-blur.png)
+
+The minimum required permissions are read access level and action execution for `comprehend:BatchDetectKeyPhrases` and `comprehend:DetectKeyPhrases`.
+
+Minimum required permissions
+
+```javascript
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "comprehend:BatchDetectKeyPhrases",(1)
+                "comprehend:DetectKeyPhrases"(2)
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+
+|     |     |
+| --- | --- |
+| **1** | Grant access for [AWS BatchDetectKeyPhrases](https://docs.aws.amazon.com/comprehend/latest/APIReference/API_BatchDetectKeyPhrases.html). |
+| **2** | Grant access for [detectKeyPhrasesinfo](https://docs.aws.amazon.com/comprehend/latest/APIReference/API_DetectKeyPhrases.html). |
+
+### [](#_configuring_the_aws_connection)Configuring the AWS connection
+
+> **Tip:** The magnolia-aws-foundation module handles all Amazon connections from Magnolia. It’s installed automatically by Maven when you install any AWS-dependent module.
+
+To use AWS in Magnolia, you must have a working AWS account.
+
+You need [AWS credentials](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) to connect AWS to Magnolia. Credentials consist of:
+
+-   AWS access key ID
+
+-   AWS secret access key
+
+-   Optionally, a session token (when using the AWS default credential provider chain)
+
+
+Generate the key in the security credentials section of the [Amazon IAM Management Console](https://console.aws.amazon.com/iam/home?region=us-east-2#/users). In the navigation bar on the upper right, choose your user name, and then choose **My Security Credentials**. You can store your AWS credentials using:
+
+-   Magnolia Passwords app (session tokens aren’t supported in the app)
+
+-   AWS default credential provider chain
+
+
+#### [](#_using_the_passwords_app)Using the Passwords app
+
+Add your generated access key ID and the secret access key to your Magnolia instance in the [Passwords app](../Password-Manager-module/) using the following names and order:
+
+|     |     |
+| --- | --- |
+| 📁 `aws-credentials` |     |
+|     | `aws_access_key_id` |
+|     | `aws_secret_access_key` |
+
+#### [](#_using_the_aws_default_credential_provider_chain)Using the AWS default credential provider chain
+
+The AWS SDK uses a chain of sources to look for credentials in a specific order. For more information, see [Default credentials provider chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html).
+
+1.  Set your AWS credentials by following the instructions in the AWS documentation: [Provide temporary credentials to the SDK](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials.html).
+
+    > **Note:** For a more secure implementation using the default credential provider chain, we recommend using a session token, which expires, rather than a permanent user token.
+
+2.  Disable Magnolia’s internal credential handling by doing one of the following:
+
+    1.  Adding the following configuration properties to your [`WEB-INF/config/default/magnolia.properties`](../../../Administration/Architecture/Configuration-management/) file:
+
+        ```java
+        magnolia.aws.validateCredentials=false
+        magnolia.aws.useCredentials=false
+        ```
+
+    2.  Using JVM arguments as shown in the next step.
+
+
+3.  Set your AWS session or user token. AWS credentials can be injected using environment variables or JVM system properties. For more details, see [Default credentials provider chain](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html) and [Configure access to temporary credentials](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-temporary.html).
+
+    Example configuration with a session token and JVM arguments
+
+    ```java
+    -Dmagnolia.aws.validateCredentials=false(1)
+    -Dmagnolia.aws.useCredentials=false(1)
+    -Daws.accessKeyId=$AWS_ACCESS_KEY_ID(2)
+    -Daws.secretAccessKey=$AWS_SECRET_ACCESS_KEY(2)
+    -Daws.sessionToken=$AWS_SESSION_TOKEN(2)(3)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Disables Magnolia’s internal credential handling using JVM properties. |
+    | **2** | JVM properties to inject environment variables containing the AWS credentials. Ensure that your environment variables `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_SESSION_TOKEN` are set. |
+    | **3** | `AWS_SESSION_TOKEN` is optional. |
+
+    Example configuration with a permanent user token
+
+    ```java
+    -Dmagnolia.aws.validateCredentials=false
+    -Dmagnolia.aws.useCredentials=false
+    -Daws.accessKeyId=<your-access-key-id>
+    -Daws.secretAccessKey=<your-secret-access-key>
+    ```
+
+
+### [](#_configuring_the_service)Configuring the service
+
+Under `/amazon-text-classification/config.yaml`, you must configure the following properties for the classification service:
+
+`/amazon-text-classification/config.yaml`
+
+```yml
+region:
+  name: your_aws_region_name
+languageCode: en
+minConfidence: 0.85
+```
+
+#### [](#_properties)Properties
+
+ PropertyDescription
+
+`region`
+
+     `name`
+
+**required**
+
+Label designating a regional endpoint to which the text classification service connects, such as `eu-west-1`.
+
+You must set a region name to configure the Amazon Comprehend service in Magnolia.
+
+To reduce data latency, AWS offers several regional endpoints. Each of the endpoints can be referred to in service configurations by a region name, for example `eu-west-1`. If you pick a region that doesn’t support this service, you may get erratic results.
+
+> **Tip:** For a list of available regions and labels, see docs.aws.amazon.com/general/latest/gr/rande.html#comprehend_region.
+
+`languageCode`
+
+**required**, *default is \`en\`*
+
+The language of the input documents.
+
+You can specify any of the primary languages supported by Amazon Comprehend: German (`de`), English (```en''), Spanish (`es''), French (`fr''), Italian (``it```), or Portuguese (`pt`). All documents must be in the same language.
+
+`minConfidence`
+
+**required**, *default is \`0.85\`*
+
+The confidence score of the classification.
+
+Must be a decimal value between 0 and 1. The filter drops the tags with a confidence score lower than the value of this property.
+
+The Amazon Comprehend solution returns a confidence score for each key phrase tag. Tags with a confidence score lower than the value of the `minConfidence` property are dropped.
+
+Setting the value higher usually results in fewer key phrase tags being returned for your content. A higher confidence score means that the tag describes the text better.
+
+## [](#_configuring_text_aggregators)Configuring text aggregators
+
+The `pages-content-tags-integration` module brings the content-tags functionality to the Pages app and handles aggregating text from the `website` workspace.
+
+The `pages-content-tags-integration-`**`compatibility`** module handles aggregating text for both the legacy [Magnolia 5 UI Pages app and the new 6 UI Pages app](#6.2@product-docs:ROOT:Upgrading-to-Magnolia/Changes-in-Magnolia-6-UI.adoc).
+
+Text aggregators collect and aggregate the content that the classification service analyzes and generates tags from. You can specify from which field types content should be taken in the text aggregator configuration.
+
+### [](#_defining_field_types)Defining field types
+
+By default, the text aggregator for the Pages app gathers text from [text](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/), [rich text](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/), [composite](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Composite-field/), and [switchable](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Switchable-field/) field types.
+
+`` text-classification/src/main/resources/text-classification/config.yaml` ``
+
+```yml
+aggregateDefinition:
+  fieldTypes: [text, textField, richText, richTextField, composite, compositeField, switchable, switchableField]
+```
+
+### [](#_excluding_terms_from_the_classification_tags)Excluding terms from the classification tags
+
+You can exclude the terms you don’t want to appear in your tags. For example, you may want to exclude your company name.
+
+1.  Open `/text-classification/config.yaml` in the Resource files app.
+
+2.  Add comma-separated terms to the `excludedTerms` list.
+
+    In this example, the words *ACME*, *corporation*, and *coyote* are excluded:
+
+    `` text-classification/src/main/resources/text-classification/config.yaml` ``
+
+    ```yml
+    termFilteringDefinition:
+      excludedTerms: [ACME, corporation, coyote]
+    ```
+
+
+> **Note:** The list of excluded terms is case insensitive.
+
+## [](#_creating_custom_content_app_text_aggregators)Creating custom content app text aggregators
+
+If you want to run text classification on a custom content app, you must write your own text aggregator implementation.
+
+1.  Implement the `TextAggregator` interface.
+
+2.  TextAggregator uses multi-binding so you must annotate it with `@Multibinding` and add it to the module descriptor as a component for injection. For example, see `pages-content-tags-integration/src/main/resources/META-INF/magnolia/pages-content-tags-integration.xml`.
+
+3.  Decorate the text-classification configuration file, for example:
+
+    `` customModule-content-tags-integration/decorations/text-classification/config/config.yaml` ``
+
+    ```yml
+    workspaceClassificationConfigurations:
+      website:
+        textAggregatorClassName: info.magnolia.ai.text.YourTextAggregator
+        workspace: yourworkspace
+        nodeType: mgnl:yournodetype
+    ```
+
+
+### [](#_properties_2)Properties
+
+| Property | Description |
+| --- | --- |
+| `workspaceClassificationConfigurations` | **required** |
+| `website` | **required**<br><br>Arbitrary, unique name for the decoration configuration. |
+| `textAggregatorClassName` | **required**<br><br>Fully qualified classname for your text aggregator.<br><br>Example: info.magnolia.ai.text.PageTextAggregator |
+| `workspace` | **required**<br><br>The workspace where the content to be analyzed is stored. |
+| `nodeType` | **required**<br><br>The name of the JCR node type for storing an item of the given content type.<br><br>Example: `mgnl:page` |
+
+## [](#_creating_custom_text_classifiers)Creating custom text classifiers
+
+The `magnolia-amazon-text-classification` submodule provides an out-of-the-box implementation to use Amazon Comprehend.
+
+However, if you want to use another third-party text classification service to classify and tag your content, you can write your own custom text classifier implementation.
+
+Before configuring the text classifier, make sure you have administrator access to your third-party classification service, including the API documentation.
+
+To create a custom text classifier you must implement the info.magnolia.ai.text.TextClassifier interface.
+
+Note that you can inject the `TextClassifier` interface as a component in any running instance of Magnolia.
+
+`info.magnolia.ai.text.TextClassifier` interface
+
+```java
+/**
+ * Commons interface to classify text.
+ */
+public interface TextClassifier {
+
+    /**
+     * Takes a {@link String text} as parameter and returns a {@link Collection collection}
+     * of {@link TextLabel Text label}s as output.
+     *
+     * <p>
+     *     Returns empty collection for the cases below:
+     *     <li>Upon exception</li>
+     *     <li>Text couldn't be classified</li>
+     * </p>
+     */
+    Collection<TextLabel> classify(String text);
+
+    /**
+     * Takes a collection containing the text of the input documents as a parameter.
+     *
+     * @param texts
+     *        A collection containing the text of the input documents.
+     * @return Returns a {@link Map map} where keys are input texts, values are {@link Collection collection}s of detected {@link TextLabel Text label}s
+     *         for the input text or empty collections if an error occurs while processing the input text.
+     *         The returned map preserves the order of the texts in the input collection.
+     *
+     * <p>
+     *     Returns an empty map for the cases below:
+     *     <li>Input {@link Collection collection} is null or empty</li>
+     *     <li>All documents in input {@link Collection collection} are processed with an error</li>
+     * </p>
+     */
+    default Map<String, Collection<TextLabel>> classify(Collection<String> texts) {
+        if (CollectionUtils.isNotEmpty(texts)) {
+            return texts.stream()
+                    .collect(Collectors.toMap(mapper -> mapper, this::classify));
+        }
+        return Collections.emptyMap();
+    }
+}
+```
+
+> **Note:** Only one TextClassifier should be used in a Magnolia instance. Remove the out-of-the-box AmazonTextClassifier if you choose to implement your own.If you have more than one module that specifies the TextClassifier implementation in the module class, the TextClassifier from the module that was started last is used.
+
+See the following files for an example implementation:
+
+-   info.magnolia.ai.text.amazon.AmazonTextClassifier
+
+-   `META-INF/magnolia/amazon-text-classification.xml`
+
+
+## [](#_running_text_classification)Running text classification
+
+The text classification and tagging action are executed during the startup of the author instance. You can also trigger the action manually in the Pages app by selecting one or more pages and clicking the **Run classification** action.
+
+Pages that are already tagged are marked as such using a JCR property called `lastTaggingAttemptDateByTextClassifier`. Executing the manual classification action forces a new tag to be set even if the content was previously tagged.
+
+The text classification feature is available only on author instances.
+
+## [](#_removing_tags)Removing tags
+
+Once a page is tagged, you can remove tags by selecting the page and clicking the **Modify tags** action in the Pages app.
+
+In the dialog box that opens, you can remove individual tags or click **Remove all tags**.
+
+> **Warning:** Note that content tagging currently has an issue when creating tags of words with accented characters. For example, Genève is tagged as Gen-ve. This means that searching for the tag Geneve or Genève doesn’t return any results. The issue is tracked here: CONTTAGS-69 No support of special characters.
+
+## [](#_disabling_text_classification)Disabling text classification
+
+If you don’t use text classification, you can disable it so that system performance isn’t affected.
+
+To disable text classification, go to the file `/text-classification/config.yaml` in the `Resource Files` app and set the `enabled` property to `false`.
+
+By default, it’s set to `true`.
+
+/text-classification/config.yaml
+
+```yaml
+# turn off the module with this property
+enabled: false (1)
+aggregateDefinition:
+  fieldTypes: [text, textField, richText, richTextField, composite, compositeField, switchable, switchableField]
+termFilteringDefinition:
+  excludedTerms: []
+```
+
+|     |     |
+| --- | --- |
+| **1** | The text classification feature is disabled. |
+
+Related topics
+
+-   [Text classification](../../../Features/Text-classification/)
+
+-   [Content tagging](../Content-Tags-module/)
+
+-   [Definition decoration](../../../Developing/Definition-decoration/)

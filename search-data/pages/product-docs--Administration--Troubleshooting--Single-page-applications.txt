@@ -1,0 +1,45 @@
+---
+title: "Single-page applications (SPA)"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Troubleshooting/Single-page-applications/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > Single-page applications (SPA)
+---
+
+# Single-page applications (SPA)
+
+## [](#_rendering_single_page_applications_spa)Rendering single-page applications (SPA)
+
+Currently, the following functionalities aren’t supported in SPA rendering:
+
+-   [Component autogeneration](../../../Developing/Templating/Template-definition/Area-definition/Component-autogeneration/)
+
+-   [Component inheritance](../../../Developing/Templating/Template-definition/Area-definition/Component-inheritance/)
+
+-   [Component personalization](../../../Features/Personalization/Component-personalization/)
+
+-   [Fragment definition](../../../Developing/Templating/Template-definition/Component-definition/)
+
+-   [Area-in-area nesting](../../../Developing/Templating/Template-definition/Area-definition/Structuring-page-areas/)
+
+
+## [](#_external_spa_and_browser_compatibility)External SPA and browser compatibility
+
+If you are running SPA editors (React, Angular or Vue) on Magnolia using either [Safari](https://apple.com/safari/) or the [Brave Browser](https://brave.com), you can run into an issue where you see a blank white screen.
+
+### [](#_safari)Safari
+
+Configure your local SPA development server to use an SSL certificate for the `localhost`, for example, with the [`mkcert`](https://github.com/FiloSottile/mkcert) tool:
+
+-   In your home SPA folder, execute the `mkcert localhost` command.
+
+-   Configure your local development server to use SSL and the newly created certificate. (Concrete instructions will depend on the framework you are using for your SPA).
+
+-   Change your environment or the light module files to use HTTPS (not just HTTP) to access the local development server. For example, use `https://localhost:3000` instead of `http://localhost:3000`.
+
+-   Restart your local development server.
+
+
+### [](#_brave_browser)Brave Browser
+
+Disable the [Shields](https://support.brave.com/hc/en-us/articles/360022973471-What-is-Shields-) temporarily.

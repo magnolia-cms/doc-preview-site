@@ -1,0 +1,1849 @@
+---
+title: "Networking"
+url: https://docs.magnolia-cms.com/paas/cockpit/sections/networking/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Manage > Cockpit sections > Networking
+---
+
+# Networking
+
+The **Networking** section of the Cockpit lets you create and manage ingresses and certificates, handle redirects and configure your desired redirect settings, and manage secrets.
+
+## [](#_select_desired_cluster)Select desired cluster
+
+Select your desired cluster from the dropdown menu at the top of the Cockpit.
+
+![select cluster id](../../_images/select-cluster-id.jpg)
+
+## [](#_ingresses)Ingresses
+
+Kubernetes Ingresses manage external access to services within a cluster, enabling HTTP and HTTPS traffic routing based on hostnames and paths. They provide a flexible, scalable way to expose Magnolia applications, supporting features like SSL termination, load balancing, and custom Nginx configurations. Ingresses are essential for delivering secure, performant web experiences in the DX Cloud Cockpit.
+
+In this section, you can find:
+
+-   [Instructions to add an Ingress in the Cockpit](#_add_an_ingress)
+
+    You can also find embedded help directly in the Cockpit.
+
+-   [Claim an Ingress](#_claim_an_ingress)
+
+-   [Synchronize an Ingress](#_synchronize_an_ingress)
+
+-   [Learn important Ingress terms](#_ingress_terms)
+
+
+* * *
+
+### [](#_add_an_ingress)Add an Ingress
+
+This guide helps you configure a new Ingress resource to manage external access to services.
+
+1.  Go to **Networking > Ingresses** in your Cockpit.
+
+2.  Ensure you are on [your desired cluster](#_select_desired_cluster).
+
+3.  Click **Add**. This opens a dialog where you configure critical Ingress criteria.
+
+4.  Under **[General settings](#_general_settings)**:
+
+    1.  Give your Ingress a **Name** and a **Description**.
+
+
+5.  Under **[Access control](#_access_control)**:
+
+    1.  Enter the **Allow List IPs**.
+
+    2.  Enter the **Deny List IPs**.
+
+    3.  Disable the robots header (if desired).
+
+    4.  Add any desired **Denied locations**. You can also deny access to Admincentral for locations here.
+
+
+6.  Under **[NGINX options](#_nginx_options)**:
+
+    1.  Set the [Max body size](#_proxybodysize).
+
+    2.  Enable [Response buffering](#_proxybuffering).
+
+    3.  Set the [Max buffer size](#_proxybuffersize).
+
+    4.  Set the [Number buffers](#_proxybuffersnumber).
+
+    5.  Enable [Request buffering](#_proxyrequestbuffering).
+
+    6.  Configure the [Connection timeout](#_proxyconnecttimeout).
+
+    7.  Adjust the [Read timeout](#_proxyreadtimeout).
+
+    8.  Set the [Send timeout](#_proxysendtimeout).
+
+    9.  Enable [Force SSL redirect](#_forcesslredirect) if desired.
+
+    10.  Enable [From to www redirect](#_fromtowwwredirect) if desired.
+
+    11.  Enable [the Ingress firewall](#_enablewaf). **Recommended**
+
+    12.  Set [Rate limiting](#_ratelimiting) parameters.
+
+    13.  Specify any [Headers to clear](#_headerstoclear) in the response.
+
+    14.  Set any [Headers](#_headerstoset) you want in the response.
+
+    15.  If desired, enable and define an [Error page](#_errorpage).
+
+    16.  Enable [Sticky sessions](#_stickysession) to route a client’s requests to the same backend server.
+
+    17.  If desired, enable [Basic auth](#_basicauth).
+
+    18.  Configure [CORS](#cors) to control which domains can access resources.
+
+    19.  Enable [client certificate authentication](#_certificateauthentication) to require clients to present a valid SSL/TLS certificate.
+
+
+7.  Under **[CDN options](#_cdn_options)**:
+
+    1.  Choose to enable content delivery for the Ingress (if desired). If enabled, Fastly is currently the only option.
+
+
+8.  Under **[Rules](#_rules)**:
+
+    Ingress rules specify the direction of allowed access to and from different identities and resources.
+
+    1.  **Allow regular expression**: Allow regular expression.
+
+    2.  **Host**: Choose the host from the dropdown menu. Only available hosts are listed.
+
+    3.  **Path type**: Choose the path type.
+
+        1.  `ImplementationSpecific`: Matching is up to the IngressClass.
+
+        2.  `Exact`: Matches the URL path exactly including being case-sensitive.
+
+        3.  `Prefix`: Matches based on a URL path prefix split by `/`. This is case-sensitive.
+
+
+    4.  **Path**: Specify the path itself, such as `/icons` or `/docs`.
+
+    5.  **Service**: Choose the desired service from the dropdown. This is typically `public` or `author`.
+
+    6.  **Backend port**: Choose the port. This can be the port number (such as `9090`) or the port name if a name is given.
+
+
+9.  Under **[TLS certificates](#_tls)**:
+
+    1.  Choose to enable **Acquire certificates automatically, using Let’s Encrypt (HTTP-01)** if desired.
+
+    2.  Otherwise, select an existing SSL/TLS certificate secret from the cluster to secure the Ingress. This is disabled if certificate acquisition is automatic (enabled above).
+
+
+
+#### [](#_general_settings)General settings
+
+##### [](#_name)Name
+
+🏷️ **Name**
+
+A unique name for the Ingress resource, used to identify it within the Kubernetes cluster. Must follow Kubernetes naming conventions (lowercase, alphanumeric, hyphens).
+
+##### [](#_description)Description
+
+🏷️ **Description**
+
+An optional description of the Ingress, providing context or purpose for the resource. Useful for organizing, auditing, and documenting resources.
+
+#### [](#_access_control)Access control
+
+##### [](#_whitelistips)whitelistIps
+
+🏷️ **Allow List IPs**
+
+A list of IP addresses or CIDR ranges allowed to access the Ingress. Only requests from these IPs are permitted, enhancing security by restricting access.
+
+##### [](#_blacklistips)blacklistIps
+
+🏷️ **Deny List IPs**
+
+A list of IP addresses or CIDR ranges blocked from accessing the Ingress. Requests from these IPs are denied, protecting against known threats.
+
+##### [](#_disablerobots)disableRobots
+
+🏷️ **Disable robots header**
+
+Enables or disables the robots header in HTTP responses. When checked, prevents search engine crawlers from indexing the Ingress; useful for private or sensitive endpoints.
+
+##### [](#_deniedlocations)deniedLocations
+
+🏷️ **Denied locations**
+
+Allows you to block access to specific paths by defining a list of denied locations. Ensures requests to those paths are rejected before reaching the backend services.
+
+#### [](#_nginx_options)NGINX options
+
+##### [](#_proxybodysize)proxyBodySize
+
+🏷️ **Max body size**
+
+Sets the maximum allowed size of the client request body, specified in bytes (e.g., "10m" for 10 megabytes). Limits large uploads to protect server resources.
+
+-   **Objective:** Limits the size of client request bodies (e.g., file uploads) to prevent resource exhaustion.
+
+-   **Context**: Magnolia allows authors to upload assets (e.g., images, PDFs) via the admin interface. Large uploads can strain server memory or disk, slowing down the CMS or causing crashes.
+
+    > **Important:** This protects the Magnolia instance from being overwhelmed by oversized uploads (e.g., a user uploading a 1GB video) and ensures server stability for both author and public instances.
+
+-   **Example**: Setting proxyBodySize to "10m" allows images up to 10MB, sufficient for most CMS assets, while blocking larger files that could disrupt performance.
+
+
+##### [](#_proxybuffering)proxyBuffering
+
+🏷️ **Enable response buffering**
+
+Controls response buffering:
+
+-   **on** (default): NGINX buffers the response in memory (or disk if large) before delivering it to the client.
+
+-   **off**: NGINX streams the response to the client as it receives it from the backend.
+
+
+Set it "off" for:
+
+-   Server-Sent Events (SSE)
+
+-   Real-time APIs
+
+-   Reduce memory use under load
+
+
+##### [](#_proxybuffersize)proxyBufferSize
+
+🏷️ **Max buffer size**
+
+Sets the size of the buffer used for reading the first part of the response received from the proxied server (ie: Magnolia, frontend application), specified in bytes (e.g., "16k" for 16 kilobytes). By default proxy buffer size is set as "4k".
+
+-   **Objective:** Allow large cookies, big JWT token or long custom headers to pass through Nginx.
+
+-   **Context**: Magnolia allows customers to use their own IDP to handle the authentication. Large number can increase the risk of Nginx memory bloat and DoS attacks
+
+-   **Example**: Setting proxyBufferSize to "16k" allows 16 kilobytes of headers/cookies
+
+
+##### [](#_proxybuffersnumber)proxyBuffersNumber
+
+🏷️ **Buffer numbers**
+
+Sets the number of the buffers in proxy\_buffers used for reading the first part of the response received from the proxied server (ie: Magnolia, frontend application). By default number of buffers is set as "4".
+
+-   **Objective:** Allow response having a large number of header of a large body content.
+
+-   **Context**: Magnolia allows customers to build their own pages and does not set any limit on the page size or the number of headers. Large number can increase the risk of Nginx memory bloat and DoS attacks
+
+
+##### [](#_proxyrequestbuffering)proxyRequestBuffering
+
+🏷️ **Enable request buffering**
+
+Controls request buffering:
+
+-   **on** (default): Buffer the entire request body in memory or to disk before sending it to the backend.
+
+-   **off**: NGINX streams the request to the backend as it receives it from the client.
+
+
+Set it "off" for:
+
+-   File uploads (ie: Enable progress bar while uploading file to Magnolia)
+
+-   Real-time data input
+
+
+##### [](#_proxyconnecttimeout)proxyConnectTimeout
+
+🏷️ **Connection timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait while establishing a TCP connection to the upstream (i.e. your Magnolia or frontend instance). By default timout is set as "60" seconds.
+
+##### [](#_proxyreadtimeout)proxyReadTimeout
+
+🏷️ **Read timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait to read data from the backend service after the connection has been established. By default timout is set as "60" seconds.
+
+##### [](#_proxysendtimeout)proxySendTimeout
+
+🏷️ **Send timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait while sending data to the backend. By default timout is set as "60" seconds.
+
+##### [](#_forcesslredirect)forceSslRedirect
+
+🏷️ **Force SSL redirect**
+
+When enabled, redirects all HTTP requests to HTTPS, ensuring secure communication. Useful for enforcing SSL/TLS across all traffic.
+
+-   **Objective:** Redirects HTTP requests to HTTPS to enforce secure, encrypted communication.
+
+-   **Context**: Magnolia public sites (e.g., corporate websites) and author instances handle sensitive data, such as user sessions or content drafts, requiring encryption to protect against eavesdropping.
+
+    > **Important:** Ensures all traffic to Magnolia is secure, building trust with site visitors, improving SEO (Google prioritizes HTTPS), and complying with regulations like GDPR for EU users.
+
+-   **Example**: Enabling forceSslRedirect redirects `http://magnolia-site.com` to `https://magnolia-site.com`, securing user interactions and protecting admin logins.
+
+
+##### [](#_fromtowwwredirect)fromToWwwRedirect
+
+🏷️ **From to www redirect**
+
+When enabled, redirects requests between "www" and non-"www" (apex) versions of the domain (e.g., www.example.com to example.com). Ensures consistent URL usage.
+
+If your rule’s host is the apex domain, the Ingress will redirect the "www" requests to the apex domain.
+
+If your rule’s host is the "www" domain, the Ingress will redirect the apex requests to the "www" domain.
+
+In both cases, the preferred domain should be the only one defined in the rules.
+
+-   **Objective:** Redirects traffic between `www` and non-`www` domains to maintain consistent URL structures.
+
+-   **Context**: Magnolia sites often use a primary domain for branding (e.g., `example.com` or `www.example.com`). Inconsistent URLs can confuse users, harm SEO due to duplicate content, or break analytics tracking.
+
+    > **Important:** Provides a unified user experience and improves SEO by preventing duplicate content penalties, ensuring all traffic uses the preferred domain.
+
+-   **Example**: Enabling fromToWwwRedirect redirects `www.magnolia-site.com` to `magnolia-site.com`, standardizing links and analytics for a corporate website.
+
+
+##### [](#_enablewaf)enableWaf
+
+🏷️ **Enable Ingress firewall (OWASP)**
+
+Enables the Web Application Firewall (WAF) to protect against common web attacks, such as SQL injection or cross-site scripting. Enhances security for public endpoints.
+
+⚠️ Enabling this feature can heavily impact performance and stability. Use only on Ingresses that are not already protected by a (Fastly) WAF.
+
+For more details, see the [OWASP ModSecurity Project](https://modsecurity.org).
+
+-   **Objective:** Activates a Web Application Firewall to block common web attacks, leveraging OWASP rulesets for protection.
+
+-   **Context**: Magnolia public sites are internet-exposed, making them targets for attacks like SQL injection or XSS. Author instances are critical, as compromised access could lead to content vandalism or data breaches.
+
+    > **Important:** Protects Magnolia from exploits, ensuring site availability and data integrity, and supports compliance with security standards like PCI DSS for e-commerce integrations.
+
+-   **Example**: Enabling enableWaf blocks malicious requests (e.g., XSS attempts on `/login`), safeguarding Magnolia’s public and admin interfaces.
+
+
+##### [](#_ratelimiting)rateLimiting
+
+🏷️ **Rate limiting**
+
+Configures rate limiting to restrict the number of requests per client, preventing abuse or denial-of-service attacks. Define limits and burst settings.
+
+-   **Objective:** Limits the frequency of client requests to prevent server overload or denial-of-service (DDoS) attacks.
+
+-   **Context**: Magnolia public sites may face traffic spikes from bots or scrapers, while author instances are vulnerable to brute-force login attempts. Rate limiting ensures server stability under load.
+
+    > **Important:** Maintains Magnolia’s availability during high traffic or attacks, reducing server load and ensuring responsive content delivery for users.
+
+-   **Example**: Setting rateLimiting to 100 requests per minute per IP prevents bots from overwhelming `/api/content`, keeping the public site accessible.
+
+
+##### [](#_headerstoclear)headersToClear
+
+🏷️ **Headers to clear**
+
+Specifies HTTP headers to remove from the response, improving security or compatibility by eliminating unwanted headers.
+
+-   **Objective:** Removes specific HTTP response headers to enhance security or resolve compatibility issues.
+
+-   **Context**: Magnolia may include default headers (e.g., `Server: nginx`) that reveal software versions, aiding attackers. Some headers may conflict with Magnolia’s frontend or third-party integrations.
+
+    > **Important:** Reduces the attack surface by hiding server details and ensures compatibility with Magnolia’s rendering or external tools, improving security and functionality.
+
+-   **Example**: Clearing the `Server` header prevents attackers from identifying Nginx version vulnerabilities, protecting the public site.
+
+
+##### [](#_headerstoset)headersToSet
+
+🏷️ **Headers to set**
+
+Defines custom HTTP headers to add to the response, such as security headers (e.g., X-Frame-Options) or caching directives.
+
+-   **Objective:** Adds custom HTTP response headers to enhance security, control caching, or support specific functionality.
+
+-   **Context**: Magnolia public sites benefit from security headers (e.g., `X-Frame-Options: DENY` to prevent clickjacking) and caching headers (e.g., `Cache-Control`) for static assets. Author instances may need headers for compliance or integration.
+
+    > **Important:** Strengthens security against attacks and optimizes performance by controlling browser caching, critical for Magnolia’s content delivery and user safety.
+
+-   **Example**: Setting `X-Frame-Options: DENY` prevents Magnolia pages from being embedded in malicious iframes, enhancing site security.
+
+
+##### [](#_errorpage)errorPage
+
+🏷️ **Error page**
+
+Customizes error pages for specific HTTP status codes (e.g., `404`, `500`), providing user-friendly messages or redirects.
+
+-   **Objective:** Customizes error pages to improve user experience during HTTP errors.
+
+-   **Context**: Magnolia public sites need branded error pages (e.g., `404`) to guide users back to content, while author instances benefit from clear error messages during maintenance or issues.
+
+    > **Important:** Enhances user experience by replacing default Nginx errors with Magnolia-branded pages, maintaining professionalism and usability during issues.
+
+-   **Example**: Setting errorPage for `404` to `/not-found` redirects users to a custom Magnolia page with navigation links, reducing bounce rates.
+
+
+##### [](#_stickysession)stickySession
+
+🏷️ **Sticky session**
+
+Enables sticky sessions to route a client’s requests to the same backend server, useful for session-based applications. Configure session persistence settings.
+
+-   **Objective:** Routes a client’s requests to the same backend server to maintain session persistence.
+
+-   **Context**: Magnolia author instances rely on sessions for user authentication and content editing. Public sites with personalization (e.g., user-specific content) may also use session data.
+
+    > **Important:** Ensures consistent user sessions, preventing login issues or data loss in the CMS, and supports Magnolia’s personalization features for public sites.
+
+-   **Example**: Enabling `stickySession` keeps an author’s editing session on the same pod, avoiding interruptions during content updates.
+
+
+##### [](#_basicauth)basicAuth
+
+🏷️ **Basic auth**
+
+Enables HTTP Basic Authentication, requiring a username and password for access. Specify credentials or authentication settings.
+
+-   **Objective:** Requires HTTP Basic Authentication (username/password) to restrict access to the Ingress.
+
+-   **Context**: Magnolia author instances or staging sites need restricted access to prevent unauthorized editing. Public sites may use basicAuth for private sections (e.g., employee portals).
+
+    > **Important:** Secures sensitive Magnolia interfaces (e.g., /author) from public access, providing simple authentication without complex SSO setups.
+
+-   **Example**: Enabling basicAuth on `/author` requires a password, protecting the admin interface from unauthorized access.
+
+
+##### [](#_cors)cors
+
+🏷️ **CORS**
+
+Configures Cross-Origin Resource Sharing (CORS) to control which domains can access resources, enabling secure cross-origin requests.
+
+-   **Objective:** Configures Cross-Origin Resource Sharing to allow specific domains to access Magnolia’s resources via HTTP requests.
+
+-   **Context**: Magnolia’s frontend may use REST APIs (e.g., for content delivery) accessed by external domains, such as mobile apps or headless CMS frontends. CORS is critical for these integrations.
+
+    > **Important:** Enables secure integration with Magnolia’s APIs or headless content delivery, supporting modern web and mobile applications consuming CMS content.
+
+-   **Example**: Setting cors to allow `\app.magnolia-site.com` enables a mobile app to fetch content from `/api/content`, ensuring secure API access.
+
+
+##### [](#_certificateauthentication)certificateAuthentication
+
+🏷️ **mTLS**
+
+Enables client certificate authentication, requiring clients to present a valid SSL/TLS certificate. Enhances security for sensitive endpoints.
+
+-   **Objective:** Requires clients to present a valid SSL/TLS client certificate for mutual TLS (mTLS) authentication.
+
+-   **Context**: High-security Magnolia author instances or enterprise integrations may use client certificates to restrict access to admins or trusted clients. Common in B2B scenarios for API endpoints.
+
+    > **Important:** Provides strong authentication beyond passwords, ensuring only authorized clients interact with Magnolia, critical for sensitive or enterprise environments.
+
+-   **Example**: Enabling certificateAuthentication for `/api/admin` restricts access to clients with valid certificates, securing enterprise API calls.
+
+
+#### [](#_cdn_options)CDN options
+
+##### [](#_enabled)enabled
+
+🏷️ **Enabled**
+
+Enables or disables the Content Delivery Network (CDN) for the Ingress. When enabled, traffic is routed through the CDN (Fastly) to improve performance and caching.
+
+##### [](#_provider)provider
+
+🏷️ **Provider**
+
+Displays the CDN provider, fixed to Fastly. This field is read-only, indicating the configured CDN service for the cluster.
+
+##### [](#_nocdnprovider)noCdnProvider
+
+Indicates that no CDN cluster is available for this Ingress. Enable a CDN cluster in your configuration to access CDN options.
+
+#### [](#_rules)Rules
+
+##### [](#_allowregex)allowRegex
+
+🏷️ **Allow regular expressions**
+
+Allows using regular expressions in the rules path fields. Only use if you use rules with path type "ImplementationSpecific" and an actual regular expression as a path.
+
+Using that option might have performance impact on your Ingress.
+
+##### [](#_host)host
+
+🏷️ **Host**
+
+Specifies the host domain for the Ingress rule (e.g., example.com). Defines which domain or subdomain the rule applies to, routing matching requests to the specified paths.
+
+##### [](#_paths)paths
+
+🏷️ **Paths**
+
+Configures the URL paths and their corresponding backend services for the host. Define path patterns (e.g., `/api`) and link them to services for routing traffic.
+
+##### [](#_norules)noRules
+
+🏷️ **Define a rule**
+
+Indicates that no rules are defined for the Ingress, which is required. Add at least one rule to specify how traffic is routed to backend services.
+
+#### [](#_tls)TLS
+
+##### [](#_acquirecertificate)acquireCertificate
+
+🏷️ **SSL/TLS Configuration**
+
+Allow unsecure traffic (No SSL/TLS) - Disables SSL/TLS encryption and allows traffic to be served over HTTP only.
+
+Automatic certificate acquisition - Automatically obtains and manages an SSL/TLS certificate for the Ingress, typically via a certificate manager (e.g., Let’s Encrypt). Manual secret selection is disabled in this mode.
+
+Custom certificate - Use a manually provided SSL/TLS certificate by selecting a pre-created secret containing the required key and certificate.
+
+##### [](#_secretname)secretName
+
+🏷️ **Secret name**
+
+Selects an existing SSL/TLS certificate secret from the cluster to secure the Ingress. Disabled when automatic certificate acquisition is enabled.
+
+##### [](#_loadingcertificates)loadingCertificates
+
+🏷️ **Loading certificates**
+
+Indicates that the list of available certificate secrets is being fetched. Wait for the list to load or check the certificate configuration if it fails.
+
+### [](#_claim_an_ingress)Claim an Ingress
+
+Claiming an Ingress designates the Cockpit as the primary tool for managing its configuration, ensuring that subsequent changes are made through the Cockpit and external updates (e.g., via Rancher or CI/CD pipelines) are ignored when publishing. Once claimed, the Cockpit’s, external changes are overwritten when publishing from the Cockpit. Only healthy ingresses, those without synchronization warnings, can be claimed and managed via the Cockpit.
+
+> **Note:** After claiming an Ingress, ensure it is managed exclusively through the Cockpit to avoid conflicts.Changes made externally (e.g., in Rancher or via kubectl) may persist in the Kubernetes cluster until overwritten by a Cockpit publish, but they can cause synchronization issues or be lost.Establish clear ownership for each Ingress, choosing one management approach:the Cockpit recommended ✓a CI/CD pipeline (configuration as code)manual Kubernetes tools (e.g., Rancher, for rare cases).
+
+To claim an Ingress:
+
+1.  Go to **Networking > Ingresses**.
+
+2.  Choose the desired Ingress.
+
+3.  Under the details section click **Claim**.
+
+
+#### [](#_validation_severity_levels)Validation Severity Levels
+
+Ingress validation issues are categorized into two severity levels:
+
+-   **Warnings** : These ingresses are functional but fail validation checks, preventing them from being claimed. Warnings indicate issues that must be resolved at the infrastructure level (e.g., via Rancher). After fixing the issues, trigger a [Synchronization](#_synchronize_an_ingress) in the Cockpit to revalidate the Ingress. If no synchornization warnings remain, the Ingress can be claimed. Attempting to claim an Ingress with synchronization warnings will result in an `HTTP 422` status code from the backend.
+
+-   **Errors** : Ingresses with errors are non-functional and can be claimed to allow fixes directly in the Cockpit. Use the Cockpit interface to edit and resolve these errors, restoring the Ingress to a healthy state.
+
+
+> **Tip:** To troubleshoot validation issues, check the Ingress details in the Cockpit or consult your Kubernetes management tool (e.g., Rancher) for specific error messages.
+
+### [](#_synchronize_an_ingress)Synchronize an Ingress
+
+Synchronization updates the Cockpit’s view of an unclaimed Ingress to reflect its current configuration in the Kubernetes cluster (e.g., managed via Rancher). Synchronization allows users to review the Ingress’s state in the Cockpit before deciding to claim it for Cockpit management. Synchronization is not available for claimed Ingresses, as claiming stops this process to ensure the Cockpit controls the Ingress’s configuration.
+
+Ingresses created in the Cockpit are typically claimed and aligned with Kubernetes upon publishing, so synchronization is only needed if external changes or validation issues arise.
+
+> **Caution:** Synchronization is only for unclaimed ingresses. After claiming an Ingress, the Cockpit manages the Ingress exclusively, and synchronization is disabled. External changes to a claimed Ingress (e.g., via Rancher) are not reflected in the Cockpit and are overwritten by a Cockpit publish.Manage claimed ingresses exclusively through the Cockpit to avoid issues.
+
+#### [](#_why_synchronize)Why Synchronize?
+
+Synchronization is used when:
+
+-   You need to view the latest Kubernetes configuration of an unclaimed Ingress (e.g., created in Rancher or modified externally) in the Cockpit before claiming it.
+
+-   Validation warnings have been fixed at the infrastructure level (e.g., in Rancher), and you need to revalidate an unclaimed Ingress to confirm it’s claimable.
+
+
+> **Note:** Ingresses created in the Cockpit are typically claimed and synced with Kubernetes upon publishing, so synchronization is rarely needed unless external changes occur before claiming.Ingresses created in Rancher or other Kubernetes tools require synchronization to appear accurately in the Cockpit before claiming.
+
+#### [](#_how_to_synchronize_an_ingress)How to synchronize an Ingress
+
+To synchronize an Ingress:
+
+1.  In the Cockpit, go to **Networking > Ingresses**.
+
+2.  Select an unclaimed Ingress from the list.
+
+3.  Verify that no unpublished changes exist in the Cockpit (e.g., check for pending edits in the Ingress details).
+
+4.  Click the **Synchronize** button.
+
+
+The Cockpit then pulls the Ingress’s current configuration from the Kubernetes cluster, updates its database, and revalidates the Ingress. If validation errors persist (e.g., resulting in an `HTTP 422` status code), resolve them at the infrastructure level and synchronize again.
+
+##### [](#_best_practices)Best Practices
+
+-   **Choose a management tool**: Decide whether an Ingress is managed via the Cockpit, a CI/CD pipeline, or manually (e.g., Rancher). Synchronize unclaimed ingresses to review their state, then claim them for Cockpit management if desired.
+
+-   **Check before synchronizing**: Ensure no temporary Cockpit edits are critical, as they will be lost during synchronization.
+
+-   **Synchronize selectively**: Use synchronization only when needed (e.g., to review external changes or revalidate warnings). After claiming, manage the Ingress exclusively via the Cockpit.
+
+-   **Monitor Ingress health**: After synchronizing, check for validation warnings () or errors () in the Cockpit.
+
+-   **Troubleshoot issues**: If synchronization fails, verify the Ingress configuration in Rancher or with `kubectl get Ingress` to identify discrepancies.
+
+
+### [](#_ingress_terms)Ingress terms
+
+### [](#_general_settings_2)General settings
+
+#### [](#_name_2)Name
+
+🏷️ **Name**
+
+A unique name for the Ingress resource, used to identify it within the Kubernetes cluster. Must follow Kubernetes naming conventions (lowercase, alphanumeric, hyphens).
+
+#### [](#_description_2)Description
+
+🏷️ **Description**
+
+An optional description of the Ingress, providing context or purpose for the resource. Useful for organizing, auditing, and documenting resources.
+
+### [](#_access_control_2)Access control
+
+#### [](#_whitelistips_2)whitelistIps
+
+🏷️ **Allow List IPs**
+
+A list of IP addresses or CIDR ranges allowed to access the Ingress. Only requests from these IPs are permitted, enhancing security by restricting access.
+
+#### [](#_blacklistips_2)blacklistIps
+
+🏷️ **Deny List IPs**
+
+A list of IP addresses or CIDR ranges blocked from accessing the Ingress. Requests from these IPs are denied, protecting against known threats.
+
+#### [](#_disablerobots_2)disableRobots
+
+🏷️ **Disable robots header**
+
+Enables or disables the robots header in HTTP responses. When checked, prevents search engine crawlers from indexing the Ingress; useful for private or sensitive endpoints.
+
+#### [](#_deniedlocations_2)deniedLocations
+
+🏷️ **Denied locations**
+
+Allows you to block access to specific paths by defining a list of denied locations. Ensures requests to those paths are rejected before reaching the backend services.
+
+### [](#_nginx_options_2)NGINX options
+
+#### [](#_proxybodysize_2)proxyBodySize
+
+🏷️ **Max body size**
+
+Sets the maximum allowed size of the client request body, specified in bytes (e.g., "10m" for 10 megabytes). Limits large uploads to protect server resources.
+
+-   **Objective:** Limits the size of client request bodies (e.g., file uploads) to prevent resource exhaustion.
+
+-   **Context**: Magnolia allows authors to upload assets (e.g., images, PDFs) via the admin interface. Large uploads can strain server memory or disk, slowing down the CMS or causing crashes.
+
+    > **Important:** This protects the Magnolia instance from being overwhelmed by oversized uploads (e.g., a user uploading a 1GB video) and ensures server stability for both author and public instances.
+
+-   **Example**: Setting proxyBodySize to "10m" allows images up to 10MB, sufficient for most CMS assets, while blocking larger files that could disrupt performance.
+
+
+#### [](#_proxybuffering_2)proxyBuffering
+
+🏷️ **Enable response buffering**
+
+Controls response buffering:
+
+-   **on** (default): NGINX buffers the response in memory (or disk if large) before delivering it to the client.
+
+-   **off**: NGINX streams the response to the client as it receives it from the backend.
+
+
+Set it "off" for:
+
+-   Server-Sent Events (SSE)
+
+-   Real-time APIs
+
+-   Reduce memory use under load
+
+
+#### [](#_proxybuffersize_2)proxyBufferSize
+
+🏷️ **Max buffer size**
+
+Sets the size of the buffer used for reading the first part of the response received from the proxied server (ie: Magnolia, frontend application), specified in bytes (e.g., "16k" for 16 kilobytes). By default proxy buffer size is set as "4k".
+
+-   **Objective:** Allow large cookies, big JWT token or long custom headers to pass through Nginx.
+
+-   **Context**: Magnolia allows customers to use their own IDP to handle the authentication. Large number can increase the risk of Nginx memory bloat and DoS attacks
+
+-   **Example**: Setting proxyBufferSize to "16k" allows 16 kilobytes of headers/cookies
+
+
+#### [](#_proxybuffersnumber_2)proxyBuffersNumber
+
+🏷️ **Buffer numbers**
+
+Sets the number of the buffers in proxy\_buffers used for reading the first part of the response received from the proxied server (ie: Magnolia, frontend application). By default number of buffers is set as "4".
+
+-   **Objective:** Allow response having a large number of header of a large body content.
+
+-   **Context**: Magnolia allows customers to build their own pages and does not set any limit on the page size or the number of headers. Large number can increase the risk of Nginx memory bloat and DoS attacks
+
+
+#### [](#_proxyrequestbuffering_2)proxyRequestBuffering
+
+🏷️ **Enable request buffering**
+
+Controls request buffering:
+
+-   **on** (default): Buffer the entire request body in memory or to disk before sending it to the backend.
+
+-   **off**: NGINX streams the request to the backend as it receives it from the client.
+
+
+Set it "off" for:
+
+-   File uploads (ie: Enable progress bar while uploading file to Magnolia)
+
+-   Real-time data input
+
+
+#### [](#_proxyconnecttimeout_2)proxyConnectTimeout
+
+🏷️ **Connection timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait while establishing a TCP connection to the upstream (i.e. your Magnolia or frontend instance). By default timout is set as "60" seconds.
+
+#### [](#_proxyreadtimeout_2)proxyReadTimeout
+
+🏷️ **Read timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait to read data from the backend service after the connection has been established. By default timout is set as "60" seconds.
+
+#### [](#_proxysendtimeout_2)proxySendTimeout
+
+🏷️ **Send timeout**
+
+Sets the maximum time (in seconds) that NGINX will wait while sending data to the backend. By default timout is set as "60" seconds.
+
+#### [](#_forcesslredirect_2)forceSslRedirect
+
+🏷️ **Force SSL redirect**
+
+When enabled, redirects all HTTP requests to HTTPS, ensuring secure communication. Useful for enforcing SSL/TLS across all traffic.
+
+-   **Objective:** Redirects HTTP requests to HTTPS to enforce secure, encrypted communication.
+
+-   **Context**: Magnolia public sites (e.g., corporate websites) and author instances handle sensitive data, such as user sessions or content drafts, requiring encryption to protect against eavesdropping.
+
+    > **Important:** Ensures all traffic to Magnolia is secure, building trust with site visitors, improving SEO (Google prioritizes HTTPS), and complying with regulations like GDPR for EU users.
+
+-   **Example**: Enabling forceSslRedirect redirects `http://magnolia-site.com` to `https://magnolia-site.com`, securing user interactions and protecting admin logins.
+
+
+#### [](#_fromtowwwredirect_2)fromToWwwRedirect
+
+🏷️ **From to www redirect**
+
+When enabled, redirects requests between "www" and non-"www" (apex) versions of the domain (e.g., www.example.com to example.com). Ensures consistent URL usage.
+
+If your rule’s host is the apex domain, the Ingress will redirect the "www" requests to the apex domain.
+
+If your rule’s host is the "www" domain, the Ingress will redirect the apex requests to the "www" domain.
+
+In both cases, the preferred domain should be the only one defined in the rules.
+
+-   **Objective:** Redirects traffic between `www` and non-`www` domains to maintain consistent URL structures.
+
+-   **Context**: Magnolia sites often use a primary domain for branding (e.g., `example.com` or `www.example.com`). Inconsistent URLs can confuse users, harm SEO due to duplicate content, or break analytics tracking.
+
+    > **Important:** Provides a unified user experience and improves SEO by preventing duplicate content penalties, ensuring all traffic uses the preferred domain.
+
+-   **Example**: Enabling fromToWwwRedirect redirects `www.magnolia-site.com` to `magnolia-site.com`, standardizing links and analytics for a corporate website.
+
+
+#### [](#_enablewaf_2)enableWaf
+
+🏷️ **Enable Ingress firewall (OWASP)**
+
+Enables the Web Application Firewall (WAF) to protect against common web attacks, such as SQL injection or cross-site scripting. Enhances security for public endpoints.
+
+⚠️ Enabling this feature can heavily impact performance and stability. Use only on Ingresses that are not already protected by a (Fastly) WAF.
+
+For more details, see the [OWASP ModSecurity Project](https://modsecurity.org).
+
+-   **Objective:** Activates a Web Application Firewall to block common web attacks, leveraging OWASP rulesets for protection.
+
+-   **Context**: Magnolia public sites are internet-exposed, making them targets for attacks like SQL injection or XSS. Author instances are critical, as compromised access could lead to content vandalism or data breaches.
+
+    > **Important:** Protects Magnolia from exploits, ensuring site availability and data integrity, and supports compliance with security standards like PCI DSS for e-commerce integrations.
+
+-   **Example**: Enabling enableWaf blocks malicious requests (e.g., XSS attempts on `/login`), safeguarding Magnolia’s public and admin interfaces.
+
+
+#### [](#_ratelimiting_2)rateLimiting
+
+🏷️ **Rate limiting**
+
+Configures rate limiting to restrict the number of requests per client, preventing abuse or denial-of-service attacks. Define limits and burst settings.
+
+-   **Objective:** Limits the frequency of client requests to prevent server overload or denial-of-service (DDoS) attacks.
+
+-   **Context**: Magnolia public sites may face traffic spikes from bots or scrapers, while author instances are vulnerable to brute-force login attempts. Rate limiting ensures server stability under load.
+
+    > **Important:** Maintains Magnolia’s availability during high traffic or attacks, reducing server load and ensuring responsive content delivery for users.
+
+-   **Example**: Setting rateLimiting to 100 requests per minute per IP prevents bots from overwhelming `/api/content`, keeping the public site accessible.
+
+
+#### [](#_headerstoclear_2)headersToClear
+
+🏷️ **Headers to clear**
+
+Specifies HTTP headers to remove from the response, improving security or compatibility by eliminating unwanted headers.
+
+-   **Objective:** Removes specific HTTP response headers to enhance security or resolve compatibility issues.
+
+-   **Context**: Magnolia may include default headers (e.g., `Server: nginx`) that reveal software versions, aiding attackers. Some headers may conflict with Magnolia’s frontend or third-party integrations.
+
+    > **Important:** Reduces the attack surface by hiding server details and ensures compatibility with Magnolia’s rendering or external tools, improving security and functionality.
+
+-   **Example**: Clearing the `Server` header prevents attackers from identifying Nginx version vulnerabilities, protecting the public site.
+
+
+#### [](#_headerstoset_2)headersToSet
+
+🏷️ **Headers to set**
+
+Defines custom HTTP headers to add to the response, such as security headers (e.g., X-Frame-Options) or caching directives.
+
+-   **Objective:** Adds custom HTTP response headers to enhance security, control caching, or support specific functionality.
+
+-   **Context**: Magnolia public sites benefit from security headers (e.g., `X-Frame-Options: DENY` to prevent clickjacking) and caching headers (e.g., `Cache-Control`) for static assets. Author instances may need headers for compliance or integration.
+
+    > **Important:** Strengthens security against attacks and optimizes performance by controlling browser caching, critical for Magnolia’s content delivery and user safety.
+
+-   **Example**: Setting `X-Frame-Options: DENY` prevents Magnolia pages from being embedded in malicious iframes, enhancing site security.
+
+
+#### [](#_errorpage_2)errorPage
+
+🏷️ **Error page**
+
+Customizes error pages for specific HTTP status codes (e.g., `404`, `500`), providing user-friendly messages or redirects.
+
+-   **Objective:** Customizes error pages to improve user experience during HTTP errors.
+
+-   **Context**: Magnolia public sites need branded error pages (e.g., `404`) to guide users back to content, while author instances benefit from clear error messages during maintenance or issues.
+
+    > **Important:** Enhances user experience by replacing default Nginx errors with Magnolia-branded pages, maintaining professionalism and usability during issues.
+
+-   **Example**: Setting errorPage for `404` to `/not-found` redirects users to a custom Magnolia page with navigation links, reducing bounce rates.
+
+
+#### [](#_stickysession_2)stickySession
+
+🏷️ **Sticky session**
+
+Enables sticky sessions to route a client’s requests to the same backend server, useful for session-based applications. Configure session persistence settings.
+
+-   **Objective:** Routes a client’s requests to the same backend server to maintain session persistence.
+
+-   **Context**: Magnolia author instances rely on sessions for user authentication and content editing. Public sites with personalization (e.g., user-specific content) may also use session data.
+
+    > **Important:** Ensures consistent user sessions, preventing login issues or data loss in the CMS, and supports Magnolia’s personalization features for public sites.
+
+-   **Example**: Enabling `stickySession` keeps an author’s editing session on the same pod, avoiding interruptions during content updates.
+
+
+#### [](#_basicauth_2)basicAuth
+
+🏷️ **Basic auth**
+
+Enables HTTP Basic Authentication, requiring a username and password for access. Specify credentials or authentication settings.
+
+-   **Objective:** Requires HTTP Basic Authentication (username/password) to restrict access to the Ingress.
+
+-   **Context**: Magnolia author instances or staging sites need restricted access to prevent unauthorized editing. Public sites may use basicAuth for private sections (e.g., employee portals).
+
+    > **Important:** Secures sensitive Magnolia interfaces (e.g., /author) from public access, providing simple authentication without complex SSO setups.
+
+-   **Example**: Enabling basicAuth on `/author` requires a password, protecting the admin interface from unauthorized access.
+
+
+#### [](#_cors_2)cors
+
+🏷️ **CORS**
+
+Configures Cross-Origin Resource Sharing (CORS) to control which domains can access resources, enabling secure cross-origin requests.
+
+-   **Objective:** Configures Cross-Origin Resource Sharing to allow specific domains to access Magnolia’s resources via HTTP requests.
+
+-   **Context**: Magnolia’s frontend may use REST APIs (e.g., for content delivery) accessed by external domains, such as mobile apps or headless CMS frontends. CORS is critical for these integrations.
+
+    > **Important:** Enables secure integration with Magnolia’s APIs or headless content delivery, supporting modern web and mobile applications consuming CMS content.
+
+-   **Example**: Setting cors to allow `\app.magnolia-site.com` enables a mobile app to fetch content from `/api/content`, ensuring secure API access.
+
+
+#### [](#_certificateauthentication_2)certificateAuthentication
+
+🏷️ **mTLS**
+
+Enables client certificate authentication, requiring clients to present a valid SSL/TLS certificate. Enhances security for sensitive endpoints.
+
+-   **Objective:** Requires clients to present a valid SSL/TLS client certificate for mutual TLS (mTLS) authentication.
+
+-   **Context**: High-security Magnolia author instances or enterprise integrations may use client certificates to restrict access to admins or trusted clients. Common in B2B scenarios for API endpoints.
+
+    > **Important:** Provides strong authentication beyond passwords, ensuring only authorized clients interact with Magnolia, critical for sensitive or enterprise environments.
+
+-   **Example**: Enabling certificateAuthentication for `/api/admin` restricts access to clients with valid certificates, securing enterprise API calls.
+
+
+### [](#_cdn_options_2)CDN options
+
+#### [](#_enabled_2)enabled
+
+🏷️ **Enabled**
+
+Enables or disables the Content Delivery Network (CDN) for the Ingress. When enabled, traffic is routed through the CDN (Fastly) to improve performance and caching.
+
+#### [](#_provider_2)provider
+
+🏷️ **Provider**
+
+Displays the CDN provider, fixed to Fastly. This field is read-only, indicating the configured CDN service for the cluster.
+
+#### [](#_nocdnprovider_2)noCdnProvider
+
+Indicates that no CDN cluster is available for this Ingress. Enable a CDN cluster in your configuration to access CDN options.
+
+### [](#_rules_2)Rules
+
+#### [](#_allowregex_2)allowRegex
+
+🏷️ **Allow regular expressions**
+
+Allows using regular expressions in the rules path fields. Only use if you use rules with path type "ImplementationSpecific" and an actual regular expression as a path.
+
+Using that option might have performance impact on your Ingress.
+
+#### [](#_host_2)host
+
+🏷️ **Host**
+
+Specifies the host domain for the Ingress rule (e.g., example.com). Defines which domain or subdomain the rule applies to, routing matching requests to the specified paths.
+
+#### [](#_paths_2)paths
+
+🏷️ **Paths**
+
+Configures the URL paths and their corresponding backend services for the host. Define path patterns (e.g., `/api`) and link them to services for routing traffic.
+
+#### [](#_norules_2)noRules
+
+🏷️ **Define a rule**
+
+Indicates that no rules are defined for the Ingress, which is required. Add at least one rule to specify how traffic is routed to backend services.
+
+### [](#_tls_2)TLS
+
+#### [](#_acquirecertificate_2)acquireCertificate
+
+🏷️ **SSL/TLS Configuration**
+
+Allow unsecure traffic (No SSL/TLS) - Disables SSL/TLS encryption and allows traffic to be served over HTTP only.
+
+Automatic certificate acquisition - Automatically obtains and manages an SSL/TLS certificate for the Ingress, typically via a certificate manager (e.g., Let’s Encrypt). Manual secret selection is disabled in this mode.
+
+Custom certificate - Use a manually provided SSL/TLS certificate by selecting a pre-created secret containing the required key and certificate.
+
+#### [](#_secretname_2)secretName
+
+🏷️ **Secret name**
+
+Selects an existing SSL/TLS certificate secret from the cluster to secure the Ingress. Disabled when automatic certificate acquisition is enabled.
+
+#### [](#_loadingcertificates_2)loadingCertificates
+
+🏷️ **Loading certificates**
+
+Indicates that the list of available certificate secrets is being fetched. Wait for the list to load or check the certificate configuration if it fails.
+
+## [](#_manage_certificates)Manage certificates
+
+You can manage your own certificates directly in the Cockpit under the **Networking** section. You can either choose to [add a managed certificate](#_managed) or [add a custom certificate](#_custom).
+
+The **Networking > Certificates** section displays useful information in a table format including the certificate status, validity period, and whether or not the certificate is custom. You can also filter by Type, Method, and Status.
+
+![certificate overview](../../_images/networking/certificates/certificate-overview.jpg)
+
+### [](#_managed)Managed
+
+Managed certificates involve fewer manual steps on your side. Once set up, we take care of everything, ensuring your certificate stays valid and up to date.
+
+You have two options, including HTTP-01 which is the most straight forward option and DNS-01 which involves just a few minor steps. See the tabs below to decide which option is best for your DX Cloud project.
+
+-   HTTP-01: Recommended
+
+-   DNS-01
+
+
+Triggers automatically if your [ingress](#_add_an_ingress) includes the `cert-manager.io/cluster-issuer` annotation (e.g., for [LetsEncrypt](https://letsencrypt.org/)).
+
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Specifies the issuer. Also, automatically triggers a managed certificate when applied. |
+
+In this case, no DNS changes are required as it verifies via a temporary HTTP endpoint.
+
+**Best for**: Simple setups where the domain is publicly accessible from port `80`.
+
+You need to add the provided `CNAME` record to your domain’s DNS settings to prove ownership.
+
+**Best for**: Wildcard certificates
+
+### [](#_custom)Custom
+
+You have more control with custom certificates. However, with more control comes more steps for you. You manage your certificate through a Certificate Signing Request (CSR).
+
+You’ll generate a CSR through the Cockpit, then use it to request a signed certificate from your Certificate Authority (CA).
+
+Once you receive the signed certificate, upload it back into our Cockpit. From there, you retain full control over the certificate’s lifecycle, including renewals and updates.
+
+See [Add certificate](#_add_certificate) for Cockpit instructions.
+
+Actions
+
+-   [Add certificate](#_add_certificate)
+
+    -   [Managed certificates](#_managed_certificates)
+
+    -   [Custom certificates](#_custom_certificates)
+
+
+-   [View certificate details](#_view_certificate_details)
+
+-   [Delete certificate](#_delete_certificate)
+
+
+* * *
+
+### [](#_add_certificate)Add certificate
+
+This section provides guidance on adding both managed and custom certificates.
+
+There are some limitations for certificates:
+
+-   The maximum number of subdomains per domain is **100**.
+
+-   The maximum subdomain and domain length combined is **250 characters**.
+
+-   You should add a certificate with either a **RSA 2048**, **RSA 4096**, **EC P-256**, or **EC P-384** key.
+
+-   You can use wildcards for custom certificates, which are handled as part of these instructions. However, if using [LetsEncrypt](https://letsencrypt.org/), you must file a [Support request](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) for wildcard certificates.
+
+
+#### [](#_managed_certificates)Managed certificates
+
+View from the Cockpit
+
+![add managed certificate](../../_images/networking/certificates/add-managed-certificate.jpg)
+
+1.  Go to your Cockpit and navigate to **Networking > Certificates**.
+
+2.  Click **Add certificate**.
+
+3.  Click **Add managed certificate**.
+
+4.  Give the certificate a **Name**. The name must match the Kubernetes resource naming scheme (e.g., `example-certificate`).
+
+    *Names must start with a letter and can contain letters, numbers, hyphens (`-`), and underscores (`_`) only.*
+
+5.  Select the **Key size** for your certificate.
+
+    Key sizes explained
+
+    -   **RSA 2048**: Widely used encryption standard that provides strong security and is considered suitable for most applications today.
+        If you’re using Fastly as your CDN, you must add a certificate with a **2048-bit RSA key** as Fastly does not support 4096-bit RSA keys.
+
+    -   **RSA 4096**: Offers a higher level of security than a 2048-bit key, though it requires more computational power and resources.
+
+    -   **EC P-256**: Uses elliptic curve cryptography to provide equivalent security to a 3072-bit RSA key, offering strong security with lower computational overhead.
+
+    -   **EC P-384**: Advanced elliptic curve option providing equivalent security to a 7680-bit RSA key, offering the highest level of security with optimal performance for demanding applications.
+
+
+    If needed, you can modify the certificate algorithm later by going to [Change algorithm](#_change_algorithm) in the details section of your desired certificate in the Cockpit.
+
+6.  Enter your **Domain** (e.g., `example.com`).
+
+7.  Choose the **Issuer** from the dropdown menu.
+
+    Currently, this is limited to [LetsEncrypt](https://letsencrypt.org/).
+
+8.  Click **Add managed certificate**.
+
+    -   If using HTTP-01 (via Ingress annotation), no further steps are needed.
+
+    -   If using DNS-01, you need to verify ownership by [adding a `CNAME` to your DNS settings](#_verify_cname).
+
+
+
+##### [](#_verify_cname)Verify CNAME
+
+These steps only apply if you’re using [the DNS-01 approach](#_managed) for your certificate.
+
+1.  Go to your Cockpit and navigate to **Networking > Certificates**.
+
+2.  From the table, select your managed certificate.
+
+3.  On the right, click the green circle with lines.
+
+4.  Click **Verify CNAME**.
+
+5.  In the dialog, copy the `CNAME`.
+
+    Example
+
+    ```none
+    _acme-challenge.example.com. IN CNAME 1234beq2-1234-112A-3w21-12380ab31t2t.auth.host.com.
+    ```
+
+6.  Paste the `CNAME` into your DNS settings.
+
+
+What does this do?
+
+This allows Magnolia to verify you have control over the domain and delegate the resolution of ACME challenges, to our infrastructure.
+
+The system constantly checks the presence of this record in the background. Keep the entry in your DNS as long as the domain should be managed by Magnolia. Automatic certificate issuance and renewal starts as soon as the record has been created.
+
+##### [](#_change_algorithm)Change algorithm
+
+You can change the algorithm (RSA, ECDSA) and key size of a Let’s Encrypt managed certificate through the Cockpit. This is useful if your organization requires stronger encryption or if you want to optimize performance with a more efficient algorithm.
+
+> **Caution:** Changing the algorithm or key size always creates a new certificate and private key.
+
+#### [](#_custom_certificates)Custom certificates
+
+View from the Cockpit
+
+![add custom certificate](../../_images/networking/certificates/add-custom-certificate.jpg)
+
+1.  Go to your Cockpit and navigate to **Networking > Certificates**.
+
+2.  Click **Add certificate**.
+
+3.  Click **Add custom certificate**.
+
+4.  Give the certificate a **Name**.
+
+    *Names must start with a letter and can contain letters, numbers, hyphens (`-`), and underscores (`_`) only.*
+
+5.  Select the **Key size** for your certificate.
+
+    Key sizes explained
+
+    -   **RSA 2048**: Widely used encryption standard that provides strong security and is considered suitable for most applications today.
+        If you’re using Fastly as your CDN, you must add a certificate with a **2048-bit RSA key** as Fastly does not support 4096-bit RSA keys.
+
+    -   **RSA 4096**: Offers a higher level of security than a 2048-bit key, though it requires more computational power and resources.
+
+    -   **EC P-256**: Uses elliptic curve cryptography to provide equivalent security to a 3072-bit RSA key, offering strong security with lower computational overhead.
+
+    -   **EC P-384**: Advanced elliptic curve option providing equivalent security to a 7680-bit RSA key, offering the highest level of security with optimal performance for demanding applications.
+
+
+    If needed, you can modify the certificate algorithm later by going to [Change algorithm](#_change_algorithm) in the details section of your desired certificate in the Cockpit.
+
+6.  Enter an **Alternative name** for your certificate. This will autofill the **Common Name**.
+
+7.  If the common name is different than the Alternative name, enter the **Common Name** for your certificate.
+
+    Important information on common names
+
+    Common Name represents the fully qualified domain name (FQDN) for which the certificate is being issued.
+
+    This is critical as it specifies the exact domain name that the certificate will secure.
+
+    For example, if a certificate is meant to secure "www.example.com" then the Common Name in the CSR should be "www.example.com".
+
+    If the Common Name does not match the domain name, the certificate will not work correctly.
+
+8.  Enter the Organization associated with the certificate.
+
+    This is the full legal company or personal name. (such as *Magnolia International* or *Frolicking Fairies*)
+
+9.  If applicable, provide the Organizational Unit name.
+
+    **Example**: The Awesome Department
+
+10.  Enter the Locality, the full city name.
+
+     **Example**: Kilgarvan
+
+11.  Enter the State, the full state name.
+
+     **Example**: Kerry
+
+12.  Enter the Country’s two letter code.
+
+     **Example**: IE
+
+13.  Click **Add custom certificate**.
+
+     Since you added a custom certificate, you’ll need to [sign the certificate](#_sign_certificate).
+
+
+#### [](#_sign_certificate)Sign certificate
+
+You now need to paste in your signed certificate from your issuer.
+
+1.  Go to your Cockpit and navigate to **Networking > Certificates**.
+
+2.  From the table, select the certificate you want to sign.
+
+3.  On the right, click the green circle with lines.
+
+4.  Click **Install certificate**.
+
+    1.  Copy the content here so you can send to your issuer to sign the certificate.
+
+        > **Note:** When validating custom certificates, you have to include the entire certificate chain. Below is just an example to give you an idea on how that would look.
+
+        Example request
+
+        ```none
+        -----BEGIN CERTIFICATE-----
+        WuIGojCCBIqgAwIBAgIoAO7I3m1IQZ1Q-+aPhHZGKgUUwDQYJKoZIhvJNAQEtBQAw
+        SzELtAkGA1UEBhtCQVQxEDAOBgNVBAozB1plJm9zU0wxKjAoBgNVBAtzIVplJm9z
+        U0wgUlNBIEovbWFpbiBzZWN1JmUgU2l0ZSBDQzAeFw0ytjExtjIwtDAwtDBaFw0y
+        tzAytjAytzU5NzlatDQxtjAwBgNVBAtzKW9wZXJhLm1wbGF0Zm9ybS5pbnQubWFn
+        bm9saWEtJGxhdGZvJm0uY29tWuIBIjANBgkqhkiG9w0BAQEFpLOCAQ3AWuIBCgKC
+        AQEAt3LgNAjf2H44o0/0q/uolZN7qvKhFQXvrKumzfJLWHEIxY4B4UB4sruuJyfI
+        5pq92Q25DCYuLJPsdBvq3-+Y2ae60qEx-+Lq7qY2xz/6ss5arH3CtrmWgdXj10UZWs
+        otKl1lStzhbupt3tAz3SthYw1b/pyZrsvB1AXiOnl-+1WpBuQwGYgjDIofgdtozK0
+        OIBlqtjS379GDBedmVDNeisgmV2jQQoz-+1sEJzSCJ7rlm3AlJ3qOoqJPFYup6gxv
+        CCrUxBSpPXludtsl1JNjdLoobfGQEj34ua5s5UAosW3tLEfH4pzsjPnUxPeWWC0f
+        0XJJZ4e5tyA2tNFQI09SLUVFKwIDAQABo4ICljCCApIwHwYDVo0jBBgwFoAUyNl4
+        OOBSHumEFnAyE4VNO9IrwzpXo1LrUgpLAYSgEnulpLAEAwBItEYCIQDfApXpe6tD
+        AN2DFVS2ty2LNVyoszBLi13XAmN1Kr4rPwIhAtFOpvdwzXQ1jY9ao1duCyfhSpLX
+        EAZUstnYXaJmh64QGeooQrinr4r6oa9LyuiBLW-+/hu33ueHoVSw3UBroL43/0O13
+        mjE5J/GQ2F1S/4bX1sEVFZ3Qt/rp0ap6O5QePm4/OnUjuulJ2L3zlUxWt3BmZEzh
+        ue3/VUNGdrHxo9WzyufnsZAJ7if2NKUd4ZAjCaakvggzrF3uDrfvkYK7NQ6C/hN6
+        IKWuJhfnx3J6ObtVexkimCBPsdtUkDElSDf9zwPJ6q293wVEAKBWUJJV0AEVpp-+u
+        9h3e9JX9xpteBm6rFJ6N/AnidUFYOVj1FurL57xqw-+Lv0QHJYiy074tDB9xaU-+sh
+        gI4XKitlot9SFGQqzlN76Y1UzE5L7fzqOiqyHpZ/po2dxpePYtW3QzaaE07Vd7fs
+        g6hsfH97zUxDiSGtzUh6FdzZrtDBjDkt/D6NEXFFwXwSgB3oCstiitKgJf3/gdJn
+        syJePXZQlz0AgYzlw7DBtgiJCyHytA==
+        -----END CERTIFICATE-----
+        -----BEGIN CERTIFICATE-----
+        WuIGojCCBIqgAwIBAgIoAO7I3m1IQZ1Q-+aPhHZGKgUUwDQYJKoZIhvJNAQEtBQAw
+        SzELtAkGA1UEBhtCQVQxEDAOBgNVBAozB1plJm9zU0wxKjAoBgNVBAtzIVplJm9z
+        U0wgUlNBIEovbWFpbiBzZWN1JmUgU2l0ZSBDQzAeFw0ytjExtjIwtDAwtDBaFw0y
+        tzAytjAytzU5NzlatDQxtjAwBgNVBAtzKW9wZXJhLm1wbGF0Zm9ybS5pbnQubWFn
+        bm9saWEtJGxhdGZvJm0uY29tWuIBIjANBgkqhkiG9w0BAQEFpLOCAQ3AWuIBCgKC
+        AQEAt3LgNAjf2H44o0/0q/uolZN7qvKhFQXvrKumzfJLWHEIxY4B4UB4sruuJyfI
+        5pq92Q25DCYuLJPsdBvq3-+Y2ae60qEx-+Lq7qY2xz/6ss5arH3CtrmWgdXj10UZWs
+        otKl1lStzhbupt3tAz3SthYw1b/pyZrsvB1AXiOnl-+1WpBuQwGYgjDIofgdtozK0
+        OIBlqtjS379GDBedmVDNeisgmV2jQQoz-+1sEJzSCJ7rlm3AlJ3qOoqJPFYup6gxv
+        CCrUxBSpPXludtsl1JNjdLoobfGQEj34ua5s5UAosW3tLEfH4pzsjPnUxPeWWC0f
+        vSUOv4-+7/NWPHOuEXE1eC42-+IeKJ5t/E5hnkDod3dKILQqljnW9y5o-+ox6Zuh6SF
+        pjZxDBzUQVSzwy3oBSi-+djbtQsBlPAJHKeHErk0SDy2Hn3pFzzvmOVH4UXbXX2EX
+        EAZUstnYXaJmh64QGeooQrinr4r6oa9LyuiBLW-+/hu33ueHoVSw3UBroL43/0O13
+        mjE5J/GQ2F1S/4bX1sEVFZ3Qt/rp0ap6O5QePm4/OnUjuulJ2L3zlUxWt3BmZEzh
+        ue3/VUNGdrHxo9WzyufnsZAJ7if2NKUd4ZAjCaakvggzrF3uDrfvkYK7NQ6C/hN6
+        IKWuJhfnx3J6ObtVexkimCBPsdtUkDElSDf9zwPJ6q293wVEAKBWUJJV0AEVpp-+u
+        9h3e9JX9xpteBm6rFJ6N/AnidUFYOVj1FurL57xqw-+Lv0QHJYiy074tDB9xaU-+sh
+        gI4XKitlot9SFGQqzlN76Y1UzE5L7fzqOiqyHpZ/po2dxpePYtW3QzaaE07Vd7fs
+        g6hsfH97zUxDiSGtzUh6FdzZrtDBjDkt/D6NEXFFwXwSgB3oCstiitKgJf3/gdJn
+        syJePXZQlz0AgYzlw7DBtgiJCyHytA==
+        -----END CERTIFICATE-----
+        ```
+
+    2.  Once you have your signed certificate from your issuer, paste it into the **Paste signed certificate** text area.
+
+        > **Note:** If the Certificate Authority provides several certificates, paste first the root certificates and then your new certificate.
+
+    3.  Click **Install certificate** to complete the process.
+
+
+
+### [](#_view_certificate_details)View certificate details
+
+1.  Go to your Cockpit and navigate to **Networking > Certificates**.
+
+2.  Go to the certificate you want to view.
+
+3.  On the right, click the green circle with lines.
+
+4.  Click **Certificate details**.
+
+
+Here, you can see important details such as:
+
+-   Certificate hierarchy
+
+-   Certificate type
+
+-   Who the certificate was issued to
+
+-   Who the certificate was issued by
+
+-   The validity period of the certificate
+
+-   Fingerprints such as Algorithm and key size
+
+
+### [](#_delete_certificate)Delete certificate
+
+1.  Go to your Cockpit and navigate to **Networking > Certificates**.
+
+2.  Go to the certificate you want to delete.
+
+3.  On the right, click the green circle with lines.
+
+4.  Click **Delete**.
+
+
+## [](#_create_redirects)Create redirects
+
+You can view redirects that you have [created](../../../configuration/redirects/) or add them directly yourself from the Cockpit. You **must** [publish](#_publish_redirects) any changes you make to redirects.
+
+![redirect overview](../../_images/networking/redirect-overview.jpg)
+
+Important concepts
+
+-   [Good to knows](#_good_to_knows)
+
+-   [Redirect best practices](#_redirect_best_practices)
+
+-   [Redirect filters](#_redirect_filters)
+
+
+Actions
+
+-   [Add redirect server](#_add_redirect_server)
+
+-   [Add redirects](#_add_redirects)
+
+-   [Manage redirects](#_manage_redirects)
+
+-   [Publish redirects](#_publish_redirects)
+
+-   [Restore redirects](#_restore_redirects)
+
+-   [Download redirects](#_download_redirects)
+
+
+### [](#_good_to_knows)Good to knows
+
+-   The redirects server is a proxy server.
+
+-   Redirects are evaluated in order of appearance when entered. The first match is accepted.
+
+-   Any query parameters with a request are copied over in the redirect.
+
+-   We use the **Source URL** to detect duplicate entries when you add a single redirect or batch import redirects (CSV).
+
+    If the redirect you enter is a duplicate, you get a `409` error code, showing the duplicate already exists. If there are any duplicates in a batch import of redirects, the entire batch is rejected. However, we notify you in the cockpit of the specific duplicate entries so you can remove them from the batch.
+
+-   Only `3xx` status codes are acceptable. Different codes affect the browser in different ways. For more, see [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections).
+
+-   If there is an issue with your `.csv` import when you [import redirects](#_add_redirects), the dialog will inform you of what the issue so you can remedy it.
+
+-   Some applications (like Microsoft Excel) wrap quotations (`"`) around CSV lines. You need to remove those quotations if importing or adding a redirect in the Cockpit.
+
+-   You can use [RE2 syntax](https://github.com/google/re2/wiki/Syntax).
+
+    RE2 Syntax examples
+
+    **Regex example**
+
+    ``https://www.example.com/0-9{2}(bar|baz)` matches `https://www.example.com/01bar` or `\https://www.example.com/14baz``
+
+    **Wildcard example**
+
+    `https://www.example.com/(.*)` → `https://www.example.com/$1.html` redirects `https://www.example.com/test` to `https://www.example.com/test.html`
+
+
+### [](#_redirect_best_practices)Redirect best practices
+
+To meet security and SEO expectations, canonicalize traffic to the `[https://www.*](https://www.*)` host through this chain:
+
+```none
+http://example.com -> https://example.com -> https://www.example.com
+```
+
+#### [](#_key_guidelines)Key Guidelines
+
+-   Ordering matters: Redirects are evaluated in order. Place the exact apex-host redirect above any path-preserving rules to avoid unintended behavior.
+
+-   TLS coverage: Ensure your TLS secret covers both `example.com` and `www.example.com` in the same Ingress to avoid certificate mismatches.
+
+-   Single Ingress: Manage apex and `www` hosts in one Ingress. Delete any separate non-www Ingress resources, and define all hosts under the same TLS secret.
+
+-   Explicit 308 redirects: Use permanent `308` redirects to preserve HTTP methods. Define two rules:
+
+    -   Exact apex-to-www redirect (avoids added trailing slashes).
+
+    -   Path-preserving redirect (ensures `/page` maps to `/page` on the canonical host).
+
+
+-   DNS alignment: Ensure DNS A/AAAA records for both `example.com` and `www.example.com` point to your Ingress controller.
+
+
+#### [](#_example_ingress)Example Ingress
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-redirect-from: http://
+    nginx.ingress.kubernetes.io/proxy-redirect-to: https://
+  name: prod-ingress-example-com
+  namespace: prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: www.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: redirects-svc
+                port:
+                  name: http
+    - host: example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: redirects-svc
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - example.com
+        - www.example.com
+      secretName: prod-ingress-example-com
+```
+
+### [](#_example_redirect_rules_308)Example redirect rules (308)
+
+| Source | Target | Code |
+| --- | --- | --- |
+| `[https://example.com](https://example.com)` | `[https://www.example.com](https://www.example.com)` | 308 - exact host |
+| `[https://example.com/(.*](https://example.com/\(.*))` | `[https://www.example.com/$1](https://www.example.com/$1)` | 308 - path-preserving |
+
+CSV example
+
+```csv
+https://example.com,https://www.example.com,308 (1)
+https://example.com/(.*),https://www.example.com/$1,308 (2)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The first rule avoids an added trailing slash on the target host. |
+| **2** | The second rule preserves paths, for example: `https://example.com/page` → `https://www.example.com/page`. |
+
+### [](#_redirect_filters)Redirect filters
+
+You can see the status of a redirect under the *Status* column in the redirect table. You can also see whether the redirect uses RegEx or not.
+
+-   **Synced**: Published redirect including any changes (if applicable).
+
+-   **Created**: New redirect; unpublished.
+
+-   **Modified**: Changes were made to the redirect; unpublished.
+
+-   **Deleted**: The redirect is marked for deletion; it is removed the next time you publish.
+
+
+-   Status
+
+-   RegEx
+
+
+1.  In your Cockpit, go to **Networking > Redirects**.
+
+2.  Click **Status**.
+
+3.  From the dropdown, choose the desired statuses.
+
+4.  Click **Save**.
+
+    ![redirects status filter](../../_images/networking/redirects-status-filter.jpg)
+
+
+1.  In your Cockpit, go to **Networking > Redirects**.
+
+2.  Click **RegEx**.
+
+3.  From the dropdown, click yes (*uses RegEx*) or no (*does not use RegEx*).
+
+4.  Click **Save**.
+
+    ![redirects regex filter](../../_images/networking/redirects-regex-filter.jpg)
+
+
+To remove the filter:
+
+1.  Click the next to the selected button.
+
+
+
+
+### [](#_select_desired_cluster_2)Select desired cluster
+
+Select your desired cluster from the dropdown menu at the top of the Cockpit.
+
+![select cluster id](../../_images/select-cluster-id.jpg)
+
+### [](#_add_redirect_server)Add redirect server
+
+By default, redirects are served from the backend. However, you can configure the settings to suit your needs if you want to use a Frontend redirect. After adding the redirect server, you can [configure and/or uninstall](#_configure_redirect_server) the server as needed. Follow the instructions here to do just that:
+
+1.  In your Cockpit, go to **Networking > Redirects**.
+
+2.  Click the **Add redirect server** button.
+
+3.  In the dialog, choose the settings that best suit your needs.
+
+    1.  Choose the number of **Replicas** you would like. There is a minimum of 2 redirect server replicas.
+
+        You may choose as many replicas as needed. However, if no more memory is available, the system rejects new replicas.
+
+    2.  Under **Redirects server**, choose **Backend** or **Frontend** .
+
+        If choosing *Frontend*, you’ll need to pass the port number you want to use, such as `3000`.
+
+    3.  Under **Load balancing**, choose **Round Robin** or **Cookie based** load balancing.
+
+        > **Important:** If choosing Cookie based, you’ll need to give the cookie a name. If you have sticky sessions enabled, this name must not be the same as the value in the nginx.ingress.kubernetes.io/session-cookie-name ingress annotation in your values.yml file.
+
+
+4.  Set your desired **Memory limit** in MB.
+
+    Memory limit details
+
+    **Memory limit** specifies the maximum amount of memory (in megabytes) allocated to each redirect server instance. This setting is critical for ensuring the server performs efficiently while managing redirects, especially under varying traffic loads.
+
+    **When to adjust**:
+
+    -   **High traffic**: Add more replicas if you expect unusually high traffic volumes, as this can be memory-intensive.
+
+    -   **Resource optimization**: Decrease the limit for low-traffic scenarios to optimize resource usage, especially in resource-constrained environments.
+
+    -   **Frontend vs. Backend**: Frontend redirect servers (e.g., using a CDN or JavaScript-based redirects) may require different memory considerations compared to backend servers, as frontend redirects offload some processing to client-side resources.
+
+
+    **Start Conservative**: Begin with a moderate memory limit (e.g., 128 MB) and scale up based on observed needs. Increaseing memory is only useful if you have a large amount of rules. Consider increasing to 256 MB if you have a lot of rules. Beyond that, create more replicas.
+
+5.  Don’t forget to save your updates.
+
+
+#### [](#_configure_redirect_server)Configure redirect server
+
+Once you’ve successfully added a redirect server by following the instructions in [Add redirect server](#_add_redirect_server) and saved your updates, the Add redirect server button in the Cockpit changes to **Configure redirect server**. Clicking this button opens a dialog where you can:
+
+-   **Edit the redirect server settings**: Modify the existing configuration, such as the number of replicas, redirect server type, load balancing method, or cookie name (if applicable).
+
+    Considerations 🤔
+
+    You can adjust the following settings through the Configure redirect server dialog.
+
+    Consider the following before acting:
+
+    -   **Number of replicas**
+
+        -   *Increasing replicas*: You can add more replicas to handle increased traffic, but sufficient memory must be available. If memory is insufficient, the system will reject the new replicas, leaving your configuration unchanged.
+
+        -   *Decreasing replicas*: Reducing the number of replicas may lower the system’s capacity to manage high traffic loads, potentially degrading performance during peak times.
+
+
+    -   **Redirect server type**
+
+        -   Switching between backend and frontend redirect servers alters how traffic is routed.
+
+        -   *Switching to frontend*: You must specify a valid port (e.g., `3000`). If the port is misconfigured or conflicts with other services, traffic may be misrouted, or the service could become unavailable.
+
+        -   *Switching to backend*: This reverts to the default configuration, which may not suit your original intent (e.g., if frontend was chosen for performance or security reasons).
+
+
+    -   **Load balancing method**
+
+        -   *Switching to Cookie-Based*: You’ll need to provide a cookie name. If sticky sessions are enabled, this name must match the `nginx.ingress.kubernetes.io/session-cookie-name` in your `values.yml` file. A mismatch can break session persistence, causing users to lose session data or be routed inconsistently across servers.
+
+        -   *Switching to Round Robin*: This eliminates session persistence, which could disrupt applications that depend on consistent server routing (e.g., those maintaining user sessions).
+
+        -   *Cookie name*: Changing the cookie name requires updating the corresponding ingress annotation in your `values.yml` file if sticky sessions are enabled. Failing to synchronize these values disrupts session persistence. Additionally, altering the cookie name may invalidate existing sessions, potentially logging users out or resetting their session state.
+
+
+
+-   **Uninstall the redirect server**: Remove the custom redirect server entirely, reverting to the default backend behavior.
+
+    Considerations 🤔
+
+    Choosing to uninstall the redirect server removes the custom configuration and reverts the system to the default behavior (backend redirect server).
+
+    Consider the following before acting:
+
+    -   **Loss of custom benefits**: Any advantages gained from the custom redirect server (e.g., optimized traffic distribution, frontend-specific routing) will be lost.
+
+    -   **Service disruptions**: Applications or services that depend on the custom redirect server may encounter errors or downtime if the default backend configuration doesn’t suit their needs.
+
+
+
+### [](#_add_redirects)Add redirects
+
+1.  Go to **Networking > Redirects**.
+
+2.  Select the desired **Environment** from the dropdown list.
+
+3.  Add a single redirect or import a redirect CSV file.
+
+    -   Add redirect
+
+    -   Import redirects (CSV)
+
+
+    1.  Click **Add**.
+
+    2.  In the dialog, fill out the following.
+
+        1.  The **Source** URL. *This is the place to redirect from*.
+
+        2.  The **Target** URL. *This is the place to redirect to*.
+
+        3.  Check **Url with regular expression** if the URL provided uses RegEx.
+
+            **`(.*)`** Why use RegEx?
+
+            Using regex for URL redirects offers several advantages:
+
+            -   It provides flexibility for matching patterns across multiple URLs.
+
+            -   It reduces the complexity of managing numerous redirects and allows dynamic handling of URL components.
+
+
+            Using regex for URL patterns better preserve SEO rankings and minimize broken links by accurately mapping old URLs to new ones which enhances user experience and maintains optimal site integrity.
+
+        4.  Click **Forward** if you want the redirect to act as a forward.
+
+            This means the target page is loaded internally without a redirect code.
+
+        5.  The **Code**. *This is the http status code passed with the redirect. Only `3xx` http codes are acceptable.*
+
+        6.  Choose the countries you want to accept in the dropdown under **Countries**.
+
+        7.  Choose the languages you want to accept in the dropdown under **Accept languages**.
+
+        8.  Click **Add** to complete the action.
+
+
+
+    ![add single redirect](../../_images/cdn/redirects/add-single-redirect.jpg)
+
+    1.  Click **Upload/Modify**.
+
+    2.  Click **Choose File** to import a CSV file for redirects.
+
+        format
+
+        ```csv
+        Id,Source,Target,Code,IsRegex,IsForward,Country,Language (1)
+        ```
+
+        |     |     |
+        | --- | --- |
+        | **1** | Only `3xx` http codes are acceptable. `Id` is optional. If an `Id` is provided, the system tries to match it with an existing record and update it. If blank or no match is found, a new record is created. |
+
+        example
+
+        ```csv
+        Id,Source,Target,Code,IsRegex,IsForward,Country,Language
+        19514,https://www.example.com,htttps://www.example.be/foo.html:hml,308,true,false,,
+        ,https://www.example.com/[0-9]12}(bar%7Cbaz),https://www.example.be/barbaz.html,,true,true,"AE,AF,PL",pl
+        ```
+
+    3.  Select your file.
+
+    4.  Click **Upload/Modify** to complete the action.
+
+
+
+### [](#_manage_redirects)Manage redirects
+
+If necessary, you can also edit or delete a redirect.
+
+1.  Go to **Networking > Redirects**.
+
+2.  Select the desired **Cluster** from the dropdown list.
+
+3.  Select the desired **Environment** from the dropdown list.
+
+4.  Select the redirect you want to manage.
+
+    1.  Click the and select your desired action.
+
+        -   Edit
+
+        -   Delete
+
+
+        If editing a redirect:
+
+        1.  Click **Edit** and in the dialog, edit the field(s) you want to change (Source, Target, Code).
+
+        2.  Click **Edit** to confirm the changes.
+
+
+        If deleting a redirect.
+
+        1.  Click the **Delete** button.
+
+        2.  Confirm that you want to delete the redirect.
+
+
+
+
+### [](#_publish_redirects)Publish redirects
+
+You must publish any changes you’ve made to redirects from within the Cockpit.
+
+1.  Go to **Networking > Redirects**.
+
+2.  Make changes as desired inside the Redirects screen.
+
+3.  Click **Publish all**.
+
+4.  Enter a meaningful message so it’s easier to understand what changes were made. This is useful if you need to [restore](#_restore_redirects) changes.
+
+5.  Click **Publish all**.
+
+    ![publish redirects](../../_images/cdn/redirects/publish-redirects.jpg)
+
+
+### [](#_restore_redirects)Restore redirects
+
+You can restore redirects that you’ve published.
+
+1.  Go to **Networking > Redirects**.
+
+2.  Click **Restore**.
+
+3.  Select a version from the dropdown list.
+
+4.  Click **Restore**.
+
+    ![restore redirects](../../_images/cdn/redirects/restore-redirects.jpg)
+
+
+### [](#_download_redirects)Download redirects
+
+1.  Go to **Networking > Redirects**.
+
+2.  Choose one of the listed redirects and click **Download selected**.
+
+    1.  Alternatively, click **Download all** to download all listed redirects.
+
+
+3.  This generates a `.csv` file download with the following information:
+
+    csv
+
+    -   `id`
+
+    -   `source`
+
+    -   `target`
+
+    -   `code`
+
+    -   `IsRegex`
+
+
+
+## [](#_add_secrets)Add secrets
+
+Secrets are sensitive data, like passwords or tokens, stored securely for certain tasks. These secrets securely authenticate Cockpit’s network operations. For example, they can be used Ingresses. The secret types covered in this section are:
+
+-   **Opaque**: Store custom credentials (e.g., API tokens).
+
+-   **Registry**: Provide credentials for container registries.
+
+-   **Basic Auth**: Set up HTTP Basic Authentication.
+
+
+### [](#_instructions)Instructions
+
+1.  Go to your Cockpit and navigate to **Networking > Secrets**.
+
+2.  Choose the **Environment**.
+
+3.  Click **Add**.
+
+4.  In the dialog, choose the **Type** of [secret](#_add_secrets).
+
+    -   Opaque
+
+    -   Registry
+
+    -   Basic auth
+
+
+    Store custom credentials (e.g., API tokens).
+
+    5.  Enter the **Key**.
+
+    6.  Enter the **Value**.
+
+        You may need to click the icon.
+
+        ![secrets opaque](../../_images/networking/secrets_opaque.jpg)
+
+
+    Provide credentials for container registries.
+
+    5.  Enter the **Domain name**. For example, `registry.magnolia-platform.com`.
+
+    6.  Enter the **User**.
+
+    7.  Enter the **Password**.
+
+        ![secrets registry](../../_images/networking/secrets_registry.jpg)
+
+
+    Set up HTTP Basic Authentication.
+
+    5.  Enter the **User**.
+
+    6.  Enter the **Password**.
+
+        ![secrets basic](../../_images/networking/secrets_basic.jpg)

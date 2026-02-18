@@ -1,0 +1,24 @@
+---
+title: "Migrate"
+url: https://docs.magnolia-cms.com/dam/migrate/migrate/
+category: Modules
+version: modules
+breadcrumb: DAM module > Migrate
+---
+
+# Migrate
+
+With the DAM module you can:
+
+-   Store both asset *metadata* and *binaries* in JCR.
+
+-   Store asset *metadata* in JCR and *binaries* in external storage, such as AWS S3.
+
+
+Magnolia provides scripts to assist you in three migration paths:
+
+-   [Migrate from DAM 4 JCR storage to DAM 6 *JCR* binary storage](../migrate-jcr-to-dam/) - optional.
+
+-   [Migrate from DAM 4 JCR storage to DAM 6 *S3* or *Azure Blob* binary storage](../migrate-jcr-to-dam/) - mandatory to use S3 or Azure Blob.
+
+-   [Migrate from Hybrid Assets incubator with an external content store to DAM 6 binary storage](../migrate-HA-to-dam/) - mandatory to use S3 or Azure Blob.

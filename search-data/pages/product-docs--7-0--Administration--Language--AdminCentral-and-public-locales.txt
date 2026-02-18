@@ -1,0 +1,190 @@
+---
+title: "AdminCentral and public locales"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Language/AdminCentral-and-public-locales/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Language > AdminCentral and public locales
+---
+
+# AdminCentral and public locales
+
+This page describes two different types of language [locale](../../Locale/) in Magnolia and how to configure Magnolia for them. The two locales influence the rendering of content in the AdminCentral and on a published page.
+
+## [](#_what_is_locale)What is locale
+
+Generally speaking, a locale in computing is \`\`a set of parameters that defines the user’s language, region and any special variant preferences that the user wants to see in their user interface'' (Wikipedia).
+
+Locale is more often associated with the language parameter, which is usually defined by a two-, three- or four-letter language code, standardized under [ISO 639](https://www.iso.org/iso-639-language-codes.html). See the [IANA Language Subtag Registry](https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry) for a complete list of available language codes and language variants.
+
+## [](#_two_locales_in_magnolia)Two locales in Magnolia
+
+The question of `two locales` is connected with the types of [users](../../IAM/Users/) who access a Magnolia instance.
+
+An ordinary internet user, new or returning, or even an application consuming content as JSON or XML via REST API – all of whom we shall call *visitor* for simplicity – will usually only be able to see and interact with content of a published web project or website. The visitor will be interacting with a running public instance of Magnolia and will expect that the content of each page on the site will be available in a language he can understand or defines in his request, ideally in his native language. A visitor whose native language is English will prefer content in English (the screenshots are from the [Travel Demo](../../../Getting-started-with-Magnolia/Demo/)):
+
+![Tour page, active visitor section](../../../_images/tourTypesPageActive_visitor_crop.png)
+
+On the other hand, an editor, publisher or even a sysadmin – let’s refer to them with the term *AdminCentral user* – working with the author instance of Magnolia may have different locale preferences than the visitor. An AdminCentral user’s native and hence preferred language may be, for example, Spanish but the content being edited may still be in English. The AdminCentral user would probably welcome if the following items in the author instance (see also [Types of translatable text](../Types-of-translatable-text/)) are displayed in Spanish rather than in English:
+
+-   Field [labels and descriptions](../../../Developing/Templating/Dialog-definition/Field-definition/#_common_simple_field_properties),
+
+-   [Messages](../../../Apps/Developing-an-app/Specific-aspects/Messages/) (alerts, warnings, information),
+
+-   App UI elements such as [workbenches](../../../Apps/App-configuration/Workbench-definition/), [columns](../../../Apps/App-configuration/Column-definition/), [forms](../../../Developing/Templating/Dialog-definition/Form-definition/) and [actions](../../../Apps/App-configuration/Action-definition/), and
+
+-   Buttons in the page editor in edit mode (used to open dialogs)
+
+
+![Page editor in edit mode](../../../_images/6-2-tourTypesPageEdit_es_scope.png)
+
+Magnolia has been built to deal with these two separate *locale* preferences:
+
+-   Public Locale
+
+-   AdminCentral Locale.
+
+
+Determining and setting the latter is fairly straightforward since the system users usually know which locale they prefer. They can also set the locale themselves directly in the AdminCentral or ask a user with superuser rights to set the preferred locale for them.
+
+To determine public locale is more difficult. Visitors usually access web content as anonymous users. Magnolia then has to rely on indirect means that point to the preferred locale of a visitor.
+
+## [](#_admincentral_locale)AdminCentral locale
+
+The AdminCentral locale primarily defines the language of [User interface labels](../Types-of-translatable-text/#_user_interface_labels) which the AdminCentral user wants to interact in with the AdminCentral. This concerns, for example, the language of labels in the **Action bar** (English on the left, Korean on the right):
+
+![Language comparison in the Action bar](../../../_images/6-2-actionBar_en_ko.png)
+
+An incomplete localization of a UI element may result in displaying a label in the fallback language, as shown above in the case the **Add page, Preview page, Copy page** and some other actions.
+
+### [](#_setting_and_configuring_the_admincentral_locale)Setting and configuring the AdminCentral locale
+
+When logged-in in the AdminCentral, its users may set their language locale parameter via the **Language** field in the **Edit user profile** dialog. The setting will be reflected in the names of action menus, actions, buttons and labels throughout the AdminCentral provided the locale is one of the available system languages or it will fallback to English, the default fallback language.
+
+Any language can be added (see [configuration of available system languages](../Language-configuration/#_available_system_languages) and [fallback language configuration](../Language-configuration/#_fallback_language)), and we ship with bundled support for:
+
+-   English
+
+-   German
+
+-   Spanish
+
+-   French
+
+-   Italian
+
+
+To set the locale of the AdminCentral, open the pull down menu in the top right corner of the browser window and click the first row of the menu, titled **Edit user profile** if the current locale setting is English. On the Preferences tab:
+
+-   Choose a language in the **Language** field:
+    ![Choosing a language](../../../_images/6-2-edit-user-language.png)
+    With the superuser role you can [set language locales for other users](../Language-configuration/#_setting_an_editors_language_preference).
+
+
+The new locale is applied the next time you log in to the AdminCentral.
+
+## [](#_public_locale)Public locale
+
+Public locale influences the [editorial content](../Types-of-translatable-text/#_editorial_content) and [template labels](../Types-of-translatable-text/#_template_labels) rendered on a visitor’s device. Unless a visitor registers to a product or service and actively provides the preferred locale information, the public instance has to rely on other means that help identify the visitor’s preferred locale.
+
+### [](#_determining_the_preferred_public_locale)Determining the preferred public locale
+
+There are a number of ways of obtaining locale information. Some of them use advanced techniques such as [geolocation](https://en.wikipedia.org/wiki/Geolocation) based on ping delay or topology, but one of the most common ways is to look into the content of an HTTP request. At least the following three parts of an HTTP request are relevant to the identification of the public user’s locale:
+
+-   the `User-Agent` header
+
+-   the `Accept-Language` header
+
+-   `Request-URI`
+
+
+#### [](#_from_the_user_agent_header)From the User-Agent header
+
+The header may contain information such as `en_US`, for example:
+
+Mozilla/5.0 (compatible; Konqueror/4.5; NetBSD 5.0.2; X11; amd64; en\_US) KHTML/4.5.4 (like Gecko)
+
+However, this locale information in the `User-Agent` header:
+
+-   Identifies the language variant of the software sending the request rather than the user’s preferred locale.
+
+-   Is usually redundant.
+
+-   Is often missing:
+
+    Mozilla/5.0 (X11; Linux x86\_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36
+
+
+Magnolia has no ready-made means how to check for the existence of and retrieve this type of locale information. The preferred locale information is communicated via the `Accept-Language` header.
+
+#### [](#_from_the_accept_language_header)From the Accept-Language header
+
+The `Accept-Language` request header of an HTTP request defines which language variant of the page is preferred by the public user. This locale information may take one of the following three forms:
+
+-   `<language>`
+
+-   `<locale>`
+
+-   `*`
+
+
+The first represents language expressed as a 2 or 3-character string, the second represents language as a full language tag, the third means `any language` (see [Accept-Language](https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.4) and [Language Tags](https://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.10) in RFC-2616).
+
+Additionally, the locale value that is sent in the header – optionally in a semicolon-delimited range for more languages – may be given an associated quality value (`q=<qvalue>`). The quality value represents an estimate of the user’s preference for the languages specified by that range, for example:
+
+Accept-Language: cs-CZ,cs;q=0.9,en-US;q=0.8,en;q=0.7
+
+In Magnolia the locale information provided in the `Accept-Language` header can be handled by the `RequestLocaleAwareI18nContentSupport` implementation of the `I18nContentSupport` interface, see below in [The I18nContentSupport interface](#_The_I18nContentSupport_interface) subsection.
+
+#### [](#_from_request_uri)From Request-URI
+
+The most common form of `Request-URI` is that used to identify a resource on an origin server or gateway. For example:
+
+/tour-type~active~.html
+
+The preferred locale information may be sent to the server as a part of a `Request-URI`, such as `de` in the following example:
+
+/de/tour-type~active~.html
+
+In Magnolia the locale information provided in the `Request-URI` can be handled by `DefaultI18nContentSupport` and `HierarchyBasedI18nContentSupport` implementations of the `I18nContentSupport` interface, see the details in the following subsection.
+
+### [](#_the_i18ncontentsupport_interface)The I18nContentSupport interface
+
+When determining the preferred public locale, a key role in deciding which approach to apply is played by the info.magnolia.cms.i18n.I18nContentSupport interface. Its configuration is stored under `/server/i18n/content`. The entry point to this interface is via info.magnolia.cms.i18n.I18nContentSupportFilter (set in `/server/filters/i18n`). The `I18nContentSupport` interface has the following implementations:
+
+-   info.magnolia.cms.i18n.AbstractI18nContentSupport – an abstract implementation. The detection of the current locale is left to one of the following three classes.
+
+-   info.magnolia.cms.i18n.RequestLocaleAwareI18nContentSupport – relevant to the [From the Accept-Language header](#_from_the_accept_language_header) case described above, this implementation reads the locale from the Accept-Language header. This implementation does not render language specific URIs (see the classes below).
+
+-   info.magnolia.cms.i18n.DefaultI18nContentSupport – relevant to the [From Request-URI](#_From_Request_URI) case described above and used in the Magnolia [Travel Demo](../../../Getting-started-with-Magnolia/Demo/), this implementation supports a language prefix in the URI, such as `de` for example. It checks if a node data with the `<name>_<locale>` pattern exists on a content node:
+    ![Language prefix in a content node](../../../_images/6-2-TravelDemo_Main_defLocale.png)
+
+
+-   info.magnolia.cms.i18n.HierarchyBasedI18nContentSupport – same as above but for a hierarchy, for example:
+
+    my-website
+        ├─en
+        │ ├─page-1
+        │ └─page-n
+        ├─de
+        │ ├─page-1
+        │ └─page-n
+        └─de\_CH
+           ├─page-1
+           └─page-n
+
+    The locale code can be at whatever position in the URI, not necessarily the first one. For example, `/my-website/node-1/node-2/de/home-page.html`.
+
+
+### [](#_configuring_locale_for_a_site)Configuring locale for a site
+
+The configuration that defines the locale information for a site is usually located:
+
+-   In DX Core under
+    `/modules/multisite/config/sites/<site-name>/i18n/locales`
+
+-   In the Community Edition under
+    `/site/config/site/<site-name>/i18n/locales`
+    In the CE’s Travel Demo bundle the configuration is extended from `/modules/travel-demo/config/travel`.
+
+
+For further details about configuring locale for a site, please see [Language configuration: 3. Define locales in site](../Language-configuration/#_define_locales_in_site).

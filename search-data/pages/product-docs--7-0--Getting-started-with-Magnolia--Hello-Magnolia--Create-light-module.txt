@@ -1,0 +1,55 @@
+---
+title: "Creating the light module"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Getting-started-with-Magnolia/Hello-Magnolia/Create-light-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Hello Magnolia > Creating the light module
+---
+
+# Creating the light module
+
+Hello Magnolia
+
+In this section, you create the `hello-magnolia` module.
+
+1.  Open a terminal.
+
+2.  Go to the `light-modules` folder of your Magnolia installation:
+
+3.  Run the following command:
+
+    ```console
+    npm run mgnl -- create-light-module hello-magnolia
+    ```
+
+    The created structure will look like this:
+
+    ```console
+    hello-magnolia/
+    ├── decorations/
+    ├── dialogs/
+    │   ├── components/
+    │   └── pages/
+    ├── i18n/
+    │   └── hello-magnolia-messages_en.properties
+    ├── includes
+    │   └── README.txt
+    ├── README.md
+    ├── templates/
+    │   ├── components/
+    │   └── pages/
+    └── webresources/
+    ```
+
+
+This is a typical Magnolia module structure.
+
+> **Note:** When creating a name for a module, do not use spaces, accented characters such as é, à, ç, ä, ö, ü or special characters such as slashes /, \ and so on.
+
+Magnolia continuously scans the file system folder defined by the `magnolia.resources.dir` property. In this case, it looks inside the light-modules folder and registers your module(s) automatically. It detects new and modified templates, dialogs and (web)resources.
+
+Open the **Resource Files** app from the *Web dev* section of the App launcher, and look for the `hello-magnolia` module structure to confirm it has been registered:
+
+![Resource files](../../../_images/hello-magnolia/helloMagnolia-moduleCreated.png)
+
+The ![The origin icon](../../../_images/6-1-originIcon.gif) icon in the Origin column indicates that the [resource](../../../Developing/Resources/) is loaded from the file system.

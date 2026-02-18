@@ -1,0 +1,61 @@
+---
+title: "Resource Files app"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/List-of-apps/Resource-Files-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Resource Files app
+---
+
+# Resource Files app
+
+The Resource Files app displays [resources](../../../Developing/Resources/) such as CSS files, JavaScript files, template scripts and [YAML](../../../Developing/YAML/) configuration files. You can use the app to edit resources in the JCR `resources` workspace and do [hotfixes](../../../Modules/Module-configuration/#_hotfixing).
+
+![Resource Files app](../../../_images/6-2-29-resourceFilesApp.png)
+
+## [](#_searching_and_filtering_resource_files)Searching and filtering resource files
+
+The in-app search field and filters allow you to quickly find what you are looking for.
+
+The search field searches through values in the following columns:
+
+-   **Name**.
+
+-   **Type**: Resource type according to a MIME type, for example `text/x-java-properties` for i18n message bundles or `text/x-yaml` for .yaml definitions. For a full list of MIME types, see for example the [All known MIME types](https://www.digipres.org/formats/mime-types/) (DigiPres Commons) page.
+
+
+In addition, the following filters are available:
+
+-   **Overrides?**: Does the resource override another resource? See also [Overriding resources](../../../Developing/Resources/#_overriding_resources).
+
+-   **Origin**
+
+    -   All: Any origin.
+
+    -   jcr
+
+    -   filesystem
+
+    -   classpath-legacy: The legacy pre-5.4 classpath `mgnl-resources`.
+
+    -   classpath
+
+
+-   **Status**
+
+    -   All: Any status.
+
+    -   Not activated
+
+    -   Modified
+
+    -   Activated
+
+
+
+## [](#_usage)Usage
+
+See [Resources: Resource Files app](../../../Developing/Resources/#_resource_files_app).
+
+Related topics
+
+-   [Resources](../../../Developing/Resources/)

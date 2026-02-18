@@ -1,0 +1,56 @@
+---
+title: "Magnolia setup and domains in a production environment"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Templating/Site-definition/How-to-use-Multisite/Magnolia-setup-and-domains-in-a-production-environment/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Site definition > How to use Multisite > Magnolia setup and domains in a production environment
+---
+
+# Magnolia setup and domains in a production environment
+
+Magnolia is distributed as two web-applications: author and public. Among other things, editors create pages on the author instance and publish content from the author instance to public instances. Public instances serve the content to visitors. In a typical production setup you have one author and several public [Instances](../../../../../Administration/Instances/).
+
+In a production setup, the author instance and public instance are typically accessed via distinct domains.
+
+In a multisite setup with one Magnolia installation, you assign multiple domains to the public instance. However, it is sufficient and recommended to have only one domain pointing to your author instance. The domain of the author instance is different from the domains of the public instance.
+
+## [](#_example_of_domains_in_a_production_environment)Example of domains in a production environment
+
+This sample below shows the difference between domains when pointing to author or public instances in a production environment.
+
+| Site | Author Instance | Public Instance |
+| --- | --- | --- |
+| site a/b | `author.yourdomain.net` | `www.yourdomain.net` (**a**)<br><br>`www.another-domain.net` (**b**) |
+| Main/German/French | `author.xyzdomain.net` | www.xyzdomain.com (**Main**)<br><br>www.xyzdomain.de (**DE**)  <br>www.xyzdomain.fr (**FR**) |
+
+## [](#_serving_the_webapps_from_root_context)Serving the webapps from root context
+
+In a production environment, you access the public instance by requesting the root path of the domain. For example, when you request http://www.yourdomain.net, you expect it to serve the webapp typically called magnoliaPublic. The same is true for the author instance: you expect http://author.yourdomain.net to serve the webapp called magnoliaAuthor.
+
+If you run a bundle on localhost, you request the public instance using http://localhost:8080/magnoliaPublic. In this case, the webapp magnoliaPublic is served from `/magnoliaPublic`.
+
+> **Tip:** In a production environment, serve the webapps from the root context instead.
+
+Application servers such as Tomcat generally only serve one webapp from root context within the same connector. However, in a production environment, you typically run the author instance and the public instance in different networks. Alternatively, you may run two Tomcat instances on the same host, or run one Tomcat instance with two connectors.
+
+## [](#_mapping_multiple_domains_to_the_application_server)Mapping multiple domains to the application server
+
+In a production environment, you typically use a web server such as [Apache](https://httpd.apache.org) in front of Tomcat. Read [Apache httpd in front of Tomcat](https://wiki.magnolia-cms.com/display/WIKI/Apache+httpd+in+front+of+Tomcat+on+a+local+dev+machine) to get some ideas about such a setup. When using the Apache HTTP Server (Apache httpd) and Apache Tomcat together, `mod_jk` or `mod_proxy_ajp` can be used to redirect from Apache httpd to Tomcat.
+
+In a multisite setup, where your public context serves content for multiple domains, you must map multiple domains to your application server (such as Tomcat). If you use a web server in front of the application, you must define multiple virtual hosts on the web server to redirect the request from Apache http to Apache Tomcat.
+
+```bash
+<VirtualHost *:80>
+ ServerName www.best-comics.net
+ ProxyPass / ajp://localhost:8010/
+ ProxyPassReverse / ajp://localhost:8010/
+</VirtualHost>
+
+<VirtualHost *:80>
+ ServerName www.best-vinyl.net
+ ProxyPass / ajp://localhost:8010/
+ ProxyPassReverse / ajp://localhost:8010/
+</VirtualHost>
+```
+
+In this example, the Apache modules `proxy_ajp_module` and `proxy_module` are used to redirect the request to Apache Tomcat using the [Apache JServ Protocol](https://en.wikipedia.org/wiki/Apache_JServ_Protocol) (AJP). The example shows two virtual hosts both redirecting to the same Magnolia public instance.

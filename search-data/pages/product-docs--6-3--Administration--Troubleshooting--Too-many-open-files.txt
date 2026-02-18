@@ -1,0 +1,127 @@
+---
+title: "Too many open files"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Troubleshooting/Too-many-open-files/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Troubleshooting > Too many open files
+---
+
+# Too many open files
+
+The embedded Derby database, which can be used instead of the H2 database, opens several file handles and may run over the maximum limit set by the system. This issue can occur on some UNIX-based systems.
+
+The solution is to increase the system-wide limit on the number of open files. The exact procedure, however, varies from one OS to another.
+
+## [](#_ubuntu_linux)Ubuntu Linux
+
+1.  Find the current maximum number of open files per user in a single session:
+
+    ```bash
+    ulimit -n
+    ```
+
+    The number is `1024` by default, which is too small.
+
+    > **Tip:** A value higher than 1048576 (from Ubuntu LTS 24.01) is recommended.
+
+2.  Edit the `limits.conf` file:
+
+    ```bash
+    sudo gedit /etc/security/limits.conf
+    ```
+
+3.  Add the following lines to the file:
+
+    ```none
+    * soft nofile 10000
+    * hard nofile 50000
+    ```
+
+    This sets for all users a soft limit of 10000 open files and a hard limit of `50000`. These are just examples. Set the limit according to your needs.
+
+    > **Note:** The wildcard option applies only to regular users, not to superuser. If you run Magnolia as superuser, replace the asterisk with root.
+
+4.  Save the file.
+
+5.  Edit the configuration file for session-related modules:
+
+    ```bash
+    sudo gedit /etc/pam.d/common-session
+    ```
+
+6.  Add the following line to the file:
+
+    ```bash
+    session required pam_limits.so
+    ```
+
+    You may need to add the following line to `/etc/systemd/system.conf` and `/etc/systemd/user.conf`:
+
+    ```none
+    DefaultLimitNOFILE=65535
+    ```
+
+7.  Save the file.
+
+8.  Restart Ubuntu.
+
+9.  Verify the new maximum number of open files:
+
+    ```bash
+    ulimit -n
+    ```
+
+    The command should now return `10000`.
+
+
+See [Cannot Increase open file limit past 4096 (Ubuntu)](https://superuser.com/questions/1200539/cannot-increase-open-file-limit-past-4096-ubuntu).
+
+## [](#_os_x_14_x)OS X 14.x
+
+1.  Find the current maximum number of open files per user in a single session:
+
+    ```bash
+    ulimit -n
+    ```
+
+    The number is 256 by default, which is too small.
+
+    To check the current limits on your Mac OS X system, run the following:
+
+    ```bash
+    launchctl limit maxfiles
+    ```
+
+    The last two columns are the soft and hard limits, respectively.
+
+2.  Add `ulimit -n 65536` to your `~/.profile` file. This increases the limit for the shell.
+
+3.  Create a `/etc/sysctl.conf` file if it does not exist.
+
+4.  Add the following lines to `/etc/sysctl.conf`:
+
+    ```bash
+    kern.maxfiles=65536
+    kern.maxfilesperproc=65536
+    ```
+
+    This increases the limit for the kernel.
+
+5.  Open a terminal and type:
+
+    ```bash
+    sudo sysctl -w kern.maxfiles=65536
+    sudo sysctl -w kern.maxfilesperproc=65536
+    sudo ulimit -n 65536
+    ```
+
+    Or restart your system to read the settings from the files you edited.
+
+6.  Type `ulimit -n`. The response should be `65536` (if not, restart your system).
+
+7.  Install Magnolia
+
+
+See [Shell session limit](http://unix.stackexchange.com/questions/108174/how-to-persist-ulimit-settings-in-osx-mavericks/221988#221988) and [this thread](https://superuser.com/questions/433746/is-there-a-fix-for-the-too-many-open-files-in-system-error-on-os-x-10-7-1/1171028) for information on previous Mac OS versions.
+
+> **Note:** The instructions above apply to Bash shell, not Zsh.

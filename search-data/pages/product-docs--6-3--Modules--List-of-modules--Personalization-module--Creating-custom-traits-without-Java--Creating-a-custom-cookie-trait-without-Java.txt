@@ -1,0 +1,53 @@
+---
+title: "Creating a custom cookie trait without Java"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Creating-a-custom-cookie-trait-without-Java/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Personalization module > Creating custom traits > Creating custom traits without Java > Creating a custom cookie trait without Java
+---
+
+# Creating a custom cookie trait without Java
+
+This tutorial shows you how to create a custom cookie trait without writing any Java code. All you need is to configure a custom cookie trait and write some FreeMarker and JavaScript code.
+
+## [](#_example_use_case)Example use case
+
+In this tutorial, we use a common business use case as an example. We create a custom cookie that is used to personalize a component based on the number of times a user visits a specific page. On the assumption that more page visits mean an increasing interest in our product, we progressively display personalized components offering incentives and discounts to entice the user to make a purchase.
+
+More specifically, in the tutorial:
+
+-   A cookie named `visits` is set.
+
+-   The cookie keeps count of the number of times a user visits the page.
+
+-   On the visitor’s first visit no personalized component displays.
+
+-   On the second and subsequent visit different personalized components offering progressively larger discounts display.
+
+
+Cookies can be used to create just about any kind of personalization feature and you can adapt the example to suit your needs or use it as inspiration for your own custom cookies.
+
+## [](#_tutorial_structure_and_work_method)Tutorial structure and work method
+
+The tutorial uses the [DX Core demo bundle](../../../../../Developing/Bundles-and-webapps/) and is divided into two sections:
+
+-   [Configuring a custom cookie trait](Configuring-a-custom-cookie-trait/): This is configured in the JCR in the Configuration app. It cannot be configured in YAML.
+
+-   [Setting and reading a custom cookie](Setting-and-reading-a-custom-cookie/): This is configured in a light module on the file system.
+
+
+The best way to learn is to do it yourself, so we recommend that you recreate the tutorial from scratch and start by [installing](../../../../../Getting-started-with-Magnolia/Installing-Magnolia/) a DX Core bundle.
+
+Related topics
+
+-   [Creating custom traits without Java](../)
+
+-   [Cookies trait configuration](../Cookies-trait-configuration/)
+
+-   [Configuring a custom cookie trait](Configuring-a-custom-cookie-trait/)
+
+-   [Setting and reading a custom cookie](Setting-and-reading-a-custom-cookie/)
+
+-   [Personalization](../../../../../use-cases/Personalization/)
+
+-   [Component personalization](../../../../../Features/Personalization/Component-personalization/)

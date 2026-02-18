@@ -1,0 +1,143 @@
+---
+title: "Subscription Resources Help"
+url: https://docs.magnolia-cms.com/cockpit/subscription/resources/
+category: DX Cloud
+version: cloud
+---
+
+# Subscription Resources Help
+
+This section provides documentation for cluster resource usage and capacity metrics.
+
+## [](#_nodes_prod)nodes-prod
+
+**Production Nodes**
+
+This metric shows the number of Kubernetes nodes allocated to your production clusters.
+
+-   **Measured:** Current number of active nodes
+
+-   **Contracted:** Number of nodes in your subscription plan
+
+-   **Impact:** Affects compute capacity, redundancy, and availability
+
+
+Production nodes handle your live website traffic and are critical for maintaining high availability and performance.
+
+## [](#_nodes_nonprod)nodes-nonProd
+
+**Non-Production Nodes**
+
+This shows the number of Kubernetes nodes allocated to your development, testing, or staging clusters.
+
+-   **Measured:** Current number of active nodes
+
+-   **Contracted:** Number of nodes in your subscription plan
+
+-   **Usage:** Development, testing, and staging environments
+
+
+Non-production nodes provide isolated environments for development and testing before deploying to production.
+
+## [](#_nodes_satelites)nodes-satelites
+
+**Satellite Nodes**
+
+This displays the number of nodes allocated to satellite clusters, typically used for specialized workloads or geographic distribution.
+
+-   **Measured:** Current number of active satellite nodes
+
+-   **Contracted:** Number of satellite nodes in your subscription
+
+-   **Purpose:** Specialized workloads, edge computing, or regional distribution
+
+
+Satellite nodes extend your Magnolia infrastructure to specific regions or use cases.
+
+## [](#_cpu_prod)cpu-prod
+
+**Production CPU**
+
+This metric shows CPU core usage across your production clusters.
+
+-   **Reserved:** CPU cores currently allocated to running workloads
+
+-   **Available:** Additional CPU capacity available for scaling
+
+-   **Contracted:** Total CPU cores in your subscription plan
+
+
+CPU usage directly impacts application performance and response times for your live websites.
+
+## [](#_cpu_nonprod)cpu-nonProd
+
+**Non-Production CPU**
+
+This shows CPU core usage across your development and testing clusters.
+
+-   **Reserved:** CPU cores currently allocated to running workloads
+
+-   **Available:** Additional CPU capacity available
+
+-   **Contracted:** Total CPU cores allocated to non-production environments
+
+
+Non-production CPU supports development workflows, testing, and staging activities.
+
+## [](#_cpu_satelites)cpu-satelites
+
+**Satellite CPU**
+
+This displays CPU usage across satellite clusters for specialized workloads.
+
+-   **Reserved:** CPU cores currently allocated
+
+-   **Available:** Additional CPU capacity
+
+-   **Contracted:** Total CPU cores for satellite clusters
+
+
+## [](#_memory_prod)memory-prod
+
+**Production Memory**
+
+This metric shows RAM usage across your production Magnolia clusters.
+
+-   **Reserved:** Memory currently allocated to running applications (in GB)
+
+-   **Available:** Additional memory available for scaling (in GB)
+
+-   **Contracted:** Total memory in your subscription plan (in GB)
+
+
+Memory usage affects application performance, caching effectiveness, and the ability to handle traffic spikes.
+
+## [](#_memory_nonprod)memory-nonProd
+
+**Non-Production Memory**
+
+This shows memory usage across your development and testing environments.
+
+-   **Reserved:** Memory currently allocated to running applications (in GB)
+
+-   **Available:** Additional memory available (in GB)
+
+-   **Contracted:** Total memory allocated to non-production (in GB)
+
+
+Non-production memory supports development activities and testing workloads.
+
+## [](#_memory_satelites)memory-satelites
+
+**Satellite Memory**
+
+This displays memory usage across satellite clusters.
+
+-   **Reserved:** Memory currently allocated (in GB)
+
+-   **Available:** Additional memory available (in GB)
+
+-   **Contracted:** Total memory for satellite clusters (in GB)
+
+
+Satellite memory supports specialized workloads and regional deployments.

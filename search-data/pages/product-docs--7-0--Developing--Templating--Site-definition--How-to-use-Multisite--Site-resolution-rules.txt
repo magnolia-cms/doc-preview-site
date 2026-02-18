@@ -1,0 +1,59 @@
+---
+title: "Site resolution rules"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Templating/Site-definition/How-to-use-Multisite/Site-resolution-rules/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Site definition > How to use Multisite > Site resolution rules
+---
+
+# Site resolution rules
+
+> **Note:** For multisite definition configuration details, see Multisite definition configuration.
+
+Site resolution rules ensure that Magnolia can properly assign a site for a given request. The Multisite module comes with a standard set of site resolution rules. The standard rules usually are sufficient.
+
+> **Warning:** If you change the site resolution rules, verify your changes on a test system before making any changes to your production environment. Errors in the site resolution rules can break your site.
+
+## [](#_rule_configuration)Rule configuration
+
+The multisite site resolution rules are configured below the `/modules/multisite/config/rules` node.
+
+| Folder or node |     |
+| --- | --- |
+| `modules` |     |
+| `multisite` |     |
+| `config` |     |
+| `rules` |     |
+| `uri-starts-with-sitename` |     |
+| `domain-and-uri-prefix-not-empty` |     |
+| `domain-and-handle-not-empty` |     |
+| `domain-and-site-uri-prefix-not-empty` |     |
+| `uri-prefix-not-empty` |     |
+| `handle-not-empty` |     |
+
+Note that every rule contains one or more configured `Matcher` classes.
+
+## [](#_disabling_the_uri_starts_with_sitename_rule_on_the_public_instance)Disabling the `uri-starts-with-sitename` rule on the public instance
+
+The `uri-starts-with-sitename` rule is a cross-site-evaluation rule that enables you to access a site using its site-definition-name from another domain. This is desired and required on the author instance, which typically runs on a domain different from the domain(s) mapped to a site definition(s).
+
+If you have two site definitions, this rule allows you to access site A from the domain which is mapped to site B. This is typically *not* desired on a public instance.
+
+> **Note:** Disable the uri-starts-with-sitename rule in the public context.Add an additional voter info.magnolia.multisite.sites.matchers.AdminOnlyMatcher to the rule. This way you can use the same configuration on both the author and public instances.
+
+| Folder, node or property | Value |
+| --- | --- |
+| `rules` |     |
+| `uri-starts-with-sitename` |     |
+| `matchers` |     |
+| `0` |     |
+| `class` | `info.magnolia.multisite.sites.matchers.SiteNameMatcher` |
+| `1` |     |
+| `class` | `info.magnolia.multisite.sites.matchers.AdminOnlyMatcher` |
+| `multipleMatchesPossible` | `false` |
+
+Matcher `0` is set by default in the `uri-starts-with-sitename` rule. Add info.magnolia.multisite.sites.matchers.AdminOnlyMatcher as a second matcher to ensure the rule is applied in the author instance only.
+
+## [](#_custom_site_resolution_rules_and_matcher_classes)Custom site resolution rules and matcher classes
+
+You can write your own custom matcher classes to create new rules. The custom class should extend info.magnolia.multisite.sites.matchers.AbstractMatcher, which implements the info.magnolia.multisite.sites.matchers.RequestMatcher interface.

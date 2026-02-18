@@ -1,0 +1,147 @@
+---
+title: "Dialog definition - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI
+---
+
+# Dialog definition - 5 UI
+
+Deprecated
+
+> **Note:** This dialog definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see Dialog definition for Magnolia 6 UI instead.
+
+Dialogs are used for content entry. A dialog defines the editable content properties of a template. Pages, area and component templates can all use dialogs.
+
+Unresolved include directive in modules/ROOT/pages/Dialog-definition-5-UI.adoc - include::6.2@product-docs:ROOT:partial$i/\_CLI\_PromotionBoxes.adoc\[\]
+
+A dialog is basically an HTML form with input fields for each content property. Editors type content into the fields and the dialog saves it in the repository.
+
+The functionality of each field in a dialog is provided by a [field definition class](Field-definition-5-UI/#_field_types) that allows the editor to perform a task such as enter text, upload an image, select a date etc. Fields are assembled into tabs and tabs into dialogs.
+
+All dialogs used throughout the system are configured in the same way. For example, the configuration of dialogs used in apps and components is the same.
+
+## [](#_dialog_properties)Dialog properties
+
+At minimum a dialog definition must have a name and has to contain a `form` and `actions`.
+
+Here’s what the configurations do:
+
+-   Form definition: Defines the tabs and fields in the dialog. It determines what content users can enter into the dialog.
+
+-   Action definition: Defines how the form is submitted. Each action definition displays as a button in the dialog. Action definitions control what happens when a user clicks a dialog button. Typical dialogs have save and cancel actions.
+
+
+**Example**: Simple dialog definition
+
+YAML file JCR node
+
+<module name>/dialogs/<dialog name>.yaml
+
+```yaml
+form:
+  tabs:
+    - name: tabText
+      fields:
+        - name: title
+          fieldType: text
+          label: Title
+actions:
+  commit:
+    class: info.magnolia.ui.dialog.action.SaveDialogActionDefinition
+    label: Save
+  cancel:
+    class: info.magnolia.ui.dialog.action.CancelDialogActionDefinition
+    label: Cancel
+```
+
+![Simple dialog definition](6.2@product-docs:ROOT:ADVT-dialog-properties.png)
+
+![Title field](6.2@product-docs:ROOT:6-0-dialogDefinition-dialogExample_v2.png)
+
+| Node | Description |
+| --- | --- |
+| `<dialog-name>` | **required**<br><br>Arbitrary node name. Typically matches the template it edits. For example the component definition node and dialog definition node for a link component could both be named `link`. This is not required and one dialog can be used for more than one template. |
+| `form` | **required**<br><br>Contains a [form definition](Form-definition-5-UI/), which defines the fields where content is entered. |
+| `actions` | **required**<br><br>Contains [action definitions](Dialog-action-definition-5-UI/) which define how the data is submitted. The actions are rendered to users as buttons. Typically you need at least save and cancel actions. |
+| `modalityLevel` | **optional**<br><br>[Modality level](../Content-apps-5-UI/Developing-an-app-5-UI/Overlays-and-modality-5-UI/) defines how intrusive the dialog is. Valid values are `strong` (default), `light` and `non-modal`. |
+| `actionArea` | **optional**<br><br>Allows you to [configure secondary actions](#_configuring_secondary_actions). |
+| `wide` | **optional**, *default is `false`*<br><br>`true` opens the dialog in wide mode using all available horizontal space.<br><br>Click the expand/collapse button in the top right corner to toggle between the wide and normal (720px) modes. |
+| `label` | **optional**<br><br>A property that sets the dialog’s caption.<br><br>The value is ignored if the `dialogLabelItemProperty` property is set (see below).<br><br>The value can be literal such as `Group` or retrieved from the [message bundle](#6.2@product-docs:ROOT:Administration/Language/Internationalization.adoc#_i18n_message_bundle) with a [key](#6.2@product-docs:ROOT:Administration/Language/Internationalization.adoc#_i18n_message_keys) such as `security-app.group.label`. |
+| `dialogLabelItemProperty` | **optional**<br><br>Allows you to set the dialog’s caption *dynamically* through a property holding the preferred value for the caption, for example through the `jcrName` property.<br><br>If no `dialogLabelItemProperty` is configured for the dialog, Magnolia tries to retrieve the caption from the `label` property (see above) or from the respective `i18n` key in the language bundle associated with the dialog.<br><br>The `jcrName` property is implemented as the value of `dialogLabelItemProperty`, for instance, in the [Security app](#6.2@product-docs:ROOT:Apps/List-of-apps/Security-app.adoc)’s `user`, `role` and `group` dialogs (`group` dialog shown below):<br><br>![Editors](6.2@product-docs:ROOT:6-1-dialogDefinition-dialogLabelItemProperty-rbox.png) |
+
+## [](#_location_of_dialog_definitions)Location of dialog definitions
+
+|     | YAML file path | JCR node path in config workspace |
+| --- | --- | --- |
+| Dialog definition | `$magnolia.resources.dir/<module-name>/dialogs` | `/modules/<module-name>/dialogs` |
+
+## [](#_referencing_dialogs)Referencing dialogs
+
+Templates reference dialog definitions in their template definition. This is how the system knows which dialog to associate with the template. Page, area and component templates reference dialogs in the same way by using the `dialog` property.
+
+**Example**: A component definition that references a `textImage` dialog.
+
+YAML file JCR node
+
+<module name>/templates/components/textImage.yaml
+
+```js
+dialog: my-module:components/textImage
+renderType: freemarker
+templateScript: /components/textImage.ftl
+title: Text & Image Component
+```
+
+| Node name | Value |
+| --- | --- |
+| my-module |     |
+| templates# |     |
+| components# |     |
+| textImage# |     |
+| dialog# | my-module:components/textImage |
+| renderType# | freemarker |
+| templateScript# | /components/textImage.ftl |
+| title# | Text & Image Component |
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>dialog</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Dialog definition ID in <code>&lt;module-name&gt;:&lt;path to dialog definition&gt;</code> format.</p></div><div class="paragraph"><p>The ID has two parts, separated by a colon:</p></div><div class="olist arabic"><ol class="arabic"><li><p><code>&lt;module-name&gt;</code> : The name of the module which contains the dialog definition.</p></li><li><p><code>&lt;path&gt;</code>: Relative path to the dialog definition inside <code>dialogs</code> root item. For example the dialog ID <code>my-module:components/textImage</code> either points to the YAML file <code>$magnolia.resources.dir/my-module/dialogs/components/textImage.yaml</code> or to the JCR node <code>/modules/my-module/dialogs/components/textImage</code> in the configuration workspace.</p></li></ol></div></div></td></tr></tbody></table></div>
+
+## [](#_using_dialogs_in_templates)Using dialogs in templates
+
+Dialogs are most commonly used for content entry in components. This is where the bulk on content is entered. But dialogs are also useful for page and area templates. Here are a few suggestions:
+
+-   Page dialogs:
+
+    -   Content entry: Use the dialog for content entry that is not necessarily rendered on the page. For example, to enter a meta title and description that is injected into the `<head>` element, or a page excerpt for use in teaser components on other pages.
+
+    -   Navigation: Set up a field to mark the page for inclusion in or exclusion from navigation. You could also define browser header and tab titles.
+
+    -   Information: Page dialogs can provide editors with useful information. For example, the [Content Dependencies module](#6.2@product-docs:ROOT:Modules/List-of-modules/Content-Dependencies-module.adoc) includes a generic tab that collects page dependencies such as other pages and assets. This information is useful when deleting a page.
+
+
+-   Area dialogs: While most areas contain components, dialog content can be rendered by the script in `noComponent` areas.
+
+
+## [](#_configuring_secondary_actions)Configuring secondary actions
+
+The `actionArea` node lets you provide additional actions and specify a renderer, if required. You need a renderer when the action requires more than just a button (for instance for an upload action).
+
+The [choose dialog](Choose-dialog-5-UI/) in the [Assets app - 5 UI](../Content-apps-5-UI/List-of-apps-5-UI/Assets-app-5-UI/) is an example. The dialog allows editors to upload assets to the DAM while working in other apps.
+
+The configuration is in `/modules/dam-app/apps/assets/chooseDialog`:
+
+![Configuring secondary actions](6.2@product-docs:ROOT:ADVT-choose-dialog-properties.png)
+
+| Property | Description |
+| --- | --- |
+| `actionArea` | **optional**<br><br>A secondary action area in the bottom left corner of the editor. Contains the action area configuration. |
+| `secondaryActions` | **required**<br><br>Add subnodes to match the secondary actions defined in the `actions` node. The order of the subnodes defines the sequence in which they are rendered. Actions configured under `secondaryActions` are rendered on the left and other actions are on the right side. |
+| `<actionName>` | **required**<br><br>Secondary action name. |
+| `actionRenderers` | **optional**<br><br>Define a subnode for each action which requires its own renderer. |
+| `<actionName>` | **required**<br><br>Name of the secondary action. |
+| `rendererClass` | **required**<br><br>A renderer class if the secondary action requires one. Must implement `ActionRenderer`.<br><br>![Assets chooser](6.2@product-docs:ROOT:6-0-dialogDefinition-assetsChooser-rbox_v2.png) |
+
+## [](#_reusing_configuration)Reusing configuration
+
+Magnolia provides mechanisms to reuse dialogs or more general said to reuse configuration items. See [Reusing configuration](#6.2@product-docs:ROOT:Developing/Reusing-configuration.adoc).

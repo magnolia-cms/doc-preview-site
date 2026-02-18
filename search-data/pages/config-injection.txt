@@ -1,0 +1,183 @@
+---
+title: "Configuration Injection module"
+url: https://docs.magnolia-cms.com/config-injection/
+category: Modules
+version: modules
+breadcrumb: Configuration Injection module
+---
+
+# Configuration Injection module
+
+
+
+Edition
+
+Incubator (*services*)
+
+Issues
+
+Coming soon!
+
+Git
+
+[Git](https://gitlab.magnolia-platform.com/ps/services/config-injection)
+
+Latest
+
+1.2
+
+> **Note:** Compatible with Magnolia 6.2.
+
+The **Configuration Injection** module lets you create and modify Magnolia configuration through a Magnolia property when Magnolia starts up. This can come in handy when running Magnolia in a container or when you want to modify the configuration of a Magnolia instance on starting up.
+
+You can:
+
+-   Set your Magnolia license key
+
+-   Enable or disable publication receivers
+
+-   Add nodes in the config workspace
+
+-   Set or modify properties of nodes in the config workspace
+
+-   Bootstrap content from a file into any workspace
+
+-   Change the ordering of nodes
+
+
+> **Warning:** This module is at the INCUBATOR level.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.services</groupId>
+  <artifactId>config-injection</artifactId>
+  <version>1.2</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+The configuration to changed or added is specified in the Magnolia property magnolia.config.inject. The value of the property is read and one or more startup tasks are created and executed when the Configuration Injection module is started.
+
+The format of the magnolia.config.inject value is:
+
+```none
+magnolia.config.inject = <config change>;<config change>;...;<config change> (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The configuration changes are executed in the order they are defined in magnolia.config.inject. Config changes are separated by ';'. |
+
+> **Note:** Config changes come in two flavors: creating a node in the config workspace and setting a property value of a node in the config workspace.
+
+### [](#_creating_a_node)Creating a node
+
+You can create a node in the config workspace by adding a config change like this:
+
+```none
+createPath:<node path>(,<node type>)
+```
+
+where:
+
+`<node path>` is the absolute path (e.g. `/foo/bar/newnode`) to the node to be created. You must specify the node path.
+
+> **Note:** If the node already exists, the task will not modify the node and will execute successfully.<node type> is the node type for the new node. It is optional, if not specified the node type will be mgnl:contentNode.
+
+### [](#_setting_a_property)Setting a property
+
+You can add or modify properties of a node in the config works space like this:
+
+```none
+setProperty:<node path>,<property name>,<property value>
+```
+
+where:
+
+`<node path>` is the absolute path (e.g. `/foo/bar/mynode`) to the node of the property to be added or modified. You must specify the node path.
+
+> **Note:** <property name> is the name of the new or existing property to be changed. You must specify the property name.<property value> is the value for the new or existing property to be changed. You must specify the property value.If the no node exists at the specified path, an error will be thrown when the set property task is executed.
+
+### [](#_bootstrapping_a_file)Bootstrapping a file
+
+You can specify a bootstrap file to be loaded into Magnolia like this:
+
+```none
+bootstrapFile:<path to file>
+```
+
+where:
+
+`<path to file>` is the location of the bootstrap file. You must specify the file path.
+
+> **Note:** The bootstrap file name must follow the Magnolia bootstrap file name convention:<workspace name>.<path>.<to>.<node>.xml,or<workspace name>.<path>.<to>.<node>.yamlYou can create bootstrap files by selecting a node and selecting the "export" action in Magnolia apps.
+
+### [](#_move_a_node_before_a_sibling)Move a node before a sibling
+
+The format of a config change to move a node before a sibling is:
+
+```none
+moveBefore:<node path>,<sibling node name>
+```
+
+where:
+
+`<node path>` is the absolute path (e.g. `/foo/bar/mynode`) to the node to be moved. You must specify the node path.
+
+> **Note:** <sibling node name> is the name of the sibling node. You must specify the sibling node name.If no sibling node does not exist, node will not be moved.
+
+### [](#_move_a_node_after_a_sibling)Move a node after a sibling
+
+The format of a config change to move a node after a sibling is:
+
+```none
+moveAfter:<node path>,<sibling node name>
+```
+
+where:
+
+`<node path>` is the absolute path (e.g. `/foo/bar/mynode`) to the node to be moved. You must specify the node path.
+
+> **Note:** <sibling node name> is the name of the sibling node. You must specify the sibling node name.If no sibling node does not exist, node will not be moved.
+
+### [](#_move_a_node_to_be_the_first_sibling)Move a node to be the first sibling
+
+The format of a config change to move a node to be first:
+
+```none
+moveFirst:<node path>
+```
+
+where:
+
+`<node path>` is the absolute path (e.g. `/foo/bar/mynode`) to the node to be moved. You must specify the node path.
+
+## [](#_example)Example
+
+Here’s an example configuration injection that will set the Magnolia license details on startup when included in the JVM invocation:
+
+```none
+-Dmagnolia.inject.config="createPath:/modules/enterprise/license\;setProperty:/modules/enterprise/license,owner,andrew.warinner@magnolia-cms.com\;setProperty:/modules/enterprise/license,key,NotARealMagnoliaLicenseKey“
+```
+
+This will: . - Create the node `/modules/enterprise/license` if it does not already exist - Set the owner property of `/modules/enterprise/license` to `andrew.warinner@magnolia-cms.com`. - Set the key property of `/modules/enterprise/license` to `"NotARealMagnoliaLicenseKey"`.
+
+There are a couple of things to note about this example:
+
+-   The semicolons in the system property value must be escaped (preceded by a backslash) for the Java property to be correctly interpreted by the JVM by the shell.
+
+-   The system property value is enclosed in double quotes to ensure is is correctly interpreted by the shell.
+
+
+## [](#_changelog)Changelog
+
+| Version | Notes |
+| --- | --- |
+| `1.2` | Added node ordering tasks. |
+| `1.1` | Added file bootstrapping. |
+| `1.0` | Initial release of the module. |

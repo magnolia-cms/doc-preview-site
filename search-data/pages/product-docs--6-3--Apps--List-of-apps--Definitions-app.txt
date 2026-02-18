@@ -1,0 +1,289 @@
+---
+title: "Definitions app"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/List-of-apps/Definitions-app/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > List of apps > Definitions app
+---
+
+# Definitions app
+
+The Definitions app is the single place to find all definitions loaded by Magnolia through the Registry API. The app displays active definitions from all sources (YAML, JCR `config` workspace, Code, and in-memory) and origins (classpath, file system, and JCR `resources` workspace).
+
+[Light development](../../../Developing/Light-development-in-Magnolia/) introduced an additional configuration source in Magnolia and the app provides an overview of both JCR and file-based definitions. At a glance, back and front-end developers can see the definition sources.
+
+In the Definitions app users can:
+
+-   [View](#_viewing_definitions), search and filter definitions by multiple criteria.
+
+-   [Access definitions](#_accessing_definitions) in either the [Configuration](../Configuration-app/) or [Resource files](../Resource-Files-app/) app directly from the Definitions app.
+
+
+The app also shows [definition decorations](#_decorated_definitions) and [configuration errors](#_definition_errors).
+
+## [](#_definition_types)Definition types
+
+The app includes all definitions that are bound to info.magnolia.config.registry.Registry (for example, info.magnolia.rendering.template.registry.TemplateDefinitionRegistry).
+
+### [](#_list_of_definition_types)List of definition types
+
+-   [`apps`](../../App-configuration/)
+
+-   `blocks`
+
+-   `charts`
+
+-   `contentTypes`
+
+-   `dashboards`
+
+-   `dataSuppliers`
+
+-   [`dialogs`](../../../Developing/Templating/Dialog-definition/)
+
+-   [`fieldTypes`](../../../Developing/Templating/Dialog-definition/Field-definition/)
+
+-   `graphqlTypes`
+
+-   [`mediaEditors`](../../../Modules/List-of-modules/UI-module/UI-Media-Editor-module/)
+
+-   [`messageViews`](../../Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
+
+-   `modules`
+
+-   `operations`
+
+-   `querySniffers`
+
+-   [`renderers`](../../../Developing/Templating/Renderers/)
+
+-   `restEndpoints`
+
+-   `searchResultSuppliers`
+
+-   [`sites`](../../../Developing/Templating/Site-definition/)
+
+-   [`templates`](../../../Developing/Templating/Template-definition/)
+
+-   [`themes`](../../../Developing/Templating/Theme/)
+
+-   `traits`
+
+-   `virtualUriMappings`
+
+-   [`workitemHandlers`](../../../Modules/List-of-modules/Workflow-module/User-tasks/)
+
+-   [`workflows`](../../../Modules/List-of-modules/Workflow-module/Workflow-processes/)
+
+
+## [](#_searching_and_filtering_definitions)Searching and filtering definitions
+
+The in-app search field and filters allow you to quickly find what you are looking for.
+
+> **Note:** In-app search in the Definitions app is case-sensitive.
+
+The search field searches through *parent node names* in the **Title** column. In addition, the following filters are available:
+
+-   **Type**: Select [definition type](#_definition_types).
+
+-   **Module**: Select a module. The field displays all modules.
+
+-   **Origin**: See [Resources: Origin and loading order](../../../Developing/Resources/#_origins_and_loading_order).
+
+    -   jcr
+
+    -   file
+
+    -   code
+
+    -   inMemory
+
+    -   extra
+
+
+-   **Decorated**: See [Definition decoration](../../../Developing/Definition-decoration/).
+
+-   **Severity**
+
+    -   SEVERE
+
+    -   MAJOR
+
+    -   DEPRECATED
+
+    -   MINOR
+
+
+
+Results are presented in a tree view display. This is to ensure you can understand in which folder the item you’ve searched for is located.
+
+## [](#_viewing_definitions)Viewing definitions
+
+You can expand any definition node to view a representation of the full configuration.
+
+## [](#_accessing_definitions)Accessing definitions
+
+Dedicated actions allow you to access a definition for editing in either the [Resource files](../Resource-Files-app/) or [Configuration](../Configuration-app/) app:
+
+-   **Show in Resources app** displays for file-based definitions. The action opens the file in read only mode in the Resource files app. You can choose to hotfix the definition in the app or edit it on the file system.
+
+-   **Show in Configuration app** displays for JCR-based definitions. The action opens the definition in the Configuration app where you can edit the definition in the JCR.
+
+
+All YAML definitions display in the **Origin** column as *file*. The origin of these definitions could be the file system or the classpath. You can see each origin in the Resource Files app.
+
+## [](#_using_the_registry_api)Using the Registry API
+
+The Definitions app provides a visual interface to explore definitions. You can also access these definitions programmatically through the Registry API in your Java code.
+
+### [](#_basic_usage_pattern)Basic usage pattern
+
+All definition registries follow the same pattern: get the registry component and call `getAllDefinitions()` to retrieve an iterator.
+
+```java
+// Generic pattern for accessing any registry
+Iterator<DefinitionType> iterator = Components.getComponent(DefinitionTypeRegistry.class).getAllDefinitions().iterator();
+while (iterator.hasNext()) {
+    DefinitionType definition = iterator.next();
+    // Work with the definition
+}
+```
+
+### [](#_common_registry_examples)Common registry examples
+
+#### [](#_templates)Templates
+
+```java
+import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
+import info.magnolia.rendering.template.TemplateDefinition;
+
+Iterator<TemplateDefinition> templateDefinitionIterator =
+    Components.getComponent(TemplateDefinitionRegistry.class).getAllDefinitions().iterator();
+while (templateDefinitionIterator.hasNext()) {
+    TemplateDefinition template = templateDefinitionIterator.next();
+    System.out.println("Template: " + template.getName());
+}
+```
+
+#### [](#_dialogs)Dialogs
+
+```java
+import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
+import info.magnolia.ui.dialog.DialogDefinition;
+
+Iterator<DialogDefinition> dialogDefinitionIterator =
+    Components.getComponent(DialogDefinitionRegistry.class).getAllDefinitions().iterator();
+while (dialogDefinitionIterator.hasNext()) {
+    DialogDefinition dialog = dialogDefinitionIterator.next();
+    System.out.println("Dialog: " + dialog.getName());
+}
+```
+
+#### [](#_apps)Apps
+
+```java
+import info.magnolia.registry.AppRegistry;
+import info.magnolia.ui.api.app.AppDescriptor;
+
+Iterator<AppDescriptor> appIterator =
+    Components.getComponent(AppRegistry.class).getAllDefinitions().iterator();
+while (appIterator.hasNext()) {
+    AppDescriptor app = appIterator.next();
+    System.out.println("App: " + app.getName());
+}
+```
+
+#### [](#_sites)Sites
+
+```java
+import info.magnolia.module.site.registry.SiteDefinitionRegistry;
+import info.magnolia.module.site.SiteDefinition;
+
+Iterator<SiteDefinition> siteIterator =
+    Components.getComponent(SiteDefinitionRegistry.class).getAllDefinitions().iterator();
+while (siteIterator.hasNext()) {
+    SiteDefinition site = siteIterator.next();
+    System.out.println("Site: " + site.getName());
+}
+```
+
+### [](#_common_registry_classes)Common registry classes
+
+The following table lists the most commonly used registry classes and their corresponding definition types:
+
+| Registry class | Definition type | Use case |
+| --- | --- | --- |
+| `TemplateDefinitionRegistry` | `TemplateDefinition` | Page and component templates |
+| `DialogDefinitionRegistry` | `DialogDefinition` | Content editing dialogs |
+| `AppRegistry` | `AppDescriptor` | Magnolia apps |
+| `SiteDefinitionRegistry` | `SiteDefinition` | Site configurations |
+| `ThemeDefinitionRegistry` | `ThemeDefinition` | Frontend themes |
+| `FieldTypeDefinitionRegistry` | `FieldTypeDefinition` | Custom field types |
+| `RendererDefinitionRegistry` | `RendererDefinition` | Template renderers |
+| `VirtualUriMappingRegistry` | `VirtualUriMappingDefinition` | URL mappings |
+
+### [](#_accessing_specific_definitions)Accessing specific definitions
+
+To get a specific definition instead of all definitions, most registries provide methods to get definitions by name:
+
+```java
+// Get a specific template by name
+TemplateDefinitionRegistry templateRegistry = Components.getComponent(TemplateDefinitionRegistry.class);
+TemplateDefinition specificTemplate = templateRegistry.getDefinition("my-template-name");
+
+// Get a specific dialog by name
+DialogDefinitionRegistry dialogRegistry = Components.getComponent(DialogDefinitionRegistry.class);
+DialogDefinition specificDialog = dialogRegistry.getDefinition("my-dialog-name");
+```
+
+> **Note:** The getDefinition() methods may return null if the definition doesn’t exist. Always check for null before using the result.
+
+## [](#_configuration)Configuration
+
+The app is configured in `/definitions-app/apps/definitions-app.yaml`.
+
+> **Warning:** The app requires NO additional configuration and it is NOT advisable to make any changes to the configuration file.
+
+## [](#_decorated_definitions)Decorated definitions
+
+[Decorated definitions](../../../Developing/Definition-decoration/) are marked in the **Decorated** column. The **Show definition decorators** action opens the **Applied definition decorators** popup which shows the source file and the decorated path of each decorator.
+
+## [](#_interpolated_variables)Interpolated variables
+
+If a definition contains an [interpolated variable](../../../Administration/Architecture/Configuration-management/#_interpolate_environment_variables_in_light_modules), its value is hidden in the Definitions app. To find out the variable’s value, you can retrieve it from the [About app](../About-Magnolia-app/) **Config Info** tab.
+
+## [](#_definition_errors)Definition errors
+
+The app makes it easy to find problematic definitions via either the **Problem severity** column in the browser or the **Problems** sub app.
+
+The following deprecated definitions are shown:
+
+> **Note:** Deprecations whose origin is in Magnolia code are not displayed in the Problems sub app.
+
+-   Deprecated classes used by any definition.
+
+-   Deprecated or non-existing templates used by block definitions.
+
+-   Deprecated or non-existing page template definitions referenced from site definitions.
+
+-   Deprecated or non-existing theme definitions referenced from site definitions.
+
+-   Template references:
+
+    -   Deprecated or non-existing dialogs.
+
+    -   Deprecated or non-existing component definitions used in page definitions.
+
+    -   Non-existing template script paths.
+
+    -   Configured but non-existing renderer.
+
+
+
+Related topics
+
+-   [Definitions App module](../../../Modules/List-of-modules/Definitions-App-module/)
+
+-   [Resource Files app](../Resource-Files-app/)
+
+-   [Configuration app](../Configuration-app/)

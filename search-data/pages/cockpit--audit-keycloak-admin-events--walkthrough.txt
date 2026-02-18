@@ -1,0 +1,24 @@
+---
+title: "Keycloak admin event logs deep dive"
+url: https://docs.magnolia-cms.com/cockpit/audit-keycloak-admin-events/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# Keycloak admin event logs deep dive
+
+## [](#_log_chart)Log chart
+
+The chart visualizes administrative operations over time, showing successful operations (green), warnings (yellow), and errors (red). Click any bar to filter logs to that specific time period.
+
+## [](#_filters)Filters
+
+Use these filter controls to narrow down the events you want to view. You can filter by operation type, administrator, resource type, time ranges, and operation outcomes. Click the reset button to clear all active filters and return to viewing all events.
+
+## [](#_log_count)Log count
+
+This displays the total number of event entries that match your currently applied filters. When events are available, a download button appears here, allowing you to export the filtered results for further analysis.
+
+## [](#_details_table)Details table
+
+The table shows individual event entries with detailed information about each administrative operation, including timestamp, operation type, administrator identity, affected resource, resource path, and outcome. Click any row to open a detailed drawer with complete operation details and change information.

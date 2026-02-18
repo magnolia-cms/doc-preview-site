@@ -1,0 +1,348 @@
+---
+title: "Release notes for Magnolia DX Core 6.4.2"
+url: https://docs.magnolia-cms.com/product-docs/Releases/Release-notes-for-Magnolia-DX-Core-6.4.2/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Releases > Release notes for Magnolia DX Core 6.4.2
+---
+
+# Release notes for Magnolia DX Core 6.4.2
+
+Delivered on January 26, 2026 • Page updated on February 9, 2026 • Changelog: [22603](https://magnolia-cms.atlassian.net/issues/?filter=22603)
+
+**Magnolia 6.4.2** is centered on platform stability, security, and infrastructure flexibility, highlighted by the introduction of native Azure Blob Storage support for DAM. This integration brings full feature parity with our existing S3 support, allowing you to store heavy asset binaries in your preferred cloud container while maintaining a seamless authoring experience. We have also upgraded the CKEditor 5 to v47, transitioning to modernized installation methods that ensure a more robust and future-proof editing environment.
+
+For developers, this release streamlines maintenance with a new filtering option in the Definitions app, designed to help you quickly isolate and inspect project-specific modules. We have also enhanced the Webhooks module, replacing deprecated parameters with clearer properties for handling request bodies and context to support more complex integrations.
+
+Finally, we have reinforced system integrity through essential security hardening measures across the platform. These improvements include stricter content validation for the HTML component in the Magnolia Templating Kit (MTK) and new depth and complexity limits for GraphQL queries to protect against potential performance vulnerabilities.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.4.2.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.4.2/magnolia-dx-core-webapp-6.4.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.4.2.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.4.2/travel-demo-webapp-6.4.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.4.2.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.4.2/travel-demo-community-webapp-6.4.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_4.0.1.zip](../../_attachments/mtk2_4.0.1.zip) (*as a light module*)
+
+
+> **Note:** There are minor breaking changes in this release:safeHtml validator configuration needs an update for CKEditor 5 v47. See SafeHtml validator and list item ids below.In the HTML component in MTK. See more details below in the HTML component validation in MTK subsection.
+
+## [](#_whats_new)What’s new
+
+### [](#_azure_blob_storage_for_dam)Azure Blob Storage for DAM
+
+We have expanded our decoupled storage architecture to support Azure Blob Storage as a native external storage provider for DAM. This functionality is handled by the new [Azure Blob submodule](../../../dam/developers/dam-azure-blob/).
+
+Previously available only for AWS S3, this integration allows you to store heavy asset binaries externally in your Azure container while keeping lightweight metadata within the local JCR workspace. This feature achieves full feature parity with our existing S3 integration, ensuring a seamless experience for both developers and content authors.
+
+Key Benefits:
+
+-   Infrastructure flexibility: Support for the two leading cloud providers allows you to align your DAM storage strategy with your existing organizational infrastructure (Azure or AWS).
+
+-   Seamless authoring: The AdminCentral UI remains unchanged; authors interact with assets exactly as they did before, regardless of where the binaries are hosted.
+
+-   Simplified configuration: The setup process for Azure mirrors the established configuration patterns used for S3, reducing the learning curve for system administrators.
+
+
+-   [MGNLDAM-1918](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1918) External asset binaries: Azure integration
+
+
+## [](#_improvements)Improvements
+
+### [](#_ckeditor_5_upgraded_to_v47)CKEditor 5 upgraded to v47
+
+This major update brings the latest CKEditor features and improvements to editors in Magnolia, such as [bookmarks](https://ckeditor.com/docs/ckeditor5/latest/features/bookmarks.html) (v44), table enhancements (v47), and so on. See the [CKEditor 5 changelog](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/changelog.html) and past release notes for more editor- and developer-focused improvements since v41.
+
+#### [](#_ckeditor_5_custom_builds)CKEditor 5 custom builds
+
+Custom builds based on CKEditor 5 v41 remain compatible and continue to work, in particular with the 1.0.x series of `@magnolia/ckeditor5-plugins`.
+
+However, when upgrading custom builds to v47, they *must* undergo several breaking changes:
+
+-   Update to [new installation methods](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-42.html#new-installation-methods) with simplified dependency management (v42) and [revised APIs and exports](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46.html#unified-exports-and-renames-in-the-editor-api) (v46). See the [migration guide](https://ckeditor.com/docs/ckeditor5/latest/updating/nim-migration/migration-to-new-installation-methods.html) for step-by-step instructions on transitioning to the new installation methods.
+
+-   Update `@magnolia/ckeditor5-plugins` to the `2.0.x` version series.
+
+
+-   [MGNLCKE-29](https://magnolia-cms.atlassian.net/browse/MGNLCKE-29) Upgrade to CKEditor 5 v47
+
+
+#### [](#_safehtml_validator_and_list_item_ids)SafeHtml validator and list item ids
+
+CKEditor 5 v47 automatically adds a `data-list-item-id` attribute to `<li>` tags. See the [v46 release notes](https://ckeditor.com/docs/ckeditor5/latest/updating/guides/update-to-46.html#list-item-identification-in-editor-data) entry for details.
+
+If you maintain your own `safeHtml` validator configuration on individual `$richTextField` definitions or override the default global config, this causes a validation error and prevents saving changes.
+
+**Resolution**: Add the following `allowedAttributes` entry to your `safeHtml` config.
+
+/ui-framework-core/config.yaml
+
+```yaml
+validators:
+safeHtml:
+  class: info.magnolia.ui.field.SafeHtmlValidatorDefinition
+  allowedAttributes:
+    lists:
+      tag: li
+      attributes: [ "data-list-item-id" ]
+```
+
+> **Tip:** If you’re unsure whether your project has a safeHtml configuration, you can run a search in your light module or resource directories.
+
+### [](#_filter_by_project_modules_in_the_definitions_app)Filter by project modules in the Definitions app
+
+You can now configure the Definitions app to filter displayed items based on a specific list of project modules. This is particularly helpful when migrating to Magnolia 6.4 to isolate and fix issues in your own code base.
+
+For more, see [Filtering project modules](../../Apps/List-of-apps/Definitions-app/#_filtering_project_modules).
+
+-   [CFGUI-240](https://magnolia-cms.atlassian.net/browse/CFGUI-240) Add **Project modules** filter option
+
+
+### [](#_webhooks_and_rest_clients)Webhooks and REST clients
+
+In the Webhooks module, the `queryParameters` property is now deprecated. It is replaced by two new properties that offer better handling of request bodies and context: `parameters` and `restClientContext`.
+
+-   `parameters`: Use this property as a direct replacement for `queryParameters`.
+
+    When using the deprecated `queryParameters` with a `POST` method, custom values were often excluded from the request body. The new `parameters` property ensures that all custom values are correctly included in the `POST` body.
+
+-   `restClientContext`: Use this property when working with a predefined REST client.
+
+    This property allows you to pass values directly to your REST client definition, giving you full control to map these values to specific request locations (headers, query parameters, or body) within the REST client configuration.
+
+
+> **Note:** Don’t use queryParameters and parameters simultaneously. If both are present, the deprecated queryParameters takes precedence to ensure backward compatibility.
+
+-   [MGNLHOOK-385](https://magnolia-cms.atlassian.net/browse/MGNLHOOK-385) Expand the Webhooks module to include dynamic content
+
+-   [MGNLRESTCL-247](https://magnolia-cms.atlassian.net/browse/MGNLRESTCL-247) Allow invoking the REST client without automatically appending custom values as query parameters
+
+
+### [](#_hybrid_assets_incubator_module_azure_stored_assets_are_displayed_in_dam_6)Hybrid Assets incubator module Azure-stored assets are displayed in DAM 6
+
+Also, we add support to current customers that are using the Hybrid Assets incubator module with Azure in Magnolia 6.2, to use or migrate their assets to new DAM 6."
+
+-   [MGNLDAM-2010](https://magnolia-cms.atlassian.net/browse/MGNLDAM-2010) Visibility of hybrid Azure assets in DAM 6
+
+
+### [](#_other_improvements)Other improvements
+
+-   [MGNLSITE-233](https://magnolia-cms.atlassian.net/browse/MGNLSITE-233) Facilitate CSP headers configuration for projects
+
+    For more details, see [Content-Security-Policy (CSP) filter](../../Administration/Architecture/Request-processing-and-filters/csp/).
+
+-   [MGNLUI-9038](https://magnolia-cms.atlassian.net/browse/MGNLUI-9038) Add a property to configure Vaadin’s `DataCommunicator maximumAllowedRows`
+
+    You can now set the global property `magnolia.selectField.maximumAllowedRows` (default is `500`) to increase the limit of items fetched by selection fields.
+
+    This prevents `IllegalStateException` errors when displaying large datasets in AdminCentral components like `twinColSelectField`.
+
+-   [MGNLUI-9351](https://magnolia-cms.atlassian.net/browse/MGNLUI-9351) Remove custom code that is handling the `X-Forwarded-` headers
+
+    > **Warning:** Reverse proxy deployments require explicit RemoteIpValve configuration.This change removes Magnolia’s custom X-Forwarded-* header parsing logic. The system now relies exclusively on standard HttpServletRequest methods (getScheme(), getServerName(), etc.), which require Tomcat’s RemoteIpValve to properly handle proxy headers.Without this configuration, React dialogs (for example, Global Search and "Mark for deletion") fail with mixed content errors.Resolution:You must configure both your reverse proxy and Tomcat:Your reverse proxy must forward protocol headers to Tomcat. For nginx, add the following to your proxy configuration:proxy_set_header X-Forwarded-Proto https;Configure Tomcat to read these headers. Add RemoteIpValve to server.xml.See Configuring Magnolia (on Tomcat) behind a reverse proxy for details about RemoteIpValve configuration in server.xml.
+
+-   [MULTISITE-227](https://magnolia-cms.atlassian.net/browse/MULTISITE-227) Configurable way to end links with slash on Multisite
+
+-   [WARPFORM-995](https://magnolia-cms.atlassian.net/browse/WARPFORM-995) Partial support for Vaadin actions (Backend)
+
+-   [WARPFORM-1166](https://magnolia-cms.atlassian.net/browse/WARPFORM-1166) Link field text widget should always show path representation
+
+
+### [](#_security_improvements)Security improvements
+
+[BUILD-1501](https://magnolia-cms.atlassian.net/browse/BUILD-1501), [BUILD-1502](https://magnolia-cms.atlassian.net/browse/BUILD-1502), [BUILD-1506](https://magnolia-cms.atlassian.net/browse/BUILD-1506), [MAGNOLIA-9881](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9881), [MGNLCE-429](https://magnolia-cms.atlassian.net/browse/MGNLCE-429), [MGNLGQL-202](https://magnolia-cms.atlassian.net/browse/MGNLGQL-202), [MGNLGQL-203](https://magnolia-cms.atlassian.net/browse/MGNLGQL-203), [MGNLRESTCL-246](https://magnolia-cms.atlassian.net/browse/MGNLRESTCL-246), [MTE-177](https://magnolia-cms.atlassian.net/browse/MTE-177)
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](../../../support/) if you need more information.
+
+#### [](#_discontinued_url_session_tracking_by_default)Discontinued URL session tracking by default
+
+Since this version, Magnolia provides an opinionated **default session tracking mode**, using **cookies** exclusively. This effectively improves security by ensuring Tomcat never falls back to the `URL` tracking mode, which could expose session IDs in initial redirect URLs. The `COOKIE` session tracking mode mitigates session fixation or accidental leaks by users.
+
+For projects inheriting Magnolia’s default `web.xml` via war overlays, this new default comes in automatically. If you require clients which do *not* support cookies, you may override the `web.xml` and reinstate the `URL` `<tracking-mode>` explicitly.
+
+For projects with a custom `web.xml`, we recommend you add or verify presence of the snippet below:
+
+```xml
+<session-config>
+  <tracking-mode>COOKIE</tracking-mode>
+</session-config>
+```
+
+#### [](#_html_component_validation_in_mtk)HTML component validation in MTK
+
+To harden security in the Magnolia Templating Kit (MTK), the HTML component there now enforces strict content validation.
+
+The component dialog uses the `info.magnolia.ui.field.SafeHtmlValidatorDefinition` class to ensure that only safe HTML tags, attributes, and protocols are accepted. This is the same standard validator used by default in the [Rich text field](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/).
+
+-   **Scenario:** If you edit an existing HTML component that contains content not present in the allowed list (such as `<script>` tags, `onclick` attributes, or `javascript:` protocols), the validator blocks the action.
+
+-   **Resolution:** You are unable to save your changes until the disallowed content is removed or the validator configuration is adjusted.
+
+
+**Configuration**
+
+The validator is applied to the `editHTML` field in the component dialog definition (`/mtk2/dialogs/components/html.yaml`). It’s configured with a strict `allowed*` list of standard HTML tags and attributes. You can customize this list or remove the validator entirely (at your own risk) by overriding the dialog definition.
+
+For more information on the validator class, see [Global validators](../../Developing/Templating/Dialog-definition/Field-definition/Field-validators/#_global_validators).
+
+#### [](#_security_hardening_in_the_graphql_module)Security hardening in the GraphQL module
+
+This release also introduces query complexity analysis and depth limiting to the [GraphQL module](../../Modules/List-of-modules/GraphQL-module/), protecting instances against potential denial-of-service (DoS) attacks. Existing queries continue to function with the new conservative default limits.
+
+What’s new:
+
+-   Query complexity limiting: By default, queries are limited to a maximum of `200` fields.
+
+-   Query depth limiting: The maximum depth of a query is now `15` levels by default.
+
+-   Field duplication detection: Duplicate fields in a query now count toward the complexity limit.
+
+
+You can adjust these limits through the module’s configuration.
+
+Additionally, client applications now receive more accurate HTTP response status codes, distinguishing between client-side and server-side errors. This change improves the debugging experience and aligns with REST/HTTP best practices.
+
+| Scenario | HTTP code before | HTTP code now |
+| --- | --- | --- |
+| `ValidationError` (for example, `DuplicateDirectiveName`, `FieldUndefined`, `UnusedVariable`) | `500` | `400` |
+| Query batching (JSON array format) | `500` | `400` |
+| Malformed JSON in request body | `500` | `400` |
+
+## [](#_bug_fixes)Bug fixes
+
+-   [ADMINCTR-636](https://magnolia-cms.atlassian.net/browse/ADMINCTR-636) Incorrect filter order in publishing configuration causes failures
+
+-   [LOGTOOLS-21](https://magnolia-cms.atlassian.net/browse/LOGTOOLS-21) Handle empty log directory gracefully in Log Tools app
+
+-   [MAGNOLIA-9859](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9859) Link management – Transformer fails to create bean for node
+
+-   [MGNLPN-816](https://magnolia-cms.atlassian.net/browse/MGNLPN-816) Variant marker isn’t displayed at new page import
+
+-   [MGNLPN-865](https://magnolia-cms.atlassian.net/browse/MGNLPN-865) Duplicating a page with variants is missing the icon indicator
+
+-   [MGNLREST-900](https://magnolia-cms.atlassian.net/browse/MGNLREST-900) REST API returns HTML instead of JSON on `401 Unauthorized`
+
+-   [MGNLUI-8663](https://magnolia-cms.atlassian.net/browse/MGNLUI-8663) **Show versions** action always shows latest version on custom content apps
+
+-   [MGNLUI-9123](https://magnolia-cms.atlassian.net/browse/MGNLUI-9123) Searching can push selected items out of view
+
+-   [MGNLUI-9262](https://magnolia-cms.atlassian.net/browse/MGNLUI-9262) `jcrMultiLinkField` doesn’t maintain the order in which the nodes were selected
+
+-   [MGNLUI-9327](https://magnolia-cms.atlassian.net/browse/MGNLUI-9327) `JcrSelectFieldSupport` is no longer public
+
+-   [MGNLUI-9349](https://magnolia-cms.atlassian.net/browse/MGNLUI-9349) Links inside the `compositeFields` aren’t correctly rewired on Livecopy creation
+
+-   [MGNLMULTPA-85](https://magnolia-cms.atlassian.net/browse/MGNLMULTPA-85) Can’t add a page if `rootPath` is set
+
+-   [PAGES-1792](https://magnolia-cms.atlassian.net/browse/PAGES-1792) Vaadin error occurs when clicking on external components
+
+
+## [](#_deprecations)Deprecations
+
+### [](#_ckeditor_4)CKEditor 4
+
+With this upgrade, the CKEditor 4 is deprecated and in the maintenance mode only.
+
+-   [MGNLUI-9344](https://magnolia-cms.atlassian.net/browse/MGNLUI-9344) Mark CKEditor 4 as deprecated
+
+
+### [](#_timetolive_property_in_rest)`timeToLive` property in REST
+
+The `timeToLive` configuration property for REST delivery endpoints has been deprecated with this release. Previously, using this property could result in duplicated `Cache-Control` headers.
+
+Caching behavior for endpoints should now be managed centrally via the [Cache modules](../../Modules/List-of-modules/Cache-modules/). To enable caching for REST endpoints, which often utilize URLs without file extensions, you should adjust the `emptyExtensionVote` property in your cache configuration.
+
+To cache REST endpoints, set the `emptyExtensionVote` property to `false` at the following configuration path:
+
+`/modules/cache/config/contentCaching/defaultPageCache/browserCachePolicy/policies/dontCachePages/voters/contentType`
+
+For more configuration details, see [Cache control directives](../../Modules/List-of-modules/Cache-modules/Cache-core/#_cache_control_directives).
+
+-   [MGNLREST-896](https://magnolia-cms.atlassian.net/browse/MGNLREST-896) Deprecate the `timeToLive` config for delivery endpoints
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Admincentral `6.4.1`
+
+-   CKEditor 5 Build `2.0.0`
+
+-   Community Edition `6.4.2`
+
+-   Content Editor `4.0.2`
+
+-   DAM App `6.0.2`
+
+-   DAM `6.0.2`
+
+-   DX Core `6.4.2`
+
+-   Definitions App `4.0.2`
+
+-   Demo Projects `6.4.2`
+
+-   GraphQL `3.0.1`
+
+-   Log Tools `3.0.1`
+
+-   Magnolia `6.4.2`
+
+-   Multiple Pages Apps `3.0.1`
+
+-   Multisite `4.0.1`
+
+-   Pages `6.4.1`
+
+-   Personalization `4.0.1`
+
+-   Publishing Transactional `3.0.1`
+
+-   Publishing `4.0.2`
+
+-   REST Client `4.0.1`
+
+-   REST Framework `4.0.2`
+
+-   Repository Tools `3.0.1`
+
+-   Site `3.0.1`
+
+-   Templating Essentials `4.0.1`
+
+-   Third-party library BOM for Extensions `6.4.2`
+
+-   Third-party library BOM `6.4.2`
+
+-   UI `6.4.2`
+
+-   Usage Metrics `3.0.1`
+
+-   Vaadin Compatibility Addons `2.0.1`
+
+-   Warp Forms `1.0.2`
+
+-   Webhooks `3.0.1`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.4.1.
+
+-   [AI Accelerator](#ai-accelerator:ROOT:index.adoc) `3.1.0`
+
+-   [Campaign Manager](#campaign-manager:ROOT:index.adoc) `5.0.3`
+
+-   [CDP integration framework](#cdp-integration-framework:ROOT:index.adoc) `3.0.1`
+
+-   [Cloudinary External DAM](../../../cloudinary/1.3/) `3.0.1`
+
+-   [Frontify DAM connector](../../../frontify-dam-connector/) `3.0.1`
+
+-   [VWO AB Testing](../../../vwo-abtesting/1.0/) `3.0.1`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.

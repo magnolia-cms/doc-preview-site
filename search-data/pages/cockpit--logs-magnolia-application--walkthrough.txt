@@ -1,0 +1,39 @@
+---
+title: "Magnolia Application Logs deep dive"
+url: https://docs.magnolia-cms.com/cockpit/logs-magnolia-application/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# Magnolia Application Logs deep dive
+
+## [](#_log_chart)Log chart
+
+The histogram visualizes log activity over time, showing the distribution of successful operations, warnings, and errors. Click any bar to filter logs to that specific time period.
+
+## [](#_filters)Filters
+
+Use these filter controls to narrow down the logs you want to view. You can filter by:
+
+-   **Time range:** From and To dates to specify the period
+
+-   **Infrastructure:** Namespace, pod, and container to isolate specific deployment locations
+
+-   **Component:** Author or Public instances
+
+-   **Tier:** Application (`APP`) or Database (`DATABASE`) tier
+
+-   **Log level:** `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, or `TRACE` severity levels
+
+-   **Message content:** Free-text search terms to find logs containing specific keywords or error messages
+
+
+Click the reset button to clear all active filters and return to viewing all logs.
+
+## [](#_log_count)Log count
+
+This displays the total number of log entries that match your currently applied filters. When logs are available, a download button appears here, allowing you to export the filtered results for further analysis.
+
+## [](#_details_table)Details table
+
+The table shows individual log entries with detailed information about each event, including timestamp, log level, Java class name (for application logs), message content, and infrastructure context (namespace, pod, container, component, tier). Click any row to open a detailed drawer with the complete log entry and full message text.

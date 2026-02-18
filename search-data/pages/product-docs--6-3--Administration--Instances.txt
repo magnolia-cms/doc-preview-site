@@ -1,0 +1,100 @@
+---
+title: "Instances"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Instances/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Instances
+---
+
+# Instances
+
+Magnolia is distributed as two web-applications: author and public. Editors work on the author instance, typically in a secure location inaccessible from the Internet. Editors publish content from the author instance to public instances. Public instances serve the content to visitors. In a typical production setup you have at least two public instances, often more.
+
+![Author and Public instances](../../_images/Author-and-public-instances.png)
+
+## [](#_publishsubscribe_pattern)Publish–subscribe pattern
+
+Magnolia’s author-public instance model follows the [publish-subscribe pattern](http://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern). In this software design pattern, an author instance acts as a publisher. Public instances take on the role of a subscriber, or *receiver* in Magnolia 6.2 terminology. The publisher classifies content so that receivers can register interest in a particular type of content.
+
+In Magnolia, editors create content in a particular workspace. It is common to organize content into a hierarchical tree structure on the author instance. This process is the equivalent of *message filtering* in the pub-sub pattern. Public instances [receive](Receivers/) content from a particular workspace and path in the content hierarchy, receiving only content they are interested in.
+
+## [](#_benefits)Benefits
+
+Separating author instances from public instances has its benefits:
+
+-   **Security**: The author instance typically resides behind a firewall ensuring that your content is never lost. Content can be republished when things go wrong on the public site.
+
+-   **Loose coupling**: The instances are loosely coupled through [content publishing relations](Receivers/) and operate independently regardless of the performance of the other. They reside on different servers and the authoring process is not disturbed by public server failure. Public instances can be easily decoupled and recoupled.
+
+-   **Scalability**: A single author instance can connect to multiple public instances. The model fits any infrastructure size and you can upscale and downscale as necessary.
+
+-   **Flexibility**: Variations of content can be served to different public instances. This makes for efficient authoring because content can be reused and adapted to specific audiences.
+
+-   **No single point of failure**: If you run fully redundant configurations where an independent database backs each Magnolia instance. For more, see [Deploying instances](Clustering/).
+
+
+Magnolia’s author/public instance model is very similar to the [publish-subscribe](http://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern) messaging pattern.
+
+## [](#_differences_between_author_and_public_instances)Differences between author and public instances
+
+Author and public instances run identical software. They both have an AdminCentral that you can log into. The differences are configuration and security only.
+
+| Configuration | Author | Public |
+| --- | --- | --- |
+| `/server/admin` | `true` | `false` |
+| `/modules/ui-admincentral/virtualURIMapping/default/toURI` | Not set. | Set. |
+| `anonymous` role | Has [author instance permissions](../IAM/Default-permissions/) | Has [public instance permissions](../IAM/Default-permissions/) |
+| `anonymous` system user | Has [author instance roles](../IAM/Default-permissions/) | Has [public instance roles](../IAM/Default-permissions/) |
+| [receivers](Receivers/) | Has active receivers | Has no receivers |
+
+## [](#_what_kind_of_instance_do_i_have)What kind of instance do I have?
+
+There are many ways to find out what kind of instance you have:
+
+-   Open the **[About Magnolia](../../Apps/List-of-apps/About-Magnolia-app/)** app and look for the instance type.
+
+-   Check the `/server/admin` property in the configuration. It is `true` for author and `false` for public instance.
+
+-   In Java code, use the `isAdmin()` method provided by the info.magnolia.cms.beans.config.ServerConfiguration class.
+
+-   In a FreeMarker template, use the `cmsfn.isAuthorInstance()` or `cmsfn.isPublicInstance()` templating functions.
+
+
+## [](#_public_instances_serving_different_content)Public instances serving different content
+
+Each public instance can serve content targeted to a particular audience or geographic area. For example, one instance can serve visitors from Europe and another visitors from the U.S.
+
+![Public instances serving different content](../../_images/Public-instances-serving-different-content.png)
+
+Magnolia’s multisite feature provides granularity for content control on multilanguage and multidomain installations. Administrators have the option to direct editors to the author instance through a specific domain. Editors edit only the part of the content structure that resides at the specified domain. To ensure a consistent browsing experience, URLs are adapted to always reflect the domain. You can also configure multiple domains to access the same instance.
+
+## [](#_intranet_and_extranet)Intranet and extranet
+
+Place secure and sensitive content on separate instances. This diagram shows a possible placement strategy where a public extranet instance resides on its own instance and has its own URL.
+
+![Intranet and extranet](../../_images/intranet-and-extranet.png)
+
+## [](#_planned_redundancy_and_high_availability)Planned redundancy and high availability
+
+A distributed instance setup allows you to respond to high availability requirements and sudden increases in traffic. Here are common problem scenarios:
+
+-   Public instance failure. You have two public instances and, due to hardware failure, one of them is out of operation for a few days. Start a new public instance to replace the broken one.
+
+-   Sudden high load. Start new public instances until the traffic subsides.
+
+-   Public instance blackout. All public instances are corrupted, broken or compromised. No instances exist to serve content.
+
+
+You can address the issues by adding a new public instance to serve the same content, helping the existing instances deal with the load.
+
+## [](#_instance_configuration_examples)Instance configuration examples
+
+Magnolia instance configurations start from a standard 3-instance setup and scale up. You can add any number of instances for load balancing and high availability. Public instances can subscribe to specific content such as intranet or extranet.
+
+![Instances configuration examples](../../_images/Instance-configuration-examples.png)
+
+Related topics
+
+-   [Creating a new public instance](Creating-a-new-public-instance/)
+
+-   [Receivers](Receivers/)

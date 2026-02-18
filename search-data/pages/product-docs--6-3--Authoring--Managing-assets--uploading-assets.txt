@@ -1,0 +1,65 @@
+---
+title: "Uploading assets"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Authoring/Managing-assets/uploading-assets/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Authoring > Managing assets > Uploading assets
+---
+
+# Uploading assets
+
+You can upload assets individually or in bulk, import them as a zip file, or upload assets from another app.
+
+## [](#_uploading_an_asset_in_the_assets_app)Uploading an asset in the Assets app
+
+To upload an asset:
+
+1.  Open the Assets app.
+
+2.  Select a parent folder to upload the asset. If no folder is selected, the asset uploads at the root level.
+
+3.  Click **Upload assets** in the action bar.
+
+4.  In the dialog that opens, select the files you want to upload or drag and drop them into the designated area.
+
+    The upload size limit is 100MB, regardless of the number of assets you want to upload. This limit can be changed by your Magnolia administrator.
+
+
+> **Note:** By default, you can’t change the filename of an asset once it’s in Magnolia. A field to rename asset filenames can be added by your Magnolia administrator.
+
+### [](#_uploading_zip_archives)Uploading .zip archives
+
+Uploading and extracting .zip archives allows you to prearrange your file hierarchy in advance and seamlessly upload it to Magnolia while preserving the original structure.
+
+You can upload a .zip archive containing multiple folders and assets:
+
+1.  Open the Assets app.
+
+2.  Click **Upload ZIP archive** in the action bar.
+
+    ![Upload ZIP dialog](../../../_images/authoring/assets-app-upload-zip-dialog.png)
+
+3.  Click **Upload** and select the .zip archive you want to upload, or drag and drop it into the upload area.
+
+4.  Select a location. You can choose between:
+
+    1.  **Extract into new folder**: Adds a new parent folder to contain the contents of the .zip archive (default).
+
+    2.  **Extract here**: Extracts the .zip archive directly into the current folder.
+
+
+5.  In **Encoding**, select the encoding for your zip archive:
+
+    1.  **Unicode Standard (UTF)** - If your .zip archive contains filenames with special or international characters to ensure compatibility across different systems.
+
+    2.  **Code Page 437 (CCSID 437)** - If your .zip archive was created on an older Windows system or DOS, as it preserves legacy character encoding.
+
+    3.  **Simplified Chinese Characters (GBK)** - If your .zip archive includes filenames in Simplified Chinese to correctly display and extract them.
+
+
+6.  Click **Upload**.
+
+
+## [](#_uploading_an_asset_from_another_app)Uploading an asset from another app
+
+You can upload an asset into the Magnolia DAM from many other apps, for example, when you add an image in the Stories app. You can define app-specific metadata fields that may be different from the standard [metadata fields](../asset-metadata/) available when uploading in the Assets app.

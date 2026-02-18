@@ -1,0 +1,147 @@
+---
+title: "Breaking changes in front-end SDK v2"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/headless/spa-development/magnolia-front-end-sdk/breaking-changes-in-front-end-sdk-v2/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development > Headless development guidelines > Magnolia front-end SDK > Breaking changes in front-end SDK v2
+---
+
+# Breaking changes in front-end SDK v2
+
+## [](#_major_updates_overview)Major updates overview
+
+-   Server-Side Rendering (SSR) and personalization (p13n)
+
+    -   Full content server-side rendering is now enabled for both author and public instances, improving performance and SEO.
+
+    -   Author instance now supports Server-Side Rendering of personalized content.
+
+
+-   TypeScript migration
+
+    The libraries have been migrated to TypeScript to enhance:
+
+    -   Code quality
+
+    -   Maintainability
+
+    -   Type safety
+
+        > **Note:** JavaScript vs TypeScript SPAs: Do you need to update?JavaScript SPAs: No updates required.TypeScript SPAs: Must update page input declarations.Magnolia samples:Affected (update needed): Angular and Angular-SSR.Unaffected: NextJS, Vue, and Nuxt.
+
+
+
+## [](#_common_changes_across_libraries)Common changes across libraries
+
+> **Tip:** You can find best practice examples of how to work with the Frontend SDK v2 (incorporating all of the following information) in the Starter projects.
+
+### [](#_wrapper_removal)Wrapper removal
+
+-   `EditorContentHelper` and `PersonalizationService` wrappers have been removed.
+
+-   SPAs must now import these functions directly from `@magnolia/frontend-helpers-base`:
+
+    ```typescript
+    import { EditorContextService, PersonalizationService } from '@magnolia/frontend-helpers-base';
+    ```
+
+
+### [](#_editor_context_changes)Editor context changes
+
+-   Editors now use `magnoliaContext` to determine page mode (edit/preview) in Magnolia.
+
+-   Replaces previous iframe-based detection (`inEditor`, `inEditorAsync`).
+
+
+### [](#_new_features)New features
+
+-   Added `ContentRendererService`.
+
+-   Introduced new types:
+
+    -   `ComponentProps`
+
+    -   `IEditorContextService`
+
+    -   `MgnlContent`
+
+    -   `MgnlTemplateAnnotations`
+
+
+
+### [](#_property_removals)Property removals
+
+-   Removed `parentTemplateId` property from `editable-area`.
+
+
+## [](#_framework_specific_updates)Framework-specific updates
+
+### [](#_angular)Angular
+
+#### [](#_enhanced_support)Enhanced support
+
+-   `editable-area` now supports additional children besides content and `customView`.
+
+-   Supports both tag and directive syntax for `editable-area`:
+
+    ```xml
+    <div class="flex flex-col justify-between min-h-[calc(100vh-5rem)]">
+      <main>
+        <editable-area [content]="main"></editable-area>
+      </main>
+
+      <div editable-area [content]="footer" [customView]="renderFooter"></div>
+
+      <ng-template #renderFooter let-components="components">
+        <app-footer-renderer [components]="components"></app-footer-renderer>
+      </ng-template>
+    </div>
+    ```
+
+
+#### [](#_property_changes)Property changes
+
+-   Removed `EditorContextService` for `templateAnnotations` and `config`.
+
+-   Removed `templateDefinitions` property in `editable-page`.
+
+-   Added new properties to `editable-page`:
+
+    ```xml
+    <editable-page
+        [content]="content"
+        [templateAnnotations]="templateAnnotations"
+        [magnoliaContext]="magnoliaContext"
+        [config]="magnoliaConfig"
+    ></editable-page>
+    ```
+
+
+### [](#_react)React
+
+-   Updated children processing in `editable-area`.
+
+    For more details about the differences between children processing in v1 and v2 libraries, see [MGNLFE-571](https://magnolia-cms.atlassian.net/browse/MGNLFE-571) *Change the way to process children of `EditableArea` in `ReactEditor`*.
+
+-   Removed `templateDefinitions` property from `editable-page`.
+
+-   Added `magnoliaContext` property to `editable-page`.
+
+-   `EditablePage`, `EditableArea`, and `EditableComponent`:
+
+    -   In React FEv1, they are **class components**. They can be extended to create custom components, for example a `CustomArea` that’s extending the `EditableArea`.
+
+    -   In React FEv2, they are **functional components**. Therefore, any custom components which extend them must be rewritten.
+
+
+-   `EditablePage`, `EditableArea`, and `EditableComponent`:
+
+    -   In React FEv1, they are **class components**. They can be extended to create custom components, for example a `CustomArea` that’s extending the `EditableArea`.
+
+    -   In React FEv2, they are **functional components**. Therefore, any custom components which extend them must be rewritten.
+
+
+
+### [](#_vue)Vue
+
+-   Added `magnoliaContext` property to `editable-page`.

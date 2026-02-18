@@ -1,0 +1,46 @@
+---
+title: "Sync Instance app"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Apps/List-of-apps/Sync-Instance-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Sync Instance app
+---
+
+# Sync Instance app
+
+The **Sync Instance** tool allows you to manually synchronize content between an author instance and a single public instance. The operation is performed asynchronously. For more information, see the [Manual synchronization](../../../Modules/List-of-modules/Synchronization-module/#_manual_synchronization) in the Synchronization module documentation.
+
+![Sync Instance](../../../_images/6-2-synchronizationModule.png)
+
+## [](#_configuration)Configuration
+
+The Sync Instance app is installed by the [Synchronization module](../../../Modules/List-of-modules/Synchronization-module/). Access to the app is restricted to the `superuser` role in the app configuration and [app launcher layout](../../../Administration/App-Launcher/App-launcher-layout/). The app is configured in `/modules/synchronization/apps/synchronization`.
+
+| Node name | Value |
+| --- | --- |
+| 📁 modules |     |
+| 📁 synchronization |     |
+| 📁 apps |     |
+| 📁 synchronization |     |
+
+## [](#_notifications)Notifications
+
+When defined, notifications are sent to users whenever synchronization fails.
+
+To configure a group to send these notifications:
+
+1.  Go to the `modules/synchronization-app/config` folder.
+
+2.  Create a user group called `notificationGroups`.
+
+3.  Inside that group, add a list of string properties.
+
+    |     |     |
+    | --- | --- |
+    | 📁 synchronization-app |     |
+    | 📁 config |     |
+    | ⸬ notificationGroups |     |
+    | ⬩ editors | editors |
+    | ⬩ publishers | publishers |
+
+    Each property represents a separate group of users.

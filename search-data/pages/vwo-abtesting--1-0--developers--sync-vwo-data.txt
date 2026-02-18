@@ -1,0 +1,75 @@
+---
+title: "Sync VWO data"
+url: https://docs.magnolia-cms.com/vwo-abtesting/1.0/developers/sync-vwo-data/
+category: Modules
+version: modules
+breadcrumb: VWO AB Testing module > Sync VWO data
+---
+
+# Sync VWO data
+
+VWO campaign data is **not stored** in Magnolia. Instead, links are checked via VWO’s REST API when:
+
+-   You start the VWO app in Magnolia.
+
+-   Your configured background job runs asynchronously.
+
+
+This ensures that there are no performance issues with the Pages App.
+
+## [](#_configure_a_scheduled_job)Configure a scheduled job
+
+You can configure a scheduled job using our [Scheduler module](../../../../product-docs/7.0/Modules/List-of-modules/Scheduler-module/) so that data is synced regularly. You should create a [command](../../../../product-docs/7.0/Developing/Commands/). In this example, the command is called `linkVwoCampaigns`.
+
+> **Note:** VWO campaigns may not appear immediately in Magnolia due to the asynchronous approach here.
+
+1.  Create a scheduler job at `/modules/scheduler/config/jobs/linkVwoCampaigns`.
+
+    | Node name | Value |
+    | --- | --- |
+    | 📁 scheduler |     |
+    | 📁 config |     |
+    | 📁 jobs |     |
+    | ⸬ linkVwoCampaigns |     |
+    | ⬩ catalog | abTestingVwo |
+    | ⬩ command | linkVwoCampaigns |
+    | ⬩ [cron](#cron) | `00 * * * *` |
+    | ⬩ description | Link VWO AB campaigns to Magnolia pages |
+    | ⬩ enabled | true |
+
+
+### [](#_descriptions)Descriptions
+
+-   `cron`: Runs every full hour (`00 * * * *`)
+
+
+## [](#_manually_sync_campaigns)Manually sync campaigns
+
+You can use the [Groovy app](../../../../product-docs/7.0/Apps/List-of-apps/Groovy-app/) to manually synchronize your test campaigns with VWO.
+
+1.  Go to the Groovy App in Admincentral.
+
+2.  Click **Add script**.
+
+3.  Add the following Groovy script to run your `linkVwoCampaigns` command.
+
+    ```groovy
+    // trigger VWO linking command
+
+    println "Executing VWO campaign sync..."
+
+    cm = info.magnolia.commands.CommandsManager.getInstance()
+    command = cm.getCommand('abTestingVwo', 'linkVwoCampaigns')
+    command.execute(ctx)
+
+    println "Finished linking VWO campaign."
+    ```
+
+4.  Click **Is a script?** if not already clicked.
+
+    -    Is a script?
+
+
+5.  Click **Run**.
+
+6.  Don’t forget to save your changes.

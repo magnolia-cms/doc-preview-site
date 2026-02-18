@@ -1,0 +1,47 @@
+---
+title: "Dialog action definition - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Dialog action definition - 5 UI
+---
+
+# Dialog action definition - 5 UI
+
+Deprecated
+
+> **Note:** This dialog action definition has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see the actions property in Dialog definition for Magnolia 6 UI instead.
+
+Dialog action definitions control what happens when a user clicks buttons in a dialog. In a typical dialog you need at least commit and cancel actions.
+
+**Example**: Save and Cancel actions in a typical dialog
+
+YAML file JCR node
+
+<module name>/dialogs/<dialog name>.yaml
+
+```js
+actions:
+  commit:
+    class: info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition
+    label: Save
+  cancel:
+    class: info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition
+    label: Cancel
+```
+
+| Node name | Value |
+| --- | --- |
+| <dialog name> |     |
+| actions# |     |
+| commit# |     |
+| class# | info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition |
+| label# | Save |
+| cancel# |     |
+| class# | info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition |
+| label# | Cancel |
+
+| Property | Description |
+| --- | --- |
+| `<action name>` | **required**<br><br>Name of the action. |
+| `class` | **required**<br><br>Dialog action definition class Save and cancel and definition classes are provided. See [Action definition classes](../../Content-apps-5-UI/App-configuration-5-UI/Action-definition-5-UI/). |

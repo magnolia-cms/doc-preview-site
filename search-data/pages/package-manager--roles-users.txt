@@ -1,0 +1,48 @@
+---
+title: "Roles and users"
+url: https://docs.magnolia-cms.com/package-manager/roles-users/
+category: Modules
+version: modules
+breadcrumb: Package Manager module > Roles and users
+---
+
+# Roles and users
+
+The Package Manager app is intended for developer-type users who already have a high level of access to the instance. The roles `package-manager-editor` and `package-manager-rest-role` contain the minimum privileges needed to work fully with the Package Manager app. With them, you can package content from any workspace and install it on an instance, regardless of your individual user access permissions.
+
+-   `package-manager-editor`: gives read/write access to the `packages` workspace.
+
+-   `package-manager-rest-role`: gives access to all Package Manager-related endpoints for the complete set of actions.
+
+
+## [](#_configure_a_package_manager_user)Configure a Package Manager user
+
+To configure a user for Package Manager, follow the steps below.
+
+1.  Assign the `developers` [group](../../product-docs/7.0/Apps/List-of-apps/Security-app/#_groups) to the user.
+
+    Since the Package Manager app is located in the Admincentral Development group by default. It’s only accessible to developers because of the role permissions defined in the App Launcher layout.
+
+    ```yaml
+    layout:
+      groups:
+        ...
+        - name: development
+          apps:
+            ...
+            - name: package-manager
+          permissions:
+            groups:
+              - developers (1)
+        ...
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | This `developers` permission allows members of the developers group to see the `development` group in Admincentral. |
+
+    > **Note:** Depending on your organisation’s policy regarding who should access the Package Manager app, you may need to adjust the App Launcher layout definition to place the Package Manager app in a different group and add Package Manager users to that group instead.
+
+2.  Add both Package Manager roles, `package-manager-editor` and `package-manager-rest-role`, to either the user’s roles or the `developers` group’s roles (of which the user is a member after step 1).
+
+    Your Package Manager user requires all the permissions configured in both roles, including access to workspaces and web access for various endpoints.

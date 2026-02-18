@@ -1,0 +1,36 @@
+---
+title: "Exporting and importing assets"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Authoring/Managing-assets/exporting-importing-assets/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Authoring > Managing assets > Exporting and importing assets
+---
+
+# Exporting and importing assets
+
+In the `dam` workspace, asset data are [stored as binary data](../../../Developing/Development-how-tos/How-to-add-an-asset-with-REST/#_structure_of_asset_nodes_in_the_dam_workspace) under the `jcr:data` subnodes. If you export an asset (or folder) from the app, an XML file will be exported and the data will be part of it. An XML file is therefore expected if you want to import an asset.
+
+## [](#_exporting)Exporting
+
+To export an asset or folder:
+
+1.  Select an item or folder.
+
+2.  In the Action bar, click **Export**.
+
+
+> **Warning:** The exported XML file also contains asset (folder) metadata such as mgnl:activationStatus. Even if you permanently delete the asset on the author instance, when you reimport it, the asset retains its publication status even though it no longer exists on the public instance.
+
+## [](#_importing)Importing
+
+To import an asset or folder:
+
+1.  Navigate to the location where you want to import the data.
+
+2.  In the Action bar, click **Import**.
+
+3.  In the Upload dialog, click **Upload**.
+
+4.  Select an XML file or drag and drop it into the File area.
+
+5.  Click **Import**.

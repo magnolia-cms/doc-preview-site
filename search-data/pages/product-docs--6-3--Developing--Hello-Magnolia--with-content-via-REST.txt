@@ -1,0 +1,273 @@
+---
+title: "Hello Magnolia - with content via REST"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Hello-Magnolia---with-content-via-REST/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Hello Magnolia - with content via REST
+---
+
+# Hello Magnolia - with content via REST
+
+On this page we describe how you can create and use a component whose content is retrieved through REST from an external API.
+
+The page is an extension to [Hello Magnolia](../../Getting-started-with-Magnolia/Hello-Magnolia/), an introductory Magnolia tutorial showing how to leverage the Magnolia [light module](../../Modules/Light-modules/) functionality to create a web page.
+
+## [](#_hello_magnolia_tutorial_a_quick_recap)Hello Magnolia tutorial - a quick recap
+
+The product of the Hello Magnolia tutorial is a light module called `hello-magnolia` that contains a component used on a page called `hello`. When published to the public instance, the page displays two elements in addition to the page title: a quotation and the quotation’s author. On the author instance, editors can change the content of both these elements in a dialog called `quotation`:
+
+![Hello Magnolia](../../_images/helloPage_final.png) ![Quotation dialog](../../_images/6-1-HelloMagnolia-quotationComponent.png)
+
+## [](#_prerequisite_a_magnolia_setup)Prerequisite: A Magnolia setup
+
+Let’s proceed from here, but first make sure that:
+
+1.  Magnolia CLI is installed on your system.
+    If it isn’t, please install it by following the instructions on the [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) page.
+
+2.  You have a running Magnolia instance.
+    If you don’t have Magnolia installed and running, go to the page called [Installing Magnolia through npm CLI](../../Getting-started-with-Magnolia/Installing-Magnolia/Installing-Magnolia-through-npm-CLI/) and complete the steps described on it.
+
+3.  The `hello-magnolia` light module is installed in Magnolia.
+    You can get a copy of the `hello-magnolia` light module by cloning it from a branch in our Documentation repository to the folder defined by the `magnolia.resources.dir` property. If you installed Magnolia using CLI, it is the `light-modules` folder, located in the root of your Magnolia installation:
+
+    ```xml
+    <your-Magnolia-installation-folder>
+    ├── apache-tomcat/
+    ├── downloads/
+    └── light-modules/
+        └── hello-magnolia/
+    ```
+
+    Clone the module to the `light-modules` folder by executing this command:
+
+    ```sh
+    git clone --branch lmo-tutorial-base/6.1 https://bitbucket.org/magnolia-cms/hello-magnolia.git
+    ```
+
+
+## [](#_enhancements)Enhancements
+
+In the steps that follow you:
+
+-   Create and configure a REST client in the `hello-magnolia` light module for GET requests to the `[https://programming-quotes-api.herokuapp.com](https://programming-quotes-api.herokuapp.com)` API. This particular API service is convenient in that it doesn’t require an API key.
+
+-   Create a new page component called `Random Programming Quotation`, which will retrieve and render the English quotations from the API service.
+
+
+The tree structure of the `hello-magnolia` light module before and after the enhancements:
+
+-   Before
+
+-   After
+
+
+```bash
+hello-magnolia/
+├── decorations/
+├── dialogs/
+│ ├── components/
+│ │ └── quotation.yaml
+│ └── pages/
+│ └── hello.yaml
+├── templates/
+│ ├── components/
+│ │ ├── quotation.ftl
+│ │ └── quotation.yaml
+│ └── pages/
+│ ├── hello.ftl
+│ ├── hello.html
+│ ├── hello.yaml
+│ └── index.html
+└── webresources/
+    └── css/
+        └── hello-style.css
+```
+
+```bash
+hello-magnolia/
+├── decorations/
+├── dialogs/
+│ ├── components/
+│ │ └── quotation.yaml
+│ └── pages/
+│ └── hello.yaml
+├── restClients/
+│ └── programming-quotations.yaml
+├── templates/
+│ ├── components/
+│ │ ├── quotation.ftl
+│ │ ├── quotation.yaml
+│ │ ├── random-programming-quotation.ftl
+│ │ └── random-programming-quotation.yaml
+│ └── pages/
+│ ├── hello.ftl
+│ ├── hello.html
+│ ├── hello.yaml
+│ └── index.html
+└── webresources/
+    └── css/
+        └── hello-style.css
+```
+
+After the changes, the module contains one new subfolder and three new files:
+
+-   Lines 8 and 9: The subfolder and a YAML template file containing a REST client configuration for the quotation API service.
+
+-   Lines 14 and 15: An FTL template script and a YAML template definition for the new `Random Programming Quotation` component.
+
+
+### [](#_creating_a_rest_client_configuration_file)Creating a REST client configuration file
+
+In the root of the `hello-magnolia` module, create a new subfolder called `restClients`. In this subfolder, save the following configuration to a new file called `programming-quotations.yaml`:
+
+/hello-magnolia/restClients/programming-quotations.yaml
+
+```yml
+baseUrl: https://programming-quotes-api.herokuapp.com
+restCalls:
+  random:
+    method: get
+    entityClass: com.fasterxml.jackson.databind.JsonNode
+    path: /Quotes/random/
+```
+
+After saving the file, you can check in the [Definitions app](../../Apps/List-of-apps/Definitions-app/) that this client configuration has been registered:
+
+![Definitions app](../../_images/6-2-helloMagnoliaWithARESTfulEnhancement-inDefinitionsApp.png)
+
+### [](#_creating_a_restful_component)Creating a RESTful component
+
+Stay in the root of the `hello-magnolia` module. Use the following Magnolia CLI command to create the `random-programming-quotation` component. The command will make it available in the `main` area of the page template:
+
+```console
+npm run mgnl -- create-component random-programming-quotation -a pages/hello@main
+```
+
+The command creates the following files:
+
+-   `/hello-magnolia/dialogs/components/random-programming-quotation.yaml`
+
+    You don’t need this file for the present use case. Delete it.
+
+-   `/hello-magnolia/templates/components/random-programming-quotation.yaml`
+
+    This template definition gives the component a name and makes the component available to the system.
+
+-   `/hello-magnolia/templates/components/random-programming-quotation.ftl`
+
+    The template script renders the content of the component.
+
+
+#### [](#_edit_the_components_template_definition)Edit the component’s template definition
+
+Open the `random-programming-quotation.yaml` file and:
+
+1.  Delete the line referring to the dialog template.
+
+2.  Rename the component’s title to `Random Programming Quotation`. The title will be displayed in the list of templates when you choose a template for a new page.
+
+
+The result to be saved should look like this:
+
+/hello-magnolia/templates/components/random-programming-quotation.yaml
+
+```yml
+title: Random Programming Quotation
+renderType: freemarker
+templateScript: /hello-magnolia/templates/components/random-programming-quotation.ftl
+```
+
+#### [](#_edit_the_components_template_script)Edit the component’s template script
+
+Open the `random-programming-quotation.ftl` template script and save it with the following code:
+
+/hello-magnolia/templates/components/random-programming-quotation.ftl
+
+```numberLines
+${ctx.response.setHeader("Cache-Control", "no-cache")}
+[#assign randomQuote = restfn.call("programming-quotations", "random")]
+
+[#if randomQuote?has_content]
+
+<blockquote>
+    <p>${randomQuote.en.textValue()}</p>
+    <cite>${randomQuote.author.textValue()}</cite>
+</blockquote>
+
+[#else]
+
+<pre>An error occurred. The endpoint may be offline or returns null values.</pre>
+
+[/#if]
+```
+
+**Notes**
+
+Line 1: Without the `no-cache` setting, the changing content of the REST response would not be accessible when reloading the page since the server by default caches the rendered HTML page.
+
+Lines 7 and 8: The expressions `randomQuote.en.textValue()` and `randomQuote.author.textValue()` will print what is stored in the `en` and `author` properties, respectively.
+
+All the necessary changes in the code are now done. In the next steps you:
+
+1.  Create a new page called `hello-rest`, using the `Hello template`.
+
+2.  Add the new `Random Programming Quotation` component to the page, save the page and publish it to the public instance.
+
+3.  On the public instance, check that the `hello-rest` page is accessible and that it displays random quotations and their attributions whenever you reload the page.
+
+
+## [](#_creating_a_new_page)Creating a new page
+
+1.  Go to the App launcher and click the **Pages** tile to open the Pages app.
+
+2.  To add a new page, click **Add page** from the Action bar on the right-hand side.
+
+3.  In the **Add page** dialog:
+
+    1.  Use `hello-rest` for Page name.
+
+    2.  Choose the `Hello template` as the page template.
+
+    3.  Click **Next**.
+
+
+4.  In the Page properties dialog, enter `RESTful Hello Magnolia` into the Title field.
+
+5.  Click **Save changes**.
+
+
+## [](#_adding_the_restful_component)Adding the RESTful component
+
+1.  Open the `hello-rest` page in the Pages app.
+
+2.  Click the **New Main Component** + button.
+
+3.  Select the `Random Programming Quotation` component:
+    ![Adding the RESTful component](../../_images/6-2-helloMagnoliaWithARESTfulEnhancement-addNewComponent.png)
+    Click **Next**.
+    At this point, you should be already receiving some content from the quotation API service. For example, a quotation by Joseph Yoder:
+    ![New component result](../../_images/6-2-helloMagnoliaWithARESTfulEnhancement-addNewComponent-ContentFetched.png)
+
+4.  Preview the page by clicking **Preview page** in the Action bar on the left. The Preview action should fetch a new quotation from the API.
+
+5.  Publish the page to the public instance by clicking **Publish**.
+
+
+## [](#_seeing_the_result_on_the_public_instance)Seeing the result on the public instance
+
+Finally, access the web page on the public instance: [http://localhost:8080/magnoliaPublic/hello-rest.html](http://localhost:8080/magnoliaPublic/hello-rest.html). The following screenshot shows a quotation by Bob Carr, fetched from the quotations API:
+
+![Result on Public instance](../../_images/6-2-HelloMagnoliaWithRESTfulRandomQuotes-finalResult.png)
+
+Related topics
+
+-   [Hello Magnolia](../../Getting-started-with-Magnolia/Hello-Magnolia/)
+
+-   [Light development](../Light-development-in-Magnolia/)
+
+-   [REST in Magnolia](../../Getting-started-with-Magnolia/Getting-started-with-REST/)
+
+-   [Example REST client configurations](../../Modules/List-of-modules/REST-Client-module/Example-REST-client-configurations/)
+
+-   [Magnolia CLI](#magnolia-cli:ROOT:index.adoc)

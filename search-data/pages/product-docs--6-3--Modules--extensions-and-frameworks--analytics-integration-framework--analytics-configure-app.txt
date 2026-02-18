@@ -1,0 +1,451 @@
+---
+title: "Configuring the Analytics app"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/extensions-and-frameworks/analytics-integration-framework/analytics-configure-app/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Analytics integration framework > Analytics app configuration
+---
+
+# Configuring the Analytics app
+
+The `magnolia-analytics-ui` submodule provides the [Analytics app](../Analytics-app/) configuration, the demo dashboard you see in the app, and several preconfigured charts.
+
+![Demo dashboard](../../../../_images/analytics/analytics-demo-dashboard.png)
+
+## [](#_analytics_app_light_module)Analytics app light module
+
+You can edit the configuration of the app and dashboards as part of a [light module](../../../Light-modules/) (YAML).
+
+```yaml
+magnolia.resources.dir/
+└── analytics-ui/
+    ├── apps/
+        └── analytics.yaml
+    ├── dashboards
+        └── demo.yaml
+    └── i18n/
+        └── magnolia-analytics-ui-messages_en.properties
+```
+
+You can configure what data is available and how it appears for the end users creating and using dashboards and widgets in the Analytics app.
+
+## [](#_dashboard_filters)Dashboard filters
+
+Developers can define filters to drill down into the data displayed in the charts that are configured. When set, each filter is applied to all the charts in the dashboard simultaneously. For example, if you set a filter to display a given time range, all the charts display data for that time range.
+
+You can use basic [Magnolia field types](../../../../Developing/Templating/Dialog-definition/Field-definition/#_field_types) to define filters, such as date, rich text, and so on.
+
+> **Note:** Complex fields such as multiValue, composite, switchable, and collapsibleComposite aren’t supported.
+
+The filter parameters depend on the type of data supplier used (see properties below).
+
+**Example**
+
+/analytics-ui/dashboards/demo.yaml
+
+```yml
+filterFields:
+  - name: limitTopSearch
+    $type: textField
+    placeholder: number
+    label: Limit of frequent search
+  - name: numberOfTags
+    $type: textField
+    placeholder: number
+    label: Number of content tags
+  - name: startDate
+    $type: dateField
+    label: Start date
+  - name: endDate
+    $type: dateField
+    label: End date
+```
+
+### [](#_properties)Properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>filterFields</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The filter names are used to append the REST call against the supplier. Therefore, the value here must have a counterpart in the given data suppliers. You can also use filters to override parameters.</p></div><div class="paragraph"><p>Filter parameters for each supplier:</p></div><div class="ulist"><ul><li><p>Adobe values: <a href="https://adobedocs.github.io/analytics-2.0-apis/" class="bare" target="_blank" rel="noopener">https://adobedocs.github.io/analytics-2.0-apis/</a></p></li><li><p>Matomo values: <a href="https://developer.matomo.org/api-reference/reporting-api#API" class="bare" target="_blank" rel="noopener">https://developer.matomo.org/api-reference/reporting-api#API</a></p></li><li><p>Google values: <a href="https://developers.google.com/analytics/devguides/reporting/core/dimsmets" class="bare" target="_blank" rel="noopener">https://developers.google.com/analytics/devguides/reporting/core/dimsmets</a></p></li><li><p><span class="inlineBean">info.magnolia.analytics.datasource.FrequentlySearchAppDataSupplier</span>: <code>limitTopSearch</code> is a number used for frequently searched apps. The default is 10 results.</p></li><li><p><span class="inlineBean">info.magnolia.analytics.datasource.ContentTagsDataSupplier</span>: <code>numberOfTags</code> is a number used for the content tags word cloud. The default is 50 tags.</p></li><li><p><span class="inlineBean">info.magnolia.analytics.datasource.MostActiveUsersOnPageDataSupplier</span>: <code>startDate</code> and <code>endDate</code> are used for most active users by publication. The default is all data available.</p></li><li><p><span class="inlineBean">info.magnolia.analytics.datasource.RecentPageActivitiesDataSupplier</span>: <code>startDate</code> and <code>endDate</code> are used for recently activated, modified and created pages. The default is the last 7 days.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Valid field alias name. See <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/" class="xref page">field types</a>.</p></div><div class="paragraph"><p>For example: <code>$type: dateField</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>label</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>A text label displayed as the title of the filter in the dashboard. For example <code>Start date</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>placeholder</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Text to be displayed in the filter field when you don’t want the filter to appear empty.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>options</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Options to be applied to the filter contents. The sub-properties depend on the field type being used.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_using_date_filters)Using date filters
+
+If you don’t set a value for the date parameter in the data supplier .yaml file (such as `/matomo/dataSuppliers/demoMatomoSupplier.yaml`), the dashboard display uses the default value (for Matomo: `last7`).
+
+In the dashboard, if the filter `startDate` and `endDate` are left empty by the user, the date parameter value from the data supplier .yaml file is used in widgets for that data supplier.
+
+If the user enters a `startDate` and `endDate` in the filter, the date value range selected is used in widgets for that data supplier.
+
+If the user only enters a `startDate`, data for that date only is displayed in widgets for that data supplier.
+
+If the user only enters an `endDate`, data for that date only is displayed in widgets for that data supplier.
+
+## [](#_enabling_and_disabling_dashboard_definitions)Enabling and disabling dashboard definitions
+
+By default, all the dashboards you or your end users create are available in the Analytics app.
+
+![Dashboards dropdown in the Analytics app](../../../../_images/analytics/6-2-analytics-dashboard-dropdown.png)
+
+If you don’t want a dashboard to be available in the app, you must set the `enabled` property in the dashboard definition to `false`.
+
+In this example, the demo dashboard is enabled:
+
+analytics-ui/dashboards/demo.yaml
+
+```yml
+enabled: true
+chartDefinitions:
+  chart1:
+    dataSupplier: recentPageActivitiesDataSupplier
+    class: info.magnolia.analytics.amcharts.data.AmChartDefinition
+    chartType:
+      class: info.magnolia.analytics.amcharts.data.configuration.AmChartType
+      series:
+        - name: Recently activated pages
+          type: LineSeries
+          yAxis: yaxe
+```
+
+When there are no user-defined dashboards available in the app, the fallback display by default is the demo dashboard provided by Magnolia.
+
+If you disable the default demo dashboard, nothing is displayed in the app when no user-defined dashboards are available.
+
+## [](#_default_dashboard_display)Default dashboard display
+
+By default, the `demo` dashboard is the dashboard selected in the dropdown and displayed when you open the Analytics app.
+
+If you want to change the default dashboard displayed, add the `dashboardName` property to `/analytics-ui/apps/analytics.yaml` and set its value to the name of the dashboard you want.
+
+```yml
+subApps:
+  dashboard:
+    class: info.magnolia.analytics.ui.app.DashboardSubAppDescriptor
+    dashboardName: timeline # this is the real name of dashboard and its `enabled` property must be `true`
+```
+
+> **Note:** The dashboard definition name you set must exist under /analytics-ui/dashboards and be enabled.
+
+## [](#_data_suppliers_available)Data suppliers available
+
+You can configure which data suppliers are available to your end users in the Analytics app **Add widget** and **Edit widget** dialogs.
+
+![Data supplier dropdown](../../../../_images/6.2-analytics-data-supplier-dropdown.png)
+
+To do so, edit the configuration for the `ignoredDataSupplierNamesStartingWith` property under `analytics-ui/config.yaml`.
+
+For example, by default, Magnolia removes the [A/B/n Testing](../../../List-of-modules/ABn-testing/) data supplier from the dropdown:
+
+```yaml
+          ignoredDataSupplierNamesStartingWith:
+            - testResultsDataSupplier #ignore supplier in ab testing
+```
+
+If you want to remove all data suppliers starting with the word "dummy", the configuration is:
+
+```yaml
+          ignoredDataSupplierNamesStartingWith:
+            - testResultsDataSupplier #ignore supplier in ab testing
+            - dummy # ignore all supplier name starting with "dummy"
+```
+
+## [](#_chart_types_available)Chart types available
+
+The `analytics-amcharts-samples` submodule provides several predefined chart definitions under `/analytics-amcharts-samples/charts`.
+
+You can configure which chart types are available to your end users in the Analytics app **Add widget** and **Edit widget** dialogs when adding advanced widgets.
+
+![Chart type dropdown](../../../../_images/analytics/analytics-chart-type-dropdown.png)
+
+To do so, edit the configuration for the `chartTypeConfigurationName` property in the:
+
+-   Add widget dialog: `analytics-ui/dialogs/widgetStep.yaml`
+
+-   Edit widget dialog: `analytics-ui/dialogs/widgetStepForEdit.yaml`
+
+
+By default, Magnolia lists the Timeline (`simple-line`), Metric number (`metric-number`), Bar (`simple-column`) and Pie (`pie`) chart types in the dropdown:
+
+```yaml
+        chartTypeConfigurationName:
+          $type: comboBoxField
+          required: true
+          placeholder: analytics-ui.widgetStep.chartTypeConfigurationName.placeholder
+          factoryClass: info.magnolia.analytics.ui.app.fields.ChartTypeConfigurationNameComboBoxFieldFactory
+          datasource:
+            $type: optionListDatasource
+            options:
+              - name: simple-column
+                value: simple-column
+              - name: pie
+                value: pie
+              - name: metric-number
+                value: metric-number
+              - name: simple-line
+                value: simple-line
+```
+
+### [](#_adding_a_chart_type_to_the_dropdown)Adding a chart type to the dropdown
+
+You can reuse one of the [predefined chart definitions](../analytics-chart-and-dashboard-configuration/) in the chart type dropdown, except those which have more than two data fields (such as the candlestick or ohlc chart types).
+
+For example, to make the predefined `word-cloud` chart type available to your users when they add or edit all widgets, add it to the options as shown below.
+
+```yaml
+chartTypeConfigurationName:
+  $type: comboBoxField
+  required: true
+  placeholder: analytics-ui.widgetStep.chartTypeConfigurationName.placeholder
+  factoryClass: info.magnolia.analytics.ui.app.fields.ChartTypeConfigurationNameComboBoxFieldFactory
+  datasource:
+    $type: optionListDatasource
+    options:
+      - name: simple-column
+        value: simple-column
+      - name: metric-number
+        value: metric-number
+      - name: pie
+        value: pie
+      - name: simple-line
+        value: simple-line
+      - name: word-cloud
+        value: word-cloud
+```
+
+We recommend you provide [an i18n key](../../../../Administration/Language/Internationalization/#_i18n_message_keys) for the chart types you add to `analytics-ui/i18n/magnolia-analytics-ui-messages_en.properties`. You can find the key by opening the dialog and looking in the dropdown:
+
+![Dialog dropdown i18 key](../../../../_images/analytics/analytics-chart-type-dropdown-key.png)
+
+If you want to update an existing chart created in v1.1 with a new chart type, use a YAML include to add it to the chart definition.
+
+For example:
+
+Before:
+
+```yaml
+chart4:
+  dataSupplier: contentTagsDataSupplier
+  class: info.magnolia.analytics.amcharts.data.AmChartDefinition
+  chartType:
+    class: info.magnolia.analytics.amcharts.data.configuration.AmChartType
+    series:
+      - name: series
+        type: WordCloudSeries
+        labels:
+          fill: "#599900"
+        dataFields:
+          - name: word
+            value: tag
+            jsonPath: $.[*].tag
+          - name: value
+            value: weight
+            jsonPath: $.[*].weight
+    type: WordCloud
+```
+
+After:
+
+```yaml
+chart4: !include:/analytics-ui/charts/word-cloud.yaml
+  dataSupplier: contentTagsDataSupplier
+  chartType:
+    # Decorate series for mapping json data
+    series:
+      - name: series
+        dataFields:
+          - name: word
+            value: tag
+            jsonPath: $.[*].tag
+          - name: value
+            value: weight
+            jsonPath: $.[*].weight
+```
+
+## [](#_theme_and_css)Theme and CSS
+
+You can change the CSS and theme of the dashboard charts to suit your visual requirements.
+
+To do so, update the `amcharts.css` and `amcharts_theme.js` files in `/info/magnolia/analytics/amcharts/vaadin`.
+
+## [](#_enabling_responsiveness)Enabling responsiveness
+
+Magnolia supports the [amCharts responsiveness feature](https://www.amcharts.com/docs/v4/concepts/responsive).
+
+\+ To make your charts responsive, enable the feature by adding the `responsive` property to the chart definition and setting it to `enabled: true` as shown in this example:
+
+analytics-amcharts-samples/dashboards/ga-and-matomo-samples.yaml
+
+```yml
+chartDefinitions:
+  column2Matomo: !include:/analytics-ui/charts/pie-and-donut-group/pie.yaml
+    label: User country from Matomo
+    chartType:
+      responsive:
+        enabled: true
+    dataSupplier: demoMatomoSupplier
+```
+
+If you enable responsiveness, when a chart’s pixelWidth is ⇐ 500px, Magnolia automatically hides the chart legend.
+
+You can change the responsive rules in `/info/magnolia/analytics/amcharts/vaadin/amcharts_connector.js`.
+
+## [](#_default_metrics_and_dimensions)Default metrics and dimensions
+
+The following default metrics and dimensions are used for each third-party data supplier. You can [change the defaults through decoration](#_example_decorating_default_metrics_and_dimensions) in the data supplier .yaml file.
+
+### [](#_adobe_analytics)Adobe Analytics
+
+| Metric | ID  |
+| --- | --- |
+| Visits | metrics/visits |
+| Unique Visitors | metrics/visitors |
+| Page Views | metrics/pageviews |
+| Time Spent per Visit | metrics/timespentvisit |
+| Bounce Rate | metrics/bouncerate |
+
+| Dimension | ID  |
+| --- | --- |
+| Date | variables/daterangeday |
+
+### [](#_google_analytics_4)Google Analytics 4
+
+| Label | ID  |
+| --- | --- |
+| Users | activeUsers |
+| Sessions | sessions |
+| Items viewed | itemsViewed |
+| Avg. Session Duration | averageSessionDuration |
+| Bounce Rate | bounceRate |
+
+| Dimension | ID  |
+| --- | --- |
+| Date | date |
+
+### [](#_matomo)Matomo
+
+| Label | ID  |
+| --- | --- |
+| Unique Visitors | nb\_uniq\_visitors |
+| Visits | nb\_visits |
+| Actions | nb\_actions |
+| Total time spent | sum\_visit\_length |
+| Bounce Rate | bounce\_rate |
+
+| Dimension | ID  |
+| --- | --- |
+| Date | API.get |
+
+### [](#_example_decorating_default_metrics_and_dimensions)Example: Decorating default metrics and dimensions
+
+In this example, the Adobe Analytics data supplier is decorated to change the default dimension and metrics.
+
+The default time granularity dimension has been changed from days (daterangeday) to weeks (daterangeweek). The default metrics are now revenue and time spent per visit.
+
+With this decoration, all commonly used metrics charts created by end users in the app are based on these new defaults.
+
+*/adobe-analytics/dataSuppliers/adobeDataSupplier.yaml*
+
+```yaml
+defaultCommonDimension: variables/daterangeweek
+
+defaultCommonMetrics:
+'metrics/revenue': "Revenue"
+'metrics/timespentvisit': "Time spent per visit"
+```
+
+> **Tip:** The metric ID is the value on the left. The value on the right is the i18n key displayed to users in the app. If no i18n key is set, the metric ID is displayed.
+
+## [](#_metric_data_start_dates)Metric data start dates
+
+You can configure the start date for the metric data for each data supplier in `/<module name>/dataSuppliers/<dataSupplierRegistryFile.yaml>`.
+
+This controls what data end users see in the widgets they add in Analytics app.
+
+Defaults:
+
+-   Adobe:
+
+    -   `endDate: '2020-01-15'`
+
+    -   `startDate: '2020-01-01'`
+
+
+-   Matomo: `last7`
+
+-   Google Analytics: `7DaysAgo`
+
+
+## [](#_date_formatting_in_widgets)Date formatting in widgets
+
+You can configure how dates are displayed in widgets either for each data supplier or for all the widgets, regardless of where the data comes from.
+
+To configure date formatting for a specific data supplier, add the properties below to: `/<module name>/dataSuppliers/<dataSupplierRegistryFile>.yaml` For example, for Adobe, `/adobe-analytics/dataSuppliers/adobeDataSupplier.yaml`:
+
+```yaml
+fromdateFormat: MMM d, yyyy
+toDateFormat: dd.MM.yy
+decimalNumberFormat: "#0.00"
+```
+
+To configure date formatting for *all widgets*, add the properties below to: `/analytics/config.yaml`. For example:
+
+```yaml
+dateFormat: dd.MM.yy
+decimalNumberFormat: "#0.00"
+```
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>fromDateFormat</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date format in the JSON results retrieved.</p></div><div class="paragraph"><p>Default values:</p></div><div class="ulist"><ul><li><p>AdobeDataSupplier: <code>MMM d, yyyy</code></p></li><li><p>GoogleDataSupplier: <code>yyyyMMdd</code></p></li><li><p>MatomoDataSupplierWithTransformer: <code>yyyy-MM-dd</code></p></li><li><p>FileBasedDataSupplier: <code>yyyy-MM-dd</code></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>toDateFormat</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date format you want to use in the charts defined for each data supplier.</p></div><div class="paragraph"><p>If defined for a given data supplier, this property overrides the <code>dateFormat</code> property.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>dateFormat</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Defines the date format for all suppliers.</p></div><div class="paragraph"><p>Default value: <code>dd.MM.yy</code>.</p></div><div class="paragraph"><p>If the <code>dateFormat</code> property is configured in the <code>/analytics/config.yaml</code> file, and <code>toDateFormat</code> property isn’t, the value of the <code>dateFormat</code> property is used for date formatting.</p></div><div class="paragraph"><p>If both the properties are configured, the value of <code>toDateFormat</code> is used.</p></div></div></td></tr></tbody></table></div>
+
+## [](#_decimal_formatting_in_widgets)Decimal formatting in widgets
+
+Like date formatting, you can configure how decimals are displayed in widgets either for each data supplier or for all the widgets, regardless of where the data comes from.
+
+To configure decimal number formatting for a specific data supplier, add the `decimalNumberFormat` property to: ``/<module name>/dataSuppliers/<dataSupplierRegistryFile>.yaml For example, for Adobe, `/adobe-analytics/dataSuppliers/adobeDataSupplier.yaml``:
+
+```yaml
+fromdateFormat: MMM d, yyyy
+toDateFormat: dd.MM.yy
+decimalNumberFormat: "#0.0000"
+```
+
+To configure decimal number formatting for *all widgets*, add the `decimalNumberFormat` property to: `/analytics/config.yaml`. For example:
+
+```yaml
+dateFormat: dd.MM.yy
+decimalNumberFormat: "#0.00"
+```
+
+| Property | Description |
+| --- | --- |
+| `decimalNumberFormat` | Decimal number formatting displayed in widgets.<br><br>The default value `"#0.00"` is set for all data suppliers in `/analytics/config.yaml`.<br><br>`"#0.00"` corresponds to two figures after the decimal point, for example, 1.23.<br><br>`"#0.0000"` corresponds to four figures after the decimal point, for example, 1.2345.<br><br>If the `decimalNumberFormat` property is configured in both the `/analytics/config.yaml` file, and the `<dataSupplierRegistryFile.yaml>`, the value in the <dataSupplierRegistryFile.yaml> is used. |
+
+## [](#_converting_time_metrics_to_seconds_for_matomo_widgets)Converting time metrics to seconds for Matomo widgets
+
+This configuration only applies to data suppliers configured with the `info.magnolia.analytics.matomo.datasource.MatomoDataSupplierWithTransformer` class.
+
+In some cases, Matomo returns time metrics as, for example, `2 days 12:34:56.789`. This means 2 days, 12 hours, 34 minutes, and 56.789 seconds. To be correctly displayed and compared on a chart, a value such as `00:01:30.00` should be converted to seconds only: `90`.
+
+You can configure time metrics so they display as seconds using the property `metricsForTimeToSecondsConversion` property in `matomo/config.yaml`.
+
+The default configuration is:
+
+matomo/config.yaml
+
+```yaml
+metricsForTimeToSecondsConversion:
+- avg_time_on_site_new
+- avg_time_on_site_returning
+- sum_total_time_watche
+- avg_time_on_site
+- avg_page_load_time
+- avg_form_time_hesitation
+- avg_form_time_spent
+- avg_form_time_to_first_submission
+- avg_form_time_to_conversion
+- avg_time_network
+- avg_time_server
+- avg_time_transfer
+- avg_time_dom_processing
+- avg_time_dom_completion
+- avg_time_on_load
+- avg_time_watched
+- avg_time_to_play
+```
+
+Add metrics to this list as required for your data.

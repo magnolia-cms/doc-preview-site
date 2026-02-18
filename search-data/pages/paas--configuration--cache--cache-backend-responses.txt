@@ -1,0 +1,44 @@
+---
+title: "Cache backend responses"
+url: https://docs.magnolia-cms.com/paas/configuration/cache/cache-backend-responses/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Cache > Cache backend responses
+---
+
+# Cache backend responses
+
+By default, Magnolia sets the [Set-Cookie header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie) when the [`country` filter](../../../../product-docs/7.0/Administration/Architecture/Request-processing-and-filters/Filters/#_country) and [CSRF](../../../../product-docs/7.0/Administration/Architecture/Request-processing-and-filters/Filters/#_csrf_security) are enabled. Because of this, responses from backend servers aren’t able to be cached. However, there are some things you can do to make these backend responses cacheable.
+
+## [](#_workaround_instructions)Workaround instructions
+
+1.  Go to your `country` filter.
+
+    *This is typically found at `/modules/personalization-traits/traits/country`.*
+
+2.  Change the [`traitStorageClass`](../../../../product-docs/7.0/Modules/List-of-modules/Personalization-module/Creating-custom-traits/#_registering_a_trait) to `$RequestScopedTraitStorage`. Alternatively, you could completely disable the country filter.
+
+    -   What you want
+
+    -   What you don’t want
+
+
+    ```none
+    info.magnolia.personalization.trait.storage.StorageAwareTraitCollector$RequestScopedTraitStorage
+    ```
+
+    ```none
+    info.magnolia.personalization.trait.storage.StorageAwareTraitCollector$SessionScopedTraitStorage
+    ```
+
+3.  Next, you’ll need to bypass the CSRF filter with paths/content-types (*and whatever else you need*) in the filter configuration. This is done with a [voter](../../../../product-docs/7.0/Administration/Voters/).
+
+    Example voter
+
+    ```yaml
+    BypassWhenNotAuthenticated:
+      class: info.magnolia.voting.voters.AuthenticatedVoter
+      not: true
+    ```
+
+    > **Warning:** If the filter is bypassed, CSRF protection for unauthenticated browser sessions are disabled meaning there is no longer protection against CSRF login attacks or any other POST requests like forms.

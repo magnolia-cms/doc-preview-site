@@ -1,0 +1,63 @@
+---
+title: "Bynder Universal Compact View integration module"
+url: https://docs.magnolia-cms.com/bynder-universal-compact-view-integration/1.0/
+category: Modules
+version: modules
+breadcrumb: Bynder Universal Compact View Integration Module > Bynder Universal Compact View integration module
+---
+
+# Bynder Universal Compact View integration module
+
+[Digital asset management (DAM)](../../product-docs/7.0/use-cases/Digital-asset-management/) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/bynder-universal-compact-view-integration) [Tier 2](../../incubator-modules/#experimental-features) Version 1.0.0 [Magnolia 6.2](#6.2@product-docs:ROOT:index.adoc) compatible
+
+A Magnolia module providing the [Bynder Universal Compact View](https://support.bynder.com/hc/en-us/articles/360013871360-Integrate-Universal-Compact-View) as the asset browsing and searching UI for a Magnolia link field.
+
+## [](#_features)Features
+
+### [](#_full_bynder_ui)Full Bynder UI
+
+Search and filter by collections, tags, file format and more.
+
+### [](#_magnolia_external_dam_integration)Magnolia External DAM integration
+
+Only references are stored. Asset details are retrieved when pages are rendered internally or when Magnolia’s REST APIs are accessed.
+
+### [](#_sso_integration)SSO Integration
+
+Users with SSO access to Magnolia and Bynder can move seamlessly between the two systems and will see their user permissions respected in both.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.external.dam</groupId>
+  <artifactId>bynder-universal-compact-view-integration</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+To browse assets via a content editing dialog, use the new field type `bynderCompactViewField`.
+
+![bynder universal compact view screenshot](_images/bynder-universal-compact-view-screenshot.jpg)
+
+To retrieve assets in REST APIs and DAM Functions helper libraries, configure Bynder access as per the [Bynder connection configuration](#6.2@product-docs:ROOT:Connector-Packs/DAM-Connector-Pack/External-DAM-module.adoc#_bynder_connection_configuration).
+
+Once the compact view is in use, it may be beneficial to block access to the Bynder subapp inside the DAM app. This can be achieved with a decoration as follows:
+
+/MY-MODULE/decorations/dam-app-core/apps/dam.yaml
+
+```yaml
+subApps: !override
+jcrBrowser:
+jcrDetail:
+```
+
+## [](#_changelog)Changelog
+
+| Version | Notes |
+| --- | --- |
+| `1.0.0` | Initial release of the module for [Magnolia 6.2](#6.2@product-docs:ROOT:index.adoc) compatibility. |

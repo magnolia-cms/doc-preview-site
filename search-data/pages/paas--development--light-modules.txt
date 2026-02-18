@@ -1,0 +1,89 @@
+---
+title: "Light modules"
+url: https://docs.magnolia-cms.com/paas/development/light-modules/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Light modules
+---
+
+# Light modules
+
+DX Cloud allows you to leverage the power of `light-modules` combined with your java development.
+
+**Light module pages** for DX Cloud:
+
+-   Informs you on what you can do with light modules in **[Magnolia light modules](#_magnolia_light_modules)**.
+
+-   Lays out the proper light-module structure for your CI/CD pipeline in **[Light Module deployment](../../deployment/light-modules/)**.
+
+
+## [](#_magnolia_light_modules)Magnolia light modules
+
+A Magnolia light module is a file and folder-based module. It can define every Magnolia item which can be configured in `YAML` – such as apps, content types, templates, dialogs, themes, and others. It can also contain a lightweight YAML-based module descriptor and web resources such as `css` and `javascript` files.
+
+Light modules can be built with a simple text editor, with no special tools (such as Maven) required.
+
+> **Important:** A light module cannot incorporate java classes.
+
+## [](#_what_items_can_be_defined_in_a_light_module)What items can be defined in a light module?
+
+The following items can be defined within a light module using YAML. Items defined by YAML can be [decorated](../../../product-docs/7.0/Developing/Definition-decoration/), or can be reused with [YAML inherit and include](../../../product-docs/7.0/Developing/Reusing-configuration/YAML-inherit-and-include/).
+
+-   [App definitions](../../../product-docs/7.0/Apps/App-configuration/App-descriptor/)
+
+-   Content type definitions
+
+-   [Dialog definitions](../../../product-docs/7.0/Developing/Templating/Dialog-definition/)
+
+-   [Field type definitions](../../../product-docs/7.0/Developing/Templating/Dialog-definition/Field-definition/Custom-fields/)
+
+-   [Media editor definitions](../../../product-docs/7.0/Modules/List-of-modules/UI-module/UI-Media-Editor-module/)
+
+-   [Message view definitions](../../../product-docs/7.0/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
+
+-   [Module configurations](../../../product-docs/7.0/Modules/Module-configuration/)
+
+-   [Renderer definitions](../../../product-docs/7.0/Developing/Templating/Renderers/)
+
+-   [REST endpoint definitions](../../../product-docs/7.0/Developing/Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/)
+
+-   [Site definitions](../../../product-docs/7.0/Developing/Templating/Site-definition/#_configuring_a_site_definition)
+
+-   [Template definitions](../../../product-docs/7.0/Developing/Templating/Template-definition/)
+
+-   [Theme definitions](../../../product-docs/7.0/Developing/Templating/Theme/)
+
+-   [Virtual URI mappings](../../../product-docs/7.0/Administration/URI-mapping/Virtual-URI-mapping/)
+
+-   [Workflow definitions](../../../product-docs/7.0/Modules/List-of-modules/Workflow-module/Workflow-processes/)
+
+-   [Work item handler definitions](../../../product-docs/7.0/Modules/List-of-modules/Workflow-module/Custom-tasks/)
+
+
+> **Note:** Non YAML-based items can also be used/found in light modules.i18n message bundles and related pagesjavascript-models:ROOT:index.adoc
+
+## [](#_creating_a_light_module_with_magnolia_cli)Creating a light module with Magnolia CLI
+
+Using the [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) you can create the folder structure for a light module with the command `create-light-module`.
+
+1.  Ensure you have [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) v5 installed:
+
+    ```sh
+    mgnl -V
+    ```
+
+    You should see something similar to the following:
+
+    ```console
+    Magnolia CLI: 5.0.0 (node.js: v20.13.1)
+    ```
+
+
+2.  Go to your light modules directory, and execute the following command:
+
+    ```console
+    npm run mgnl -- create-light-module <light-module>
+    ```
+
+
+> **Important:** When creating a name for a module, do not use spaces, accented characters such as é, à, ç, ä, ö, ü or special characters (e.g. slashes /, \ and so on). The name must match the regular expression [a-zA-Z0-9-_].

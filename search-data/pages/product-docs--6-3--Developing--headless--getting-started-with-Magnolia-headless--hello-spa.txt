@@ -1,0 +1,1831 @@
+---
+title: "Hello Magnolia - SPA"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/headless/getting-started-with-Magnolia-headless/hello-spa/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Headless docs > Get Started with Magnolia Headless > Hello Magnolia - SPA
+---
+
+# Hello Magnolia - SPA
+
+In this tutorial, we will learn how to use the [Visual Single Page Application (SPA) Editor](https://www.magnolia-cms.com/product/single-page-apps-editing.html) to build stunning websites with ReactJS, Angular and Vue.
+
+Basic form-based headless CMS systems are good for constrained and predefined content types. However, to give marketers the ability to create articles, page structure or create their own custom landing pages or microsites, the Magnolia SPA Editor will accelerate your Marketer and free up your development capacity.
+
+The Visual SPA Editor is bridging the gap between enterprise-level content management systems and SPA frontend development.
+
+## [](#_what_are_we_going_to_build)What are we going to build?
+
+We are going to build a Travel Website SPA promoting travel packages.
+
+In the [Hello Magnolia - Headless](../hello-headless/) tutorial, we have built a basic Headless CMS Website. In the present tutorial, we create an application, but enable the Marketer to visually change the SPA.
+
+-   Marketers can add new navigation items.
+
+-   They can create new pages and arrange the content freely with a pre-defined list of *Components*.
+
+
+![Developers and Marketers creating cool stuff together](../../../../_images/headless/illustrations/SPA-handles-1024x512.png)
+
+## [](#_prerequisites)Prerequisites
+
+-   Magnolia CLI and required development tools. The instructions are [here](../installation/).
+
+
+## [](#_install_the_demo_project)Install the demo project
+
+To jumpstart our project, we will install our demo project. The easiest way to do this is to clone our git repository.
+
+1.  Clone the Git repository.
+
+    ```sh
+    git clone https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos.git
+    ```
+
+2.  Switch to the `minimal-headless-spa-demos` folder:
+
+    ```sh
+    cd minimal-headless-spa-demos
+    ```
+
+
+### [](#_install_magnolia)Install Magnolia
+
+1.  Change directory to `magnolia`.
+
+    ```console
+    cd magnolia
+    ```
+
+2.  Start `magnolia` installation.
+
+    ```console
+    mgnl jumpstart
+    ```
+
+3.  In the first set of options, choose `2) demo-webapps (Magnolia with travel demo)`, followed by `1) magnolia-community-demo-webapp` in the second one.
+
+    Once the installation has finished, you will see an output similar to this on your console:
+
+    ```console
+    ...
+    info: Run `npm run mgnl` to see the list of registered commands.
+    info: Project successfully downloaded
+    info: Run "npm run mgnl" to see the list of registered commands
+    info: Start the project using: "npm run mgnl -- start"
+    info: If the "StartPlugin" is not available, install it using: "npm run mgnl -- add-plugin @magnolia/cli-start-plugin"
+    info: For additional plugins and features, refer to the Magnolia CLI documentation: https://docs.magnolia-cms.com/magnolia-cli
+    ```
+
+4.  Start Magnolia.
+
+    ```console
+    mgnl start
+    ```
+
+    When the terminal shows `Server startup in […​] milliseconds`, Magnolia is up and running.
+
+5.  Open [http://localhost:8080](http://localhost:8080).
+
+6.  Click `Run the Web update on the author instance`.
+
+7.  Login with:
+
+    1.  **username**: `superuser`
+
+    2.  **password**: `superuser`
+
+        > **Tip:** Help is here. Are you having any trouble with starting Magnolia? Ask for help on our Google group, and we’ll get you setup!
+
+
+
+#### [](#_install_the_spa)Install the SPA
+
+We include a React, Angular and Vue example, just choose which one you want to use. In your terminal, go to the actual frontend app directory (for React, Angular or Vue).
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+```sh
+cd ../spa/react-minimal
+```
+
+```sh
+npm install
+```
+
+```sh
+npm run start
+```
+
+Be sure you first install the [Angular CLI](https://github.com/angular/angular-cli#development-setup).
+
+```sh
+npm install -g @angular/cli (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `-g` flag installs the Angular CLI globally on your computer. |
+
+```sh
+cd ../spa/angular-minimal
+```
+
+```sh
+npm install
+```
+
+```sh
+ng serve
+```
+
+```sh
+cd ../spa/vue-minimal
+```
+
+```sh
+npm install
+```
+
+```sh
+npm run serve
+```
+
+## [](#_see_it_in_action)See It In Action
+
+Let’s have a look at the running demo containing the starter content before we inspect the Starter Code. In the previous chapter, we have started Magnolia and built and started our SPA project.
+
+### [](#_install_demo_content)Install demo content
+
+To install the Demo Content follow these steps:
+
+-   Open the [Pages app](http://localhost:8080/magnoliaAuthor/.magnolia/admincentral#app:pages-app) in your browser.
+
+-   Click `Import` action (You might need to scroll down in the action bar.)
+
+-   For React, select the file `./magnolia/_dev/content-to-import/website.react-minimal.yaml`.
+
+-   For Angular, select the file `./magnolia/_dev/content-to-import/website.angular-minimal.yaml`.
+
+-   For Vue, select the file `./magnolia/_dev/content-to-import/website.vue-minimal.yaml`.
+
+
+![spacontentimport](../../../../_images/headless/spacontentimport.gif)
+
+### [](#_page_builder)Page Builder
+
+In the Pages app, open the SPA Project by double-clicking on `react-minimal`, `angular-minimal` or `vue-minimal` depending on which project you have installed.
+
+Now you can see the React, Angular or Vue app rendered in the Magnolia Page Builder. Go-ahead and try to change the title or add an image.
+
+> **Note:** To see the images displayed in the SPA app on localhost:3000, you must add the web access GET right with path /dam/* to the anonymous user in the Security app in your Magnolia Author instance.
+
+Hooray
+
+*You are editing a SPA!*
+
+![Page Builder](../../../../_images/headless/editspa.gif)
+
+## [](#_inspect_the_code)Inspect the Code
+
+Let’s see how our demo project is structured:
+
+![Component Mapping](../../../../_images/headless/03-spa-component-screenshot.png)
+
+The blue and green components are fixed components, the developer controls them and their position. The magenta components inside the *Area Component* are controlled and freely arranged (added, moved, deleted, etc.) by the marketer. The marketer uses the Page Editor to edit the SPA with components built and defined by the developer.
+
+You can look at it as the developer putting *handles* and *knobs* on frontend components, so that marketers and content authors can move them around and tune them with custom content.
+
+The green **Page Component** and **Area Component** are provided by Magnolia.
+
+-   The **Page Component** is responsible for rendering the *top* frontend component, and preparing the Magnolia Page Editor.
+
+-   The **Area Component** is mapping the content created by the marketer, to the components defined by the developer, in order to render them. You can define multiple area components on the same Page Component, and a component can have one or more areas of its own.
+
+
+![Putting handles and knobs on components](../../../../_images/headless/illustrations/SPA-block-1024x512.png)
+
+### [](#_light_modules)Light Modules
+
+You can share code and components in multiple light modules.
+
+#### [](#_shared_light_module_spa_lm)Shared Light Module: spa-lm
+
+The Magnolia templates and dialogs are the same no matter the front-end framework, so the demo project puts all the shared content in the `spa-lm` module.
+
+```sh
+cd magnolia/light-modules/spa-lm
+```
+
+##### [](#_templates)Templates
+
+Template definitions register the component with the Magnolia system. They also point to the Dialog definition.
+
+```sh
+cd templates/components
+```
+
+-   `headline.yaml`
+
+-   `image.yaml`
+
+-   `paragraph.yaml`
+
+
+##### [](#_dialogs)Dialogs
+
+Dialog definitions provision the form that the Marketers will use to tune and enter content. They define the fields and the names of the properties to be persisted.
+
+```sh
+cd ../../dialogs/components
+```
+
+-   `headline.yaml`
+
+-   `image.yaml`
+
+-   `paragraph.yaml`
+
+
+#### [](#_application_light_module)Application Light Module
+
+The actual SPA will be deployed to a front-end framework-specific module.
+
+We have defined two page templates, which the marketer will be able to include in our SPA in the page builder. In the page template, you can define *areas* and *which components* will be available in the areas.
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+```sh
+cd ../../../react-minimal-lm;
+cd templates/pages;
+```
+
+```sh
+cd ../../../angular-minimal-lm;
+cd templates/pages;
+```
+
+```sh
+cd ../../../vue-minimal-lm;
+cd templates/pages;
+```
+
+Have a look at
+
+-   `basic.yaml`
+
+-   `contact.yaml`
+
+
+### [](#_frontend_app_structure)Frontend app Structure
+
+Open your project in:
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+```sh
+minimal-headless-spa-demos/spa/react-minimal/src
+```
+
+```sh
+minimal-headless-spa-demos/spa/angular-minimal/src/app
+```
+
+```sh
+minimal-headless-spa-demos/spa/vue-minimal/src
+```
+
+We have two categories of templates: *Page* and *Components*.
+
+In our source directory, we have two subdirectories: Page (containing Layout Components) and Components.
+
+-   Pages
+
+    -   Basic
+
+    -   Contact
+
+    -   Personalization (React)
+
+
+-   Components
+
+    -   Expander
+
+    -   Headline
+
+    -   Image
+
+    -   (List-)Item
+
+    -   List
+
+    -   Navigation
+
+    -   Paragraph
+
+
+
+#### [](#_magnolia_config_js)magnolia.config.js
+
+The `componentMappings` in this file are what the Magnolia JS libraries use to determine which SPA component to instantiate, based on the `templateID` (for example: `spa-lm:components/paragraph`) which is received in the JSON from the Magnolia endpoint.
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+```js
+import Basic from "./pages/Basic";
+import Contact from "./pages/Contact";
+import Headline from "./components/Headline";
+import Image from "./components/Image";
+import Paragraph from "./components/Paragraph";
+import Expander from "./components/Expander";
+import List from "./components/List";
+import Item from "./components/Item";
+import Personalization from './pages/Personalization';
+
+const config = {
+  componentMappings: {
+    "react-minimal-lm:pages/basic": Basic,
+    "react-minimal-lm:pages/contact": Contact,
+    "react-minimal-lm:pages/personalization": Personalization,
+
+    "spa-lm:components/headline": Headline,
+    "spa-lm:components/image": Image,
+    "spa-lm:components/paragraph": Paragraph,
+    "spa-lm:components/expander": Expander,
+    "spa-lm:components/list": List,
+    "spa-lm:components/listItem": Item
+  }
+};
+
+export default config;
+```
+
+```js
+import { BasicComponent } from "./app/pages/basic/basic.component";
+import { ContactComponent } from "./app/pages/contact/contact.component";
+import { HeadlineComponent } from "./app/components/headline/headline.component";
+import { ListItemComponent } from "./app/components/list-item/list-item.component";
+import { ListComponent } from "./app/components/list/list.component";
+import { ParagraphComponent } from "./app/components/paragraph/paragraph.component";
+import { ImageComponent } from "./app/components/image/image.component";
+import { ExpanderComponent } from "./app/components/expander/expander.component";
+
+export const config = {
+  componentMapping: {
+    "angular-minimal-lm:pages/basic": BasicComponent,
+    "angular-minimal-lm:pages/contact": ContactComponent,
+
+    "spa-lm:components/headline": HeadlineComponent,
+    "spa-lm:components/list": ListComponent,
+    "spa-lm:components/listItem": ListItemComponent,
+    "spa-lm:components/paragraph": ParagraphComponent,
+    "spa-lm:components/image": ImageComponent,
+    "spa-lm:components/expander": ExpanderComponent
+  }
+};
+```
+
+```js
+import Basic from './pages/Basic';
+import Contact from './pages/Contact';
+import Image from './components/Image';
+import Headline from './components/Headline';
+import Paragraph from './components/Paragraph';
+import List from './components/List';
+import Item from './components/Item';
+import Expander from './components/Expander';
+
+const config = {
+  componentMappings: {
+    // Pages
+    'vue-minimal-lm:pages/basic': Basic,
+    'vue-minimal-lm:pages/contact': Contact,
+
+    // Components
+    'spa-lm:components/headline': Headline,
+    'spa-lm:components/image': Image,
+    'spa-lm:components/paragraph': Paragraph,
+    'spa-lm:components/list': List,
+    'spa-lm:components/listItem': Item,
+    'spa-lm:components/expander': Expander,
+  },
+};
+
+export default config;
+```
+
+## [](#_frontend_components)Frontend Components
+
+### [](#_root_component_bootstrap_component)Root Component / Bootstrap Component
+
+The Root Component (`App.js` in React, `root.component.ts` / `root.component.html` in Angular, `App.vue` in Vue) is the main entry point of our app. It defines the page structure and routing.
+
+> **Note:** The imports of the Magnolia JS lib: @magnolia/react-editor or @magnolia/angular-editor.
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+```jsx
+return (
+    <>
+      <PageLoader pathname={pathname} />
+      <footer>
+        Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+        <br />
+        Copyright © 2020
+      </footer>
+    </>
+);
+```
+
+From `/helpers/PageLoader.js`:
+
+```js
+import {EditablePage, EditorContextHelper} from '@magnolia/react-editor';
+```
+
+```ts
+...
+import { EditorContextService } from '@magnolia/angular-editor';
+...
+```
+
+```html
+<app-navigation></app-navigation>
+
+<div class="container">
+  <editable-page [content]="content"> </editable-page>
+</div>
+
+<footer>
+   Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+   <br />
+   Copyright © 2020
+</footer>
+```
+
+In Vue, we define the routes in `main.js`.
+
+main.js
+
+```js
+import { createApp } from 'vue';
+import App from './App';
+import router from './Router.js';
+
+const app = createApp(App);
+app.use(router);
+app.mount('#app');
+```
+
+The `App.vue` is loading the proper routes using the `PageLoader` Component defined in `Router.js` using the standard `router-view`.
+
+The main entry point `App.vue` is looking like this:
+
+```js
+<template>
+  <div id="app">
+    <header>
+      <Navigation />
+    </header>
+    <div class="container">
+      <router-view :key="$route.fullPath"></router-view>
+    </div>
+    <footer>
+      Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+      <br />Copyright © 2020
+    </footer>
+  </div>
+</template>
+
+<script>
+import Navigation from "./components/Navigation";
+
+export default {
+  name: "app",
+  components: {
+    Navigation
+  }
+};
+</script>
+
+<style>
+@import "./App.css";
+</style>
+```
+
+### [](#_page_component)Page Component
+
+The Page Component is defining the layout and the placement of the *area* components. Let’s have a look at the Basic Page. The `EditableArea` defines which content should be displayed.
+
+> **Note:** In our case we have defined main and extras in our page template.
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+```jsx
+import React from 'react';
+import { EditableArea } from '@magnolia/react-editor';
+
+const Basic = props => {
+  const { main, extras, title } = props;
+
+  return (
+    <div className="Basic">
+      <div className="hint">[Basic Page]</div>
+      <h1>{title || props.metadata['@name']}</h1>
+
+      <main>
+        <div className="hint">[Main Area]</div>
+        {main && <EditableArea className="Area" content={main} />}
+      </main>
+
+      <div className="Extras" >
+        <div className="hint">[Sercondary Area]</div>
+        {extras && <EditableArea className="Area" content={extras} />}
+      </div>
+    </div>
+  )
+};
+
+export default Basic;
+```
+
+```html
+<div class="Basic">
+    <div class="hint">[Basic Page]</div>
+    <h1>{{title || metadata['@name']}}</h1>
+
+    <main>
+        <div class="hint">[Main Area]</div>
+        <div editable-area  [content]="main" [parentTemplateId]="metadata['mgnl:template']"></div>
+    </main>
+
+    <div class="Extras" >
+        <div class="hint">[Extras Area]</div>
+        <div editable-area  [content]="extras" [parentTemplateId]="metadata['mgnl:template']"></div>
+        <button routerLink="/contact">Contact</button>
+    </div>
+
+</div>
+```
+
+```ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  templateUrl: './basic.component.html',
+  styleUrls: ['./basic.component.scss']
+})
+export class BasicComponent {
+  @Input() title: any;
+
+  @Input() main: any;
+  @Input() extras: any;
+  // metadata
+  @Input() metadata: any;
+}
+```
+
+In Vue js we define the routes in main.js.
+
+main.js:
+
+```js
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import App from './App.vue';
+import PageLoader from './helpers/PageLoader.vue';
+
+Vue.config.productionTip = false;
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+  mode: 'history',
+  base: '/magnoliaAuthor/vue-minimal',
+  routes: [{ path: '*', component: PageLoader }],
+});
+
+new Vue({
+  router,
+  render: (h) => h(App),
+}).$mount('#app');
+```
+
+The App.vue is loading the proper routes using the PageLoader Component defined in main.js using the standard router-view.
+
+The main entry point App.vue is looking like this:
+
+```html
+<template>
+  <div id="app">
+    <header>
+      <Navigation />
+    </header>
+    <div class="container">
+      <router-view :key="$route.fullPath"></router-view>
+    </div>
+    <footer>
+      Integer posuere erat a ante venenatis dapibus posuere velit aliquet.
+      <br />Copyright © 2020
+    </footer>
+  </div>
+</template>
+
+<script>
+import Navigation from "./components/Navigation";
+
+export default {
+  name: "app",
+  components: {
+    Navigation
+  }
+};
+</script>
+
+<style>
+@import "./App.css";
+</style>
+```
+
+### [](#_component_components)*Component* Components 🤔
+
+We learned earlier that the Magnolia SPA editor framework is helping to map the content structure created in Magnolia to frontend components. Let’s have a look at the *Headline* Component as an example.
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+`src/components/Headline.js`
+
+```jsx
+import React from 'react';
+
+const Headline = props => <h2 className="Headline">{props.text}</h2>;
+
+export default Headline;
+```
+
+You can see how the fields defined in the dialog is passed through to the component, directly as `**props**`!
+
+src/app/components/headline/headline.component.html
+
+```html
+<h2>{{text}}</h2>
+```
+
+src/app/components/headline/headline.component.ts
+
+```ts
+import { Component, Input } from '@angular/core';
+
+@Component({
+  templateUrl: './headline.component.html',
+  styleUrls: ['./headline.component.scss'],
+})
+export class HeadlineComponent {
+  @Input() text: any;
+}
+```
+
+You can see how the field defined in the dialog is passed directly through to the component!
+
+```jsx
+<template>
+  <h2 class="Headline">{{ text }}</h2>
+</template>
+
+<script>
+export default {
+  name: 'Headline',
+  props: ['text'],
+};
+</script>
+```
+
+You can see how the field defined in the dialog is passed directly through to the component!
+
+## [](#_build_a_component)Build a Component
+
+In the Headless CMS tutorial, we have created a headless app to show tour packages. Using the Visual SPA Editor and the basic form-centric approach is not mutually exclusive. On the contrary, both approaches complement each other.
+
+### [](#_what_are_we_going_to_build_2)What are we going to build?
+
+We will build a *Tour List* Component. Our Marketers will be able to choose and add the component anywhere they want.
+
+-   Create a new component using light modules.
+
+-   Create a dialog for Marketers to add a headline.
+
+
+### [](#_create_tour_list_component)Create Tour List Component
+
+Let’s create a new Component in Magnolia CMS first.
+
+1.  Go to:
+
+    ```sh
+    minimal-headless-spa-demos/magnolia/light-modules/spa-lm/templates/components/
+    ```
+
+2.  Create a YAML definition file for the `tourList` component by executing:
+
+    ```sh
+    touch tourList.yaml
+    ```
+
+3.  Open the component file for editing and paste in:
+
+    ```yaml
+    title: Tour List
+    dialog: spa-lm:components/tourList
+    ```
+
+
+#### [](#_dialog)Dialog
+
+Next we will define a simple dialog for our Marketers.
+
+```sh
+cd ../../dialogs/components
+```
+
+```sh
+touch tourList.yaml
+```
+
+Edit the dialog file `tourList.yaml` and paste in:
+
+```yaml
+label: Tour List
+form:
+  properties:
+    headline:
+      label: Tour List Headline
+      $type: textField
+      i18n: true
+```
+
+#### [](#_make_the_component_available)Make the Component available
+
+Next, we want to define where the component can be used. We will add our `tourList` Component to the available components of our *Basic Page*
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+```sh
+cd ../../../react-minimal-lm/templates/pages
+```
+
+Edit the file `basic.yaml` and add following text to the `availableComponents` from the *main* Area:
+
+```yaml
+TourList:
+  id: spa-lm:components/tourList
+```
+
+The full file will look like this:
+
+```yaml
+title: "React: Basic"
+baseUrl: http://localhost:3000
+routeTemplate: '/{language}{{@path}}'
+# templateScript: /react-minimal-lm/webresources/build/index.html
+# The templateScript property is deprecated since Magnolia 6.2.30 for use with the SPA renderer.
+dialog: spa-lm:pages/basic
+$type: spa
+
+areas:
+  main:
+    title: Main Area
+    availableComponents:
+      Headline:
+        id: spa-lm:components/headline
+      Image:
+        id: spa-lm:components/image
+      Paragraph:
+        id: spa-lm:components/paragraph
+      Expander:
+        id: spa-lm:components/expander
+      List:
+        id: spa-lm:components/list
+      TourList:
+        id: spa-lm:components/tourList
+
+  extras:
+    title: Extras Area
+    availableComponents:
+      Headline:
+        id: spa-lm:components/headline
+      Paragraph:
+        id: spa-lm:components/paragraph
+      List:
+        id: spa-lm:components/list
+```
+
+```sh
+cd ../../../angular-minimal-lm/templates/pages
+```
+
+Edit the file `basic.yaml` and add following text to the `availableComponents` from the *main* Area:
+
+```yaml
+TourList:
+  id: spa-lm:components/tourList
+```
+
+The full file will look like this:
+
+```yaml
+title: "Angular: Basic"
+baseUrl: http://localhost:4200
+routeTemplate: '/{language}{{@path}}'
+# templateScript: /angular-minimal-lm/webresources/build/index.html
+# The templateScript property is deprecated since Magnolia 6.2.30 for use with the SPA renderer.
+dialog: spa-lm:pages/basic
+
+renderType: spa
+class: info.magnolia.rendering.spa.renderer.SpaRenderableDefinition
+
+areas:
+  main:
+    title: Main Area
+    availableComponents:
+      Headline:
+        id: spa-lm:components/headline
+      Image:
+        id: spa-lm:components/image
+      Paragraph:
+        id: spa-lm:components/paragraph
+      Expander:
+        id: spa-lm:components/expander
+      List:
+        id: spa-lm:components/list
+      TourList:
+        id: spa-lm:components/tourList
+
+  extras:
+    title: Extras Area
+    availableComponents:
+      Headline:
+        id: spa-lm:components/headline
+      Paragraph:
+        id: spa-lm:components/paragraph
+      List:
+        id: spa-lm:components/list
+```
+
+```sh
+cd ../../../vue-minimal-lm/templates/pages
+```
+
+Edit the file `basic.yaml` and add following text to the `availableComponents` from the *main* Area:
+
+```yaml
+TourList:
+  id: spa-lm:components/tourList
+```
+
+The full file will look like this:
+
+```yaml
+title: 'Vue: Basic'
+baseUrl: http://localhost:3000
+routeTemplate: '/{language}{{@path}}'
+# templateScript: /vue-minimal-lm/webresources/dist/index.html
+# The templateScript property is deprecated since Magnolia 6.2.30 for use with the SPA renderer.
+dialog: spa-lm:pages/basic
+
+renderType: spa
+class: info.magnolia.rendering.spa.renderer.SpaRenderableDefinition
+
+areas:
+
+  main:
+    title: Main Area
+    availableComponents:
+      Headline:
+        id: spa-lm:components/headline
+      Image:
+        id: spa-lm:components/image
+      Paragraph:
+        id: spa-lm:components/paragraph
+      Expander:
+        id: spa-lm:components/expander
+      List:
+        id: spa-lm:components/list
+      TourList:
+        id: spa-lm:components/tourList
+  extras:
+    title: Extras Area
+    availableComponents:
+      Headline:
+        id: spa-lm:components/headline
+      Paragraph:
+        id: spa-lm:components/paragraph
+      List:
+        id: spa-lm:components/list
+```
+
+Now we can already select the component in the Page Editor.
+
+Open the [Pages app](http://localhost:8080/magnoliaAuthor/.magnolia/admincentral#app:pages-app) and add your component.
+
+![spa first component page editor](../../../../_images/headless/spa-first-component-page-editor.gif)
+
+Of course, before we can see anything displayed, we have to implement the frontend component.
+
+### [](#_the_frontend_component)The Frontend Component
+
+Our new component is now provisioned in Magnolia, and an instance of it is saved to the content repository. First, we want the component to display the Header entered by the Marketer. Once this is running and we have seen how to add and edit the component in the SPA Editor, we will extend the component to read and display our Tour List data.
+
+Now, let’s build out our component in React, Angular or Vue.
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+1.  Switch to our React SPA directory:
+
+    ```sh
+    cd ../../../../../spa/react-minimal
+    ```
+
+2.  Go to the `components` directory:
+
+    ```sh
+    cd src/components
+    ```
+
+3.  Create a new file for our component:
+
+    ```sh
+    touch TourList.js
+    ```
+
+4.  Edit the Component:
+
+    ```jsx
+    import React from "react";
+
+    export default ({ headline }) => ( (1)
+      <div className="tourlist">
+        <h1>{headline}</h1>
+      </div>
+    );
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | We will print the headline surrounded by a `div`. |
+
+5.  Next, open the Magnolia Config file to add our component to the mapping.
+
+    ```sh
+    src/magnolia.config.js
+    ```
+
+6.  Import the new component:
+
+    ```js
+    import TourList from "./components/TourList";
+    ```
+
+7.  Add to mapping:
+
+    ```js
+    'spa-lm:components/tourList': TourList
+    ```
+
+
+The full file looks like this:
+
+```js
+import Basic from "./pages/Basic";
+import Contact from "./pages/Contact";
+import Headline from "./components/Headline";
+import Image from "./components/Image";
+import Paragraph from "./components/Paragraph";
+import Expander from "./components/Expander";
+import List from "./components/List";
+import Item from "./components/Item";
+import Personalization from './pages/Personalization';
+import TourList from "./components/TourList";
+
+const config = {
+  componentMappings: {
+    "react-minimal-lm:pages/basic": Basic,
+    "react-minimal-lm:pages/contact": Contact,
+    "react-minimal-lm:pages/personalization": Personalization,
+
+    "spa-lm:components/headline": Headline,
+    "spa-lm:components/image": Image,
+    "spa-lm:components/paragraph": Paragraph,
+    "spa-lm:components/expander": Expander,
+    "spa-lm:components/list": List,
+    "spa-lm:components/listItem": Item,
+    "spa-lm:components/tourList": TourList
+  }
+};
+
+export default config;
+```
+
+> **Note:** Ensure that your SPA development server is running. If not, in the /spa/react-minimal directory run:
+
+```sh
+npm run start
+```
+
+1.  Switch to our Angular SPA directory:
+
+    ```sh
+    cd ../../../../../spa/angular-minimal
+    ```
+
+    ```sh
+    ng generate component components/TourList
+    ```
+
+    output
+
+    ```none
+    CREATE src/app/components/tour-list/tour-list.component.css (0 bytes)
+    CREATE src/app/components/tour-list/tour-list.component.html (24 bytes)
+    CREATE src/app/components/tour-list/tour-list.component.spec.ts (643 bytes)
+    CREATE src/app/components/tour-list/tour-list.component.ts (286 bytes)
+    ```
+
+2.  Add the new created `TourListComponent` into your `app.module.ts` file. *Add it as an import and to the `declarations` and `entryComponents`. (It might have been added by the `ng` command, but double-check `entryComponents`.)*
+
+    ```none
+    import { TourListComponent } from './components/tour-list/tour-list.component';
+    ...
+      declarations: [
+
+        TourListComponent,
+    ...
+      ],
+      entryComponents: [
+    ...
+        TourListComponent,
+    ...
+    ```
+
+3.  Open the Magnolia Config file to add our component to the mapping.
+
+    ```sh
+    src/magnolia.config.js
+    ```
+
+4.  Import the new component:
+
+    ```js
+    import { TourListComponent } from "./app/components/tour-list/tour-list.component";
+    ```
+
+5.  Add to mapping:
+
+    ```js
+    'spa-lm:components/tourList': TourListComponent
+    ```
+
+    Full file example
+
+    ```js
+    import { BasicComponent } from "./app/pages/basic/basic.component";
+    import { ContactComponent } from "./app/pages/contact/contact.component";
+    import { HeadlineComponent } from "./app/components/headline/headline.component";
+    import { ListItemComponent } from "./app/components/list-item/list-item.component";
+    import { ListComponent } from "./app/components/list/list.component";
+    import { ParagraphComponent } from "./app/components/paragraph/paragraph.component";
+    import { ImageComponent } from "./app/components/image/image.component";
+    import { ExpanderComponent } from "./app/components/expander/expander.component";
+    import { TourListComponent } from "./app/components/tour-list/tour-list.component";
+
+    export const config = {
+      componentMapping: {
+        "angular-minimal-lm:pages/basic": BasicComponent,
+        "angular-minimal-lm:pages/contact": ContactComponent,
+
+        "spa-lm:components/headline": HeadlineComponent,
+        "spa-lm:components/list": ListComponent,
+        "spa-lm:components/listItem": ListItemComponent,
+        "spa-lm:components/paragraph": ParagraphComponent,
+        "spa-lm:components/image": ImageComponent,
+        "spa-lm:components/expander": ExpanderComponent,
+        "spa-lm:components/tourList": TourListComponent
+      }
+    };
+    ```
+
+6.  Change the `tour-list.component.ts` file with following content:
+
+    ```js
+    import { Component, Input } from "@angular/core";
+
+    @Component({
+      templateUrl: "./tour-list.component.html",
+      styleUrls: ["./tour-list.component.css"]
+    })
+    export class TourListComponent {
+      @Input() headline: any;
+    }
+    ```
+
+    > **Note:** Please ensure that the styleUrls path correctly points to the style file, it might have a .css or it might have a .scss extension. (It depends on your angular CLI setup. Tricky!)
+
+7.  Edit the `TourList` component template.
+
+    ```sh
+    src/app/components/tour-list/tour-list.component.html
+    ```
+
+    ```html
+    <div className="tourlist">
+      <h1>{{ headline }}</h1>
+    </div>
+    ```
+
+8.  Ensure that your SPA development server is running. If not, in the `/spa/angular-minimal` directory run:
+
+    ```sh
+    ng serve
+    ```
+
+
+1.  Switch to our Vue SPA directory:
+
+    ```sh
+    cd ../../../../../spa/vue-minimal
+    ```
+
+2.  Go to the `components` directory:
+
+    ```sh
+    cd src/components
+    ```
+
+3.  Create a new file for our component:
+
+    ```sh
+    touch TourList.vue
+    ```
+
+4.  Edit the Component:
+
+    ```jsx
+    <template>
+      <div class="tourlist"> (1)
+        <h1>{{headline}}</h1>
+      </div>
+    </template>
+
+    <script>
+    export default {
+      name: "TourList",
+      props: ["headline"]
+    };
+    </script>
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | We will just print the headline surrounded by a `div`. |
+
+5.  Next, open the Magnolia Config file to add our component to the mapping.
+
+    ```sh
+    src/magnolia.config.js
+    ```
+
+6.  Import the new component:
+
+    ```js
+    import TourList from "./components/TourList";
+    ```
+
+7.  Add to mapping:
+
+    ```js
+    'spa-lm:components/tourList': TourList
+    ```
+
+    Full file example
+
+    ```js
+    import Basic from './pages/Basic';
+    import Contact from './pages/Contact';
+    import Image from './components/Image';
+    import Headline from './components/Headline';
+    import Paragraph from './components/Paragraph';
+    import List from './components/List';
+    import Item from './components/Item';
+    import Expander from './components/Expander';
+    import TourList from "./components/TourList";
+
+    const config = {
+      componentMappings: {
+        // Pages
+        'vue-minimal-lm:pages/basic': Basic,
+        'vue-minimal-lm:pages/contact': Contact,
+
+        // Components
+        'spa-lm:components/headline': Headline,
+        'spa-lm:components/image': Image,
+        'spa-lm:components/paragraph': Paragraph,
+        'spa-lm:components/list': List,
+        'spa-lm:components/listItem': Item,
+        'spa-lm:components/expander': Expander,
+        'spa-lm:components/tourList': TourList
+      },
+    };
+
+    export default config;
+    ```
+
+8.  Ensure that your SPA development server is running. If not, in the `/spa/vue-minimal` directory run:
+
+    ```sh
+    npm run start
+    ```
+
+
+### [](#_try_your_component)Try your Component
+
+Now that you implemented your component, open up the Page Editor again and view your page.
+
+Your component is displayed.
+
+Nice work!
+
+You’ve just gone through the complete cycle of building a component (with handles and knobs on it) that a marketer can place in a visual SPA Editor.
+
+Next, keep going with your new component. Bring in the tour listing logic you implemented in the *Hello Magnolia - Headless* section into your new component.
+
+### [](#_displaying_list_of_tours)Displaying List of Tours
+
+Our Component is up and running. Next we want to:
+
+-   Upload some Demo Content
+
+-   Define the REST API endpoint
+
+-   Extend our Frontend Component to display the list of tours
+
+
+#### [](#_add_tours_content_type)Add Tours Content Type
+
+In the folder *spa-lm* switch to `contentTypes` directory:
+
+```sh
+cd ./contentTypes
+```
+
+Create a file named `tours.yaml` and copy following content into it:
+
+```yaml
+datasource:
+  workspace: tours
+  autoCreate: true
+
+model:
+  properties:
+    name:
+      label: Name
+      required: true
+      i18n: true
+
+    description:
+      label: Description
+      i18n: true
+
+    isFeatured:
+      type: Boolean #Types 'Decimal', 'Long' and 'Double' are also available.
+      label: Feature this item
+
+    image:
+      type: asset
+      label: Image
+
+    tourTypes:
+      label: Tour Types
+      multiple: true
+
+    location:
+      label: Start City
+      i18n: true
+
+    date:
+      label: Date
+      type: Date
+
+    duration:
+      type: Long
+      label: Tour Duration
+      options:
+        "2":
+          value: 2
+          label: 2 days
+        "7":
+          value: 7
+          label: 7 days
+        "14":
+          value: 14
+          label: 14 days
+        "21":
+          value: 21
+          label: 21 days
+
+    tourOperator:
+      label: Tour Operator
+      i18n: true
+
+    body:
+      type: richText
+      label: Body
+      i18n: true
+```
+
+### [](#_create_a_magnolia_app)Create a Magnolia app
+
+Change to the `spa-lm/apps` directory.
+
+```sh
+cd ../apps
+```
+
+Create a file named `tours.yaml` with following content:
+
+```yaml
+!content-type:tours
+name: tours
+label: Tours
+
+# Optionally override any of the app configuration supplied by the content type.
+subApps:
+  detail:
+    label: Detail Tour
+    form:
+      properties:
+        isFeatured:
+          buttonLabel: "Featured"
+        tourTypes:
+          $type: multiValueField
+          field:
+            $type: linkField
+            chooser:
+              workbenchChooser:
+                appName: categories
+```
+
+> **Tip:** To see your new Tours app, log out and log back in, and press the grid icon.
+
+### [](#_install_content)Install content
+
+We have prepared Demo Content to start with. To install the Demo Content follow these steps:
+
+-   Open the Tours app.
+
+-   Click the **Import** action. You might need to scroll down in the action bar.
+
+-   Select the `./magnolia/_dev/content-to-import/tours.magnolia-travels.xml` file.
+
+
+![import tours content](../../../../_images/headless/import-tours-content.gif)
+
+#### [](#_add_tours_rest_api_endpoint)Add Tours REST API Endpoint
+
+In the folder *spa-lm* switch to `restEndpoints/delivery` directory:
+
+```sh
+cd ./restEndpoints/delivery
+```
+
+Create a file named `tours.yaml` and copy following content into it:
+
+```yaml
+$type: jcrDeliveryEndpoint_v2
+workspace: tours
+depth: 10
+includeSystemProperties: true
+nodeTypes:
+  - mgnl:content
+
+references:
+  - name: assetReference
+    propertyName: image
+    referenceResolver:
+      class: info.magnolia.rest.reference.dam.AssetReferenceResolverDefinition
+      assetRenditions:
+        - 960x720
+        - 480x360
+```
+
+This creates our new REST endpoint. Give it a try:
+
+[http://localhost:8080/magnoliaAuthor/.rest/delivery/tours](http://localhost:8080/magnoliaAuthor/.rest/delivery/tours)
+
+#### [](#_finish_the_frontend_component)Finish the Frontend Component
+
+Finally, we can extend our *TourList* Component to fetch and display the imported data.
+
+> **Note:** To see the tour images displayed in the SPA app on localhost:3000, you must add the web access GET right with path /.rest/* to the anonymous user in the Security app in your Magnolia Author instance.
+
+![tourlist preview](../../../../_images/headless/tourlist-preview.gif)
+
+-   React
+
+-   Angular
+
+-   Vue
+
+
+**Add some more styling**
+
+In `/spa/react-minimal/src/components` create a file `TourList.css` in the same directory as `TourList.js` and copy in this stylesheet:
+
+```css
+.tour-list .tour-list-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tour-list .tour-list-cards .card {
+  max-width: 150px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  -webkit-box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  -moz-box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  transition: transform 0.4s ease-in-out;
+  cursor: pointer;
+}
+
+.tour-list .tour-list-cards .card .card-img-top {
+  width: 150px;
+}
+
+.tour-list .tour-list-cards .card .card-body {
+  padding: 5px;
+}
+
+.tour-list .tour-list-cards .card .card-body .card-text {
+  margin: 5px;
+  opacity: 0.8;
+  font-size: 10px;
+  font-weight: 200;
+  transition: opacity 0.8s ease-in;
+}
+
+.tour-list .tour-list-cards .card .card-body .card-title {
+  margin: 0;
+  font-weight: 200;
+}
+
+.tour-list .tour-list-cards .card:hover {
+  transform: scale3d(1.5, 1.5, 1.5);
+  transform-origin: center;
+  background-color: #ffffff;
+}
+
+.tour-list .tour-list-cards .card:hover .card-body .card-text {
+  opacity: 1;
+}
+
+.tour-list .tour-list-cards .card:hover .card-body .card-title {
+  color: #00b39b;
+}
+```
+
+Open your `TourList.js` file, and replace the code with this:
+
+```jsx
+import React, { useState, useEffect } from "react";
+import "./TourList.css";
+
+const API_ENDPOINT =
+  "http://localhost:8080/magnoliaAuthor/.rest/delivery/tours";
+const IMAGE_BASE = "http://localhost:8080";
+
+export default ({ headline }) => {
+  const [tours, setTours] = useState([]);
+
+  useEffect(() => {
+    async function fetchTourList() {
+      let response = await fetch(API_ENDPOINT);
+      let data = await response.json();
+      setTours(data.results);
+    }
+    fetchTourList();
+  }, []);
+
+  return (
+    <div className="tour-list">
+      <h1>{headline}</h1>
+      {tours.length > 0 ? (
+        <div className="tour-list-cards">
+          {tours.map(tour => (
+            <div class="card">
+              <img
+                src={IMAGE_BASE + tour.image.renditions["480x360"].link}
+                class="card-img-top"
+                alt="..."
+              />
+              <div class="card-body">
+                <h5 class="card-title">{tour.name}</h5>
+                <p class="card-text">{tour.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <h2>No Tours found</h2>
+      )}
+    </div>
+  );
+};
+```
+
+**Add some more styling**
+
+Open the `tour-list.component.css` file in your previously created component directory `/spa/angular-minimal/src/app/components/tour-list` and copy in the following stylesheet:
+
+> **Note:** It might be tour-list.component.scss depending on the configuration of your Angular CLI.
+
+```css
+.tour-list .tour-list-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tour-list .tour-list-cards .card {
+  max-width: 150px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  -webkit-box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  -moz-box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  transition: transform 0.4s ease-in-out;
+  cursor: pointer;
+}
+
+.tour-list .tour-list-cards .card .card-img-top {
+  width: 150px;
+}
+
+.tour-list .tour-list-cards .card .card-body {
+  padding: 5px;
+}
+
+.tour-list .tour-list-cards .card .card-body .card-text {
+  margin: 5px;
+  opacity: 0.8;
+  font-size: 10px;
+  font-weight: 200;
+  transition: opacity 0.8s ease-in;
+}
+
+.tour-list .tour-list-cards .card .card-body .card-title {
+  margin: 0;
+  font-weight: 200;
+}
+
+.tour-list .tour-list-cards .card:hover {
+  transform: scale3d(1.5, 1.5, 1.5);
+  transform-origin: center;
+  background-color: #ffffff;
+}
+
+.tour-list .tour-list-cards .card:hover .card-body .card-text {
+  opacity: 1;
+}
+
+.tour-list .tour-list-cards .card:hover .card-body .card-title {
+  color: #00b39b;
+}
+```
+
+Open your `tour-list.component.ts` file and replace it with this code:
+
+```js
+import { Component, Input } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+const API_ENDPOINT =
+  "http://localhost:8080/magnoliaAuthor/.rest/delivery/tours";
+const IMAGE_BASE = "http://localhost:8080";
+
+
+@Component({
+  templateUrl: './tour-list.component.html',
+  styleUrls: ['./tour-list.component.scss'] (1)
+})
+export class TourListComponent {
+  @Input() headline: any;
+  @Input() tours: any;
+
+  constructor(private http: HttpClient) {
+    this.http = http;
+  }
+
+  ngOnInit() {
+    this.http.get(API_ENDPOINT).subscribe((data: any) => {
+      this.tours = data.results.map(item => ({ ...item, image: IMAGE_BASE + item.image.renditions[role=zoom,"480x360"].link }));
+    })
+
+  }
+}
+```
+
+|     |     |
+| --- | --- |
+| **1** | You might have to change the `styleUrls` to `tour-list.component.scss` depending on the name of your actual file. |
+
+Edit the `TourList` component template `tour-list.component.html` and replace it with this content:
+
+```html
+<div class="tour-list">
+    <h1>{{ headline }}</h1>
+    <div class="tour-list-cards">
+
+        <div class="card" *ngFor="let tour of tours">
+        <img
+        [src]="tour.image"
+            class="card-img-top"
+            alt="..."
+        />
+        <div class="card-body">
+            <h5 class="card-title">{{tour.name}}</h5>
+            <p class="card-text">{{tour.description}}</p>
+        </div>
+        </div>
+
+      </div>
+</div>
+```
+
+**Add some more styling**
+
+In `/spa/vue-minimal/src/components` open your `TourList.vue` file and add at the end of it the stylesheet:
+
+```none
+<style scoped>
+.tour-list .tour-list-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tour-list .tour-list-cards .card {
+  max-width: 150px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+  -webkit-box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  -moz-box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  box-shadow: 10px 10px 28px -4px rgba(0, 0, 0, 0.53);
+  transition: transform 0.4s ease-in-out;
+  cursor: pointer;
+}
+
+.tour-list .tour-list-cards .card .card-img-top {
+  width: 150px;
+}
+
+.tour-list .tour-list-cards .card .card-body {
+  padding: 5px;
+}
+
+.tour-list .tour-list-cards .card .card-body .card-text {
+  margin: 5px;
+  opacity: 0.8;
+  font-size: 10px;
+  font-weight: 200;
+  transition: opacity 0.8s ease-in;
+}
+
+.tour-list .tour-list-cards .card .card-body .card-title {
+  margin: 0;
+  font-weight: 200;
+}
+
+.tour-list .tour-list-cards .card:hover {
+  transform: scale3d(1.5, 1.5, 1.5);
+  transform-origin: center;
+  background-color: #ffffff;
+}
+
+.tour-list .tour-list-cards .card:hover .card-body .card-text {
+  opacity: 1;
+}
+
+.tour-list .tour-list-cards .card:hover .card-body .card-title {
+  color: #00b39b;
+}
+</style>
+```
+
+Next replace `script` with this:
+
+```jsx
+<script>
+const API_ENDPOINT =
+  "http://localhost:8080/magnoliaAuthor/.rest/delivery/tours";
+
+export default {
+  name: "TourList",
+  props: ["headline"],
+  data() {
+    return {
+      tours: [],
+      imageBase: "http://localhost:8080"
+    };
+  },
+  created() {
+    this.fetchTours();
+  },
+  methods: {
+    async fetchTours() {
+      let response = await fetch(API_ENDPOINT);
+      let data = await response.json();
+      this.tours = data.results;
+    }
+  }
+};
+</script>
+```
+
+And extend the template to display the tours by replacing `template` with following code:
+
+```html
+<template>
+  <div class="tour-list">
+    <h1>{{headline}}</h1>
+    <div v-if="tours.length > 0" class="tour-list-cards">
+      <div class="card" v-for="tour in tours" v-bind:key="tour.path">
+        <img
+          v-bind:src="imageBase + tour.image.renditions['480x360'].link"
+          class="card-img-top"
+          alt="..."
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{tour.name}}</h5>
+          <p class="card-text">{{tour.description}}</p>
+        </div>
+      </div>
+    </div>
+    <h2 v-else>No Tours found</h2>
+  </div>
+</template>
+```
+
+You have upgraded your SPA component. Now open up the Page Editor again and view your page.
+
+You will see the new tour list.
+
+### [](#_next_steps)Next Steps
+
+Well done!
+
+You’ve fully upgraded a simple headless SPA into one marketers can fully manage, including placing a sophisticated listing component.

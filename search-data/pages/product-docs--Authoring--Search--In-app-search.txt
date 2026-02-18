@@ -1,0 +1,68 @@
+---
+title: "In-app Search"
+url: https://docs.magnolia-cms.com/product-docs/Authoring/Search/In-app-search/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Authoring > Searching for content > In-app Search
+---
+
+# In-app Search
+
+In-app Search lets you focus your search within a specific Magnolia app, such as Assets or Pages, making it easier to find content in large collections. It searches text fields like Name or Title and works seamlessly with app-specific filters to deliver precise results. Search is also available in chooser dialogs for apps using JCR-based data sources.
+
+## [](#_key_features)Key features
+
+-   **Targeted search**: Search within a single app’s content, focusing on fields like Name or Title.
+
+-   **Flat list view**: Results are displayed in a clear, flat list for easy browsing.
+
+-   **Chooser dialog search**: Search within dialogs (for example, Asset chooser) for quick content selection.
+
+
+![Asset chooser search](../../../_images/inAppSearch-fullText.png)
+
+> **Note:** In Asset Chooser dialogs, filtering isn’t available. Use the full-text search field to quickly find the items you need.
+
+## [](#_filtering_in_in_app_search)Filtering in in-app search
+
+Each app offers tailored filters to refine results, which vary depending on the app. Filters persist throughout your session and reset only when you log out or remove them manually.
+
+### [](#_example_filters_assets_app)Example filters (Assets app)
+
+-   **Asset type**: Filter by specific asset types (image, video, and so on).
+
+-   **Author**: Filter by content creator, with a *Current User* option for your own content (SSO users see only this option).
+
+-   **Size**: Filter by asset size.
+
+-   **Status**: Filter by publication status (*Published*, *Draft*, …​).
+
+
+### [](#_how_to_filter)How to filter
+
+1.  Click the **\+ Add filter** next to the search field.
+
+    ![Add an Asset type filter to the Assets app](../../../_images/authoring/assets-app-add-type-filter.png)
+
+2.  Choose a filter type from the dropdown list.
+
+3.  Select a value for the filter.
+
+    If there are more than 8 options in the filter, you can type to search for the value you want in the filter header.
+
+    ![Select the Image type in the filter](../../../_images/authoring/assets-app-type-filter-image.png)
+
+    > **Tip:** Once you set filters, they’re kept throughout your user session. They only reset when you log out or when you remove them.
+
+4.  Click the in the filter button to remove the filter or click **Remove filters** on the right to remove all filters.
+
+
+### [](#_example)Example
+
+In the Assets app, searching for `kyoto` with an *Image* filter narrows results to images related to Kyoto, displaying details like Name, Status, and Last Updated.
+
+### [](#_customization)Customization
+
+Administrators can configure filter options and integrate external data sources to enhance search capabilities.
+
+![Assets app with all filters added](../../../_images/authoring/assets-app-all-filters.png)

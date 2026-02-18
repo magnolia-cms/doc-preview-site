@@ -1,0 +1,242 @@
+---
+title: "Advanced Cache Policies module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Advanced-cache-modules/Advanced-Cache-Policies-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Advanced cache modules > Advanced Cache Policies module
+---
+
+# Advanced Cache Policies module
+
+[Operations](../../../../use-cases/operations/) Bundled: DX Core
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLADVCACHE](https://magnolia-cms.atlassian.net/browse/MGNLADVCACHE) |
+| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache%2F4.0.0) |
+| Latest | 4.0.0 |
+
+The Advanced Cache module offers a collection of advanced cache strategies to help minimize load on the server while ensuring fresh content is served to the users.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.advancedcache</groupId>
+  <artifactId>magnolia-advanced-cache</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_uninstalling)Uninstalling
+
+To uninstall:
+
+1.  Set the cache policy in `/modules/cache/config/contentCaching/defaultPageCache/cachePolicy@class` back to the default value `info.magnolia.module.cache.cachepolicy.Default`.
+
+2.  Remove the `/modules/advanced-cache` node and its subnodes.
+
+3.  Shut down Magnolia.
+
+4.  Remove the Advanced Cache module `JAR` file (`magnolia-advanced-cache.jar`) from `WEB-INF/lib`.
+
+5.  Start up Magnolia again.
+
+
+## [](#_caching_strategies)Caching strategies
+
+### [](#_serving_old_content_while_re_caching)Serving old content while re-caching
+
+Using this strategy, the cache isn’t completely cleaned when content is updated and entries are retained. After the update, fresh cache entries are generated when the first page requests come in. All further requests for the same entry are then served from the old cache content until the new entry is ready.
+
+-   Set `/modules/cache/config/contentCaching/defaultPageCache/cachePolicy@class` to `info.magnolia.module.advancedcache.ServeUntilRecachedCachePolicy`.
+
+-   Set `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/flushAll@class` to `info.magnolia.module.advancedcache.NotifyFlushListeningPolicy`.
+
+
+See also [Timestamp for last flushing](#_timestamp_for_last_flushing).
+
+### [](#_eager_re_caching)Eager re-caching
+
+Using this strategy, the cache stores the most frequently served entries. The system attempts to refresh these entries as soon as it detects a content update. All other entries are re-cached on request. You can configure the number of entries to re-cache immediately and set the lifetime of the most served content.
+
+To enable eager re-caching:
+
+-   Set `/modules/cache/config/contentCaching/defaultPageCache/cachePolicy@class` to `info.magnolia.module.advancedcache.EagerRecacheCachePolicy`.
+
+-   Set `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/flushAll@class` to `info.magnolia.module.advancedcache.EagerRecacheFlushPolicy`.
+
+-   Set `/modules/cache/config/contentCaching/defaultPageCache/executors/store/cacheContent@class` to `info.magnolia.module.cache.executor.Store`.
+
+
+#### [](#_changing_default_flush_policy)Changing default flush policy
+
+By default, statistics about served pages are retained indefinitely. If you want to force the system to flush the cache after each content update:
+
+1.  Create a `resetAfterUpdate` property node under `flushPolicy`.
+
+2.  Set the value to `true`.
+
+
+By default, the top 100 entries are eagerly re-cached on every update. To change that number:
+
+1.  Create an `eagerRecache` property node under `flushPolicy`.
+
+2.  Set the value to the number of top entries in the list you wish to have eagerly re-cached.
+
+
+See also [Timestamp for last flushing](#_timestamp_for_last_flushing).
+
+#### [](#_changing_default_waiting_time)Changing default waiting time
+
+By default, Magnolia waits 10 seconds before attempting to re-cache after a content update. This timeout is controlled by the `blockingTimeout` property configured in the [Ehcache 3 back-end](../../Cache-modules/Ehcache-3-module/). The `blockingTimeout` property applies to the whole cache factory.
+
+If you want to change the waiting time for a particular cache policy, add a `timeout` property with the number of milliseconds to wait (the default value is `10000`).
+
+> **Warning:** Changes to cache policies and executors are applied immediately. Setting incorrect values can render the Magnolia instance inaccessible.If this happens, try the Groovy Rescue app:DX Core Groovy modulePaaS Rescue App
+
+See also [Cache core module](../../Cache-modules/Cache-core/).
+
+### [](#_timestamp_for_last_flushing)Timestamp for last flushing
+
+The advanced flush policies update a `lastUpdateTimestamp` property to record the last flushing event. The timestamp allows the corresponding cache policy to identify which cache entries need to be regenerated. When you delegate cache to an advanced cache policy, create a property at a path that includes the name of your custom policy.
+
+Example 1 - Serving old content while re-caching
+
+-   `/modules/advanced-cache/config/notifyFlushListeningPolicy@lastUpdateTimeStamp` (default)
+
+-   `/modules/advanced-cache/config/notifyFlushListeningPolicy/`**`<custom_cache_name>`**`@lastUpdateTimeStamp` (custom)
+
+
+Example 2 - Eager re-caching
+
+-   `/modules/advanced-cache/config/eagerRecacheFlushPolicy@lastUpdateTimeStamp` (default)
+
+-   `/modules/advanced-cache/config/eagerRecacheFlushPolicy/`**`<custom_cache_name>`**`@lastUpdateTimeStamp` (custom)
+
+
+In the examples above, `<custom_cache_name>` is the name of your custom policy.
+
+## [](#_headless_personalization_and_caching)Headless personalization and caching
+
+For headless personalization to work correctly with content caching in Magnolia, you have to set `/modules/cache/config/contentCaching/<your-configuration>/cachePolicy@includePersonalizedDescendants` to `true`.
+
+By configuring this property, the [dynamic page-caching](../../High-performance-caching-modules/Advanced-Cache-Dynamic-Page-Caching/#_dynamic_page_caching) function is disabled.
+
+> **Caution:** Magnolia does not currently support caching for different headers or cookies. Therefore, it is impossible to specify for which headers or cookies a response should be cached.See MGNLCACHE-245 for the upcoming improvement.
+
+## [](#_multisite_cache_configuration)Multisite cache configuration
+
+When content is published, the cache on the public instance is flushed automatically to show the new content. This increases the load on the server and affects all sites in a [multisite](../../../../Developing/Templating/Site-definition/How-to-use-Multisite/) environment. You can configure multiple cache configurations to ensure that only cache entries that belong to the same subtree (site) as the published content are flushed.
+
+There are two flush policies available:
+
+-   info.magnolia.module.advancedcache.SiteAwareFlushFromPublishingEventPolicy
+
+    This configuration observes when content is published and flushes the cache from a site when publishing completes successfully. This policy is used by default.
+
+-   info.magnolia.module.advancedcache.SiteAwareFlushAllListeningPolicy
+
+    This configuration observes changes (content publication, imports, edits) in a workspace. It flushes the cache when new or modified content is detected.
+
+
+> **Note:** Both policies are supported for flushing of cache entries per site. However, SiteAwareFlushAllListeningPolicy registers JCR observations for observing changes in the workspace, so there are more events when compared to SiteAwareFlushFromPublishingEventPolicy.
+
+We recommend you use the [Advanced Cache app module](../Advanced-Cache-app-module/) to configure the advanced cache, but you can also do it manually:
+
+To configure multisite cache flush policies:
+
+1.  Set `/modules/advanced-cache/config@createSeparateCachesForEachSite=true`.
+
+    This creates caches for each site defined. It uses the `defaultPageCache` configuration for each site if `/modules/cache/config/contentCaching/SITE-NAME` doesn’t exist.
+
+    |     |     |
+    | --- | --- |
+    | 📁 modules |     |
+    | 📁 advanced-cache |     |
+    | 📁 config |     |
+    | ⬩ createSeparateCachesForEachSite | true |
+
+2.  Set `/server/filters/cache@class=info.magnolia.module.advancedcache.filter.SiteAwareCacheFilter`.
+
+    This filter chooses the right site-specific cache to use so you don’t need to have separate cache filters per cache.
+
+    |     |     |
+    | --- | --- |
+    | 📁 server |     |
+    | 📁 filters |     |
+    | 📁 cache |     |
+    | ⬩ class | info.magnolia.module.advancedcache.filter.SiteAwareCacheFilter |
+
+3.  Create one of the following:
+
+    1.  Default: `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/flushSiteAware@class=info.magnolia.module.advancedcache.SiteAwareFlushFromPublishingEventPolicy`
+
+        |     |     |
+        | --- | --- |
+        | 📁 modules |     |
+        | 📁 cache |     |
+        | 📁 config |     |
+        | 📁 contentCaching |     |
+        | ⸬ defaultPageCache |     |
+        | ⸬ flushPolicy |     |
+        | ⸬ policies |     |
+        | ⸬ flushSiteAware |     |
+        | ⬩ class | info.magnolia.module.advancedcache.SiteAwareFlushFromPublishingEventPolicy |
+
+    2.  `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/flushSiteAware@class=info.magnolia.module.advancedcache.SiteAwareFlushAllListeningPolicy`
+
+        |     |     |
+        | --- | --- |
+        | 📁 modules |     |
+        | 📁 cache |     |
+        | 📁 config |     |
+        | 📁 contentCaching |     |
+        | ⸬ defaultPageCache |     |
+        | ⸬ flushPolicy |     |
+        | ⸬ policies |     |
+        | ⸬ flushSiteAware |     |
+        | ⬩ class | info.magnolia.module.advancedcache.SiteAwareFlushAllListeningPolicy |
+
+
+4.  For all site-aware workspaces (those which have separate subtrees for each site):
+
+    1.  Exclude the workspace from the default flush policy: `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/flushAll/excludedWorkspaces@WORKSPACE_NAME=WORKSPACE_NAME`.
+
+        |     |     |
+        | --- | --- |
+        | 📁 modules |     |
+        | 📁 cache |     |
+        | 📁 config |     |
+        | 📁 contentCaching |     |
+        | ⸬ defaultPageCache |     |
+        | ⸬ flushPolicy |     |
+        | ⸬ policies |     |
+        | ⸬ flushAll |     |
+        | ⸬ excludedWorkspaces |     |
+        | ⬩ <WORKSPACE\_NAME> |     |
+
+    2.  Register this workspace to site aware flush policy: `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/flushSiteAware/workspaces@WORKSPACE_NAME=WORKSPACE_NAME`.
+
+        |     |     |
+        | --- | --- |
+        | 📁 modules |     |
+        | 📁 cache |     |
+        | 📁 config |     |
+        | 📁 contentCaching |     |
+        | ⸬ defaultPageCache |     |
+        | ⸬ flushPolicy |     |
+        | ⸬ policies |     |
+        | ⸬ flushSiteAware |     |
+        | ⸬ workspaces |     |
+        | ⬩ <WORKSPACE\_NAME> |     |
+
+
+5.  Restart your instance.

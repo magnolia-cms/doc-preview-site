@@ -1,0 +1,216 @@
+---
+title: "A/B/n Testing module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/ABn-testing/ABn-testing-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > A/B/n Testing > A/B/n Testing module
+---
+
+# A/B/n Testing module
+
+[Analytics and optimization](../../../../use-cases/analytics-and-optimization/) Unbundled: Extension
+
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| --- | --- |
+| Issues | [ABTEST](https://jira.magnolia-cms.com/projects/ABTEST/summary) |
+| Maven site | [A/B/n Testing](https://nexus.magnolia-cms.com/repository/magnolia.addons.releases/info/magnolia/abtesting/) |
+| Latest | 3.0.0 |
+| [Available on SPA/Headless](../../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | No  |
+
+> **Note:** Note that A/B/n Testing comes with a special license and runs as a connected service. Contact your Magnolia Customer Success Manager or Support to find out more.
+
+The A/B/n Testing module installs the A/B/n Testing app and allows you to perform A/B/n testing via the Magnolia UI.
+
+> **Tip:** Test results from the A/B/n Testing module rely on the Analytics dashboard from the Analytics module.
+
+## [](#_module_structure)Module structure
+
+| artifactID | Description |
+| --- | --- |
+| `magnolia-abtesting` | Provides a default implementation to connect to the A/B/n Testing app. |
+| `magnolia-abtesting-ui` | Provides the UI configuration for the A/B/n Testing app. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.abtesting</groupId>
+  <artifactId>magnolia-abtesting</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.abtesting</groupId>
+  <artifactId>magnolia-abtesting-ui</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_configuring)Configuring
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+To configure the following properties, go to `ab-testing/config.yaml`.
+
+If you don’t see a `config.yaml` file, create one.
+
+In the module configuration, you can:
+
+-   Define the minimum unique visitors required to produce test results.
+
+-   Adjust the minimum sample size required.
+
+-   Set a limit to the maximum number of remaining days.
+
+
+> **Warning:** You must also make sure your site allows CORS for the POST method.
+
+ab-testing/config.yaml
+
+```yml
+abTestingConfig:
+  apiGatewayURL: your-api-gateway-url
+  authorEventsExcluded: true
+  resultsConfig:
+    minUniqueVisitors: 10
+    minSampleSize: 1
+  statsEngineConfig:
+    maxRemainingDays: 10
+```
+
+| Property | Description |
+| --- | --- |
+| `apiGatewayURL` | **required**<br><br>The API gateway URL provided to you by Magnolia. |
+| `authorEventsExcluded` | Default is `true`.<br><br>Excludes author instance events from the test. |
+| `minUniqueVisitors` | **required**<br><br>The number of minimum unique visitors that must visit the site before results are produced. |
+| `minSampleSize` | **required**<br><br>The minimum overall sample size that must visit the site before results are produced. |
+| `maxRemainingDays` | **required**<br><br>The maximum number of days that can remain in an A/B/n testing campaign. |
+
+### [](#_enabling_cors_for_the_post_method)Enabling CORS for the POST method
+
+You must add the POST method to the list of allowed HTTP methods in your [CORS configuration](../../../../Administration/Architecture/Request-processing-and-filters/CORS/) (Cross-origin Resource Sharing).
+
+User events for the test variants are submitted to the Magnolia [REST endpoint](#rest:api:delivery-endpoint.adoc) using the POST method.
+
+Typically, only the GET method is enabled by default in Magnolia.
+
+To enable the POST method:
+
+1.  Locate the `allowedMethods` node in your site definition.
+
+    Typically, a property named `get` with the value `GET` is configured by default. This means the site allows CORS only for the GET method.
+
+2.  Update the `get` property name to `all` and the value to `*`.
+
+    This effectively adds the POST method required by A/B/n Testing.
+
+3.  **Publish** the change so that your public instance configuration is updated.
+
+
+Travel site example
+
+![CORS configuration](../../../../_images/abntest/ab-testing-cors-config.png)
+
+### [](#_configuring_permissions)Configuring permissions
+
+Magnolia provides user [role](../../../../Administration/IAM/Roles-and-access-control-lists/) configuration to facilitate permissions for A/B/n testing.
+
+Existing users with `editor` or `publisher` roles are be granted *read only* permissions to A/B/n Testing so that they can see the status of tests in the Pages app.
+
+An `ab-tester` role is configured by default and grants minimal permissions to users to access the A/B/n Testing app tile in AdminCentral and create and start A/B/n tests.
+
+You must assign the `ab-tester` role to your new and existing users who will use A/B/n Testing.
+
+You can view, assign and edit roles in the [Security app](../../../../Apps/List-of-apps/Security-app/).
+
+## [](#_usage)Usage
+
+When running an A/B/n test using the A/B/n Testing module, a copy of the original page in the `website` workspace is made when the first variant is created.
+
+The original page in the `website` workspace isn’t locked. Only the copy is locked and is used as a base for any variants created.
+
+When a page is being used in a test, the status of the test in displayed in the Pages app. Variants of the original page are not displayed in the Pages app, only the original. If you want to see the variants, you can find them in the [JCR Browser](../../../../Apps/List-of-apps/JCR-Browser-app/).
+
+![JCR browser](../../../../_images/abntest/ab-testing-variants-JCR.png)
+
+Editors can continue working on the original page while the test is running. When the test completes and users must decide which variant to use, they’re warned that the original has changed since the test began.
+
+> **Warning:** Segments are not locked nor copied when used in a test. The effect of deleting or modifying a segment that is actively being used in a test is not defined. We recommend you create dedicated segments for each test.
+
+For more information, see the [A/B/n Testing app](../ABn-testing-app/) page.
+
+### [](#_abn_testing_for_multilanguage_websites)A/B/n Testing for multilanguage websites
+
+In the context of a multilanguage website, the A/B/n Testing feature behaves differently depending on the multilanguage structure configured:
+
+-   When using a [single tree structure](../../../../Administration/Language/Multilanguage-structure/#_single_tree), the multilanguage content is stored in a single JCR content node. This means that you must create one A/B/n Testing test that covers all the languages.
+
+    For example, if your website is in German and French, one test covers both languages.
+
+-   When using a [multiple tree structure](../../../../Administration/Language/Multilanguage-structure/#_multiple_trees), the multilanguage structure consists of separate website trees. In this case, you must create an A/B/n Testing test for each language that you want to test.
+
+    For example, if you want to run the same test for German and French, you must create two A/B/n Testing tests: one for each language.
+
+
+> **Note:** The A/B/n Testing feature doesn’t work with the URL Translation incubator module.
+
+## [](#_uninstalling)Uninstalling
+
+To uninstall the A/B/n Testing module:
+
+1.  Go to the A/B/n Testing app, abort any running tests and delete all tests.
+
+2.  In your site definition, revert any changes you made when [Enabling CORS for the POST method](#_enabling_cors_for_the_post_method).
+
+3.  Go to the Configuration app and delete the following nodes:
+
+    -   `/modules/cache/config/contentCaching/defaultPageCache/cachePolicy/shouldBypassVoters/deny/abTestingPage`
+
+    -   `/server/filters/cms/testingResolver`
+
+    -   `/server/filters/sitemesh/decoratedFilter/contentProcessor/tagRuleBundles/magnolia/rules/DisableLinksInABVariantEditor`
+
+
+4.  Shut down Magnolia, remove the A/B/n Testing module JAR files (`magnolia-abtesting.jar`, `magnolia-abtesting-ui.jar`) from `WEB-INF/lib` and start up Magnolia again.
+
+
+> **Note:** If you don’t use the Analytics module outside of A/B/n Testing purposes, delete the magnolia-analytics-x JAR files too.
+
+Related topics
+
+-   [Multilanguage structure](../../../../Administration/Language/Multilanguage-structure/)
+
+-   [Personalization](../../../../use-cases/Personalization/)
+
+-   [A/B/n Testing app](../ABn-testing-app/)
+
+
+## [](#_changelog)Changelog
+
+The changelog gives you an overview of the changes made to the A/B/n Testing module at each release.
+
+> **Note:** This changelog covers the 3.x branch of the A/B/n Testing module. For the 2.x changelog, see here. For the 1.x changelog, see here.
+
+### [](#_3_0_0)3.0.0
+
+Compatible with Magnolia 6.4
+
+## [](#_compatibility)Compatibility
+
+| A/B/n Testing module version | Magnolia version |
+| --- | --- |
+| 3.0+ | 6.4+ |
+| 2.0+ | 6.3+ |
+| 1.0+ | 6.2.4+ |

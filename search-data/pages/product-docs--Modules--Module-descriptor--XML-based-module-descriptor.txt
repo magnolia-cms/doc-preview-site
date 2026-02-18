@@ -1,0 +1,203 @@
+---
+title: "XML-based module descriptor"
+url: https://docs.magnolia-cms.com/product-docs/Modules/Module-descriptor/XML-based-module-descriptor/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Module descriptor > XML-based module descriptor
+---
+
+# XML-based module descriptor
+
+This page is about the XML-based module descriptor file which identifies and defines a Magnolia Maven module. If you are using a Magnolia light module, you should use a [YAML-based module descriptor](../YAML-based-module-descriptor/).
+
+The XML file:
+
+-   Conforms to [module.dtd](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/release/6.2/magnolia-core/src/main/resources/info/magnolia/module/model/module.dtd).
+
+-   Is stored in `src/main/resources/META-INF/magnolia/<module-name>.xml`
+
+-   Can refer to nodes of the module [pom file](http://maven.apache.org/guides/introduction/introduction-to-the-pom).
+
+
+When you start Magnolia, the system identifies available modules by locating each module’s descriptor file.
+
+## [](#_benefits_of_a_module_descriptor)Benefits of a module descriptor
+
+The XML-based module descriptor has a number of benefits:
+
+-   [Dependency injection](../../Dependency-injection-and-inversion-of-control/): Inject components into the module.
+
+-   [Module version handling](#_module_versions): Smoother version changes with Maven.
+
+-   [Dependencies](#_module_dependencies): Define runtime and install time dependencies to other modules.
+
+-   [Servlets](#_Servlets): Register servlets in your module.
+
+-   [Workspaces](#_workspaces): Create workspaces.
+
+-   [Module class](../../Module-configuration/#_module_class_bean_properties): Register a module class that allows you to define module specific properties.
+
+
+## [](#_example_module_descriptor)Example module descriptor
+
+Here is an example XML Maven module descriptor that defines a module class (`class` element), a module version handler (`versionHandler` element), an IoC component and a dependency on the `ui-admincentral` module.
+
+Note how you can refer to Maven properties within the module descriptor.
+
+acme-geotagging-module.xml
+
+```xml
+<!DOCTYPE module SYSTEM "module.dtd">
+<module>
+  <name>acme-geotagging-module</name>
+  <displayName>Acme geotagging module.</displayName>
+  <class>com.acme.GeotaggingModule</class>
+  <versionHandler>com.acme.GeotaggingModuleVersionHandler</versionHandler>
+  <version>${project.version}</version>
+  <components>
+    <id>app-geotagging</id>
+  </components>
+  <components>
+    <id>app-geotagging-main</id>
+    <component>
+      <type>com.acme.geo.app.main.GeoTaggingMainSubappView</type>
+      <implementation>com.acme.geo.app.main.GeoTaggingMainSubappViewImpl</implementation>
+    </component>
+  </components>
+  <dependencies>
+    <dependency>
+      <name>ui-admincentral</name>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+</module>
+```
+
+## [](#_module_descriptor_elements)Module descriptor elements
+
+| Element | Description |
+| --- | --- |
+| `name` | **required**<br><br>Functional name of the module in the `config` workspace. |
+| `version` | **required**<br><br>Module version. |
+| `class` | **optional**<br><br>Name of the [module class](../../Module-configuration/). |
+| `description` | **optional**<br><br>Full description of the module. |
+| `displayName` | **optional**<br><br>Display name of the module. |
+| `versionHandler` | **optional**<br><br>Name of the version handler class. |
+| `properties` | **optional**<br><br>Properties used with the version handler. |
+| `dependencies` | **optional**<br><br>Dependencies installed for the module. |
+| `servlets` | **optional**<br><br>Servlets included in the servlet filter. |
+| `repositories` | **optional**<br><br>Repositories used by the module. |
+| `components` | **optional**<br><br>Injected components used by the module. |
+
+## [](#_module_naming)Module naming
+
+For each module you have to provide:
+
+1.  `artifactId` and `groupId` to the identify the Maven artifact
+
+2.  Name of the module descriptor file.
+
+3.  `<name>` of the module in the module descriptor file.
+
+
+There are no strict naming conventions. You should give a name that reflects the purpose of the module. The name may also contain the name of your company.
+
+Depending on the module purpose it might be a good idea to use the same value for the artifact ID and module name.
+
+It is definitively good practice to name the *module descriptor file* by the pattern `<module-name>.xml`.
+
+Example
+
+-   Module name: `Social Media Hub`
+
+-   Artifact ID: `social-media-hub`
+
+-   Group ID: `com.tinext.magnolia` (contains the name of the creator [Tinext.com](http://Tinext.com))
+
+-   Module descriptor file: `social-media-hub.xml`
+
+
+## [](#_module_versions)Module versions
+
+The syntax for a version is
+
+from version / to version
+
+where the version number consists of three parts: `x.y.z`. The `x.y` parts denote a major version and the `z` part a maintenance release. The `y.z` parts are optional. For a strict version dependency, use just one version string.
+
+The info.magnolia.module.model.VersionRange class supports the following syntax to indicate version dependencies. Only three parts are supported: major, minor and security versions. The build number is not supported. See [Runtime.Version](https://docs.oracle.com/javase/9/docs/api/java/lang/Runtime.Version.html) for more information.
+
+-   `*`: all versions.
+
+    > **Important:** In a YAML file, make sure to wrap * with quotes (version: "*").
+
+-   `1.2`: version 1.2 only.
+
+-   `1.2/*`: version 1.2 or higher.
+
+-   `1.2/1.2.9` or `[1.2,1.2.9]`: all versions between 1.2 and 1.2.9 (including 1.2 and 1.2.9).
+
+-   `[1.2,1.2.9[` or `[1.2,1.2.9)`: all versions between 1.2 and 1.2.9 (including 1.2 but excluding 1.2.9).
+
+
+| Example | Description |
+| --- | --- |
+| `3` | Major version 3. |
+| `3.6` | Major version 3.6. |
+| `3.6.3` | Major version 3.6 and maintenance version 3. |
+| `3/*` | Major version 3 or higher. |
+| `3.6/*` | Major version 3.6 or higher. |
+| `3.6.3/*` | Major version 3.6 and maintenance version 3 or higher. |
+| `*/3` | Major version 3 or earlier. |
+| `*/3.6` | Major version 3.6 or earlier. |
+| `*/3.6.3` | Major version 3.6 and maintenance version 3 or earlier. |
+| `3.5/3.6.2` or `[3.5/3.6.2]` | All versions between 3.5 and 3.6.2 (including 3.5 and 3.6.2). |
+| `[3.5/3.6.2[` or `[3.5/3.6.2)` | All versions between 3.5 and 3.6.2 (including 3.5 but excluding 3.6.2). |
+
+## [](#_module_dependencies)Module dependencies
+
+You can define runtime or install time dependencies (not build dependencies). If you define a dependency on a module, then this module will be installed and started before your module. A dependency can be optional. Optional in this context means that if an optional module is not present, installation will proceed, but if the optional module is present, this module will be installed first. The dependencies could look like this:
+
+```xml
+<dependencies>
+   <dependency>
+      <name>core</name>
+      <version>3.6.0/*</version>
+   </dependency>
+   <!-- in case cache module is present,
+   make sure we install after so we can add a bypass -->
+   <dependency>
+      <name>cache</name>
+      <version>3.6.0/*</version>
+      <optional>true</optional>
+   </dependency>
+</dependencies>
+```
+
+## [](#_module_dependencies_define_module_loading_order)Module dependencies define module loading order
+
+The module dependencies define the order in which modules are loaded during startup. For example, if `module-a` depends on `module-b`, `module-b` will be loaded before `module-a.` The order becomes important, for example, if both `module-a` and `module-b` decorate the same definition or if `module-a` inherits a definition from `module-b`.
+
+> **Tip:** Decorations are applied in the module load order.
+
+## [](#_workspaces)Workspaces
+
+Workspaces can be defined in the module descriptor. If necessary Magnolia initializes these workspaces before the installation starts. As an example look at the data module:
+
+```xml
+  <repositories>
+    <repository>
+      <name>magnolia</name>
+      <workspaces>
+        <workspace>data</workspace>
+      </workspaces>
+      <nodeTypeFile>/mgnl-nodetypes/magnolia-module-data-nodetypes.xml</nodeTypeFile>
+    </repository>
+  </repositories>
+```
+
+Under the hood, these repository workspaces are registered and initialized by info.magnolia.module.delta.SetupModuleRepositoriesTask when the module is installed.
+
+If you are using the Magnolia [Content Types module](#content-types:ROOT:index.adoc), you can define workspaces (and node types) also in light modules.
+
+> **Tip:** Please read the page Defining JCR node types and workspaces, which provides an overview of all ways to define custom JCR node types and create new workspaces with Magnolia.

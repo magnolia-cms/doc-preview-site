@@ -1,0 +1,119 @@
+---
+title: "Cookies trait configuration"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Cookies-trait-configuration/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Personalization module > Creating custom traits > Creating custom traits without Java > Cookies trait configuration
+---
+
+# Cookies trait configuration
+
+As of version 2.1.0, the [Personalization module](../../) provides [two implementations of cookie traits](../#_two_magnolia_cookie_trait_implementations):
+
+-   New cookie trait implementation in the `magnolia-personalization-traits` submodule.
+
+-   Older (deprecated) implementation in the `magnolia-personalization-compatibility` submodule.
+
+
+Even though in both implementations you can create and use multiple cookies, we recommend using the new implementation since a cookie trait is easily configurable there using the `@TraitType` annotation.
+
+## [](#_cookie_trait_definition_properties)Cookie trait definition properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;cookie&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Trait name.</p></div><div class="paragraph"><p>The property can be omitted if the definition is done using a YAML configuration file. The value is taken from the name of the file.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (module version 2.1.x and higher)</p></div><div class="paragraph"><p>Since you are configuring a cookie trait, use <code>cookieTrait</code> as the value.</p></div><div class="paragraph"><p>The <code>$type</code> property defines the trait type for delivery of personalized content. The following types are available:</p></div><div class="ulist"><ul><li><p><code>cookieTrait</code></p></li><li><p><code>headerTrait</code></p></li><li><p><code>requestParameterTrait</code></p></li></ul></div><div class="paragraph"><p>See also <a href="#rest:api:Requesting-personalized-content-with-the-delivery-endpoint.adoc" class="xref unresolved">Requesting personalized content with the delivery endpoint</a>.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>The <code>$type</code> property is only required for the new traits. It does not need to be configured for the traits that were present in the older (pre-2.1) versions of the Personalization module:</p></div><div class="ulist"><ul><li><p><code>date</code></p></li><li><p><code>cookies</code></p></li><li><p><code>country</code></p></li><li><p><code>visitor</code></p></li></ul></div><div class="paragraph"><p>All of these pre-configured traits are now provided by the <code>magnolia-personalization-compatibility</code> submodule.</p></div><div class="paragraph"><p>Due to session security restrictions, the <code>country</code> trait can only be used if Magnolia and an SPA application are on the same domain.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>ruleField</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Field used to <em>define</em> permitted values for the trait. The options display in the <a href="../../../../../use-cases/Personalization/" class="xref page">Choose audience</a> dialog.</p></div><div class="paragraph"><p>See also <a href="../Creating-a-custom-cookie-trait-without-Java/Configuring-a-custom-cookie-trait/#_configuring_the_rule_field" class="xref page">Configuring the rule field</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>valueField</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Field used to <em>set</em> permitted values for personalized content delivery. The options displayed in the <a href="../../../../../Apps/List-of-apps/Preview-app/" class="xref page">Preview app</a>.</p></div><div class="paragraph"><p>See also <a href="../Creating-a-custom-cookie-trait-without-Java/Configuring-a-custom-cookie-trait/#_configuring_the_value_field" class="xref page">Configuring the value field</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>converterClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (module version 2.0.x and earlier)</p></div><div class="paragraph"><p>Cookie parameter converter (<span class="inlineBean">info.magnolia.personalization.cookie.CookieParameterConverter</span>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultPreviewTrait</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em> (module version 2.0.x and earlier)</p></div><div class="paragraph"><p>Displays all cookie trait options in the Preview app by default when set to <code>true</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultRuleTrait</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em> (module version 2.0.x and earlier)</p></div><div class="paragraph"><p>Indicates whether the trait should be pre-set in the Choose audience dialog.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (module version 2.1.1 and higher)</p></div><div class="paragraph"><p>Disables the respective trait in the <a href="../../My-first-personalized-campaign/#_choose_audience" class="xref page">Choose audience dialog</a> when set to <code>false</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>traitClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (module version 2.0.x and earlier)</p></div><div class="paragraph"><p>Specifies the cookie trait class (<span class="inlineBean">info.magnolia.personalization.cookie.Cookies</span>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>voterClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (module version 2.0.x and earlier)</p></div><div class="paragraph"><p>Matches the cookie name to the cookie value (<span class="inlineBean">info.magnolia.personalization.cookie.CookieVoter</span>). See also <a href="../../../../../Administration/Voters/" class="xref page">Voters</a>.</p></div></div></td></tr></tbody></table></div>
+
+## [](#_configuration_examples)Configuration examples
+
+### [](#_new_implementation)New implementation
+
+```yaml
+$type: cookieTrait
+ruleField:
+  $type: comboBoxField
+  name: value
+  label: Gender
+  datasource: &datasource
+    $type: optionListDatasource
+    options:
+      - name: male
+        value: male
+      - name: female
+        value: female
+      - name: other
+        value: other
+valueField:
+  $type: comboBoxField
+  label: Gender
+  datasource: *datasource
+```
+
+> **Note:** Cookie trait configuration from a light moduleThe name is omitted as it is taken from the name of the YAML file. In the case below, the name would be cookies from the cookies.yaml file.<light-module>/traits/cookies.yaml$type: cookieTrait
+> ruleField:
+>   ...
+> valueField:
+>   ...
+
+### [](#_deprecated_implementation)Deprecated implementation
+
+```yaml
+cookies:
+  converterClass: info.magnolia.personalization.cookie.CookieParameterConverter
+  defaultPreviewTrait: false
+  defaultRuleTrait: false
+  traitClass: info.magnolia.personalization.cookie.Cookies
+  voterClass: info.magnolia.personalization.cookie.CookieVoter
+  ruleField:
+    class: info.magnolia.ui.form.field.definition.SwitchableFieldDefinition
+    transformerClass: info.magnolia.personalization.cookie.CookieFieldTransformer
+    options:
+      weatherLocality:
+        value: weatherLocality
+      tourType:
+        value: tourType
+    fields:
+      weatherLocality:
+        class: info.magnolia.ui.form.field.definition.SelectFieldDefinition
+        defaultValue: any
+        options:
+          any:
+            label: cookies.anyValue
+            value: any
+          london:
+            value: London
+          basel:
+            value: Basel
+      tourType:
+        class: info.magnolia.ui.form.field.definition.SelectFieldDefinition
+        defaultValue: none
+        options:
+          any:
+            label: cookies.anyValue
+            value: any
+          none:
+            label: cookies.noValue
+            value: none
+  valueField:
+    class: info.magnolia.ui.form.field.definition.OptionGroupFieldDefinition
+    multiselect: true
+    options:
+      weatherLocalityLondon:
+        value: weatherLocality=London
+      weatherLocalityBasel:
+        value: weatherLocality=Basel
+      tourTypeAny:
+        value: tourType=any
+```
+
+Related topics
+
+-   [Creating custom traits without Java](../)
+
+-   [Creating a custom cookie trait without Java](../Creating-a-custom-cookie-trait-without-Java/)
+
+    -   [Configuring a custom cookie trait](../Creating-a-custom-cookie-trait-without-Java/Configuring-a-custom-cookie-trait/)
+
+    -   [Setting and reading a custom cookie](../Creating-a-custom-cookie-trait-without-Java/Setting-and-reading-a-custom-cookie/)
+
+
+-   [Personalization](../../../../../use-cases/Personalization/)
+
+-   [Component personalization](../../../../../Features/Personalization/Component-personalization/)

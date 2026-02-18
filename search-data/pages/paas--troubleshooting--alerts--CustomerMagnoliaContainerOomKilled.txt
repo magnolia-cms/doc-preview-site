@@ -1,0 +1,213 @@
+---
+title: "OOMKilled container"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/alerts/CustomerMagnoliaContainerOomKilled/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > OOMKilled container
+---
+
+# OOMKilled container
+
+This topic guides you on troubleshooting containers that are being "OOMKilled".
+
+What is OOMKill?
+
+Out of memory kill meaning a container or pod was terminated, because it was using more memory than it was allowed.
+
+## [](#_symptom)Symptom
+
+The `CustomerMagnoliaContainerOOMKilled` alert is firing.
+
+> **Note:** CustomerMagnoliaContainerOOMKilled alerts are sent to subscribers via email.
+
+### [](#_whats_using_the_memory)What’s using the memory?
+
+Kubernetes restarts a pod if it exceeds its memory limit. The Magnolia JVM typically cannot exceed its memory limit - the JVM max heap setting - but the JVM also will consume off heap memory that can vary over time, depending on what Magnolia is doing. Other containers running in the Magnolia pod may also consume memory but they usually use very small amounts (`10s` of `mb`). Temporary filesystems may use memory as well.
+
+## [](#_observations)Observations
+
+Here are the details on the alert:
+
+### [](#_alert_customermagnoliacontaineroomkilled)Alert: `CustomerMagnoliaContainerOomKilled`
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>magnolia:oomkill:interval &gt; 0</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>0</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>instance</code></p></li><li><p><code>namespace</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+> **Note:** The magnolia:oomkill:interval metric is defined as:(kube_pod_container_status_restarts_total{pod=~".+-magnolia-helm-.+"} - kube_pod_container_status_restarts_total{pod=~".+-magnolia-helm-.+"} offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{pod=~".+-magnolia-helm-.+",reason="OOMKilled"}[10m]) == 1
+
+### [](#_determine_the_memory_request_and_limit_for_magnolia)Determine the memory request and limit for Magnolia
+
+The alert notes the affected Magnolia pod. You can view the memory request and limit for the Magnolia in Rancher or with `kubectl`.
+
+```sh
+kubectl -n <namespace from alert> describe pod <Magnolia pod from alert>
+```
+
+Actions
+
+-   Look in the "Limits" section for the memory limit.
+
+-   Look in the "Requests" section for the memory request.
+
+-   The memory limit and the memory request are usually set to the same value.
+
+
+### [](#_determine_the_jvm_max_heap_setting_used_for_magnolia)Determine the JVM max heap setting used for Magnolia
+
+The JVM max heap setting is usually defined as a property stored in a configmap: `<namespace>-config-<author|public>`. You can view the configmap in Rancher or display it with kubectl.
+
+The `JVM_RAM_MAX_PERCENTAGE` property specifies the percentage of the pod memory request used by the Magnolia.
+
+For example, if the memory request/limit is 10Gi and `JVM_RAM_MAX_PERCENTAGE` is `60`:
+
+-   The JVM max heap will be '6Gi'
+
+-   `4Gi` will be available to the pod and other containers running in the Magnolia pod
+
+
+## [](#_considerations)Considerations
+
+### [](#_jvm_memory_usage)JVM memory usage
+
+The JVM uses more memory than just the heap. Constraining the max heap won’t necessarily stop the JVM from exceeding the memory limit set for the pod.
+
+#### [](#_non_heap_memory_usage)Non-heap memory usage
+
+-   Direct memory allocated with the `java.nio.ByteBuffer.allocateDirect`.
+
+-   Other classes in the `java.nio` library may allocate a direct memory buffer.
+
+-   Classes dealing with compressed streams like `DeflaterInputStream`, `DeflaterOutputStream`, `GZIPInputStream`, `GZIPOutputStream`, `ZipFile`, `ZipInputStream`, and `ZipOutputStream` may allocate a direct memory buffer.
+
+-   Magnolia imaging operations using compressed image formats like `gif` or `webp` may allocate direct memory buffers when resizing or modifying images.
+
+
+Direct memory buffers may be deallocated when the Java object using it is garbage collected, but a large number requests, such as imaging requests, may cause non-heap memory to be used.
+
+A Magnolia instance that is being OOMKilled frequently will:
+
+-   Have high traffic - many requests per second
+
+-   Have lots of imaging requests in that traffic
+
+-   Have frequent cache flushes or be configured to not cache imaging requests
+
+
+### [](#_memory_usage_metrics)Memory usage metrics
+
+We have many metrics that monitor the memory used by the JVM and Magnolia pod:
+
+-   `jvm_memory_bytes_used{area="heap"}`: how much memory on the heap is being used
+
+-   `jvm_memory_bytes_used{area="nonheap"}`: how much off heap memory is being used
+
+-   `jvm_memory_bytes_committed{area="heap"}`: how much memory the JVM currently has allocated for the heap
+
+-   `jvm_memory_bytes_committed{area="nonheap"}`: how much memory the JVM currently has allocated for off heap usage
+
+-   `jvm_memory_bytes_max{area="heap"}`: the maximum size of the JVM heap
+
+-   `jvm_memory_bytes_max{area="nonheap"}`: NOT the maximum size of the off heap memory, **is always -1**!
+
+
+> **Important:** All JVM memory metrics above do not include direct memory usage (off heap) memory used by the JVM. They can’t be used to determine what is consuming heap and off heap memory in the JVM.
+
+#### [](#_usage_metrics)Usage metrics
+
+There are some things to keep in mind about the above metrics.
+
+-   The JVM memory metrics are collected every 60 seconds (1m). They may not reflect sudden spikes in memory usage.
+
+-   The `jvm_memory_bytes_used` (heap and nonheap) metric is memory being used, but it’s not the memory actually being used by the JVM itself. `jvm_memory_bytes_committed` is the amount of memory used by the JVM for heap and off-heap memory.
+
+    -   Heap memory
+
+    -   Off heap memory
+
+
+    ```none
+    jvm_memory_bytes_used < jvm_memory_bytes_committed ≤ jvm_memory_bytes_max (1)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | The jvm\_memory\_bytes\_max{area="heap"} metric is the maximum size of the JVM heap (as controlled by the JVM options in the Helm chart values). |
+
+    ```none
+    jvm_memory_bytes_used < jvm_memory_bytes_committed (1)
+    ```
+
+    <1>
+
+
+### [](#_pod_and_container_combined_memory)Pod and container combined memory
+
+There is another metric that determines the memory used the Magnolia pod and its containers:
+
+-   `container_memory_working_set_bytes`
+
+
+The same caveats for the JVM memory metrics apply to `container_memory_working_set_bytes`. The `container_memory_working_set_bytes` metric is collected every 60 seconds and may not reflect sudden spikes in memory usage.
+
+The `container_memory_working_set_bytes` metric shows memory usage by container for a pod; it does not know what the memory is being used for (heap, off heap, etc).
+
+> **Note:** container_memory_working_set_bytes seems to be a lagging indicator in that its value doesn’t actually exceed the memory limit for the pod.
+
+## [](#_solutions)Solutions
+
+This section provides solutions that should help resolve the issue in most cases.
+
+### [](#_limit_the_direct_off_heap_memory)Limit the direct (off heap) memory
+
+Limit the direct (off heap) memory available to the JVM as this is the best way to prevent OOMKills. The JVM command line option to set a limit for direct memory is:
+
+```none
+-XX:MaxDirectMemorySize=<size> (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | where `<size>` is `1[k\|K\|m\|M\|g\|G]` or greater. See IBM’s [xxmaxdirectmemorysize](https://www.ibm.com/docs/en/sdk-java-technology/8?topic=options-xxmaxdirectmemorysize) for more details. |
+
+### [](#_limit_memory)Limit memory
+
+The memory limit should be set so that the **max heap** + **max direct memory** + **a reasonable surplus** (for other JVM off heap memory use) should equal less than the memory limit for the Magnolia pod specified in the Helm chart values.
+
+> **Tip:** A "reasonable surplus" for additional off heap memory for JVM can’t really be determined without turning on Java Native Memory Tracking and profiling the memory used while Magnolia is running.We recommend a minimum surplus/reserve of at least 500MB.Table 1. Example calculation  Memory typeAmountJVM Max Heap7.2 GBDirect memory3.8 GBSurplus1 GBTotal12 GB
+
+### [](#_set_via_helm_chart)Set via Helm chart
+
+The Helm chart does not have a value for setting `MaxDirectMemorySize` but you can set it with the `CATALINA_OPTS_EXTRA` environment variable in the `values.yml` file used for Magnolia.
+
+-   Public
+
+-   Author
+
+
+```yaml
+magnoliaPublic:
+  env:
+    - name: CATALINA_OPTS_EXTRA
+      value: "-XX:MaxDirectMemorySize=300m"
+```
+
+```yaml
+magnoliaAuthor:
+  env:
+    - name: CATALINA_OPTS_EXTRA
+      value: "-XX:MaxDirectMemorySize=300m"
+```
+
+### [](#_other_tips_for_resolving)Other tips for resolving
+
+The default `MaxDirectMemorySize` is the max size of the JVM heap. You could prevent OOMKills by setting the `JVM_RAM_MAX_PERCENTAGE` to something less than 50% (remember to leave something for other off heap memory usage by the JVM).
+
+If the non-JVM memory available to the Magnolia pod is less than 2Gi, adjust the memory request/limit and the `JVM_RAM_MAX_PERCENTAGE` value to allow at least 2Gi of memory not use by the Magnolia JVM.
+
+Also make sure the Magnolia JVM also has sufficient memory:
+
+-   `8gb` or more max heap for a Magnolia public instance
+
+-   `10gb` or more max heap for a Magnolia author instance
+
+
+> **Note:** Since the JVM_RAM_MAX_PERCENTAGE and memory request/limit settings are controlled by the Magnolia Helm chart, you must adjust the values and redeploy Magnolia.

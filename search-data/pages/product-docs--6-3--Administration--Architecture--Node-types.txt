@@ -1,0 +1,227 @@
+---
+title: "Node types"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Architecture/Node-types/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Architecture > Node types
+---
+
+# Node types
+
+Magnolia stores data in a Java Content Repository. The repository is a hierarchical object database that is particularly well-suited for storing content. In a content management system you need to be able to store text, documents, images and other binary objects along with their metadata. The data is structured as a tree of nodes. Each node can have one or more types. The type defines what kind of properties the node has, the number and type of its child nodes, and its behavior.
+
+Want to know more?
+
+See [Jackrabbit Node Types](http://jackrabbit.apache.org/node-types.html) for more information and [Node Type Visualization](http://jackrabbit.apache.org/node-type-visualization.html) for a diagram of the node type hierarchy.
+
+In Magnolia we define custom node types that define Magnolia’s custom content model. The JCR in turn enforces the constraints of that model at the repository level. If you need to reference JCR node types in your code, Jackrabbit’s [JcrConstants](http://jackrabbit.apache.org/api/2.14/org/apache/jackrabbit/JcrConstants) is useful. We provide constants also for Magnolia’s custom node types but also convenience methods.
+
+For example, to update the last modification date of a node, use the `NodeTypes.LastModified.update(node)` convenience method. Magnolia node types are registered by the info.magnolia.jcr.util.NodeTypes class.
+
+## [](#_prefixes)Prefixes
+
+  Node typePrefixNotes
+
+JCR primary node type
+
+`nt:`
+
+Mixin node type
+
+`mix:`
+
+Magnolia node type
+
+`mgnl:`
+
+The `mgnl` prefix does not tell you whether the node is a primary node or a mixin.
+
+> **Note:** To find out which type a mgnl node is, check the magnolia-nodetypes.cnd file.
+
+## [](#_node_type_hierarchy)Node type hierarchy
+
+In this simplified node type hierarchy diagram you can see what extends what. For example, `mgnl:page` extends `mgnl:versionable`. This means that page is an object you can version. In contrast, `mgnl:area` and `mgnl:component` are not versionable - they are subnodes that must be published together with the parent page. However, all three node types (page, area, component) are renderable which means you can [render a component on its own](../../../Developing/Templating/Rendering-content/) without its parent page.
+
+> **Tip:** See the magnolia-nodetypes.cnd file for a full view of the Magnolia node type hierarchy.
+
+![Node type hierarchy](../../../_images/node-type-hierarchy.png)
+
+## [](#_primary_node_types)Primary node types
+
+Every node has a primary node type assigned to it upon creation. The primary node type defines node structure such as allowed and required child nodes and properties. Primary types reflect the business that is represented in the repository. Magnolia’s primary node types define content management nodes such as pages, areas, components and resources.
+
+### [](#_jcr_primary_node_types)JCR primary node types
+
+| Notation | Description |
+| --- | --- |
+| `nt:base` | The base type of all primary node types. |
+| `nt:unstructured` | Unstructured node type that allows any properties and child nodes. |
+| `nt:hierarchyNode` | Abstract base type for nodes in a structured node hierarchy. |
+| `nt:file` | JCR representation of a file. |
+| `nt:frozenNode` | This node type is used in the versioning system. |
+
+### [](#_magnolia_primary_node_types)Magnolia primary node types
+
+The primary Magnolia node types are defined in [magnolia-nodetypes.cnd](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/release/6.3/magnolia-core/src/main/resources/mgnl-nodetypes/magnolia-nodetypes.cnd)
+
+These types are required for the basic features of Magnolia to function:
+
+-   configuration
+
+-   page editing
+
+-   page rendering
+
+-   publishing from author to public (which relies on versioning)
+
+
+| Notation | Description |
+| --- | --- |
+| `mgnl:area` | Area |
+| `mgnl:component` | Component |
+| `mgnl:content` | Publishable and versionable content objects such as pages. |
+| `mgnl:contentNode` | Publishable but not versionable content objects which can be rendered independently. For example, blocks or objects below page level such as area or component. |
+| `mgnl:folder` | Folder |
+| `mgnl:group` | Group |
+| `mgnl:metaData` | Metadata |
+| `mgnl:nodeData` | Property |
+| `mgnl:page` | Page |
+| `mgnl:reserve` | Reserved for system use. |
+| `mgnl:resource` | Resource |
+| `mgnl:role` | Role |
+| `mgnl:user` | User |
+
+## [](#_mixin_node_types)Mixin node types
+
+Mixin node types specify additional properties or characteristics to the node. A node can have a primary type and several mixin types at the same time. JCR mixins add repository-level functionality such as versioning and locking. Magnolia mixins add content management capabilities such as publishing and rendering.
+
+### [](#_jcr_mixin_node_types)JCR mixin node types
+
+| Notation | Description |
+| --- | --- |
+| `mix:referenceable` | Mixin type for referenceable nodes. Provides an auto-created `jcr:uuid` property that gives the node a unique identifier that can be referenced. |
+| `mix:versionable` | Mixin type for versionable nodes. |
+| `mix:lockable` | Enables locking capabilities for a node. |
+
+### [](#_magnolia_mixin_node_types)Magnolia mixin node types
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 30%;"> <col style="width: 40%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Notation</th><th class="tableblock halign-left valign-top">Properties</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnl:deleted</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>mgnl:deleted (DATE)</code></p></li><li><p><code>mgnl:deletedBy (STRING)</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date the node was deleted, the user who deleted it and the deletion comment.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnl:lastModified</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>mgnl:lastModified (DATE)</code></p></li><li><p><code>mgnl:lastModifiedBy (STRING)</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date the node was last modified and the user who modified it.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnl:activatable</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>mgnl:lastActivated (DATE)</code></p></li><li><p><code>mgnl:lastActivatedBy (STRING)</code></p></li><li><p><code>mgnl:activationStatus (STRING)</code></p></li><li><p><code>mgnl:lastActivatedVersion (STRING)</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date the node was published, the user who published it, its current publication status and the version in which the node was published.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">On the public instance, these properties are irrelevant and removed because they would always contain the date of the previous publication, not the current one.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnl:created</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>mgnl:created (DATE)</code></p></li><li><p><code>mgnl:createdBy (STRING)</code></p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date the node was created and the user who created it.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnl:renderable</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>mgnl:template (STRING)</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Associates a template with the node for rendering.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnl:versionable</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>mgnl:comment (STRING)</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Allows the user to leave a comment on the version.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>mgnl:visitorReference</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>mgnl:visitorId (STRING)</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Uniquely identifies a page visitor and the associated site content for the purposes of <a href="../../../Features/Data-privacy/" class="xref page">personal data protection</a>(GDPR).</p></div></div></td></tr></tbody></table></div>
+
+## [](#_same_name_siblings_are_not_allowed)Same name siblings are not allowed
+
+The Magnolia node type definition, [`magnolia-nodetypes.cnd`](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/release/6.3/magnolia-core/src/main/resources/mgnl-nodetypes/magnolia-nodetypes.cnd), does not allow same name siblings. This means that you cannot have two nodes at the same level in the node hierarchy with the same name.
+
+Typically same name siblings is not an issue because Magnolia enforces the constraint automatically during normal usage. However, if prior to Magnolia `5.2` you imported an XML file that was created outside of Magnolia or was edited by hand, it is possible that the XML import created a same name sibling.
+
+Use the `siblings.groovy` script to find same name siblings in your repository. The example below searches for identically named areas (`returnItemType` is `mgnl:area`) in the `website` workspace under the `/travel/about` page.
+
+> **Tip:** See Groovy module for instructions on how to execute Groovy scripts.
+
+siblings.groovy
+
+```groovy
+import info.magnolia.cms.util.QueryUtil;
+import info.magnolia.cms.core.search.Query;
+import info.magnolia.cms.core.Path;
+import info.magnolia.jcr.util.NodeUtil;
+import info.magnolia.context.MgnlContext;
+import javax.jcr.Session;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import org.apache.commons.lang.StringUtils;
+import java.util.LinkedList;
+def siblings(workspace,path,returnItemType) { (1)
+    query = "/jcr:root" + path + "//* order by @name"; (2)
+    try {
+        NodeIterator nodes = QueryUtil.search(workspace,query,Query.XPATH,returnItemType); (3)
+
+        Session session = MgnlContext.getJCRSession(workspace);
+        def siblings = [];
+        while (nodes.hasNext()) {
+            Node node = nodes.nextNode();
+            nodePath = node.getPath();
+            if (StringUtils.contains(nodePath,"[")) {
+              println "found same name sibling of '${node.getName()}' at ${nodePath}";
+              siblings.add(node);
+            }
+        }
+        siblings.each {
+            nodePath = node.getPath();
+            newName = Path.getUniqueLabel(session,nodePath,node.getName());
+            NodeUtil.renameNode(node,newName);
+            println "${nodePath} was renamed to ${newName}";
+        }
+        session.save();
+    } catch (Exception e) {
+        println e;
+    }
+}
+//example
+siblings("website", "/travel/about", "mgnl:area");
+```
+
+|     |     |
+| --- | --- |
+| **1** | `workspace`: Any [Magnolia workspace](../Workspaces/). |
+| **2** | `path`: A valid path in the workspace. `/` will search for everything under the workspace root. For example, `path=/travel/about`. |
+| **3** | `returnItemType`: A valid JCR node type. The query goes through all node types but the results are filtered to the node type you specify. Use `nt:base` as a `wildcard`. |
+
+## [](#_module_specific_node_types)Module-specific node types
+
+The following sections list node types that are provided by individual Magnolia modules. You can define several node types per module if you so require. Almost all the node types added inherit from `mgnl:contentNode` or `mgnl:content`.
+
+### [](#_categorization_module)Categorization module
+
+Defined in [`magnolia-category-nodetypes.cnd`](https://gitlab.magnolia-platform.com/pd/modules/categorization/-/blob/master/magnolia-categorization/src/main/resources/mgnl-nodetypes/magnolia-category-nodetypes.cnd).
+
+| Notation | Description |
+| --- | --- |
+| `mgnl:category` | An object containing a [category](../../../Modules/List-of-modules/Categorization-module/#_what_is_a_category). Inherits from `mgnl:content`. |
+
+### [](#_content_editor_module)Content Editor module
+
+Defined in [`content-editor-nodetypes.cnd`](https://gitlab.magnolia-platform.com/pd/enterprise/content-editor/-/blob/master/magnolia-content-editor/src/main/resources/mgnl-nodetypes/content-editor-nodetypes.cnd).
+
+| Notation | Description |
+| --- | --- |
+| `mgnl:block` | Content editor block objects containing text, image or similar content. Inherits from `mgnl:contentNode` and are publishable but not versionable. |
+| `mgnl:composition` | Compositions are publishable and versionable as a whole and contain ordered subnodes of type `mgnl:block`. |
+| `mgnl:collection` | Collection of unordered content editor compositions. |
+
+### [](#_content_tags_module)Content Tags module
+
+Defined in [`content-tags-nodetypes.xml`](https://gitlab.magnolia-platform.com/pd/enterprise/content-tags/-/blob/master/magnolia-content-tags-core/src/main/resources/mgnl-nodetypes/content-tags-nodetypes.xml).
+
+| Notation | Description |
+| --- | --- |
+| `mgnl:tag` | An object containing a content tag. Inherits from `mgnl:content`. |
+
+### [](#_dam_module)DAM module
+
+Defined in [`magnolia-dam-nodetypes.xml`](https://gitlab.magnolia-platform.com/pd/modules/dam/-/blob/master/magnolia-dam-jcr/src/main/resources/mgnl-nodetypes/magnolia-dam-nodetypes.cnd).
+
+| Notation | Description |
+| --- | --- |
+| `mgnl:asset` | An object containing an asset. |
+
+### [](#_marketing_tags_module)Marketing Tags module
+
+Defined in [`magnolia-tags-nodetypes.xml`](https://gitlab.magnolia-platform.com/pd/enterprise/marketing-tags/-/blob/master/src/main/resources/mgnl-nodetypes/magnolia-tags-nodetypes.xml).
+
+| Notation | Description |
+| --- | --- |
+| `mgnl:marketing-tag` | An object containing a [marketing tag](../../../Apps/List-of-apps/Marketing-Tags-app/#_what_are_marketing_tags). Inherits from `mgnl:content`. |
+
+### [](#_password_manager_module)Password manager module
+
+Defined in [`magnolia-keystore-nodetypes.xml`](https://gitlab.magnolia-platform.com/pd/modules/password-manager/-/blob/master/magnolia-password-manager-core/src/main/resources/mgnl-nodetypes/magnolia-keystore-nodetypes.xml).
+
+| Notation | Description |
+| --- | --- |
+| `mgnl:password` | An object containing a password. Inherits from `mgnl:content`. |
+
+## [](#_custom_node_types)Custom node types
+
+To meet your needs you can define custom content types and with the Magnolia [Content Types module](#content-types:ROOT:index.adoc), you can define them (together with workspaces) in light modules too.
+
+> **Tip:** Please read the page How to define JCR node types and workspaces, which provides an overview of all ways to define custom JCR node types and create new workspaces with Magnolia.

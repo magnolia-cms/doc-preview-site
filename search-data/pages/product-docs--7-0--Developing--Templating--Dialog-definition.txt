@@ -1,0 +1,117 @@
+---
+title: "Dialog definition"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Templating/Dialog-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Dialog definition
+---
+
+# Dialog definition
+
+A dialog is a pop-up featuring some content and actions to conduct some operations on that content. It contains a head (title), content (typically forms) and a footer (mainly action controls).
+
+> **Note:** This dialog definition is part of the Magnolia 6 UI framework. The fully qualified class name for the base definition is info.magnolia.ui.dialog.DialogDefinition.
+
+The base dialog definition does not enforce any type of content. The most common dialog definition is info.magnolia.ui.dialog.FormDialogDefinition, which uses info.magnolia.ui.editor.FormDefinition for content configuration.
+
+Dialog definitions for *Magnolia 5 UI* still reside in the same registry and can be used in the apps that are not ported to Vaadin 8 UI; they extend the dialog definition for *Magnolia 6 UI* (with legacy properties).
+
+## [](#_example_definition)Example definition
+
+There are many layout possibilities when using *Magnolia 6 UI* dialogs (see [Layout types](Form-definition/#_layout_types)). The most common is the tabbed layout with its single-tab and multi-tab use cases.
+
+-   Single tab
+
+-   Multi tab
+
+
+```yml
+form:
+  properties:
+    text:
+      label: Text
+      $type: textField
+footerLayout:
+  $type: defaultEditorActionLayout
+  primaryActions:
+    commit: commit
+```
+
+```yml
+form:
+  properties:
+    title:
+      $type: textField
+      label: Title
+    description:
+      $type: textField
+      label: Description
+  layout:
+    $type: tabbedLayout
+    tabs:
+      firstTab:
+        label: First
+        fields:
+          - name: title
+      secondTab:
+        label: Second
+        fields:
+          - name: description
+footerLayout:
+  $type: defaultEditorActionLayout
+  primaryActions:
+    commit: commit
+```
+
+## [](#_dialog_properties)Dialog properties
+
+| Property | Description |
+| --- | --- |
+| `form` | **required**<br><br>Node containing fields and similar components as well as their layout.<br><br>See [Form definition](Form-definition/) for more information. |
+| `actions` | **optional**, *default is `commit` and `cancel`*<br><br>Defines actions in the dialog. Specified actions are rendered as components via info.magnolia.ui.api.action.ActionDefinition.<br><br>Only the actions that are defined will be provided. If no action is specified, the dialog will have `commit` and `cancel` actions by default. |
+| `footerLayout` | **optional**, *default is `info.magnolia.ui.dialog.layout.DefaultEditorActionLayoutDefinition`*<br><br>Contains the action area configuration. Specifies the action component layout via info.magnolia.ui.framework.layout.LayoutDefinition. |
+| `primaryActions` | **optional**, *default is `commit` and `cancel`*<br><br>Adds subnodes to match the primary actions defined in the `actions` node. The order of the subnodes defines the sequence in which they are rendered. Actions configured under `primaryActions` are rendered on the right side. |
+| `secondaryActions` | **optional**, *default is `localeSelector`*<br><br>Adds subnodes to match the secondary actions defined in the `actions` node. The order of the subnodes defines the sequence in which they are rendered. Actions configured under `secondaryActions` are rendered on the left side. |
+| `label` | **optional**<br><br>Dialog label displayed to editors. The value can be literal or a [key](../../../Administration/Language/Internationalization/#_i18n_message_keys) of a [message bundle](../../../Administration/Language/Internationalization/#_i18n_message_bundle).<br><br>If you do not provide the property, Magnolia will fall back to a generated i18n key.<br><br>If you do not want to have any label, set the property to an empty string such as `label: ""` in YAML. |
+| `light` | **optional**, *default is `true`*<br><br>When `false`, the dialog blacks out the background—you can only interact with the dialog until it is closed. |
+| `wide` | **optional**, *default is `false`*<br><br>When `true`, the dialog appears in `wide` mode using the maximum width of the viewport with a 20-pixel padding on the left and right. See also the `width` property. |
+| `width` | **optional**, *default is `medium`*<br><br>Defines the dialog width. Possible values are `small` (700 pixels), `medium` (1000 pixels) and `wide`. For `small` and `medium` to work, the `wide` property has to be `false`. |
+
+## [](#_definition_location)Definition location
+
+|     | YAML file path | JCR node path in `config` workspace |
+| --- | --- | --- |
+| Dialog definition | `$magnolia.resources.dir/<module-name>/dialogs` | `/modules/<module-name>/dialogs` |
+
+## [](#_referencing_dialogs)Referencing dialogs
+
+Templates reference dialog definitions in their template definition. This is how the system knows which dialog to associate with the template. Page, area and component templates reference dialogs in the same way by using the `dialog` property.
+
+```yml
+dialog: my-module:components/textImage
+renderType: freemarker
+templateScript: /components/textImage.ftl
+title: Text & Image Component
+```
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>dialog</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Dialog definition ID in <code>&lt;module-name&gt;:&lt;path to dialog definition&gt;</code> format.</p></div><div class="paragraph"><p>The ID has two parts separated by a colon:</p></div><div class="olist arabic"><ol class="arabic"><li><p><code>&lt;module-name&gt;</code>: the name of the module that contains the dialog definition.</p></li><li><p><code>&lt;path&gt;</code>: relative path to the dialog definition inside the <code>dialogs</code> root item. For example, the dialog ID <code>my-module:components/textImage</code> points either to the YAML file <code>$magnolia.resources.dir/my-module/dialogs/components/textImage.yaml</code> or to the JCR node <code>/modules/my-module/dialogs/components/textImage</code> in the configuration workspace.</p></li></ol></div></div></td></tr></tbody></table></div>
+
+## [](#_using_dialogs_in_templates)Using dialogs in templates
+
+Dialogs are most commonly used for content entry in components. However, dialogs are also useful for page and area templates. Here are a few suggestions:
+
+-   Page dialogs:
+
+    -   Content entry: use the dialog to enter content that is not necessarily rendered on the page (for example, to enter a meta title and description that are injected into the `<head>` element or a page excerpt for use in teaser components on other pages).
+
+    -   Navigation: set up a field to mark the page for inclusion in or exclusion from navigation. You could also define browser header and tab titles.
+
+    -   Information: page dialogs can provide editors with useful information. For example, the [Content Dependencies module](../../../Modules/List-of-modules/Content-Dependencies-module/) includes a generic tab that collects page dependencies such as other pages and assets. This information is useful when deleting a page.
+
+
+-   Area dialogs: while most areas contain components, dialog content can be rendered by the script in `noComponent` areas.
+
+
+## [](#_reusing_configuration)Reusing configuration
+
+Magnolia provides mechanisms to reuse dialogs and other configuration items. For more information, see [Reusing configuration](../../Reusing-configuration/).

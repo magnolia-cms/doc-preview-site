@@ -1,0 +1,52 @@
+---
+title: "Marketing Automation REST endpoint"
+url: https://docs.magnolia-cms.com/product-docs/Modules/extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-REST-endpoint/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Marketing automation integration framework > Marketing Automation REST endpoint
+---
+
+# Marketing Automation REST endpoint
+
+This page describes the `MarketingLeadEndpoint` endpoint, which can be used to get data about marketing leads.
+
+## [](#_get)GET
+
+### [](#_get_a_marketing_lead)Get a marketing lead
+
+Gets a marketing lead from your third-party marketing software solution, such as Marketo or Salesforce Sales Cloud, based on a filter.
+
+#### [](#_request_url)Request URL
+
+`/.rest/marketing-automation/v1/leads/`
+
+#### [](#_parameters)Parameters
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 40%;"> <col style="width: 10%;"> <col style="width: 20%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Parameter</th><th class="tableblock halign-left valign-top">Description</th><th class="tableblock halign-left valign-top">Type</th><th class="tableblock halign-left valign-top">Data Type</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>definitionName</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The definition name.</p></div><div class="paragraph"><p>For example: <code>marketo</code> or <code>salesforce</code>.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>query</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>string</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>filterType</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The type of filter applied to the results.</p></div><div class="paragraph"><p>For example: <code>email</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>query</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>string</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>filterValues</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The value of the filter.</p></div><div class="paragraph"><p>For example: <code>jane.doe@email.com</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>query</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>string</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>fields</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The fields whose data you want to get.</p></div><div class="paragraph"><p>For example: <code>FirstName,LastName,Email</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>query</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>string</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>checkFormPrefilling</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="ulist"><ul><li><p>If set to <code>true</code>, checks if form pre-filling is enabled.</p></li><li><p>If it is enabled, lead data is returned.</p></li><li><p>If it is disabled, no lead data is returned.</p></li></ul></div><div class="paragraph"><p>This means you can use this parameter to effectively enable/disable form pre-filling.</p></div><div class="paragraph"><p>If not used or <code>false</code>, then form pre-filling configuration is not checked.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>query</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>boolean</code></p></div></div></td></tr></tbody></table></div>
+
+#### [](#_example)Example
+
+Gets the first and last names for the lead with the email `test@best-cms.com` from Marketo.
+
+http://localhost:8080/magnoliaPublic/.rest/marketing-automation/v1/leads?definitionName=marketo&filterType=email&filterValues=test@best-cms.com&fields=FirstName,LastName
+
+##### [](#_response)Response
+
+```json
+{
+    "id": {
+        "externalId": "13",
+        "definitionName": "marketo"
+    },
+    "values": {
+        "id": 13,
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "email": "test@best-cms.com"
+    }
+}
+```
+
+Related topics
+
+-   [API](../../../../Developing/API/)

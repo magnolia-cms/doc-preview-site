@@ -1,0 +1,14 @@
+---
+title: "CDN Cache"
+url: https://docs.magnolia-cms.com/cockpit/cdn-cache/
+category: DX Cloud
+version: cloud
+---
+
+# CDN Cache
+
+Use this page to manage your cache policies.
+
+-   **Browser cache**: Manage your browser cache policies. These control the `Cache-Control` header sent to end users, determining how long their browsers store responses locally.
+
+-   **CDN cache**: Manage your CDN cache policies. These control the `Surrogate-Control` header, determining how long the CDN caches content. When present, `Surrogate-Control` takes precedence over `Cache-Control` for CDN caching, letting you set different cache durations for browsers and the CDN. CDN caching also helps serve cached content when Magnolia is down or experiencing issues.

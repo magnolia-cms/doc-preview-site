@@ -1,0 +1,470 @@
+---
+title: "Creating a custom webapp with Maven"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Bundles and webapps > Creating a custom webapp with Maven
+---
+
+# Creating a custom webapp with Maven
+
+This tutorial explains how you can create custom Magnolia webapps with [Maven](https://maven.apache.org/). Using Maven allows you to customize your webapps with the POM files, which can be tracked with a [version control system](https://en.wikipedia.org/wiki/Version_control) like [Git](https://en.wikipedia.org/wiki/Git). A tailored webapp makes building and deploying faster and has a positive impact on the performance of your instances. With Maven, you can streamline your Magnolia project to meet the specific demands of the project.
+
+> **Tip:** If you just want to try out Magnolia, follow the tutorial called 4.x@magnolia-cli:ROOT:how-to-get-and-adapt-a-bundle-with-magnolia-cli.adoc. Note that this is a CLI v4 tutorial.
+
+## [](#_what_is_a_webapp)What is a webapp
+
+A Java Web Application (webapp) is a collection of servlets, other Java classes, static resources such as HTML pages, other resources, and meta information that describes the webapp bundled together. You can run a webapp on a servlet container. A Java webapp has a typical structure.
+
+It can be packaged as a [WAR file](https://en.wikipedia.org/wiki/WAR_%28file_format%29). A webapp usually contains already packed portions called libraries or modules as [JAR](https://en.wikipedia.org/wiki/JAR_%28file_format%29) files.
+
+Magnolia provides several preconfigured webapps and bundles. Some of them are ideal candidates as a starting point to build your custom webapp.
+
+## [](#_list_of_webapps)List of webapps
+
+Magnolia provides the following stand-alone, pre-configured Apache Tomcat server that does not include a webapp:
+
+| Artifact | Download | Usage |
+| --- | --- | --- |
+| `` `magnolia-tomcat-barebone` `` | [Nexus](https://nexus.magnolia-cms.com/#browse/search/maven=attributes.maven2.artifactId%3Dmagnolia-tomcat-barebone) | A preconfigured Tomcat server ready to be used with any Magnolia webapp. |
+
+Magnolia provides the following webapps and bundles.
+
+> **Tip:** To get the complete list of the modules in each webapp or bundle, look at the corresponding POM file of the bundle.
+
+### [](#_dx_core)DX Core
+
+  ArtifactUsage
+
+`dx-core-webapp`
+
+This is the DX Core webapp for projects. Use `dx-core-webapp` for local Magnolia Cloud development. (*If you are a partner, see dx-core-cloud-webapp below*).
+
+> **Note:** Add a tomcat-bundle classifier to use with Apache Tomcat
+
+[](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/7.0.0/magnolia-dx-core-webapp-7.0.0.war)
+
+`travel-demo-webapp`
+
+DX Core webapp plus the Travel Demo for evaluation purposes.
+
+> **Note:** Add a tomcat-bundle classifier to use with Apache Tomcat.
+
+[](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/7.0.0/travel-demo-webapp-7.0.0.war)
+
+`magnolia-dx-core-custom-cloud-webapp`
+
+For internal and partner cloud Magnolia usage.
+
+> **Note:** Partners should use magnolia-dx-core-custom-cloud-webapp for local Magnolia Cloud development or when creating a custom cloud bundle for a customer
+
+> **Important:** Use dx-core-webapp for local Magnolia Cloud development.
+
+[](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-custom-cloud-webapp/7.0.0/magnolia-dx-core-custom-cloud-webapp-7.0.0.war)
+
+### [](#_community)Community
+
+| Artifact | Usage |     |
+| --- | --- | --- |
+| `magnolia-empty-webapp` | This is the most basic Magnolia webapp. Use this as a basis for your custom webapp. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/magnolia-empty-webapp/7.0.0/magnolia-empty-webapp-7.0.0.war) |
+| `magnolia-community-webapp` | Complete Magnolia Community Edition webapp for community projects. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/bundle/magnolia-community-webapp/7.0.0/magnolia-community-webapp-7.0.0.war) |
+| `travel-demo-community-webapp` | Community Edition webapp plus the Travel Demo for evaluation purposes. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/7.0.0/travel-demo-community-webapp-7.0.0.war) |
+| `travel-demo-community-webapp` with tomcat | Community Edition webapp plus the Travel Demo for evaluation purposes bundled with Apache Tomcat. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/7.0.0/travel-demo-community-webapp-7.0.0-tomcat-bundle.zip) |
+
+## [](#_requirements)Requirements
+
+We assume that you are familiar with [Maven](https://maven.apache.org/) and the basics of [POM](https://maven.apache.org/pom.html) files. Your Maven settings should comply with the Magnolia [Maven setup](../../Development-environment/Maven/), which provides access to the [Magnolia Nexus](https://nexus.magnolia-cms.com/) repositories, and thus ensures that you can build the webapps described in the examples. If you are new to Magnolia, we recommend that you first carefully follow the [Magnolia Maven setup^](../../Development-environment/Maven/) page.
+
+When creating a custom webapp, you have to decide whether your webapp will contain DX Core modules or only Community Edition modules. If you go for the DX Core, you need credentials to access the DX Core repositories on Nexus and you also need a DX Core license to run the DX Core webapps. If you don’t have these credentials yet, but want to try out the Magnolia DX Core, [apply for a trial license](https://www.magnolia-cms.com/developer-trial.html).
+
+## [](#_possible_approaches)Possible approaches
+
+This section describes two approaches to define a custom webapp with Maven. For both of them, keep in mind the following:
+
+To create a custom Magnolia webapp, always start with a *preconfigured* Magnolia webapp.
+
+### [](#_a_minimal_webapp_and_adding_modules)A minimal webapp and adding modules
+
+If your aim is a minimalistic webapp, we recommend using the `magnolia-empty-webapp` as a base for your webapp project. it is also the base for every Magnolia webapp and provides the essentials such as the Core and UI modules. This approach is applied on the subpage [Creating a minimal webapp with Maven](Creating-a-minimal-webapp-with-Maven/). It could be suitable for you, if you aim at creating a custom headless instance.
+
+### [](#_a_feature_rich_webapp_and_excluding_modules)A feature-rich webapp and excluding modules
+
+Most of the preconfigured Magnolia webapps come with a feature-rich set allowing you to accomplish a number of different tasks and run complex websites. The most prominent preconfigured Magnolia webapps are these two:
+
+-   `magnolia-community-webapp`
+
+-   `magnolia‑dx-core‑webapp`
+
+
+In the [Creating a DX Core webapp with Maven](Creating-a-DX-Core-webapp-with-Maven/) part of this tutorial, the `magnolia-dx-core-webapp` is used as a starting point. We then exclude some modules which are not necessary for the example use case.
+
+When creating a feature-rich webapp, you cannot only exclude modules, you also need to add additional modules. Usually, it is common to do both, exclude and add modules.
+
+#### [](#_procedure_overview)Procedure overview
+
+1.  Create a webapp skeleton from a Magnolia Maven archetype.
+
+2.  Modify the POM files according to your needs.
+
+3.  Add additional resources, if necessary.
+
+4.  Build the webapp.
+
+
+## [](#_creating_an_archetype_based_webapp_skeleton)Creating an archetype-based webapp skeleton
+
+Just as Maven provides archetypes to create a typical skeleton for Maven projects, Magnolia too provides an archetype to create a skeleton for a Magnolia Maven project. The Magnolia archetype comes with options for different tasks. Here, we use the `magnolia-project-archetype`. It is an archetype that creates a Magnolia project with its parent POM and a webapp with its own POM.
+
+> **Warning:** Before running the Maven archetype command, please read How to use Magnolia Maven archetypes: Check Maven settings.
+
+If you are not familiar with the Maven archetype plugin, please also read [How to use Magnolia Maven archetypes: The archetype plugin](../../Development-how-tos/How-to-use-Magnolia-Maven-archetypes/#_Thearchetypeplugin).
+
+### [](#_the_archetype_command)The archetype command
+
+The first step to create your Maven-based custom webapp is running the archetype command. Change into the directory where you want to create the Maven project for the Magnolia webapp. In the directory, use a shell to run the following command:
+
+```sh
+mvn archetype:generate -DarchetypeGroupId=info.magnolia.maven.archetypes -DarchetypeArtifactId=magnolia-project-archetype -DarchetypeVersion=RELEASE
+```
+
+While the archetype script is running, Maven prompts you to supply values for a list of parameters. Some of them are Maven-specific, others concern only Magnolia. In some cases, Maven suggests a value. To accept it, enter `RETURN` or specify your own value and press `RETURN`.
+
+Executing the archetype command is the very first step you always have to take irrespective of the webapp edition you wish to create (Community or DX Core) and the approach you want follow (minimal or feature-rich). The parameters you specify in the prompts have no influence on the edition type or the approach.
+
+#### [](#_archetype_parameters)Archetype parameters
+
+These are the parameters Maven prompts you with in the order they appear:
+
+  ParameterSampleNotes
+
+`groupId`
+
+`com.example`
+
+It typically reflects the name or domain of your company or projects.
+
+`artifactId`
+
+`custom-project-minimal`
+
+Project-specific identifier.
+
+`version`
+
+`1.0-SNAPSHOT`
+
+Project version. Typically, when creating a new project, use the value suggested, `1.0-SNAPSHOT`.
+
+`package`
+
+`com.example`
+
+Package name for Java classes reflecting both your company (or domain) and the specific project.
+
+> **Note:** For this archetype, this parameter is not used, but you must provide a value. You can use the value proposed by the archetype script.
+
+`magnolia-bundle-version`
+
+`7.0.0`
+
+The Magnolia version from which your custom project inherits. If you are unsure, use the latest released version (see releases).
+
+> **Note:** This version is used in the dependencyManagement section of the created POM files. The section indirectly manages all the versions of the Magnolia modules which go into the webapp.
+
+`project-name`
+
+\`custom-project-minimal \`
+
+Project name.
+
+> **Tip:** In many cases it is reasonable to use the same value as in artifactId
+
+After entering a `project-name` value, the archetype script lists all the values you have provided. Now you can:
+
+-   Confirm your choice by pressing `RETURN`. Maven will generate the skeleton based on your parameters.
+
+-   Escape the running archetype script by pressing `CTRL`+`C`. The script terminates, not creating anything. To start again, execute the archetype command as described above.
+
+
+If you have confirmed your choice of parameters, the script finishes the build with a `BUILD SUCCESS` message.
+
+### [](#_the_webapp_skeleton)The webapp skeleton
+
+Maven generates the following webapp skeleton:
+
+```numberLines
+custom-project-minimal/
+├── custom-project-minimal-webapp
+│ ├── pom.xml
+│ └── src
+└── pom.xml
+```
+
+-   Line 3: The webapp’s POM file, defining the modules going into the webapp.
+
+-   Line 4: The `src` directory, containing more subfolders. In [Example 2](#_examples), you add more resources to this directory.
+
+-   Line 5: The parent (actually the root) POM file of the created project. This POM file manages the dependencies.
+
+
+The POM files are the central pieces of the skeleton. Make sure you understand these files since you must adapt them in [the examples](#examples) to define the custom webapps.
+
+#### [](#_parent_pom)Parent POM
+
+The content of the parent POM file, generated for bundle version 7.0:
+
+custom-project-minimal/pom.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>custom-project-minimal</artifactId>
+  <name>custom-project-minimal (parent pom)</name>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <magnoliaBundleVersion>{magnolia-latest-version}</magnoliaBundleVersion>
+    <javaVersion>{base-java-version}</javaVersion>
+  </properties>
+
+  <!-- Fill the following in, so you can use the release plugin -->
+
+  <scm>
+    <connection/>
+    <developerConnection/>
+    <url/>
+  </scm>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Option A -->
+      <!-- Importing dependencyManagement of CE bundle. -->
+      <dependency>
+        <groupId>info.magnolia.bundle</groupId>
+        <artifactId>magnolia-bundle-parent</artifactId>
+        <version>${magnoliaBundleVersion}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Option B -->
+      <!-- If you want to use the DX CORE. -->
+      <!--
+      <dependency>
+        <groupId>info.magnolia.dx</groupId>
+        <artifactId>magnolia-dx-core-parent</artifactId>
+        <version>${magnoliaBundleVersion}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      -->
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <source>${javaVersion}</source>
+          <target>${javaVersion}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+    <!-- default resources configuration which will filter your module descriptors -->
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*</include>
+        </includes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>META-INF/magnolia/*</include>
+        </includes>
+      </resource>
+    </resources>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>magnolia.public</id>
+      <url>https://nexus.magnolia-cms.com/repository/public</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <!-- IF YOU NEED MODULES FROM THE ENTERPRISE VERSION, UNCOMMENT THE FOLLOWING REPOSITORY -->
+    <!--
+    <repository>
+      <id>magnolia.nexus.enterprise</id>
+      <url>https://nexus.magnolia-cms.com/repository/enterprise</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    -->
+    <repository>
+      <id>vaadin-addons</id>
+      <url>https://maven.vaadin.com/vaadin-addons</url>
+    </repository>
+  </repositories>
+
+  <modules>
+    <module>custom-project-minimal-webapp</module>
+  </modules>
+
+</project>
+```
+
+Depending on the requirements of your project, the `properties` and the `dependencyManagement` sections may need some adjustments.
+
+##### [](#_properties)Properties
+
+The `properties` section is where you define values such as versions. You can use the section in both the parent POM and the webapp POM.
+
+Use the `properties` section to define versions. The section may the serve as a central part for organizing all versions required by your project.
+
+For example, the archetype adds the `magnoliaBundleVersion` property.
+
+##### [](#_dependency_management)Dependency management
+
+In the `dependencyManagement` section, you define the artifact dependencies that you also add to the module in the webapp POM.
+
+In the skeleton, *Option A* and *Option B* were created, the latter as a comment.
+
+-   **Use the *Option A* to inherit dependency management for a Magnolia *Community Edition* (CE) webapp.**
+    Have a look at the [parent POM of the CE bundle](https://gitlab.magnolia-platform.com/pd/platform/ce/-/blob/master/pom.xml) (Magnolia release 6.4) to understand what exactly you inherit with *Option A*.
+
+
+-   **Use the *Option B* to inherit dependency management for a Magnolia *DX Core* webapp**.
+    Importing the DX Core dependency management section also indirectly imports the CE dependency management.
+    Have a look at the [parent POM of the DX Core](https://gitlab.magnolia-platform.com/pd/platform/ce/-/blob/master/pom.xml) (Magnolia release 6.4) to understand what exactly you inherit with *Option B*. To access the parent POM of the EE bundle on Git, you need [DX Core credentials](#_ee_credentials).
+
+
+Also, use the `dependencyManagement` section to define the versions of other modules which you want to add to the webapp.
+
+#### [](#_webapp_pom)Webapp POM
+
+The contents of the webapp POM file:
+
+custom-project-minimal/custom-project-minimal-webapp/pom.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.example</groupId>
+    <artifactId>custom-project-minimal</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>custom-project-minimal-webapp</artifactId>
+  <name>custom-project-minimal: webapp</name>
+  <packaging>war</packaging>
+  <dependencies>
+    <!--
+     Add your project specific dependencies here:
+     A custom webapp typically is based on a magnolia webapp. The most simple and reduced bundle to start with is the "magnolia-empty-webapp" (see "option i" below).
+     => Please just use one of the four below listed options!
+     Make sure to use the appropriate option (A or B) in the parent pom
+    -->
+
+    <!-- option i - magnolia-empty-webapp -->
+    <!-- Dependencies versions are already imported by parent pom. Requires "Option A" in the parent pom. -->
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-empty-webapp</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia</groupId>
+      <artifactId>magnolia-empty-webapp</artifactId>
+      <type>pom</type>
+    </dependency>
+
+    <!-- option ii - magnolia-community-webapp -->
+    <!-- Dependencies versions are already imported by parent pom. Requires "Option A" in the parent pom. -->
+    <!--
+    <dependency>
+      <groupId>info.magnolia.bundle</groupId>
+      <artifactId>magnolia-community-webapp</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.bundle</groupId>
+      <artifactId>magnolia-community-webapp</artifactId>
+      <type>pom</type>
+    </dependency>
+    -->
+
+    <!-- option iii - magnolia-dx-core-webapp -->
+    <!-- Dependencies versions are already imported by parent pom. Requires "Option B" in the parent pom. -->
+    <!--
+    <dependency>
+      <groupId>info.magnolia.dx</groupId>
+      <artifactId>magnolia-dx-core-webapp</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.dx</groupId>
+      <artifactId>magnolia-dx-core-webapp</artifactId>
+      <type>pom</type>
+    </dependency>
+    -->
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <!-- exclude jars copied "physically" from the webapp overlay - so we only get those resolved by Maven's dependency management -->
+          <dependentWarExcludes>WEB-INF/lib/*.jar</dependentWarExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+```
+
+##### [](#_dependencies)Dependencies
+
+Finally, in the `dependencies` section of the webapp POM, you assemble the modules which should be part of the webapp. Since you are using a preconfigured Magnolia webapp as the base, the Magnolia archetype creates and adds the following options to the webapp POM:
+
+-   `magnolia-empty-webapp`
+
+-   `magnolia-community-webapp`
+
+-   `magnolia-dx-core-webapp`
+
+
+Each of these options has a dependency to two artifact types – `pom` and `war`.
+
+Besides adding an existing webapp, you typically also add other dependencies to single modules.
+
+## [](#_examples)Examples
+
+For examples of creating custom webapps with Maven, see the following pages:
+
+-   Example 1: [Creating a minimal webapp with Maven](Creating-a-minimal-webapp-with-Maven/)
+
+-   Example 2: [Creating a DX Core webapp with Maven](Creating-a-DX-Core-webapp-with-Maven/)
+
+
+Related topics
+
+-   [Bundles and webapps](../)
+
+-   [Apache Maven](https://maven.apache.org/)
+
+-   [Maven setup](../../Development-environment/Maven/)

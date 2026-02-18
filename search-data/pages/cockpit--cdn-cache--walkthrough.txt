@@ -1,0 +1,85 @@
+---
+title: "CDN Cache deep dive"
+url: https://docs.magnolia-cms.com/cockpit/cdn-cache/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# CDN Cache deep dive
+
+## [](#_sidebar_filters)Sidebar filters
+
+The sidebar filters lets you select your **Release environment**.
+
+## [](#_browser_cache)Browser cache
+
+Manage your browser cache policies. Browser caching controls the `Cache-Control` header sent to end users, determining how long their browsers store responses locally.
+
+## [](#_cdn_cache)CDN cache
+
+Manage your CDN cache policies. CDN caching controls the `Surrogate-Control` header. When the CDN sees this header, it uses it instead of `Cache-Control`, letting you give the browser and CDN different cache instructions.
+
+For example, you might set `Cache-Control: no-cache` on images so browsers never cache them, while setting `Surrogate-Control: max-age=31536000` so the CDN caches them for a year. If you need to update the images later, you only invalidate the CDN cache and all browsers immediately get the new version.
+
+CDN caching also helps serve cached content when Magnolia is down or experiencing issues.
+
+## [](#_publish)Publish
+
+Publish your cache policies to the CDN.
+
+1.  Click **Publish**.
+
+2.  Write a message to describe the changes.
+
+3.  Click **Publish**.
+
+
+## [](#_restore)Restore
+
+You can restore a previous version of your cache policies.
+
+1.  Click **Restore**.
+
+2.  Choose the version you want to restore from the dropdown list.
+
+3.  Click **Restore**.
+
+
+## [](#_import_cache_rules_from_magnolia)Import cache rules from Magnolia
+
+You can import cache rules from your Magnolia instance.
+
+1.  Click **Import cache rules from Magnolia**.
+
+2.  The cache rules will be imported and added to the list.
+
+
+You can edit the policies after the import.
+
+## [](#_add_policy)Add policy
+
+Add a new policy to your cache policies. Depending on the cache type, you see different fields.
+
+1.  Give the policy a **Name**.
+
+2.  Choose the **Type**.
+
+    -   For Browser cache, choose the **Type** and set the **Expiration in minutes**.
+
+    -   For CDN cache, the **Type** and set the **Expiration in minutes**.
+
+
+3.  Click **Add policy**.
+
+    You can also add [voters](https://docs.magnolia-cms.com/product-docs/administration/voters/) to the policy.
+
+
+For full details, see [Magnolia Docs: Cache](https://docs.magnolia-cms.com/paas/cockpit/sections/content-delivery/#_cache_2).
+
+## [](#_reorder)Reorder
+
+You can reorder your policies.
+
+1.  Click **Reorder**.
+
+2.  Drag the policies to the order you desire.

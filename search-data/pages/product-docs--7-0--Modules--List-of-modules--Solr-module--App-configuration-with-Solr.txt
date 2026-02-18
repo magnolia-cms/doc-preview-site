@@ -1,0 +1,141 @@
+---
+title: "App configuration with Solr"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Solr-module/App-configuration-with-Solr/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Solr module > App configuration with Solr
+---
+
+# App configuration with Solr
+
+> **Note:** This page describes legacy app configuration used together with the old Magnolia 5 UI.
+
+The Solr Workbench submodule of the Magnolia [Solr module](../) provides a Magnolia Solr container that can be used instead of the JCR container for list, search and thumbnail views in a content app.
+
+This page describes how to configure the submodule to use Solr’s functionality in the 5 UI and for indexing of the assets it manages.
+
+The Solr container, which fetches data indexed in the [Apache Solr](http://solr.apache.org/) search platform, is recommended to be used when [handling large numbers of assets](../../../../Authoring/Managing-assets/#_how_to_handle_large_amount_of_assets).
+
+> **Note:** Magnolia uses the following search containers that backup the search view in the UI:info.magnolia.ui.workbench.search.SearchJcrContainer for Jackrabbit.info.magnolia.search.solrsearchprovider.workbench.SolrContainer for Solr.In general, you can use these containers in any JCR based Content App. Similarly, indexing is workspace-based and hence one workspace may use Jackrabbit’s indexing functionality, another one Solr’s indexing functionality.You can also define and use your own custom container, especially in case you need to use both Jackrabbit and Solr together in one workspace.
+
+## [](#_creating_a_dedicated_core_for_the_assets_app)Creating a dedicated core for the Assets app
+
+When Apache Solr is running, create a new core called `dam_wokbench` for the :
+
+```bash
+./solr create_core -c dam_workbench -d magnolia_data_driven_schema_configs
+```
+
+## [](#_dam_workspace_indexers)DAM workspace indexers
+
+The Solr Workbench module comes with two preconfigured DAM workspace indexers:
+
+-   `damWorkbenchAssets`
+
+-   `damWorkbenchFolders`
+
+
+To enable them, set the following properties to `true`:
+
+-   `/modules/content-indexer/config/indexers/damWorkbenchAssets@enabled`
+
+-   `/modules/content-indexer/config/indexers/damWorkbenchFolders@enabled`
+
+
+For more information about configuring indexers, see [Indexer configuration](../Indexing-and-crawling-a-website-with-Solr/#_indexer_configuration).
+
+The preconfigured configuration:
+
+| Node name | Value |
+| --- | --- |
+| damWorkbenchAssets |     |
+| clients |     |
+| dam\_wokbench | dam\_wokbench |
+| fieldMappings |     |
+| caption | asset\_caption |
+| contributor | asset\_contributor |
+| copyright | asset\_copyright |
+| coverage | asset\_coverage |
+| description | asset\_description |
+| extension | asset\_extension |
+| fileName | asset\_filename |
+| languages | asset\_languages |
+| name | asset\_name |
+| publisher | asset\_publisher |
+| relation | asset\_relation |
+| source | asset\_source |
+| subject | asset\_subject |
+| title | asset\_title |
+| enabled | false |
+| nodeType | mgnl:asset |
+| assetProviderId | jcr |
+| rootNode | /   |
+| type | dam-workbench |
+| workspace | dam |
+
+| Node name | Value |
+| --- | --- |
+| damWorkbenchFolders |     |
+| clients |     |
+| dam\_wokbench | dam\_wokbench |
+| fieldMappings |     |
+| enabled | false |
+| nodeType | mgnl:folder |
+| assetProviderId | jcr |
+| rootNode | /   |
+| type | dam-workbench |
+| workspace | dam |
+
+## [](#_dam_app_configuration)DAM app configuration
+
+### [](#_content_connector)Content connector
+
+The Solr Workbench module introduces `info.magnolia.search.solrsearchprovider.workbench.SolrJcrContentConnectorDefinition`. It allows you to specify which [client](../Providing-a-Solr-search/#_ConfiguringtheSolrclients) should be used.
+
+The configuration snippet below is a YAML decoration showing how to use `SolrJcrContentConnectorDefinition` in the app:
+
+/<light\_module>/decorations/dam-app/apps/assets.subApps.browser.contentConnector.yaml
+
+```yaml
+class: info.magnolia.search.solrsearchprovider.workbench.SolrJcrContentConnectorDefinition
+client: dam_workbench
+```
+
+For more about content connectors, see .
+
+### [](#_content_view)Content View
+
+The submodule provides presenter and definition classes for list, search and thumbnail views. The configuration decoration snippet below shows SOLR-based content view definitions for the list, thumbnail and search views in the DAM app’s browser:
+
+/<light\_module>/decorations/dam-app/apps/assets.subApps.browser.workbench.contentViews.yaml
+
+```yaml
+list:
+  class: info.magnolia.search.solrsearchprovider.workbench.SolrListPresenterDefinition
+search:
+  class: info.magnolia.search.solrsearchprovider.workbench.SolrSearchPresenterDefinition
+thumbnail:
+  class: info.magnolia.search.solrsearchprovider.workbench.SolrThumbnailPresenterDefinition
+```
+
+For more information about configuring content view definitions, see [Content view definition configuration](../../../../Apps/App-configuration/Content-view-definition/).
+
+### [](#_dam_solr_workbench_light_module)dam-solr-workbench light module
+
+> **Caution:** Not compatible with the 6 UI-based DAM app.
+
+To use the Solr Workbench submodule in the DAM app, you can use a pre-configured light module called [dam-solr-workbench](https://gitlab.magnolia-platform.com/pd/lightmodules/dam-solr-workbench) from git.
+
+Related topics
+
+-   [Solr module](../)
+
+-   [Installing Apache Solr](../Installing-Apache-Solr/)
+
+-   [Indexing and crawling a website with Solr](../Indexing-and-crawling-a-website-with-Solr/)
+
+-   [Providing a Solr search](../Providing-a-Solr-search/)
+
+-   [Jackrabbit search](../../../../Administration/Jackrabbit-search/)
+
+-   [Generating Custom sitemap with SOLR](https://magnolia-cms.atlassian.net/wiki/spaces/WIKI/pages/839943643/Generating+custom+sitemap+with+Solr) (Community Wiki)

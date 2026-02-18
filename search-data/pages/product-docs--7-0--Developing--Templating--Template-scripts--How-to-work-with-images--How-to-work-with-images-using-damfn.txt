@@ -1,0 +1,156 @@
+---
+title: "How to work with images using damfn"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > How to work with images > How to work with images using damfn
+---
+
+# How to work with images using damfn
+
+This page explains how to work with images and other assets stored in Magnolia [Digital asset management](../../../../../use-cases/Digital-asset-management/) using [`damfn`](../../Templating-functions/damfn/) [templating functions](../../Templating-functions/) in template scripts.
+
+## [](#_imaging_modules)Imaging modules
+
+If you use a Magnolia bundle, the required and optional modules are already included.
+
+If you [created a custom webapp](../../../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/), add the following modules in the POM file of the webapp of your bundle. The modules may have dependencies to other modules, but these dependencies are handled by Maven dependency management.
+
+### [](#_required_modules)Required modules
+
+Modules required for basic image operations.
+
+| artifactId | version |
+| --- | --- |
+| `magnolia-dam-imaging` | 5.0.0 |
+| `magnolia-imaging-support` | 5.0.0 |
+
+### [](#_optional_modules)Optional modules
+
+Modules required when using info.magnolia.dam.api.AssetRendition, such as size variations of an image (recommended).
+
+| artifactId | version |
+| --- | --- |
+| `magnolia-site` | 3.0.0 |
+| `magnolia-templating-essentials-imaging` | 4.0.0 |
+
+## [](#_selecting_image_in_dialog_using_link_field)Selecting image in dialog using link field
+
+To select an image in a dialog, use a [link field](../../../Dialog-definition/Field-definition/List-of-fields/Link-field/). It stores a reference to the selected asset.
+
+**Example**: Code fragment from a [dialog definition](../../../Dialog-definition/).
+
+```yml
+form:
+  properties:
+    image:
+      $type: damLinkField
+```
+
+## [](#_displaying_an_image)Displaying an image
+
+To render an image, you need to get a link to the asset. Use the link as a value in the `src` attribute of the `img` element.
+
+### [](#_getting_an_image_link_with_itemkey)Getting an image link with `itemKey`
+
+Use the `#getAssetLink(itemKey)` method if you have the [`itemKey`](../../Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset) of the image. See [Get link for asset](../../Templating-functions/damfn/#_get_link_for_asset). For instance, the `textImage` component stores `itemKey` in the `image` property. This is a very common use case.
+
+**Example**: Getting an image link with `itemKey`. Assume that this code is executed in a component template. The current `content` node has a property named `image` where `itemKey` is stored.
+
+\[#assign imgItemKey = content.image!\]
+\[#if imgItemKey??\]
+    \[#assign imgRef = damfn.getAssetLink(imgItemKey)!\]
+    \[#if imgRef??\]
+        <img src="${imgRef}"/>
+    \[/#if\]
+\[/#if\]
+
+### [](#_getting_an_image_link_for_an_asset)Getting an image link for an asset
+
+Use the `getLink()` method if you already have the asset. Since an \[.inlineBean\]#info.magnolia.dam.api.Asset object is a Java bean, you can use its public method `#getLink()`. You may even use the dot notation.
+
+**Example**: Getting an image link for an asset.
+
+\[#assign myAsset = damfn.getAsset("jcr","/photos/pool.jpg")!\]
+\[#if myAsset??\]
+    <img src="${myAsset.getLink()}"/>
+\[/#if\]
+
+\[#assign myAsset = damfn.getAsset("jcr","/photos/dilbert.jpg")!\]
+\[#if myAsset??\]
+    <img src="${myAsset.link}"/>
+\[/#if\]
+
+## [](#_displaying_resized_images)Displaying resized images
+
+> **Note:** If you need different sizes of the same image, do not upload multiple copies (variations) of the same image to your DAM repository. Instead, upload the image only once and define image size variations in your theme.
+
+### [](#_defining_image_variations)Defining image variations
+
+Configure your image variations in a theme. Each variation should be a node under `<my-theme>/imaging/variations`. The variation node name is what you will be referencing in your template scripts. It is also known as *rendition name*.
+
+**Example**: Defining three image variations in a [theme](../../../Theme/).
+
+## [](#_configuring_theme_variations)Configuring theme variations
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>imaging</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Imaging node of the theme.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><span class="inlineBean">info.magnolia.templating.imaging.VariationAwareImagingSupport</span> provides support for image variations.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>variations</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Map of image variations.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;variation name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the variation (rendition). Choose a name that describes the variation. The name is used in template scripts to reference the variation. Add one node for every variation.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>You can use one of the available classes or create a custom one. The available properties depend on the class used for the variation. Any custom class must implement <span class="inlineBean">info.magnolia.imaging.variation.Variation</span>.</p></div><div class="paragraph"><p>The <a href="../../../../../Modules/List-of-modules/MTE-module/" class="xref page">MTE module</a> provides:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.templating.imaging.variation.SimpleResizeVariation</span> to resize images to a defined size in pixels (see below for available properties).</p></li><li><p><span class="inlineBean">info.magnolia.templating.imaging.variation.ImageOperationProvidingVariation</span> to create your own image operation chain using the <code>mte</code> image generator.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;properties&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Add properties that are supported by the class used.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Enables and disables support for image variations.</p></div></div></td></tr></tbody></table></div>
+
+On the node `/modules/site/config/themes/<your-theme>/imaging`, you must specify the `class` property. The used class must implement info.magnolia.imaging.ImagingSupport. The [MTE module](../../../../../Modules/List-of-modules/MTE-module/) provides info.magnolia.templating.imaging.VariationAwareImagingSupport, which is a good choice for our use case here.
+
+Add one node for every required variation below `<your-theme>/imaging/variations`. The name of such a node is the name of the variation (rendition name). In the example above, we have defined the renditions `small-square`, `thumbnail` and `medium`.
+
+For every variation, you have to configure some properties. The available properties depend on the class you use in the variation. You can implement your own class. The definition class must implement the info.magnolia.imaging.variation.Variation interface.
+
+In the example above, we use info.magnolia.templating.imaging.variation.SimpleResizeVariation. This class is provided by the `magnolia-templating-essentials-imaging` module. Your webapp bundle must contain the module.
+
+Properties of `SimpleResizeVariation`:
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;variation name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Class used to resize images to a defined size in pixels. Must implement <span class="inlineBean">info.magnolia.templating.imaging.variation.SimpleResizeVariation</span>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>crop</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Defines whether the image can be cropped to fit the desired aspect ratio.</p></div><div class="paragraph"><p><strong>Example</strong>: A source image in the DAM is 800x800 px (square). For a variation, you define the desired target size as 200x100 (rectangle). The image is first resized to 200x200 and then cropped equally from the top and bottom to reach 200x100 so that it is not distorted. If you set <code>crop</code> to <code>false</code>, the image will be distorted to achieve the desired target size.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>expand</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Defines whether the image can be expanded when it is not cropped.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>height</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Integer to define the height in pixels. You must define either <code>height</code> or <code>width</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>width</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Integer to define the width in pixels. You must define either <code>height</code> or <code>width</code>.</p></div><div class="ulist"><ul><li><p>If you do not define either <code>height</code> or <code>width</code>, the <a href="../../../Renderers/" class="xref page">renderer</a> will internally throw <code>ImagingException</code> and the image will appear in its original uploaded size.</p></li><li><p>If you define both <code>height</code> and <code>width</code>, the image will be sized down to the lower of the two and the rest will be cropped if necessary. Cropping starts from the middle, so the image is cropped either on the top and bottom or the left and right.</p></li><li><p>If you define only <code>height</code> or <code>width</code>, the other property will be calculated using the aspect ratio of the original image.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+> **Warning:** Make sure the site where you want to display the image variations references the theme. The name property of the theme in a site configuration must be the same as the main node of the configured theme.
+
+### [](#_getting_an_image_variation)Getting an image variation
+
+**Example**: Getting an image variation (asset rendition) with `itemKey`. Assume that `content` in this example stores `itemKey` in the `image` property.
+
+\[#assign imgItemKey = content.image!\]
+\[#if imgItemKey??\]
+    \[#assign myMediumRendition = damfn.getRendition(imgItemKey, "medium")!\]
+    \[#if myMediumRendition??\]
+        <img src="${myMediumRendition.getLink()}"/>
+    \[/#if\]
+\[/#if\]
+
+**Example**: Getting an image variation (asset rendition) for an asset.
+
+\[#if myAsset?? && myAsset.isAsset()\]
+    \[#assign myThumbnail = damfn.getRendition(myAsset, "thumbnail")!\]
+    \[#if myThumbnail??\]
+        <img src="${myThumbnail.getLink()}"/>
+    \[/#if\]
+\[/#if\]
+
+### [](#_image_variation_cache)Image variation cache
+
+Magnolia caches image resources to improve performance. Any dynamic images generated by the Imaging module are also cached at two levels: in the `imaging` workspace and in the actual cache like any other page or document. This means that once the system generates an image, you keep getting the same cached image on subsequent requests.
+
+#### [](#_disabling_image_cache_during_development)Disabling image cache during development
+
+During development, it is helpful to disable caching of generated images completely. Go to **Configuration** > **/server/filters/servlets/ImagingServlet/parameters**, create a new property named `storeGeneratedImages` and set its value to `false`.
+
+![Disabling image cache during development in Configuration app](../../../../../_images/ADVT-HTimages-cache.png)
+
+> **Warning:** Remove the property or to set it to true after having finished image variation development. Do not use this property in your production environment.
+
+#### [](#_deleting_image_variations_in_the_imaging_workspace)Deleting image variations in the imaging workspace
+
+Once image variations are stored in the `imaging` workspace, they remain there. After you remove the `storeGeneratedImages` property, any cached image variations are served from the `imaging` workspace again. Delete the nodes from the workspace.
+
+Option 1: Groovy script. In the script, `examples-theme` is the name of your theme. You can run this script in the [Groovy console](../../../../../Modules/List-of-modules/Groovy-module/) or add a new script and run it.
+
+session = MgnlContext.getJCRSession('imaging')
+images = session.getNode('/examples-theme')
+images.remove()
+session.save()
+
+Option 2: Delete the nodes in the `imaging` workspace in the [JCR Browser app](../../../../../Apps/List-of-apps/JCR-Browser-app/).

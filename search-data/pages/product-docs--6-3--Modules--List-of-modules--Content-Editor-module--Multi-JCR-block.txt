@@ -1,0 +1,140 @@
+---
+title: "Multi JCR block"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Content-Editor-module/Multi-JCR-block/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Content Editor module > Multi JCR block
+---
+
+# Multi JCR block
+
+info.magnolia.editor.block.jcr.MultiJcrBlockDefinition is a special type of [multi field](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Multi-field/) installed by the [Content Editor module](../). It enables different block types in a content editor, for example the [Stories app](../../../../Apps/List-of-apps/Stories-app/), and allows you to change their appearance.
+
+> **Important:** Keep in mind that multiJcrBlock is a content-editor field and therefore can’t be used in a content-type app.
+
+> **Note:** By specifying the $type as multiJcrBlock, or alternatively the class as info.magnolia.editor.block.jcr.MultiJcrBlockDefinition, several configuration properties are set automatically:implementationClass is set to info.magnolia.editor.block.MultiBlockViewentryResolution is set to MultiJcrBlockEntryResolutionorderHandler is set to MultiJcrBlockOrderHandler
+
+## [](#_example_definition)Example definition
+
+```yml
+blocks:
+  label: Blocks
+  $type: multiJcrBlock
+  initialBlock: text
+  defaultBlock: image
+  blocks:
+    - text
+    - image
+    - video
+    - externalLink
+  itemProvider:
+    $type: currentItemProvider
+```
+
+## [](#_properties)Properties
+
+### [](#_block_specific_properties)Block-specific properties
+
+| Property | Description |
+| --- | --- |
+| `blocks` | **required**<br><br>Node containing a list of block definitions. |
+| `defaultBlock` | **required**<br><br>The name of the block which will be pre-selected in the block picker subdialog. |
+| `initialBlock` | **required**<br><br>The name of the block that will be created as the initial block when creating a new content item (new story). |
+
+### [](#_common_multi_field_properties)Common multi field properties
+
+> **Note:** When configuring the common multi field properties listed in the table below, make sure that you use the JcrMultiFieldDefinition-related variables if more options are present.The field property only applies to field definitions. The corresponding property in a multi block definition is blocks (see in the table above).
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>field</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Node containing an editor property definition item (typically, a field).</p></div><div class="paragraph"><p>All <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/#_field_types" class="xref page">field types</a> are supported. See <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/" class="xref page">List of fields</a> for more information.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content"><code>JcrMultiLinkFieldDefinition</code> supports only <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/" class="xref page">link</a> and <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Combobox-field/" class="xref page">combobox</a> fields.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>chooserId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (used only in <code>JcrMultiLinkFieldDefinition</code>), <em>default is <code>ui-framework-core:multiChooser</code></em></p></div><div class="paragraph"><p>Unique identifier for the multi-<a href="../../../../Developing/Templating/Dialog-definition/Dialog-types/#_chooser_dialog" class="xref page">chooser dialog</a>. If none is specified, the <a href="https://git.magnolia-cms.com/projects/PLATFORM/repos/ui.pub/browse/magnolia-ui-framework-jcr/src/main/resources/ui-framework-jcr/dialogs/multiChooser.yaml" target="_blank" rel="noopener">JCR <code>multiChooser</code></a> will be used by default.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>entryResolution</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is</em></p></div><div class="ulist"><ul><li><p><em><code>MultiFieldEntryResolution</code> for <code>JcrMultiFieldDefinition</code></em></p></li><li><p><em><code>MultiJcrBlockEntryResolution</code> for <code>MultiJcrBlockDefinition</code></em></p></li><li><p><em><code>JsonMultiFieldEntryResolver</code> for <code>JsonMultiFieldDefinition</code></em></p></li></ul></div><div class="paragraph"><p>Implementation class that defines how the child entries of a multi field should be resolved.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content"><div class="paragraph"><p><code>MultiFieldEntryResolution</code> of <code>JcrMultiFieldDefinition</code> extends <code>ByIndexedChildNodes</code>, which resolves entry nodes regardless of node names. To enable this non-strict resolution behavior, there is a <code>strict</code> property that is set to <code>false</code> by default.</p></div><div class="paragraph"><p>Setting <code>strict</code> to <code>true</code> ensures backward compatibility (for example, when porting configurations that use <a href="#6.2@product-docs:ROOT:Upgrading-to-Magnolia/Magnolia-6-UI-ports-of-5-UI-field-transformer-classes.adoc" class="xref unresolved"><em>Magnolia 5 UI</em> multi field transformers</a>). In configurations such as the two below, <code>strict</code> falls back to the required value and that change appears in the <a href="../../../../Apps/List-of-apps/Definitions-app/" class="xref page">Definitions app</a>.</p></div><div class="ulist"><ul><li><p><code>itemProvider</code> specifies the type of data binding for subnodes in complex fields. When you configure a multi field with <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/Item-providers/#_for_any_data_source" class="xref page">CurrentItemProvider</a> and set <code>entryResolution</code> to <code>MultiFieldEntryResolution</code>, the <code>strict</code> node resolution is set to <code>false</code>. This ensures that nodes, which aren’t multi fields, don’t get resolved as multi fields.</p></li><li><p>When you configure a multi field with <a href="#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.1.adoc#_new_supporti18n_property_in_jcrchildnodeprovider" class="xref unresolved">isSupportI18N</a> set to <code>false</code>, the <code>strict</code> property of <code>entryResolution</code> is set to <code>false</code>. The <code>isSupportI18N</code> configuration flattens localized multi parent nodes into a single parent. However, you need to resolve child nodes in a way that considers their locale suffix and doesn’t take everything beneath the parent, so <code>strict</code> is set to <code>true</code>.</p></li></ul></div></td></tr></tbody></table></div><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content"><div class="paragraph"><p>You can’t configure this property through YAML but it can be used in your Java code.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>orderHandler</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is</em></p></div><div class="ulist"><ul><li><p><em><code>DefaultJcrNodeOrderHandler</code> for <code>JcrMultiFieldDefinition</code></em></p></li><li><p><em><code>MultiJcrBlockOrderHandler</code> for <code>JcrMultiFieldDefinition</code></em></p></li></ul></div><div class="paragraph"><p>Implementation class that sorts nodes and ensures that the suffixes in index names correspond to the order in which they are stored.</p></div><div class="paragraph"><p>When <code>MultiFormDefinition$OrderHandlerDefinition$Noop</code> is used, the order of the items of a multi field cannot be changed retroactively.</p></div><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content"><div class="paragraph"><p>You can’t configure this property through YAML but it can be used in your Java code.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>canRemoveItems</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code> for <code>MultiValueFieldDefinition</code> and <code>JcrMultiFieldDefinition</code></em></p></div><div class="paragraph"><p>When <code>false</code>, the items of a multi field cannot be removed from a dialog.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>buttonSelectAddLabel</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is translated <code>buttons.add</code> key (translated <code>dialogs.buttons.select.multiple</code> key for <code>JcrMultiLinkFieldDefinition</code>)</em></p></div><div class="paragraph"><p>Button label for adding an item. The value is <a href="../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">i18n</a>-able.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>buttonSelectRemoveLabel</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is translated <code>buttons.delete</code> key</em></p></div><div class="paragraph"><p>Button label for removing an item. The value is <a href="../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">i18n</a>-able.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>minItems</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>0</code></em></p></div><div class="paragraph"><p>Specifies the minimum number of items to be added.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxItems</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>Integer.MAX_VALUE</code></em></p></div><div class="paragraph"><p>Specifies the maximum number of items to be added.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content"><div class="paragraph"><p>If <code>minItems</code> is greater than <code>maxItems</code>, item count validation will be disabled.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>itemCountErrorMessage</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is translated <code>validators.multi.itemCount.errorMessage</code> key</em></p></div><div class="paragraph"><p>Error message shown when the number of items is less than <code>minItems</code> or greater than <code>maxItems</code>. The value can be literal or a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>required</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Makes the field required. An asterisk is displayed next to the field label.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>requiredErrorMessage</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is translated <code>validation.message.required</code> key</em></p></div><div class="paragraph"><p>Error message shown when <code>required</code> is set to <code>true</code> and the user saves an empty field. The value can be literal or a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_common_complex_field_properties)Common complex field properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the field definition item. Derived from the configured node name. Use alphanumeric characters without spaces.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (unless <code>$type</code> is used)</p></div><div class="paragraph"><p>Type of the field definition item. The value must be a fully qualified class name and a subtype of <code>info.magnolia.ui.field.FieldDefinition</code>. See <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/#_field_types" class="xref page">Field types</a> for possible values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>You can use this as a shortcut for <code>class</code> if the definition class is annotated with <code>info.magnolia.ui.field.FieldType</code>. The proper value is defined by the annotation.</p></div><div class="listingblock"><div class="title">Example class annotation</div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@FieldType("textField")
+public class TextFieldDefinition extends ConfiguredFieldDefinition&lt;String&gt; {
+...
+}</code></pre></div></div><div class="paragraph"><p>See <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/#_field_types" class="xref page">Field types</a> for possible values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>itemProvider</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is</em></p></div><div class="ulist"><ul><li><p><em><code>JcrChildNodeProviderDefinition</code> for <code>JcrMultiFieldDefinition</code></em></p></li><li><p><em><code>CurrentItemProviderDefinition</code> for <code>StaticFieldViewDefinition</code></em></p></li></ul></div><div class="paragraph"><p>Node with a <code>$type</code> property that specifies the type of data binding for the subnodes in complex fields.</p></div><div class="paragraph"><p>For more details, see <a href="../../../../Developing/Templating/Dialog-definition/Field-definition/Item-providers/" class="xref page">Item providers</a>.</p></div><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content"><div class="paragraph"><p>You can’t configure this property through YAML but it can be used in your Java code.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Help text displayed when the user clicks the help icon. The value can be literal or a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>i18n</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables <a href="../../../../Administration/Language/Language-configuration/" class="xref page">i18n authoring support</a>, which allows editors to write foreign-language or regionally targeted content. A two-letter language identifier (<code>en</code>, <code>de</code>, <code>fr</code>, etc.) is displayed on controls where <code>i18n</code> is set to <code>true</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>label</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Field label displayed to editors. The value can be literal or a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div><div class="paragraph"><p>If you do not provide the property, Magnolia will fall back to a generated i18n key.</p></div><div class="paragraph"><p>If you do not want to have any label, set the property to an empty string such as <code>label: ""</code> in YAML.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>styleName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Additional style information for an editor property definition item applied to the element when the form is rendered. The value can be a CSS class or a list of CSS classes separated by white spaces.</p></div><div class="paragraph"><p>The style name will be rendered as an HTML class name, which can be used in a CSS definition. The class name is added to the field by calling the Vaadin method <a href="https://vaadin.com/api/framework/8/com/vaadin/ui/AbstractComponent.html#addStyleName-java.lang.String-" target="_blank" rel="noopener"><code>addStyleName</code></a>.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>The referenced class can be defined in:</p></div><div class="ulist"><ul><li><p>An <a href="../../../../Developing/Templating/Theme/" class="xref page">out-of-the-box Magnolia theme</a>.</p></li><li><p>A <a href="https://vaadin.com/docs/v8/framework/themes/themes-creating.html" target="_blank" rel="noopener">custom theme</a>.</p></li><li><p>A <a href="https://vaadin.com/forum/thread/17175160/where-to-put-the-style-css" target="_blank" rel="noopener">custom component style sheet</a>.</p></li></ul></div></td></tr></tbody></table></div></div></td></tr></tbody></table></div>
+
+## [](#_content_i18n_and_migration_to_version_2_1_and_higher)Content i18n and migration to version 2.1 (and higher)
+
+[Internationalization](../../../../Administration/Language/Internationalization/) (i18n) of content is supported since version `2.1` of the Content Editor module.
+
+If you are upgrading from Magnolia 6.2 or from a 1.x version of the Content Editor, please mind the migration procedures below to enable i18n in the Stories app, as well as in other Content Editor based apps you may have.
+
+### [](#_compatibility_of_content_and_block_definitions)Compatibility of content and block definitions
+
+Block definitions and data structures created in the older versions of the module must be migrated.
+
+#### [](#_flat_vs_nested_content_structure)Flat vs nested content structure
+
+The data model has changed for internationalized stories. Whereas in versions `1.3.x` and `2.0.x` of the module, the `mgnl:block` elements are stored in a flat node structure,
+
+stories
+└── story1
+    ├── 0
+    └── 1
+
+in the i18n-supported version (`2.1` and higher), the nodes are locale-nested under intermediate nodes of type `mgnl:contentNode`, named `blocks_de` and `blocks` in this example:
+
+stories
+└── story1
+    └── blocks\_de
+    │   ├── 0\_de
+    │   └── 1\_de
+    └── blocks
+        ├── 0
+        └── 1
+
+This must be reflected in your `[MultiJcrBlockDefinition](./)`, where you need to add and enable the `i18n` property.
+
+Instead of the `CurrentItemProvider`, the `CompatibleBlockProvider` is set as the default provider, which can resolve both flat and nested block nodes. You do not need to declare it in your block definition.
+
+Example definition
+
+```yml
+blocks:
+  label: Blocks
+  $type: multiJcrBlock
+  i18n: true
+  blocks:
+    - text
+```
+
+> **Note:** This applies only to the 2.0.x block definitions. Block definitions created for version 1.3.x (5 UI) of the module are not compatible with the 2.1 version and must be fully migrated.
+
+#### [](#_migrating_content)Migrating content
+
+There are two ways you can migrate the non-i18n blocks to the i18n-compatible hierarchy: using a version handler or a Groovy script.
+
+> **Caution:** We strongly recommend you have the latest version of the Content Editor before migrating your content.In versions prior to 2.1.3, the MigrateBlockToIntermediateParentTask doesn’t preserve the order of nodes when migrating to the latest version. Running this task can actually reorder the nodes to an incorrect state.
+
+##### [](#_version_handler)Version handler
+
+When upgrading the Stories app submodule to version `2.1` or higher, all block nodes in the `stories` workspace will be moved to intermediate nodes, see the `MigrateBlockToIntermediateParentTask` task.
+
+##### [](#_groovy_script)Groovy script
+
+You can run the migration task in the [Groovy app](../../../../Apps/List-of-apps/Groovy-app/), especially in case a block node is stored in another workspace.
+
+Example Groovy script
+
+```groovy
+import info.magnolia.editor.setup.MigrateBlockToIntermediateParentTask
+import info.magnolia.module.InstallContextImpl
+import info.magnolia.module.ModuleRegistryImpl
+import info.magnolia.objectfactory.Components
+import javax.jcr.Session
+
+
+Session session =  MgnlContext.getJCRSession("stories");
+task = new MigrateBlockToIntermediateParentTask("stories", "/", "blocks");
+task.execute(Components.newInstance(InstallContextImpl.class));
+session.save();
+```
+
+The parameters in the `MigrateBlockToIntermediateParentTask`:
+
+-   `stories` - workspace name
+
+-   `/` - path
+
+-   `blocks` - name of the intermediate node, the name of the `multiJcrBlock` field.

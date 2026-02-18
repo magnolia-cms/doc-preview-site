@@ -1,0 +1,318 @@
+---
+title: "Tasks"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Features/Tasks/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Magnolia DXP > Use tasks for collaboration
+---
+
+# Tasks
+
+Tasks make collaboration better. Tasks are better than messages when you work together with others. Tasks have a clear status and an assignee. You can go to the [Tasks app](../../Apps/List-of-apps/Tasks-app/) to claim a task for yourself and start work on it.
+
+Magnolia uses tasks in the publishing workflow: when an editor publishes a page the system creates an approval task and sends it to the publishers group.
+
+See also [Custom tasks](../../Modules/List-of-modules/Workflow-module/Custom-tasks/) and [User tasks](../../Modules/List-of-modules/Workflow-module/User-tasks/) documentation for how to integrate it with jBPM. But please keep in mind, that you can create and work with Tasks without having to deal with jBPM and workflow.
+
+> **Note:** Do not use tasks if you do not have any human activity in your workflow. They are unnecessary for operations that only involve the system itself.
+
+## [](#_tasksmanager)TasksManager
+
+A task is an object that you create using info.magnolia.task.TasksManager. You can send the task to a list of users or to a list of groups. A recipient can assign the task to themselves. Others can see who owns the task and its status when they go to the Tasks app.
+
+When working with tasks, use the `TasksManager` interface to update fields such as `creationDate`, `modificationDate` and `status` and to notify the system event bus.
+
+To get `TasksManager` in your implementations, use injection:
+
+Using `TasksManager`
+
+```java
+@Inject
+public MyClass(TasksManager tasksManager) {
+    this.tasksManager = tasksManager;
+}
+
+public void createTask() {
+    Task task = new Task();
+    ...
+    tasksManager.addTask(task);
+}
+```
+
+> **Note:** Be aware that by calling  task.setId(String);the task will not be created in the workspace.
+
+## [](#_creating_a_task)Creating a task
+
+Start by giving the task a name. The name is unique for the type of task you are creating and acts as a reference to the task definition in the registry.
+
+Defining the task name
+
+```java
+task.setname("getGroceries")
+```
+
+Next, define the possible assignees for the task. You can send a task to a list of `groups` or `actors`.
+
+Defining assignees
+
+```java
+List<String> actorIds = new ArrayList() {{
+       add("eric");
+       add("susan");
+    }};
+List<String> groupIds = new ArrayList() {{
+       add("groceryShoppers");
+    }};
+
+task.setActorIds(actorIds);
+task.setGroupIds(groupIds);
+```
+
+Finally, add `content` to your task. The `content` should contain the information the assignee needs to complete the task. For example, in the default publishing workflow the `content` contains information the publisher needs to review a page and publish it such as the [workspace](../../Administration/Architecture/Workspaces/) where the page resides, a path to the page node, and the version of the page being published.
+
+Adding content to a task
+
+```java
+Map<String, String> content = new HashMap() {{
+            put("groceries", "milk, eggs, beer");
+            put("budget", "15.- CHF");
+        }};
+
+task.setContent(content);
+```
+
+> **Note:** The content map is stored to JCR using OCM and allows storing any <String, Object> map where Object is a simple type. The data inside the content map is usually only used for displaying information in the Tasks app.
+
+## [](#_claiming_a_task)Claiming a task
+
+When a user assigns a task to themselves they *claim* it. To claim a task, set the `actorId`:
+
+Claiming a task
+
+```java
+taskManager.claim(taskId, userId);
+```
+
+This will update the task `status` and `modificationDate` and notifies the system event bus.
+
+Magnolia uses `info.magnolia.task.app.actions.ClaimTasksAction` inside the Tasks app for this step.
+
+## [](#_reclaiming_a_task)Reclaiming a task
+
+With appropriate publication rights you can reclaim a task which is already `InProgress` from another user.
+
+Task reclaiming works in the same way as claiming a task, i.e.
+
+Reclaiming a task
+
+```java
+taskManager.claim(taskId, userId);
+```
+
+using the `info.magnolia.task.app.actions.ClaimTasksActionDefinition` class but adds `notifyPreviousAssignee`, which is set to `true` by default and will trigger sending an i18n-able notification in the Tasks app to the previous assignee in the publication sequence that the task has been reclaimed by another user:
+
+Notifying the author
+
+```java
+messagesManager.sendMessage(task.getActorId(), message)
+```
+
+Please note that `notifyPreviousAssignee` is present also in `info.magnolia.task.app.actions.ClaimTasksActionDefinition`.
+
+## [](#_resolving_a_task)Resolving a task
+
+To resolve a task assigned to an actor:
+
+Resolving a task
+
+```java
+Map<String, Object> result = new HashMap<String, Object>();
+result.put("budgetSpent", "13.25 CHF");
+
+taskManager.resolve(taskId, result);
+```
+
+A resolved task usually produces some sort of output. You can use the `result` map to pass this output to further processing. `TasksManager` will take care of notifying any handlers registered to the system event bus.
+
+Magnolia uses `info.magnolia.task.app.actions.AbortTasksActionDefinition` inside the Tasks app for this step. It allows you to define a decision inside the configuration which is mainly used for approving or rejecting a publication.
+
+```yaml
+abort:
+  class: info.magnolia.task.app.actions.AbortTasksActionDefinition
+  decision: abort
+  icon: icon-publish
+  availability:
+    multiple: true
+    rules:
+      canAbort:
+        assignee: false
+        class: info.magnolia.task.app.actions.availability.TaskAvailabilityRuleDefinition
+        status:
+          Created: Created
+          Failed: Failed
+          InProgress: InProgress
+          Scheduled: Scheduled
+    access:
+      roles:
+        superuser: superuser
+```
+
+After resolving the task using the `ResolveTask` action the result map contains only one entry with the configured decision.
+
+> **Note:** As with the content map, the result map is stored to JCR using OCM and allows storing any <String, Object> map where Object is a simple type.
+
+## [](#_archiving_and_removing_a_task)Archiving and removing a task
+
+The `TasksManager` provides a method for archiving tasks. The method removes the task from the Tasks app. You can still retrieve an archived task later in case you want to re-open it or audit.
+
+While the API allows deleting a task, we strongly discourage doing so unless you know for sure that the deleted task won’t be used any more.
+
+Archiving and removing a task
+
+```java
+taskManager.archiveTask(taskId);
+
+taskManager.removeTask(taskId);
+```
+
+> **Caution:** Workflows associated with unresolved tasks are kept in the workflows workspace. It’s possible for you to use the methods above on unresolved tasks but not recommended. Removing or archiving unresolved tasks can leave orphaned workflows behind. Magnolia recommends resolving tasks by approving or aborting them before you archive or remove unresolved tasks.
+
+## [](#_status)Status
+
+Every task is bound to a life cycle and goes through several statuses in your process:
+
+-   `Created`: The task has been created but is not assigned to any user.
+
+-   `InProgress`: The task has been assigned to a user.
+
+-   `Resolved`: The task has been resolved by the assigned user.
+
+-   `Failed`: Task execution has failed.
+
+-   `Archived`: The task has been removed from the Tasks app.
+
+-   `Removed`: The task has been removed from the repository.
+
+    > **Note:** Removing tasks is supported by the API but should be used carefully. Depending on the use case, a user should be able to reopen a task after it has been resolved.
+
+-   `Scheduled`: A task whose execution has been set for a specific date and time using the Scheduler module.
+
+
+Changes to task status can be tracked by registering info.magnolia.task.event.TaskEventHandler to the system event bus.
+
+## [](#_task_definition)Task definition
+
+Every task type needs a unique name. The name is used to read the task definition from the task registry in your module configuration.
+
+```yaml
+'publish':
+  'class': 'info.magnolia.module.workflow.jbpm.humantask.definition.PublicationTaskDefinition'
+  'parameterResolver': 'info.magnolia.livecopy.workflow.jbpm.humantask.DynamicPublicationTaskParameterResolver'
+  'taskJobFactoryClass': 'info.magnolia.module.workflow.jbpm.humantask.schedule.PublicationTaskJobFactory'
+  'groups':
+    'publishers': 'publishers'
+  'viewMapping':
+    'default': 'workflow:publish'
+    'website': 'pages-app:publish'
+```
+
+The simplest info.magnolia.task.definition.TaskDefinition needs the following properties:
+
+> **Note:** All properties below are required.
+
+|     |     |
+| --- | --- |
+| `<task name>` | The node’s name used to look up the configuration for a task. |
+| `title` | The i18nable title of the task displayed in the tasks list in the Tasks app. |
+| `taskView` | The view definition used to render the form and action bar in the detail view of the Tasks app. This is a reference to a `messageView` definition. |
+| `class` | The class mapping used for *map2bean* to initialize the POJO. `info.magnolia.task.definition.TaskDefinition`. |
+
+> **Note:** As with any definition used in Magnolia, you can define your own extensions to the task definition and add configurable nodes and properties.
+
+## [](#_task_view)Task view
+
+> **Note:** While we use the term task view for the detail view of a task, it is technically a message view used to render the form and action bar.
+
+Use a message view configuration to define which fields of the task object are displayed to the user. You can use a dot notation such as `content.groceries` to reference fields from the `content` or `result` map. In the same fashion, you can configure your , including
+
+and [action bar](../../Apps/App-configuration/Action-bar-definition/) mappings.
+
+![Tasks view](../../_images/ADVT-tasks-view.png)
+
+## [](#_configuring_actions)Configuring actions
+
+The `abort`, `archive` and `claim` tasks are configured as bulk actions.
+
+The decoration file below adds a setting for the `abort` action in the task browser and detail (the definition class is `info.magnolia.task.app.actions.AbortTasksActionDefinition`) with the `travel-demo-publisher` role set to access this action:
+
+<my-light-module>/decorations/tasks-app/apps/tasks-app.yaml
+
+```yaml
+subApps:
+  allTasks:
+    actions:
+      abort:
+        availability:
+          access:
+            roles:
+              - travel-demo-publisher
+```
+
+<my-light-module>/decorations/pages-app/messageViews/publish.yaml
+
+```yaml
+actions:
+  abort:
+    availability:
+      access:
+        roles:
+          - travel-demo-publisher
+```
+
+To allow actions for different users, add their role names from the list of [default roles](../../Administration/IAM/Roles-groups-and-users/#_default_roles) as the properties and values of the `roles` subnode.
+
+See [Action definition](../../Apps/App-configuration/Action-definition/) for more details about action properties.
+
+## [](#_rescheduling_tasks_after_downtime)Rescheduling tasks after downtime
+
+Task rescheduling after author instance downtime refers to rescheduling publications that were supposed to occur during an instance’s offline period, when the author instance is starting up. This ensures that content is published as intended, even if there were temporary interruptions on the author instance. To do this, the author instance checks for expired tasks, which are those with a scheduled time in the past, during startup.
+
+The property `resumeScheduledPublicationsAtStart` in the Task Management module is set to `true` by default. You can set it to `false` to improve performance during heavy publication schedules or when manual control over publication tasks is required. However, if set to `false`, recovery steps are always necessary for any scheduled tasks, regardless of whether they are in the past or future.
+
+| Node name | Value |
+| --- | --- |
+| 📁 config |     |
+| ⬩ resumeScheduledPublicationsAtStart | true |
+
+Below is an overview of the possible scenarios.
+
+-   `resumeScheduledPublicationsAtStart` is set to `true`
+
+    -   *Public instance(s) running, author instance starting up*:
+
+        -   Expired tasks are published after Magnolia starts.
+
+        -   Tasks are successfully resolved and their statuses are updated in the Tasks app.
+
+
+    -   *Public instance(s) not running, author instance starting up*:
+
+        -   Expired tasks fail after Magnolia starts up since no public instance is available.
+
+        -   Tasks are marked as failed in the Tasks app.
+
+        -   Republishing them can be attempted in the Tasks app when both the author and a public instance are running again.
+
+
+
+-   `resumeScheduledPublicationsAtStart` is set to `false`,
+
+    -   Author instance starting up:
+
+        -   Nothing happens with expired tasks automatically after Magnolia starts.
+
+        -   Tasks appear with a scheduled status in the Tasks app, but they aren’t factored into the workflow until recovery steps are completed.
+
+        -   Manual recovery or rescheduling is needed.
+
+            > **Note:** To recover and trigger these expired publications, an administrator must manually restart the Task Management module. You can do this by making any change to the /modules/task-management/config node (for example, by editing it). Once the module restarts, tasks are rescheduled, which includes publishing the expired tasks and rescheduling tasks scheduled for the future on the currently running Magnolia instance. Administrators must ensure that public instances are running before attempting to retry or reschedule tasks to avoid further failures. Resuming scheduled tasks doesn’t mean immediate publication; it only applies if their scheduled time is in the past.

@@ -1,0 +1,77 @@
+---
+title: "Dialog types - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Dialog-definition-5-UI/Dialog-types-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Dialog definition - 5 UI > Dialog types - 5 UI
+---
+
+# Dialog types - 5 UI
+
+Deprecated
+
+> **Note:** These dialog types have been deprecated since Magnolia 6.0. They are part of the Magnolia 5 UI framework.For the updated implementations, see Dialog types for Magnolia 6 UI instead.
+
+## [](#_simple_dialog)Simple dialog
+
+Use a simple dialog to collect only few data points. A simple dialog provides limited ways to organize and group fields.
+
+Characteristics:
+
+-   No tab bar (the dialog is composed of one tab).
+
+-   One or more fields.
+
+
+![Submit button dialog](6.2@product-docs:ROOT:6-1-dialogTypes-simpleDialog.png)
+
+## [](#_complex_dialog)Complex dialog
+
+Use a complex dialog to collect larger amounts of data. A complex dialog can handle complex, hierarchical data sets and summarize key settings of some or all of its subforms.
+
+Characteristics:
+
+-   Multiple tabs for grouping fields.
+
+-   One or more fields per tab.
+
+
+![Page properties dialog](6.2@product-docs:ROOT:6-1-dialogTypes-complexDialog.png)
+
+## [](#_light_dialog)Light dialog
+
+Use a light dialog as part of the task the user is working on. A light dialog asks for quick input but does not severely interrupt the user.
+
+[Modality level](../../Content-apps-5-UI/Developing-an-app-5-UI/Overlays-and-modality-5-UI/#_level): `light`
+
+Characteristics:
+
+-   Commonly used with actions that require parameters from the user.
+
+-   Only makes sense in the context where the user is working.
+
+-   Displayed modally but does not black out the background.
+
+
+![Rename page dialog](6.2@product-docs:ROOT:6-1-dialogTypes-lightDialog.png)
+
+## [](#_strong_dialog)Strong dialog
+
+Use a strong dialog to collect data from the user. A strong dialog severely interrupts the user because it typically requires more data to be input.
+
+[Modality level](../../Content-apps-5-UI/Developing-an-app-5-UI/Overlays-and-modality-5-UI/#_level): `strong`
+
+Characteristics:
+
+-   Commonly used with more elaborate actions (such as uploading a file).
+
+-   Displayed modally and blacks out the background.
+
+
+![Import File dialog](6.2@product-docs:ROOT:6-1-dialogTypes-strongDialog.png)
+
+## [](#_choose_dialog)Choose dialog
+
+The target app can also provide a choose dialog. This is an alternative to the usual workbench view and may be better suited for selecting an item. When a choose dialog is configured, it is used instead of the workbench view provided by the browser subapp. For example, the Assets app provides a choose dialog for selecting images. The choose dialog looks like a workbench, but it also provides custom actions for uploading and editing images from the desktop. The definition is in `/modules/dam-app/apps/assets/chooseDialog`.
+
+![Assets chooser](6.2@product-docs:ROOT:6-1-dialogTypes-chooseDialog.png)

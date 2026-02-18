@@ -1,0 +1,215 @@
+---
+title: "Site-aware exception handling"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Administration/Troubleshooting/Site-aware-exception-handling/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Administration > Troubleshooting > Site-aware exception handling
+---
+
+# Site-aware exception handling
+
+This guide explains how to configure site-aware exception handling to deliver customized, user-friendly error pages for each site.
+
+Magnolia CMS supports multiple sites, each mapped to distinct URLs, domains, or hosts. By default, errors like HTTP 404 (Resource Not Found) or 500 (Internal Server Error) display the web container’s technical error page, which is not user-friendly. For instance, an invalid URL such as `[https://demopublic.magnolia-cms.com/travel/%20where%20is%20my%20tour](https://demopublic.magnolia-cms.com/travel/%20where%20is%20my%20tour)` might show:
+
+```console
+HTTP STATUS 500 - javax.servlet.ServletException: Invalid path:/travel/ where is my tour
+java.lang.RuntimeException: javax.servlet.ServletException: Invalid path:/travel/ where is my tour
+    info.magnolia.module.cache.filter.CacheFilter.doFilter(CacheFilter.java:234)
+    ...
+```
+
+## [](#_configuration_steps)Configuration steps
+
+### [](#_configure_the_servlet_container)Configure the servlet container
+
+To customize error handling in your web container (for example, Apache Tomcat), add the following to `Tomcat/webapps/YOUR-MAGNOLIA-WEBAPP/WEB-INF/web.xml` before the `</web-app>` tag:
+
+```xml
+<error-page>
+    <error-code>404</error-code>
+    <location>/customException</location>
+</error-page>
+<error-page>
+    <error-code>500</error-code>
+    <location>/customException</location>
+</error-page>
+<error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/customException</location>
+</error-page>
+```
+
+> **Note:** The /customException path handles all java.lang.Throwable exceptions. If this conflicts with existing configurations, update the path and corresponding mappings.
+
+### [](#_implement_site_aware_exception_handling)Implement site-aware exception handling
+
+Deploy the following Java class to enable site-aware exception handling. Include it in your classpath if developing a custom Magnolia Maven module.
+
+#### [](#_java_implementation)Java implementation
+
+Class: `info.magnolia.virtualuri.mapping.SiteAwareExceptionMapping`
+
+```java
+package info.magnolia.virtualuri.mapping;
+
+import info.magnolia.context.MgnlContext;
+import info.magnolia.module.site.SiteManager;
+import info.magnolia.objectfactory.Components;
+
+import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.util.Optional;
+
+public class SiteAwareExceptionMapping extends DefaultVirtualUriMapping {
+
+    public static final String SERVLET_ERROR_REQUEST_URI_ATTRIBUTE_NAME = "javax.servlet.error.request_uri";
+    private String siteName;
+
+    @Override
+    public Optional<Result> mapUri(URI uri) {
+        HttpServletRequest request = MgnlContext.getWebContext().getRequest();
+        Object errorRequestObject = request.getAttribute(SERVLET_ERROR_REQUEST_URI_ATTRIBUTE_NAME);
+        if (errorRequestObject == null) {
+            return Optional.empty();
+        }
+
+        String errorRequest = errorRequestObject.toString();
+        String[] requestParts = errorRequest.split("/");
+
+        if (requestParts.length >= 3) {
+            errorRequest = "/" + requestParts[2] + "/";
+        }
+
+        String requestedSite = Components.getComponent(SiteManager.class)
+                .getAssignedSite(request.getServerName(), errorRequest)
+                .getName();
+
+        if (!siteName.equals(requestedSite)) {
+            return Optional.empty();
+        }
+
+        return super.mapUri(uri);
+    }
+
+    public String getSiteName() {
+        return siteName;
+    }
+
+    public void setSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+}
+```
+
+#### [](#_light_development_deployment)Light development deployment
+
+For light development, deploy the class using the [Groovy app](../../../Apps/List-of-apps/Groovy-app/):
+
+1.  In the Groovy app, create a folder structure with a file named `SiteAwareExceptionMapping` in it.
+
+    | Name | Enabled |
+    | --- | --- |
+    | 📁 info |     |
+    | 📁 magnolia |     |
+    | 📁 virtualuri |     |
+    | 📁 mapping |     |
+    | SiteAwareExceptionMapping | true |
+
+2.  Paste the Java code above into the file.
+
+    This makes the class available in the classpath without a custom module.
+
+
+### [](#_configure_virtual_uri_mappings)Configure virtual URI mappings
+
+Map the `/customException` path to site-specific error pages using either YAML or JCR configuration. Use only one method to avoid duplication.
+
+> **Warning:** Ensure the exception page does not trigger the same error, as this may cause a cyclic reference and stack overflow.
+
+#### [](#_yaml_configuration)YAML configuration
+
+Define virtual URI mappings that redirect requests from `/customException` to specific exception pages (`/travel/exception`, /`sportstation/exception`, or `/exception`) based on the site context (`travel`, `sportstation`, or `fallback`).
+
+In your light module, create a `virtualUriMappings` folder and add these configurations as new YAML files:
+
+travel-exception-mapping.yaml
+
+```yaml
+class: info.magnolia.virtualuri.mapping.SiteAwareExceptionMapping
+fromUri: /customException
+toUri: forward:/travel/exception
+siteName: travel
+```
+
+sportstation-exception-mapping.yaml
+
+```yaml
+class: info.magnolia.virtualuri.mapping.SiteAwareExceptionMapping
+fromUri: /customException
+toUri: forward:/sportstation/exception
+siteName: sportstation
+```
+
+fallback-exception-mapping.yaml
+
+```yaml
+class: info.magnolia.virtualuri.mapping.SiteAwareExceptionMapping
+fromUri: /customException
+toUri: forward:/exception
+siteName: fallback
+```
+
+#### [](#_jcr_configuration)JCR configuration
+
+Place all the configurations under a module (for example `ui-admincentral`) in the JCR repository.
+
+### [](#_create_exception_pages)Create exception pages
+
+In the Pages app, create site-specific exception pages (for the `travel` and `fallback` sites, for instance) and assign appropriate templates.
+
+> **Note:** Error details are stored in the javax.servlet.error.exception request attribute, per the Java Servlet Specification. In Magnolia FreeMarker templates, access it with ${ctx.request.getAttribute("javax.servlet.error.exception")}.In the ServletRequest context, available attributes include:  AttributeTypeDescriptionjavax.servlet.error.exception_typeClassException classjavax.servlet.error.status_codeIntegerHTTP status codejavax.servlet.error.messageStringError messagejavax.servlet.error.exceptionThrowableExceptionjavax.servlet.error.request_uriStringOriginal request URIjavax.servlet.error.servlet_nameStringServlet name
+
+### [](#_customize_exception_page_location)Customize exception page location
+
+To change the error page location, update the `toUri` property. For example, modify `/modules/ui-admincentral/virtualUriMappings/travel-exception-mapping@toUri` from `forward:/travel/exception` to a new path. See the [Virtual URI Mapping documentation](../../URI-mapping/Virtual-URI-mapping/) for more details.
+
+### [](#_customize_exception_page_template)Customize exception page template
+
+To use a custom template:
+
+1.  Create a FreeMarker file in your light module.
+
+2.  Update `/modules/ui-admincentral/templates/pages/exception@templateScript` to reference the new file.
+
+
+#### [](#_sample_template)Sample template
+
+exception.ftl
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server Error</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style>
+        body { font-family: sans-serif; line-height: 1.4; text-align: center; }
+        #boxer { display: inline-block; margin: 40px; }
+        .error-details { width: 80%; text-align: left; margin-top: 40px; }
+    </style>
+</head>
+<body>
+[#assign mySite=sitefn.site()]
+<div id="boxer">
+    <h2>Error on ${mySite.name}</h2>
+    <div class="error-details">
+        <img src="data:image/gif;base64,..."/>
+        <h3>Server Error: ${ctx.request.getAttribute("javax.servlet.error.exception")!'No exception'}</h3>
+        <hr/>
+        <pre>Please check server logs for details.</pre>
+    </div>
+</div>
+</body>
+</html>
+```

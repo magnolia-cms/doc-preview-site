@@ -1,0 +1,224 @@
+---
+title: "Synchronization REST module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Synchronization-module/Synchronization-REST-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Synchronization module > Synchronization REST module
+---
+
+# Synchronization REST module
+
+The Synchronization REST module provides a convenient REST API for publishing content from a source Magnolia instance (typically an author instance) to a target Magnolia instance (typically a public instance). It provides another way to synchronize content using the [Synchronization module](../) and start synchronization, monitor synchronizations and stop synchronizations remotely through via a REST service.
+
+The module allows you to publish a large amount of content selectively. Only previously published content is transferred to the target instance. You can use the module to add content to new public instances without shutting down existing instances and impacting their ability to serve content.
+
+## [](#_command_rest_vs_sync_rest)Command REST vs Sync REST
+
+You could launch a synchronization with the command API of the [REST module](#3.1@rest:ROOT:index.adoc). However, using the Synchronization REST API to synchronize has several advantages over the command REST API.
+
+### [](#_command_rest)Command REST
+
+Synchronous
+
+-   The API will not return a result until the synchronization has finished. Synchronizations may take some time to finish depending on the amount of content.
+
+
+Fixed configuration
+
+-   Must be configured before launching a synchronization. The synchronization command uses a [receiver](../../../../Administration/Instances/Receivers/) defined in the Synchronization module’s configuration. The receiver defines the target Magnolia instance to send content to and can’t be passed to the synchronization command.
+
+
+Uncontrolled execution
+
+-   It is possible to launch identical synchronizations to the same instance if not carefully orchestrated. You can launch many synchronizations simultaneously. Synchronizations adds load on the source Magnolia instance; you can overload the source Magnolia instance by launching too many synchronizations at the same time.
+
+
+### [](#_sync_rest)Sync REST
+
+Asynchronous
+
+-   A synchronization launched with the Synchronization REST API returns immediately with a job ID and provides calls to check on the status of the synchronization job (waiting for execution, running, finished successfully and finished with errors).
+    In addition, if you need to define a site specific receiver using workspace path mappings, you can define a template receiver in the configuration of the Synchronization REST module and use the mappings in the template to perform the synchronization.
+
+
+No configuration
+
+-   You can specify all the details of the synchronization (URL for the Magnolia instance, workspace, path and more) when launching the synchronization. No configuration is needed to start a synchronization.
+
+
+Controlled execution
+
+> **Tip:** Using these policies, you can avoid overloading the source Magnolia instance and prevent duplicate synchronizations of the same content to a Magnolia instance.
+
+-   The synchronization policy can be set to control synchronizations:
+
+    -   Allow only one synchronization at a time
+
+    -   Allow only one synchronization to a target Magnolia instance
+
+    -   Allow only one synchronization of a workspace to a target Magnolia instance
+
+    -   Allow all requested synchronizations
+
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.synchronization</groupId>
+  <artifactId>magnolia-synchronization-rest</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_synchronization_rest_api)Synchronization REST API
+
+This page describes the synchronization endpoint, which can be used to launch synchronization and check on their status.
+
+## [](#_get)GET
+
+### [](#_get_status)Get status
+
+Returns the status of a specified synchronization request.
+
+#### [](#_request_url)Request URL
+
+`/.rest/synchronization/v1/status/{synchId}`
+
+#### [](#_parameters)Parameters
+
+   ParameterDescriptionParameter typeData type
+
+`synchId`
+
+**required**
+
+Specify the synchronization request ID.
+
+> **Note:** the synchronization request ID is returned by synchronize or synchronizeWith.
+
+`path`
+
+`String`
+
+Returns the status of a synchronization request with:
+
+-   `jobId` - the ID of the synchronization request (same as `synchId`)
+
+-   `status` - the synchronization request status, one of:
+
+    -   `WAITING` - waiting for execution
+
+    -   `RUNNING` - currently executing
+
+    -   `DONE` - completed successfully without errors
+
+    -   `FAILED` - completed unsuccessfully due to an error
+
+    -   `CANCELLED` - synchronization was cancelled before execution
+
+    -   `ERROR` - synchronization was completed but was unable to determine results
+
+
+
+### [](#_clear_jobs)Clear jobs
+
+Clears the status of all synchronization jobs.
+
+> **Important:** This call will not stop running synchronization jobs or synchronization jobs awaiting execution.
+
+#### [](#_request_url_2)Request URL
+
+`/.rest/synchronization/v1/reset`
+
+Returns an HTTP status of:
+
+-   `204` - the reset was successful
+
+
+## [](#_post)POST
+
+### [](#_trigger_synchronization)Trigger synchronization
+
+Launch a synchronization of designated workspace on a Magnolia instance.
+
+#### [](#_request_url_3)Request URL
+
+`/.rest/synchronization/v1/trigger`
+
+#### [](#_parameters_2)Parameters
+
+| Parameter | Description | Parameter type | Data type |
+| --- | --- | --- | --- |
+| `url` | **required**<br><br>The URL of the Magnolia instance. | `query` | `String` |
+| `workspace` | **required**<br><br>The workspace to be synchronized. | `query` | `String` |
+| `recursive` | **optional**, *default is `true`*<br><br>Indicates if subnodes of path should also be synchronized. | `query` | `boolean` |
+| `fromDate` | **optional**<br><br>Specifies a Unix epoch timestamp in milliseconds.<br><br>Nodes modified since `fromDate` will be synchronized, nodes older than `fromDate` will be skipped.<br><br>If `null`, all node specified by `path` and `recursive` will be synchronized. | `query` | `long` |
+| `fromPath` | **required**<br><br>Workspace path on the author instance from which content is published. | `query` | `String` |
+| `toPath` | **optional**<br><br>Workspace path on the public instance to which the content is published.<br><br>Nodes at or below `fromPath` will be synchronized on the target Magnolia instance at `toPath`. | `query` | `String` |
+
+Returns an HTTP status of:
+
+-   `200` - the synchronization request was launched and awaiting execution
+
+-   `409` - another synchronization request is running and the request cannot be launched at this time
+
+-   `500` - an error occurred and the synchronization request was not launched
+
+
+If the request was launched, the status of a synchronization request is returned with:
+
+-   `jobId` - the ID of the synchronization request (same as `synchId`)
+
+-   `status` - the synchronization request status, one of:
+
+    -   `WAITING` - waiting for execution
+
+    -   `RUNNING` - currently executing
+
+    -   `DONE` - completed successfully without errors
+
+    -   `FAILED` - completed unsuccessfully due to an error
+
+    -   `CANCELLED` - synchronization was cancelled before execution
+
+    -   `ERROR` - synchronization was completed but was unable to determine results
+
+
+
+#### [](#_example)Example
+
+Here is an example call for triggering a synchronization
+
+```js
+curl -u superuser:superuser http://localhost:8080/magnoliaAuthor/.rest/synchronization/v1/trigger --data '
+{"url" : "http://localhost:8080/magnoliaPublic", "workspace": "website", "fromPath" : "/", "fromDate" : "2012-03-29T10:05:45-06:00"}
+' --header "Content-Type: application/json"
+```
+
+## [](#_known_issues)Known Issues
+
+Due to the fact that update/install tasks are not run from beta to final versions there will be some manual steps if you were using one of the beta releases.
+
+### [](#_import_manager_config)Import manager config
+
+-   The following configuration will have to be **imported manually**. (See [config.modules.synchronization-core.config.manager.xml](https://gitlab.magnolia-platform.com/pd/extensions/synchronization/-/blob/master/magnolia-synchronization-core/src/main/resources/mgnl-bootstrap/synchronization-core/config.modules.synchronization-core.config.manager.xml)).
+
+
+### [](#_remove_command_config)Remove command config
+
+-   RestSynchronizationCommand removed from final module. This is harmless but the command node configuration will have to be **removed manually** from the JCR configuration. (i.e. `/modules/synchronization-rest/commands`)
+
+    2020-06-25 15:10:19,851 WARN magnolia.transformer.ClassPropertyBasedTypeResolver: Encountered the 'class' property but failed to resolved the type from its value: \[info.magnolia.synchronization.commands.RestSynchronizationCommand\]
+
+
+### [](#_remove_sender_config)Remove sender config
+
+-   In case 1.9-beta3 was installed, the synchronization sender node will have to be **removed manually** from JCR configuration. (i.e. `/modules/synchronization-core/commands/synchronization/synchronize/synchronizationSenderClass`).

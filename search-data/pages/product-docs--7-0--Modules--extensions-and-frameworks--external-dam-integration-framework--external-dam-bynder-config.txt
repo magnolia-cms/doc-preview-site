@@ -1,0 +1,304 @@
+---
+title: "Bynder extension configuration"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/extensions-and-frameworks/external-dam-integration-framework/external-dam-bynder-config/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > External DAM integration framework > Bynder extension
+---
+
+# Bynder extension configuration
+
+[Digital asset management (DAM)](../../../../use-cases/Digital-asset-management/) Unbundled: [Extension](../../../#_module_types) License: [Special license](../../../../Administration/License/#_special_licenses)\[[1](#_footnotedef_1 "View footnote.")\]
+
+This page explains how to configure the connection between the External DAM module and your Bynder external asset management solution.
+
+Essentially, you:
+
+-   Provide connection credentials for Bynder.
+
+-   Enable the subapp to display in the Magnolia [Assets app](../../../../Apps/List-of-apps/Assets-app/).
+
+-   Configure the cache if necessary.
+
+
+You can create or edit the configuration in the JCR or the File System (YAML) under `<module-name>/external-dams/<definition-name>`.
+
+To use Bynder assets in Magnolia, you must have a working Bynder account.
+
+## [](#_licensing)Licensing
+
+The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../Administration/License/).
+
+## [](#_api_token)API token
+
+You need a permanent OAuth 2.0 API token from Bynder to access the assets.
+
+To generate a token, see this Bynder documentation: [https://help.bynder.com/system/oauth2-permanent-tokens.htm](https://help.bynder.com/system/oauth2-permanent-tokens.htm).
+
+You can use the token value directly in the yaml configuration or add the permanent token to your Magnolia instance in the [Password manager app](../../../../Apps/List-of-apps/Passwords-app/), and reference the path in the configuration.
+
+For example:
+
+|     |     |
+| --- | --- |
+| `bynder-credentials` |     |
+|     | ![Padlock](../../../../_images/padlock.gif) `bynder_permanent_token` |
+
+## [](#_connecting)Connecting
+
+Add your connection configuration under `/dam-bynder/config.yaml`.
+
+```yml
+bynderPortalURL: https://magnoliaintegration.getbynder.com
+permanentToken: <client_secret_or_path_to_password_manager>
+```
+
+### [](#_connection_properties)Connection properties
+
+ PropertyDescription
+
+`bynderPortalURL`
+
+**required**
+
+URL to your Bynder service.
+
+`permanentToken`
+
+**required**
+
+> **Note:** A permanent OAuth 2.0 API token from Bynder or the path to the Passwords app where the token is stored.
+
+## [](#_enabling_your_subapp)Enabling your subapp
+
+By default, the Bynder subapp is disabled.
+
+To enable it, decorate the Magnolia [Assets app](../../../../Apps/List-of-apps/Assets-app/) under `<dam-connector>/decorations/dam` and set the `enabled` property to `true`.
+
+dam-bynder/decorations/dam/dam.config.yaml
+
+```yaml
+providers:
+  bynderProvider:
+    identifier: bynder
+    enabled: true
+    class: info.magnolia.external.dam.bynder.BynderAssetProvider
+    renderers:
+      bynder:
+        class: info.magnolia.external.dam.bynder.BynderAssetRenderer
+        proxyMode: true
+        mediaTypes:
+          audio: 'audio/*'
+          application: 'application/*'
+          video: 'video/*'
+          image: 'image/*'
+```
+
+## [](#_configuring_a_single_asset_provider_for_link_fields)Configuring a single asset provider for link fields
+
+You can configure a [link field](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/) to limit your users to selecting assets from only one asset provider.
+
+> **Note:** This is possible from External DAM 1.0.7 (DAM module 3.0.8). Previously, you had to use the aggregated damLinkField and users had to choose from all the enabled asset providers.
+
+This example shows a dialog definition with two link fields, each limited to different asset providers:
+
+external-dam/dialogs/components/textExternalImage.yaml
+
+```yaml
+form:
+  properties:
+    bynder:
+      $type: damLinkField
+      chooserId: dam-bynder:chooser
+      datasource:
+        class: info.magnolia.dam.app.data.AssetDatasourceDefinition
+        name: bynder
+    jcr:
+      $type: linkField
+      converterClass: info.magnolia.ui.editor.converter.JcrAssetConverter
+      datasource:
+        $type: jcrDatasource
+        workspace: website
+```
+
+## [](#_configuring_the_cache)Configuring the cache
+
+This integration framework uses [Caffeine](https://github.com/ben-manes/caffeine), a high-performance Java cache library, to manage caching for external assets via a Magnolia helper module called `magnolia-addon-commons-cache`.
+
+For Bynder caching, you can specify the behavior of the caches. Essentially, you can configure all the parameters available in [CaffeineSpec](https://github.com/ben-manes/caffeine/blob/e8ff6d3261e7f5666d2b486352cc04b2874d70ed/caffeine/src/main/java/com/github/benmanes/caffeine/cache/CaffeineSpec.java).
+
+For example:
+
+-   Set a maximum cache size.
+
+-   Define how often the cache expires.
+
+
+Additionally, you can:
+
+-   Enable or disable the cache.
+
+
+You configure caching through [decoration](../../../../Developing/Definition-decoration/) under `/<dam-connector>/decorations/addon-commons-cache/config.yaml`.
+
+Bynder default configuration
+
+/dam-bynder/decorations/addon-commons-cache/config.yaml
+
+```yml
+cacheConfigurations:
+  bynder:
+    caches:
+      bynder-media: maximumSize=500, expireAfterAccess=10m
+      bynder-all: expireAfterAccess=60m
+      bynder-size: expireAfterAccess=60m
+    enabled: true
+```
+
+### [](#_cache_configuration_properties)Cache configuration properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>caches</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Use CaffeineSpec properties to specify the cache behavior such as the maximum size of the cache and when cache entries expire for each cache.</p></div><div class="ulist"><ul><li><p><a href="https://www.javadoc.io/doc/com.github.ben-manes.caffeine/caffeine/latest/com/github/benmanes/caffeine/cache/Caffeine.html#maximumSize-long-" target="_blank" rel="noopener"><code>maximumSize</code></a>: default is 500</p></li><li><p><a href="https://www.javadoc.io/doc/com.github.ben-manes.caffeine/caffeine/latest/com/github/benmanes/caffeine/cache/Caffeine.html#expireAfterAccess-java.time.Duration-" target="_blank" rel="noopener">expireAfterAccess</a>: default is 10m</p></li></ul></div><div class="paragraph"><p>For example:</p></div><div class="paragraph"><p><code>&lt;cacheName-1&gt;: maximumSize=500, expireAfterAccess=10m</code></p></div><div class="paragraph"><p><code>&lt;cacheName-2&gt;: expireAfterAccess=60m</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <code>true</code> by default</p></div><div class="paragraph"><p>Set to <code>false</code> to disable caching.</p></div></div></td></tr></tbody></table></div>
+
+> **Note:** Bynder loading timesNote that the Bynder API may be slow in some regions. For example, one image upload may take up to 20 seconds in EU regions. This may cause some actions to fail in the Magnolia UI and the cache to be invalidated.For more information, see https://github.com/Bynder/bynder-js-sdk/issues/43.
+
+### [](#_manually_flushing_the_cache)Manually flushing the cache
+
+If you want to flush the cache, you can either set the cache expiry to a very short time (see above) or configure a script in the [Groovy app](../../../../Apps/List-of-apps/Groovy-app/) to flush the cache manually. For example:
+
+```groovy
+import info.magnolia.objectfactory.Components
+
+cacheManager = Components.getComponent(info.magnolia.addon.commons.cache.CacheManager)
+cacheManager.evictCache("bynder-objects")
+```
+
+## [](#_configuring_pagination_to_improve_response_times)Configuring pagination to improve response times
+
+Magnolia retrieves *pages* of objects from Bynder and then obtains the assets you require from those pages. The pages are cached.
+
+You can configure the size of a page of objects using the properties `pageSize` and `bynderMaxNumberPerRequest`.
+
+dam-bynder/config.yaml
+
+```yml
+pageSize: 100
+```
+
+ PropertyDescription
+
+`pageSize`
+
+**optional**
+
+The maximum number of objects per request retrieved from Bynder is `100`.
+
+`bynderMaxNumberPerRequest`
+
+**optional,** *default is `1000`* (Bynder only)
+
+Maximum number of objects that Bynder returns if you specify a `pageSize` greater than 1000.
+
+> **Note:** See the Bynder documentation: https://bynder.docs.apiary.io/#reference/oauth-1.0a/retrieve-assets, limit parameter.
+
+## [](#_configuring_the_proxy_service_to_protect_private_asset_urls)Configuring the proxy service to protect private asset URLs
+
+To protect the URLs of private Bynder assets rendered in Magnolia, you must use the proxy service provided.
+
+> **Tip:** The proxy service is also required if you want to use Bynder image variations.
+
+The proxy service enforces security by generating a Magnolia URL that hides the private Bynder URL.
+
+If you don’t use the proxy service, private Bynder URLs are exposed in published Magnolia pages for example.
+
+When using the proxy, if you want to make a Bynder asset public, for example an image asset used in the Pages app, you must publish the image as well as the page in Magnolia.
+
+You can enable or disable the proxy service using the `proxyMode` parameter. The functionality is provided via the BynderAssetRenderer.
+
+> **Warning:** The proxy service is only available with Magnolia 6.2.6+. If you use an earlier version of Magnolia Core, you must disable the proxy service.
+
+dam-bynder/decorations/dam/dam.config.yaml
+
+```yml
+providers:
+  bynderProvider:
+    identifier: bynder
+    enabled: false
+    class: info.magnolia.external.dam.bynder.BynderAssetProvider
+    renderers:
+      bynder:
+        class: info.magnolia.external.dam.bynder.BynderAssetRenderer
+        proxyMode: true
+        mediaTypes:
+          audio: 'audio/*'
+          application: 'application/*'
+          video: 'video/*'
+          image: 'image/*'
+```
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>proxyMode</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, default is <code>true</code></p></div><div class="paragraph"><p>Enables or disables the proxy service.</p></div><div class="ulist"><ul><li><p>When set to <code>true</code>, the proxy mode is enabled. The Bynder asset generates a Magnolia URL to hide the Bynder URL and the asset is served through the Magnolia instance.</p></li><li><p>When set to <code>false</code>, the proxy mode is disabled. The Bynder asset generates a Bynder URL and the asset is served directly by Bynder. Private Bynder URLs may be exposed.</p></li></ul></div></div></td></tr></tbody></table></div>
+
+## [](#_using_bynder_image_derivatives)Using Bynder image derivatives
+
+You must enable proxy mode to use Bynder derivatives in Magnolia.
+
+Bynder provides *image derivatives* (referred to as *variations* or *renditions* in Magnolia) by default, such as:
+
+-   `small`
+
+-   `medium`
+
+-   `large`
+
+-   `original`
+
+-   `thumbnail`
+
+
+These derivatives can be used as the rendition names in the Magnolia [DAM templating function (damfn)](../../../../Developing/Templating/Template-scripts/Templating-functions/damfn/).
+
+For example, to retrieve the `small` Bynder derivative:
+
+/templates/pages/sample.ftl
+
+```html
+<!DOCTYPE html>
+<html xml:lang="${cmsfn.language()}" lang="${cmsfn.language()}">
+  <head>
+    [@cms.page /]
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${content.windowTitle!content.title!}</title>
+  </head>
+  <body class="sample-dam ${cmsfn.language()}">
+
+    <div class="container">
+      <h3>Bynder ID: ${content.assetId}</h3>
+
+      <h4>small</h4>
+      <img src="${damfn.getAssetLink(content.assetId, "small")}"/>
+
+    </div>
+  </body>
+</html>
+```
+
+Only *image* type Bynder asset derivatives can be used in Magnolia.
+
+To see which derivatives are available for a given Bynder image, look in the **Size variations** field in the asset details view:
+
+![Bynder derivatives information](../../../../_images/extdam/extdam-bynder-derivatives.png)
+
+Magnolia falls back to the `original` derivative if the requested derivative is unavailable.
+
+> **Note:** Retrieving Bynder derivatives differs from using typical Magnolia image variations:You don’t have to define image variations in a theme when using Bynder derivatives.In your template script, instead of the Magnolia asset itemKey or renditionName, you use the Bynder derivative name (such as small, medium, large, original).
+
+For more information about Bynder derivatives, see following pages in the Bynder documentation:
+
+-   [Derivatives (Create Smaller Versions of Assets)](https://support.bynder.com/hc/en-us/articles/360013931139-Derivatives-Create-Smaller-Versions-of-Assets-)
+
+-   [Downloading Assets](https://developer-docs.bynder.com/api/downloading-assets/)
+
+
+* * *
+
+[1](#_footnoteref_1). The framework is included with your DX Core license. However, the associated extensions require an additional special license.

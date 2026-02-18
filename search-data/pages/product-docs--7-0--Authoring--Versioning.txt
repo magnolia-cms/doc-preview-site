@@ -1,0 +1,97 @@
+---
+title: "Versioning"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Authoring/Versioning/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Authoring > Publishing > Versioning
+---
+
+# Versioning
+
+Magnolia versions pages, assets and contacts by default when they are published and unpublished. You can also configure versioning for any other content type.
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+## [](#_showing_versions)Showing versions
+
+The **Show versions** action provides access to versions. This action is available in the Pages, Assets and Contacts apps and opens a dialog containing a list of versions.
+
+> **Note:** If workflow is enabled, the workflow comment is appended for each version (second set of brackets).
+
+![The Show versions action](../../_images/authoring/version-actions.png)
+
+To show a version, select the version and click **Show**. The selected page, asset or contact opens for viewing.
+
+> **Warning:** You cannot edit the item in the view mode.
+
+![Show versions dialog](../../_images/authoring/show-versions-dialog.png)
+
+## [](#_comparing_versions)Comparing versions
+
+In the Pages app two additional actions are available:
+
+-   **Compare to previous version** compares the current to the previous version and opens the page in diff view that uses redlining: deletions are highlighted in red and insertions in green.
+    ![The Compare to previous version feature](../../_images/6-0-versioning-compareVersions.png)
+
+-   **Compare versions** allows you to select the versions to be compared. Select a **From** and **To** version and click **Compare** to open the page in diff view.
+    ![Compare versions dialog](../../_images/authoring/compare-versions-dialog.png)
+
+
+## [](#_restoring_versions)Restoring versions
+
+The **Restore versions** action allows you to revert to a previous version. It is available in the Pages, Assets and Contacts apps. Select the version and click **Restore**. A new version is created automatically prior to restore. After restoring you need to publish the restored item.
+
+> **Note:** Restoring a previous version does not restore the name or location (path) of the item if these have been changed.
+
+Versioning functionality is enabled by default in Magnolia in the Pages, Assets and Contacts apps. Versions are saved automatically and can be reverted to as necessary.
+
+The versioning functionality is enhanced by the [Diff module](../../Modules/List-of-modules/Diff-module/) that adds diff and redlining capabilities.
+
+By default, versions are created when pages, assets and contacts are published, unpublished and restored in the related apps. Versions are also created in these apps for the purpose of restoring items prior to deletion.
+
+For more information, see [Deleting and restoring](../Deleting-and-restoring/).
+
+> **Note:** Versioning can be enabled by configuration for any content app.
+
+In a new installation of the Magnolia bundle all demo pages, assets and contacts do not have versions even though the status indicator is green (published). This is because the content is marked as published when bootstrapped into the web applications, but no actual publication has taken place at this point in time. The available versions actions remain inactive until actual versions are created by publishing, unpublishing or deleting.
+
+Versioning is functionally usable only on the admin instance, where you can use it to restore and republish an older version of some content. In case you wanted to let the visitors of your site browse through and see historic versions of, for example, a terms and conditions page, you would have to develop custom code for this feature.
+
+## [](#_immutability_of_versions)Immutability of versions
+
+When working with a version, it’s important to know that it is immutable. This means you can’t create missing area nodes for a version node.
+
+This prevents new area nodes from being added to later versions intended to remain unchanged.
+
+## [](#_version_limits)Version limits
+
+You can limit the number of versions held in your repository using the **Configuration app**.
+
+> **Caution:** Each time you create a new version of an item in Magnolia, Magnolia creates a copy of the entire item and not just a delta from the previous version. Because of this, we recommend limiting versions if possible. Otherwise, the version store will grow quickly which can inhibit performance.
+
+1.  Start up your Magnolia instance.
+
+2.  Under **Apps**, go to **Configuration app**.
+
+    ![Configuration app in ui](../../_images/apps/ui-apps-configuration.png)
+
+3.  Navigate down to **server > version**.
+
+4.  Select the `maxVersionIndex` property.
+
+5.  Edit the property.
+
+6.  Input your desired **Value**. *This defines the maximum number of versions allowed.*
+
+    ![Edit version index property](../../_images/apps/ui-apps-configuration-server-version-index.png)
+
+7.  Don’t forget to save your changes.
+
+
+Related topics
+
+-   [Deleting and restoring](../Deleting-and-restoring/)
+
+-   [Diff module](../../Modules/List-of-modules/Diff-module/)
+
+-   [Enabling versioning in content apps](../../Apps/Developing-an-app/Specific-aspects/Enabling-versioning-in-content-apps/)

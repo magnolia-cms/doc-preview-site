@@ -1,0 +1,74 @@
+---
+title: "Magnolia Publications deep dive"
+url: https://docs.magnolia-cms.com/cockpit/environments-publications/walkthrough/
+category: DX Cloud
+version: cloud
+---
+
+# Magnolia Publications deep dive
+
+## [](#_sidebar_filters)Sidebar Filters
+
+The sidebar filters allow you to refine your view by selecting specific criteria.
+
+-   **Release**: Select the namespace to analyze. Defaults to the first available option.
+
+-   **Date range**: Select the time period using preset ranges or the calendar picker for custom dates.
+
+-   **Memory unit**: Choose how to display data transfer sizes (KB, MB, GB, or TB).
+
+
+Click **Apply filters** to update the view.
+
+## [](#_request)Request
+
+Monitor publication activity and success rates.
+
+-   **Number of publications**: Total publication count and trends over time.
+
+-   **Number of unpublications**: Unpublication count, ratio, and trends over time.
+
+-   **Success ratio**: Percentage of successful operations and trends over time.
+
+-   **Top 10 error messages**: Most common errors affecting your publishing workflow.
+
+
+## [](#_response_time)Response time
+
+Track how quickly content reaches your Public instances.
+
+-   **Latency**: Average response time for publication operations.
+
+-   **Latency 95th percentile**: Response time threshold that 95% of operations fall within.
+
+-   **Latency per subscriber**: Response times broken down by each subscriber instance.
+
+
+## [](#_transactions)Transactions
+
+Monitor transaction health for publication commits.
+
+-   **Rollback ratio**: Percentage of transactions that failed and were rolled back.
+
+
+## [](#_traffic)Traffic
+
+Understand bandwidth consumption from publishing operations.
+
+-   **Traffic**: Total data transferred and trends over time.
+
+
+## [](#_workspaces)Workspaces
+
+Analyze publication activity across your JCR workspaces.
+
+-   **Total per workspace**: Publication counts for each workspace.
+
+-   **Total failures per workspace**: Failed publication attempts for each workspace.
+
+
+## [](#_publishers)Publishers
+
+Identify content authoring patterns across your team.
+
+-   **Top 10 publishers**: Most active users publishing content.

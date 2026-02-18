@@ -1,0 +1,53 @@
+---
+title: "IUX slot filter configuration example for Google Analytics 4"
+url: https://docs.magnolia-cms.com/product-docs/Modules/extensions-and-frameworks/analytics-integration-framework/analytics-iux-slot-ga4-example/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Analytics integration framework > IUX slot for analytics > Google Analytics 4 slot
+---
+
+# IUX slot filter configuration example for Google Analytics 4
+
+Filter configuration example for GA4.
+
+The configuration in this decoration file (with the relevant credentials added) results in charts displayed in an IUX slot at the top of the Pages app for the Travel Demo pages.
+
+pages-app.subApps.browser.workbench.yaml
+
+```yml
+extensionViews:
+  - name: analytics1
+    icon: icon-analytics-app
+    view:
+      name: analytics
+      $type: analyticsView
+      chartDefinitions:
+        - name: active28DayUsers
+          label: GA Active 28 Days Users
+          class: info.magnolia.analytics.amcharts.data.AmChartDefinition
+          dataSupplier: gaActive28DayUsersSupplier
+          chartType: !include:/analytics-ui/chartTypes/line-and-area/line-different-colors-ups-downs.yaml
+            series:
+              - name: series
+                dataFields:
+                  - name: categoryX
+                    jsonPath: $.rows.[*].dimensionValues.[*].value
+                  - name: valueY
+                    jsonPath: $.rows.[*].metricValues.[*].value
+        - name: sessions
+          label: GA Sessions
+          class: info.magnolia.analytics.amcharts.data.AmChartDefinition
+          dataSupplier: gaSessionsSupplier
+          chartType: !include:/analytics-ui/chartTypes/line-and-area/line-different-colors-ups-downs.yaml
+            series:
+              - name: series
+                dataFields:
+                  - name: categoryX
+                    jsonPath: $.rows.[*].dimensionValues.[*].value
+                  - name: valueY
+                    jsonPath: $.rows.[*].metricValues.[*].value
+```
+
+> **Tip:** Refer to the chart types and properties sections for detailed information about configuring chartDefinitions.
+
+![IUX slot](../../../../_images/6-2-3-iux-analytics.png)

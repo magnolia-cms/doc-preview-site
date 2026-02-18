@@ -1,0 +1,167 @@
+---
+title: "Rendering context objects"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/Template-scripts/Rendering-context-objects/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating > Template scripts > Rendering context objects
+---
+
+# Rendering context objects
+
+[FreeMarker development only](../../Renderers/#_renderers_provided_by_magnolia)
+
+Rendering context objects provide direct access to important Magnolia classes from a template script. You can get information such as the current template, user and request through these objects. Rendering content objects are set in info.magnolia.rendering.renderer.AbstractRenderer and its child classes.
+
+Most context objects are [JavaBeans](http://en.wikipedia.org/wiki/JavaBeans), which means you can access their properties with the `dot` operator or a getter method in a template script. Both expressions are valid and return the same value.
+
+${ctx.aggregationState.channel.name}
+${ctx.getAggregationState().getChannel().getName()}
+
+## [](#_content)`content`
+
+Current content node in the rendering context provided as info.magnolia.jcr.util.ContentMap.
+
+In a page template, current node is the page node (`mgnl:page`). In a component template, current node is the component node (`mgnl:component`). It is the contextual `root` content node. The current node is exposed as a [ContentMap](../Templating-functions/Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap) object, which means it carries the properties of the underlying [Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html).
+
+**Example**: Rendering a page title. Here the current node is a page node.
+
+```xml
+<h1>${content.title!""}</h1>
+```
+
+## [](#_def)`def`
+
+Current info.magnolia.rendering.template.RenderableDefinition. Use `def` to access the properties of the template definition such as title or use [custom parameters](../../Template-definition/). It is a JavaBean, which means you can access its properties with the `dot` operator or a getter method.
+
+**Example**: Getting a CSS class name from [custom parameters](../../Template-definition/) and assigning it to a variable.
+
+\[#assign cssClass=def.parameters.cssClass\]
+
+## [](#_model)`model`
+
+A JavaBean created by the renderer based on the model class defined in the [template definition](../../Template-definition/). Every model class must implement the info.magnolia.rendering.model.RenderingModel interface.
+
+> **Warning:** Not every template defines a model class. If no model is defined, no bean will be created and its reference will be null.
+
+A model can be implemented as a Java class by implementing info.magnolia.rendering.model.RenderingModel. Since Magnolia 5.5.6, a model can also be written in JavaScript (see [JavaScript Models module](#javascript-models:ROOT:index.adoc)).
+
+The `model` itself provides the following built-in properties:
+
+-   `parent`: Model of the parent component or template.
+
+-   `root`: Top root model of the rendering process.
+
+-   `content`: Content node bound to the model in the rendering context provided as a [ContentMap](../Templating-functions/Templating-function-arguments-and-return-types/#_node_and_content_map).
+
+-   `node`: Content node bound to the model in the rendering context provided as a [Node](../Templating-functions/Templating-function-arguments-and-return-types/#_node_and_content_map).
+
+-   `definition`: The renderable definition (template, area or component) bound to the model. Same as [`def`](#_def).
+
+
+These properties can referenced like this:
+
+model.root
+model.node
+
+The probably most handy property is `parent`. Parent points to the parent model, its meaning depends on the case. If you have for instance a component template with a model and a page template with a model - the parent model of the component template is the model of the page template. Via parent you can access all built in properties of the parent model like this:
+
+model.parent.definition
+model.parent.content
+
+**Example**: Asking a model for a URL and a title, then building a link.
+
+\[#assign linkURL = model.url!\]
+\[#assign linkText = model.title!\]
+
+<a href="${linkURL}">${linkText}</a>
+
+> **Note:** There’s no reason to use content properties of a model (model.content, model.parent.content, and so on).The correct and secure way to render content in templating is through ${content…​}. The info.magnolia.rendering.renderer.AbstractRenderer makes sure that content nodes are always wrapped using the wrapNodeForTemplate method for their exposure in template scripts.    protected Node wrapNodeForTemplate(Node content) {
+>         content = wrapWithChannelVisibilityWrapper(content);
+>         content = wrapWithI18NWrapper(content);
+>         content = wrapWithHTMLEscapingWrapper(content);
+>         return content;
+>     }
+
+## [](#_action)`action`
+
+A String returned by the `execute()` method of the model class. Can be used for logic that has to be executed before rendering, when rendered output depends on the result of the logic, for example form field validation before rendering the field.
+
+## [](#_ctx)`ctx`
+
+Context represents the environment in which the current process runs. The type is info.magnolia.context.Context. It is info.magnolia.context.WebContext when the script is executed from a Web page and info.magnolia.context.SimpleContext, for instance, when the script generates a mail from within a workflow or scheduled job.
+
+The info.magnolia.context.Context interface provides access to:
+
+-   `user`
+
+-   `locale` ([java.util.Locale](https://docs.oracle.com/javase/7/docs/api/java/util/Locale.html))
+
+    Please note that `${ctx.locale}` is different from `${cmsfn.language()}`, the former referring to the locale currently used by the user, the latter to the locale currently used by the site. See also [AdminCentral and public locales](../../../../Administration/Language/AdminCentral-and-public-locales/).
+
+
+In addition, info.magnolia.context.WebContext provides access to:
+
+-   `AggregationState`
+
+-   `contextPath` (current context path)
+
+-   `request` ([`javax.servlet.http.HttpServletRequest`](https://docs.oracle.com/javaee/7/api/javax/servlet/http/HttpServletRequest.html))
+
+
+Any `ctx` attributes (request, session or application scoped) listed under `config:server/rendering/engine/protectedAttributes` are not exposed.
+
+```yml
+'protectedAttributes':
+  'servletContext': 'servletContext'
+```
+
+WebContext properties are null if the execution is not a Web page request.
+
+**Example**: Getting a search query from a request parameter.
+
+\[#assign queryStr = ctx.getParameter('queryStr')!?html\]
+
+## [](#_state)`state`
+
+The current info.magnolia.cms.core.AggregationState. Only set if ctx is of type WebContext. (See above.) It is a shortcut for `ctx.aggregationState`.
+
+Provides access to many properties such as:
+
+-   `channel`
+
+-   `originalURI`
+
+-   `currentURI`
+
+-   `queryString`
+
+-   `mainContentNode` ([javax.jcr.Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html))
+
+    This property returns the node (of type `Node`) that contains the main content. For example, if a child node [inherits](../../../Reusing-configuration/YAML-inherit-and-include/#_yaml_inherit) content from another component and `state.mainContentNode` was applied to the child node, it is the child node’s main content that would be returned.
+
+    A use case for this is shown below. Since the type returned by `state.mainContentNode` is `Node`, the function [cmsfn.asContentMap](../Templating-functions/cmsfn/#_convert_node_to_content_map) converts that node to a `ContentMap`, providing access to its properties. Finally, the [cmsfn.page](../Templating-functions/cmsfn/#_page_by_content) function returns the page to which the content belongs.
+
+    ```yaml
+    [#local currentPage = (cmsfn.page(cmsfn.asContentMap(state.mainContentNode)))!{}]
+    ```
+
+-   `templateName`
+
+-   `locale` (same as `ctx.locale`)
+
+
+> **Tip:** Check out info.magnolia.cms.core.AggregationState for all properties.
+
+Please note that the values of all the properties are HTML-escaped by default. Should you need it, the raw (unescaped) data can still be accessed in the following manner:
+
+`${state.unwrap().originalURI}`
+
+However, be warned that this may expose your webapp to XSS attacks.
+
+## [](#_i18n)`i18n`
+
+A message bundle wrapper (info.magnolia.freemarker.MessagesWrapper) to retrieve translated keys of a [message bundle](../../../../Administration/Language/Internationalization/) according to the current [`java.util.Locale`](https://docs.oracle.com/javase/7/docs/api/java/util/Locale.html).
+
+Use it to internationalize labels that are not stored in content (see [template labels](../../../../Administration/Language/Types-of-translatable-text/)). For example:
+
+i18n\["link.readon"\]

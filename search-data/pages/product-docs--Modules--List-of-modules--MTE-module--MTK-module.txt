@@ -1,0 +1,66 @@
+---
+title: "MTK module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/MTE-module/MTK-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > MTE module > MTK module
+---
+
+# MTK module
+
+[Multi-experience support](../../../../use-cases/multi-experience-support/) Bundled: Extension
+
+| Edition | CE  |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MTE](https://magnolia-cms.atlassian.net/browse/MTE) |
+| Maven site | [MTE](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Ftemplating%2Fmagnolia-templating-kit-2%2F4.0.0) |
+| Latest | 4.0.0 |
+
+## [](#_what_is_mtk)What is MTK
+
+The [Magnolia Templating Kit](#) (MTK) is a small set of ready-to-use component, area and page templates supplying basic functionality that is common across websites. The templates are designed to be flexible, with dialog options enabling them to fit many use cases without development. The MTK templates can be used as is, modified to suit your project needs or referenced as helpful examples of best-practice Magnolia templating. The MTK is intentionally small so that developers can learn it quickly. CSS is kept to a minimum to enable developers to easily integrate their own CSS or frameworks.
+
+In addition to the standard Maven module, the MTK is also available as a light module for easy access to the files. To get the latest version, see the download area on the [release notes pages](../../../../Releases/).
+
+> **Tip:** To experiment with Magnolia templating, put the unzipped MTK light module in Magnolia’s resource directory and make changes to the files. Due to Magnolia’s resource-loading mechanism, these files will be used instead of the ones in the Java classpath provided by the Maven module.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.templating</groupId>
+  <artifactId>magnolia-templating-kit-2</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+For the deprecated MTK with *Magnolia 5 UI* dialogs, add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.templating</groupId>
+  <artifactId>magnolia-templating-kit</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+See [Templates in MTK](../../../../Developing/Templating/Templates-in-MTK/)
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+Related topics
+
+-   [Templates in MTK](../../../../Developing/Templating/Templates-in-MTK/)

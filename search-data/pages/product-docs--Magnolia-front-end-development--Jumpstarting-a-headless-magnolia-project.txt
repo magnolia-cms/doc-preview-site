@@ -1,0 +1,233 @@
+---
+title: "Jumpstarting a headless Magnolia project"
+url: https://docs.magnolia-cms.com/product-docs/Magnolia-front-end-development/Jumpstarting-a-headless-magnolia-project/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development > Headless development guidelines > Jumpstarting a headless Magnolia project
+---
+
+# Jumpstarting a headless Magnolia project
+
+After creating a new project directory and running the [Magnolia CLI jumpstart plugin](../Getting-started-with-front-end-development/#_jumpstarting_a_project), you’re prompted to choose from available templates:
+
+```shell
+? Choose a template
+  1) standard-webapps (Magnolia without any content)
+  2) demo-webapps (Magnolia with travel demo)
+  3) headless (Magnolia with headless starter projects)
+```
+
+Select `3) headless` and press Enter.
+
+## [](#_selecting_a_starter_project)Selecting a starter project
+
+Next, choose a starter project for your desired front-end framework. These Magnolia starter projects provide a consistent and structured setup for headless development.
+
+```shell
+? Choose a template
+  1) angular-starter
+  2) react-starter
+  ...
+```
+
+For this guide, select `2) react-starter`.
+
+## [](#_choosing_a_magnolia_edition)Choosing a Magnolia edition
+
+You’re also prompted to select a [Magnolia Edition](../../Administration/License/#_editions_and_licenses):
+
+```shell
+? Choose a template
+  1) dx-core
+  2) ce
+```
+
+For this guide, select `2) ce` (Community Edition).
+
+## [](#_understanding_the_project_structure)Understanding the project structure
+
+The `react-starter` template provides an example project that demonstrates how to work with Magnolia in a headless setup. After downloading, your new project directory includes:
+
+-   `.magnolia/apache-tomcat/` - Tomcat with Magnolia webapp
+
+-   `light-modules/spa-lm/` - Light module with components, pages, and configuration
+
+-   `spa/` - React application folder
+
+-   `mgnl.config.js` - Configuration for Magnolia CLI and its plugins
+
+
+## [](#_key_concepts_of_headless_development)Key concepts of headless development
+
+When using Magnolia in a headless setup, your front-end application is responsible for rendering content retrieved from Magnolia via REST APIs.
+
+### [](#_component_mapping)Component mapping
+
+To display Magnolia content in your front-end app, you must map Magnolia templates to front-end components.
+
+This is done using a component mapping file, located here in the React starter project: `spa/src/magnolia.config.js`
+
+It contains code that connects Magnolia template identifiers (like `spa-lm:components/Banner`) to the corresponding component source files (like `Banner.jsx`).
+
+Learn more in the [Mapping between Magnolia and SPA components](../../Developing/headless/spa-development/mapping-between-magnolia-and-SPA-components/) page.
+
+> **Tip:** For more information about the React starter project structure, see the README.md in the spa/ folder.
+
+## [](#_magnolia_cli_configuration)Magnolia CLI configuration
+
+Some important values inside `mgnl.config.js`:
+
+```js
+...
+plugins: [
+  new CreateComponentPlugin({
+    ...
+  }),
+  new CreatePagePlugin({
+    ...
+  }),
+  ...
+],
+type: "jsx",
+lightModulesPath: "./light-modules",
+lightModule: "spa-lm",
+componentMappingFilePath: "./spa/src/magnolia.config.js"
+```
+
+### [](#_configuration_breakdown)Configuration breakdown
+
+These settings allow Magnolia CLI to set up and map pages and components inside your React app.
+
+| Setting | Description |
+| --- | --- |
+| `type: "jsx"` | Enables React JSX template generation |
+| `lightModulesPath` | Directory where Magnolia light modules are stored |
+| `lightModule` | Default module used for new Magnolia config items |
+| `componentMappingFilePath` | Path to mapping file for connecting React components and pages to Magnolia templates |
+| `CreateComponentPlugin` | Magnolia CLI plugin for creating Magnolia component templates and front-end components based on the plugin configuration |
+| `CreatePagePlugin` | Magnolia CLI plugin for creating Magnolia page templates and front-end pages based on the plugin configuration |
+
+## [](#_creating_pages_and_components_with_cli)Creating pages and components with CLI
+
+Magnolia CLI provides plugins that work with React projects using `@magnolia/cli-react-prototypes`.
+
+### [](#_create_a_new_page_template)Create a new page template
+
+To create a new page template, run:
+
+```shell
+npm run mgnl -- create-page HomePage
+```
+
+This command:
+
+-   Creates a new file for the React page: `./spa/src/app/templates/pages/HomePage.jsx`
+
+-   Creates a YAML page template definition in the light modules folder
+
+-   Updates `spa/src/magnolia.config.js` with the new page mapping
+
+
+### [](#_create_a_new_component)Create a new component
+
+To create a new component inside the HomePage, run:
+
+```shell
+npm run mgnl -- create-component Banner -a HomePage
+```
+
+This command:
+
+-   Generates `./spa/src/app/templates/components/Banner.jsx`
+
+-   Creates a YAML component template definition in the light modules folder
+
+-   Adds component mapping in `spa/src/magnolia.config.js`
+
+-   Registers the component inside the main area of the HomePage template
+
+
+## [](#_view_the_component_mapping)View the component mapping
+
+Open `spa/src/magnolia.config.js` and you see mappings like:
+
+```js
+import BannerComponent from './app/templates/components/Banner.jsx'
+import HomePagePage from './app/templates/pages/HomePage.jsx'
+...
+
+const config = {
+  componentMappings: {
+    ...
+    "spa-lm:pages/HomePage": HomePagePage,
+    "spa-lm:components/Banner": BannerComponent
+  },
+};
+
+export default config;
+```
+
+## [](#_starting_magnolia_cms)Starting Magnolia CMS
+
+In the project root, run:
+
+```shell
+npm run mgnl -- start
+```
+
+After the Magnolia instance is successfully started, visit [http://localhost:8080](http://localhost:8080).
+
+## [](#_login)Login
+
+Go to [`http://localhost:8080/magnoliaAuthor`](http://localhost:8080/magnoliaAuthor) and sign in as a `superuser` :
+
+-   Username: `superuser`
+
+-   Password: `superuser`
+
+
+Magnolia is ready to use and gives you a list of suggestions to get started.
+
+> **Note:** superuser is a system administrator account that has permissions to do everything. It’s useful for testing.
+
+## [](#_starting_the_react_app)Starting the React app
+
+In the new terminal window, run:
+
+```shell
+cd spa
+npm install
+npm run dev
+```
+
+Visit [http://localhost:8181](http://localhost:8181) to view your front-end app fetching content from Magnolia.
+
+## [](#_creating_pages_and_content_in_magnolia)Creating pages and content in Magnolia
+
+1.  Open the Pages app in AdminCentral.
+
+2.  Create a new page using the `HomePage` template.
+
+3.  Add the `Banner` component to the main area of the page.
+
+4.  Refresh [http://localhost:8181](http://localhost:8181) to see your new content coming from Magnolia and rendered in your React app.
+
+
+## [](#_next_steps)Next Steps
+
+You successfully jumpstarted a headless Magnolia project with React.
+
+Here are some ideas for what to explore next:
+
+-   Customize your prototype - configure your CLI plugins
+
+-   Create your own CLI plugin - create a plugin to match your exact needs
+
+-   Create your first content app and content type and render the content in your React app
+
+-   Use REST APIs - Review `restEndpoints/delivery` config in `spa-lm` and visit the [Delivery API documentation](#rest:api:delivery-endpoint.adoc)
+
+-   Learn about the [Magnolia React Editor](../../Developing/headless/spa-development/magnolia-front-end-sdk/magnolia-react-editor/) `@magnolia/react-editor`
+
+
+[Want to try FreeMarker next?](../Jumpstarting-a-freemarker-based-magnolia-project/)

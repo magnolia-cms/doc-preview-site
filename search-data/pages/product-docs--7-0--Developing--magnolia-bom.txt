@@ -1,0 +1,225 @@
+---
+title: "Bill of Materials (BOM) for dependencies"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/magnolia-bom/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Bill of Materials (BOM) for dependencies
+---
+
+# Bill of Materials (BOM) for dependencies
+
+> A software bill of materials (software BOM) is a list of components in a piece of software. Software vendors often create products by assembling open source and commercial software components. The software BOM describes the components in a product. It is analogous to a list of ingredients on food packaging. (Wikipedia)
+
+## [](#_overview)Overview
+
+Magnolia uses Maven BOMs to centralize and manage dependency versions across your projects. This ensures version consistency and simplifies dependency management.
+
+Magnolia provides two main BOMs:
+
+-   [Third-party dependencies BOM](#_third_party_dependencies_bom): Manages versions of external libraries (Spring, Jackson, etc.)
+
+-   [Extensions BOM](#_extensions_bom): Manages versions of libraries used by DX Core extensions
+
+
+Both BOMs use Maven’s dependency import mechanism, allowing you to inherit pre-configured dependency versions without explicitly declaring them in your project.
+
+## [](#_third_party_dependencies_bom)Third-party dependencies BOM
+
+The third-party dependencies BOM (`magnolia-external-dependencies`) centralizes versions for common external libraries used throughout Magnolia projects.
+
+### [](#_when_to_use)When to use
+
+Use this BOM to:
+
+-   Ensure compatibility with Magnolia’s tested third-party library versions
+
+-   Avoid version conflicts between different libraries
+
+-   Simplify upgrades by changing a single version number
+
+
+### [](#_adding_to_your_project)Adding to your project
+
+Include this snippet as the first dependency in the `dependencyManagement` section of your parent POM:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <!-- Third-party BOM -->
+    <dependency>
+      <groupId>info.magnolia.boms</groupId>
+      <artifactId>magnolia-external-dependencies</artifactId>
+      <version>{magnola-latest-version}</version> (1)
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+
+    <!-- Module BOM -->
+    <dependency>
+      <groupId>info.magnolia.dx</groupId>
+      <artifactId>magnolia-dx-core-parent</artifactId>
+      <version>{magnola-latest-version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+|     |     |
+| --- | --- |
+| **1** | The latest version is `7.0.0`. |
+
+> **Important:** The order matters. Place the third-party BOM before the Magnolia module BOM to ensure proper version resolution.
+
+### [](#_3rd_party_libraries_list)3rd-party libraries list
+
+A list of licenses of third-party libraries used by Magnolia as part of the build is displayed in the **Libraries license info** tab of the About app.
+
+On Magnolia Cloud, there is no other option to get an overview of these libraries and their licenses.
+
+## [](#_extensions_bom)Extensions BOM
+
+The extensions BOM (`magnolia-extensions-bom`) manages third-party library versions specifically required by DX Core extensions. This BOM was introduced in Magnolia 6.3 to provide better isolation and version management for extension-specific dependencies.
+
+### [](#_when_to_use_2)When to use
+
+Use the extensions BOM when:
+
+-   Your project uses DX Core extensions
+
+-   You’re upgrading to Magnolia 6.3 or later from an earlier version
+
+
+### [](#_adding_to_your_project_2)Adding to your project
+
+Add the extensions BOM to your `dependencyManagement` section after the third-party BOM:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <!-- Third-party BOM -->
+    <dependency>
+      <groupId>info.magnolia.boms</groupId>
+      <artifactId>magnolia-external-dependencies</artifactId>
+      <version>{magnola-latest-version}</version> (1)
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+
+    <!-- Extensions BOM (DX Core only) -->
+    <dependency>
+      <groupId>info.magnolia.boms</groupId>
+      <artifactId>magnolia-extensions-bom</artifactId>
+      <version>{magnola-latest-version}</version> (1)
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+
+    <!-- Module BOM -->
+    <dependency>
+      <groupId>info.magnolia.dx</groupId>
+      <artifactId>magnolia-dx-core-parent</artifactId>
+      <version>{magnola-latest-version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+|     |     |
+| --- | --- |
+| **1** | The latest version is `7.0.0`. |
+
+### [](#_version_compatibility)Version compatibility
+
+| Magnolia DX Core Version | Extensions BOM Version | Notes |
+| --- | --- | --- |
+| `6.4.x` | `6.4` | Required for extensions compatibility |
+| `6.3.x` | `6.3` | First version with extensions BOM |
+| `6.2.x and earlier` |     | Extensions BOM not available |
+
+> **Note:** The extensions BOM is only available for DX Core editions starting with version 6.3.
+
+## [](#_best_practices)Best practices
+
+### [](#_bom_ordering)BOM ordering
+
+Always import BOMs in this order:
+
+1.  Third-party dependencies BOM
+
+2.  Extensions BOM (if using DX Core extensions)
+
+3.  Magnolia module BOM (CE or DX Core parent)
+
+
+This ordering ensures proper dependency resolution and prevents version conflicts.
+
+### [](#_version_alignment)Version alignment
+
+Keep all BOM versions aligned with your Magnolia version:
+
+```xml
+<properties>
+  <magnolia.version>{magnola-latest-version}</magnolia.version> (1)
+</properties>
+
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>info.magnolia.boms</groupId>
+      <artifactId>magnolia-external-dependencies</artifactId>
+      <version>${magnola-latest-version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <dependency>
+      <groupId>info.magnolia.boms</groupId>
+      <artifactId>magnolia-extensions-bom</artifactId>
+      <version>${magnola-latest-version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+|     |     |
+| --- | --- |
+| **1** | The latest version is `7.0.0`. |
+
+### [](#_troubleshooting)Troubleshooting
+
+#### [](#_dependency_conflicts)Dependency conflicts
+
+If you encounter version conflicts:
+
+1.  Check that BOMs are imported in the correct order.
+
+2.  Verify all BOMs use the same Magnolia version.
+
+3.  Use `mvn dependency:tree` to identify conflicting versions.
+
+4.  Consider excluding transitive dependencies if necessary.
+
+
+#### [](#_missing_dependencies)Missing dependencies
+
+If dependencies are not resolved:
+
+1.  Ensure the BOM artifacts are available in your Maven repository
+
+2.  Check network connectivity to Maven Central or your corporate repository
+
+3.  Verify the BOM version exists (especially important for extensions BOM pre-6.3)
+
+
+## [](#_see_also)See also
+
+-   [Software bill of materials](https://en.wikipedia.org/wiki/Software_bill_of_materials) (Wikipedia)
+
+-   [Upgrading to Magnolia 7.0](../../Upgrading-to-Magnolia/)
+
+-   [Maven BOM documentation](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#bill-of-materials-bom-poms)

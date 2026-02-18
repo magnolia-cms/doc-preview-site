@@ -1,0 +1,35 @@
+---
+title: "JCR preview definition"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/App-configuration/Data-source-definition/JCR-data-source/JCR-preview-definition/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > App configuration > Data source definition > JCR data source > JCR preview definition
+---
+
+# JCR preview definition
+
+JCR preview definition ensures that a content app can render previews of binary data (e.g. an image) for the JCR nodes of a given data source. It implements the info.magnolia.ui.datasource.PreviewDefinition interface.
+
+> **Note:** JCR preview definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.contentapp.preview.JcrPreviewDefinition.If you work with the Magnolia 5 UI framework, see Image provider definition instead.
+
+## [](#_example_definition)Example definition
+
+```yml
+datasource:
+  $type: jcrDatasource
+  workspace: contacts
+  preview:
+    nodeName: photo
+    class: info.magnolia.ui.contentapp.preview.JcrPreviewDefinition
+    extension: .png
+```
+
+## [](#_list_of_properties)List of properties
+
+| Property | Description |
+| --- | --- |
+| `nodeName` | **required**, *default is `JcrConstants.JCR_CONTENT`*<br><br>Name of the JCR node where the original source image is stored. For example, if a file upload field on a form stores the image in a node named `photo`, set the value to `photo`. |
+| `class` | **optional**, *default is `info.magnolia.ui.contentapp.preview.JcrPreviewDefinition`*<br><br>Preview definition class that reads the configuration properties and can supply additional parameters to the class. Set the value to a fully qualified class name. |
+| `extension` | **optional**, *default is `jpg`*<br><br>Extension used to deliver the image. |
+| `generator` | **optional**, *default is `portrait`*<br><br>Name of the image generator that generates thumbnail images. |
+| `servletPath` | **optional**, *default is `.imaging`*<br><br>Path where the imaging servlet resides. |

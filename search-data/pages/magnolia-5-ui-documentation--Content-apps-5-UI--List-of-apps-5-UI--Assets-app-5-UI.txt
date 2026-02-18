@@ -1,0 +1,116 @@
+---
+title: "Assets app - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-apps-5-UI/List-of-apps-5-UI/Assets-app-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content apps - 5 UI > List of apps - 5 UI > Assets app - 5 UI
+---
+
+# Assets app - 5 UI
+
+This page describes the old Assets app, configurable using the [Configuration app](#6.2@product-docs:ROOT:Apps/List-of-apps/Configuration-app.adoc) (`/modules/dam-app`). By default, this app is hidden in the UI.
+
+Its 6 UI equivalent is called the [Magnolia Assets subapp](#6.2@product-docs:ROOT:Apps/List-of-apps/Assets-app/Magnolia-Assets-subapp.adoc), is available through the Assets app icon in the Applauncher, and its configuration is stored in a YAML file: `/dam-app-jcr/decorations/dam-assets-app/apps/dam.subApps.yaml`.
+
+The Assets app - 5 UI allows you to manage media assets in Magnolia’s [digital asset management system (DAM)](#6.2@product-docs:ROOT:Features/Digital-asset-management.adoc). You can upload original assets into the system, organize them, perform basic image manipulation operations such as cropping. The assets can be used on the website.
+
+![Assets app](6.2@product-docs:ROOT:6-2-1-oldAssetsApp.png)
+
+See [Digital asset management](#6.2@product-docs:ROOT:Features/Digital-asset-management.adoc) on how to use the app. The Assets app is installed by the [DAM App module](#6.2@product-docs:ROOT:Modules/List-of-modules/Digital-Asset-Management-module.adoc).
+
+## [](#_configuration)Configuration
+
+The app is based on the [content app framework](../../Parts-of-a-content-app-5-UI/) so its configuration is typical of any content app.
+
+The app is configured in `/modules/dam-app/apps/assets`.
+
+| Node name |
+| --- |
+| modules |
+| dam-app# |
+| apps# |
+| assets# |
+
+### [](#_turning_the_image_thumbnails_off_in_the_browser_subapp)Turning the image thumbnails off in the Browser subapp
+
+By default image thumbnails are displayed next to the asset names in the workbench of the Browser subapp:
+
+![Image thumbnail](6.2@product-docs:ROOT:browser_listview551_detail_scope_on.png)
+
+This behavior can be changed by setting the `thumbnails` property to `false` under the `/modules/dam-app/apps/assets/subApps/browser/workbench/contentViews/list/columns/asset` node. An icon is then displayed next to the asset name instead of the thumbnail:
+
+![Image icon](6.2@product-docs:ROOT:browser_listview551_detail_scope_off.png)
+
+The default value is set to `true` in the definition class. This means that if you do not set the value to `false` in the app configuration, the value is `true` and the thumbnails are displayed.
+
+### [](#_workspace)Workspace
+
+The Assets app operates on the `dam` workspace. The `dam` workspace stores the uploaded original assets and variations created with image operations such as cropping.
+
+### [](#_node_types)Node types
+
+The DAM App module registers a custom `mgnl:asset` [node type](#6.2@product-docs:ROOT:Administration/Architecture/Node-types.adoc). The Assets app operates on nodes of this type and on folders.
+
+### [](#_editing_and_upload_configuration)Editing and upload configuration
+
+Icons, thumbnail images, preview images and supported media types are configured in `/dam-app/config/editAssetAppConfigurations`. The configurations define the supported media types and asset preview configurations for each asset category. For images, the edit configuration is also configured.
+
+Based on the `SupportedMediaType` related to the `Asset`, the corresponding `EditAssetAppConfiguration` is retrieved during the rendering of the `detail` subapp. Only appropriate actions are displayed and can be executed in the `detail` subapp. For example, users have the option to open the image editor and edit images, but this is not possible for other media types.
+
+Here’s the configuration for images:
+
+![Images configuration](6.2@product-docs:ROOT:ADVT-assets-app-1.png)
+
+Nodes and properties:
+
+| `imageUploadConfiguration` |     |
+| --- | --- |
+| `previewConfig` | Defines the action configuration to execute if a preview of the asset is required. Previews are only configured for images. |
+| `iconStyleName` | `icon-search` displays search icon below the preview image on the left. The icon opens the image in the lightbox. |
+| `previewComponentProviderClass` | `ImagePreviewComponentProvider` is the image implementation of the `PreviewComponentProvider` interface. This implementation opens `OverlayCloser` containing an image. |
+| `editConfig` | Defines the action configuration to call the image editor configured in `/modules/ui-mediaeditor/mediaEditors/image`. |
+| `iconStyleName` | `icon-edit` displays edit icon below the preview image on the right. The icon opens the image image editor. |
+| `mediaEditorId` | Media editor ID. |
+| `supportedMediaTypes` | Media types are configured as a list of `String` properties that are a representation of the corresponding `MediaType` (see below). |
+| `image` | By default all image formats are supported. |
+| `thumbnailComponentProviderClass` | `ImageThumbnailComponentProvider` creates a thumbnail image. You can extend this for other media types by installing the [Dam Preview module](#6.2@product-docs:ROOT:Modules/List-of-modules/Digital-Asset-Management-module/DAM-Preview-module.adoc). |
+
+Here’s an image in the Asset dialog.
+
+![Image in the Asset dialog](6.2@product-docs:ROOT:image-upload-configuration.png)
+
+For other assets only the `supportedMediaTypes` and `thumbnailComponentProviderClass` nodes are configured. With one exception, they all use the same thumbnail provider class that displays an icon, and all media types are supported by default. SVG images use the image thumbnail component provider class. An image thumbnail displays but these images cannot be edited in Magnolia.
+
+Here are the configurations in `/modules/dam-app/config/editAssetAppConfigurations`.
+
+![Configurations](6.2@product-docs:ROOT:ADVT-assets-app-2.png)
+
+Nodes and properties:
+
+| `<upload configuration name>` |     |
+| --- | --- |
+| `supportedMediaTypes` | Media types are configured as a list of `String` properties that are a representation of the corresponding `MediaType` (see below). |
+| `<media type>` | By default all asset formats are supported. |
+| `thumbnailComponentProviderClass` | `IconThumbnailComponentProvider` creates an icon’s thumbnail related to the file media type. |
+
+Here’s a video in the Asset dialog.
+
+![Video in the Asset dialog](6.2@product-docs:ROOT:video-icon-asset-dialog.png)
+
+`MediaTypes` in the `SupportedMediaTypes` node are configured as a list of `String` properties. These `String` properties are a representation of the corresponding `MediaType`:
+
+    String incommingMimeType = "image/png";
+    // 'image/\*' is the string to be put in configuration if the config has to support all images
+    MediaType allImage = MediaType.parse("image/\*");
+    // 'image/Jpeg' is the string to be put in configuration if the config has to support only jpeg
+    MediaType onlyJpeg = MediaType.parse("image/jpeg");
+    // RETURN TRUE
+    boolean isImage = MediaType.parse(incommingMimeType).is(allImage);
+    // RETURN FALSE
+    boolean isJpeg = MediaType.parse(incommingMimeType).is(onlyJpeg);
+
+## [](#_using_the_app)Using the app
+
+See [Digital asset management](#6.2@product-docs:ROOT:Features/Digital-asset-management.adoc) for how to use the Assets app to store and use your media files.
+
+Unresolved include directive in modules/ROOT/pages/Content-apps-5-UI/List-of-apps-5-UI/Assets-app-5-UI.adoc - include::6.2@product-docs:ROOT:partial$authoring/r\_handle-large-amount-of-assets.adoc\[\]

@@ -1,0 +1,49 @@
+---
+title: "JSON Content-Type validation"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Troubleshooting/JSON-Content-Type-validation/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > JSON Content-Type validation
+---
+
+# JSON Content-Type validation
+
+Security scanners and penetration tests may occasionally flag Vaadin’s handling of JSON requests as a potential issue. Specifically, reports may note that the framework accepts JSON payloads (such as UIDL requests) even when the `Content-Type` header isn’t strictly set to `application/json`.
+
+This behavior is intentional and doesn’t constitute a security vulnerability.
+
+> **Note:** This finding is frequently reported as a "False Positive" in automated security audits.
+
+## [](#_rationale)Rationale
+
+The decision not to strictly enforce the `Content-Type` header is based on two main factors: compatibility and the actual security mechanism used by the framework.
+
+-   **Compatibility:** Strict enforcement of `application/json` breaks compatibility with certain legitimate technologies and environments, such as specific Portlet containers and gateways, which may modify or omit headers during transit.
+
+-   **Parsing Logic:** Regardless of the header provided, Vaadin attempts to parse the content. If the request body contains malformed JSON, the request will fail at the parsing stage, ensuring data integrity.
+
+
+## [](#_security_mechanism_csrf)Security mechanism (CSRF)
+
+Vaadin doesn’t rely on `Content-Type` checks to secure the application against Cross-Site Request Forgery (CSRF) or other injection attacks. Instead, the framework relies on a robust Synchronizer Token Pattern.
+
+1.  **CSRF Tokens**: Every UIDL request (state change request) must include a valid CSRF token (often referred to as the security key) that matches the token held in the user’s session.
+
+2.  **Validation Priority**: This token is validated independently of the `Content-Type` header. If the token is missing or invalid, the request is rejected immediately, rendering the value of the `Content-Type` header irrelevant from a security perspective.
+
+
+Because the security of the request is guaranteed by the cryptographically strong CSRF token, enforcing the content type adds no additional security value but would introduce significant compatibility regressions.
+
+## [](#_summary)Summary
+
+Vaadin intentionally accepts JSON requests without requiring the `application/json` header. Security doesn’t rely on this header but on mandatory CSRF tokens.
+
+Related topics
+
+For further context, please refer to:
+
+-   [CSRF security](../../Architecture/Request-processing-and-filters/Filters/#_csrf_security)
+
+-   [Frequently Reported Security Issues](https://vaadin.com/docs/latest/flow/security/advanced-topics/frequent-issues#content-type-incorrectly-stated) (vaadin.com)
+
+-   [GitHub Issue #9492: Content-Type Validation](https://github.com/vaadin/framework/issues/9492) (github.com/vaadin)

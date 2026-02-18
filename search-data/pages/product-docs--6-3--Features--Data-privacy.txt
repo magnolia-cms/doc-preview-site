@@ -1,0 +1,183 @@
+---
+title: "Data privacy"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Features/Data-privacy/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Magnolia DXP > Data privacy
+---
+
+# Data privacy
+
+This page explains how Magnolia helps you ensure the data privacy rights of website visitors in the context of GDPR.
+
+## [](#_what_is_gdpr)What is GDPR?
+
+The General Data Protection Regulation (GDPR) is a set of rules brought into effect on May 25, 2018 to protect the data privacy rights of European citizens. GDPR requires companies to be transparent about what personal data they collect about subjects and for what purpose. Personal data is defined as any information relating to an identified or identifiable natural person. See [European Commission’s website](https://ec.europa.eu/info/law/law-topic/data-protection/data-protection-eu_en) for more information about the regulation.
+
+## [](#_does_gdpr_impact_you)Does GDPR impact you?
+
+Any company that wants to do business in the European Union must comply with GDPR. Even if you do not intend to provide EU residents with goods or services – but you are collecting their personal data – you need to comply with the GDPR.
+
+### [](#_gdpr_roles)GDPR roles
+
+The GDPR defines two main roles:
+
+-   **Controller** who determines the purposes and means of processing personal data. The controller is ultimately responsible for GDPR compliance.
+
+-   **Processor** who processes personal data on behalf of the controller.
+
+
+#### [](#_client_hosted)Client Hosted
+
+A typical Client Hosted Magnolia client is both a *controller* and *processor*. As a client hosted client, you determine what personal data is collected from visitors and why. You also store and process the data. Magnolia is one of the means (tools, methods) you use to collect the data. As the data controller, you are ultimately responsible for your site’s compliance with GDPR.
+
+#### [](#_cloud)Cloud
+
+A typical Magnolia Cloud client is a *controller* while Magnolia Cloud is the *processor*. Magnolia hosts your website(s) as a cloud service on AWS and collects, stores and processes data on your behalf. You can find out more about AWS GDPR compliancy [here](https://aws.amazon.com/compliance/gdpr-center/). As the data controller, you are ultimately responsible for your site’s compliance with GDPR.
+
+## [](#_how_does_magnolia_help_you_become_gdpr_compliant)How does Magnolia help you become GDPR compliant?
+
+Magnolia is committed to the General Data Protection Regulation and to protecting privacy and personal data in a practical and solution-oriented way.
+
+Magnolia provides:
+
+-   A GDPR-dedicated set of modules.
+
+-   APIs to handle visitor information and to manage cookies.
+
+-   Visitors and Cookies apps.
+
+-   Sample templates, dialogs and forms.
+
+
+### [](#_storing_personal_data_and_managing_consent)Storing personal data and managing consent
+
+**Example**: A visitor fills a contact form on your website. They enter their name and email address into the form. Under GDPR, email address and name are personal data and you must ask the visitor for consent so that you may collect, store and use their data. You should also tell the visitor how you plan to use the data. For example, it may not be obvious to the visitor that you will add them to a newsletter mailing list.
+
+Magnolia helps you manage this in a compliant way by providing a set of privacy-aware form templates. The forms are used to collect and record the personal data and related consent.
+
+Try to minimize the personal data you collect. If you don’t have a compelling business reason to capture a particular detail then don’t do it. Is there another way of achieving the same goal without having to collect the data?
+
+You should only collect data that is:
+
+-   Adequate
+
+-   Relevant
+
+-   Limited to what is necessary for the purposes for which it is processed.
+
+
+#### [](#_forms)Forms
+
+Developers can update your website’s forms to become GDPR-aware using the default form components delivered with Magnolia’s [Privacy module](../../Modules/List-of-modules/Privacy-module/):
+
+-   **Get visitor data** form
+
+-   **Confirm visitor data** form
+
+-   **Store visitor data** form
+
+-   **Delete visitor data** form
+
+-   **Forget me** form
+
+
+These forms and the consent fields available in them can be [used as a starting point and configured](../../Modules/List-of-modules/Privacy-module/GDPR-and-forms/) to gather only the information you require.
+
+#### [](#_consent)Consent
+
+Magnolia helps you make sure your visitors have a clear way to give or refuse consent.
+
+The form shown below and the related consent mechanism was created using the out-of the-box **Store visitor data** form template in a page. Once submitted, the user is asked to confirm their consent by email: this is called *double opt-in*.
+
+![Contact form](../../_images/6-2-consent-form-component.png) ![Contact form on Public instance](../../_images/6-0-consent-form-preview.png)
+
+The form template automatically:
+
+-   Adds consent fields to your forms so that granular consent for the data being collected is obtained directly via the configured form.
+
+-   Helps you configure double opt-in validation for consent by sending a link to a confirmation page by email.
+
+
+These sample forms can be [configured and extended to suit your specific needs](../../Modules/List-of-modules/Privacy-module/GDPR-and-forms/).
+
+Create a `Privacy policy` page explaining what visitor information you collect and why. Include a link to this page during the double opt-in process and/or when visitors are asked to give consent.
+
+#### [](#_data_storage)Data storage
+
+Information gathered from visitors is stored in different JCR [workspaces](../../Administration/Architecture/Workspaces/). These workspaces are then registered under the [Visitor manager module](../../Modules/List-of-modules/Privacy-module/#_visitor_references_searchers) to be able to process GDPR-sensitive data.
+
+Visitor consent is stored in a dedicated `visitors` workspace. You can view consent data, including a record of when and how consent was collected for each piece of information, as well as update and delete consent in the [Visitors app](../../Apps/List-of-apps/Visitors-app/).
+
+### [](#_gdpr_data_is_stored_on_public_and_must_be_synchronized_on_clusters)GDPR data is stored on public and must be synchronized on clusters
+
+Data is stored on the public context.
+
+> **Important:** Synchronization between public nodes may be required.
+
+The record of consent for form-based data in the `visitors` workspace is created on the *public* Magnolia instance, never on the author instance. This is also true for referenced content, for instance in the `contacts` workspace.
+
+You must synchronize the consent records stored if you use several public instances. The instances, or in our sample implementation at least the `visitors`, `pendingContacts` and `contacts` workspaces, must be clustered to share accounts between the different instances. Alternatively, implement observation-based synchronization to replicate visitor and contact data across instances.
+
+### [](#_managing_cookies)Managing cookies
+
+Magnolia helps you [manage cookies on your website](../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/). Under GDPR, you must inform visitors that your website is using cookies, and, if your cookies collect personal data, ask visitors to consent to the their data being collected. Before setting a cookie, Magnolia checks the cookie consent stored in the visitor’s browser against the configuration of the cookie in the Cookies app and determines whether or not the cookie may be set.
+
+The Magnolia [Travel demo](../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/) shows how the default cookie-related tabs in the Pages app can be used to configure cookies and how they appear to users:
+
+![Page properties cookies](../../_images/6-2-page-properties-cookies.png) ![Preview of the page](../../_images/6-0-page-properties-cookies-preview.png)
+
+Create a `Cookie policy` page explaining what types of cookies exist on your site and their purpose. Include a link to this page from the cookie banner.
+
+#### [](#_cookie_consent)Cookie consent
+
+If your cookies collect personal data, you need to get and record consent from your visitors.
+
+In the following example, the list of cookies marketeers can choose from is configured in the [Cookies app](../../Apps/List-of-apps/Cookies-app/). This is where developers can add and configure the cookies required for your site:
+
+![Cookies app](../../_images/6-2-cookie-manager-config.png)
+
+##### [](#_marketing_tag_example)Marketing tag example
+
+Google Analytics is a commonly used tool on websites. It works by collecting information about visitors through the use of cookies. You need to obtain consent for this type of cookie.
+
+> Google Analytics is Google’s analytics tool that helps website and app owners to understand how their visitors engage with their properties. It may use a set of cookies to collect information and report website usage statistics without personally identifying individual visitors to Google. The main cookie used by Google Analytics is the \`\_\_ga' cookie.
+
+Marketeers can link the [Google Analytics marketing tag](../../Apps/List-of-apps/Marketing-Tags-app/) to the relevant cookie configured in the Cookies app to ensure you ask your visitors to consent the `_ga` cookie being used. Marketing tags linked to cookies are not added if the visitor doesn’t accept the cookies in question.
+
+![Google Analytics marketing tag tab](../../_images/6-2-mktg-tag-cookie-tab.png)
+
+### [](#_erasing_personal_data)Erasing personal data
+
+Magnolia enables you to respect a subject’s right to be forgotten. For example, the visitor that signed up for the newsletter no longer wants to receive it: he/she may request their data be deleted via a link on your site and be asked to confirm by email.
+
+Magnolia provides a default **Delete visitor data** form template to quickly create a form where visitor can request you delete their data. With the [Data privacy API](../../Developing/API/Java-Server-APIs/Data-privacy-API/), developers can delete all visitor data previously stored upon request.
+
+### [](#_data_portability)Data portability
+
+Magnolia enables you to export a .zip file of all the personal data you have collected about a visitor at their request (or at the request of data protection authorities). The machine-readable export can contain information such as:
+
+-   What personal data has been collected and processed.
+
+-   Why the data has been collected and processed.
+
+-   The categories of data subjects.
+
+-   The categories of third parties that data may be shared with.
+
+
+See [exporting JCR data](../../Administration/Importing-and-exporting-data/Importing-and-exporting-JCR-data-for-bootstrapping/) - Importing and exporting JCR data with apps from the Admin UI.
+
+Related topics
+
+-   [Privacy module](../../Modules/List-of-modules/Privacy-module/)
+
+-   [Data privacy API](../../Developing/API/Java-Server-APIs/Data-privacy-API/)
+
+-   [GDPR and forms](../../Modules/List-of-modules/Privacy-module/GDPR-and-forms/)
+
+-   [GDPR and cookies](../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/)
+
+-   [Cookies app](../../Apps/List-of-apps/Cookies-app/)
+
+-   [Visitors app](../../Apps/List-of-apps/Visitors-app/)

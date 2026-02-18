@@ -1,0 +1,119 @@
+---
+title: "Release notes for Magnolia CMS 6.3.2"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.2/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.2
+---
+
+# Release notes for Magnolia CMS 6.3.2
+
+[LTS release](../../../../support/) • Delivered on December 11, 2024 • Page updated on January 8, 2025 • Changelog: [14368](https://magnolia-cms.atlassian.net/issues/?filter=14368)
+
+**Magnolia CMS 6.3.2** is a security and bug-fixing release primarily related to [known issues](../Release-notes-for-Magnolia-CMS-6.3.1/Magnolia-6.3.1-known-issues/) in the previous release.
+
+> **Note:** See Upgrading to Magnolia 6.3 and Upgrading to Magnolia 6.3.1 and later before installing this version.
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.2.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.2/magnolia-dx-core-webapp-6.3.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.2.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.2/travel-demo-webapp-6.3.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.2.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.2/travel-demo-community-webapp-6.3.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.0.zip](../../_attachments/mtk2_3.0.0.zip) (*as a light module*)
+
+
+## [](#_announcements)Announcements
+
+-   E-commerce [2.0.1](#ecommerce:ROOT:changelog.adoc) was released on November 11, 2024.
+
+-   External DAM [2.0.1](../../Modules/extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_external_dam_module_changelog) was released on November 13, 2024.
+
+-   External DAM [2.0.2](../../Modules/extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_external_dam_module_changelog) was released on November 22, 2024.
+
+
+## [](#_bug_fixes)Bug fixes
+
+-   [BUILD-1299](https://magnolia-cms.atlassian.net/browse/BUILD-1299) Upgrade to commons-io `2.17.x` causes DAM app and Imaging module to break
+
+-   [CFGUI-199](https://magnolia-cms.atlassian.net/browse/CFGUI-199) In-app search and filter don’t work correctly in Definitions app
+
+-   [MAGNOLIA-9503](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9503) Classpath definitions can’t be overlayed with filesystem definitions
+
+-   [MGNLRES-421](https://magnolia-cms.atlassian.net/browse/MGNLRES-421) In-app search and filter don’t work correctly in Resource Files app
+
+-   [MGNLUI-9079](https://magnolia-cms.atlassian.net/browse/MGNLUI-9079) Search field is missing in some apps after converting the definitions
+
+-   [MGNLUI-9095](https://magnolia-cms.atlassian.net/browse/MGNLUI-9095) Switching variants replaces the target variant with the current value without clicking Save Changes
+
+-   [TASKS-64](https://magnolia-cms.atlassian.net/browse/TASKS-64) In-app search and filter don’t work correctly in Tasks app
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MGNLDAM-1532](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1532) Update generic chooser CTA to say **Select** instead of **Choose**
+
+-   [MGNLEESOLR-255](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-255) Make Magnolia Solr module compatible with Solr `9.0`
+
+-   [MGNLTOMCAT-48](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-48) Update dependency org.apache.tomcat:tomcat to `9.0.97`
+
+
+## [](#_third_party_library_updates)Third-party library updates
+
+This release comes with a number of third-party library updates, see the [Magnolia Third-party library BOM 6.3.2](https://gitlab.magnolia-platform.com/pd/build/boms/-/blob/magnolia-bom-6.3.2/pom.xml?ref_type=tags).
+
+### [](#_notable_updates)Notable updates
+
+-   [BUILD-1296](https://magnolia-cms.atlassian.net/browse/BUILD-1296) Update Netty to version `4.1.115.Final`
+
+
+## [](#_updated_modules)Updated modules
+
+-   Advanced Cache `3.0.1`
+
+-   Barebones Tomcat Bundle `1.2.32`
+
+-   Cache `6.0.2`
+
+-   Community Edition `6.3.2`
+
+-   Content Editor `3.0.2`
+
+-   DAM `4.0.2`
+
+-   DX Core `6.3.2`
+
+-   Definitions App `3.0.2`
+
+-   Demo Projects `6.3.2`
+
+-   Magnolia `6.3.2`
+
+-   Pages `6.3.2`
+
+-   Personalization `3.0.2`
+
+-   Resources `4.0.2`
+
+-   Solr Search Provider `9.0.0`
+
+-   Tasks `6.3.1`
+
+-   Third-party library BOM for Extensions `6.3.2`
+
+-   Third-party library BOM `6.3.2`
+
+-   UI `6.3.2`
+
+-   Vaadin Compatibility Addons `1.3.19`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release.
+
+Thanks a mill!
+
+Special thanks go out to Shaihk Imran, Milan Prakash, and Manda Tory.

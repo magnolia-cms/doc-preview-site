@@ -1,0 +1,59 @@
+---
+title: "Elevated service errors"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/alerts/CustomerElevatedServiceErrors/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > Elevated service errors
+---
+
+# Elevated service errors
+
+## [](#_symptom)Symptom
+
+A `CustomerElevatedServiceErrors` alert is firing.
+
+It indicates a service is showing a high level of errors (5xx responses) from a service, specifically:
+
+-   if a service is running on a production cluster AND
+
+-   the service is receiving more than 6 requests / minute AND
+
+-   more than `10%` of the responses from the service are 5xx for the last `10` minutes
+
+
+> **Important:** These alerts apply to any service used by an ingress - Magnolia service, frontend service, redirect service or other service - running on a production cluster.
+
+> **Note:** CustomerElevatedServiceErrors alerts are sent to subscribers via email.
+
+## [](#_observations)Observations
+
+Here are the details on the alert:
+
+### [](#_alert_customerelevatedserviceerrors)Alert: CustomerElevatedServiceErrors
+
+|     |     |
+| --- | --- |
+| Expression |     |
+| Delay | 10 minutes |
+| Labels | team: customer |
+| Annotations | summary, description, tenant, cluster\_id, cluster\_name, namespace, service |
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>service:requests:rate15m{k8s_cluster_name=~".+(prod|production)"} &gt; 0.1 AND service:errors:rate15m{k8s_cluster_name=~".+(prod|production)"} / service:requests:rate15m{k8s_cluster_name=~".+(prod|production)"} &gt; 0.1</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>15</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>service</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>namespace</code></p></li></ul></div></div></td></tr></tbody></table></div>
+
+## [](#_solutions)Solutions
+
+This section provides solutions that should help resolve the issue in most cases.
+
+### [](#_investigate_cause_for_elevated_service_errors)Investigate cause for elevated service errors
+
+Unfortunately there is no easy resolution for elevated service errors alerts; there are many possible causes for service errors.
+
+Possible causes for the elevated service errors:
+
+-   The ingress is misconfigured: service selector does not find the expected service (check the ingress configuration)
+
+-   No pods for the service are running: pods are restarting or crashlooping (check the pod status with kubectl or Rancher)
+
+-   No pods for the service are running: deployment / daemonset / statefulset is scaled down to 0 pods (check the deployment / daemonset / statefulset with kubectl or Rancher)
+
+-   Pods are running but are returning errors (do this as a last resort! Logs are often verbose and are difficult to interpret)

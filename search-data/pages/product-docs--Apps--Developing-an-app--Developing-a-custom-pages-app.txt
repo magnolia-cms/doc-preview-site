@@ -1,0 +1,82 @@
+---
+title: "Developing a custom pages app"
+url: https://docs.magnolia-cms.com/product-docs/Apps/Developing-an-app/Developing-a-custom-pages-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > Developing a custom pages app
+---
+
+# Developing a custom pages app
+
+This page describes how to develop a custom pages app whose features are similar to the Magnolia [Pages app](../../List-of-apps/Pages-app/) but is tailored to the needs of your project, for example to:
+
+-   Provide a custom action to create a page that is linked to some external content.
+
+-   Store the content in a custom workspace and with a custom node type.
+
+
+> **Note:** Currently, it is not possible to create a custom pages app with Magnolia Light Development alone. A custom Java module is required.
+
+## [](#_introduction)Introduction
+
+You can provision the Page Editor UI in any app, creating a more powerful and intuitive Magnolia for you Authoring team(s).
+
+Authors may want to use the Page Editor UI in other apps besides the Pages app. For example, to create:
+
+-   a **Mobile** or **Kiosk** apps, to allow editing of multiple channels.
+
+-   a **Reusables** app, to allow creation of parts of pages which could be reused in many pages.
+
+
+This is supported in both the FreeMarker and the headless modes.
+
+## [](#_example)Example
+
+Follow these steps to try the demonstration which will create a custom pages app which utilizes a custom `workspace` and `nodeType`.
+
+1.  Clone the [custom-pages-app-barebones](https://bitbucket.org/magnolia-cms/custom-pages-app-barebones) repository.
+
+2.  Execute the `mgnl jumpstart` command and in the two templates lists displayed consecutively, select the `demo-webapp` and `magnolia-community-demo-webapp` templates.
+
+3.  Build the module (a) and copy the jar file into the webapp (b):
+
+    1.  `cd custom-pages-support && mvn clean install && cd ..`
+
+    2.  `cp custom-pages-support/target/custom-pages-support-1.0.0-SNAPSHOT.jar apache-tomcat/webapps/magnoliaAuthor/WEB-INF/lib/`
+
+
+4.  Run `mgnl start`.
+
+5.  Run the React application:
+
+    1.  `cd spa/spa-react-app`
+
+    2.  `npm install && npm run start`
+
+
+6.  In the Security app, assign permissions to the `rest-anonymous` user role.
+
+    1.  On the Access control lists tab, set `CustomWebsite` to `Read Only` for the `/` path.
+
+    2.  On the Web access tab, assign the `Get` method to the `/.rest/annotations/*` path.
+
+
+
+### [](#_sample_custom_pages_app)Sample custom pages app
+
+For reference, see the code example of a custom pages app:
+
+```sh
+git clone https://bitbucket.org/magnolia-cms/custom-pages-app-barebones.git
+```
+
+## [](#_implementation_tips)Implementation tips
+
+-   The `workspace` and `nodeType` are registered through the `contentType`. See `/light-modules/custom-pages-app-lm/contentTypes/customPages.yaml` in the cloned repository.
+
+-   The new template annotation (`/light-modules/custom-pages-app-lm/restEndpoints/annotations/`) and delivery (`/light-modules/custom-pages-app-lm/restEndpoints/delivery/`) endpoints now target the custom workspace.
+
+    The SPA is updated to use this custom annotations endpoint. See `spa/spa-react-app/src/environment.js`.
+
+
+> **Caution:** Some classes that are required are only component-mapped for the pages-app. To re-use them in the custom Pages app, they must be mapped manually at the moment.Bear in mind that the id is hard-coded, so the name of the custom pages app needs to be custom-pages-app.See the module descriptor.The Add page action must define the custom createPage dialog in order to create pages with the custom nodeType.

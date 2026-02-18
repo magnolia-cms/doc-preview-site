@@ -1,0 +1,59 @@
+---
+title: "Templating"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/Templating/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > Templating
+---
+
+# Templating
+
+Templates are blueprints for creating pages, areas and components. When you add a page in the [Pages app](../../Apps/List-of-apps/Pages-app/), you must choose a template.
+
+A template consists of:
+
+
+
+[Template definition](Template-definition/)
+
+**required**
+
+A template definition gives a template a name and makes it available to the system. At a minimum, a template definition must specify a [script](Template-scripts/) and a [renderer](Renderers/).
+
+[Template script](Template-scripts/)
+
+**required**
+
+A template script defines the output (typically HTML) and is interpreted by `Renderer`. The script is written in a templating language such as FreeMarker.
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+In the context of developing [single-page applications](../../Features/Single-page-applications/), the elements comparable to FreeMarker template scripts are components. These are compiled into a single HTML page. On the Magnolia side, page rendering is handled by the [SPA renderer](Renderers/#_spa_renderer).
+
+[Dialog definition](Dialog-definition/)
+
+**optional**
+
+A dialog is a pop-up featuring some content and actions to conduct some operations on that content. It contains a head (title), content (typically forms) and a footer (mainly action controls).
+
+[Model](Rendering-content/)
+
+**optional**
+
+The model is a JavaBean implementing `RenderingModel`. Use it to implement complex logic. The model can execute any Java code to retrieve data from the repository or from an external source. The results are available to the template script for rendering.
+
+> **Note:** In the context of developing single-page applications, templating involves creating Angular or ReactJS components. These are compiled into a single HTML page. For more details, see:Headless docs
+
+The [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) speeds up template creation for light developers. The tool provides commands that automatically create basic template definitions and scripts on the file system.
+
+## [](#_refreshing_the_page_editor)Refreshing the page editor
+
+When developing templates with `Freemarker`, template changes require that you refresh the browser page (or click on another tab and then return to the previous one) for them to take effect. Another possibility to refresh the page editor is to use a frontend synchronization CLI tool to trigger URL updates. One such tool is [Browsersync](https://browsersync.io), a module for `Node.js`. After installing, Node.js and Browsersync, you can start it from a terminal with a single command - see Browsersync’s [documentation](https://browsersync.io/docs) for more information.
+
+Expand to see a demo of Browsersync with Magnolia…​
+
+A demo of syncing an `FTL` file with two browsers is shown in the GIF below. The template changes are reloaded in both open browsers as soon as the file is saved.
+
+![Browsersync Magnolia demo](../../_images/browsersync-magnolia-demo.gif)
+
+> **Tip:** When starting Browsersync, make sure you run it from the folder containing the files you are working on (or specify subfolders when defining which files to monitor, for example, --files "*.html, css/*.css"). Furthermore, when running Magnolia locally, you need to run Browsersync in proxy mode, using the parameter --proxy "localhost:3000/magnoliaAuthor". The complete start command might look like this (depending on which port you use to launch Magnolia and which files you wish to synchronize):browser-sync start --proxy "localhost:3000/magnoliaAuthor" --files "*"

@@ -1,0 +1,103 @@
+---
+title: "Virtual URI mapping issues"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Troubleshooting/Virtual-URI-mapping-issues/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > Virtual URI mapping issues
+---
+
+# Virtual URI mapping issues
+
+## [](#_directorywatcher_overflow)DirectoryWatcher overflow
+
+A `DirectoryWatcher` overflow warning can help you pinpoint the roots of an overflow. It is logged when there are more than 500 configured virtual URI mappings in light modules.
+
+If a `DirectoryWatcher` overflow error occurs ([MAGNOLIA-7762](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-7762)), try to:
+
+-   Keep the number of files in a single folder below 100.
+
+-   Use folder hierarchies whenever possible.
+
+
+## [](#_i18n_breaks_virtual_uri_mapping_for_paths_starting_with_a_language_tag)i18n breaks virtual URI mapping for paths starting with a language tag
+
+You have a virtual URI mapping configuration similar to what’s shipped with the `tours` module of the Magnolia Travel Demo:
+
+/tours/virtualUriMappings/travelToursMapping.yaml
+
+```yaml
+class: info.magnolia.virtualuri.mapping.RegexpVirtualUriMapping
+fromUri: ^/(.*/)?tours(.*).html
+toUri: forward:/$1travel/tour?tour=$2
+```
+
+Provided `en` is the default language, you may see that requests for pages without the language tag in the path (`/tours/magnolia-travels/Kyoto.html`) work correctly, while those where the tag is part of the path (`/de/tours/magnolia-travels/Kyoto.html`) fail.
+
+### [](#_add_a_bypass_of_the_i18n_filter)Add a bypass of the i18n filter
+
+> **Note:** A solution adopted for example in the Magnolia 6.2.12 Demo webapp.
+
+/server/filters/
+
+```yaml
+...
+  i18n:
+    class: info.magnolia.cms.i18n.I18nContentSupportFilter
+    enabled: true
+    bypasses:
+      BypassWhenForward:
+        class: info.magnolia.voting.voters.ForwardVoter
+  cache:
+    class: info.magnolia.module.cache.filter.CacheFilter
+    defaultContentCachingConfigurationName: defaultPageCache
+  virtualURI:
+    class: info.magnolia.virtualuri.VirtualUriFilter
+    enabled: true
+...
+```
+
+> **Caution:** This approach can only be used:Without the SiteMesh module, orwithout component personalization and Advanced Dynamic Page Caching.
+
+Additionally, set `/modules/cache/config/contentCaching/<your-configuration>/cachePolicy@includePersonalizedDescendants` to `true`. This makes sure that personalized components are part of page cache key. Otherwise, you would always get the first page version.
+
+### [](#_change_the_filter_order)Change the filter order
+
+In this solution (adopted in the Magnolia 6.2.13 Demo webapp), the bypass of the i18n filter is removed but the order of filters has changed:
+
+/server/filters/
+
+```yaml
+...
+  virtualURI:
+    class: info.magnolia.virtualuri.VirtualUriFilter
+    enabled: true
+  i18n:
+    class: info.magnolia.cms.i18n.I18nContentSupportFilter
+    enabled: true
+  cache:
+    class: info.magnolia.module.cache.filter.CacheFilter
+    defaultContentCachingConfigurationName: defaultPageCache
+...
+```
+
+> **Caution:** Redirects aren’t cached.
+
+### [](#_you_are_probably_not_affected)You are probably not affected
+
+If a `tours`\-like mapping isn’t used in your project or you don’t use language variants, keep the following order of filters:
+
+/server/filters/
+
+```yaml
+...
+  i18n:
+    class: info.magnolia.cms.i18n.I18nContentSupportFilter
+    enabled: true
+  cache:
+    class: info.magnolia.module.cache.filter.CacheFilter
+    defaultContentCachingConfigurationName: defaultPageCache
+  virtualURI:
+    class: info.magnolia.virtualuri.VirtualUriFilter
+    enabled: true
+...
+```

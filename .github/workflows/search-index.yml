@@ -41,9 +41,13 @@ jobs:
           cd native-search
           npm ci
 
-      - name: Run search indexer against built preview site
+      - name: Run search indexer
         run: |
           node native-search/src/indexer.js build/site search-data || exit 1
+
+      - name: Run markdown generator
+        run: |
+          node native-search/src/markdown-generator.js build/site search-data || exit 1
 
       - name: Commit and push updated search-data
         run: |
@@ -57,6 +61,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "Update search index (automated)"
+          git commit -m "Update search index and LLM pages (automated)"
           git push
-

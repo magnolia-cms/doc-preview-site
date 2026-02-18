@@ -1,0 +1,80 @@
+---
+title: "Automatic backups"
+url: https://docs.magnolia-cms.com/paas/backup/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Automatic backups
+---
+
+# Automatic backups
+
+DX Cloud provides automatic backups as defined in the [values.yml file](#_values_yml_file) in your project. The backup sidecar is a container defined in the Magnolia Database (DB) pod of both the author and public workloads. The sidecar provides endpoints to list and create backups. In order to execute the endpoint, a port forward to the corresponding pod/container is required. The backup server is running on port `9999`.
+
+> **Important:** Write ahead logging (WAL) must be enabled for the backup to work properly. It stores a base backup as well as the transaction logs.
+
+![backups](../cockpit/_images/environments/backups/backups.jpg)
+
+## [](#_values_yml_file)values.yml file
+
+The `values.yml` file is found in the root of your DX Cloud project folder.
+
+> **Note:** The example below shows the db section of the file. For a full look at the file, see here.
+
+```yaml
+...
+db:
+  backup:
+    enabled: true
+    env:
+      - name: MGNLBACKUP_PG_DATA
+        value: "/db/data"
+      - name: MGNLBACKUP_USE_PG_WAL (1)
+        value: "true"
+      - name: MGNLBACKUP_SYNC_DIR
+        value: "/archive"
+      - name: MGNLBACKUP_NO_STDOUT
+        value: "true"
+      - name: MGNLBACKUP_LOGLEVEL
+        value: "debug"
+      - name: MGNLBACKUP_BUCKET (2)
+        value: "[subscription-name]-backup-bucket"
+      - name: MGNLBACKUP_PREFIX
+        value: {{ .Env.DEPLOYMENT }}/author (3)
+      - name: MGNLBACKUP_HERITAGE
+        value: "magnolia-backup"
+      - name: MGNLBACKUP_CRON (4)
+        value: "0 3 * * *"
+      - name: MGNLBACKUP_KEEPDAYS (5)
+        value: "30"
+      - name: MGNLBACKUP_S3_ENDPOINT (6)
+        value: "s3.eu-central-1.amazonaws.com"
+      - name: MGNLBACKUP_S3_REGION (7)
+        value: "eu-central-1"
+      - name: MGNLBACKUP_S3_ACCESSKEY (8)
+        valueFrom:
+          secretKeyRef:
+            name: s3-backup-key
+            key: accesskey
+      - name: MGNLBACKUP_S3_SECRETKEY (8)
+        valueFrom:
+          secretKeyRef:
+            name: s3-backup-key
+            key: secretkey
+      - name: MGNLBACKUP_TAGS_NODE_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+      - name: MGNLBACKUP_TAGS_NAMESPACE
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.namespace
+      - name: MGNLBACKUP_TAGS_POD_NAME
+        valueFrom:
+          fieldRef:
+            fieldPath: metadata.name
+      - name: MGNLBACKUP_TAGS_RELEASE
+        value: {{ .Env.DEPLOYMENT }}
+...
+```
+
+<div class="joplin-table-wrapper"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td><code>MGNLBACKUP_USE_PG_WAL</code> <em>(write-ahead-logging)</em> has to be enabled in order to use <a href="https://www.postgresql.org/docs/12/continuous-archiving.html" target="_blank" rel="noopener">Postgres WAL for Point-in-Time Recovery</a>.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><code>MGNLBACKUP_BUCKET</code> name of the bucket containing the subscription name.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td><code>MGNLBACKUP_PREFIX</code> defines the storage path prefix in the S3 bucket for this instance’s backups. This value <strong>must be unique for each database instance</strong> writing to the same bucket.<div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content"><div class="paragraph"><p>In satellite deployments, the primary and satellite public instances must use different prefixes to prevent WAL transaction logs from being mixed. Mixed transaction logs result in incomplete or corrupted restores.</p></div><table class="tableblock frame-all grid-all stretch"><caption class="title">Table 1. Example prefix values for a primary/satellite setup:</caption> <colgroup><col style="width: 35%;"> <col style="width: 65%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Instance</th><th class="tableblock halign-left valign-top">Prefix value</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Primary Author</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>prod/author</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Primary Public</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>prod/public</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Satellite Author</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>prod-s01/author</code></p></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Satellite Public</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>prod-s01/public</code></p></td></tr></tbody></table></td></tr></tbody></table></div></td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td><code>MGNLBACKUP_CRON</code> cron expression for how often a full base backup is created.<div class="admonitionblock note best"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Recommended Base Backup Rotation Cycles"></i></td><td class="content"><div class="ulist"><ul><li><p><code>0 3 * * *</code> = <em>every day</em> at 3am (or any other time outside of the high traffic hours)</p></li></ul></div></td></tr></tbody></table></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">While a <code><em>basebackup</em></code> retains a complete dump of the database in the S3 bucket, ongoing backups of transaction logs are being made and stored on the S3 bucket as well due to <a href="https://www.postgresql.org/docs/12/continuous-archiving.html" target="_blank" rel="noopener">WAL</a>. Consider that with each base backup the whole database (per author/public instance) is hold back on storage until cleaned up during rotation (<em>MGNLBACKUP_KEEPDAYS</em>).</td></tr></tbody></table></div></td></tr><tr><td><i class="conum" data-value="5"></i><b>5</b></td><td><code>MGNLBACKUP_KEEPDAYS</code> number of days backups are stored in <a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener">S3</a> (<em>or similar S3-compatible storage</em>) for the specified number of days.</td></tr><tr><td><i class="conum" data-value="6"></i><b>6</b></td><td><code>MGNLBACKUP_S3_ENDPOINT</code> endpoint for S3 server storing the backups.</td></tr><tr><td><i class="conum" data-value="7"></i><b>7</b></td><td><code>MGNLBACKUP_S3_REGION</code> AWS region for the S3.</td></tr><tr><td><i class="conum" data-value="8"></i><b>8</b></td><td><code>MGNLBACKUP_S3_ACCESSKEY</code> &amp; <code>MGNLBACKUP_S3_SECRETKEY</code> API token credentials for connecting to S3.<div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Secret <code>s3-backup-key</code> required to be defined on K8s Cluster (in <em>Namespace</em>).</td></tr></tbody></table></div></td></tr></tbody></table></div>

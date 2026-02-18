@@ -1,0 +1,98 @@
+---
+title: "Security app"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/List-of-apps/Security-app/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > List of apps > Security app
+---
+
+# Security app
+
+The Security app is where you manage access in the system by administering users, groups, and roles. Magnolia’s built-in access management system authenticates users to determine who is using the system and provides them with the means to sign into applications. It also authorizes users, ensuring that they have the required permissions for actions such as editing pages. You can use the app for permission reporting, auditing, and troubleshooting why users can’t access the resources they should be able to.
+
+Access the Security app from the App Launcher: **Admin** > **Security**.
+
+![Security app](../../../_images/6-2-securityApp.png)
+
+## [](#_subapps)Subapps
+
+### [](#_users)Users
+
+Use the **Users** subapp to manage the different [types of user](../../../Administration/IAM/Users/#_types_of_users):
+
+-   Create users.
+
+-   Edit user information such as user name, password, details, e-mail, and language.
+
+-   Assign groups to the user.
+
+-   Assign roles to the user.
+
+-   View the groups and roles assigned to a given user.
+
+
+> **Note:** Password fields in the Security app automatically enforce a global password policy validation configured through the Admincentral module. This ensures all user passwords meet security requirements, including minimum length, character types, and special characters.
+
+![User info field](../../../_images/security-app-edit-user.png)
+
+The user configuration data is stored in the `users` workspace below these paths:
+
+|     |     |
+| --- | --- |
+| System users | `/system` |
+| Users | `/admin` |
+| Public users | `/public` |
+
+For more information, see [Editing user permissions](../../../Administration/IAM/Users/#_editing_user_permissions).
+
+### [](#_groups)Groups
+
+Users sharing similar privileges are organized into groups. The purpose of a group is to define the settings for the group as whole rather than for each individual user. Permissions defined at a group level automatically extend to all its members.
+
+When a role is assigned to a group, all users within that group inherit the permissions associated with the role. This eliminates the need to assign individual roles to each user.
+
+Moreover, by assigning additional groups to the current group, users within the current group inherit both the roles and permissions granted to the groups being added.
+
+![Groups subapp](../../../_images/security-app-edit-group.png)
+
+See [Groups](../../../Administration/IAM/Groups/) for further information.
+
+### [](#_roles)Roles
+
+A role is a function a user performs either in the management of Magnolia or as a visitor of a Magnolia website. It reflects the actions and activities assigned to, required, or expected of a user. Specific permissions are granted to enable the functions of a role.
+
+For example, the *editor* role is responsible for editing content displayed on the site. Permissions granted to this role allow the user to edit the content and submit it for review. The *publisher* role, on the other hand, is tasked with reviewing the content and publishing it from the author instance to the public instance(s).
+
+Roles have JCR Access Control Lists (ACLs) and Web access permissions. For both the JCR content and Web access, you can define multiple ACLs per role.
+
+![Role subapp](../../../_images/security-app-edit-role.png)
+
+To understand how to configure ACLs per role, see [Roles and access control lists](../../../Administration/IAM/Roles-and-access-control-lists/)
+
+## [](#_configuration)Configuration
+
+The Security app is installed by the [Security app module](../../../Modules/List-of-modules/Security-App-module/). You can configure the app in `/security-app/apps/security-app.yaml`. It comes with the `users`, `groups`, and `roles` subapps.
+
+> **Note:** The public folder in the users subapp is installed and configured by the Public User Registration module.
+
+Only users assigned the `superuser` role have permission to access the subapps.
+
+### [](#_workspaces)Workspaces
+
+The subapps operate on the following workspaces:
+
+| Subapp | Workspace |
+| --- | --- |
+| `users` | `users` |
+| `groups` | `usergroups` |
+| `roles` | `userroles` |
+
+### [](#_node_types)Node types
+
+The Security app module registers the following custom [node types](../../../Administration/Architecture/Node-types/) in the subapp configurations. The subapps operate on these nodes types and on `mgnl:folder`.
+
+| Subapp | Node type |
+| --- | --- |
+| `users` | `mgnl:user` |
+| `groups` | `mgnl:group` |
+| `roles` | `mgnl:role` |

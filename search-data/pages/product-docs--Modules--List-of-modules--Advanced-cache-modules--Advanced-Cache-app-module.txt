@@ -1,0 +1,61 @@
+---
+title: "Advanced Cache app module"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Advanced-cache-modules/Advanced-Cache-app-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Advanced cache modules > Advanced Cache app module
+---
+
+# Advanced Cache app module
+
+[Operations](../../../../use-cases/operations/) Bundled: DX Core
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLADVCACHE](https://magnolia-cms.atlassian.net/browse/MGNLADVCACHE) |
+| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache-app%2F4.0.0) |
+| Latest | 4.0.0 |
+
+The Advanced Cache app installs an **Advanced** tab into the Cache Tools app that allows you to configure site-aware caches.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.advancedcache</groupId>
+  <artifactId>magnolia-advanced-cache-app</artifactId>
+  <version>4.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_uninstalling)Uninstalling
+
+1.  Go to the app, unset all checkboxes for site aware workspaces and confirm.
+
+2.  Remove the `/modules/advanced-cache-app` and `/modules/cache-app/apps/cacheTools/subApps/advancedTools` nodes.
+
+3.  Shut down Magnolia, remove the Advanced Cache module JAR (`magnolia-advanced-cache-app.jar`) from `WEB-INF/lib` and start up Magnolia again.
+
+
+## [](#_usage)Usage
+
+Open the `cacheTools` app, go to the `Advanced` tab and select workspaces that are site-aware. Then means that it used different subtrees for different sites. For example, the site [www.site1.com](http://www.site1.com) uses subtree `/site1` in the `website` workspace and [www.site2.com](http://www.site1.com) uses the subtree `/site2`. Click Configure and restart your instance.
+
+![Site-aware cache configuration](../../../../_images/6-2-advancedCacheAppModule.png)
+
+## [](#_how_to_test)How to test
+
+1.  Fill the caches with some content.
+
+2.  Change something in one of the subtrees.
+
+3.  Check that the corresponding cache was flushed and other site caches aren’t empty.
+
+4.  Add/remove a site and check that a cache was added/removed.

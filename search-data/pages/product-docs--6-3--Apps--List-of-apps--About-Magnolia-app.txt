@@ -1,0 +1,26 @@
+---
+title: "About Magnolia app"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/List-of-apps/About-Magnolia-app/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > List of apps > About Magnolia app
+---
+
+# About Magnolia app
+
+The About Magnolia app displays installation and configuration information about the current instance. You can report Jira issues directly from the app.
+
+## [](#_configuration)Configuration
+
+The Tools app group that this app belongs to is only available to the `superuser` role. This is configured in the [app launcher layout](../../../Administration/App-Launcher/App-launcher-layout/). The app is configured in `/modules/about-app/apps/about`.
+
+## [](#_usage)Usage
+
+The About app has several subapps:
+
+-   **About Magnolia**: Shows information about the version, environment and [license](../../../Administration/License/). The subapp also provides the checkbox your Adminstrator uses to opt in or out of Magnolia collecting information about your instance. See our Privacy policy for more information about what data is collected and why.
+    To enter or modify your license email and key, click **Enter license info** in the **License information** section.
+
+-   **Config Info**: Displays server configuration information. Uses the boxes at the top of the table to filter by configuration property or value. This tab is only accessible for users with `superuser` role. Additionally, all variables are blurred to hide any sensitive data coming from [interpolated variables](../../../Administration/Architecture/Configuration-management/#_interpolate_environment_variables_in_light_modules). Clicking a row reveals and allows you to copy the variable’s value.
+
+-   **Libraries license info**: Displays third-party libraries used by Magnolia as part of the build. See [BOM for third-party libraries](../../../Developing/BOM-for-third-party-libraries/) for more information.

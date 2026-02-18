@@ -1,0 +1,180 @@
+---
+title: "Configuring Magnolia (on Tomcat) behind a reverse proxy"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Deploying/Configuring-Magnolia-behind-a-proxy/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Deploying WAR files > Configuring Magnolia (on Tomcat) behind a reverse proxy
+---
+
+# Configuring Magnolia (on Tomcat) behind a reverse proxy
+
+When you run a Magnolia instance behind any reverse proxy (like Nginx, Apache httpd, or a cloud load balancer), you must perform a special configuration on Tomcat. If this configuration is missing, you encounter significant problems with how Magnolia generates URLs, which can break links, prevent logins, and cause mixed-content errors in browsers. This guide explains the problem, the solution, and how to configure both your proxy and your Tomcat server.
+
+## [](#_the_problem)The problem
+
+This section examines the potential causes, context, and observable symptoms of misconfigurations related to configuring Magnolia behind a reverse proxy.
+
+### [](#_how_the_problem_arises)How the problem arises
+
+In a proxied setup, the user doesn’t connect to Tomcat directly. They connect to the proxy, and the proxy connects to Tomcat.
+
+-   User request: `https://www.your-domain.com` (to the proxy)
+
+-   Proxy request: `http://localhost:8080` (to Tomcat)
+
+
+### [](#_why_tomcat_lacks_context)Why Tomcat lacks context
+
+Tomcat only sees the final request it receives from the proxy. It has no direct knowledge of the original user request. When your application, Magnolia, asks Tomcat for the details of the connection (using standard `HttpServletRequest` calls), Tomcat reports the proxy’s information:
+
+-   `request.getScheme()` returns `http` (because the proxy-to-Tomcat connection is plain HTTP)
+
+-   `request.getServerName()` returns `localhost` (or whatever the proxy uses to connect)
+
+-   `request.getServerPort()` returns `8080` (the internal Tomcat port)
+
+
+### [](#_symptoms_of_a_misconfiguration)Symptoms of a misconfiguration
+
+When Magnolia needs to generate an absolute URL (for redirects, email links, sitemap entries, or links in the Admin UI), it uses this incorrect information. You see symptoms like:
+
+-   Wrong scheme: `http://www.your-domain.com` instead of `https://…​`. This leads to browser mixed-content warnings or security errors.
+
+-   Wrong host: `http://localhost/` in a link instead of `http://www.your-domain.com/`.
+
+-   Wrong port: `https://www.your-domain.com:8080/` instead of the standard `https://www.your-domain.com/`.
+
+
+## [](#_how_its_supposed_to_work_with_x_forwarded_headers)How it’s supposed to work with X-Forwarded headers
+
+The standard solution is for the proxy to act as a trusted informant. The proxy adds special HTTP headers to its request to Tomcat, telling Tomcat all the details of the original client connection. These headers are the X-Forwarded set:
+
+-   `X-Forwarded-Host`: The original domain the user requested (e.g., `www.your-domain.com`)
+
+-   `X-Forwarded-Proto`: The original protocol (e.g., `https`)
+
+-   `X-Forwarded-For`: The original user’s IP address (e.g., `81.10.22.1`)
+
+-   `X-Forwarded-Port`: The original port (e.g., `443`)
+
+
+The goal has two parts:
+
+1.  Configure the proxy to send these headers.
+
+2.  Configure Tomcat to read and trust these headers.
+
+
+## [](#_configuring_the_proxy)Configuring the proxy
+
+You must configure your proxy pass these headers to Tomcat.
+
+> **Note:** If you are in a managed cloud environment like Amazon AWS (with an ELB/ALB) or Kubernetes (with an Ingress Controller), this is almost always configured for you by default. These platforms automatically send the correct X-Forwarded-* headers. If you are managing your own proxy, refer to the configurations below.
+
+### [](#_nginx_example)Nginx example
+
+In your `location` block, use `proxy_set_header` to add the headers. The Nginx variables (`$host`, `$scheme`, etc.) make this simple.
+
+```nginx
+location / {
+    proxy_pass http://localhost:8080;
+    # Set the standard X-Forwarded headers
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Host  $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    # Also set the Host header (highly recommended)
+    proxy_set_header Host $host;
+}
+```
+
+Further reading (Nginx)
+
+-   `ngx_http_proxy_module` documentation: [ngx\_http\_proxy\_module.html](https://nginx.org/en/docs/http/ngx_http_proxy_module.html)
+
+-   `proxy_set_header` directive: [proxy\_set\_header](https://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_set_header)
+
+
+### [](#_apache_httpd_example)Apache httpd example
+
+Using `mod_proxy`, you can use `RequestHeader` (from `mod_headers`) to set the headers.
+
+```apache
+# Assuming this is inside a <VirtualHost *:443> block
+ProxyRequests     Off
+ProxyPreserveHost On
+ProxyPass         /  http://localhost:8080/
+ProxyPassReverse  /  http://localhost:8080/
+# Set the X-Forwarded-Proto header (httpd 2.4.10+ required for expr)
+RequestHeader set X-Forwarded-Proto "expr=%{REQUEST_SCHEME}"
+# mod_proxy automatically adds X-Forwarded-For and X-Forwarded-Host
+# when ProxyRequests is Off.
+```
+
+Further reading (Apache httpd)
+
+-   `mod_proxy` guide: [mod\_proxy.html](https://httpd.apache.org/docs/current/mod/mod_proxy.html)
+
+-   `mod_headers` (for `RequestHeader`): [mod\_headers.html](https://httpd.apache.org/docs/current/mod/mod_headers.html)
+
+-   `RequestHeader` directive: [requestheader](https://httpd.apache.org/docs/current/mod/mod_headers.html#requestheader)
+
+
+## [](#_configuring_tomcat)Configuring Tomcat
+
+Configuring the proxy addresses only part of the solution. By default, Tomcat ignores `X-Forwarded-*` headers for security reasons. You must explicitly tell Tomcat to read and trust them by enabling the `RemoteIpValve`. Edit your `$CATALINA_BASE/conf/server.xml` file (where `CATALINA_BASE` is your Tomcat directory, for example, `/opt/magnolia/tomcat`). Find the `<Engine>` tag and add the following `<Valve>` configuration inside it:
+
+```xml
+<Engine name="Catalina" defaultHost="localhost">
+    <!--
+      This Valve tells Tomcat to trust X-Forwarded headers
+      from your proxy.
+    -->
+    <Valve className="org.apache.catalina.valves.RemoteIpValve"
+
+           <!-- Headers to read (must match your proxy config) -->
+           hostHeader="X-Forwarded-Host"
+           protocolHeader="X-Forwarded-Proto"
+           remoteIpHeader="X-Forwarded-For"
+           portHeader="X-Forwarded-Port"
+
+           <!--
+             SECURITY: This is a list of trusted proxy IPs.
+             Tomcat trusts headers only from these IPs.
+             You must adapt this value to your environment.
+           -->
+           internalProxies="127\.0\.0\.1|10\.\d{1,3}\.\d{1,3}\.\d{1-3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}"
+           />
+    <!-- ... your existing <Host> definitions ... -->
+    <Host name="localhost" ... >
+      ...
+    </Host>
+</Engine>
+```
+
+Further reading (Tomcat)
+
+-   Tomcat 10.1: [Remote\_IP\_Valve](https://tomcat.apache.org/tomcat-10.1-doc/config/valve.html#Remote_IP_Valve)
+
+-   Tomcat 9.0: [Remote\_IP\_Valve](https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html#Remote_IP_Valve)
+
+-   Tomcat 8.5: [Remote\_IP\_Valve](https://tomcat.apache.org/tomcat-8.5-doc/config/valve.html#Remote_IP_Valve)
+
+
+### [](#_critical_the_internalproxies_parameter)Critical: The `internalProxies` parameter
+
+This parameter is the most important part of the configuration.
+
+1.  What it is: A regular expression (`regex`) that lists the IP addresses of all your reverse proxies. The request *from the proxy to Tomcat* must come from an IP matching this list.
+
+2.  How it works: Tomcat receives a request from `10.1.1.5` (your proxy). It checks `internalProxies`. If `10.1.1.5` matches, Tomcat treats the proxy as trusted and reads its `X-Forwarded-*` headers. If it *doesn’t* match, Tomcat ignores the headers.
+
+3.  What you must do: The example value covers most private IP ranges (localhost, `10.x.x.x`, `192.168.x.x`, `172.16-31.x.x`). You must ensure your proxy’s IP address (the one Tomcat sees) is covered by this expression.
+
+
+### [](#_why_isnt_this_enabled_by_default)Why isn’t this enabled by default?
+
+Enabling this valve without a correct `internalProxies` list is a major security vulnerability. If the valve is on by default and trusted headers from any IP, an attacker could bypass all IP-based security. An attacker can send a direct request to your Tomcat server with a fake header:
+
+`X-Forwarded-For: 127.0.0.1`
+
+A misconfigured valve sees this header and tells your application, "This request is from `localhost`," potentially granting the attacker admin access. By forcing you to configure `internalProxies`, Tomcat ensures you make a conscious decision to only trust headers from specific, known proxy servers.

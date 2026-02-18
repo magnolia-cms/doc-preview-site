@@ -1,0 +1,37 @@
+---
+title: "Multilanguage structure"
+url: https://docs.magnolia-cms.com/product-docs/Administration/Language/Multilanguage-structure/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Language > Multilanguage structure
+---
+
+# Multilanguage structure
+
+This page helps you choose the appropriate structure for a multilingual site. You typically have three choices for organizing content: single tree, multiple trees or a mix of the two.
+
+## [](#_single_tree)Single tree
+
+Magnolia can store multilanguage content in a single JCR content node. This means you only need one site hierarchy. A single tree stores each translation as a property under the same parent node. See [Storing localized content](../Language-configuration/#_storing_and_serving_localized_content) for an example what the repository hierarchy looks like.
+
+As long as your site content is reasonably similar from one language to another, this is the best option. You will have fewer pages to manage and the system takes care of serving the correct language automatically. This option is best suited when content is managed centrally, content is primarily (at least 75%) translated, and the website’s organization is identical between the languages.
+
+A use case where a single hierarchy makes sense is a white-labeled product such as an insurance policy. The number of pages and components needed to describe the policy is likely the same regardless of the visitor’s language or location. Regional affiliate companies offering the same policy can enter content in their own language and serve it under their own brand.
+
+## [](#_multiple_trees)Multiple trees
+
+This structure consists of separate website trees, one for each language. One site tree for English, another for German and so on. This effectively duplicates some pages but allows completely customized local content.
+
+This option is best suited when less than 75% of total website content is multilingual. This option is also optimal when the content for each language is managed by separate teams or the site is organized differently for each language.
+
+## [](#_mixed_trees)Mixed trees
+
+This structure is a mix where one tree is multilingual and others are monolingual. Use the multilingual tree for the international sections of the site. For each region or language, create a monolingual tree and merge it below the main tree. This option is best suited when the first level or two of your website is identical for all languages and countries.
+
+## [](#_how_to_choose)How to choose
+
+This decision tree helps choose a strategy.
+
+![Multi-language decision tree](../../../_images/multilanguage-decision-tree.png)
+
+Please be aware that the decision which strategy to choose has an impact on the way you [define locales in a site](../Language-configuration/#_define_locales_in_site), namely on the class that implements the I18n content support.

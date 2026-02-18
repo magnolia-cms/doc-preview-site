@@ -1,0 +1,57 @@
+---
+title: "Analytics module changelog"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/extensions-and-frameworks/analytics-integration-framework/analytics-changelog/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Analytics integration framework > Analytics module changelog
+---
+
+# Analytics module changelog
+
+The changelog gives you an overview of the changes made to the Analytics module at each release.
+
+> **Note:** This changelog covers the 2.x branch of the Analytics module. For the 1.x changelog, see here.
+
+## [](#_2_0_0)2.0.0
+
+Released on **September 4, 2024**.
+
+This release is compatible with Magnolia 6.3.
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **[ANALYTICS-498](https://magnolia-cms.atlassian.net/browse/{ANALYTICS-498)** |     | Migrate Adobe connector credentials from JWT to OAuth Server-to-Server credentials.<br><br>For more information, see [How to migrate Adobe credentials from JWT to OAuth Server-to-Server](../Adobe-credentials-JWT-to-OAuth/). |
+
+## [](#_compatibility)Compatibility
+
+| Module version | Magnolia CMS version |
+| --- | --- |
+| **2.0.0** | **6.3.0** |
+| 1.2.3+ | 6.2.34+ |
+| 1.2+ | 6.2.2+ |
+| 1.1+ | 6.2+ |
+| 1.0 | 6.1 |
+
+> **Note:** A note about connector compatibiltyThe third-party versions listed below are the versions Magnolia has developed and tested against. If you don’t see a particular version listed, it simply means that we do not routinely test on it. If you are using another version of the third-party tool and run into compatibility issues, please contact our Magnolia DX Core support.
+
+| Module version | amCharts version |
+| --- | --- |
+| **2.0** | **4.9.17** |
+| 1.2 | 4.9.17 |
+| 1.1 | 4.5.3 |
+| 1.0 | 4.5.3 |
+
+| Module version | Adobe Analytics API |
+| --- | --- |
+| **2.0** | Tested against **2.0** |
+| 1.0 | Tested against 2.0 |
+
+| Module version | Google Analytics |
+| --- | --- |
+| **2.0** | Tested against official Google BOM **26.24.0** |
+| 1.0 | Tested against Google Analytics API v4-rev1-1.21.0 |
+
+| Module version | Matomo |
+| --- | --- |
+| **2.0** | Tested against **Matomo demo site 3.13.5-b2** |
+| 1.0+ | Tested against Matomo demo site 3.13.5-b2 |

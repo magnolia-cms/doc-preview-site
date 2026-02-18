@@ -1,0 +1,440 @@
+---
+title: "Imaging module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Imaging-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Imaging module
+---
+
+# Imaging module
+
+[Digital asset management (DAM)](../../../use-cases/Digital-asset-management/) Bundled: Community edition
+
+The Imaging module simplifies working with images. You don’t need to resize and crop each image by hand as the imaging engine generate variations on the fly. Administrators create the rules that determine the sizes of derivatives. Editors save time as they can select an image from the [DAM](../../../use-cases/Digital-asset-management/) or upload one, and it will be automatically adapted to match the rule.
+
+| Edition | CE  |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLIMG](https://magnolia-cms.atlassian.net/browse/MGNLIMG) |
+| Maven site | [Imaging](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fimaging%2Fmagnolia-imaging%2F4.0.4) |
+| Latest | 4.0.4 |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.imaging</groupId>
+  <artifactId>magnolia-imaging</artifactId>
+  <version>4.0.4</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Warning:** Note the changes in groupId and artifactId since the 3.4 release.
+
+### [](#_compatibility_module)Compatibility module
+
+With Magnolia 5.6 we’ve begun removing the old Content API from our modules. If you have custom code relying on classes from the old imaging module then you must do one of two things:
+
+-   Update your code for the [new version of the imaging module](https://magnolia-cms.atlassian.net/browse/MGNLIMG-200).
+
+-   Or you can use the `magnolia-imaging-compatibility` module together with the `magnolia-core-compatibility` module.
+
+
+Add the following snippet to your POM file:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.imaging</groupId>
+  <artifactId>magnolia-imaging-compatibility</artifactId>
+  <version>4.0.4</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_image_request_processing)Image request processing
+
+The diagram shows the elements of the Imaging module and how they interrelate (credit: Richard Unger).
+
+-   info.magnolia.imaging.ImagingServlet is responsible for the actual generation of the images.
+
+-   The info.magnolia.imaging.ImageGenerator interface is the entry point for generating images.
+
+-   info.magnolia.imaging.operations.ImageOperationChain implements `ImageGenerator` and executes an [operation chain](#_image_operation_chains).
+
+-   Various implementations of the info.magnolia.imaging.ParameterProviderFactory interface are responsible for instantiating [parameter providers](#_parameter_provider_factory) for a given environment.
+
+-   Implementations of the info.magnolia.imaging.ImageStreamer interface are responsible for pushing the generated image, with the given generator and parameters, to an output stream.
+
+
+![Image request processing](../../../_images/image-request-processing.png)
+
+## [](#_imaging_servlet)Imaging servlet
+
+info.magnolia.imaging.ImagingServlet is registered in the Magnolia [servlet filter chain](../../../Administration/Architecture/Request-processing-and-filters/Filters/) in `/server/filters/servlets/ImagingServlet`. The servlet is responsible for [generating images](#_image_request_processing).
+
+| Node name | Value |
+| --- | --- |
+| ⸬ ImagingServlet |     |
+| ⬩ enabled | true |
+| ⬩ servletName | ImagingServlet |
+| ⬩ class | info.magnolia.cms.filters.ServletDispatchingFilter |
+| ⬩ servletClass | info.magnolia.imaging.ImagingServlet |
+| ⬩ comment | Imaging Servlet |
+| ⸬ mappings |     |
+| ⸬ -.imaging-- |     |
+| ⬩ pattern | /.imaging/\* |
+| ⸬ parameters |     |
+
+## [](#_image_generators)Image generators
+
+info.magnolia.imaging.ImageGenerator is a component that generates variants from a source image based on configuration. Generators are used by [image provider](../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/App-configuration-5-UI/Image-provider-definition-5-UI/) classes to render images in the UI and on pages.
+
+Generators are configured in {`/modules/imaging/config/generators`.
+
+**Example**: Generator configurations
+
+| Node name | Value |
+| --- | --- |
+| 📁 generators |     |
+| ⸬ default |     |
+| ⬩ class | info.magnolia.imaging.DefaultImageGenerator |
+| ⸬ mte |     |
+| ⬩ class | info.magnolia.templating.imaging.ThemeAwareImageGenerator |
+| ⸬ parameterProviderFactory |     |
+| ⬩ class | info.magnolia.templating.imaging.parameters.ThemeAwareParameterProviderFactory |
+| ⸬ outputFormat |     |
+| ⬩ quality | 80  |
+| ⸬ large |     |
+| ⬩ class | info.magnolia.imaging.operations.ImageOperationChain |
+| ⸬ outputFormat |     |
+| ⬩ formatName | jpg |
+| ⬩ quality | 80  |
+| ⸬ operations |     |
+| ⸬ load |     |
+| ⬩ class | info.magnolia.imaging.operations.load.FromBinaryNode |
+| ⸬ resize |     |
+| ⬩ maxWidth | 500 |
+| ⬩ class | info.magnolia.imaging.operations.cropresize.BoundedResize |
+| ⬩ maxHeight | 500 |
+| ⸬ parameterProviderFactory |     |
+| ⬩ class | info.magnolia.imaging.parameters.BinaryNodeParameterProviderFactory |
+| ⸬ portrait |     |
+| ⬩ class | info.magnolia.imaging.operations.ImageOperationChain |
+| ⸬ outputFormat |     |
+| ⬩ formatName | jpg |
+| ⬩ quality | 80  |
+| ⸬ operations |     |
+| ⸬ load |     |
+| ⬩ class | info.magnolia.imaging.operations.load.FromBinaryNode |
+| ⸬ resize |     |
+| ⬩ maxWidth | 240 |
+| ⬩ class | info.magnolia.imaging.operations.cropresize.BoundedResize |
+| ⬩ maxHeight | 160 |
+| ⸬ parameterProviderFactory |     |
+| ⬩ class | info.magnolia.dam.imaging.parameters.AssetAndBinaryNodeIdentifierParameterProviderFactory |
+| ⸬ thumbnail |     |
+| ⬩ class | info.magnolia.imaging.operations.ImageOperationChain |
+| ⸬ outputFormat |     |
+| ⬩ formatName | jpg |
+| ⬩ quality | 90  |
+| ⸬ operations |     |
+| ⸬ load |     |
+| ⬩ class | info.magnolia.imaging.operations.load.FromBinaryNode |
+| ⸬ resize |     |
+| ⬩ maxWidth | 230 |
+| ⬩ class | info.magnolia.imaging.operations.cropresize.BoundedResize |
+| ⬩ maxHeight | 230 |
+| ⸬ parameterProviderFactory |     |
+| ⬩ class | info.magnolia.dam.imaging.parameters.AssetAndBinaryNodeIdentifierParameterProviderFactory |
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>generators</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Generators configuration.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;generator name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The name of the image generator.</p></div><div class="paragraph"><p><code>large</code>, <code>portrait</code> and <code>thumbnail</code> are used in the UI to generate images in apps. <code>mte</code> generates <a href="../../../Developing/Templating/Theme/" class="xref page">image variations</a> in a <a href="../../../Developing/Templating/Theme/" class="xref page">theme</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The image generator class:</p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.imaging.DefaultImageGenerator</span>: Default image generator with provided <code>OutputFormat</code> and <code>ImageOperation</code> defaults.</p></li><li><p><span class="inlineBean">info.magnolia.imaging.operations.ImageOperationChain</span>: Image generator that delegates to a list of <code>ImageOperation</code> instances. This is the most commonly used generator class. It executes an <a href="#_image_operation_chains">operation chain</a> and is used by <code>large</code>, <code>portrait</code> and <code>thumbnail</code> generators.</p></li><li><p><span class="inlineBean">info.magnolia.templating.imaging.ThemeAwareImageGenerator</span>: Theme-aware generator that handles image variations in a theme. Extends <code>ImageOperationChain</code>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>outputFormat</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><a href="#_output_format">Output format</a> configuration.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>parameterProviderFactory</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>See the <a href="#_parameter_provider_factory">Parameter provider factory</a> class.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>operations</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (for <code>ImageOperationChain</code> only)</p></div><div class="paragraph"><p>See the <a href="#_image_operation_chains">Image operation chains</a> configuration.</p></div></div></td></tr></tbody></table></div>
+
+### [](#_output_format)Output format
+
+The output format is the format or file type the generator produces, such as JPEG or PNG. Supported formats are `bmp`, `gif`, `jpeg`, `png`, and `webp`. The module also supports these formats and `tiff` as input formats.
+
+> **Note:** Generation of WebP images from image sources that are not using the RGB color space is not supported.
+
+The output format is configured in `/modules/imaging/generators/<generator name>/outputFormat`.
+
+> **Caution:** For the PNG format, only image compression is supported. The current implementation only supports PNG images with bit depths of 8 or 16. Compressing PNG images with a bit depth of 4 may result in a different byte size of the image.Converting a PNG image to a different image format is not possible.
+
+| Property | Description |
+| --- | --- |
+| `outputFormat` | **required**<br><br>Output format configuration. Defines the format the generator produces, such as `jpg` or `png`. |
+| `quality` | **required**<br><br>Image quality as a percentage. |
+| `formatName` | **optional** (**required** only for `ImageOperationChain`)<br><br>The file extension of the generated images.<br><br>`ThemeAwareImageGenerator` and `DefaultImageGenerator` generate images in the same format as the source image. If you upload a `jpg`, this generator will produce a `jpg`. |
+
+### [](#_parameter_provider_factory)Parameter provider factory
+
+Parameters are instructions passed to an operation, such as where to load a source image or what text to lay over it. Registering `ParameterProviderFactory` allows you to pass parameters from different sources:
+
+The parameter provider factory is configured in `/modules/imaging/generators/<generator name>/parameterProviderFactory`.
+
+**Parameter provider classes:**
+
+|     |     |
+| --- | --- |
+| `info.magnolia.imaging.parameters.BinaryJcrNodeIdentifierParameterProviderFactory` | Node-based `ParameterProviderFactory` that tries to determine `Node` by its identifier. |
+| `info.magnolia.imaging.parameters.BinaryJcrNodePathParameterProviderFactory` | Node-based `ParameterProviderFactory` that tries to determine `Node` by its path. |
+| `info.magnolia.templating.imaging.parameters.ThemeAwareParameterProviderFactory` | Theme-aware `ParameterProviderFactory`. |
+| `info.magnolia.imaging.parameters.AbstractJcrWorkspaceAndPathParameterProviderFactory` | Superclass for parameter provider factories based on workspace and path. |
+| `info.magnolia.imaging.parameters.AbstractJcrWorkspaceAndIdentifierParameterProviderFactory` | Extracts workspace and identifier from path. Everything after the identifier is ignored. This allows you, for example, to pass a properly named filename to the image. |
+
+### [](#_image_operation_chains)Image operation chains
+
+The Imaging module can resize and crop images, overlay text and apply image filters. These are called image operations and are configured in `/modules/imaging/config/generators/<generator name>/operations`. Image operations can also be configured in a [theme](../../../Developing/Templating/Theme/).
+
+An image operation chain consists of one or more operations. A simple chain could add only fixed text, while a more complex chain could load an image from a remote source, apply filters, add multiple text fields and style them differently.
+
+| Property | Description |
+| --- | --- |
+| `<generator name>` | **required**<br><br>Name of the image generator. |
+| `operations` | **required**<br><br>Operations node. |
+| `<operation names>` | **required**<br><br>One node for each operation in the chain, for example `load`, `resize` and `overlay`. The chain is executed from top to bottom. |
+| `class` | **required**<br><br>Operation class |
+| `<properties>` | **required/optional**<br><br>Other properties supported by the operation class.<br><br>The first operation in an operation chain is typically a load operation. Use info.magnolia.imaging.operations.load.FromBinaryNode to load an image from the [DAM](../../../use-cases/Digital-asset-management/). |
+
+#### [](#_parameter_provider_factory_and_load_operation_class_typing)Parameter provider factory and load operation class typing
+
+Note that the `ParameterProviderFactory` and `ParameterProvider` implementations are typed. Let’s have a look at the interfaces:
+
+-   **ParameterProviderFactory**: [ParameterProviderFactory.java](https://gitlab.magnolia-platform.com/pd/modules/imaging/-/blob/master/magnolia-imaging/src/main/java/info/magnolia/imaging/ParameterProviderFactory.java)
+
+-   **ParameterProvider**: [ParameterProvider.java](https://gitlab.magnolia-platform.com/pd/modules/imaging/-/blob/master/magnolia-imaging/src/main/java/info/magnolia/imaging/ParameterProvider.java)
+
+
+> **Warning:** The return type of ParameterProviderFactory#newParameterProviderFor and the method argument in the class used for a load operation must have the same type!For instance, info.magnolia.imaging.parameters.BinaryJcrNodePathParameterProviderFactory and info.magnolia.imaging.operations.load.FromBinaryNode work well together.
+
+### [](#_image_subsampling)Image subsampling
+
+Image subsampling reduces an image’s resolution by skipping pixels instead of resizing them smoothly. The system selects every nth pixel rather than using all of them, making the image smaller while roughly preserving its appearance. Subsampling is useful for thumbnail images and for preventing very large images from using too much RAM.
+
+To optimize memory usage when processing images, you can configure subsampling settings for relevant generators. You can set memory limits, target dimensions (width and/or height), or both, depending on your generator’s purpose and the actions defined in it.
+
+> **Note:** Subsampling is supported for the following image formats: JPG, TIFF, BMP, GIF, and PNG.
+
+Example: Subsampling using dimensions
+
+If you set one of `subSampleWidth` or `subSampleHeight` to `240`, the other is automatically adjusted to keep the original aspect ratio.
+
+-   Original image: 10315 x 7049 pixels (≈ 218 MB)
+
+-   Subsampled image: **240** x 164 pixels (≈ 39 KB)
+
+
+Example 2: Subsampling using memory limits
+
+If you set the `subSampleMemory` to `20000000` (20 MB), the image dimensions are adjusted to ensure memory usage doesn’t exceed 20 MB while keeping the aspect ratio.
+
+-   Original image: 10315 x 7049 pixels (≈ 218 MB)
+
+-   Subsampled image: 3123 x 2134 pixels (≈ **20 MB**)
+
+
+> **Note:** If only subSampleWidth or subSampleHeight is specified, the other adjusts automatically to maintain the image’s original aspect ratio. If both memory and dimension limits are provided, the system first adjusts the image to fit within the memory limit and then resizes it to fit the target dimensions.
+
+To enable and configure image subsampling, edit the Imaging module configuration in the Configuration app. You can set different configuration nodes for each generator depending on your requirements. The table below shows some sample nodes set for the `portrait` generator, which generates thumbnails and previews:
+
+| Node name | Value |
+| --- | --- |
+| 📁 generators |     |
+| ⸬ portrait |     |
+| ⸬ outputFormat |     |
+| ⸬ operations |     |
+| ⸬ load |     |
+| ⬩ imageDecoder |     |
+| ⬩ subSampleWidth | 500 |
+| ⬩ subSampleHeight | 500 |
+| ⬩ subSampleMemory | 20000000 |
+| ⬩ class | info.magnolia.imaging.operations.load.FromBinaryNode |
+| ⸬ resize |     |
+| ⸬ parameterProviderFactory |     |
+| ⬩ class | info.magnolia.imaging.operations.ImageOperationChain |
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><caption class="title">Table 4. Properties</caption> <colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>imageDecoder</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Container node for the subsampling configuration.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>subSampleMemory</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>-1</code></em></p></div><div class="paragraph"><p>Maximum memory (in bytes) the image can occupy after subsampling.</p></div><div class="paragraph"><p>If the image exceeds this limit, it’s resized to fit within the limit while preserving the aspect ratio.</p></div><div class="paragraph"><p>Use <code>-1</code> to disable memory-based subsampling.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>subSampleWidth</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>-1</code></em></p></div><div class="paragraph"><p>Target width for the subsampled image.</p></div><div class="paragraph"><p>Use <code>-1</code> to disable subsampling based on dimensions.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>subSampleHeight</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>-1</code></em></p></div><div class="paragraph"><p>Target height for the subsampled image.</p></div><div class="paragraph"><p>Use <code>-1</code> to disable subsampling based on dimensions.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>subSampleFailIfUnsupported</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Controls behavior when subsampling is unsupported:</p></div><div class="ulist"><ul><li><p><code>true</code>: Cancels the operation and throws an error if subsampling is required but not supported by the image format.</p></li><li><p><code>false</code>: Proceeds without applying subsampling when not supported.</p></li></ul></div><div class="paragraph"><p>Subsampling is supported for the following image formats: JPG, TIFF, BMP, GIF, and PNG.</p></div></div></td></tr></tbody></table></div>
+
+> **Tip:** Original and subsampled image dimensions and memory usage are logged at the DEBUG level under info.magnolia.imaging.operations.load.DefaultImageIOImageDecoder.
+
+### [](#_create_a_custom_generator)Create a custom generator
+
+You can create a custom image generator If the defaults do not meet your requirements:
+
+-   Subclass `ImageOperationChain`.
+
+-   Override `getOutputFormat()` method.
+
+-   Set the value of the `class` node to your class name.
+
+
+### [](#_imaging_workspace)Imaging workspace
+
+The imaging engine stores generated images in the `imaging` [workspace](../../../Administration/Architecture/Workspaces/).
+
+The path where generated images are stored depends on info.magnolia.imaging.caching.CachingStrategy. The default path is:
+
+/<generatorName>
+  /<workspaceName>
+    /<path of node or property (nodedata)>
+
+For the MTE generator, the path is:
+
+/mte
+  /<themeName>
+    /<variationName>
+      /<path of node or property (nodedata)>
+
+For example:
+
+/mte
+  /travel-demo-theme
+    /960x720
+      /dam
+        /tours
+          /shark\_brian\_warrick\_0824.JPG
+            /jcr:content
+             /generated image
+
+When the image is rendered on a page, the URL to the generated image is:
+
+/<CATALINA\_HOME, contextPath>
+  /.imaging (which is the Imaging servlet default path)
+    /<generatorName>
+      /<path to the cached image>
+
+Here’s the same image generated by the `portrait` and `mte` generators in the [JCR Browser app](../../../Apps/List-of-apps/JCR-Browser-app/). The `960x720` [variation](#_image_variations_in_a_theme) is configured in the `travel-demo-theme`.
+
+![Image configuration in JCR workspace](../../../_images/6-2-imagingModule.png)
+
+### [](#_view_generated_images)View generated images
+
+The syntax for the URL to request a generated image depends on the used ParameterProviderFactory. However, it usually has the following pattern:
+
+```xml
+<protocol>://<context>/.imaging/<generator name>/<specific parameters ...>
+```
+
+Here is an example of a path when using info.magnolia.imaging.parameters.BinaryJcrNodePathParameterProviderFactory:
+
+```xml
+<protocol>:<context>/.imaging/<generator-name>/<jcr-workspace-name>/<path-to-binary-node>.<suffix-according-to-output-type>
+```
+
+**Example**: [http://localhost:8080/magnoliaAuthor/.imaging/custom-generator-2/dam/examples/jimi-hendrix.jpg/jcr:content.jpg](http://localhost:8080/magnoliaAuthor/.imaging/custom-generator-2/dam/examples/jimi-hendrix.jpg/jcr:content.jpg)
+
+## [](#_image_throttling)Image throttling
+
+To regulate your imaging system under high load, you can configure the number of concurrent image generation requests and the allocated memory to throttle the process. When the system reaches its resource limits, new requests wait until resources free up. Resource limits are reached when there are either too many requests at once or not enough memory available.
+
+You can also configure the wait time: requests can wait indefinitely (not recommended) or for a set timeout. If requests exceed the timeout, they’re canceled and return a `503 Service Unavailable` error.
+
+The values you configure depend on your project requirements and infrastructure.
+
+> **Tip:** Processing a single image typically requires 1.5 to 2 times its original size in memory, though actual usage depends on the image type and processing steps. For example:If a 100MB image is resized to 10% of its original size immediately after loading, the system briefly holds both the full-sized image (100MB) and the resized version (10MB), totaling 110MB in memory (~110% of the original size).If a text overlay is applied to a 100MB image, the system retains both the original (100MB) and the modified version (100MB), requiring 200MB in memory (~200% of the original size).
+
+To configure image throttling, you must edit your [`magnolia.properties` file](../../../Administration/Architecture/Configuration-management/) and restart your instance.
+
+`magnolia.properties` example
+
+```shell
+magnolia.imaging.max-memory=300000000 (1)
+magnolia.imaging.max-requests=10 (2)
+magnolia.imaging.max-wait=10000 (3)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Example value of 300,000,000 bytes of memory allocated |
+| **2** | Example value of a maximum of 10 concurrent requests |
+| **3** | Example value of 10000 milliseconds wait time |
+
+| Property | Description |
+| --- | --- |
+| `max-memory` | **optional**, *default is `-1`*<br><br>Defines the maximum memory (in bytes) allocated for image processing across all requests. Use `-1` for no limit.<br><br>If the image to be loaded exceeds the configured `max-memory`, the request is denied with a `413 Content Too Large` HTTP response. This rejection is due to the `max-memory` allocated rather than contention with other concurrent processes. Retrying later doesn’t resolve the issue unless this property is changed or the image size is reduced. |
+| `max-requests` | **optional** *default is `-1`*<br><br>Specifies the maximum number of concurrent image generation requests. Use `-1` for no limit. Since image processing is primarily CPU-bound with minimal I/O, this value should generally not exceed the number of available CPU cores. |
+| `max-wait` | **optional** *default is `-1`*<br><br>Sets the maximum time (in milliseconds) a request waits for resources (memory and execution permit). Use `-1` for an indefinite wait.<br><br>If resources aren’t granted within the `max-wait` time configured, the request is canceled, and a `503 Service Unavailable` HTTP response is returned. |
+
+> **Note:** Using Image subsampling also impacts memory requirements. It reduces the initial image size before loading and lowers overall memory consumption.
+
+### [](#_image_throttling_logs)Image throttling logs
+
+[Logging](../../../Administration/Monitoring/#_loggers) is managed by the info.magnolia.imaging.ImagingJobController log category. When a new request arrives but there are insufficient resources, an `INFO`\-level log message provides details about the situation. For example:
+
+```json
+Waiting for resources - requested-memory: 1,458,600 bytes, current: [requests: 10/10, memory: 2,917,200 bytes /300,000,000, queue: 8]
+```
+
+This example log shows:
+
+-   The job is requesting 1,458,600 bytes of memory for image processing (requested-memory).
+
+-   10 requests are currently being processed, reaching the maximum limit of 10, while 8 additional requests are waiting in the queue.
+
+-   The ongoing requests have allocated 2,917,200 bytes of memory out of the total available 300,000,000 bytes.
+
+
+If a request has to wait, a follow-up message is logged once it’s granted the necessary resources. For example:
+
+```json
+Resources granted - wait: 13ms, requested-memory: 1,458,600 bytes, current: [requests: 1 /10, memory: 1,458,600 bytes /300,000,000, queue: 8]
+```
+
+This example log shows:
+
+-   The request waited 13 ms before resources became available.
+
+-   The rest of the log message provides the updated system state, similar to the previous example.
+
+-   The log level can be set to `DEBUG` to obtain additional details or assist with troubleshooting.
+
+
+## [](#_caching)Caching
+
+Magnolia caches image resources to improve performance. Any dynamic images generated by the Imaging module are cached at two levels: in the `imaging` workspace and in the actual cache like any other page or document. This means that once the system generates an image, you keep getting the same cached image on subsequent requests.
+
+During testing, you can disable caching of generated images completely. In `/modules/imaging/config`, create a new property named `storeGeneratedImages` and set the value to `false`.
+
+![Disable caching of generated images](../../../_images/ADVT-imaging-mod-cache.png)
+
+> **Warning:** There is still a small delay between configuration changes and a new image being available. Magnolia’s observation mechanism intentionally waits a couple of seconds before reading a changed configuration.
+
+## [](#_imaging_support)Imaging support
+
+Imaging support is enabled by 3 Magnolia modules:
+
+|     |     |     |
+| --- | --- | --- |
+| `magnolia-imaging-support` | info.magnolia.imaging.ImagingSupport | The support interface for imaging. |
+| `magnolia-dam-imaging` | info.magnolia.dam.imaging.ImagingBasedAssetRenderer | Asset renderer that uses `ImagingSupport` to generate [renditions](../../../Developing/API/Java-Server-APIs/DAM-API/). |
+| `magnolia-templating-essentials-imaging` | info.magnolia.templating.imaging.support.ThemeDelegatingImagingSupport | ImagingSupport that delegates to a [Theme](../../../Developing/Templating/Theme/). |
+
+## [](#_image_variations_in_a_theme)Image variations in a theme
+
+A *variation* is a theme-specific configuration that defines the size of the target image and tells the imaging engine whether cropping is allowed. Variations are configured in a theme which allows you to configure image look and feel in the same place as CSS.
+
+See [Image variations](../../../Developing/Templating/Theme/) and [Displaying resized images](../../../Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/) for more.
+
+## [](#_issues)Issues
+
+### [](#_renditions_of_animated_gif_images)Renditions of animated GIF images
+
+In renditions of animated GIF images, only the first frame is resized and kept, turning the originally animated GIF image into a static GIF.
+
+For the development status of this feature, see [MGNLIMG-389 Allow GIFs to be used with Renditions](https://magnolia-cms.atlassian.net/browse/MGNLIMG-389).
+
+Related topics
+
+-   [How to work with images using `imgfn`](../../../Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-imgfn/)
+
+-   [How to work with images using `damfn`](../../../Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)
+
+-   [`imgfn` templating functions](../../../Developing/Templating/Template-scripts/Templating-functions/imgfn/)

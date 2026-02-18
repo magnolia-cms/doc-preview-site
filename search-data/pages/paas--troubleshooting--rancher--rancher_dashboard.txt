@@ -1,0 +1,23 @@
+---
+title: "Rancher UI Dashboard"
+url: https://docs.magnolia-cms.com/paas/troubleshooting/rancher/rancher_dashboard/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Troubleshoot > Rancher UI Dashboard
+---
+
+# Rancher UI Dashboard
+
+The Rancher UI Dashboard, also known as the *Rancher Cluster Explorer*, simplifies the access, interaction, and management of multiple Kubernetes Clusters. Although the UI is quite intuitive, [Rancher 2.6](https://ranchermanager.docs.rancher.com/) introduced a few changes in the UI that you should be aware of.
+
+> **Tip:** For a full walkthrough of the Rancher dashboard, check out Rancher’s UI Walkthrough Guide.
+
+If you have missed any component such as a `workload`, `secret`, `ingress`, or something else, you need to ensure that you have the correct namespace selected, as those items won’t be displayed otherwise:
+
+![rancher ui 1blur](../../../_images/rancher/rancher_ui_1blur.png)
+
+Further reading
+
+-   [Clone Secrets with Rancher 2.6](../rancher_copy-secrets/)
+
+-   [Namespace doesn’t appear in Rancher](../rancher_workaround-namespaces/)

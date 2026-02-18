@@ -1,0 +1,100 @@
+---
+title: "Switchable field"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Switchable-field/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Switchable field
+---
+
+# Switchable field
+
+info.magnolia.ui.field.ConfiguredSwitchableFieldDefinition renders a complex field that displays alternative forms depending on user choice. Use the field to switch, for example, between:
+
+-   Plain text and rich text editors.
+
+-   Unauthenticated and authenticated SMTP settings.
+
+-   Same and different addresses for shipping and billing.
+
+
+> **Note:** This switchable field definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.field.ConfiguredSwitchableFieldDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+switchable:
+  $type: switchableField
+  label: Foo or bar options
+  field:
+    $type: radioButtonGroupField
+    layout: horizontal
+    datasource:
+      $type: optionListDatasource
+      options:
+        - name: foo
+          label: Foo
+          value: foo
+        - name: bar
+          label: Bar
+          value: bar
+  itemProvider:
+    $type: jcrChildNodeProvider
+  forms:
+    - name: foo
+      properties:
+        foo:
+          $type: textField
+          label: Foo text
+    - name: bar
+      properties:
+        bar:
+          $type: richTextField
+          label: Bar rich text
+```
+
+> **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
+
+## [](#_field_properties)Field properties
+
+### [](#_field_specific_properties)Field-specific properties
+
+ PropertyDescription
+
+`field`
+
+**required**
+
+Node containing a [select field](../Select-field/) and [data source](../../../../../../Apps/App-configuration/Data-source-definition/) to switch between forms.
+
+As `$type`, only [`comboBoxField`](../Combobox-field/) and [`radioButtonGroupField`](../Radio-button-group-field/) are supported.
+
+As `datasource`, only [`optionListDatasource`](../../../../../../Apps/App-configuration/Data-source-definition/Option-list-data-source/) can be used.
+
+> **Note:** Options in radioButtonGroupField are positioned vertically by default. A horizontal layout can be configured using the common layout property of option group field.
+
+`forms`
+
+**required**
+
+List of forms to switch between. Forms define fields and similar components as well as their layout.
+
+See [Form definition](../../../Form-definition/) for more information.
+
+`removePreviouslySelected`
+
+**optional**, *default is `true`*
+
+> **Note:** The value is always true in the New UI Forms. For more details, see Migrating the removePreviouslySelected property.
+
+A switchable field has different options, in which each option may have one or more fields. However, depending on the radio button selection, only one option is visible in the UI. An example switchable field is shown below.
+
+![Switchable field example](../../../../../../_images/6-2_switchable-field-example.png)
+
+If the `removePreviouslySelected` property is set to `true`, only data for the selected (visible when viewed in the UI) option is saved.
+
+### [](#_common_complex_field_properties)Common complex field properties
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the field definition item. Derived from the configured node name. Use alphanumeric characters without spaces.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (unless <code>$type</code> is used)</p></div><div class="paragraph"><p>Type of the field definition item. The value must be a fully qualified class name and a subtype of <code>info.magnolia.ui.field.FieldDefinition</code>. See <a href="../../#_field_types" class="xref page">Field types</a> for possible values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>You can use this as a shortcut for <code>class</code> if the definition class is annotated with <code>info.magnolia.ui.field.FieldType</code>. The proper value is defined by the annotation.</p></div><div class="listingblock"><div class="title">Example class annotation</div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@FieldType("textField")
+public class TextFieldDefinition extends ConfiguredFieldDefinition&lt;String&gt; {
+...
+}</code></pre></div></div><div class="paragraph"><p>See <a href="../../#_field_types" class="xref page">Field types</a> for possible values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>itemProvider</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is</em></p></div><div class="ulist"><ul><li><p><em><code>JcrChildNodeProviderDefinition</code> for <code>JcrMultiFieldDefinition</code></em></p></li><li><p><em><code>CurrentItemProviderDefinition</code> for <code>StaticFieldViewDefinition</code></em></p></li></ul></div><div class="paragraph"><p>Node with a <code>$type</code> property that specifies the type of data binding for the subnodes in complex fields.</p></div><div class="paragraph"><p>For more details, see <a href="../../Item-providers/" class="xref page">Item providers</a>.</p></div><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content"><div class="paragraph"><p>You can’t configure this property through YAML but it can be used in your Java code.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Help text displayed when the user clicks the help icon. The value can be literal or a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>i18n</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables <a href="../../../../../../Administration/Language/Language-configuration/" class="xref page">i18n authoring support</a>, which allows editors to write foreign-language or regionally targeted content. A two-letter language identifier (<code>en</code>, <code>de</code>, <code>fr</code>, etc.) is displayed on controls where <code>i18n</code> is set to <code>true</code>.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">When configuring <code>CurrentItemProviderDefinition</code> with <code>i18n</code> to <code>true</code> for a Switchable field, the <code>i18n</code> sub field must also be set to <code>true</code>.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>label</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Field label displayed to editors. The value can be literal or a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div><div class="paragraph"><p>If you do not provide the property, Magnolia will fall back to a generated i18n key.</p></div><div class="paragraph"><p>If you do not want to have any label, set the property to an empty string such as <code>label: ""</code> in YAML.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>styleName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Additional style information for an editor property definition item applied to the element when the form is rendered. The value can be a CSS class or a list of CSS classes separated by white spaces.</p></div><div class="paragraph"><p>The style name will be rendered as an HTML class name, which can be used in a CSS definition. The class name is added to the field by calling the Vaadin method <a href="https://vaadin.com/api/framework/8/com/vaadin/ui/AbstractComponent.html#addStyleName-java.lang.String-" target="_blank" rel="noopener"><code>addStyleName</code></a>.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>The referenced class can be defined in:</p></div><div class="ulist"><ul><li><p>An <a href="../../../../Theme/" class="xref page">out-of-the-box Magnolia theme</a>.</p></li><li><p>A <a href="https://vaadin.com/docs/v8/framework/themes/themes-creating.html" target="_blank" rel="noopener">custom theme</a>.</p></li><li><p>A <a href="https://vaadin.com/forum/thread/17175160/where-to-put-the-style-css" target="_blank" rel="noopener">custom component style sheet</a>.</p></li></ul></div></td></tr></tbody></table></div></div></td></tr></tbody></table></div>

@@ -1,0 +1,138 @@
+---
+title: "Feeds"
+url: https://docs.magnolia-cms.com/product-docs/Authoring/Feeds/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Authoring > Authoring content > Feeds
+---
+
+# Feeds
+
+The RSS Aggregator module displays external feed content on a Magnolia page (feed aggregation) and generates feeds from Magnolia content (feed syndication).
+
+Planet feeds enhance standard aggregation feeds by collecting additional data and generating feed statics.
+
+## [](#_creating_an_aggregate_feed)Creating an aggregate feed
+
+A feed aggregator retrieves external feeds and displays the content on a Magnolia page.
+
+[Planet feeds](http://en.wikipedia.org/wiki/Planet_%28software%29) have all the features of standard feeds but can generate additional data and statistics that is displayed in planet components. See [Feed components](#_feed_components) and for more details.
+
+In this example we collect three individual RSS feeds into one aggregate feed:
+
+-   Slashdot: [http://rss.slashdot.org/Slashdot/slashdot](http://rss.slashdot.org/Slashdot/slashdot)
+
+-   Engadget: [http://www.engadget.com/rss.xml](http://www.engadget.com/rss.xml)
+
+
+These have a common topic – technology – so they are good candidates for aggregation. A reader interested in one feed is likely to be interested in the others too.
+
+To create a RSS aggregator, in the Feeds app:
+
+1.  Add a new feed.
+
+    -   **Name**: `Technology`. This is the internal name of the aggregator.
+
+    -   **Title**: Feed title.
+
+    -   **Short description**: Feed description.
+
+    -   Check **Planet Feed** to mark the feed as a planet feed.
+
+
+2.  Add the feed URLs from above.
+
+    -   **Title**: Leave blank to get the title from the external feed title
+
+    -   **URL**: Feed URL.
+        **Image**: Select an image from the DAM. 60x60 px works best. The image is displayed in the Planet Feeds component. [Hackergotchi](http://en.wikipedia.org/wiki/Hackergotchi) images are supported.
+
+
+3.  Add filters to refine content.
+
+    1.  **Condition**: Select an AND, OR or NOT condition to include or exclude content.
+
+    2.  **Property**: Select from a pre-defined list of options, Author, Category, Description or Title, commonly found in feeds.
+
+    3.  **Regex**: Type a [regex pattern](http://en.wikipedia.org/wiki/Regular_expression) to meet the condition and property in the first two boxes.
+
+
+
+![RSS Aggregators tab](../../_images/6-2-feeds-rssAggregatorsTab.png)
+
+Feeds can be marked as a planet feed at any time. When you change a standard feed to a planet feed, [re-import the feed data](#_importing_feed_data) before generating planet data.
+
+## [](#_importing_feed_data)Importing feed data
+
+To import data:
+
+-   All feeds: Click **Import all feeds** **now**.
+
+-   A single feed: Click **Import feed** **now**.
+
+
+See also: [Scheduling automated feed imports](#_scheduling_automated_feed_imports).
+
+## [](#_feed_components)Feed components
+
+The module includes components that display external feeds and generate feeds from internal content.
+
+Content will only display in the feed components after it has been [imported](#_importing_feed_data). To display feed content on the public instance publish the feed in the Feeds app. This will also publish the feed data.
+
+Read more about configuring feed components over [here](../../Administration/Authoring-content-config/Feed-component-configuration/).
+
+## [](#_scheduling_automated_feed_imports)Scheduling automated feed imports
+
+[Importing feed data manually](#_importing_feed_data) is not a long-term solution. You should configure an automated import schedule. Choose the update frequency depending on how often feeds have new content. For example, if a blog gets one post a day then importing once a day at 6 a.m. is enough.
+
+### [](#_setting_automated_imports_for_all_feeds)Setting automated imports for all feeds
+
+You can schedule automated imports for all feeds in the Configuration app. The global settings can be [overridden](_setting_automated_imports_for_single_feeds) for single feeds.
+
+1.  **Periodic import**:
+
+    1.  **Disabled**: Automated imports are disabled by default. You can switch off them off at any time.
+
+    2.  **Import every**: Quick option to set imports for a specified number of minutes, hours or days.
+
+    3.  **Use cron time/date defintion**: Define a [Quartz Cron Pattern](http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html) to create a suitable import schedule.
+
+        For example, the pattern `0 0 6 * * *` imports data daily at 6 a.m. See [Cron Maker](http://www.cronmaker.com/) for help.
+
+
+2.  **Fetcher**: Substitute the default feed fetcher class if necessary.
+
+
+![Feed configuration](../../_images/6-2-feeds-configuration.png)
+
+Head over [here](../../Administration/Authoring-content-config/Feed-component-configuration/#_configuring_automated_reports) to read more about configuring automated imports for all feeds.
+
+### [](#_setting_automated_imports_for_single_feeds)Setting automated imports for single feeds
+
+You can configure automated import settings for each feed in the Import Settings tab of the edit dialog.
+
+> **Caution:** These setting override the global settings.
+
+1.  **Periodic import**:
+
+    1.  Select **This feed has different import settings** to override the global settings.
+
+    2.  **Disabled**: Stops any scheduled automated imports for the individual feed and the global settings take over.
+
+    3.  **Import every**: Quick option to set imports for a specified number of minutes, hours or days.
+
+    4.  **Use cron time/date defintion**: Define a [Quartz Cron Pattern](http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html) to create a suitable import schedule.
+
+        For example, the pattern `0 0 6 * * *` imports data daily at 6 a.m. See [Cron Maker](http://www.cronmaker.com/) for help.
+
+
+2.  **Fetcher**: Substitute the default feed fetcher class if necessary.
+
+
+![Automated imports in Feeds](../../_images/6-2-feeds-importSettings.png)
+
+Related topics
+
+-   [Feeds app](../../Apps/List-of-apps/Feeds-app/)
+
+-   [RSS Aggregator module](../../Modules/List-of-modules/RSS-Aggregator-module/)

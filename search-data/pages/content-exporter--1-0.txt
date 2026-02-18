@@ -1,0 +1,136 @@
+---
+title: "Content Exporter module"
+url: https://docs.magnolia-cms.com/content-exporter/1.0/
+category: Modules
+version: modules
+breadcrumb: Content Exporter module
+---
+
+# Content Exporter module
+
+
+
+Edition
+
+Incubator (*services*)
+
+Issues
+
+[CONTEXP](https://magnolia-cms.atlassian.net/browse/CONTEXP)
+
+Git
+
+[Git](https://gitlab.magnolia-platform.com/ps/incubator/content-exporter)
+
+Latest
+
+1.0.0
+
+> **Note:** Compatible with Magnolia 6.2.
+
+The **Content Exporter** module allows you to export and import content via `CSV`.
+
+> **Warning:** This module is at the INCUBATOR level.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.content</groupId>
+  <artifactId>content-exporter</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+This sections shows you how to configure and use the module.
+
+### [](#_configuration)Configuration
+
+You can configure which property is allowed to be exported. This is done in your `config.yaml` file.
+
+`config.yaml`
+
+```yaml
+################# SPECIFY THE EXPORT CONFIGURATION #################
+exportConfiguration: # this configuration supports multiple workspaces
+  website: (1)
+    allowedNodeTypes: (2)
+      - mgnl:page
+      - mgnl:component
+    contentAttributes: (3)
+      - title
+      - description
+      - text
+#  contact:
+#    allowedNodeTypes:
+#      - mgnl:contact
+#    contentAttributes:
+#      - lastName
+#      - firstName
+```
+
+|     |     |
+| --- | --- |
+| **1** | The repository. |
+| **2** | The specific node types to be exported. |
+| **3** | Defines which attributes are displayed in the dialog in admincentral. |
+
+### [](#_export_csv_dialog)Export CSV dialog
+
+To export content via CSV.
+
+1.  Go to the **Content Exporter** module on your admincentral.
+
+2.  Click export.
+
+3.  Define the properties to export with the following format:
+
+    ```csv
+    title
+    description
+    text
+    ```
+
+    options
+
+    -    **Include empty**: allows users to export properties which do not exist as a node path.
+
+    -    **Include i18n properties**: allows users to export `i18n` properties such as `title_de`, `title_fr`, and so on.
+
+    -    **Include subnodes**: allows users to export sub nodes.
+
+
+4.  Click **Export**.
+
+
+![exportDialog](_images/exportDialog.jpg)
+
+### [](#_import_csv_dialog)Import CSV dialog
+
+To import content via CSV.
+
+1.  Go to the **Content Exporter** module on your admincentral.
+
+2.  Click import.
+
+3.  In the dialog, upload your CSV file.
+
+    options
+
+    -    **Include empty**: selectd if you want to import properties that do not exist as a node path.
+
+
+4.  Click **Import**.
+
+
+![importDialog](_images/importDialog.jpg)
+
+## [](#_changelog)Changelog
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

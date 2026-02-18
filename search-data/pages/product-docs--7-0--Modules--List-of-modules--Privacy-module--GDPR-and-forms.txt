@@ -1,0 +1,160 @@
+---
+title: "GDPR and forms"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Privacy-module/GDPR-and-forms/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Privacy module > GDPR and forms
+---
+
+# GDPR and forms
+
+This page describes how to create a new GDPR-compliant form as well as how to adapt an existing form (containing a field where users may enter personal data) to comply with [GDPR](../../../../Features/Data-privacy/) requirements.
+
+The examples on this page make use of the [Privacy module](../) and the [Travel Demo](../../../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/).
+
+## [](#_simple_form_processing_compared_to_gdpr_compliant_form_processing)Simple form processing compared to GDPR-compliant form processing
+
+In an ordinary form, the data entered in the input field is usually processed directly upon hitting the Submit button on the form.
+
+A GDPR-compliant form needs to follow a more complex procedure called *double opt-in*:
+
+-   A form that contains personal data has to be submitted together with the user’s consent for the processing of such data. This is usually done via checkboxes which the user has to tick off before submitting the form.
+
+-   In the second step, the user has to confirm the consent given. The user receives an [opt-in email](https://en.wikipedia.org/wiki/Opt-in_email) with links to a web page where the user can finish the double opt-in procedure (confirm or reject the consent).
+
+
+In the example below, we assume that we have a text input form field called `fullname` that must be handled in compliance with GDPR.
+
+## [](#_privacy_module_writes_into_the_contacts_app)Privacy module writes into the contacts app
+
+**Visitors app adds also contacts**
+
+In the Magnolia DX Core Travel Demo, the `contacts` workspace is registered in the configuration of the Privacy module for demonstration purposes of dealing with personal data. This means the Visitors app interacts not only with the `visitors` workspace but also with the `contacts` workspace, which is otherwise primarily used by the [Contacts app](../../../../Apps/List-of-apps/Contacts-app/).
+
+## [](#_gdpr_data_is_stored_on_public_and_must_be_synchronized_on_clusters)GDPR data is stored on public and must be synchronized on clusters
+
+Data is stored on the public context.
+
+> **Important:** Synchronization between public nodes may be required.
+
+The record of consent for form-based data in the `visitors` workspace is created on the *public* Magnolia instance, never on the author instance. This is also true for referenced content, for instance in the `contacts` workspace.
+
+You must synchronize the consent records stored if you use several public instances. The instances, or in our sample implementation at least the `visitors`, `pendingContacts` and `contacts` workspaces, must be clustered to share accounts between the different instances. Alternatively, implement observation-based synchronization to replicate visitor and contact data across instances.
+
+## [](#_creating_a_gdpr_compliant_form)Creating a GDPR-compliant form
+
+In this section, you create a new GDPR-compliant form. You need the knowledge gained here in the second section where you already have a form and want to adapt it for GDPR.
+
+The Magnolia Travel Demo bundle comes with a sample form component template called **(GDPR) Store data form**, which is provided by the `privacy-sample` submodule and designed for the purposes of GDPR.
+
+This component template is preconfigured to:
+
+-   Ask for a user’s consent before submitting the form by displaying consent checkboxes.
+
+-   Send the user an opt-in email.
+
+
+### [](#_adding_and_configuring_the_form)Adding and configuring the form
+
+1.  Make sure that the page in which you want to create the form uses the Travel Standard page template.
+
+2.  Add a **(GDPR) Store data form** component to the page.
+
+3.  Click **Edit** in the Action bar to edit the form component.
+
+4.  On the **Opt-in Email** tab, configure the parts of the email which will be sent to the user in the second phase of the opt-in procedure:
+
+    The largest text area in the dialog is where you can define with FreeMarker variables how the main message of the confirmation email will look like. The body of this email message should contain hyperlinks to a consent confirmation/rejection page.
+
+    > **Note:** The Travel Demo comes with a sample of such a page at /travel/contact/confirmation.
+
+5.  Copy and paste this path to the **Confirmation page** field of the dialog and save the changes.
+
+
+### [](#_adding_a_gdpr_sensitive_field)Adding a GDPR-sensitive field
+
+1.  Add a new GDPR-sensitive input field component to the beginning of the form’s field set.
+
+2.  In the input field’s edit dialog, label the Full Name field, name it `fullname` (this becomes the value of the internal JCR `controlName` property).
+
+3.  On the **Advanced** tab, set Full Name field’s type to `text.`
+
+4.  Open the edit dialog of the **Consent definition** component.
+
+5.  Configure the option in which the user chooses consent duration in the **Expiration options** field. Use the `<label>:<timeUnit>__<timeQuantifier>` following format, where:
+
+    -   `<label>` represents the label shown for the option.
+
+    -   `<timeUnit>` defines the time unit. Use `1` for year, `2` for month or `10` for hour.
+
+    -   `<timeQuantifier>` defines the actual length of consent for the time unit specified.
+
+        For example, if you want to allow the user to choose from consent durations of 24 hours, 72 hours and 1 month, you need to enter the following in the field:
+
+        ```bash
+        24 hours:10__24
+        72 hours:10__72
+        1 month:2__1
+        ```
+
+
+6.  To set a default value to be selected when the form is loaded, enter the part that follows the colon in the **Default expiration value** field, for example `2__1`.
+
+
+### [](#_updating_privacy_module_configuration)Updating Privacy module configuration
+
+Since this step is done in the [Configuration app](../../../../Apps/List-of-apps/Configuration-app/), you need the `superuser` [role](../../../../Administration/IAM/Roles-groups-and-users/) to access the app and change the configuration.
+
+Both the `email` field (it comes preconfigured with the **(GDPR) Store data form** template) and the `fullname` field (added to the form’s field set) must be database names registered in the system for GDPR-compliant data processing. This is done in the configuration of the [Privacy module](../).
+
+1.  Open the `visitor-manager` module configuration at `/modules/visitor-manager/config/personalFields`.
+
+2.  Add the newly added `fullname` field name as a property (which is in fact arbitrary) and value under the `name/fieldNames` node, which is already present in the configuration
+
+
+At this point, the newly created form is GDPR-compliant.
+
+## [](#_making_an_existing_form_gdpr_compliant)Making an existing form GDPR-compliant
+
+In this section, we assume that you already have a form with a text input field labeled **Full Name**, internally `fullname`, and you want to adapt to comply with GDPR.
+
+### [](#_changing_and_configuring_the_component_template)Changing and configuring the component template
+
+First, you need to change the form’s template to use one that is designed for GDPR. In this example, we use the template called **(GDPR) Store data form** again.
+
+1.  Select the form and change its template to **(GDPR) Store data form**.
+
+2.  In the next step, switch to the **Opt-in Email** tab and configure the parts of the opt-in email.
+
+3.  After saving the changes, the form contains two field sets.
+
+
+### [](#_relocating_the_text_input_field)Relocating the text input field
+
+Now, you have to make the **Full Name** field in the first field set a member of the other field set. With the `superuser` role, you can do that in the JCR Browser app:
+
+![Relocating the text input field](../../../../_images/GDPRfieldMove.png)
+
+After this operation, the **Full Name** field is located next to the **Email** field.
+
+### [](#_updating_privacy_module_configuration_2)Updating Privacy module configuration
+
+Again, the `fullname` field, added to the form’s field set, must be a database name registered in the system for GDPR-compliant data processing. Ask your system administrator to do this for you if don’t have access to the Configuration app.
+
+Open `visitor-manager` module configuration at `/modules/visitor-manager/config/personalFields`.
+
+Make sure that the relocated field’s `fullname` name is a property and value under the `name/fieldNames` node, which is already present in the configuration. If it isn’t there yet, add it there.
+
+The relocated field is now also subject to the logic of the **(GDPR) Store data form** template and hence the GDPR requirements.
+
+When submitting the page, the user is asked to give consent for both text input fields in the form, **Full Name** and **Email**.
+
+Related topics
+
+-   [Data privacy](../../../../Features/Data-privacy/)
+
+-   [Data privacy API](../../../../Developing/API/Java-Server-APIs/Data-privacy-API/)
+
+-   [Privacy module](../)
+
+-   [Visitors app](../../../../Apps/List-of-apps/Visitors-app/)

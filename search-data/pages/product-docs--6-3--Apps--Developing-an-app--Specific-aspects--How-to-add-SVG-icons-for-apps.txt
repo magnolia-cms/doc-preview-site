@@ -1,0 +1,95 @@
+---
+title: "How to add SVG icons for apps"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Apps/Developing-an-app/Specific-aspects/How-to-add-SVG-icons-for-apps/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Apps > Developing an app > How to add SVG icons for apps
+---
+
+# How to add SVG icons for apps
+
+This page explains how you can provide and use custom SVG icons for [apps](../../../).
+
+## [](#_introduction)Introduction
+
+Every Magnolia app has an icon assigned to it. The icon can be defined in the [app descriptor](../../../App-configuration/App-descriptor/) with the `icon` property.
+
+### [](#_where_the_icon_is_displayed)Where the icon is displayed
+
+It is displayed:
+
+-   In the [App launcher](../../../../Administration/App-Launcher/App-launcher-layout/):
+    ![App launcher displaying icons](../../../../_images/appIcon-appLauncher.png)
+
+-   In the tab name of the first subapp:
+    ![Icon displayed in the tab name of the first subapp](../../../../_images/appIcon-firstSubapp.png)
+
+-   In the [Find Bar](../../../../Authoring/Search/Searching-for-content/) search result list when the result type is an app:
+    ![Icon displayed in the Find Bar search result list](../../../../_images/appIcon-findBarResult.png)
+
+
+## [](#_providing_and_referencing_a_custom_icon)Providing and referencing a custom icon
+
+To use a custom icon for an app, you must:
+
+-   Provide an SVG file in a Maven module that is included in your webapp bundle.
+    The SVG file must be located in the `$maven-module/src/main/resources/VAADIN/appicons` folder.
+
+-   Reference the icon in the [app descriptor](../../../App-configuration/App-descriptor/) by setting the property `icon`. Its value must be the filename without the `svg` suffix.
+
+
+### [](#_example)Example
+
+1.  In your Maven module, add the `fast-vehicle-icon.svg` file to the `src/main/resources/VAADIN/appicons` folder.
+
+    my-foobar-module/
+    ├── pom.xml
+    └── src
+        └── main
+            └── resources
+                └── VAADIN
+                    └── appicons
+                        └── fast-vehicle-icon.svg
+
+    Make sure to add `my-foobar-module` to your webapp bundle.
+
+2.  Reference the icon from the app descriptor of your custom app.
+
+    /content-type-examples/apps/tourVehicles-app.yaml
+
+
+```yml
+!content-type:tourVehicle
+icon: fast-vehicle-icon
+```
+
+#### [](#_result)Result
+
+![A custom icon displayed in the App Launcher](../../../../_images/appIcon-appLauncher-withCustomIcon.png)
+
+
+
+![A custom icon displayed in the first subapp tab ](../../../../_images/appIcon-firstSubapp-withCustomIcon.png)
+
+## [](#_reusing_app_icons_from_the_ui_framework)Reusing app icons from the UI framework
+
+Instead of using a custom app icon, you can also reference and use app icons that are part of the UI framework (see the [Magnolia app icons gallery](https://dev.magnolia-cms.com/svg-app-icons-gallery/)).
+
+### [](#_icon_resolution_strategy)Icon resolution strategy
+
+MagnoliaAppIcon is used to resolve custom app icons or default to a fallback icon. If no SVG icon (logo) or font icon (forCssClass) is defined, the default SVG app icon will be used as fallback.
+
+```css
+MagnoliaAppIcon.forName(logo)
+                .or(MagnoliaIcons::forCssClass)
+                .or(MagnoliaIcons.APP)
+                .ifPresent(...);
+```
+
+Related topics
+
+-   [App descriptor](../../../App-configuration/App-descriptor/)
+
+-   [Magnolia Design System for CSS: Icons](https://ds.magnolia-cloud.com/css/?path=/docs/brand-icons—​docs)
+
+-   [Magnolia icons font](../../General-aspects/Designing-an-app/Icons/)

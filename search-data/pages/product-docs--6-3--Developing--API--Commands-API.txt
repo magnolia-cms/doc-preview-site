@@ -1,0 +1,165 @@
+---
+title: "Commands API"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Developing/API/Commands-API/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Developing > API > Commands API
+---
+
+# Commands API
+
+This page describes the `commands` endpoint, which can be used to trigger [commands](../../Commands/) defined in [catalogs](../../Commands/#_catalogs).
+
+Magnolia uses commands to publish and unpublish content, send email, flush cache, take backups, import and export data and for many other tasks.
+
+The commands:
+
+-   Can perform duties within the system or connect to external resources.
+
+-   Are typically executed by [actions](../../../../../magnolia-5-ui-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI/) or scheduled for execution by the [Scheduler module](../../../Modules/List-of-modules/Scheduler-module/).
+
+
+> **Caution:** The REST resource must be called with HTTP POST.
+
+You can only call commands via REST which are whitelisted at `/modules/rest-services/rest-endpoints/commands/enabledCommands`. For further details see [REST module configuring the commands endpoint](#3.1@rest:ROOT:index.adoc#_commands_endpoint) and [REST security](../../../Modules/List-of-modules/REST-module/REST-security/).
+
+## [](#_request_urls)Request URLs
+
+The endpoint recognizes URLs with or without a catalog parameter.
+
+POST `/commands/v2/{catalogName}/{commandName}`
+
+POST `/commands/v2/{commandName}`
+
+## [](#_parameters)Parameters
+
+| Parameter | Description | Type | Data Type |
+| --- | --- | --- | --- |
+| `commandName` | **required** The name of the command as defined in the [Command definition](../../Commands/#_command_definition). | `path` | `String` |
+| `catalogName` | **optional**, *default catalog name is \`default\`* The name of the [Command catalog](../../Commands/#_catalogs). | `path` | `String` |
+| `body` | **required** Request body in JSON or XML format; it contains the parameters required to execute the command. | `body` | `String` |
+
+## [](#_examples)Examples
+
+Here are a couple of examples for publishing content using the commands endpoint.
+
+### [](#_publish_page)Publish page
+
+Publish the page `/travel/hello`.
+
+```bash
+curl http://localhost:8080/magnoliaAuthor/.rest/commands/v2/website/activate \
+  -H "Content-Type: application/json" \
+  -X POST --user superuser:superuser \
+  --data \
+'{
+  "comment": "Published via REST",
+  "repository": "website",
+  "path": "/travel/hello",
+  "recursive": false
+}'
+```
+
+You cannot send the request as XML, you only can receive the response in XML with the `Accept` header.
+
+### [](#_schedule_page)Schedule page
+
+Publish (activate) the page `/travel/hello` on a future date.
+
+```bash
+curl http://localhost:8080/magnoliaAuthor/.rest/commands/v2/website/activate \
+  -H "Content-Type: application/json" \
+  -X POST --user superuser:superuser \
+  --data \
+'{
+  "comment": "Published via REST (scheduled)",
+  "publicationDate": "2020-01-01T11:10:00.000+01:00",
+  "repository": "website",
+  "path": "/travel/hello",
+  "recursive": false
+}'
+```
+
+### [](#_call_the_markasdeletedaction_command)Call the `markAsDeletedAction` command
+
+This example shows how to call the info.magnolia.ui.contentapp.action.MarkAsDeletedCommandActionDefinition command. The following parameters are required for the call context:
+
+-   The name of a repository.
+
+-   The name of the node to be marked.
+
+-   The UUID of the parent node.
+
+
+```bash
+curl http://localhost:8080/magnoliaAuthor/.rest/commands/v2/markAsDeleted \
+  -H "Content-Type: application/json" \
+  -X POST --user superuser:superuser \
+  --data \
+'{
+  "repository": "dam",
+  "deleteNode": "google-plus.png",
+  "uuid": "0234aab2-9a0a-456a-8f0b-fe0a6d4d83ec"
+}'
+```
+
+### [](#_call_the_flushcachescommand_command)Call the `flushCachesCommand` command
+
+This example shows how to call the info.magnolia.module.cache.commands.FlushCachesCommand command, which completely flushes all caches.
+
+The call context, no parameters are required:
+
+```bash
+curl http://localhost:8080/magnoliaAuthor/.rest/commands/v2/cache/flushAll \
+  -H "Content-Type: application/json" \
+  -X POST --user superuser:superuser
+```
+
+### [](#_whitelist_return_properties)Whitelist return properties
+
+This example shows how to configure which data should be sent back using a configuration for [contextParameters](#3.1@rest:ROOT:index.adoc#contextParameters). The Groovy command in this example is configured in the `ui-admincentral` module, as shown below.
+
+| Node name | Value |
+| --- | --- |
+| ⸬ groovy |     |
+| ⬩ class | samples.commands.RestCommand |
+
+The Groovy command is added to the Groovy app and contains the following script.
+
+```groovy
+package samples.commands;
+
+import info.magnolia.commands.MgnlCommand;
+import info.magnolia.context.MgnlContext;
+
+/*
+* This groovy class is an example that serves to show how it can be used as a replacement of a traditional Java class on the fly.
+*/
+public class RestCommand extends MgnlCommand {
+@Override
+public boolean execute(Context ctx) throws Exception {
+MgnlContext.setInstance(ctx);
+MgnlContext.setAttribute("foo", "bar");
+}
+}
+```
+
+By specifying `foo` and `request` as [contextParameters](#3.1@rest:ROOT:index.adoc#contextParameters), you can get them sent back after the call below. Using this configuration, you can block or allow data through depending on what should be returned.
+
+Example Groovy call request
+
+```bash
+curl https://localhost:8080/magnoliaAuthor/.rest/commands/v2/groovy \
+  -H "Content-Type: application/json" \
+  -X POST --user superuser:superuser \
+  --data \
+'{
+  "request": "Groovy call"
+}'
+```
+
+Example Groovy call response
+
+```json
+{"request":"Groovy call","success":true,"foo":"bar"}
+```

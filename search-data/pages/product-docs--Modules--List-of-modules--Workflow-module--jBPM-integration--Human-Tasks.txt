@@ -1,0 +1,23 @@
+---
+title: "Human Tasks"
+url: https://docs.magnolia-cms.com/product-docs/Modules/List-of-modules/Workflow-module/jBPM-integration/Human-Tasks/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Workflow module > jBPM integration > Human Tasks
+---
+
+# Human Tasks
+
+While being conceptually very close, Magnolia’s and jBPM’s Human Task implementation differ from each other. jBPM provides a *org.kie.api.task.TaskService* interface for creating and managing Tasks created by a Human Task *WorkItemHandler*. This Task Service is registered to the *RuntimeEngine* and obtained from it when needed.
+
+The whole *lifecycle* of Tasks created by the Task Service is totally independent of the lifecycle of the workflow process itself, which allowed Magnolia to break out of jBPM’s world at this stage. So, instead of implementing the TaskService interface and register it to the RuntimeEngine, Magnolia uses Magnolia’s own TasksManager to steer the lifecycle of its Tasks. This is done by injecting the TasksManager where needed. As a consequence of this you cannot obtain any TaskService instance from the RuntimeEngine, it will return null.
+
+Please compare the following UML diagrams for the differences in its details:
+
+## [](#_magnolias_human_tasks_implementation)Magnolia’s Human Tasks implementation
+
+![Magnolia usertasks](../../../../../_images/Magnolia_usertasks.png)
+
+## [](#_jbpms_human_tasks_implementation)jBPM’s Human Tasks implementation
+
+![JPA usertasks](../../../../../_images/JPA_usertasks.png)

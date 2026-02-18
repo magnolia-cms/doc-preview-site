@@ -1,0 +1,113 @@
+---
+title: "Light Module deployment"
+url: https://docs.magnolia-cms.com/paas/deployment/light-modules/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Light Module deployment
+---
+
+# Light Module deployment
+
+Your light module project must contain a `light-modules` folder containing one or more light modules.
+
+> **Warning:** The .gitlab-ci.yml will break if there are no light modules in the light module project.
+
+> **Note:** The example .gitlab-ci.yml does not contain the JavaScript build commands.
+
+Light module structure example
+
+```text
+custom-lightmodule
+|-- README.md
+|-- .gitlab-ci.yml
+|-- light-modules
+    |-- custom-lightmodule
+        |-- README.md
+        |-- decorations
+        |-- dialogs
+        |   |-- components
+        |   |-- pages
+        |       |-- custom-page.yaml
+        |-- i18n
+        |   |-- custom-lightmodule-messages_en.properties
+        |-- includes
+        |   |-- README.txt
+        |-- templates
+        |   |-- components
+        |   |-- pages
+        |       |-- custom-page.ftl
+        |       |-- custom-page.yaml
+        |-- webresources
+```
+
+## [](#_the_gitlab_ci_yml_file)The `.gitlab-ci.yml` file
+
+It’s important that you configure the `.gitlab-ci.yml` file correctly so that your light development changes are picked up and deployed.
+
+> **Note:** Magnolia automatically picks up the changes when using this approach.
+
+gitlab-ci.yml
+
+```yaml
+stages:
+  - deploy (1)
+
+.deploy:
+  image: devspacesh/devspace:6
+  stage: deploy
+  before_script:
+    - export KUBECONFIG=$KUBE_CONFIG (2)
+
+deploy:base:sync:
+  extends: .deploy
+  script:
+    - export KUBECTL_NAMESPACE=base (3)
+    - export LIGHT_MODULES_CONTAINER_PATH=/mgnl-home/modules
+    - kubectl -n $KUBECTL_NAMESPACE get pods -l "release=$KUBECTL_NAMESPACE,tier=app" -o name | sed 's/^pod\///' > pods.txt
+    - cat pods.txt
+    - >
+      for pod in `cat pods.txt`; do
+        devspace sync --path light-modules/:$LIGHT_MODULES_CONTAINER_PATH -n $KUBECTL_NAMESPACE --pod $pod -c $KUBECTL_NAMESPACE  --initial-sync mirrorLocal --no-watch --upload-only
+      done
+  environment:
+    name: dev (4)
+  when: manual (5)
+
+deploy:dev:sync:
+  extends: .deploy
+  script:
+    - export KUBECTL_NAMESPACE=dev (3)
+    - export LIGHT_MODULES_CONTAINER_PATH=/mgnl-home/modules
+    - kubectl -n $KUBECTL_NAMESPACE get pods -l "release=$KUBECTL_NAMESPACE,tier=app" -o name | sed 's/^pod\///' > pods.txt
+    - cat pods.txt
+    - >
+      for pod in `cat pods.txt`; do
+        devspace sync --path light-modules/:$LIGHT_MODULES_CONTAINER_PATH -n $KUBECTL_NAMESPACE --pod $pod -c $KUBECTL_NAMESPACE  --initial-sync mirrorLocal --no-watch --upload-only
+      done
+  environment:
+    name: dev (4)
+  when: manual (5)
+
+deploy:uat:sync:
+  extends: .deploy
+  script:
+    - export KUBECTL_NAMESPACE=uat (3)
+    - export LIGHT_MODULES_CONTAINER_PATH=/mgnl-home/modules
+    - kubectl -n $KUBECTL_NAMESPACE get pods -l "release=$KUBECTL_NAMESPACE,tier=app" -o name | sed 's/^pod\///' > pods.txt
+    - cat pods.txt
+    - >
+      for pod in `cat pods.txt`; do
+        devspace sync --path light-modules/:$LIGHT_MODULES_CONTAINER_PATH -n $KUBECTL_NAMESPACE --pod $pod -c $KUBECTL_NAMESPACE  --initial-sync mirrorLocal --no-watch --upload-only
+      done
+  environment:
+    name: dev (4)
+  when: manual (5)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `deploy stage` first collects all pods running author or public instances and uses the devspace tool to [rsync](https://en.wikipedia.org/wiki/rsync) light module files to the running pods. |
+| **2** | The `KUBE_CONFIG` CI/CD variable should be defined as type `File` and hold KubeConfig of the cluster the deployment should go to. The same variable can be defined in different environment scopes (see `2`) |
+| **3** | The namespace must be the same the corresponding Magnolia deployment is running in. |
+| **4** | The environment name corresponds to the environment scope (`dev` or `prod`) defined in the `Deployments` section. In different environments the same variable names can be used. |
+| **5** | The `deployment` must be triggered manually. |

@@ -1,0 +1,520 @@
+---
+title: "SSO in DX Cloud"
+url: https://docs.magnolia-cms.com/paas/sso/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > SSO in DX Cloud
+---
+
+# SSO in DX Cloud
+
+The instructions on this page focus primarily on the required steps to integrate into our Identity Platform (IdP) based on Keycloak, which gives you access to our DX Cloud Service via SSO.
+
+> **Tip:** Please note that we offer this IdP Integration to access our DX Cloud Service via SSO. If you have your own IdP, we recommended to use it on magnolia-sso:ROOT:index.adoc to access and secure the Magnolia AdminCentral. In that case, you must configure the IdP settings on your own.
+
+## [](#_overview)Overview
+
+Unresolved include directive in modules/ROOT/pages/sso.adoc - include::magnolia-sso:ROOT:partial$c\_module-overview.adoc\[\]
+
+## [](#_keycloak_settings_for_sso)Keycloak settings for SSO
+
+To integrate an external IdP Directory Service for Single-Sign-On (SSO) with DX Cloud, it’s possible to setup a connection via [`SAML`](https://en.wikipedia.org/wiki/SAML_2.0) or [`OpenID Connect (OIDC)`](https://en.wikipedia.org/wiki/OpenID).
+
+Example: Azure AD Integration with Keycloak via OpenID Connect (OIDC)
+
+As OIDC is the preferred way, the following instructions explain the basic Integration steps for Keycloak and Azure AD via OIDC authentication (OAuth2 for authorization). To integrate an existing Azure AD with Keycloak via OIDC, the following steps are required to be performed (ordered). All `Azure` Actions are performed via [Microsoft Azure portal](https://portal.azure.com).
+
+> **Tip:** An Azure AD Premium P1/P2 subscription is required to map AppRoles to Users/Groups in Azure later.
+
+### [](#_basic_setup)Basic setup
+
+-   Azure
+
+-   Keycloak
+
+
+> **Important:** To integrate your Azure AD with Keycloak using OIDC, we’ll need the following information to be securely(!) shared with Magnolia:Client ID (Application ID)Client Secret (Application Secret Secret Value)Well-Known URL (OpenID Metadata Document URL including all necessary information)
+
+1.  Create an **Enterprise Application** and copy the `ApplicationID` (ie. `1978A428-FY151-444B-AA32-GB18DCB7F482`)
+
+    ![Azure createApp](../_images/sso/Azure_createApp.png)
+
+    ![Azure AppID](../_images/sso/Azure_AppID.png)
+
+2.  Navigate to **App Registrations** and find your recently created application and open it.
+
+    ![Azure AppRegistration](../_images/sso/Azure_AppRegistration.png)
+
+3.  In **Manage > Certificates & Secrets**, create a `Client Secret` and copy down the new `Secret Value` (`Secret ID` is not required).
+
+    ![Azure CreateAppRegSecret](../_images/sso/Azure_CreateAppRegSecret.png)
+
+    ![Azure CopyAppRegSecret](../_images/sso/Azure_CopyAppRegSecret.png)
+
+4.  In **App Registrations** on the newly created app, open **Overview > Endpoints** and note the [OpenID Metadata Document URL](https://learn.microsoft.com/en-us/entra/identity-platform/userinfo#find-the-well-known-configuration-endpoint) of the new Application.
+
+    ![Azure WellKnownDocument](../_images/sso/Azure_WellKnownDocument.png)
+
+    > **Tip:** .well-known Metadata document is publicly available and typically follows this format https://login.microsoftonline.com/<app-uuid>/v2.0/.well-known/openid-configuration.
+
+5.  Finally, in the **Authentication** section of the App Registration, add the Magnolia Keycloak URLs as `valid redirect URIs` (Platform `Web`). Please enter them in the following format (replace `<customer>` with your customer shortname):
+
+    -   EMEA: `[https://id.eu-central.magnolia-platform.com/realms/<customer>/broker/oidc/endpoint](https://id.eu-central.magnolia-platform.com/realms/<customer>/broker/oidc/endpoint)`
+
+    -   APAC: `[https://id.ap-southeast.magnolia-platform.asia/realms/<customer>/broker/oidc/endpoint](https://id.ap-southeast.magnolia-platform.asia/realms/<customer>/broker/oidc/endpoint)`
+
+    -   US: `[https://id.us-east.magnolia-platform.us/realms/<customer>/broker/oidc/endpoint](https://id.us-east.magnolia-platform.us/realms/<customer>/broker/oidc/endpoint)`
+
+        > **Tip:** Azure does not allow wildcards(*) in RedirectURIs, so you need to add each URL separately with the full path.
+
+        ![Azure validRedirects](../_images/sso/Azure_validRedirects.png)
+
+        ![Azure validRedirectsList](../_images/sso/Azure_validRedirectsList.png)
+
+
+
+1.  In the `<customer>` realm under **Identity Providers**, create a new IdP Integration using the information received before.
+
+    -   `Client ID` (Application ID)
+
+    -   `Client Secret` (Application Secret `Secret Value`)
+
+    -   `Well-Known URL` (OpenID Metadata Document URL including all necessary information)
+
+        [Fetch OIDC metadata](https://learn.microsoft.com/en-us/azure/active-directory/develop/v2-protocols-oidc#fetch-the-openid-configuration-document) to "autofill" basic Information
+
+        ![Keycloak CreateIDP 1](../_images/sso/Keycloak_CreateIDP_1.png)
+
+        ![Keycloak CreateIDP 2](../_images/sso/Keycloak_CreateIDP_2.png)
+
+
+2.  For the `ClientID`, enter the Azure App’s `ApplicationID`.
+
+3.  For the `ClientSecret`, enter Azure App’s `Secret Value`.
+
+    ![Keycloak EnterInfo](../_images/sso/Keycloak_EnterInfo.png)
+
+4.  Perform a basic Test on Realm ID.
+
+    > **Tip:** See the URL format https://id.eu-central.magnolia-platform.com/realms/<customer>/account/#/.
+
+5.  Prepare `RoleMapping` (Map OpenID "roles" to existing keycloak roles).
+
+
+### [](#_app_mapping)App mapping
+
+-   Azure
+
+-   Keycloak
+
+
+IdP naming and structure for groups, users, roles, and assignments are flexible, so it’s important for SSO to align and match on certain role assignments to control granular access privileges.
+
+Aligning `Claim-Value` with the `Group` name in both Keycloak and Azure AD helps to avoid any confusion or misconfiguration.
+
+> **Tip:** Ensure that these roles are delivered as part of the roles claim in the OIDC Token. See Microsoft’s App roles vs groups for more information.
+
+Use the [DX Cloud groups](../cockpit/access-management/iam/#_groups) to prepare an IdP for onboarding with DX Cloud Keycloak.
+
+1.  In **App Registrations** of your app, create your desired `AppRole` (ie. Magnolia, Cockpit, Rancher) to be delivered as an OIDC Claim Value (`Value` = `Claim Value` in Keycloak).
+
+    ![Azure AppRole](../_images/sso/Azure_AppRole.png)
+
+2.  In **(Enterprise) Application**, map the `AppRole` on a User and/or Group Level in Azure AD.
+
+    ![Azure MapAppRole](../_images/sso/Azure_MapAppRole.png)
+
+    Important if using SSO module
+
+    If you connect the [magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc) to our Keycloak IDP, you must get the `roles` by setting `targetProperty: <value>` to `magnolia-roles`.
+
+    ```yaml
+    authorizationGenerators:
+      - name: groupsAuthorization
+        groups:
+          targetProperty: magnolia-roles (1)
+    ...
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | `targetProperty` maps to the groups in your IDP for the SSO module. See [SSO module: Configuring via yaml](#magnolia-sso:ROOT:index.adoc#_configuring_via_yaml) for more details. |
+
+
+1.  In **<customer> > Identity Providers > Mappers**, map `Claim Value` (set before in Azure as `AppRole`) of the OIDC Token Claim `roles` to the existing `Role` in Keycloak IdP.
+
+    ![Keycloak RoleMapping](../_images/sso/Keycloak_RoleMapping.png)
+
+
+Repeat the steps of [App mapping](#_app_mapping) per Application you want to integrate. For more information on installing and configuring the **SSO Module** and securing Magnolia Admincentral Access, check out [magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc).
+
+Further reading
+
+-   [Microsoft: Add app roles and receive them in the tokenˆ](https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-app-roles-in-apps).
+
+-   [Microsoft: Azure App Registration](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app).
+
+-   [External: Microsoft Azure Step-by-step](https://www.grebintegration.dk/2021/03/07/microsoft-azure-active-directory-as-keycloak-identity-provider/).
+
+
+## [](#_set_samesitecookies_to_lax)Set `sameSiteCookies` to lax
+
+In your Tomcat configuration, make sure that the `CookieProcessor` component does not have the `sameSiteCookies` property set to `strict`. Instead, set the property to `Lax`:
+
+Tomcat
+
+```xml
+<CookieProcessor sameSiteCookies="Lax" /> (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | `sameSiteCookies` set to `Lax` instead of `strict`. |
+
+> **Important:** If the CookieProcessor with sameSiteCookies set to strict, you will likely encounter issues while trying to log into Magnolia. If you decide to continue using the SSO Module, you need to know that setting this cookie to Lax has the potential to impact site security.
+
+### [](#_modify_values_yml)Modify values.yml
+
+To modify `sameSiteCookies`, update your `values.yml` file.
+
+> **Note:** After making these changes, you have to redeploy your application for the changes to be picked up.
+
+values.yml
+
+```yaml
+magnoliaAuthor:
+  sameSiteCookies: Lax (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | `sameSiteCookies` set to `Lax` instead of `strict`. |
+
+## [](#_integrate_sso_in_dx_cloud_paas)Integrate SSO in DX Cloud PaaS
+
+This section outlines steps to configure Single Sign-On (SSO) in the DX Cloud PaaS environment including integration with Azure Active Directory (AD). This secure user authentication setup includes configuration examples and debugging advice for administrators and developers. At the end of the process, PaaS users can log in once and access multiple instances without the need for re-authentication if each instance is configured to use the same SSO identity provider.
+
+### [](#_configuration_steps)Configuration steps
+
+1.  [Configure JAAS](#magnolia-sso:ROOT:index.adoc#_configuring_jaas) in your webapp bundle.
+
+    WEB-INF/config/jaas.config
+
+    ```properties
+    magnolia {
+      info.magnolia.jaas.sp.jcr.JCRAuthenticationModule requisite;
+      info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required;
+    };
+
+    sso-authentication {
+      info.magnolia.sso.jaas.SsoAuthenticationModule requisite;
+      info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required;
+    };
+    ```
+
+2.  Add the [SSO config yaml](#magnolia-sso:ROOT:index.adoc#_configuring_via_yaml) in the right place.
+
+    1.  The default location is: `<light-modules>/magnolia-sso/config.yaml`.
+
+    2.  Ensure that you set the `magnolia.sso.config` property to an existing value.
+
+
+3.  Your `sameSiteCookies` setting is strict by default in PaaS, you must set it to `Lax` when using SSO (`<CookieProcessor sameSiteCookies="Lax" />`). See [Modify values.yml](../troubleshooting/general/sso-issues/#_modify_values_yml) for more details.
+
+    values.yaml
+
+    ```properties
+    magnoliaAuthor:
+      sameSiteCookies: Lax
+    ```
+
+4.  Check your existing SSO config and include `oidc.type: azure` and `oidc.azure.tenant: <azureTenantId>`.
+
+    Example SSO config
+
+    ```yaml
+    callbackUrl: /.auth
+    authorizationGenerators:
+      - name: fixedRoleAuthorization
+        fixed:
+          targetRoles:
+            - superuser
+
+    clients:
+      oidc.type: azure (1)
+      oidc.azure.tenant: <azureTenantId> (2)
+      oidc.id: !env ${SSO_OIDCID}
+      oidc.secret: !env ${SSO_OIDCSECRET}
+      oidc.clientAuthenticationMethod: client_secret_post
+      oidc.scope: openid profile email
+      oidc.discoveryUri: https://login.microsoftonline.com/<azureTenantId>/v2.0/.well-known/openid-configuration
+      oidc.preferredJwsAlgorithm: RS256
+      oidc.authorizationGenerators: fixedRoleAuthorization
+    userFieldMappings:
+      name: name
+      removeEmailDomainFromUserName: true
+      removeSpecialCharactersFromUserName: false
+      fullName: name
+      email: email
+      language: locale
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Add `oidc.type: azure`. |
+    | **2** | Add `oidc. azure.tenant: <azureTenantId>`. |
+
+5.  When integrating with an identity and access management (IAM) service such as Azure, configure your Identity Provider (IDP).
+
+    1.  Configure redirect URLs.
+
+        ![Azure SSO Authentication](../_images/sso/Azure-SSO-Authentication.png)
+
+    2.  Assign groups to your client.
+
+        ![Azure SSO UsersGroups](../_images/sso/Azure-SSO-UsersGroups.png)
+
+    3.  Prepare the mapping for your groups.
+
+        1.  Azure display name | Magnolia roles | Magnolia groups | Azure Group Object ID → `magnolia.superuser | superuser | publisher | 6c1c2684-78aa-4fd5-a976-abc`.
+
+        2.  Given the example mapping above, your configuration is as follows:
+
+            ```yaml
+            - name: groupsAuthorization
+                groups:
+                  mappings:
+                    - name: 6c1c2684-78aa-4fd5-a976-abc #magnolia.superuser
+                      targetRoles:
+                        - superuser
+                      targetGroups:
+                        - publisher
+            ```
+
+
+    4.  **Option 1**: Allow [groups claim](#magnolia-sso:ROOT:index.adoc#_prerequisites) in the access token.
+
+        1.  Configure groups to be returned in access token.
+
+            ![azure](magnolia-sso:ROOT:azure.png)
+
+        2.  Configure [authorizationGenerators](#magnolia-sso:ROOT:index.adoc#sso-yamlConfig-authGeneratorSection) in your SSO `config.yaml`. This defines the groups and roles for your client. They are needed for groups and fixed role generators. If you want a custom generator, follow the steps [here](#magnolia-sso:ROOT:guides/custom-auth-generators.adoc).
+
+            ```yaml
+            callbackUrl: /.auth
+            postLogoutRedirectUri: http://localhost:8080
+            authorizationGenerators:
+              - name: groupsAuthorization
+                groups:
+                  targetProperty: groups
+                  mappings:
+                    - name: superusers
+                      targetGroups:
+                        - publishers
+                      targetRoles:
+                        - superuser
+            ```
+
+
+    5.  **Option 2**: Include [this custom group authentication](#magnolia-sso:ROOT:guides/custom-auth-generators/custom-auth-with-azure.adoc).
+
+
+6.  If you want to hide client credentials from the configuration file, check whether you enabled them as `catalinaExtraEnv` for both author and public instances in your helm `values.yaml` file.
+
+    ```yaml
+    magnoliaAuthor:
+      env:
+        - name: SSO_OIDCID
+          value: {{ .Env.SSO_OIDCID | quote }}
+        - name: SSO_OIDCSECRET
+          value: {{ .Env.SSO_OIDCSECRET | quote }}
+        - name: SSO_POST_LOGOUT_URI
+          value: {{ .Env.SSO_POST_LOGOUT_URI | quote }}
+        - name: SSO_CALLBACK_URL
+          value: {{ .Env.SSO_CALLBACK_URL | quote }}
+      catalinaExtraEnv:
+        magnolia.yaml.envsubst: "true"
+    ```
+
+
+### [](#_for_debugging_purposes)For debugging purposes
+
+1.  To enable debugging, log in with a Magnolia account and navigate to the Log tools app. Set the configurations to `DEBUG`. These configurations are reset upon pod restart.
+
+    1.  `info.magnolia.sso: DEBUG`
+
+    2.  `org.pac4j: DEBUG`
+
+    3.  `com.nimbusds: DEBUG`
+
+
+2.  Set them also in your `values.yaml` and redeploy.
+
+    ```yaml
+    magnoliaAuthor:
+      logging:
+        loggers:
+          - name: info.magnolia.sso
+            level: DEBUG
+          - name: org.pac4j
+            level: DEBUG
+          - name: com.nimbusds
+            level: DEBUG
+    ```
+
+    1.  Alternatively, you can change the `configmap` (for example, `dev-configmap-author`) without redeploying.
+
+        1.  Editing YAML in ConfigMaps.
+
+            ![ConfigMaps](../_images/sso/ConfigMaps.png)
+
+
+    2.  Scroll down to `log4j.xml` and paste the loggers.
+
+        ![Loggers](../_images/sso/Loggers.png)
+
+    3.  Restart your pod.
+
+
+
+### [](#_troubleshooting)Troubleshooting
+
+1.  Make sure these configs are available and in the correct order.
+
+    1.  `/server/filters/login/loginHandlers` from SSO `4.x` (class: `info.magnolia.cms.security.auth.login.LoginFilter`):
+
+        1.  /server/filters/login/loginHandlers/Basic/class=info.magnolia.cms.security.auth.login.**BasicLogin**
+
+        2.  /server/filters/login/loginHandlers/sso/class=info.magnolia.sso.auth.login.**SsoLoginHandler**
+
+        3.  /server/filters/login/loginHandlers/Form/class=info.magnolia.cms.security.auth.login.**FormLogin**
+
+            ![ConfigurationApp loginHandlers](../_images/sso/ConfigurationApp_loginHandlers.png)
+
+
+    2.  `/server/filters/logout` from SSO `4.x` (class: `info.magnolia.cms.security.LogoutFilter`)
+
+        1.  /server/filters/logout/handlers/extends=../../login/loginHandlers
+
+            ![ConfigurationApp logout handlers](../_images/sso/ConfigurationApp_logout-handlers.png)
+
+
+    3.  `/server/filters/securityCallback/clientCallbacks`
+
+        1.  /server/filters/securityCallback/clientCallbacks/ssoFallback/class=info.magnolia.cms.security.auth.callback.**FormClientCallback**
+
+        2.  /server/filters/securityCallback/clientCallbacks/ssoLocationFragmentRedirect/class=info.magnolia.sso.**LocationFragmentRedirectClientCallback**
+
+        3.  /server/filters/securityCallback/clientCallbacks/sso/class=info.magnolia.sso.**UserInitiatedRedirectClientCallback**
+
+        4.  /server/filters/securityCallback/clientCallbacks/form/class=info.magnolia.cms.security.auth.callback.**FormClientCallback**
+
+            ![ConfigurationApp ssoFallback](../_images/sso/ConfigurationApp_ssoFallback.png)
+
+
+    4.  The order of `/server/filters/servlets/SSOCallbackServlet`.
+
+        1.  /server/filters/servlets/SSOCallbackServlet/servletClass=info.magnolia.sso.SsoCallbackServlet
+
+        2.  /server/filters/servlets/SSOCallbackServlet/mappings/-.auth/pattern=/.auth
+
+            ![ConfigurationApp SSOCallbackServlet](../_images/sso/ConfigurationApp_SSOCallbackServlet.png)
+
+
+    5.  `/server/security/userManagers`
+
+        1.  /server/security/userManagers/system/class=info.magnolia.cms.security.**SystemUserManager**
+
+        2.  /server/security/userManagers/admin/class=info.magnolia.cms.security.**MgnlUserManager**
+
+        3.  /server/security/userManagers/sso-authentication/class=info.magnolia.sso.**SsoUserManager**
+
+            ![ConfigurationApp userManagers](../_images/sso/ConfigurationApp_userManagers.png)
+
+
+    6.  Use the below Groovy script to check the values.
+
+        ```groovy
+        import info.magnolia.jcr.util.NodeUtil
+
+
+        session = MgnlContext.getJCRSession("config");
+        println("--callbacks")
+        clientCallbacks = session.getNode("/server/filters/securityCallback/clientCallbacks");
+        print(info.magnolia.cms.util.DumperUtil.dump(clientCallbacks, 3));
+        println("--login")
+        login = session.getNode("/server/filters/login/loginHandlers");
+        print(info.magnolia.cms.util.DumperUtil.dump(login, 3));
+
+        println("--logout")
+        logout = session.getNode("/server/filters/logout");
+        print(info.magnolia.cms.util.DumperUtil.dump(logout, 3));
+
+        println("--callbackServlet")
+        callbackServlet = session.getNode("/server/filters/servlets/SSOCallbackServlet");
+        print(info.magnolia.cms.util.DumperUtil.dump(callbackServlet, 3));
+
+
+        println("--userManagers")
+        userManagers = session.getNode("/server/security/userManagers");
+        print(info.magnolia.cms.util.DumperUtil.dump(userManagers, 3));
+
+        println("--sso version")
+        session = MgnlContext.getJCRSession("config");
+        ssoVersion = session.getNode("/modules/sso");
+        print(info.magnolia.cms.util.DumperUtil.dump(ssoVersion, 3));
+        ```
+
+
+2.  For public instances, when SSO is triggered on the main domain because of a missing multisite configuration. Define your [site definition](../../product-docs/7.0/Developing/Templating/Site-definition/#_mapping_a_site_definition_to_your_website) as follows.
+
+    ```yaml
+    domains:
+      example:
+        name: example.com
+      example-dev:
+        name: test-dev.public.magnolia-platform.io
+
+    mappings:
+      website:
+        URIPrefix: ''
+        handlePrefix: /example
+        repository: website
+    ```
+
+3.  Logout example without `postLogoutRedirectUriin` your SSO `config.yaml`.
+
+    1.  Example of a successful logout.
+
+        ![LogoutSuccessful](../_images/sso/LogoutSuccessful.png)
+
+    2.  Console log for a successful logout.
+
+        ```bash
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.core.engine.DefaultLogoutLogic          : redirectUrl: http://localhost:8585/.magnolia/admincentral
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.core.engine.DefaultLogoutLogic          : Performing application logout
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.jee.context.session.JEESessionStore     : createSession: false, retrieved session: org.apache.catalina.session.StandardSessionFacade@14f1e877
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.jee.context.session.JEESessionStore     : Get sessionId: F00762317C5AF70DFFA29B051B8B3046
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.core.profile.ProfileManager             : Removing profiles from session
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.jee.context.session.JEESessionStore     : createSession: true, retrieved session: org.apache.catalina.session.StandardSessionFacade@14f1e877
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.jee.context.session.JEESessionStore     : Set key: pac4jUserProfiles for value: {}
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.core.profile.ProfileManager             : Removing profiles from request
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.jee.context.session.JEESessionStore     : createSession: false, retrieved session: org.apache.catalina.session.StandardSessionFacade@14f1e877
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.jee.context.session.JEESessionStore     : Invalidate session: org.apache.catalina.session.StandardSessionFacade@14f1e877
+        2025-06-12 13:12:50,315 DEBUG org.pac4j.core.engine.DefaultLogoutLogic          : Performing central logout
+        2025-06-12 13:12:50,316 DEBUG org.pac4j.core.engine.DefaultLogoutLogic          : Profile: #AzureAdProfile# | id: QZwkH..IVRKjMSTcU0O4 | attributes: {sub=QZwkHnvFW...IVRKjMSTcU0O4, xms_pl=en, iss=https://login.microsoftonline.com/123-52a7-4eed-a51d-/v2.0, oid=6ef8238b-2e7b-45f7-afbe-18cb3b15ab28, preferred_username=123@outlook.com, acrs=[p1], tid=123-52a7-4eed-a51d-0910bfd660ff, sid=005d6a29-4dac-dbf6-0525-3f8bea6576a7, login_hint=O.CiQwMDAwMDAwMC0wMDAwLTAwMDAtMDRkYy1mYWM3NDg2MDcwZjcSJDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZBocZG9uZ2FuaGhhbm9pMTExMEBvdXRsb29rLmNvbSAp, ctry=VN, auth_time=Thu Jun 12 13:12:44 ICT 2025, exp=Thu Jun 12 14:12:44 ICT 2025, ipaddr=45.126.93.146, iat=Thu Jun 12 13:07:44 ICT 2025, email=123@outlook.com, mgnlGroups=[swissre-admin], ver=2.0, xms_tpl=en, id_token=A, tenant_ctry=VN, token_expiration_advance=0, aud=[7b3a95d7-1573-482d-a51f-6eba91110d0a], tenant_region_scope=AS, nbf=Thu Jun 12 13:07:44 ICT 2025, idp=https://sts.windows.net/9188040d-6c67-4c5b-b112-36a304b66dad/, rh=1.AXAAktsmnKd..RDQpwAHlwAA., name=Minh Anh, expiration=1749713137608, family_name=Anh, acct=0} | authenticationAttributes: {} | roles: [rest-admin, swissre-admin] | permissions: [] | isRemembered: false | clientName: AzureAd2Client | linkedId: null |
+        2025-06-12 13:12:50,316 DEBUG org.pac4j.core.client.Clients                     : Found client: #AzureAd2Client# | name: AzureAd2Client | callbackUrl: /.auth | callbackUrlResolver: org.pac4j.core.http.callback.NoParameterCallbackUrlResolver@d260613 | ajaxRequestResolver: org.pac4j.core.http.ajax.DefaultAjaxRequestResolver@64bbd2c9 | redirectionActionBuilder: org.pac4j.oidc.redirect.OidcRedirectionActionBuilder@28c07808 | credentialsExtractor: org.pac4j.oidc.credentials.extractor.OidcExtractor@200c6fc | authenticator: org.pac4j.oidc.credentials.authenticator.OidcAuthenticator@3fab5e31 | profileCreator: org.pac4j.oidc.profile.azuread.AzureAdProfileCreator@53cee97 | logoutActionBuilder: org.pac4j.oidc.logout.OidcLogoutActionBuilder@2e17c600 | authorizationGenerators: [info.magnolia.sso.oidc.FixedRoleAuthorizationGenerator@2aa4c218] | configuration: #AzureAd2OidcConfiguration# | clientId: 7b3a95d7-1573-482d-a51f-6eba91110d0a | secret: [protected] | discoveryURI: https://login.microsoftonline.com/123-52a7-4eed-a51d-0910bfd660ff/v2.0/.well-known/openid-configuration | scope: openid profile email | customParams: {} | clientAuthenticationMethod: client_secret_post | useNonce: false | preferredJwsAlgorithm: RS256 | maxAge: null | maxClockSkew: 30 | connectTimeout: 500 | readTimeout: 5000 | resourceRetriever: org.pac4j.oidc.client.azuread.AzureAdResourceRetriever@4f9b4bab | responseType: code | responseMode: null | logoutUrl: null | withState: true | stateGenerator: org.pac4j.core.util.generator.RandomValueGenerator@2db15c99 | logoutHandler: #DefaultLogoutHandler# | store: #GuavaStore# | size: 10000 | timeout: 30 | timeUnit: MINUTES | | destroySession: false | | tokenValidator: org.pac4j.oidc.profile.azuread.AzureAdTokenValidator@3d86b8e9 | mappedClaims: {} | allowUnsignedIdTokens: false | SSLFactory: null | privateKeyJWTClientAuthnMethodConfig: null | callUserInfoEndpoint: true | | for name: AzureAd2Client
+        2025-06-12 13:12:50,316 DEBUG org.pac4j.core.engine.DefaultLogoutLogic          : Logout action: Optional[#FoundAction# | code: 302 | location: https://login.microsoftonline.com/123-52a7-4eed-a51d-/oauth2/v2.0/logout?post_logout_redirect_uri=http%3A%2F%2Flocalhost%3A8585%2F.magnolia%2Fadmincentral&id_token_hint=eyJ0eXA |]
+        2025-06-12 13:12:50,316 DEBUG info.magnolia.sso.auth.login.SsoLoginHandler      : Logout from IdP executed, session should have been removed from the server.
+        2025-06-12 13:12:50,316 INFO  info.magnolia.audit.AuditLoggingManager           : [Audit] logout, Minh Anh
+        2025-06-12 13:12:50,316 DEBUG info.magnolia.sso.auth.login.SsoLoginHandler      : Magnolia user session has been removed.
+        2025-06-12 13:12:50,416 DEBUG agnolia.sso.LocationFragmentRedirectClientCallback: Remember location fragment feature is disabled.
+        2025-06-12 13:12:50,416 DEBUG info.magnolia.sso.pac4j.SecFetchMode              : Sec-Fetch-Mode: no-cors
+        2025-06-12 13:12:57,035 DEBUG agnolia.sso.LocationFragmentRedirectClientCallback: Remember location fragment feature is disabled.
+        2025-06-12 13:12:57,035 DEBUG info.magnolia.sso.pac4j.SecFetchMode              : Sec-Fetch-Mode: navigate
+        2025-06-12 13:12:57,035 DEBUG o.magnolia.sso.UserInitiatedRedirectClientCallback: Attempting to redirect to: http://localhost:8585/.magnolia/admincentral
+        2025-06-12 13:12:57,035 DEBUG o.magnolia.sso.UserInitiatedRedirectClientCallback: Redirect successful to: http://localhost:8585/.magnolia/admincentral
+        2025-06-12 13:12:57,038 DEBUG info.magnolia.sso.auth.login.SsoLoginHandler      : SSO login handler.
+        2025-06-12 13:12:57,038 DEBUG org.pac4j.core.engine.DefaultSecurityLogic        : === SECURITY ===
+        2025-06-12 13:12:57,038 DEBUG org.pac4j.core.engine.DefaultSecurityLogic        : url: http://localhost:8585/.magnolia/admincentral
+        ```

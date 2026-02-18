@@ -1,0 +1,156 @@
+---
+title: "Publishing overview"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Architecture/Publishing/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Publishing overview
+---
+
+# Publishing overview
+
+Publishing handles how content gets published from an author instance to a public instances. DX Core publishing is the default bundled option.
+
+## [](#_swift_publication)Swift publication
+
+DX Core [publishing performance](Publishing-performance/) can be optimized in several ways to handle increased publishing demands. However, we recommend using the external [Swift publication](../../../Modules/List-of-modules/Swift-publication/) in production environments if you need to scale publication in terms of public instances and reduce the load on your author instance.
+
+## [](#_dx_core_publishing)DX Core publishing
+
+DX Core publishing is installed by the [Publishing module](../../../Modules/List-of-modules/Publishing-module/) and extended by the [Publishing Transactional module](../../../Modules/List-of-modules/Publishing-Transactional-module/). The publishing implementation also allows you to define and use custom publishing [operations](../../../Modules/List-of-modules/Publishing-module/#_operations). You can use these operations to publish content to something that’s not a Magnolia public instance, for example to a custom API or a Content Delivery Network.
+
+> **Note:** DX Core publishing is a refactored version of the former activation. The original Activation module has been broken into multiple submodules, see the module structure. The driving decision was to have a set of maintainable and extensible components. Another reason was to remove deprecated code. The core concepts remain the same. The transport layer is still using the HTTP protocol, but you can now easily plug in any type of transport layer.
+
+DX Core includes [transactional publishing](../../../Modules/List-of-modules/Publishing-Transactional-module/) to keep content synchronized between multiple public instances. This includes rollback if any of them respond with an error. A locking mechanism is used to manage concurrent publishing actions. A four-eye approval workflow facilitates structured publishing and reliable results.
+
+### [](#_locking)Locking
+
+Each publishing request executes a lock for either a path or node where content is to be published.
+
+> **Note:** Path-based locking has been introduced as the default way of locking with version 1.2.6 of the Publishing module. Node-based locking is available for compatibility reasons. See the lockManagerMode property on the module page for configuration details.
+
+If two users publish to the same (sub)tree, the locking mechanism waits a predefined amount of time and tries to obtain a lock for the operation. If the operation receives the lock, it can proceed with content (un)publishing. If not, publishing is considered unsuccessful and the respective status code is returned to the sender.
+
+> **Caution:** Content publishing and content synchronizationAlways wait with content publishing actions until all content synchronization tasks have been finished.If you attempt to publish a page while the Synchronization module is mid-sync and hasn’t yet synchronized the page’s parent, the publishing process will fail.
+
+### [](#_recursive_and_non_recursive_publishing)Recursive and non-recursive publishing
+
+Magnolia supports two methods of publishing content:
+
+-   Non-recursive, which publishes only the selected node and its properties.
+
+-   Recursive, which publishes the selected node, its properties, and its children.
+
+
+> **Note:** Items that are marked for deletion are permanently deleted if their parent node is published recursively.
+
+> **Note:** You can’t publish the root node programmatically, but you can recursively publish its subnodes using the publishing command. You also can’t unpublish the root node or its subnodes. Instead, you must unpublish subnodes under the root node one by one.
+
+### [](#_transactional_publishing)Transactional publishing
+
+Transactional publishing provides a way to publish content-managed transactions. Content is:
+
+-   `commited` if all receivers respond with success status.
+
+-   `rollbacked` if at least one of the receivers respond with error status.
+
+
+The transactional publishing receiver uses `mgnlSystem` workspace to store the backups of the published content. If content is to be commited, the backup is removed. If content is to be rollbacked, the backup is restored to the workspace it belongs to.
+
+### [](#_transport_layer)Transport layer
+
+By default Magnolia uses the HTTP transport layer.
+
+### [](#_workspaces_are_publishable_by_default)Workspaces are publishable by default
+
+The [Publishing module](../../../Modules/List-of-modules/Publishing-module/) makes all workspaces publishable by default.
+
+### [](#_authentication_and_security)Authentication and security
+
+Publishing is authenticated using [public-key cryptography](http://en.wikipedia.org/wiki/Public-key_cryptography). The authentication configuration for publishing is stored in `/server/activation`; see [Publishing security](../../Security/Publishing-security/) for more on this.
+
+### [](#_disable_the_publishing_workflow_in_the_pages_app)Disable the publishing workflow in the Pages app
+
+Magnolia ships with publishing approval and rejection workflows. By default, they are only enabled in the Pages app.
+
+Disabling the workflow in the Pages app may be appropriate for a simple site workflow where there are no separate editor and publisher roles.
+
+There are several options to disable the publishing workflow for the Pages app.
+
+1.  [Create a DX Core webapp](../../../Developing/Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/Creating-a-DX-Core-webapp-with-Maven/) that excludes the [Workflow](../../../Modules/List-of-modules/Workflow-module/) and [Personalization](../../../Modules/List-of-modules/Personalization-module/) modules.
+
+2.  Decorate the `pages-app` and add a dependency to `workflow-pages`. The dependency is necessary so that the light module decoration isn’t overridden again.
+
+    Click to see the decorations
+
+    /light-modules/my-module/decorations/pages-app/apps/pages-app.subApps.yaml
+
+    ```yaml
+    browser:
+      actions:
+        publish: !override
+          icon: icon-publish
+          $type: jcrCommandAction
+          command: personalizationActivation
+          availability:
+            writePermissionRequired: true
+            rules:
+              isPublishable:
+                $type: jcrPublishableRule
+        publishRecursive: !override
+          icon: icon-publish-incl-sub
+          $type: jcrCommandAction
+          command: personalizationActivation
+          params:
+            recursive: true
+          availability:
+            writePermissionRequired: true
+            rules:
+              isPublishable:
+                $type: jcrPublishableRule
+    ```
+
+    light-modules/my-module/module.yaml
+
+    ```yaml
+    version: 1.0.2
+    displayName: Shareable
+    dependencies:
+      workflow-pages:
+        version: 6.0/*
+    ```
+
+    > **Tip:** Removing a decoration?The only way to remove an existing decoration is to either override it with another decoration or remove the whole module with the original decoration.
+
+3.  Delete the content of the `workflow-pages` decoration. This approach doesn’t persist the changes when an instance is upgraded and involves extra configuration steps.
+
+    Click to see more details
+
+    > **Warning:** Editing a resource in the Resources files app creates a copy of the recourse in JCR. This isn’t recommended for deployment and maintenance. For productive environments, you should use a decorator, as described above.
+
+
+
+    **Resource Files app**
+
+    1.  Go to the Resource Files app.
+
+    2.  Search for `pages-app`.
+
+    3.  Select the file `/workflow-pages/decorations/pages-app/apps/pages-app/pages-app.subApps.yaml`.
+
+    4.  Click **Edit file**.
+
+        > **Note:** Make a copy of the contents if you need to restore the four-eye workflow actions later.
+
+    5.  Delete its contents and **Save changes**.
+
+
+    **Configuration app**
+
+    6.  Add the `itemTypes` property on the `/modules/publishing-core/commands/default/publish/publish` node as shown below.
+
+        | Node name | Value |
+        | --- | --- |
+        | ⸬ publish |     |
+        | ⸬ publish |     |
+        | ⬩ class | info.magnolia.publishing.command.PublicationCommand |
+        | ⬩ itemTypes | mgnl:contentNode,mgnl:componentVariants |

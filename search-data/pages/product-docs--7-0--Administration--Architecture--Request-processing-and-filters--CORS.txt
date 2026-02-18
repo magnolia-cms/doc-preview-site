@@ -1,0 +1,323 @@
+---
+title: "CORS"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/Architecture/Request-processing-and-filters/CORS/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Request processing and filters > CORS
+---
+
+# CORS
+
+This page describes how to configure Magnolia properties that handle simple and pre-flight requests for Cross-Origin Resource Sharing (CORS). For more information about CORS itself, see the [Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) Mozilla page.
+
+## [](#_introduction)Introduction
+
+The CORS implementation has been available since Magnolia 6.2.4 and is provided by the following filters:
+
+-   `info.magnolia.cors.SelfConfiguredCorsFilter`
+
+-   `info.magnolia.module.site.filters.SiteAwareCorsFilter`
+
+
+Which filter is to be used is specified in the [Magnolia filter chain](../) under `/server/filters/cors`.
+
+> **Note:** In Magnolia 6.2.3 and below, you can use the AddHeadersFilter. For more details, see Filters: Adding HTTP headers.
+
+### [](#_global_cors_filter)Global CORS filter
+
+`SelfConfiguredCorsFilter` is a global CORS filter, and its properties are configured directly in the server. For example:
+
+```yaml
+server:
+  filters:
+    cors:
+      class: info.magnolia.cors.SelfConfiguredCorsFilter
+      uris:
+        rest:
+          patternString: /.rest/*
+      allowedOrigins:
+        - https://example.com
+        - https://magnolia-cms.com
+      allowedMethods:
+        - GET
+        - OPTIONS
+        - POST
+      allowedHeaders:
+        - '*'
+```
+
+### [](#_site_aware_cors_filters)Site-aware CORS filters
+
+#### [](#_in_magnolia_dx_core)In Magnolia DX Core
+
+In a multisite setup, `SiteAwareCorsFilter` is usually configured separately for each site under `/modules/multisite/config/sites/<site-name>/cors`. For example:
+
+```yaml
+modules:
+  multisite:
+    config:
+      sites:
+        travel:
+          cors:
+            travel:
+              uris:
+                rest:
+                  patternString: /.rest/*
+              allowedOrigins:
+                - '*'
+              allowedMethods:
+                - GET
+              allowedHeaders:
+                - Accept
+                - Content-Type
+                - Origin
+                - X-PINGOTHER
+                - X-Requested-With
+```
+
+Then, in the `server` part, make sure that `SiteAwareCorsFilter` is configured.
+
+```yaml
+server:
+  filters:
+    cors:
+      class: info.magnolia.module.site.filters.SiteAwareCorsFilter
+```
+
+#### [](#_in_magnolia_ce)In Magnolia CE
+
+In Magnolia Community Edition, where only one site can be configured and used, the CORS configuration can be defined:
+
+-   Under `/modules/site/config/<site-name>/cors`.
+
+-   In the `sites` folder of your module using a YAML definition file.
+
+    For an example site definition, see the [`travel.yaml`](https://bitbucket.org/magnolia-cms/travel-demo) definition file in the Magnolia `travel-demo` repository.
+
+
+## [](#_configuration)Configuration
+
+### [](#_properties)Properties
+
+| Property | Description |
+| --- | --- |
+| `<CORS configuration name>` | **required** (site-aware configuration only)<br><br>Add a node for each CORS configuration. The name is arbitrary, but it is good practice to use a descriptive name. |
+| `uris` `<pattern name>` | **required**<br><br>List of named URI patterns in the form `patternString: <SimpleUrlPattern>`. The URIs will be matched against the incoming CORS request.<br><br>Example<br><br>```yaml<br>uris:<br>  restReadWrite:<br>    patternString: /.rest/*<br>  restReadOnly:<br>    patternString: /.read/*<br>``` |
+| `allowedOrigins` | **required**<br><br>List of allowed origin domains. For example:<br><br>```yaml<br>allowedOrigins:<br>  - https://example.com<br>  - https://magnolia-cms.com<br>``` |
+| `allowedMethods` | **required**<br><br>List of allowed HTTP methods. For example:<br><br>```yaml<br>allowedMethods:<br>  - GET<br>  - POST<br>``` |
+| `allowedHeaders` | **required**<br><br>List of allowed HTTP header fields. For example:<br><br>```yaml<br>allowedHeaders:<br>  - Date<br>  - X-Device-Id<br>``` |
+| `supportsCredentials` | **required**, *default is `false`*<br><br>When set to `true`, the request can be made with credential information. |
+| `maxAge` | **required**, *default is `-1`*<br><br>Value in seconds to cache pre-flight request results. For example:<br><br>```yaml<br>maxAge: 600<br>``` |
+
+## [](#_examples)Examples
+
+In the following examples, the `curl` command is used to query the `/magnolia-travels/Kyoto` tour from the Magnolia DX Core Travel Demo. The following configuration is assumed to be in place:
+
+-   The `tours_v1` delivery endpoint configured in `/tours/restEndpoints/delivery/tours_v1.yaml`:
+
+    /tours/restEndpoints/delivery/tours\_v1.yaml
+
+    ```yaml
+    $type: jcrDeliveryEndpoint_v2
+
+    nodeTypes:
+      - mgnl:content
+    includeSystemProperties: false
+    limit: 50
+    workspace: tours
+    references:
+      - name: tourTypes
+        propertyName: tourTypes
+        referenceResolver:
+          $type: jcrReferenceResolver
+          targetWorkspace: category
+      - name: destinations
+        propertyName: destination
+        referenceResolver:
+          $type: jcrReferenceResolver
+          targetWorkspace: category
+      - name: tourImageReference
+        propertyName: image
+        referenceResolver:
+          $type: assetReferenceResolver
+          assetRenditions:
+            - 960x720
+    ```
+
+-   `SiteAwareCorsFilter` configured in `/server/filters/cors@class`.
+
+-   CORS configuration for the `travel` site under `/modules/multisite/config/sites/travel/cors/travel`:
+
+    /modules/multisite/config/sites/travel/cors/travel
+
+    ```yaml
+      uris:
+        rest:
+          patternString: /.rest/*
+      allowedOrigins:
+        all: *
+      allowedMethods:
+        all: *
+      allowedHeaders:
+        accept: Accept
+        content-type: Content-Type
+        origin: Origin
+        x-pingother: X-PINGOTHER
+        x-requested-with: X-Requested-With
+    ```
+
+
+Notes: To receive responses for the `curl` command, appropriate security permissions and web access must be configured via the [Security app](../../../../Apps/List-of-apps/Security-app/). In the `curl` command, the options `-v -o /dev/null` are used to limit the output of the command just to the information contained in the headers.
+
+### [](#_simple_cors_request)Simple CORS request
+
+In this example, a simple CORS request is sent. The port number is used to indicate that the origin of the request is different from the server that is queried:
+
+```c
+curl -X GET 'http://localhost:8080/magnoliaAuthor/.rest/delivery/tours/v1/magnolia-travels/Kyoto' -H "Origin: http://localhost:8081" -v -o /dev/null -u superuser:superuser
+```
+
+The command sends the following header, where the origin can be seen specified in the `Origin` header field (line 6):
+
+```c
+GET /magnoliaAuthor/.rest/delivery/tours/v1/magnolia-travels/Kyoto HTTP/1.1
+Host: localhost:8080
+Authorization: Basic c3VwZXJ1c2VyOnN1cGVydXNlcg==
+User-Agent: curl/7.58.0
+Accept: */\*
+Origin: http://localhost:8081
+```
+
+Since the above CORS configuration allows any origin, the server returns the `200` HTTP code in the response header:
+
+HTTP/1.1 200
+Set-Cookie: JSESSIONID=A8890F8F3D05C22111D88675691F4B5A; Path=/magnoliaAuthor; HttpOnly; SameSite=Strict
+X-Magnolia-Registration: Registered
+Pragma: no-cache
+Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Access-Control-Allow-Origin: \*
+Vary: Accept-Language
+Content-Language: en
+Content-Type: application/json;charset=UTF-8
+Transfer-Encoding: chunked
+Date: Tue, 10 Nov 2020 09:28:11 GMT
+
+If you modified the `allowedOrigins` list to allow, for example, only requests coming from `[http://localhost:9000](http://localhost:9000)`, then the server would return the `403` HTTP code in the response, meaning that access to the requested resource is forbidden for some reason:
+
+HTTP/1.1 403
+Set-Cookie: JSESSIONID=FB0FA9481A997D85FDB4F486FB10CB91; Path=/magnoliaAuthor; HttpOnly; SameSite=Strict
+X-Magnolia-Registration: Registered
+Pragma: no-cache
+Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+WWW-Authenticate: FormBased
+Content-Type: text/html;charset=UTF-8
+Transfer-Encoding: chunked
+Date: Tue, 10 Nov 2020 13:46:41 GMT
+
+In addition, an entry like this would be logged on the server:
+
+WARN info.magnolia.cors.AbstractCorsFilter : CORS failed due to: Origin \[http://localhost:8081\] not allowed
+
+### [](#_pre_flight_cors_request)Pre-flight CORS request
+
+In a pre-flight CORS request, the client sends a short `OPTIONS` request to find out whether the server accepts full requests with parameters specified in the header fields of the short pre-flight `OPTIONS` request.
+
+Both of the two examples that follow utilize the CORS `travel` configuration mentioned above. The `curl` commands issue a pre-flight `OPTIONS` request inquiring whether the endpoint can be queried from `[http://localhost:8081](http://localhost:8081)`.
+
+#### [](#_return_code_204_no_content)Return code 204 - No Content
+
+However, the first `curl` command, however, checks whether the `GET` HTTP method can be used:
+
+curl -X OPTIONS 'http://localhost:8080/magnoliaAuthor/.rest/' -H "Origin: http://localhost:8081" -H "Access-Control-Request-Method: GET" -v -o /dev/null -u superuser:superuser
+
+The header that is sent is:
+
+\> OPTIONS /magnoliaAuthor/.rest/ HTTP/1.1
+> Host: localhost:8080
+> Authorization: Basic c3VwZXJ1c2VyOnN1cGVydXNlcg==
+> User-Agent: curl/7.58.0
+> Accept: \*/\*
+> Origin: http://localhost:8081
+> Access-Control-Request-Method: GET
+
+> **Note:** Since the GET method is allowed, the server returns code 204. It successfully processed the request but is not returning any content:
+
+```xml
+< HTTP/1.1 204
+< Set-Cookie: JSESSIONID=282C24905B8E022C9F18A5FC08419C4C; Path=/magnoliaAuthor; HttpOnly; SameSite=Strict
+< X-Magnolia-Registration: Registered
+< Pragma: no-cache
+< Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+< Expires: Thu, 01 Jan 1970 00:00:00 GMT
+< Vary: Access-Control-Request-Method,Access-Control-Request-Headers
+< Access-Control-Allow-Methods: GET
+< Access-Control-Allow-Headers: accept,content-type,origin,x-pingother,x-requested-with
+< Access-Control-Allow-Origin: *
+< Date: Thu, 12 Nov 2020 07:52:51 GMT
+```
+
+#### [](#_return_code_403_forbidden)Return code 403 - Forbidden
+
+The second `curl` command intends to use the `POST` HTTP method instead:
+
+curl -X OPTIONS 'http://localhost:8080/magnoliaAuthor/.rest/' -H "Origin: http://localhost:8081" -H "Access-Control-Request-Method: POST" -v -o /dev/null -u superuser:superuser
+
+The following header is sent:
+
+\> OPTIONS /magnoliaAuthor/.rest/ HTTP/1.1
+> Host: localhost:8080
+> Authorization: Basic c3VwZXJ1c2VyOnN1cGVydXNlcg==
+> User-Agent: curl/7.58.0
+> Accept: \*/\*
+> Origin: http://localhost:8081
+> Access-Control-Request-Method: POST
+
+Since no other method than `GET` is allowed, the server returns HTTP code `403`, meaning it is refusing to give the requested resource in this case:
+
+```xml
+< HTTP/1.1 403
+< Set-Cookie: JSESSIONID=EDB3A94A37E7FC48274F5994D1256019; Path=/magnoliaAuthor; HttpOnly; SameSite=Strict
+< X-Magnolia-Registration: Registered
+< Pragma: no-cache
+< Cache-Control: no-cache, no-store, must-revalidate, max-age=0
+< Expires: Thu, 01 Jan 1970 00:00:00 GMT
+< WWW-Authenticate: FormBased
+< Content-Type: text/html;charset=UTF-8
+< Transfer-Encoding: chunked
+< Date: Thu, 12 Nov 2020 08:03:24 GMT
+```
+
+### [](#_bootstrap_cors_configuration_in_magnolia_dx_webapps)Bootstrap CORS configuration in Magnolia DX webapps
+
+Magnolia DX [webapps](../../../../Developing/Bundles-and-webapps/#_magnolia_bundles_and_webapps), as well as the [online demo](https://demo.magnolia-cms.com/.magnolia/admincentral#app:configuration:browser;/server/filters/cors:edit), contain the following bootstrap CORS configuration, where the wildcard values together with `/VAADIN/*` make sure that the green bar icons of the Magnolia Page editor would be accessible also in [external SPA setups](../../../../Developing/headless/spa-development/SPA-hosting/).
+
+This is especially due to [an aggressive Chrome cache issue](https://blog.keul.it/chrome-cors-issue-due-to-cache/). For more details, see also [PAGES-532](https://magnolia-cms.atlassian.net/browse/PAGES-532).
+
+/server/filters/
+
+```yml
+cors:
+  jcr:primaryType: mgnl:content
+  op: OR
+  internal:
+    class: info.magnolia.cors.SelfConfiguredCorsFilter
+    uris:
+      vaadin:
+        patternString: /VAADIN/*
+    allowedOrigins:
+      all: *
+    allowedMethods:
+      all: *
+    allowedHeaders:
+      all: *
+  project:
+    class: info.magnolia.module.site.filters.SiteAwareCorsFilter
+```
+
+Related topics
+
+-   [Filters](../Filters/)
+
+-   [Delivery API](#rest:api:delivery-endpoint.adoc)

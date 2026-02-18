@@ -1,0 +1,22 @@
+---
+title: "Magnolia Application logs"
+url: https://docs.magnolia-cms.com/cockpit/logs-magnolia-application/
+category: DX Cloud
+version: cloud
+---
+
+# Magnolia Application logs
+
+Magnolia Application logs display log entries from Kubernetes Pods running your Magnolia application and database instances.
+
+## [](#_key_information_tracked)Key information tracked
+
+Application logs capture operational events including:
+
+-   **Application tier logs**: Java application events from Magnolia Author and Public instances
+
+-   **Database tier logs**: PostgreSQL database operations and maintenance events
+
+-   **Error and warning tracking**: Filter by log level (`FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`)
+
+-   **Deployment topology**: Each log identifies its source namespace, pod, container, component, and tier

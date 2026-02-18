@@ -1,0 +1,221 @@
+---
+title: "Add a Federation"
+url: https://docs.magnolia-cms.com/cockpit/admin-federations/add/
+category: DX Cloud
+version: cloud
+---
+
+# Add a Federation
+
+1.  In the Cockpit, go to **Admin > Federations**.
+
+2.  Enter a [Display name](#displayName) for your Federation. This autofills the [Alias](#alias) field.
+
+3.  Check the box for **Enabled** if you want to enable the Federation.
+
+4.  Select the [type](#type) of the Federation. This is either OIDC or SAML.
+
+    -   OIDC
+
+    -   SAML
+
+
+    The following are required:
+
+    1.  Enter the [Authorization URL](#_authorization_url).
+
+    2.  Enter the [Token URL](#tokenUrl).
+
+    3.  Enter the [Client ID](#clientId).
+
+    4.  Enter the [Client secret](#clientSecret).
+
+
+    The remainig are optional but recommended:
+
+    1.  Enter the [Logout URL](#logoutUrl).
+
+    2.  Enter the [User info URL](#userInfoUrl).
+
+    3.  Enter the [Issuer](#issuer).
+
+    4.  Check the box for [Validate signature](#validateSignature) if you want to validate the signature of the IDP token.
+
+    5.  Check the box for [Use JWKs URL](#useJwksUrl) if you want to use the JWKs URL to validate the signature of the IDP token.
+
+    6.  Enter the [JWKs URL](#jwksUrl).
+
+
+    The following are required:
+
+    1.  Enter the [SAML Metadata](#samlMetadata).
+
+
+    The remaining are optional but recommended:
+
+    1.  Enter the [Name ID Policy Format](#nameIdPolicyFormat).
+
+    2.  Enter the [Principal Type](#principalType). Use `NameID`.
+
+
+5.  Under **Advanced settings**, choose the [Sync Mode](#syncMode). This is either **Force on every login** or **Import only on first login**.
+
+6.  Check the box for [Trust Email](#trustEmail) if you want to trust the email of the user.
+
+
+## [](#_general_settings)General settings
+
+### [](#alias)Alias
+
+🏷️ **Alias**
+
+The alias is used to identify the Federation in the system. This is the same as the Display name you enter when adding a Federation.
+
+### [](#displayName)Name
+
+🏷️ **Display name**
+
+The Display name of the Federation. This is the same as the Alias you enter when adding a Federation.
+
+### [](#enabled)Enabled
+
+🏷️ **Enabled**
+
+Click the checkbox to enable the Federation.
+
+### [](#type)Type
+
+🏷️ **Type**
+
+The type of the Federation. This is either OIDC or SAML.
+
+## [](#_openid_connect_settings)OpenID Connect settings
+
+### [](#_authorization_url)Authorization URL
+
+🏷️ **Authorization URL**
+
+The Authorization URL is the endpoint where the identity provider redirects the user after a successful authentication.
+
+Example
+
+```none
+https://let.me.in.com
+```
+
+### [](#tokenUrl)Token URL
+
+🏷️ **Token URL**
+
+The Token URL is the endpoint where the identity provider returns the access token.
+
+Example
+
+```none
+https://get.my.token.com
+```
+
+### [](#clientId)Client ID
+
+🏷️ **Client ID**
+
+The Client ID is the unique identifier of the application in the identity provider.
+
+You should get this from your Identity Provider.
+
+Example
+
+```none
+jamesbond
+```
+
+### [](#clientSecret)Client secret
+
+🏷️ **Client secret**
+
+The Client secret is the secret key used to authenticate the application in the identity provider.
+
+You should get this from your Identity Provider.
+
+Example
+
+```none
+superFlyTopSecret5000
+```
+
+### [](#logoutUrl)Logout URL
+
+🏷️ **Logout URL**
+
+The Logout URL is the endpoint where the identity provider redirects the user after a successful logout.
+
+### [](#userInfoUrl)User info URL
+
+🏷️ **User info URL**
+
+The User info URL is the endpoint where the identity provider returns the user information.
+
+### [](#issuer)Issuer
+
+🏷️ **Issuer**
+
+The Issuer is the unique identifier of the identity provider.
+
+### [](#validateSignature)Validate signature
+
+🏷️ **Validate signature**
+
+Click the checkbox to validate the signature of the IDP token.
+
+### [](#useJwksUrl)Use JWKs URL
+
+🏷️ **Use JWKs URL**
+
+Click the checkbox to use the JWKs URL to validate the signature of the IDP token.
+
+### [](#jwksUrl)JWKs URL
+
+🏷️ **JWKs URL**
+
+The JWKs URL is the endpoint where the identity provider returns the JSON Web Key Set (JWKs) used to validate the signature of the IDP token.
+
+## [](#_saml_settings)SAML settings
+
+### [](#samlMetadata)SAML Metadata
+
+🏷️ **SAML Metadata**
+
+The SAML Metadata is the XML metadata of the identity provider.
+
+### [](#nameIdPolicyFormat)Name ID Policy Format
+
+🏷️ **Name ID Policy Format**
+
+The Name ID Policy Format is the format of the Name ID in the SAML assertion.
+
+### [](#principalType)Principal Type
+
+🏷️ **Principal Type**
+
+The Principal Type is the type of the principal in the SAML assertion. Use the `NameId`.
+
+## [](#_advanced_settings)Advanced settings
+
+### [](#syncMode)Sync Mode
+
+🏷️ **Sync Mode**
+
+The Sync Mode is the mode of the Federation.
+
+Options:
+
+-   Force on every login
+
+-   Import only on first login
+
+
+### [](#trustEmail)Trust Email
+
+🏷️ **Trust Email**
+
+Click the checkbox to trust the email of the user.

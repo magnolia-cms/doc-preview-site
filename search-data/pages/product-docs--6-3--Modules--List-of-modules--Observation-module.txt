@@ -1,0 +1,185 @@
+---
+title: "Observation module"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Modules/List-of-modules/Observation-module/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Modules > Observation module
+---
+
+# Observation module
+
+[Operations](../../../use-cases/operations/) Unbundled: Extension
+
+| Edition | CE  |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLOBS](https://magnolia-cms.atlassian.net/browse/MGNLOBS) |
+| Maven site | [Observation](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fmagnolia-module-observation%2F3.0.0) |
+| Latest | 3.0.0 |
+
+The Observation module allows you to listen to events in the repository and trigger a reaction. Use observation to automate tasks such as publishing newly added assets or sending an email notification when a comment is added. Custom event listeners can react to almost any event. The Observation module is based on the JCR [observation feature](https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/12_Observation.html).
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>magnolia-module-observation</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_what_is_an_event_listener)What is an event listener?
+
+An event listener registers an interest in a particular type of event. The job of the listener is to detect the event and possibly react to it.
+
+Example
+
+You want to send an email notification when a new page is added. Configure an event listener that listens to the `NODE_ADDED` event. This event occurs when a new node is added. Limit the listener to the `mgnl:page` [node type](../../../Administration/Architecture/Node-types/) so you only get notified about pages, not other types of nodes. Define the mail command as the desired reaction.
+
+Magnolia provides two types of event listeners: listeners that react to the event on their own and listeners that delegate the reaction to a command. Both listeners are configured the same way, but [command event listeners](#_command_listener_configuration) require additional properties that the command class supports.
+
+## [](#_listener_configuration)Listener configuration
+
+The module includes a sample, self-contained listener and info.magnolia.module.observation.sample.PageListener, which reacts to an event on its own. The reaction is hard-coded in the class and outputs the following message to the console when a page is added.
+
+Console output
+
+```sh
+EventListener Test: Text Message
+EventListener Test: Text Message2
+```
+
+Basic `PageListener` configuration in `/modules/observation/config/listenerConfigurations`
+
+```yaml
+observation:
+  config:
+    listenerConfigurations:
+      listener:
+        class: info.magnolia.module.observation.sample.PageListener
+      nodeType: mgnl:page (1)
+      active: true
+      delay: 31
+      description: Writes messages to console when a page is added.
+      eventTypes: NODE_ADDED
+      includeSubNodes: true
+      path: /
+      repository: website
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `nodeType` parameter filters by matching the parent node type. For more see [here](#nodeType-descriptor). |
+
+<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><caption class="title">Table 1. Parameter descriptions</caption> <colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>listenerConfigurations</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Listener configuration node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;listener name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Arbitrary node name.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>listener</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Listener node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Fully qualified <a href="#_listener_classes">listener class</a> name.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>nodeType</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is all node types</em></p></div><div id="nodeType-descriptor" class="paragraph"><p>Restricts observation to events on the specified <a href="../../../Administration/Architecture/Node-types/" class="xref page">node type</a>, for example <code>mgnl:page</code>.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Only events whose associated parent node is of one of the node types in the <code>nodeType</code> String array is received.</td></tr></tbody></table></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">You can use it together with certain <a href="#_listener_classes">Listener classes</a> that observe the specified node type.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>path</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Path to the node that is observed.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>repository</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><a href="../../../Administration/Architecture/Workspaces/" class="xref page">Workspace</a> of the observed node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>active</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em>.</p></div><div class="paragraph"><p>Enables and disables the listener.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>delay</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Minimum delay (in milliseconds) before the reaction is triggered.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>description</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Listener description.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>eventTypes</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is all event types</em></p></div><div class="paragraph"><p>Type of <a href="https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/12_Observation.html#12.1%20Event%20Model" target="_blank" rel="noopener">JCR event</a> monitored.</p></div><div class="dlist"><dl><dt class="hdlist1">Options</dt><dd><div class="ulist"><ul><li><p><code>NODE_ADDED</code></p></li><li><p><code>NODE_MOVED</code></p></li><li><p><code>NODE_REMOVED</code>,</p></li><li><p><code>PROPERTY_ADDED</code></p></li><li><p><code>PROPERTY_CHANGED</code></p></li><li><p><code>PROPERTY_REMOVED</code></p></li><li><p><code>PERSIST</code></p></li></ul></div></dd></dl></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">Separate multiple types with a comma.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>includeSubNodes</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Observe also events in subnodes. For example, only changes to the page would be observed by default. Set to <code>true</code>, if you also want to observe changes to components under the page node.</p></div></div></td></tr></tbody></table></div>
+
+A single listener can monitor a single `nodeType` or all types. To monitor two types to the exclusion of other types, two listener configurations are required. Folders and contacts, for example, require one listener to monitor folders (`nodeType=mgnl:folder`) and another to monitor contacts (`nodeType=mgnl:contact`). You can verify the `nodeType` by exporting the node to be monitored to XML and searching for the value of `jcr:primaryType property` in the file.
+
+## [](#_command_listener_configuration)Command listener configuration
+
+A command event listener delegates the reaction to a [command](../../../Developing/Commands/). You can use an [existing command](../../../Developing/Commands/) or [write your own](../../../Developing/Commands/).
+
+The module installs two example command listener configurations in `/modules/observation/config/listenercConfigurations/`:
+
+-   `activateAddedPages`: Uses `PublicationCommand` to automatically publish new pages.
+
+-   `sendMailOnPageChange`: Uses `MailCommand` to send an email message when a page is created, updated or deleted. WARNING: This example assumes the `pageChangeNotification` [mail template](../Mail-module/Mail/) has been configured in the [Mail](../Mail-module/Mail/) module.
+
+
+![Command listener configuration](../../../_images/ADVT-obs-mod-listen2.png)
+
+| Property | Description |
+| --- | --- |
+| `listenerConfigurations` | **required**<br><br>Listener configuration node. |
+| `<listener name>` | **required**<br><br>Arbitrary node name. |
+| `listener` | **required**<br><br>Listener node. |
+| `command` | **required**<br><br>Command node. |
+| `class` | **required**<br><br>Fully qualified [command class name](../../../Developing/Commands/) the reaction is delegated to. |
+| `params` | **optional**<br><br>Parameters passed to the command. For example the `MailTemplate` used to compose the mail body is required by `MailCommand`. |
+| `class` | **required**<br><br>Fully qualified name of the command [listener class](#_listener_classes). |
+| `nodeType` | **optional**, *default is all node types*<br><br>Restricts observation to events on the specified [node type](../../../Administration/Architecture/Node-types/). |
+| `<listener properties>` | **optional/requried**<br><br>Same as standard [listener properties](#_listener_configuration).<br><br>Listeners may rely on the [Mail](../Mail-module/Mail/) module to send emails. [Configure SMTP](../Mail-module/Mail/) setting to ensure they work. |
+
+## [](#_listener_classes)Listener classes
+
+The module provides the following listener classes:
+
+|     |     |
+| --- | --- |
+| `info.magnolia.module.observation.sample.PageListener` | Writes a message to the console when a page is added. |
+| `info.magnolia.module.observation.commands.CommandEventListener` | Executes a command when an event occurs. |
+| `info.magnolia.module.observation.commands.RestrictToNodeTypeEventListener` | Executes a command when an event occurs in the specified node type. |
+| `info.magnolia.module.observation.commands.RestrictToTemplateEventListener` | Executes a command only when an event occurs in the specified node that has a specified template type as a resource node. |
+| `info.magnolia.module.observation.commands.RegexEventListener` | Executes a command when an event occurs in the specified node type and matches a regular expression pattern. |
+| `info.magnolia.module.observation.commands.SpecifiedNodeTypeOnlyEventListener` | Executes a command when an event occurs in a node that is in the `included'' list of node types and not on the ``excluded` list. |
+
+## [](#_activating_assets_automatically)Activating assets automatically
+
+This example command listener configuration observes the `NODE_ADDED` event in the `dam` workspace. To test the listener, upload a new asset.
+
+> **Warning:** The dam workspace is defined twice. The property is always required under the listener configuration. In this case, it’s also required as a parameter by the PublicationCommand.
+
+### [](#_example_1_activating_assets_automatically)Example 1: Activating assets automatically
+
+Automatically publish new assets added in the Assets app (JCR-stored only).
+
+|     |     |
+| --- | --- |
+| 📁 observation |     |
+| 📁 config |     |
+| 📁 listenerConfigurations |     |
+| ⸬ autoActivateAssets |     |
+| ⸬ listener |     |
+| ⸬ command |     |
+| ⬩ class | info.magnolia.publishing.command.PublicationCommand |
+| ⸬ params |     |
+| ⬩ repository | dam |
+| ⬩ class | info.magnolia.module.observation.commands.RestrictToNodeTypeEventListener |
+| ⬩ nodeType | mgnl:asset |
+| ⬩ active | true |
+| ⬩ description | Automatically activate new assets |
+| ⬩ eventTypes | NODE\_ADDED |
+| ⬩ includeSubNodes | true |
+| ⬩ path | /   |
+| ⬩ repository | dam |
+
+In this example, only Magnolia assets are published automatically.
+
+
+
+### [](#_example_2_activating_folders_and_assets_automatically)Example 2: Activating folders and assets automatically
+
+Automatically publish new folders and assets added in the Assets app (JCR-stored only). In this second example, `SpecifiedNodeTypeOnlyEventListener` is used because it allows folders to be automatically published as well.
+
+|     |     |
+| --- | --- |
+| 📁 observation |     |
+| 📁 config |     |
+| 📁 listenerConfigurations |     |
+| ⸬ autoActivateAssets |     |
+| ⸬ listener |     |
+| ⸬ command |     |
+| ⬩ class | info.magnolia.publishing.command.PublicationCommand |
+| ⸬ params |     |
+| ⬩ repository | dam |
+| ⸬ includes |     |
+| ⬩ 0 | mgnl:asset |
+| ⬩ 1 | mgnl:folder |
+| ⬩ class | info.magnolia.module.observation.commands.SpecifiedNodeTypeOnlyEventListener |
+| ⬩ active | true |
+| ⬩ description | Automatically activate new assets & folders |
+| ⬩ eventTypes | NODE\_ADDED |
+| ⬩ includeSubNodes | true |
+| ⬩ path | /   |
+| ⬩ repository | dam |
+
+The `SpecifiedNodeTypeOnly` listener allows you to publish folders automatically. Included types to be published automatically are defined under the `includes` node.
+
+> **Note:** If you upload assets in a zipped archive, publish the parent folder before uploading it. Otherwise, the assets won’t be automatically published.

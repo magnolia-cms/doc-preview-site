@@ -1,0 +1,119 @@
+---
+title: "Model-view-presenter pattern - 5 UI"
+url: https://docs.magnolia-cms.com/magnolia-5-ui-documentation/Content-apps-5-UI/Developing-an-app-5-UI/Model-view-presenter-pattern-5-UI/
+category: Modules
+version: modules
+breadcrumb: Magnolia 5 UI documentation > Content apps - 5 UI > Developing an app - 5 UI > Model-view-presenter pattern - 5 UI
+---
+
+# Model-view-presenter pattern - 5 UI
+
+Deprecated
+
+> **Note:** This model-view-presenter pattern has been deprecated since Magnolia 6.0. It is part of the Magnolia 5 UI framework.For the updated implementation, see UI framework and development pattern changes in Magnolia 6 instead.
+
+Magnolia uses the model-view-presenter pattern. The separation of views and presenters is done consistently throughout the application on server and client and within complex components. The presenter reacts on events raised by user interaction, driving the view by populating it with data to display.
+
+## [](#_ui_events)UI events
+
+Magnolia uses a [model-view-presenter](http://en.wikipedia.org/wiki/Model_View_Presenter) pattern to handle UI events.
+
+-   The View does not implement business logic or communicate with the Model. The view provides the interface to the end user and reacts on and informs the Presenter about user actions (input).
+
+-   The View and Presenter communicate together.
+
+-   The Presenter uses the Model to fetch data and implements business logic, informing the View to display content (such as a form).
+
+
+![UI events diagram](6.2@product-docs:ROOT:Model-view-present-pattern.png)
+
+-   The View interface defines a Listener interface that is implemented by the Presenter. The purpose of the Listener interface is to ensure that the view does not inadvertently communicate to the Presenter.
+
+-   The Listener methods are implemented by the Presenter; the callback methods from the view to the Presenter.
+
+
+![Workbench subapp diagram](6.2@product-docs:ROOT:model-view-presenter-pattern-workbench.png)
+
+-   The `Presenter` only knows about the `View`’s Interface; this ensures that the `Presenter` is not bypassing the pattern and cannot directly communicate to the `View` implementation.
+
+
+![Workbench view diagram](6.2@product-docs:ROOT:model-view-presenter-pattern-notifications-and-updates.png)
+
+## [](#_mvp_and_the_app_framework)MVP and the app framework
+
+Here we look at an example of how the MVP pattern is employed in a subapp.
+
+1.  The View’s interface defines an inline `Listener` interface with the method `greetUser(String user)`.
+
+    ```java
+    public interface HelloWorldMainSubAppView extends View {
+        void setListener(Listener listener);
+        void addUser(String user);
+
+        public interface Listener {
+            void greetUser(String user);
+        }
+    }
+    ```
+
+2.  The Presenter (subclass) implements:
+
+    -   `View` inline listener interface and the `greetUser(String user)` callback method. The method is called by the View (via the listener) on user input through the UI.
+
+    -   The interface type of the View is determined by the `getView()` method.
+
+    -   `The Presenter` registers itself as the `View`’s Listener using the `onSubAppStart()` method.
+
+    -   In the ``onSubAppStart()`method the `Presenter`` calls the `View`’s interface \`getView().addUser("Lisa")\`method.
+
+        ```java
+        //The Presenter implements the View's Listener by providing the View's callback method to the Presenter.
+        public class HelloWorldMainSubApp extends BaseSubApp implements HelloWorldMainSubAppView.Listener {
+            private LocationController locationController;
+
+            // The View is injected into the Presenter's constructor. The View's implementation is defined by the IOC component provider.
+            @Inject
+            public HelloWorldMainSubApp(final SubAppContext subAppContext, HelloWorldMainSubAppView view, LocationController locationController) {
+                super(subAppContext, view);
+                // Set the location controller
+                this.locationController = locationController;
+            }
+
+            // Defines the implementation of the injected view in use.
+            @Override
+            public HelloWorldMainSubAppView getView() {
+                return (HelloWorldMainSubAppView) super.getView();
+            }
+
+            @Override
+            protected void onSubAppStart() {
+                // Register this presenter as the View's Listener.
+                getView().setListener(this);
+                // Call the view to display something.
+                getView().addUser("Lisa");
+            }
+
+            // Implements the View's Listener method. Is the View's callback function to the presenter.
+            @Override
+            public void greetUser(String user) {
+                // Do what ever logic needed triggered by this UI action.
+            }
+        }
+        ```
+
+
+3.  `View` calls the `Presenter` via the `Listener’s` callback-function `listener.greetUser(user):`
+
+    ```java
+    @Override
+    public void addUser(final String user) {
+        Button button = new Button("Say hello to " + user + "!");
+        button.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                listener.greetUser(user);
+            }
+        });
+        layout.addComponent(button);
+     }
+    ```

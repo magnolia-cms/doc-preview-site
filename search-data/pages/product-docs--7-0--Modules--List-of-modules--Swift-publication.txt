@@ -1,0 +1,46 @@
+---
+title: "Swift publication"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/Swift-publication/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Swift publication
+---
+
+# Swift publication
+
+Swift publication is installed by the [Swift publication module](../Swift-publication-module/Swift-publication-module/) and offers a more scalable and efficient method for versioning and publishing content than the default DX Core [publishing](../../../Administration/Architecture/Publishing/) workflow. It is delivered as a standalone enterprise module that can be used as a replacement for DX Core publishing in the Pages app. It requires the provisioning of additional infrastructure (an external version store). DX Cloud users can use it out of the box, while on-premises users must provision the external infrastructure themselves.
+
+> **Important:** Swift publication currently manages publication for Pages only. Assets and other content types continue to use the standard DX Core publication mechanism by default. See Configuring the Assets app for more details.As a result, when configuring public instances you must define both sets of receiver properties:magnolia.publishing.receivers.* — DX Core publishing (used by Assets when Swift is installed, or by all content if Swift is not used).swift.publication.receivers.* — Swift publication (applies to Pages only by default).Define both for every public instance you configure so that Pages publish via Swift and other content types publish via DX Core publishing.
+
+## [](#_architecture)Architecture
+
+Swift publication stores versions in an external version store, such as S3. You can use REST to communicate between author and public instances. When an author publishes changes, the changes are sent to and stored in the external version store. The public instances receive notifications via REST and fetch the corresponding version from the version store.
+
+![Swift publication](../../../_images/swift/SwiftPublication-REST.png)
+
+## [](#_advantages)Advantages
+
+This architecture provides the following advantages over the default DX Core publication process:
+
+-   There is less load on the author instance as versions are maintained externally
+
+-   Better and more flexible scalability regarding the size and frequency of publications, as well as the number of public instances
+
+-   Improved resilience and easier failure recovery
+
+-   Simple transactionality model (eventual consistency amongst public instances)
+
+
+> **Caution:** These benefits come with the added complexity of provisioning, configuring, and maintaining the external version store. For smaller sites, you might not consider the extra effort justified.
+
+## [](#_comparing_publishing_methods)Comparing publishing methods
+
+A comparison table for the two publication options outlined above is shown below.
+
+|     | DX Core publishing | Swift publication |
+| --- | --- | --- |
+| Workflow | **Four-eye workflow**: it can be disabled if you don’t have separate editor and publisher roles.<br><br>The four-eye workflow is primarily used in the Pages app. | Swift publication can be used as a replacement for DX Core publishing.<br><br>Publication is carried out asynchronously and is shown by an `In Progress` status in the Pages app. |
+| Versioning | Versions are managed internally within the author instance. Content is copied to a **JCR version workspace** on the author instance when published. | Swift publication stores versions in an **external version store** (for example, S3).<br><br>This means that when changes are published, the respective versions are sent to the external store, reducing the load on the author instance. Public instances then take the changes from the external store. |
+| Performance | The load can impact the performance since **all versions are maintained on the author instance**.<br><br>This can lead to slower publishing processes, especially for larger content repositories. | The architecture allows for **better scalability** regarding the size and frequency of publications and the number of public instances. |
+| Infrastructure | **No additional infrastructure** required for publishing. | Swift publication requires **additional infrastructure**, in particular an external version store (S3). |
+| Authentication and security | Data is transferred through the instances using **public-key cryptography**. | For S3, you must specify security credentials to authenticate and authorize your requests. |

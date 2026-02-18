@@ -1,0 +1,150 @@
+---
+title: "Properties API"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Developing/API/Nodes-and-properties-APIs/Properties-API/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > API > Properties API
+---
+
+# Properties API
+
+This page describes the `properties` API, which can be used to access and manipulate JCR properties.
+
+> **Tip:** The Properties API is best used as a content management API. For content delivery, we recommend using our rest:api:delivery-endpoint.adoc.
+
+## [](#_get)GET
+
+Returns a string representation of a property from the specified workspace and path.
+
+### [](#_request_url)Request URL
+
+`/.rest/properties/v1/{workspace}/{path}`
+
+### [](#_parameters)Parameters
+
+| Parameter | Description | Type | Data Type |
+| --- | --- | --- | --- |
+| `workspace` | **required**<br><br>The name of the [workspace](../../../../Administration/Architecture/Workspaces/). | `path` | `String` |
+| `path` | **optional**, *default is `/`*<br><br>The absolute path to the property within the workspace. | `path` | `String` |
+
+### [](#_example)Example
+
+Read the `keywords` property of the travel site from the `website` workspace.
+
+Get JSON Get XML
+
+curl -X GET 'http://localhost:8080/magnoliaAuthor/.rest/properties/v1/website/travel/keywords' \\
+-u superuser:superuser
+
+curl -X GET 'http://localhost:8080/magnoliaAuthor/.rest/properties/v1/website/travel/keywords' \\
+-u superuser:superuser -H "Accept: application/xml"
+
+Get JSON Get XML
+
+```js
+{
+   "name":"keywords",
+   "type":"String",
+   "multiple":false,
+   "values":[
+      "Magnolia CMS, Open Source CMS, Content management, Demonstration project, Demo project, Demo, Online demo, Website builder"
+   ]
+}
+```
+
+```xml
+<property>
+   <multiple>false</multiple>
+   <name>keywords</name>
+   <type>String</type>
+   <values>
+      <value>Magnolia CMS, Open Source CMS, Content management, Demonstration project, Demo project, Demo, Online demo, Website builder</value>
+   </values>
+</property>
+```
+
+## [](#_put)PUT
+
+Adds a new property to a node at the specified workspace and path.
+
+### [](#_request_url_2)Request URL
+
+`/.rest/properties/v1/{workspace}/{path}`
+
+### [](#_parameters_2)Parameters
+
+| Parameter | Description | Type | Data Type |
+| --- | --- | --- | --- |
+| `workspace` | **required**<br><br>The name of the [workspace](../../../../Administration/Architecture/Workspaces/). | `path` | `String` |
+| `path` | **optional**, *default is `/`*<br><br>The absolute path to the node within the workspace where the new property should be added. | `path` | `String` |
+| `name` | **required**<br><br>The name of the new property. | `query` | `String` |
+| `value` | **required**<br><br>The value of the new property. | `query` | `List` |
+| `type` | **optional**, *default is `String`*<br><br>[PropertyType](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/PropertyType.html) to be added. | `query` | `String` |
+| `multiple` | **optional**, *default is `false`*<br><br>Indicates if the property should be a multivalue property. | `query` | `boolean` |
+
+## [](#_post)POST
+
+Creates a property or updates an existing property of a node at the specified `workspace` and `path`. Other existing properties and subnodes are not affected.
+
+> **Caution:** Do not use JSON body to create or update the properties (name, value, type or multiple). Use query parameters, as for example name=foo and value=bar in the following cURL command:curl http://localhost:8080/magnoliaAuthor/.rest/properties/v1/website/travel/title\?name\=foo\&value\=bar \
+>   -H "Content-Type: application/json" \
+>   -X POST -i \
+>   --user superuser:superuser
+
+### [](#_request_url_3)Request URL
+
+`/.rest/properties/v1/{workspace}/{path}`
+
+### [](#_parameters_3)Parameters
+
+| Parameter | Description | Type | Data Type |
+| --- | --- | --- | --- |
+| `workspace` | **required**<br><br>The name of the [workspace](../../../../Administration/Architecture/Workspaces/). | `path` | `String` |
+| `path` | **optional**, *default is `/`*<br><br>The absolute path to the node within the workspace where the new property should be added. | `path` | `String` |
+| `name` | **required**<br><br>The name of the new property. | `path` | `String` |
+| `value` | **required**<br><br>The value of the new property. | `query` | `List` |
+| `type` | **optional**, *default is `String`*<br><br>[PropertyType](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/PropertyType.html) to be added. | `query` | `String` |
+| `multiple` | **optional**, *default is `false`*<br><br>Indicates if the property should be a multivalue property. | `query` | `boolean` |
+
+## [](#_delete)DELETE
+
+Deletes a property of a node at the specified workspace and path.
+
+### [](#_request_url_4)Request URL
+
+`/.rest/properties/v1/{workspace}/{path}`
+
+### [](#_parameters_4)Parameters
+
+   ParameterDescriptionTypeData Type
+
+`workspace`
+
+**required**
+
+The name of the [workspace](../../../../Administration/Architecture/Workspaces/).
+
+`path`
+
+`String`
+
+`path`
+
+**optional**, *default is `/`*
+
+The path of the property which you want to delete.
+
+> **Warning:** Always provide a path. If default / is used, this will return a 404, property not found.
+
+`path`
+
+`String`
+
+### [](#_example_2)Example
+
+Delete the `keywords` property of the travel site in the `website` workspace.
+
+curl -X DELETE -i http://localhost:8080/magnoliaAuthor/.rest/properties/v1/website/travel/keywords \\
+--user superuser:superuser
+
+> **Note:** Tip: Use the -i option with cURL to show the HTTP response headers.

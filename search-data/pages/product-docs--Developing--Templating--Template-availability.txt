@@ -1,0 +1,351 @@
+---
+title: "Template availability"
+url: https://docs.magnolia-cms.com/product-docs/Developing/Templating/Template-availability/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template availability
+---
+
+# Template availability
+
+Template availability defines which templates editors can use to create pages and components. Available page templates are displayed in a dropdown list in the Pages app. Available component templates are listed in the page editor when adding a component inside an area.
+
+**Example**: The template dropdown in the Pages app shows available templates
+
+![The template dropdown in the Pages app](../../../_images/6-2-magnoliaBasics-pageTemplates.png)
+
+## [](#_page_template_availability)Page template availability
+
+Page template availability is controlled on several levels:
+
+-   `visible` property in a [page definition](../Template-definition/Page-definition/).
+
+-   `availability` node in a site definition
+
+    -   to configure the availability per site.
+
+    -   configuring role-based availability per template (per site).
+
+    -   using page template definition property `type`.
+
+
+
+### [](#_availability_by_page_definition)Availability by page definition
+
+The template availability can be set on [page template definition](../Template-definition/Page-definition/) with the `visible` property.
+
+| Property | Description |
+| --- | --- |
+| `visible` | **optional**, *default is `true`*<br><br>When `false`, the template is not available to editors.<br><br>There are more ways to control [page template availability](#_page_template_availability). |
+
+### [](#_availability_by_site)Availability by site
+
+The `availability` node in a [site definition](../Site-definition/) allows you to make templates available per site. This means an editor working on site X can only choose templates that are available on site X. As a use case, a small campaign site may only have one available template whereas your main site has many templates.
+
+You can configure template availability in a YAML site definition.
+
+**Example**
+
+/travel-demo/sites/travel.yaml
+
+```yaml
+templates:
+  class: info.magnolia.module.site.templates.ReferencingPrototypeTemplateSettings
+  prototypeId: travel-demo:pages/prototype
+  availability:
+    templates:
+      home:
+        id: travel-demo:pages/home
+      standard:
+        id: travel-demo:pages/standard
+      searchResultPage:
+        id: travel-demo:pages/searchResultPage
+      pur:
+        id: travel-demo:pages/pur
+    enableAllWithRenderType:
+      freemarker: freemarker
+      spa: spa
+```
+
+You need the [Site module](#site:ROOT:index.adoc) in order to create a site definition. The Site module is not always included, such as when you [create your own webapp](../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/) based on the [empty webapp](../../../Administration/Architecture/Webapp/). [Add a dependency](../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/) to the Site module in your webapp POM file. The Site module provides the same availability definitions that were previously in the Standard Templating Kit module.
+
+#### [](#_option_1_define_page_templates_explicitly)Option 1: Define page templates explicitly
+
+You may define page templates explicitly under the `availability/templates` node in your site definition. Add the child nodes as shown in the example below, where the `home` and `standard` templates are made available on the `travel` site:
+
+![Defining page templates explicitly](../../../_images/ADVT-templateavail-1.png)
+
+Properties:
+
+`id`
+
+**required** ID of the [page definition](../Template-definition/Page-definition/) in `<module name>:<path to page definition>` format.
+
+The ID has two parts separated by a colon:
+
+-   `<module-name>` : Name of the module which contains the page definition.
+
+-   `<path>`: Relative path to the page definition inside `pages` root item. For example, the page ID `my-module:pages/home` either points to a YAML file `$magnolia.resources.dir/my-module/templates/pages/home.yaml` or to a JCR node `/modules/my-module/templates/pages/home` in the `config` workspace.
+
+
+> **Note:** You can reference templates from any module.
+
+#### [](#_option_2_make_all_templates_available)Option 2: Make all templates available
+
+You can make all templates available by adding the `enableAll` property to the `availability` node in your site definition and set the property to `true`:
+
+![Making all templates available](../../../_images/ADVT-templateavail-2.png)
+
+#### [](#_option_3_make_templates_available_by_rendertype)Option 3: Make templates available by `RenderType`
+
+By adding the `enableAllWithRenderType` node to the `availability` node, you can make templates available by `RenderType`. In the example below, the templates rendered by `freemarker` and `jsp` are made available on the `travel` site:
+
+![Making templates available by RenderType](../../../_images/ADVT-templateavail-3.png)
+
+Options 1 and 3 can be combined.
+
+Configure template availability under the `availability` node in the site definition:
+
+-   Community Edition:
+
+    -   `/modules/<my-module>/config/<site-definition>/templates/availability` when you want to store the site definition in your own module.
+
+    -   `/modules/site/config/site/templates/availability` when you want to store the site definition in the Site module.
+
+
+-   DX Core:
+
+    -   `/modules/multisite/config/sites/<site-definition>/templates/availability` when you have multiple sites and use the [Multisite module](../../../Modules/List-of-modules/Multisite-module/).
+
+
+
+### [](#_availability_by_role)Availability by role
+
+The `roles` node in a site definition allows you to make templates available to users who have a specific [role](../../../Administration/IAM/Roles-and-access-control-lists/). The roles themselves are managed in the [Security app](../../../Apps/List-of-apps/Security-app/). Reference them by name from the site definition.
+
+**Example**: Only users in the `superuser` role have permission to create `home` pages. Users with `superuser` or `editor` roles can create pages based on the `standard` template.
+
+/<module-name>/sites/travel.yaml
+
+```yaml
+...
+templates:
+  availability:
+    templates:
+      home:
+        id: travel-demo:pages/home
+        roles:
+          superuser: superuser
+      standard:
+        id: travel-demo:pages/standard
+        roles:
+          superuser: superuser
+          editor: editor
+...
+```
+
+| Property | Description |
+| --- | --- |
+| `roles` | **optional** |
+| `<role name>` | **optional** |
+
+The property name is arbitrary but the value must match a valid [role](../../../Administration/IAM/Roles-and-access-control-lists/) as configured in the [Security app](../../../Apps/List-of-apps/Security-app/).
+
+### [](#_availability_by_type)Availability by `type`
+
+The optional `type` property in a [page definition](../Template-definition/Page-definition/) allows you to make templates available per page *type*. Common page types are home, section and article. Types allow you to control where in the page tree a template can be used. If a template type is not allowed in a given place in the tree, it will not be available to editors.
+
+To limit template availability by type you need to:
+
+1.  Add a `type` property to your page definitions.
+
+2.  Implement a custom `TemplateAvailability` class that reacts to the types.
+
+3.  Configure the custom `TemplateAvailability` class in the site definition.
+
+
+#### [](#_adding_a_type_property)Adding a `type` property
+
+**Example**: Type `home` in a page definition
+
+example/templates/pages/home.yaml
+
+```yaml
+renderType: freemarker
+templateScript: /my-module/templates/pages/home.ftl
+dialog: my-module:pages/homePageProperties
+# areas:
+visible: true
+type: home
+class: com.example.templates.CustomTemplateDefinition
+modelClass: com.example.templates.HomePageModel
+```
+
+| Property | Description |
+| --- | --- |
+| `type` | **optional,** *default is \`content\`* |
+
+> **Warning:** You have to define the template types yourself. Magnolia does not provide ready-made types.
+
+Most web pages fall into these types:
+
+-   `home`: Home page. Root of the site.
+
+-   `section`: Sections that organize the site.
+
+-   `content`: Core content pages.
+
+-   `feature`: Special templates that collect or aggregate content.
+
+-   `functional`: Templates that perform actions such as redirect rather than render content.
+
+
+#### [](#_implementing_a_template_availability_class)Implementing a template availability class
+
+Implement and configure your own `TemplateAvailability` class that reacts to the defined types. Write your own implementation of the `info.magnolia.rendering.template.TemplateAvailability` interface ([source](https://nexus.magnolia-cms.com/repository/magnolia.public.sites/ref/6.4.2/apidocs/info/magnolia/rendering/template/TemplateAvailability.html)). You may want to look at one of its existing implementations for inspiration: `info.magnolia.module.site.templates.ConfiguredSiteTemplateAvailability` ([source](https://nexus.magnolia-cms.com/repository/magnolia.public.sites/ref/6.4.2/apidocs/info/magnolia/rendering/template/configured/ConfiguredTemplateAvailability.html)).
+
+Look into the [Magnolia Templating Kit](../Templates-in-MTK/) (KIT) for more information about template availability. Templates of type `home` can only be used on the site root page. Templates of type `content` can only be used on a page that resides under a page whose template belongs to types `section`, `feature` or `functional`.
+
+#### [](#_configuring_a_template_availability_class)Configuring a template availability class
+
+**Example**: Configuring a TemplateAvailability class in a site definition.
+
+/<module-name>/sites/travel.yaml
+
+```yaml
+...
+templates:
+  availability:
+    class: com.example.myModule.site.CustomTemplateAvailability
+...
+```
+
+## [](#_component_template_availability)Component template availability
+
+The `add-availability` and `create-component` commands in the [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) allow [light developers](../../Light-development-in-Magnolia/) to define component availability in a page template.
+
+The availability of a component is defined per area in an [Area definition](../Template-definition/Area-definition/) (and an area definition is always part of page template definition).
+
+### [](#_restricting_component_availability_in_an_area_template)Restricting component availability in an area template
+
+You can restrict access to components made available in an area template definition to users assigned a specific role.
+
+In this example component `textImage` can be used by any editor, but only users assigned the `superuser` role in the [Security app](../../../Apps/List-of-apps/Security-app/) can create a `HTML` component. See [Roles](../../../Administration/IAM/Roles-and-access-control-lists/) for more.
+
+```js
+areas:
+  myArea:
+    availableComponents:
+      textImage:
+        id: my-module:components/textImage
+      html:
+        id: my-module:components/HTML
+        roles:
+          - superuser
+        # could also be written as
+        # roles: [superuser]
+```
+
+Where `id` is the Component definition ID in `<module name>:<path to component definition>` format. See [Area properties](../Template-definition/Area-definition/#_area_properties) for more.
+
+### [](#_restricting_the_number_of_components_in_an_area_template)Restricting the number of components in an area template
+
+You can restrict the number of components that render in a `list` area by adding a `maxComponents` property. Once the limit is reached the New Component box is replaced with a Maximum Components Reached notification preventing editors from adding additional components.
+
+```js
+areas:
+  myArea:
+    availableComponents:
+      maxComponents: 5
+      renderType: freemarker
+      type: list
+```
+
+### [](#_restricting_component_actions_in_a_component_template)Restricting component actions in a component template
+
+You can restrict the actions that editors can take on a component in the component definition using the `deletable`, `writable`, `moveable` and `personalizable` properties. By default, all components can be deleted, edited, moved, and personalized but you can change this behavior by setting these properties to `false`.
+
+my-module/templates/components/html.yaml
+
+```js
+renderType: freemarker
+templateScript: /my-module/components/html.ftl
+dialog: my-module:components/html
+deletable: false
+writable: false
+moveable: false
+personalizable: false
+```
+
+### [](#_restricting_component_actions_in_an_area_template)Restricting component actions in an area template
+
+You can define which roles can edit, move, delete, and also personalize components in an [area definition](../Template-definition/Area-definition/).
+
+```js
+areas:
+  myArea:
+    availableComponents:
+      myComponent:
+        id: my-module:components/myComponent
+        permissions:
+          write:
+            roles: [editors, superuser]
+          move:
+            roles: [senior-editor, superuser]
+          delete:
+            roles: [editors, superuser]
+          personalize:
+            roles: [senior-editor, superuser]
+```
+
+ PropertyDescription
+
+`permissions`
+
+**optional**
+
+Required parent item that contains the action restrictions.
+
+     `<write|move|delete|personalize>`
+
+**optional**
+
+Action to which the restriction applies. (`personalize` is not available in CE)
+
+         `roles`
+
+**required**
+
+> **Note:** roles must be added as a list in the YAML file. (See YAML-Lists).
+
+             `<roleName>`
+
+**required**
+
+Identifies the role. The name of the attribute is arbitrary but the value must match an existing role
+
+#### [](#_resctrictions_and_template_availability_in_spa_contexts)Resctrictions and template availability in SPA contexts
+
+In [SPA environments](../../headless/spa-development/), both the server and the client(s) have their own credential configurations.
+
+If a [CORS](../../../Administration/Architecture/Request-processing-and-filters/CORS/) request does not include credentials, it will be interpreted as an *anonymous* request. The [SPA template annotations endpoint](../../API/SPA-templating-API/#_spa_template_annotations_endpoint) will then return data for the anonymous user.
+
+From a SPA, requests to the Template annotations endpoint must include:
+
+fetch(templateEndpointUrl, { credentials: "include" });
+
+**Example CORS filter configuration for `example.com`**
+
+/server/filters/cors/template-annotations/
+
+```yaml
+...
+uris:
+  templateAnnotations: /.rest/template-annotations/*
+allowedOrigins:
+  example_com: https://example.com
+supportCredentials: true
+...
+```
+
+> **Tip:** For more information about the Access-Control-Allow-Credentials header, see MDN Web Docs: Access-Control-Allow-Credentials.

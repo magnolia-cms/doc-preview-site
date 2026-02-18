@@ -1,0 +1,670 @@
+---
+title: "Default permissions"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/IAM/Default-permissions/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Identity and access management (IAM) > Default permissions
+---
+
+# Default permissions
+
+These are default permissions in Magnolia. You can manage them in the Security app. The default permissions are just an example how to grant permissions in a typical website. You should adapt the permissions to match your own organization. [App permissions](../App-permissions/) are configured in the app launcher configuration.
+
+## [](#_roles)Roles
+
+-   [superuser role](#_superuser_role)
+
+-   [admincentral-developer role](#_admincentral_developer_role)
+
+-   [admincentral-editor role](#_admincentral_editor_role)
+
+-   [anonymous role - author instance](#_anonymous_role_author_instance)
+
+-   [anonymous role - public instance](#_anonymous_role_public_instance)
+
+-   [asset-editor role](#_asset_editor_role)
+
+-   [categorization-base role](#_categorization_base_role)
+
+-   [category-editor role](#_category_editor_role)
+
+-   [contact-base role](#_contact_base_role)
+
+-   [dam-app-core-editor role](#_dam_app_core_editor_role)
+
+-   [dam-app-jcr-editor role](#_dam_app_jcr_editor_role)
+
+-   [definitions-app-developer role](#_definitions_app_developer_role)
+
+-   [diff-viewer role](#_diff_viewer_role)
+
+-   [graphql-developer role](#_graphql_developer_role)
+
+-   [imaging-base role](#_imaging_base_role)
+
+-   [imaging-editor role](#_imaging_editor_role)
+
+-   [marketingTag-editor role](#_marketingtag_editor_role)
+
+-   [page-editor role](#_page_editor_role)
+
+-   [pages-app-editor role](#_pages_app_editor_role)
+
+-   [resources-base role](#_resources_base_role)
+
+-   [resources-editor role](#_resources_editor_role)
+
+-   [REST admin roles](#_rest_admin_roles)
+
+-   [rss-aggregator-base role](#_rss_aggregator_base_role)
+
+-   [scripter role](#_scripter_role)
+
+-   [security-base role](#_security_base_role)
+
+-   [stories-base role](#_stories_base_role)
+
+-   [story-editor role](#_story_editor_role)
+
+-   [travel-demo-base role](#_travel_demo_base_role)
+
+-   [travel-demo-admincentral role](#_travel_demo_admincentral_role)
+
+-   [travel-demo-editor role](#_travel_demo_editor_role)
+
+-   [travel-demo-publisher role](#_travel_demo_publisher_role)
+
+-   [travel-demo-tour-editor role](#_travel_demo_tour_editor_role)
+
+-   [workflow-editor role](#_workflow_editor_role)
+
+-   [workflow-publisher role](#_workflow_publisher_role)
+
+-   [workflow-base role](#_workflow_base_role)
+
+
+### [](#_superuser_role)superuser role
+
+The `superuser` role provides full access to the system. The permissions are the same on both author and public instances.
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| AdvancedCache | Read/Write | `/*` |
+| Category | Read/Write | `/*` |
+| Config | Read/Write | `/*` |
+| Contacts | Read/Write | `/*` |
+| Dam | Read/Write | `/*` |
+| Dms\* | Read/Write | `/*` |
+| Forum | Read/Write | `/*` |
+| GoogleSitemaps | Read/Write | `/*` |
+| Imaging | Read/Write | `/*` |
+| Keystore | Read/Write | `/*` |
+| Marketing-tags | Read/Write | `/*` |
+| Messages | Read/Write | `/*` |
+| Personas | Read/Write | `/*` |
+| Profiles | Read/Write | `/*` |
+| Resources | Read/Write | `/*` |
+| Rss | Read/Write | `/*` |
+| Scripts | Read/Write | `/*` |
+| Segments | Read/Write | `/*` |
+| Stories | Read/Write | `/*` |
+| Tags | Read/Write | `/*` |
+| Tasks | Read/Write | `/*` |
+| Templates | Read/Write | `/*` |
+| Tours | Read/Write | `/*` |
+| Usergroups | Read/Write | `/*` |
+| Userroles | Read/Write | `/*` |
+| Users | Read/Write | `/*` |
+| Website | Read/Write | `/*` |
+| Workflow (DX Core) | Read/Write | `/*` |
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `*` |
+
+| Applies to | Name | Path |
+| --- | --- | --- |
+| App | Publishing | `/modules/activation/apps/activation/permissions/roles` |
+|     | Configuration | `/modules/ui-admincentral/apps/configuration/permissions/roles` |
+|     | Security | `/modules/security-app/apps/security/permissions/roles` |
+|     | Security | `/modules/security-app/dialogs/role/form/tabs/role/fields/jcrName` |
+|     | Mail tools | `/modules/mail/apps/mail/permissions/roles` |
+|     | Dev tools | `/modules/tools/apps/tools/permissions/roles` |
+|     | Backup | `/modules/backup/apps/backup/permissions/roles` |
+| App launcher | Dev group | `/modules/ui-admincentral/config/appLauncherLayout/groups/dev/permissions/roles` |
+|     | Tools group | `/modules/ui-admincentral/config/appLauncherLayout/groups/tools/permissions/roles` |
+| Tasks app | Abort action | `/modules/workflow/messageViews/publish/actions/abort/availability/access/roles` |
+|     | Archive action | `/modules/workflow/messageViews/publish/actions/archive/availability/access/roles` |
+
+### [](#_admincentral_developer_role)admincentral-developer role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Category | Read only | `/*` |
+| Userroles | Read only | `/admincentral-developer` |
+
+### [](#_admincentral_editor_role)admincentral-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/admincentral-editor` |
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `*` |
+| Deny | `/.*` |
+| Get & Post | `/.magnolia/admincentral/*` |
+
+### [](#_anonymous_role_author_instance)anonymous role - author instance
+
+The `anonymous` role defines the permissions of public, unauthenticated users. Permissions are different on the author and public instances.
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| DAM | Read only | `/*` |
+| Website | Deny access | `/*` |
+| Resources | Read only | `/*` |
+| Category | Read only | `/`<br><br>`/*` |
+| Marketing-tags | Read only | `/`<br><br>`/*` |
+
+| Permission | Path |
+| --- | --- |
+| Deny | `*` |
+| Deny | `/.magnolia*` |
+
+### [](#_anonymous_role_public_instance)anonymous role - public instance
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Category | Read only | `/`<br><br>`/*` |
+| Dam | Read only | `/`<br><br>`/*` |
+| GoogleSitemaps | Read only | `/`<br><br>`/*` |
+| Marketing-tags | Read only | `/`<br><br>`/*` |
+| Resources | Read only | `/*` |
+| Website | Read only | `/*` |
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `*` |
+| Deny | `/.magnolia` |
+| Deny | `/.magnolia/*` |
+| Deny | `/travel/members/protected*` |
+| Deny | `/travel/members/profile-update*` |
+| Deny | `<travel>/members/protected*` |
+| Deny | `<travel>/members/profile-update*` |
+
+### [](#_asset_editor_role)asset-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Dam | Read/Write | `/*` |
+| Userroles | Read only | `/asset-editor` |
+
+### [](#_categorization_base_role)categorization-base role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Data | Read-only | `/categorization` |
+| Data | Read-only | `/categorization/*` |
+| Userroles | Read only | `/categorization-base` |
+
+### [](#_category_editor_role)category-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Data | Read-only | `/category-editor` |
+| Data | Read/Write | `/*` |
+| Userroles | Read only | `/category-editor` |
+
+### [](#_contact_base_role)contact-base role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Contact | Read only | `/*` |
+| Userroles | Read only | `/contact-base` |
+
+### [](#_dam_app_core_editor_role)dam-app-core-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/dam-app-core-editor` |
+
+### [](#_dam_app_jcr_editor_role)dam-app-jcr-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Dam | Read/Write | `/` |
+| Dam | Read/Write | `/*` |
+| Userroles | Read only | `/dam-app-jcr-editor` |
+
+### [](#_definitions_app_developer_role)definitions-app-developer role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/definitions-app-developer` |
+
+### [](#_diff_viewer_role)diff-viewer role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/diff-viewer` |
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `/.magnolia/versionDiff*` |
+
+### [](#_graphql_developer_role)graphql-developer role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/graphql-developer` |
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `/.graphiql` |
+| Get & Post | `/.graphql` |
+
+### [](#_imaging_base_role)imaging-base role
+
+| Workspace | Permission | Path | Imaging |
+| --- | --- | --- | --- |
+| Read only | `/*` | Userroles | Read only |
+
+### [](#_imaging_editor_role)imaging-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/imaging-editor` |
+
+| Permission | Path |
+| --- | --- |
+| Get | `/.imaging/*` |
+
+### [](#_livecopy_admin_role)livecopy-admin role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/livecopy-admin` |
+
+### [](#_marketingtag_editor_role)marketingTag-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/marketingTag-editor` |
+| Marketing tags | Read/Write | `/*` |
+
+### [](#_page_editor_role)page-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/page-editor` |
+| Website | Read/Write | `/*` |
+
+### [](#_pages_app_editor_role)pages-app-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/page-app-editor` |
+| Website | Read/Write | `/*` |
+
+### [](#_resources_base_role)resources-base role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Config | Read only | `/modules/resources`<br><br>`/modules/resources/*` |
+| Resources | Read/Write | `/*` |
+| Userroles | Read only | `/resources-base` |
+
+### [](#_resources_editor_role)resources-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/resources-editor` |
+
+| Permission | Path |
+| --- | --- |
+| Get | `./resources/*` |
+
+### [](#_rest_admin_roles)REST admin roles
+
+#### [](#_rest_admin_role)`rest-admin` role
+
+> **Note:** The superuser account has the rest-admin role by default so you can use superuser to test your requests. However, for production use, you should create a custom REST role. The anonymous role is specifically denied access to the REST endpoints.
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `/.rest/*` |
+
+| Applies to | Name | Path |
+| --- | --- | --- |
+| Commands | Delete | `/modules/rest-services/rest-endpoints/commands/enabledCommands/markAsDeleted/access/roles` |
+|     | Publish | `/modules/rest-services/rest-endpoints/commands/enabledCommands/activate/access/roles` |
+
+#### [](#_rest_editor_role)`rest-editor` role
+
+| Permission | Path |
+| --- | --- |
+| Deny | `/.rest*` |
+| Get | `/.rest/delivery/*` |
+| Deny | `/.rest/commands*` |
+| Deny | `/.rest/nodes*` |
+| Get & Post | `/.rest/nodes/v1/website*` |
+| Deny | `/.rest/properties*` |
+| Get & Post | `/.rest/properties/v1/website*` |
+| Get & Post | `/.rest/cache/v1*` |
+
+#### [](#_rest_anonymous_role)`rest-anonymous` role
+
+> **Note:** If you’re a PaaS customer, there are some differences with the rest-anonymous role. This is highlighted below in a PaaS-specific section in the table.
+
+| Permission | Path |
+| --- | --- |
+| Deny | `/.rest*` |
+| Get | `/.rest/delivery/*` |
+| **PaaS only** |     |
+| Get & Post | `/.rest/configuration/*` |
+| Get & Post | `/.rest/cloud/*` |
+| Get | `/.rest/status` |
+
+#### [](#_rest_backup_role)`rest-backup` role
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `/.rest/commands/v2/backup/backup` |
+
+| Applies to | Name | Path |
+| --- | --- | --- |
+| Command | Backup | `/modules/rest-services/rest-endpoints/commands/enabledCommands/backup/access/roles` |
+
+### [](#_rss_aggregator_base_role)rss-aggregator-base role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Data | Read-only | `/rss-aggregator`<br><br>`/rss-aggregator/*` |
+| Rss | Read-only | `/*` |
+| Userroles | Read only | `/rss-aggregator-base` |
+
+### [](#_scripter_role)scripter role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Scripts | Read/Write | `/*` |
+| Userroles | Read only | `/scripter` |
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `*` |
+
+| Applies to | App | Path |
+| --- | --- | --- |
+| App | Groovy | `/modules/groovy/apps/groovy/permissions/roles` |
+
+### [](#_security_base_role)security-base role
+
+| Permission | Path |
+| --- | --- |
+| Deny | `/.magnolia/log4j` |
+| Deny | `/.rest*` |
+
+### [](#_stories_base_role)stories-base role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/stories-base` |
+| Stories | Read only | `/` |
+| Stories | Read only | `/*` |
+
+### [](#_story_editor_role)story-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/stories-editor` |
+| Stories | Read/Write | `/*` |
+
+### [](#_travel_demo_base_role)travel-demo-base role
+
+The \`travel-demo-base role is specific to the demo website. The permissions are the same on both author and public instances.
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Category | Read only | `/tour-types`<br><br>`/tour-types/`<br><br>**<br><br>`/destinations`<br><br>**<br><br>**`/destinations/`** |
+| Dam | Read only | `/*` |
+| Tours | Read only | `/*` |
+| Stories | Deny | `/`<br><br>`/*` |
+| Userroles | Read only | `/travel-demo-base` |
+
+### [](#_travel_demo_admincentral_role)travel-demo-admincentral role
+
+The \`travel-demo-admincentral role is specific to the demo-project example websites. The permissions are the same on both author and public instances.
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `*` |
+
+### [](#_travel_demo_editor_role)travel-demo-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Category | Read/Write | `/*` |
+| Dam | Read/Write | `/*` |
+| Userroles | Read only | `/travel-demo-editor` |
+| Website | Read/Write | `/*` |
+| Stories | Read/Write | `/`<br><br>`/*` |
+
+| Applies to | App | Name | Path |
+| --- | --- | --- | --- |
+| App | Assets |     | `/modules/dam-app/apps/assets/permissions/roles` |
+| Action | Assets | Publish | `/modules/dam-app/apps/assets/subApps/browser/actions/activate/availability/access/roles` |
+| Action | Pages | Publish | `/modules/pages/apps/pages/subApps/browser/actions/activate/availability/access/roles` |
+
+### [](#_travel_demo_publisher_role)travel-demo-publisher role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Userroles | Read only | `/travel-demo-publisher` |
+| Website | Read/Write | `/*` |
+| Stories | Read/Write | `/`<br><br>`/*` |
+
+| Applies to | App | Name | Path |
+| --- | --- | --- | --- |
+| App | Assets |     | `/modules/dam-app/apps/assets/permissions/roles` |
+| Action | Assets | Publish | `/modules/dam-app/apps/assets/subApps/browser/actions/activate/availability/access/roles` |
+| Action | Pages | Publish | `/modules/pages/apps/pages/subApps/browser/actions/activate/availability/access/roles` |
+
+### [](#_travel_demo_tour_editor_role)travel-demo-tour-editor role
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Category | Read/Write | `/tour-types`<br><br>`/tour-types/`<br><br>**<br><br>`/destinations`<br><br>**<br><br>**`/destinations/`** |
+| Dam | Read/Write | `/*` |
+| Tours | Read/Write | `/*` |
+| Userroles | Read only | `/travel-demo-tour-editor` |
+
+### [](#_workflow_editor_role)workflow-editor role
+
+Installed by the `workflow` module (DX Core). Allows editing of content.
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Category | Read/Write | `/*` |
+| Contacts | Read/Write | `/*` |
+| Dam | Read/Write | `/*` |
+| Userroles | Read only | `/editor` |
+| Website | Read/Write | `/*` |
+
+| Applies to | App | Name | Path |
+| --- | --- | --- | --- |
+| Action | Pages | Activate | `/modules/pages/apps/pages/subApps/browser/actions/activate/availability/access/roles` |
+
+### [](#_workflow_publisher_role)workflow-publisher role
+
+Installed by the `workflow` module (DX Core). Allows publishing of content.
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Category | Read only | `/*` |
+| Contacts | Read only | `/*` |
+| Dam | Read only | `/*` |
+| Userroles | Read only | `/publisher` |
+| Website | Read only | `/*` |
+| Workflow | Read/Write | `/*` |
+
+| Applies to | App | Name | Path |
+| --- | --- | --- | --- |
+| Action | Pages | Publish | `/modules/pages/apps/pages/subApps/browser/actions/activate/availability/access/roles` |
+
+### [](#_workflow_base_role)workflow-base role
+
+Base role allowing users to use the `workflow` workspace (DX Core).
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| Workflow | Read/Write | `/*` |
+| Userroles | Read only | `/workflow-base` |
+
+## [](#_groups)Groups
+
+Group permissions are the same on both author and public instances. The three core groups of `developers`, `editors`, and `publishers` are represented in the table. You can find the roles referenced in the table in [Roles](#_roles).
+
+The [travel demo groups](#_travel_demo_groups) are in a subsection after the table.
+
+| Role | Developers | Editors | Publishers |
+| --- | --- | --- | --- |
+| `admincentral-editor` |     |     |     |
+| `admincentral-developer` |     |     |     |
+| `asset-editor` |     |     |     |
+| `category-editor` |     |     |     |
+| `dam-app-core-editor` |     |     |     |
+| `dam-app-jcr-editor` |     |     |     |
+| `definitions-app-developer` |     |     |     |
+| `diff-viewer` |     |     |     |
+| `graphql-developer` |     |     |     |
+| `imaging-editor` |     |     |     |
+| `marketingTag-editor` |     |     |     |
+| `page-editor` |     |     |     |
+| `pages-app-editor` |     |     |     |
+| `resources-editor` |     |     |     |
+| `sso-redirect-uri-authorizer` |     |     |     |
+| `stories-app-editor` |     |     |     |
+| `story-editor` |     |     |     |
+| `tour-editor` |     |     |     |
+| `tourCategory-editor` |     |     |     |
+| `userranking-editor` |     |     |     |
+| `workflow-editor` |     |     |     |
+| `workflow-publisher` |     |     |     |
+
+### [](#_travel_demo_groups)Travel demo groups
+
+#### [](#_travel_demo_pur_group)travel-demo-pur group
+
+The `travel-demo-pur` group is used to organize the editors of the sample websites.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| (none) | `categorization-base` |
+|     | `contact-base` |
+|     | `forum-pagecomments-user` |
+|     | `imaging-base` |
+|     | `travel-demo-base` |
+|     | `travel-demo-pur` |
+
+#### [](#_travel_demo_editors_group)travel-demo-editors group
+
+The `travel-demo-editors` group is used to organize the editors of the sample websites.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| (none) | `travel-demo-admincentral` |
+|     | `travel-demo-editor` |
+|     | `travel-demo-tour-editor` |
+|     | `imaging-base` |
+|     | `security-base` |
+|     | `resources-base` |
+|     | `workflow-base` |
+
+#### [](#_travel_demo_publishers_group)travel-demo-publishers group
+
+The `travel-demo-publishers` group is used to organize the publishers of the sample websites.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| (none) | `travel-demo-admincentral` |
+|     | `travel-demo-publisher` |
+|     | `travel-demo-tour-editor` |
+|     | `security-base` |
+|     | `workflow-base` |
+
+#### [](#_travel_demo_tour_editors_group)travel-demo-tour-editors group
+
+The `travel-demo-tour-editors` group is used to organize editors in the tour apps of the sample websites.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| (none) | `travel-demo-admincentral` |
+|     | `travel-demo-base` |
+|     | `travel-demo-tour-editor` |
+|     | `security-base` |
+|     | `workflow-base` |
+
+## [](#_users)Users
+
+### [](#_eric_user)eric user
+
+The user `eric` is an example editor.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| `travel-demo-editors` | (none) |
+
+### [](#_eric_de_user)eric-de user
+
+The user `eric-de` is an example German editor.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| `travel-demo-editors` | (none) |
+
+### [](#_peter_user)peter user
+
+The user `peter` is an example publisher.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| `travel-demo-publisher` | (none) |
+
+### [](#_tina_user)tina user
+
+The user `tina` is an example tour editor.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| `travel-demo-tour-editors` | (none) |
+
+## [](#_system_users)System users
+
+### [](#_anonymous_system_user)anonymous system user
+
+The system user `anonymous` represents a Web visitor.
+
+> **Warning:** The anonymous role has different permissions on the author and public instances.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| (none) | `anonymous` |
+|     | `categorization-base` |
+|     | `contact-base` |
+|     | `forum-pagecomments-user` |
+|     | `imaging-base` |
+|     | `rest-anonymous` |
+|     | `travel-demo-base` |
+
+### [](#_superuser_system_user)superuser system user
+
+The system user `superuser` represents an administrator who has full access to the system.
+
+| Assigned groups | Assigned roles |
+| --- | --- |
+| (none) |     |
+|     | `superuser` |
+|     | `rest-admin` |
+|     | `forum_ALL_admin` |

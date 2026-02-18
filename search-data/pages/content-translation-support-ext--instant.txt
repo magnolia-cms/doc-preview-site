@@ -1,0 +1,193 @@
+---
+title: "CTSX Instant Translation"
+url: https://docs.magnolia-cms.com/content-translation-support-ext/instant/
+category: Modules
+version: modules
+breadcrumb: Content Translation Extended module > CTSX Instant Translation
+---
+
+# CTSX Instant Translation
+
+[Content management](../../product-docs/7.0/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.0.0 [Magnolia 6.4](../../product-docs/7.0/) compatible
+
+The **CTSX Instant Translation** module adds option (functionality) for quick translation of page/area/component.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+
+> **Important:** In order to be able to use "Quick translate" action, please make sure that the core and apps modules in the Content Translation Extended have already been installed.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.translation</groupId>
+  <artifactId>magnolia-content-translation-support-ext-instant</artifactId>
+  <version>5.0.0</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+There is no need of extra configuration for this module to function properly. The only thing that this module requires is setting a default translator (defaultFlag set to "true").
+
+"Quick translate" action in the magnolia’s action bar will be shown automatically (no need of extra configuration).
+
+![instant](_images/instant.png)
+
+> **Important:** Please note that "Quick translate" action in magnolia’s action bar, translate the component/area/page and save translated content in the JCR.
+
+In case there is no need to save translated content in JCR automatically, you can configure "Quick translate" action on dialog level.
+
+![instant dialog](_images/instant-dialog.png)
+
+To add "Quick translate" secondary action to dialog definition you need to update, dialog’s actions definitions:
+
+commit:
+  $type: commitAction
+cancel:
+  $type: closeAction
+instantTranslation:
+  name: instantTranslation
+  $type: instantTranslationDialogAction
+  label: "Quick translate"
+
+and also dialog’s footer layout definition:
+
+$type: defaultEditorActionLayout
+primaryActions:
+  - commit
+  - cancel
+secondaryActions:
+  - localeSelector
+  - instantTranslation
+
+So dialog definition should look like this:
+
+form:
+  properties:
+    headlineLevel:
+      $type: comboBoxField
+      defaultValue: small
+      datasource:
+        $type: optionListDatasource
+        options:
+          - name: big
+            value: big
+          - name: medium
+            value: medium
+          - name: small
+            value: small
+    headline:
+      $type: textField
+      i18n: true
+    text:
+      class: info.magnolia.dam.app.field.DamRichTextFieldDefinition
+      i18n: true
+    image:
+      $type: damLinkField
+    imagePosition:
+      $type: comboBoxField
+      defaultValue: below
+      datasource:
+        $type: optionListDatasource
+        options:
+          - name: above
+            value: above
+          - name: below
+            value: below
+    imageAltText:
+      $type: textField
+      i18n: true
+    imageTitle:
+      $type: textField
+      i18n: true
+    imageCaption:
+      $type: textField
+      i18n: true
+    imageCredit:
+      $type: textField
+      i18n: true
+  layout:
+    $type: tabbedLayout
+    tabs:
+      - name: tabText
+        fields:
+          - name: headlineLevel
+          - name: headline
+          - name: text
+      - name: tabImage
+        fields:
+          - name: image
+          - name: imagePosition
+          - name: imageAltText
+          - name: imageTitle
+          - name: imageCaption
+          - name: imageCredit
+
+actions:
+  commit:
+    $type: commitAction
+  cancel:
+    $type: closeAction
+  instantTranslation:
+    name: instantTranslation
+    $type: instantTranslationDialogAction
+    label: "Quick translate"
+
+footerLayout:
+  $type: defaultEditorActionLayout
+  primaryActions:
+    - commit
+    - cancel
+  secondaryActions:
+    - localeSelector
+    - instantTranslation
+
+### [](#_configuration_on_content_app)Configuration on content app
+
+In the content app definition, the configuration would look like this:
+
+  editor:
+    class: info.magnolia.ui.contentapp.detail.DetailDescriptor
+    subAppClass: info.magnolia.editor.app.ContentEditorDetailSubApp
+    footerLayout:
+      $type: contentEditorActionLayout
+    actions:
+      close:
+        class: info.magnolia.editor.action.CloseContentEditorActionDefinition
+      instantTranslation:
+        label: "Quick translate"
+        $type: instantTranslationDialogAction
+        availability:
+          rules:
+            isNotDefaultLocale:
+              class: info.magnolia.editor.action.availability.IsNotDefaultLocaleRuleDefinition
+.....
+    footerLayout:
+      $type: defaultContentEditorActionLayout
+      primaryActions:
+        - save
+        - saveAndPublish
+        - close
+      secondaryActions:
+        - localeSelector
+        - instantTranslation
+        - copyContent
+
+## [](#_usage)Usage
+
+Instant translation module uses default translator to translate properties of page/area/component to the language chosen in the language switch.
+
+> **Note:** If page/area/component doesn’t have translatable (i18n=true) properties "Quick translate" action will be disabled.
+
+![instant](_images/instant.png)
+
+![instant lang](_images/instant-lang.png)
+
+### [](#_how_it_works)How it works
+
+-   Select a component/area/page you want to translate.
+
+-   Select desired target language in the language switch.
+
+-   Click "Quick translate" action.

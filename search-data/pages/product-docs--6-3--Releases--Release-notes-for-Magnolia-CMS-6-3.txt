@@ -1,0 +1,630 @@
+---
+title: "Release notes for Magnolia CMS 6.3.0"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.0
+---
+
+# Release notes for Magnolia CMS 6.3.0
+
+[LTS release](../../../../support/) • Delivered on September 4, 2024 • Changelog: [11643](https://magnolia-cms.atlassian.net/issues/?filter=11643)
+
+**Magnolia 6.3.0** is the next step in the digital experience hub for omnichannel. In this major release, we focus particularly on the following areas:
+
+-   Improved search, usability, and UI experience
+
+-   Enhanced overall system performance
+
+-   Refined flexibility of configuration
+
+
+As with any Magnolia release, this release also delivers critical bug and security fixes. We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.0/magnolia-dx-core-webapp-6.3.0.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.0/travel-demo-webapp-6.3.0.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.0/travel-demo-community-webapp-6.3.0.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.0.zip](../../_attachments/mtk2_3.0.0.zip) (*as a light module*)
+
+
+## [](#_whats_new)What’s new
+
+### [](#_search_experience)Search experience
+
+We’re improving the Magnolia search experience by refining its usability and building a more efficient workflow for editors to find and manage relevant content in a seamless way.
+
+More specifically, we bring the [in-app search for Pages and Assets apps](../../Authoring/Search/Searching-for-content/#_targeted_search_within_content_apps), together with usability enhancements to the top navigation and action bar.
+
+![Assets app with all search filters added](../../_images/authoring/assets-app-all-filters.png)
+
+### [](#_usability)Usability
+
+This release brings several usability updates to the [deletion workflow](../../Authoring/Deleting-and-restoring/) as part of our ongoing efforts to improve user experience.
+
+Users benefit from better visual feedback thanks to informative success notification pop-ups upon submitting deletion requests or completing content deletion actions.
+
+Additionally, the Action Bar has been refined with updated titles, action labels, and icons for better clarity.
+
+These improvements aim to make content management smoother and more intuitive for our users.
+
+#### [](#_ckeditor_5)CKEditor 5
+
+Magnolia 6.3 comes with version 5 of the CKEditor, a highly customizable editor which powers the Magnolia [Rich text field](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/).
+
+Version 5 is a modern, state-of-the-art, modular, and highly customizable editor that provides a number of [advanced formatting, editing, and productivity features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html).
+
+A full-featured rich text field with the CKEditor functions bar
+
+![Rich text Field example](../../_images/6-2-11-lightRichTextField-richTextFieldExample.png)
+
+> **Tip:** See also the following resources on the ckeditor.com site:Differences between CKEditor 4 and CKEditor 5Migration from CKEditor 4
+
+### [](#_new_app_home_tab_icon)New app home tab icon
+
+You see a new **Home** tab when you open an app. Each app has this tab, regardless of the number of subapps, to maintain consistency in your user experience.
+
+Use the slider to see the current and previous view.
+
+
+
+![](https://docs.magnolia-cms.com/product-docs/6.3/_images/admincentral/2024_pages-app-example.jpg "Current app with home tab") ![](https://docs.magnolia-cms.com/product-docs/6.3/_images/admincentral/2023_pages-app-example.jpg "Previous app with no home tab")
+
+### [](#_system_performance)System performance
+
+This release brings significant performance-related improvements:
+
+-   A technical preview of [Swift publishing](#performance-tuning:ROOT:Content-structure-and-organization/Internal-vs-external-publication.adoc#_swift_publication)
+
+-   Reworked [observation handling](#performance-tuning:ROOT:Search-and-indexing/JCR-observation-definition.adoc) and its effect on the UI
+
+-   Introduced two new flush cache policies not based on observation: [FlushAllFromPublishingEventPolicy](../../Modules/List-of-modules/Cache-modules/Cache-core/#_flush_policy) and [SiteAwareFlushFromPublishingEventPolicy](#performance-tuning:ROOT:Caching-strategies/Advanced-cache-modules.adoc#_multisite_cache_configuration) in the multisite cache configuration
+
+-   Published a [large-scale content guide and metrics](#performance-tuning:ROOT:index.adoc)
+
+-   [JMX endpoints for performance and load monitoring](#performance-tuning:ROOT:Logging-and-monitoring/JMX-monitoring.adoc)
+
+
+### [](#_configuration)Configuration
+
+#### [](#_microprofile_config)MicroProfile Config
+
+Magnolia 6.3 embraces [MicroProfile Config](https://download.eclipse.org/microprofile/microprofile-config-3.0/microprofile-config-spec-3.0.html), adding state-of-the-art flexibility for external instance configuration. This is applied first to publishing receivers config (moving out of JCR).
+
+For more details, see the following links:
+
+-   [MicroProfile Config](../../Administration/Architecture/configuration-management/microprofile-config/)
+
+    -   [External configuration for publishing receivers](../../Administration/Architecture/configuration-management/microprofile-config/external-configuration-for-publishing-receivers/)
+
+
+
+##### [](#_microprofile_health)MicroProfile Health
+
+Magnolia 6.3 provides [MicroProfile Health](https://download.eclipse.org/microprofile/microprofile-health-4.0.1/microprofile-health-spec-4.0.1.html) endpoints, facilitating deployment with liveness, readiness, and startup probes in Kubernetes environments.
+
+Below is an example of a response payload, following the MicroProfile Health REST interface specification.
+
+```json
+{
+  "status": "UP",
+  "checks": [
+    {
+      "name": "magnolia-instance",
+      "status": "UP",
+      "data": {}
+    }
+  ]
+}
+```
+
+As a consequence, the `status` path in the [Health check API](../../Developing/API/Health-check-API/#_status_path) is deprecated in Magnolia 6.3.
+
+#### [](#_reworked_configuration_sources)Reworked configuration sources
+
+Magnolia 6.3 streamlines the `ConfigurationSources` implementation by following the general trend of moving definitions from JCR to YAML.
+
+**Key changes**
+
+-   You can pull definitions from variable sources.
+
+-   The registry keeps no resolved configuration state on its own.
+
+-   A configuration source keeps the state of the definitions it discovers.
+
+-   Validation can still be applied at the registry level.
+
+-   A built-in facility for observation changes is available.
+
+
+> **Caution:** A drawback of these changes is, however, that YAML configurations can no longer inherit configurations in JCR. If you want to inherit an existing definition that’s supplied via JCR configuration, you must migrate it to a YAML file.Inheriting from YAML remains fully functional.
+
+#### [](#_default_user_groups_and_roles)Default user groups and roles
+
+Magnolia 6.3 introduces a *modular privilege pattern* to increase the coherence and traceability of roles in the system. You can now onboard users with only an assignment to groups, with everything framed by better traceability and an overview of privileges.
+
+Each Magnolia module is now responsible for providing roles describing access (privileges) to the resources it provides.
+
+For more details, see [Roles, groups and users](../../Administration/IAM/Roles-groups-and-users/).
+
+#### [](#_multiple_login_providers_for_sso)Multiple login providers for SSO
+
+Magnolia 6.3 provides the ability to use default Magnolia users as well as SSO-based users to log into Magnolia. This guarantees that you can always access the Magnolia instance even if your Identity Provider (IdP) is down.
+
+For more details on SSO updates, see the [master@magnolia-sso:ROOT:changelog.adoc](#master@magnolia-sso:ROOT:changelog.adoc).
+
+#### [](#_ietf_language_tags)IETF language tags
+
+Magnolia now supports [*IETF Language Tags*](https://en.wikipedia.org/wiki/IETF_language_tag) (also known as *BCP 47*). These tags are used in most web standards and allow for a more flexible and semantically accurate representation of language variations and local specificities.
+
+The support is done through a more permissive `languageTag` property in [language configuration](../../Administration/Language/Language-configuration/) (`LocaleDefinitions`).
+
+> **Note:** Since Magnolia 6.3.0, the IETF-compliant i18n support (info.magnolia.cms.i18n.IetfI18nContentSupport) is the default implementation.
+
+-   [MAGNOLIA-8709](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-8709) Allow use of IETF language tags
+
+
+## [](#_improvements)Improvements
+
+### [](#_functionality)Functionality
+
+-   [MAGNOLIA-8380](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-8380) Add debug logging for tracking `SystemRepositoryStrategy` instances
+
+-   [MAGNOLIA-9258](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9258) Exclude observation listeners from the config workspace from registering a `EventListenerMBean`
+
+-   [MAGNOLIA-9388](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9388) Add postLogoutRedirectUrl property for `LoginHandler`
+
+-   [MGNLCACHE-240](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-240) Optimise `EhCache3Factory` cache wrapping functionality
+
+-   [MGNLCACHE-369](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-369) Prevent cache entries duplications
+
+-   [MGNLDAM-1429](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1429) Make bulk restore recursive in the Assets app
+
+-   [MGNLDAM-1471](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1471) Set `allowedMimeTypePattern` for the multiple upload feature
+
+-   [MGNLDAM-1522](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1522) Declutter the Upload CTAs in the Assets chooser
+
+-   [MGNLMAIL-114](https://magnolia-cms.atlassian.net/browse/MGNLMAIL-114) Upgrade or restore Mail Tools app
+
+
+### [](#_authentication)Authentication
+
+-   [MGNLMAIL-136](https://magnolia-cms.atlassian.net/browse/MGNLMAIL-136) Implement OAuth 2.0 authentication
+
+
+### [](#_rest_api)REST API
+
+-   [MGNLREST-799](https://magnolia-cms.atlassian.net/browse/MGNLREST-799) Add a way to force maximum limit of nodes returned by Delivery API endpoint
+
+-   [MGNLREST-803](https://magnolia-cms.atlassian.net/browse/MGNLREST-803) Change default of `maxLimit` property from 1000 to 100
+
+
+### [](#_user_experience)User experience
+
+-   [MGNLUI-7570](https://magnolia-cms.atlassian.net/browse/MGNLUI-7570) Global `SafeHtmlValidatorDefinition` validator doesn’t accept HTML comment block
+
+-   [MGNLUI-8082](https://magnolia-cms.atlassian.net/browse/MGNLUI-8082) `FormView#getPropertyValue` could support composite fields
+
+-   [MGNLUI-8807](https://magnolia-cms.atlassian.net/browse/MGNLUI-8807) Update CKEditor 4 to `4.24.0-lts`
+
+-   [MGNLUI-8828](https://magnolia-cms.atlassian.net/browse/MGNLUI-8828) The first tab (Home) label should be customizable
+
+-   [MGNLUI-8939](https://magnolia-cms.atlassian.net/browse/MGNLUI-8939) Change the modifier of `pasteSingleItem` from `private` to `protected` in `JcrClipboard`
+
+
+### [](#_miscellaneous)Miscellaneous
+
+-   [ADMINCTR-520](https://magnolia-cms.atlassian.net/browse/ADMINCTR-520) Revert feature-toggle-based App Launcher config
+
+-   [ADMINCTR-549](https://magnolia-cms.atlassian.net/browse/ADMINCTR-549) Long sticker content breaking the UI
+
+-   [DEV-2454](https://magnolia-cms.atlassian.net/browse/DEV-2454) Verify upgrade with Cloudinary and OpenAI
+
+-   [IMGREC-117](https://magnolia-cms.atlassian.net/browse/IMGREC-117) Sunset `local-image-recognition` submodule
+
+-   [MAGNOLIA-7739](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-7739) Remove old pages app from webapps
+
+-   [MAGNOLIA-8286](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-8286) As a developer, I can add a servlet via annotation or web.xml
+
+-   [MAGNOLIA-8341](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-8341) As a developer, I need a feature flag to enable servlet though annotation or web xml
+
+-   [MAGNOLIA-8440](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-8440) Replace Reflections library with ClassGraph
+
+-   [MAGNOLIA-8481](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-8481) Review ConfigurationSource / Registry refactoring potential blindspots
+
+-   [MAGNOLIA-9181](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9181) Expose EventListenerMBean for monitoring
+
+-   [MAGNOLIA-9183](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9183) Expose QueryStatManagerMBean for monitoring
+
+-   [MAGNOLIA-9184](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9184) Expose RepositoryStatistics for monitoring
+
+-   [MAGNOLIA-9198](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9198) Refactor ProviderImpl to gain access to the RepositoryContext
+
+-   [MAGNOLIA-9219](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9219) Provide MicroProfile ConfigSources for webapp WEB-INF resources
+
+-   [MAGNOLIA-9242](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9242) Revert locking of the `config` workspace
+
+-   [MAGNOLIA-9244](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9244) Align liveness & readiness with standard MicroProfile Health API
+
+-   [MAGNOLIA-9357](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9357) Consolidate the accessibility of superuser in Magnolia webapp
+
+-   [MAGNOLIA-9437](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9437) Synchronize node ID’s in new bootstraps with old nodes for editors and publishers groups
+
+-   [MGNLCE-304](https://magnolia-cms.atlassian.net/browse/MGNLCE-304) Replace Reflections library with ClassGraph
+
+-   [MGNLCE-323](https://magnolia-cms.atlassian.net/browse/MGNLCE-323) Swap default MySQL repo config to Connector/J 8
+
+-   [MGNLDAM-1486](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1486) Missing `i18` German translation for new asset dialog
+
+-   [MGNLEE-815](https://magnolia-cms.atlassian.net/browse/MGNLEE-815) Ship `content-editor` `v2` with 6.3.0
+
+-   [MGNLGQL-123](https://magnolia-cms.atlassian.net/browse/MGNLGQL-123) Update to graphql `17.4` or higher
+
+-   [MGNLGROOVY-256](https://magnolia-cms.atlassian.net/browse/MGNLGROOVY-256) Update Groovy to latest stable `4.0.x`
+
+-   [MGNLIMG-232](https://magnolia-cms.atlassian.net/browse/MGNLIMG-232) Create `imaging-editor` role that allows retrieval from `/.imaging/*`
+
+-   [MGNLLIC-91](https://magnolia-cms.atlassian.net/browse/MGNLLIC-91) Replace Reflections library with ClassGraph
+
+-   [MGNLREST-411](https://magnolia-cms.atlassian.net/browse/MGNLREST-411) Replace Reflections library with ClassGraph
+
+-   [MGNLREST-775](https://magnolia-cms.atlassian.net/browse/MGNLREST-775) Health check API should also check the database connection
+
+-   [MGNLREST-781](https://magnolia-cms.atlassian.net/browse/MGNLREST-781) Implement Health check rest endpoint
+
+-   [MGNLSITE-105](https://magnolia-cms.atlassian.net/browse/MGNLSITE-105) Site definition registry
+
+-   [MGNLUI-7184](https://magnolia-cms.atlassian.net/browse/MGNLUI-7184) Replace Reflections library with ClassGraph
+
+-   [MGNLUI-7693](https://magnolia-cms.atlassian.net/browse/MGNLUI-7693) Remove support for deprecated `linkField#chooser` config
+
+-   [MGNLUI-8438](https://magnolia-cms.atlassian.net/browse/MGNLUI-8438) Performance: Configurable JCR observation delay and the option to disable observation
+
+-   [MGNLUI-8695](https://magnolia-cms.atlassian.net/browse/MGNLUI-8695) Add extra popup confirmation in the delete workflow
+
+-   [MGNLUI-8703](https://magnolia-cms.atlassian.net/browse/MGNLUI-8703) Update the Action Bar title, actions' labels and icons
+
+-   [MGNLWORKFLOW-484](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW-484) Java 17 - Content isn’t allowed in `prolog` - `/mgnl-nodetypes/workflow-jbpm-nodetypes.xml` - Convert to CND
+
+-   [MGNLWORKFLOW-495](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW-495) Complete Simple Workflow "Marked for deletion" changes to all the apps
+
+-   [PAGES-1459](https://magnolia-cms.atlassian.net/browse/PAGES-1459) Show status label in the footer of the page detail
+
+-   [PSWDMNGR-12](https://magnolia-cms.atlassian.net/browse/PSWDMNGR-12) Split Password Manager module into `core` and `app` submodules
+
+-   [PSWDMNGR-37](https://magnolia-cms.atlassian.net/browse/PSWDMNGR-37) Solve Password manager topic in SaaS
+
+-   [PUBLISHING-318](https://magnolia-cms.atlassian.net/browse/PUBLISHING-318) Remove default receiver config from module’s MicroProfile Config
+
+
+## [](#_java_17)Java 17
+
+Java 17 is the build baseline of Magnolia 6.3. Magnolia 6.3 also runs on the latest Java versions, as specified in the [Certified stack](../../Administration/Certified-stack/).
+
+## [](#_artifact_changes)Artifact changes
+
+### [](#_unification_of_extensions)Unification of extensions
+
+Each module has been re-categorized into a [Core module, Extension, or Framework](../../Modules/), as well as being assigned to a defined [business-case category](../../). Modules follow a new uniform module structure, which is easier to understand for both the user and the developer.
+
+> **Tip:** For more details, see Old module packs, new extensions.
+
+### [](#_travel_demo_webapps_extracted_to_the_demo_project)Travel Demo webapps extracted to the Demo project
+
+The Community and DX Core Demo webapps are now part of the Magnolia Demo project. Their artifact names have changed:
+
+-   For DX Core, from `dx-core-demo-webapp` to `travel-demo-webapp`.
+
+-   For Community, from `magnolia-community-demo-webapp` to `travel-demo-community-webapp`.
+
+
+### [](#_local_image_recognition_module_discontinued)Local image recognition module discontinued
+
+We are discontinuing the option to use a local, pre-trained neural network for the [Image Recognition module](#image-recognition:ROOT:index.adoc). This feature was experimental and relied on outdated and unmaintained libraries. Amazon Rekognition becomes the reference implementation for the Image Recognition module.
+
+## [](#_key_bug_fixes)Key bug fixes
+
+-   [ADMINCTR-479](https://magnolia-cms.atlassian.net/browse/ADMINCTR-479) Logout from external IdPs no longer works
+
+-   [CFGUI-154](https://magnolia-cms.atlassian.net/browse/CFGUI-154) Definitions app displays the same problem twice
+
+-   [CONTEDIT-597](https://magnolia-cms.atlassian.net/browse/CONTEDIT-597) Stories `Multiblock` `Others` button doesn’t obey the YAML definition
+
+-   [CONTEDIT-609](https://magnolia-cms.atlassian.net/browse/CONTEDIT-609) Stories aren’t rendered
+
+-   [CONTEDIT-614](https://magnolia-cms.atlassian.net/browse/CONTEDIT-614) Copy blocks from fallback doesn’t copy text fields with 'rows' attribute
+
+-   [MAGNOLIA-9214](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9214) Instances randomly fail to start up on fast machines
+
+-   [MAGNOLIA-9342](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9342) `TabbedForm` shows definition error
+
+-   [MGNLCACHE-367](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-367) Cache redirect doesn’t include response header on redirect responses
+
+-   [MGNLCACHE-370](https://magnolia-cms.atlassian.net/browse/MGNLCACHE-370) Potential cache header poisoning - include headers in cache keys
+
+-   [MGNLDAM-1482](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1482) New File Upload doesn’t set Multipart Boundary when uploading assets via chooser
+
+-   [MGNLDAM-1484](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1484) Handle EXTDAM exceptions better so that they don’t break the Assets chooser
+
+-   [MGNLDEMO-428](https://magnolia-cms.atlassian.net/browse/MGNLDEMO-428) Component with JavaScript model isn’t rendered on stories page
+
+-   [MGNLDEMO-431](https://magnolia-cms.atlassian.net/browse/MGNLDEMO-431) Remove dependency on old `dam-app` compatibility
+
+-   [MGNLEE-829](https://magnolia-cms.atlassian.net/browse/MGNLEE-829) Cannot upload archives with JavaScript
+
+-   [MGNLGQL-164](https://magnolia-cms.atlassian.net/browse/MGNLGQL-164) Cannot access GraphQL app and GraphQL API
+
+-   [MGNLMAIL-198](https://magnolia-cms.atlassian.net/browse/MGNLMAIL-198) Can’t use `ThreadedMailHandler` handler
+
+-   [MGNLMAIL-206](https://magnolia-cms.atlassian.net/browse/MGNLMAIL-206) Fix `6.2` to `6.3` migration tests
+
+-   [MGNLPER-192](https://magnolia-cms.atlassian.net/browse/MGNLPER-192) `JcrSearchResultSupplier` generates inefficient queries
+
+-   [MGNLRES-404](https://magnolia-cms.atlassian.net/browse/MGNLRES-404) Create `resources-editor` role that allows retrieval from `/.resources/*`
+
+-   [MGNLREST-361](https://magnolia-cms.atlassian.net/browse/MGNLREST-361) Configuration property to control the depth of referenced nodes
+
+-   [MGNLREST-655](https://magnolia-cms.atlassian.net/browse/MGNLREST-655) `richTextLinkReferenceResolver` doesn’t resolve localised links for all languages
+
+-   [MGNLREST-800](https://magnolia-cms.atlassian.net/browse/MGNLREST-800) Performance on resolver resolution
+
+-   [MGNLREST-804](https://magnolia-cms.atlassian.net/browse/MGNLREST-804) `assetReferenceResolver` returns different asset link
+
+-   [MGNLSITE-214](https://magnolia-cms.atlassian.net/browse/MGNLSITE-214) Empty webapp can’t be started without site JCR module
+
+-   [MGNLUI-8710](https://magnolia-cms.atlassian.net/browse/MGNLUI-8710) Multi field with nested composite fields needs a click to display the fields
+
+-   [MGNLUI-8780](https://magnolia-cms.atlassian.net/browse/MGNLUI-8780) JCR Multi field throws exception on dialog without an existing node
+
+-   [MGNLUI-8785](https://magnolia-cms.atlassian.net/browse/MGNLUI-8785) RichText area problem while resizing
+
+-   [MGNLUI-8863](https://magnolia-cms.atlassian.net/browse/MGNLUI-8863) Some actionbars are collapsed by default
+
+-   [MKTAUT-177](https://magnolia-cms.atlassian.net/browse/MKTAUT-177) `marketing-automation-ui` deprecation issue
+
+-   [PAGES-1057](https://magnolia-cms.atlassian.net/browse/PAGES-1057) Paste action fails due to an area node not being created
+
+-   [PAGES-1620](https://magnolia-cms.atlassian.net/browse/PAGES-1620) Adding SVG to an HTML component template breaks edit mode
+
+-   [PAGES-1624](https://magnolia-cms.atlassian.net/browse/PAGES-1624) `DefaultSoftLockingView` may not be added
+
+-   [PAGES-1626](https://magnolia-cms.atlassian.net/browse/PAGES-1626) `VariantSelectorViewDefinition` may not be added
+
+-   [PSWDMNGR-60](https://magnolia-cms.atlassian.net/browse/PSWDMNGR-60) Don’t generate new keypair if one already exists
+
+-   [TXTREC-109](https://magnolia-cms.atlassian.net/browse/TXTREC-109) Text Classification module not working properly on demo environments
+
+
+## [](#_third_party_library_updates)Third-party library updates
+
+This release comes with a number of third-party library updates, see the [Magnolia Third-party library BOM 6.3.0](https://gitlab.magnolia-platform.com/pd/build/boms/-/blob/magnolia-bom-6.3.0/pom.xml?ref_type=tags).
+
+### [](#_notable_updates)Notable updates
+
+-   [BUILD-709](https://magnolia-cms.atlassian.net/browse/BUILD-709) Upgrade groovyVersion to `3.0.10`
+
+-   [BUILD-697](https://magnolia-cms.atlassian.net/browse/BUILD-697) Upgrade log4jVersion to `2.17.2`
+
+-   [BUILD-717](https://magnolia-cms.atlassian.net/browse/BUILD-717) Upgrade micrometer.version to `1.7.10`
+
+-   [BUILD-849](https://magnolia-cms.atlassian.net/browse/BUILD-849) Upgrade Vaadin version to `8.26`
+
+-   [BUILD-679](https://magnolia-cms.atlassian.net/browse/BUILD-679) Upgrade xStreamVersion to `1.4.19`
+
+
+## [](#_upgrading_to_6_3)Upgrading to 6.3
+
+See [Upgrading to Magnolia 6.3](../../Upgrading-to-Magnolia/).
+
+### [](#_performance_tuning)Performance tuning
+
+The [Performance tuning guide](#master@performance-tuning:ROOT:index.adoc) provides an overview of performance-related topics that could help improve the operation and capabilities of your upgraded Magnolia setup.
+
+## [](#_known_issues)Known issues
+
+Due to the complexity and number of code changes, we’re still aware of some known issues in this major release, which we aim to address in the next 6.3 maintenance releases.
+
+For the latest information, see the [6.3 list of known issues](https://magnolia-cms.atlassian.net/issues/?filter=12464).
+
+> **Note:** Issues discovered after the release are listed in the 6.3.0 known issues page.
+
+## [](#_new_or_updated_modules)New or updated modules
+
+-   AWS Foundation `2.0.0`
+
+-   About `6.3.0`
+
+-   Admincentral-legacy `6.3.0`
+
+-   Admincentral `6.3.0`
+
+-   Advanced Cache `3.0.0`
+
+-   Blossom `4.0.0`
+
+-   CKEditor 5 Build `1.0.0`
+
+-   Cache `6.0.0`
+
+-   Categorization `3.0.0`
+
+-   Community Edition `6.3.0`
+
+-   Contacts App `2.0.0`
+
+-   Content Dependencies `3.0.0`
+
+-   Content Editor `3.0.0`
+
+-   Content Importer `2.0.0`
+
+-   Content Tags `3.0.0`
+
+-   Content Translation Support `3.0.0`
+
+-   Content Types `2.0.0`
+
+-   DAM `4.0.0`
+
+-   DX Core `6.3.0`
+
+-   Definitions App `3.0.0`
+
+-   Demo Projects `6.3.0`
+
+-   Diff `3.0.0`
+
+-   Form `3.0.0`
+
+-   Freemarker Templating Samples `6.3.0`
+
+-   GraphQL `2.0.0`
+
+-   Groovy `4.0.0`
+
+-   Icons `29`
+
+-   Image Recognition `2.0.0`
+
+-   Imaging `4.0.0`
+
+-   JCR Tools `2.0.0`
+
+-   Javascript Models `3.0.0`
+
+-   LDAP Connector `2.0.0`
+
+-   Language Bundles `2.0.0`
+
+-   License `2.0.0`
+
+-   Log Tools `2.0.0`
+
+-   Magnolia `6.3.0`
+
+-   Mail `6.0.0`
+
+-   Marketing Tags Manager `3.0.0`
+
+-   Messages `6.3.0`
+
+-   Multisite `3.0.0`
+
+-   Observation `3.0.0`
+
+-   Pages `6.3.0`
+
+-   Password Manager `2.0.0`
+
+-   Periscope `2.0.0`
+
+-   Personalization `3.0.0`
+
+-   Public User Registration `3.0.0`
+
+-   Publishing Transactional `2.0.0`
+
+-   Publishing `2.0.0`
+
+-   REST Client UI `2.0.0`
+
+-   REST Client `3.0.0`
+
+-   REST Framework `3.0.0`
+
+-   Ranker `2.0.0`
+
+-   Repository Tools `2.0.0`
+
+-   Resources `4.0.0`
+
+-   Scheduler `3.0.0`
+
+-   Security `7.0.0`
+
+-   Single Sign On `4.0.0`
+
+-   Site `2.0.0`
+
+-   SiteMesh `2.0.0`
+
+-   Soft Locking `4.0.0`
+
+-   Synchronization `3.0.0`
+
+-   Task Management `2.0.0`
+
+-   Tasks `6.3.0`
+
+-   Templating Essentials `3.0.0`
+
+-   Text Classification `2.0.0`
+
+-   Third-party library BOM for Extensions `6.3.0`
+
+-   Third-party library BOM `6.3.0`
+
+-   UI `6.3.0`
+
+-   Usage Metrics `2.0.0`
+
+-   Vaadin Compatibility Addons `1.3.17`
+
+-   Webhooks `2.0.0`
+
+-   Workflow `7.0.0`
+
+
+### [](#_extensions)Extensions
+
+-   A/B/n Testing [`2.0.0`](../../Modules/List-of-modules/ABn-testing/ABn-testing-module/#_changelog)
+
+-   AI Accelerator [`2.0.0`](#ai-accelerator:ROOT:index.adoc)
+
+-   Blossom [`4.0.0`](../../Modules/List-of-modules/Blossom-module/)
+
+-   Cloudinary External DAM [`2.0.0`](../../../../cloudinary/1.3/)
+
+-   Campaign Manager [`4.0.0`](#campaign-manager:ROOT:index.adoc)
+
+-   CTSX DeepL Translator [`3.4.14`](../../../../content-translation-support-ext/deepl/)
+
+-   JavaScript UI module [`2.1.0`](#ui-framework-javascript:ROOT:index.adoc)
+
+-   Live Copy [`4.0.0`](#live-copy:ROOT:changelog.adoc)
+
+-   Privacy [`3.0.0`](../../Modules/List-of-modules/Privacy-module/)
+
+-   REST Proxy [`2.0.0`](#rest-proxy:ROOT:index.adoc)
+
+-   Segment CDP extension [`1.1.1`](#cdp-integration-framework:segment:index.adoc)
+
+-   Solr Search Provider [`8.0.0`](../../Modules/List-of-modules/Solr-module/)
+
+-   SSO [`4.0.0`](#master@magnolia-sso:ROOT:changelog.adoc)
+
+
+### [](#_integration_frameworks)Integration frameworks
+
+-   Analytics integration framework [`2.0.0`](../../Modules/extensions-and-frameworks/analytics-integration-framework/analytics-changelog/)
+
+-   CDP integration framework [`1.1.1`](#cdp-integration-framework:ROOT:index.adoc)
+
+-   Commerce integration framework [`2.0.0`](#ecommerce:ROOT:changelog.adoc)
+
+-   Content Translation Extended framework [`3.4.14`](../../../../content-translation-support-ext/)
+
+-   External DAM integration framework [`2.0.0`](../../Modules/extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_external_dam_module_changelog)
+
+-   Marketing Automation integration framework [`2.0.0`](../../Modules/extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-module/#_changelog)
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release.
+
+Thanks a mill!
+
+Special thanks go out to Marco Blasco, Thomas Comiotto, Björn Eschle, Philipp Gaschuetz, Rico Jansen, Marvin Kerkhoff, Martijn Kooijman, Denis Lobo, Juan Miguel Ruiz Ladrón, Pierre Sandrin, Marzena Sieradzka, Frank Sommer, Antonio Tuor, Janek Valgma, and Andrey Zavodnik.

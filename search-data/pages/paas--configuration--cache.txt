@@ -1,0 +1,359 @@
+---
+title: "Cache"
+url: https://docs.magnolia-cms.com/paas/configuration/cache/
+category: DX Cloud
+version: cloud
+breadcrumb: DX Cloud > Cache
+---
+
+# Cache
+
+You can see cache information directly in your Cockpit in the [Content delivery](../../cockpit/sections/content-delivery/) section. You can configure what items are cached.
+
+To configure what to cache, you need to update the configuration in your Magnolia instance and not directly via the CDN.
+
+> **Tip:** Typically, you would find this at:/modules/cache/config/contentCaching/defaultPageCache/browserCachePolicy/policies/resources
+
+Default cached items
+
+By default, CSS, JavaScript, and images are cached. Pages are not cached by default. However, you can configure your policy to cache Pages.
+
+See [Server cache policy](#_server_cache_policy) for help with that.
+
+## [](#_configuration)Configuration
+
+Cache configuration is defined in `/modules/cache/config/contentCaching/`. Within each configuration you can define:
+
+-   What to cache.
+
+-   When to flush the cache.
+
+-   What header data to pass to browsers.
+
+-   Specific implementations of tasks.
+
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+| Node name | Value |
+| --- | --- |
+| 📁 modules |     |
+| 📁 cache |     |
+| 📁 config |     |
+| 📁 contentCaching |     |
+| ⸬ defaultPageCache |     |
+| ⸬ uuid-key-mapping |     |
+| ⸬ compression |     |
+| ⸬ cacheFactory |     |
+| ⬩ cacheResponseThreshold | 1000 |
+
+> **Note:** The default value for cacheResponseThreshold is 500. For more information and configuration details, see the [_cache_threshold] subsection below.
+
+To select one of the cache configurations, set the `defaultContentCachingConfigurationName` parameter in the [Cache filter](../../../product-docs/7.0/Administration/Architecture/Request-processing-and-filters/Filters/). The chosen configuration is read into a JavaBean using the [Node2Bean mechanism](../../../product-docs/7.0/Administration/Architecture/Configuration-management/), making it dynamically available to your own module code.
+
+| Node name | Value |
+| --- | --- |
+| 📁 server |     |
+| 📁 filters |     |
+| 📁 cache |     |
+| ⬩ defaultContentCachingConfigurationName | defaultPageCache |
+| ⬩ class | info.magnolia.module.cache.filter.CacheFilter |
+
+### [](#_policy_configuration)Policy configuration
+
+Caching behavior for each configuration is defined with policies.
+
+#### [](#_server_cache_policy)Server cache policy
+
+This policy defines whether the requested content should be cached or not. The decision to cache relies on [voters](../../../product-docs/7.0/Administration/Voters/), which are used whenever configuration values aren’t assigned at startup but depend on rules.
+
+Voters evaluate a rule such as *should content residing at this URL be cached* and return a positive or negative response. By default, all content on public instances is cached except the AdminCentral UI at `/.magnolia`. Server cache policy is configured in `/modules/cache/config/contentCaching/defaultPageCache/cachePolicy`.
+
+The default implementation (info.magnolia.module.cache.cachepolicy.Default) checks if the content exists in the cache store and requests caching if the content is not found. The alternative class (info.magnolia.module.cache.cachepolicy.Never) instructs the cache not to store the generated content. Server-side re-caching of no-cache requests (shift reload) is configurable and set to `false` by default.
+
+| Node name | Value |
+| --- | --- |
+| ⸬ defaultPageCache |     |
+| ⸬ cachePolicy |     |
+| ⸬ shouldBypassVoters |     |
+| ⸬ urls |     |
+| ⸬ deny |     |
+| ⸬ parameters |     |
+| ⸬ whitelist |     |
+| ⬩ 0 | ^utm\_.\*$ |
+| ⸬ resources |     |
+| ⬩ class | info.magnolia.module.cache.cachepolicy.Default |
+| ⬩ refreshOnNoCacheRequests | false |
+
+##### [](#_whitelisting_specific_parameters)Whitelisting specific parameters
+
+Since Magnolia 6.2.30, under `../shouldBypassVoters/deny/parameters/whitelist`, you can configure a key-value(regex) map of request parameters that should be ignored and hence their requests cached as a result.
+
+As shown in the example above, the map configured there causes caching of all requests containing the `utm_`\* tracking tag(s), which could otherwise generate a high server load, for example when sending marketing mails or other material utilizing the `utm_`\* tracking tag(s).
+
+##### [](#_cache_key_generator)Cache key generator
+
+You can define a custom cache key generator or configure the default one to meet your needs.
+
+|     |     |
+| --- | --- |
+| 📁 cache |     |
+| 📁 config |     |
+| 📁 contentCaching |     |
+| ⸬ defaultPageCache |     |
+| ⸬ cachePolicy |     |
+| ⸬ shouldBypassVoters |     |
+| ⸬ ttlVoters |     |
+| ⸬ cacheKeyGenerator |     |
+| ⬩ useRequestParameters | false |
+| ⬩ class | info.magnolia.module.cache.cachekey.DefaultCacheKeyGenerator |
+| ⬩ class | info.magnolia.module.cache.cachepolicy.Default |
+
+| Attribute | Default | Description |
+| --- | --- | --- |
+| `useUri` | `true` | Use URI as part of cache key. |
+| `useRequestParameters` | `true` | Use request query as part of cache key. |
+| `useRequestMethod` | `true` | Use request method (GET/POST/HEAD) as part of cache key. |
+| `useRequestServerName` | `true` | Use server name as part of cache key. |
+| `useRequestGetSecure` | `true` | Save information whether this request was made using a secure channel, such as HTTPS as part of cache key. |
+| `useUserName` | `true` | Use user name as part of cache key. |
+| `useLocale` | `true` | Use locale `info.magnolia.cms.core.AggregationState#getLocale` as part of cache key. |
+| `useChannel` | `true` | Use channel `info.magnolia.cms.core.AggregationState#getChannel` as part of cache key. |
+
+#### [](#_client_browser_cache_policy)Client (browser) cache policy
+
+Allows for different policies for different content types. [Voters](../../../product-docs/7.0/Administration/Architecture/Configuration-management/) are used to define the caching rules.
+
+These policies define how long the browser may cache each content type. The time is passed to the browser in the response header.
+
+-   info.magnolia.module.cache.browsercachepolicy.FixedDuration instructs the browser to cache the content for the specified length of time in minutes.
+
+-   info.magnolia.module.cache.browsercachepolicy.Never instructs the browser to do nothing.
+
+
+> **Tip:** Client cache policy is configured in /modules/cache/config/contentCaching/defaultPageCache/browserCachePolicy.
+
+##### [](#_cache_control_directives)Cache-Control directives
+
+Using the `directives` property, you can also specify standard [`Cache-Control` directives](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control#cache_directives).
+
+> **Note:** The directives property is only applied to info.magnolia.module.cache.browsercachepolicy.FixedDuration.
+
+This is where we define cache headers. [Fastly](https://www.fastly.com/) processes these defined headers. You can also set certain headers so that it affects only Fastly and not the browser cache.
+
+> **Tip:** See Fastly’s docs for more on controlling cache.
+
+**Example configuration**
+
+| Node name | Value |
+| --- | --- |
+| ⸬ defaultPageCache |     |
+| ⸬ browserCachePolicy |     |
+| ⸬ policies |     |
+| ⸬ disableBrowserCacheInDevelopMode |     |
+| ⸬ voters |     |
+| ⸬ developMode |     |
+| ⬩ class | info.magnolia.voting.voters.PropertyVoter |
+| ⬩ property | magnolia.develop |
+| ⬩ value | true |
+| ⬩ class | info.magnolia.module.cache.browsercachepolicy.FixedDuration |
+| ⸬ farFuture |     |
+| ⬩ class | info.magnolia.module.cache.browsercachepolicy.FixedDuration |
+| ⬩ expirationMinutes | 525600 |
+| ⸬ voters |     |
+| ⸬ resources |     |
+| ⬩ class | info.magnolia.module.cache.browsercachepolicy.FixedDuration |
+| ⬩ expirationMinutes | 60  |
+| ⸬ voters |     |
+| ⬩ op | OR  |
+| ⸬ dotResources |     |
+| ⬩ class | info.magnolia.voting.voters.URIStartsWithVoter |
+| ⬩ pattern | /.resources/ |
+| ⸬ contentType |     |
+| ⬩ class | info.magnolia.voting.voters.RequestExtensionVoter |
+| ⬩ emptyExtensionVote | false |
+| ⸬ allowed |     |
+| ⬩ css | css |
+| ⬩ js | js  |
+| ⸬ dontCachePages |     |
+| ⬩ class | info.magnolia.module.cache.browsercachepolicy.Never |
+| ⸬ voters |     |
+| ⸬ default |     |
+| ⬩ class | info.magnolia.module.cache.browsercachepolicy.FixedDuration |
+| ⬩ directives | public, max-age=604800, immutable |
+| ⬩ expirationMinutes | 10  |
+| ⬩ class | info.magnolia.module.cache.browsercachepolicy.BrowserCachePolicySet |
+
+> **Note:** Since Magnolia 6.2.34, the emptyExtensionVote property can control the behavior of the RequestExtensionVoter class in case the request URL has no extension. The default value is true.
+
+#### [](#_flush_policy)Flush policy
+
+The flush policy defines when to flush the cache. There are three policies, two of which are installed by default.
+
+**Flush upon changes from content publication**
+
+The default policy is `info.magnolia.module.cache.flushpolicy.FlushAllFromPublishingEventPolicy`, and you can set it via `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/flushAll@class`.
+
+This configuration flushes the cache whenever a publishing event is completely finished.
+
+The cache can only be flushed completely. Each module can register its own flush policy (or multiple policies) and receive events in each workspace. Flush policies are informed about notifications from the publication module. By default, all workspaces are allowed to flush unless they’re listed under the `excludedWorkspaces` subnode. Alternatively, you can list the allowed workspaces per policy under the `workspaces` subnode of each policy.
+
+**Flush upon changes in workspaces**
+
+This configuration observes changes (content publication, import, edit) in a workspace and flushes the cache if new or modified content is detected.
+
+The cache can be flushed completely, partially or not at all. Each module can register its own flush policy (or multiple policies) and receive notifications about new or modified content in each workspace. Flush policies are informed about changes in observed workspaces. By default, all workspaces trigger a cache flush unless they’re listed under the `excludedWorkspaces` subnode.
+
+> **Tip:** Performance aspectsTo improve performance, list the observed workspaces per policy under the workspaces subnode of each policy.If your custom workspace doesn’t affect the content of pages, you should register it under excludedWorkspaces, otherwise, a change in that workspace unnecessarily flushes the cache.
+
+To enable this configuration, set `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/flushAll@class` to `info.magnolia.module.cache.FlushAllListeningPolicy`.
+
+**Flush upon changes in light modules**
+
+> **Warning:** Magnolia 5.6.1+: A change in the light modules folder may also flush the server cache. See /modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/lightModule/pathToCacheMappings/defaultPageCache with the pattern property, which specifies the pattern for the operation. The default value is ./(templates|webresources|i18n)/.. Node nameValue⸬ defaultPageCache     ⸬ flushPolicy         ⸬ policies             ⸬ flushAll                 ⸬ excludedWorkspaces                     ⬩ forumforum                     ⬩ imagingimaging                     ⬩ magnolia-mgnlSystemmagnolia-mgnlSystem                     ⬩ magnolia-mgnlVersionmagnolia-mgnlVersion                     ⬩ messagesmessages                     ⬩ profilesprofiles                     ⬩ usersusers                 ⬩ classinfo.magnolia.module.cache.FlushAllListeningPolicy             ⸬ lightModules                 ⸬ defaultPageCache                     ⬩ cacheNamedefaultPageCache                     ⬩ pattern.*/(templateswebresourcesi18n)/.*                 ⬩ classinfo.magnolia.module.cache.flushpolicy.LightModuleChangesFlushPolicy         ⬩ classinfo.magnolia.module.cache.DelegateFlushPolicy
+
+#### [](#_executors)Executors
+
+These are actions taken once a caching decision is made. There are three possible actions:
+
+1.  `useCache`: Retrieves the cached item from the cache and streams it to the client.
+
+2.  `store`: Stores the response in the cache for future use.
+
+3.  `bypass`: Skips caching. This is useful for content that can’t or shouldn’t be cached.
+
+
+> **Tip:** Executors can be configured at /modules/cache/config/contentCaching/defaultPageCache/executors. Each of the executors is also responsible for configuring expiration headers.
+
+| Node name | Value |
+| --- | --- |
+| ⸬ defaultPageCache |     |
+| ⸬ executors |     |
+| ⸬ bypass |     |
+| ⸬ store |     |
+| ⸬ useCache |     |
+
+##### [](#_cacheable_response_codes)Cacheable response codes
+
+By default, all cacheable response codes are cached. For a full list, see [RFC-7231: Overview of Status Codes](https://www.rfc-editor.org/rfc/rfc7231#section-6.1) and [RFC 7233: 206 Partial Content](https://www.rfc-editor.org/rfc/rfc7233#section-4.1).
+
+Using the `cacheableResponseCodes` property, you can define exactly which codes you want cached.
+
+```yaml
+...
+defaultPageCache:
+  executors:
+    store:
+      cacheContent:
+        cacheableResponseCodes: 200,300,400 (1)
+...
+```
+
+|     |     |
+| --- | --- |
+| **1** | Where `200`, `300`, and `400` are cached only. |
+
+##### [](#_response_headers_in_redirect_requests)Response headers in redirect requests
+
+Setting `cacheHeadersInRedirects` to `true` allows headers to be included in the response of the redirect request (`302`).
+
+```yaml
+...
+defaultPageCache:
+  executors:
+    store:
+      cacheContent:
+        cacheHeadersInRedirects: true (1)
+...
+```
+
+|     |     |
+| --- | --- |
+| **1** | By default, the property is set to `false` to keep the behavior consistent with the previous versions. |
+
+##### [](#_whitelisting_headers_to_be_included_in_a_cache_key)Whitelisting headers to be included in a cache key
+
+Under `allowedRequestHeaders`, you can list headers that can be included in a cache key.
+
+```yaml
+...
+defaultPageCache:
+  cachePolicy:
+    cacheKeyGenerator:
+      allowedRequestHeaders:
+        x-my-header: x-my-header (1)
+...
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `x-my-header` is allowed in this example, but the list is empty by default. |
+
+### [](#_compression)Compression
+
+Compression is a simple and effective way to save bandwidth and speed up your site. It’s a common practice used by Google and Yahoo! for example. ([How to Optimize Your Site with GZIP Compression](http://betterexplained.com/articles/how-to-optimize-your-site-with-gzip-compression/) is a great general introduction to the topic).
+
+Compression is performed in the gzip filter, configured in `/server/filters/gzip`}. When a client requests a resource such as `index.html`, Magnolia delivers it zipped. A typical HTML page is compressed to 20% of its original size. So if your page is 100 kB uncompressed, it’s 20 kB compressed. To improve performance further, zipped content is streamed from the repository to the client rather than read into memory first.
+
+#### [](#_configuring)Configuring
+
+You can configure which content types to compress. By default, the gzip filter bypasses compression for HTML, JavaScript and CSS because they’re explicitly selected for compression in the Cache module configuration. These types can be compressed efficiently because they’re text. The decision to compress a particular content type is made with voters. Voters are used whenever configuration values aren’t assigned at startup but depend on rules instead. In the Cache module configuration there are three voting rules based on content type:
+
+-   `text/html`: HTML.
+
+-   `application/x-javascript`: JavaScript.
+
+-   `text/css`: Cascading Style Sheets.
+
+
+| Node name | Value |
+| --- | --- |
+| 📁 cache |     |
+| 📁 config |     |
+| ⸬ compression |     |
+| ⸬ voters |     |
+| ⸬ contentType |     |
+| ⸬ allowed |     |
+| ⬩ 1 | text/html |
+| ⬩ 2 | application/x-javascript |
+| ⬩ 3 | text/css |
+| ⬩ class | info.magnolia.voting.voters.RequestExtensionVoter |
+
+To add more content types, such as XML, create a numbered property under `allowed`. Use the Internet media type (MIME type) as value. Here are some [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types):
+
+-   `application/xhtml-xml`: XHTML.
+
+-   `text/csv`: Comma-separated value.
+
+-   `text/plain`: Textual data.
+
+-   `text/xml`: Extensible Markup Language.
+
+-   `application/pdf`: Portable Document Format.
+
+
+> **Note:** As a rule, compressing the HTML, JavaScript and CSS is sufficient; it’s not necessary to compress binary content such as images. During the process, the browser sends a header telling the server that it accepts compressed content: Accept-Encoding: gzip. Note that Magnolia doesn’t cache big binaries.
+
+#### [](#_testing_compression)Testing compression
+
+To test your compression configuration, use a tool such as [Web-Sniffer](http://websniffer.cc/) that allows you to change the `Accept`, `Encoding` and `User-Agent` sent headers easily. Here’s what the headers look like when the [Magnolia demo site](http://demopublic.magnolia-cms.com/demo-project) home page [is submitted](http://web-sniffer.net/?url=http%3A%2F%2Fdemopublic.magnolia-cms.com%2Fdemo-project.html&submit=Submit&http=1.1&gzip=yes&type=GET&uak=3)^ to the sniffer.
+
+Request header
+
+```none
+GET /demo-project.html HTTP/1.1 Host: demopublic.magnolia-cms.com
+Connection: close User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1;
+de; rv:1.9) Gecko/2008052906 Firefox/3.0 Accept-Encoding: gzip
+Accept-Charset: ISO-8859-1,UTF-8;q=0.7,*;q=0.7 Cache-Control: no
+Accept-Language: de,en;q=0.7,en-us;q=0.3 Referer: http://web-sniffer.net
+```
+
+Response header
+
+```none
+Status: HTTP/1.1 200 OK Date: Fri, 23 Jul 2010 07:45:10 GMT Server:
+Apache/2.2.9 X-Magnolia-Registration: Registered Cache-Control:
+max-age=900 Last-Modified: Thu, 01 Jul 2010 14:03:12 GMT
+Content-Encoding: gzip Vary: Accept-Encoding Content-Length: 3852
+Connection: close Content-Type: text/html;charset=UTF-8
+```

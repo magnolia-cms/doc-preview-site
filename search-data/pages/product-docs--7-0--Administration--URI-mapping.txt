@@ -1,0 +1,89 @@
+---
+title: "URI mapping"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Administration/URI-mapping/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > URI mapping
+---
+
+# URI mapping
+
+This page and its two subpages describe two URI mapping mechanisms in Magnolia, the *URI to repository* *mapping* and the *virtual URI mapping*.
+
+## [](#_uri_url_urn)URI, URL, URN
+
+URI stands for Uniform Resource Identifier, a string of characters which identifies a resource. URI falls into two subsets:
+
+-   Uniform Resource Names (URNs).
+
+-   Uniform Resource Locators (URLs).
+
+
+The former is a location-independent naming scheme that is used to identify a resource, the latter a means of *locating* the resource by describing its primary access mechanism. The most common type of locator is a Web address (URL).
+
+For example, `urn:isbn:9780199535729` should identify the resource as a 2008 paperback impression of *Moby Dick* by Herman Melville. In digital form, the text of the Melville’s novel can be located on the internet through the following URLs:
+
+-   [`http://www.gutenberg.org/files/2701/2701-h/2701-h.htm`](http://www.gutenberg.org/files/2701/2701-h/2701-h.htm).
+
+-   [`http://www.gutenberg.org/files/2701/2701-0.txt`](http://www.gutenberg.org/files/2701/2701-0.txt).
+
+-   [`ftp://ftp.ibiblio.org/pub/docs/books/gutenberg/2/7/0/2701/2701-h/2701-h.htm`](ftp://ftp.ibiblio.org/pub/docs/books/gutenberg/2/7/0/2701/2701-h/2701-h.htm).
+
+
+## [](#_uri_mapping_in_general)URI mapping in general
+
+URI mapping is a way to redirect an incoming request to a content location which has a different underlying path than the one in the incoming request. Consider the following scenario:
+
+A marketing agency has a system of product marketing campaigns for specific periods of the year. The individual landing pages for product campaigns may reside on the agency’s server under very long paths:
+
+/campaigns/us/automotive/gauss/2016/modelA.html
+/campaigns/us/automotive/gauss/2016/modelB.html
+/campaigns/us/automotive/gauss/2017/modelA.html
+/campaigns/us/automotive/gauss/2017/modelB.html
+
+### [](#_a_user_friendly_path_vs_full_path)A user-friendly path vs full path
+
+While somebody who visits the website frequently may have no difficulty remembering the long path pattern, it can pose an obstacle for everybody else. The agency may thus decide to offer an alternative routing to the individual campaigns. Instead of releasing the 2017 US campaign for the Model A under the long path `gauss-automotive.com/campaigns/us/automotive/gauss/2017/modelA.html`, the company decides to roll out the campaign with just `gauss-automotive.com/2017modelA`.
+
+In this case, the system will need to know that every request arriving in this short form has to be interpreted differently since no campaign page `/2017modelA` exists in the hierarchy of pages on the server:
+
+![Path mapping](../../_images/6-2-URImappings-general.png)
+
+A mapping rule will have to be configured for this on the `gauss-automotive.com` site:
+
+/2017modelA > /campaigns/us/automotive/gauss/2017/modelA.html
+
+## [](#_uri_mapping_in_magnolia)URI mapping in Magnolia
+
+In the context of Magnolia there are two types of URI mapping: *URI to repository mapping* and *virtual URI mapping.*
+
+### [](#_uri_to_repository_mapping)URI to repository mapping
+
+[URI to repository mapping](URI-to-repository-mapping/) determines which repository node should be served when a particular URI is requested.
+
+### [](#_virtual_uri_mapping)Virtual URI mapping
+
+[Virtual URI mapping](Virtual-URI-mapping/) allows you to create short, convenient URLs that do not match the site hierarchy exactly.
+
+For more details about the mappings, follow the respective links.
+
+## [](#_page_name_conflicts_with_uri_mappings)Page name conflicts with URI mappings
+
+Sometimes, an editor may give a new page a name that is identical with the value in the configuration of an already existing URI mapping. This could result in hiding the new page from the readers, redirecting each request for the page to a different page. If such a conflict appears, Magnolia will inform the editor about the potential danger by placing a warning icon next to the name of the newly created page:
+
+![Page name conflicts with URI mappings warning](../../_images/6-0-URIMappings-pageConflicts.png)
+
+## [](#_further_reading)Further reading
+
+-   [URIs, URLs, and URNs: Clarifications and Recommendations 1.0](https://www.w3.org/TR/uri-clarification/) (w3.org)
+
+-   [Naming and Addressing: URIs, URLs, …](https://www.w3.org/Addressing/) (w3.org)
+
+-   [Uniform Resource Identifier](https://en.wikipedia.org/wiki/Uniform_Resource_Identifier) (a Wikipedia entry)
+
+
+Related topics
+
+-   [URI to repository mapping](URI-to-repository-mapping/)
+
+-   [Virtual URI mapping](Virtual-URI-mapping/)

@@ -1,0 +1,53 @@
+---
+title: "REST and GraphQL"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Features/REST-and-GraphQL/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Magnolia DXP > Leverage Magnolia’s APIs
+---
+
+# REST and GraphQL
+
+Endpoints enable other software to get real, raw content directly from Magnolia. This is how mobile apps, front-end JavaScript apps, or systems, like e-commerce or banking systems, can connect with Magnolia.
+
+With our out-of-the-box [REST Delivery](#3.1@rest:api:delivery-endpoint.adoc) and [GraphQL](../../Developing/API/GraphQL-API/) endpoints, this is easy and fast to set up, more powerful and more performant than ever.
+
+Choose whether the Delivery endpoint or the GraphQL endpoint is most relevant for your use case. The Delivery endpoint is very convenient in giving you the full content from a page in the [Pages app](../../Apps/List-of-apps/Pages-app/) and a story from the [Stories app](../../Apps/List-of-apps/Stories-app/) with one simple call. On the other hand, if you need to retrieve content from a content app (a specialized app type for managing structured content, see [Content Types](../Content-Types/)) and you want control of exactly which properties and related content is included, GraphQL is most convenient.
+
+You can use both in your project. REST Delivery and GraphQL are not competitors. Rather, they complement each other to provide you with the flexibility for discrete content retrieval scenarios.
+
+For more information about the endpoints, see the following links:
+
+## [](#_rest_reference)REST reference
+
+-   [REST module](#3.1@rest:ROOT:index.adoc)
+
+-   [REST Client module](../../Modules/List-of-modules/REST-Client-module/)
+
+-   [REST security](../../Modules/List-of-modules/REST-module/REST-security/)
+
+
+## [](#_graphql_reference)GraphQL reference
+
+-   [GraphQL module](../../Modules/List-of-modules/GraphQL-module/)
+
+
+## [](#_apis)APIs
+
+-   [3.1@rest:api:delivery-endpoint.adoc](#3.1@rest:api:delivery-endpoint.adoc)
+
+-   [GraphQL API](../../Developing/API/GraphQL-API/)
+
+
+## [](#_tutorials_and_how_to_guides)Tutorials and how-to-guides
+
+Note: The following two resources are part of *hd.magnolia-cms.com*.
+
+-   [Hello Magnolia - Headless](../../Developing/headless/getting-started-with-magnolia-headless/hello-headless/)
+
+-   [Hello Magnolia - SPA](../../Developing/headless/getting-started-with-magnolia-headless/hello-spa/)
+
+
+## [](#_see_also)See also
+
+-   Phil Sturgeon: [GraphQL vs REST: Overview](https://web.archive.org/web/20201109040555/https://phil.tech/2017/graphql-vs-rest-overview/) (snapshot at archive.org)

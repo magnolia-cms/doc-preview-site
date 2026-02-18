@@ -1,0 +1,71 @@
+---
+title: "UI Framework REST Extensions module"
+url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/UI-Framework-REST-Extensions-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > UI Framework REST Extensions module
+---
+
+# UI Framework REST Extensions module
+
+[Developer productivity](../../../use-cases/developer-productivity/) Bundled: DX Core
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLRESTUI](https://magnolia-cms.atlassian.net/browse/MGNLRESTUI) |
+| Maven site | [Nexus](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Frestclient%2Fmagnolia-rest-client-ui%2F3.0.0) |
+| Latest | 3.0.0 |
+
+The Magnolia UI Framework REST Extensions module is a DX Core Edition feature which complements the [REST Client module](../REST-Client-module/) by enabling configured REST clients as:
+
+-   Datasources of subapps and UI elements such as the [link field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/) or [Combobox field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Combobox-field/).
+
+-   [Search result suppliers](REST-search-result-suppliers-for-Global-Search/) for the [Global Search](../../../Authoring/Search/Global-search/).
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.restclient</groupId>
+  <artifactId>magnolia-rest-client-ui</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_configuration)Configuration
+
+No configuration is required in this module. For REST Client configuration properties, see the [REST Client module](../REST-Client-module/) page.
+
+## [](#_usage)Usage
+
+Examples of using the UI Framework REST Extensions:
+
+-   [REST search result suppliers for Periscope: Sample REST integration](REST-search-result-suppliers-for-Global-Search/#_sample_rest_integration)
+
+-   [Example REST client configurations: Simple client configuration (Case 1b)](../REST-Client-module/Example-REST-client-configurations/#_b_used_for_a_content_app)
+
+
+### [](#_handling_offline_datasources)Handling offline datasources
+
+The module provides two additional [field types](../../../Developing/Templating/Dialog-definition/Field-definition/#_field_types) to handle offline datasources:
+
+-   `jsonLinkField`
+
+-   `jsonComboBoxField`
+
+
+These types wrap the `linkField` and `comboBoxField` types, respectively, and check whether REST calls are working properly. If an error occurs, a label appears next to the component that uses the REST field type and the component is disabled.
+
+Related topics
+
+-   [REST Client module](../REST-Client-module/)
+
+-   [Example REST client configurations](../REST-Client-module/Example-REST-client-configurations/)
