@@ -14,33 +14,11 @@ A `CustomerMagnoliaHomePersistentVolumeAlmostFull` alert is firing
 
 > **Note:** CustomerMagnoliaHomePersistentVolumeAlmostFull alerts are sent to subscribers via email.
 
-## [](#_observations)Observations
-
-Here are the details on the alerts:
-
-### [](#_alert_customermagnoliahomepersistentvolumealmostfull)Alert: CustomerMagnoliaHomePersistentVolumeAlmostFull
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>(kubelet_volume_stats_available_bytes{persistentvolumeclaim=~"magnolia-home.*"} / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~"magnolia-home.*"}) * 100 &lt; 10</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>10</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>namespace</code></p></li><li><p><code>pvc</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_determine_current_size_of_magnolia_home_persistent_volume)Determine current size of Magnolia home persistent volume
-
-The name of the persistent volume claim and its namespace are contained in the alert, for example "database-prod-magnolia-helm-public-db-0".
-
-You can find the details on the persistent volume by displaying the persistent volume claim using kubectl:
-
-```bash
-kubectl -n <namespace from alert> get pvc <persistent volume claim from alert>
-```
-
-Executing the above will list the size of the persistent volume:
-
-```bash
-$ kubectl -n prod get pvc magnolia-home-prod-magnolia-helm-public-0
-NAME                                        STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-magnolia-home-prod-magnolia-helm-public-0   Bound    pvc-30bb25b4-289f-4029-946e-29197a5aea44   10Gi       RWO            gp2            228d
-```
-
-> **Note:** The value is listed in the CAPACITY column.
+| **Expression** | `(kubelet_volume_stats_available_bytes{persistentvolumeclaim=~"magnolia-home.*"} / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~"magnolia-home.*"}) * 100 < 10` |
+| --- | --- |
+| **Delay** | `10` minutes |
+| **Labels** | `team: customer` |
+| **Annotations** | • `summary` • `description` • `tenant` • `cluster_id` • `cluster_name` • `namespace` • `pvc` |
 
 ## [](#_solutions)Solutions
 

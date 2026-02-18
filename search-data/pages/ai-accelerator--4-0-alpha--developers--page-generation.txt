@@ -1,0 +1,64 @@
+---
+title: "Configure page generation"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/page-generation/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Page generation
+---
+
+# Configure page generation
+
+Generate full pages based on your template sets.
+
+> **Important:** Only components and templates that are enabled using availableTemplates and availableComponents can be used for generating pages.
+
+## [](#_activation)Activation
+
+To activate the feature:
+
+1.  Go to the `<light-module-folder>/<light-module-name>/decorations/pages-app/apps/pages-app.yaml` file in your project.
+
+2.  Ensure that you have the following in the file:
+
+    `<light-module-folder>/<light-module-name>/decorations/pages-app/apps/pages-app.yaml`
+
+    ```yaml
+    subApps:
+      browser:
+        actions:
+          generatePage:
+            label: Generate page
+            $type: openDetailSubappAction
+            icon: icon-add-item
+            appName: pages-app
+            subAppName: generatePage
+            availability:
+              root: true
+              writePermissionRequired: true
+              nodeTypes:
+                page: mgnl:page
+              rules:
+                notDeleted:
+                  $type: jcrIsDeletedRule
+                  negate: true
+        actionbar:
+          sections:
+            crud:
+              groups:
+                abTest:
+                add-delete:
+                  items:
+                    - name: generatePage
+      generatePage: (1)
+        class: info.magnolia.ai.automations.ui.AiAssistedSubAppDescriptor
+        label: Generate page
+        fieldScript: /ai-accelerator-ui/webresources/page-generator/app.html
+        parameters:
+          assetsFolder: /
+          minCharacterOfAIPrompt: 5 # optional: default 2
+          maxCharacterOfAIPrompt: 1000 # optional: default 500
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Generate the page. |

@@ -1,0 +1,55 @@
+---
+title: "Init command for project initialization"
+url: https://docs.magnolia-cms.com/magnolia-cli/getting-started/init/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Init command for project initialization
+---
+
+# Init command for project initialization
+
+The `init` command initializes a Magnolia CLI project in your current directory. It automatically detects your project type and configures the necessary files and dependencies.
+
+## [](#_running_the_command)Running the command
+
+In your project directory, run:
+
+```console
+npx @magnolia/cli@latest init
+```
+
+The command does the following steps:
+
+-   Detect the project type.
+
+-   Create or validate the `package.json` with `"type": "module"`.
+
+-   Install the `@magnolia/cli` as a dependency.
+
+-   Add the `"mgnl": "node node_modules/@magnolia/cli"` script.
+
+-   Create the `mgnl.config.js` (or `mgnl.config.mjs`, for CommonJS projects),
+
+-   For Headless Accelerator projects: Run `ha install` if available.
+
+
+> **Caution:** For Headless Accelerator projects, ensure that the ha-cli and ha commands are installed. For more details, see the HA Documentation.
+
+> **Note:** If your project has already been initialized, the command detects this and exits without making any changes.
+
+## [](#_next_steps)Next steps
+
+After the initialization:
+
+1.  Browse the [available plugins](../../plugins/) to find the ones you need.
+
+2.  Add plugins: `npm run mgnl — add-plugin <plugin-name>`.
+
+3.  Run CLI commands as needed.
+
+
+| Error type | How to fix |
+| --- | --- |
+| Invalid `package.json` | Fix the syntax errors before running the `init` again. |
+| `mgnl.config.js` file errors | Review and fix import or syntax errors in your config file. |
+| Headless Accelerator setup failures | Run `ha install` manually if needed. For more details, see the [HA Documentation](https://ha.magnolia-cms.com/) |

@@ -1,0 +1,58 @@
+---
+title: "Modal"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/modal/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Modal
+---
+
+# Modal
+
+The Modal component displays a popup window containing a title and body text, which supports basic formatting. It includes a separate "Open" button with customizable text, shown on the page. You can also choose to have the modal open by default.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `defaultOpen` (optional) - Checkbox to define whether the modal is open by default.
+
+-   `openButtonText` (required) - The text displayed on the button that triggers the modal.
+
+-   `modalTitle` (required) - The title displayed at the top of the modal.
+
+-   `modalText` (optional) - Rich text content shown inside the modal body.
+
+
+## [](#_behavior)Behavior
+
+-   The component renders a button using the `openButtonText` value.
+
+-   When clicked, the modal opens and displays:
+
+    -   The `modalTitle` as a heading.
+
+    -   The `modalText` as body content, if provided.
+
+
+-   If `defaultOpen` is enabled, the modal appears on page load.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Modal -p modal
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

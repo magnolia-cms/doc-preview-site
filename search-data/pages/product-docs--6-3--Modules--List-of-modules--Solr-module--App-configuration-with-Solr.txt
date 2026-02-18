@@ -12,7 +12,7 @@ breadcrumb: DX Core > Modules > Solr module > App configuration with Solr
 
 The Solr Workbench submodule of the Magnolia [Solr module](../) provides a Magnolia Solr container that can be used instead of the JCR container for list, search and thumbnail views in a content app.
 
-This page describes how to configure the submodule to use Solr’s functionality in the 5 UI [Assets app](../../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/List-of-apps-5-UI/Assets-app-5-UI/) and for indexing of the assets it manages.
+This page describes how to configure the submodule to use Solr’s functionality in the 5 UI [Assets app](#6.2@product-docs:ROOT:Support/Magnolia-5-UI-documentation/Content-apps-5-UI/List-of-apps-5-UI/Assets-app-5-UI.adoc) and for indexing of the assets it manages.
 
 The Solr container, which fetches data indexed in the [Apache Solr](http://solr.apache.org/) search platform, is recommended to be used when [handling large numbers of assets](../../../../Authoring/Managing-assets/#_how_to_handle_large_amount_of_assets).
 
@@ -28,63 +28,30 @@ When Apache Solr is running, create a new core called `dam_wokbench` for the Ass
 
 > **Note:** magnolia_data_driven_schema_configs is a directory name which must exist in the Solr installation, under server/solr/configsets/.
 
-## [](#_dam_workspace_indexers)DAM workspace indexers
-
-The Solr Workbench module comes with two preconfigured DAM workspace indexers:
-
--   `damWorkbenchAssets`
-
--   `damWorkbenchFolders`
-
-
-To enable them, set the following properties to `true`:
-
--   `/modules/content-indexer/config/indexers/damWorkbenchAssets@enabled`
-
--   `/modules/content-indexer/config/indexers/damWorkbenchFolders@enabled`
-
-
-For more information about configuring indexers, see [Indexer configuration](../Indexing-and-crawling-a-website-with-Solr/#_indexer_configuration).
-
-The preconfigured configuration:
-
 | Node name | Value |
 | --- | --- |
-| damWorkbenchAssets |     |
-| clients |     |
-| dam\_wokbench | dam\_wokbench |
-| fieldMappings |     |
-| caption | asset\_caption |
-| contributor | asset\_contributor |
-| copyright | asset\_copyright |
-| coverage | asset\_coverage |
-| description | asset\_description |
-| extension | asset\_extension |
-| fileName | asset\_filename |
-| languages | asset\_languages |
-| name | asset\_name |
-| publisher | asset\_publisher |
-| relation | asset\_relation |
-| source | asset\_source |
-| subject | asset\_subject |
-| title | asset\_title |
+| damWorkbenchAssets |  |
+| clients |  |
+| dam_wokbench | dam_wokbench |
+| fieldMappings |  |
+| caption | asset_caption |
+| contributor | asset_contributor |
+| copyright | asset_copyright |
+| coverage | asset_coverage |
+| description | asset_description |
+| extension | asset_extension |
+| fileName | asset_filename |
+| languages | asset_languages |
+| name | asset_name |
+| publisher | asset_publisher |
+| relation | asset_relation |
+| source | asset_source |
+| subject | asset_subject |
+| title | asset_title |
 | enabled | false |
 | nodeType | mgnl:asset |
 | assetProviderId | jcr |
-| rootNode | /   |
-| type | dam-workbench |
-| workspace | dam |
-
-| Node name | Value |
-| --- | --- |
-| damWorkbenchFolders |     |
-| clients |     |
-| dam\_wokbench | dam\_wokbench |
-| fieldMappings |     |
-| enabled | false |
-| nodeType | mgnl:folder |
-| assetProviderId | jcr |
-| rootNode | /   |
+| rootNode | / |
 | type | dam-workbench |
 | workspace | dam |
 
@@ -103,7 +70,7 @@ class: info.magnolia.search.solrsearchprovider.workbench.SolrJcrContentConnector
 client: dam_workbench
 ```
 
-For more about content connectors, see [Content connector configuration](../../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/App-configuration-5-UI/Content-connector-5-UI/).
+For more about content connectors, see [Content connector configuration](#6.2@product-docs:ROOT:Support/Magnolia-5-UI-documentation/Content-apps-5-UI/App-configuration-5-UI/Content-connector-5-UI.adoc).
 
 ### [](#_content_view)Content View
 

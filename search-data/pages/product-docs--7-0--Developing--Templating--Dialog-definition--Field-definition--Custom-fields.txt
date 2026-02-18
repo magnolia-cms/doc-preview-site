@@ -12,9 +12,9 @@ You can create your own fields when the default fields do not meet your requirem
 
 You can start by looking through the [Vaadin sampler](http://demo.vaadin.com/sampler/). When you find a matching field, implement it as a simple Vaadin [Field](https://vaadin.com/api/framework/8/com/vaadin/client/ui/Field.html) in Magnolia.
 
-If you need a more complex field that is a composition of more than one simple field, look at the [composite field](../List-of-fields/Composite-field/) or implement a Vaadin [CustomField](https://vaadin.com/api/framework/8/com/vaadin/ui/CustomField.html).
+If you need a more complex field that is a composition of more than one simple field, look at the [composite field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Composite-field/) or implement a Vaadin [CustomField](https://vaadin.com/api/framework/8/com/vaadin/ui/CustomField.html).
 
-`personaSwitcher` is an example of a custom field. Editors can quickly switch between [personas](../../../../../use-cases/Personalization/) while previewing the page.
+`personaSwitcher` is an example of a custom field. Editors can quickly switch between [personas](../../../../../../RNs-6-4-3/use-cases/Personalization/) while previewing the page.
 
 > **Note:** This custom field definition is part of the Magnolia 6 UI framework.If you work with the Magnolia 5 UI framework, see instead.
 
@@ -32,7 +32,7 @@ A factory class creates and initializes Vaadin fields based on the field definit
 
 #### [](#_example)Example
 
-The info.magnolia.ui.field.factory.TextFieldFactory creates a [text field](../List-of-fields/Text-field/). It contains logic to react to the definition properties.
+The info.magnolia.ui.field.factory.TextFieldFactory creates a [text field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/). It contains logic to react to the definition properties.
 
 -   If the `rows` property equals `1`, the factory creates a single-line input element.
 
@@ -47,7 +47,7 @@ A field class is only needed if you cannot find a single Vaadin field that meets
 
 #### [](#_example_2)Example
 
-A [link field](../List-of-fields/Link-field/) is a combination of a text box and a button. Vaadin does not provide this combination out of the box, so a info.magnolia.ui.field.LinkField class that extends Vaadin [CustomField](https://vaadin.com/api/framework/8/com/vaadin/ui/CustomField.html) is needed. The custom field class provides a layout with a text field on the left and a button on the right. It also registers a preview component that displays a thumbnail of the link target if defined.
+A [link field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/) is a combination of a text box and a button. Vaadin does not provide this combination out of the box, so a info.magnolia.ui.field.LinkField class that extends Vaadin [CustomField](https://vaadin.com/api/framework/8/com/vaadin/ui/CustomField.html) is needed. The custom field class provides a layout with a text field on the left and a button on the right. It also registers a preview component that displays a thumbnail of the link target if defined.
 
 The link field is an example that provides all three (definition, factory and field) classes:
 

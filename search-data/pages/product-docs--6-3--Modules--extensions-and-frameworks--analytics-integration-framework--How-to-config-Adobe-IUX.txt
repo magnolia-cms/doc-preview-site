@@ -42,7 +42,7 @@ In our first use case, we want to display Adobe analytics in an IUX slot to show
 
 In our example, we want to show the following data:
 
-![Example IUX slot](../../../../_images/analytics/visitors-of-travel-with-7day-period-in-Adobe-Analytics.png)
+![Example IUX slot](../../../../../RNs-6-4-3/_images/analytics/visitors-of-travel-with-7day-period-in-Adobe-Analytics.png)
 
 The chart, or report, above shows us the number of visits to the page `/travel` from 30 June to 6 July.
 
@@ -64,11 +64,11 @@ Here are the steps to set up a custom variable in **Adobe Launch** to store all 
 
 1.  In Adobe Launch, add a `nodePath` Data Element.
 
-    ![IUX slot](../../../../_images/analytics/nodePath-data-element.png)
+    ![IUX slot](../../../../../RNs-6-4-3/_images/analytics/nodePath-data-element.png)
 
 2.  Edit your existing Rules to set up an `eVar1` variable
 
-    ![IUX slot](../../../../_images/analytics/set-variables-action-in-rules.png)
+    ![IUX slot](../../../../../RNs-6-4-3/_images/analytics/set-variables-action-in-rules.png)
 
 3.  Make sure you publish every change in **Publishing Flow**.
 
@@ -88,11 +88,11 @@ Here are the steps to set up a custom variable in **Adobe Launch** to store all 
 
 Example of changes in the MTK template
 
-![IUX slot](../../../../_images/analytics/mtk-head-changes.png)
+![IUX slot](../../../../../RNs-6-4-3/_images/analytics/mtk-head-changes.png)
 
 Example of changes in the Travel template
 
-![IUX slot](../../../../_images/analytics/travel-demo-marketing-tags-head-changes.png)
+![IUX slot](../../../../../RNs-6-4-3/_images/analytics/travel-demo-marketing-tags-head-changes.png)
 
 ### [](#_javascript_alternative_to_get_the_node_path)JavaScript alternative to get the node path
 
@@ -116,7 +116,7 @@ If you don’t want to get the node path using Free marker code, you can replace
 
 2.  Ensure your script can send `eVar1`. You can check using the [Adobe Experience Platform Debugger](https://experienceleague.adobe.com/docs/platform-learn/data-collection/debugger/overview.html?lang=en).
 
-    ![IUX slot](../../../../_images/analytics/adobe-debug.png)
+    ![IUX slot](../../../../../RNs-6-4-3/_images/analytics/adobe-debug.png)
 
 
 > **Note:** We recommend you try to fetch your report with Adobe Swagger first to ensure the custom variable eVar1 is working.Example JSON body request:{
@@ -166,13 +166,13 @@ For this use case, you follow the same steps as in use case 1 with some changes 
 
 1.  In Adobe Launch, add a `pathName` Data Element.
 
-    ![Add a data element](../../../../_images/analytics/data-element-page-path-name.png)
+    ![Add a data element](../../../../../RNs-6-4-3/_images/analytics/data-element-page-path-name.png)
 
 2.  Edit your existing Rules to set up the `eVar2` variable.
 
     > **Tip:** In this example, we use a custom variable called eVar2,but you can use any custom variable available that suits your requirements.
 
-    ![Edit rules](../../../../_images/analytics/set-evar2-for-page-path-name.png)
+    ![Edit rules](../../../../../RNs-6-4-3/_images/analytics/set-evar2-for-page-path-name.png)
 
 3.  Ensure your script can send `eVar2` by **Adobe debugger**
 

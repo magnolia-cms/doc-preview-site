@@ -8,7 +8,7 @@ breadcrumb: DX Core > Upgrading to Magnolia 6.3
 
 # Upgrading to Magnolia 6.3
 
-This page has information about upgrading to Magnolia 6.3 from earlier and [currently supported versions](../../../support/release-support-and-life-cycle/). Before starting the upgrade process, we recommend you:
+This page has information about upgrading to Magnolia 6.3 from earlier and [currently supported versions](#support:ROOT:eol.adoc). Before starting the upgrade process, we recommend you:
 
 -   Update to the latest maintenance release of Magnolia `6.2` first.
 
@@ -29,7 +29,7 @@ You must update your helm chart to the latest version. For more, see [Magnolia 6
 
 -   **You must not**:
 
-    [Override (hotfix) JCR resources](../Developing/Resources/#_overriding_resources) in the Resource Files app before upgrading to Magnolia 6.3.
+    [Override (hotfix) JCR resources](../../RNs-6-4-3/Developing/Resources/#_overriding_resources) in the Resource Files app before upgrading to Magnolia 6.3.
 
 -   **You must**:
 
@@ -82,87 +82,13 @@ You must update your helm chart to the latest version. For more, see [Magnolia 6
 
 
 
-## [](#_platform_updates)Platform updates
-
-### [](#_java_17)Java 17
-
-Magnolia 6.3 requires Java 17, but also runs on Java 21 (latest LTS).
-
-### [](#_jakarta_ee_8)Jakarta EE 8
-
-To keep the updating process from `6.2` straightforward, Magnolia `6.3` remains on the Jakarta EE 8 baseline.
-
-However, in preparation for the upcoming breaking update to Jakarta EE 9+, we have updated the Maven coordinates of the EE 8 API specifications.
-
-Examples
-
-```properties
-javax.inject:javax.inject:1 >> jakarta.inject:jakarta.inject-api:1.0
-javax.json:javax.json-api   >> jakarta.json:jakarta.json-api
-```
-
-To avoid duplicate (yet identical) classes on the classpath, we recommend you do the same by replacing your Maven dependencies with `javax` group id, with their Jakarta EE 8 equivalents under the `jakarta` group id.
-
-Versions of these dependencies are already provided in the Magnolia third-party library BOM, through the `jakarta.jakartaee-bom` import.
-
-> **Note:** See also Certified stack: Maven coordinates.
-
-### [](#_microprofile_config)MicroProfile Config
-
-Magnolia 6.3 embraces [MicroProfile Config](https://download.eclipse.org/microprofile/microprofile-config-3.0/microprofile-config-spec-3.0.html), adding state-of-the-art flexibility for external instance configuration. This is applied first to [publishing receivers](../Administration/Instances/Receivers/) config, and requires a project update.
-
-> **Important:** Publishing receivers config must be migrated (see immediately below).
-
-#### [](#_configuring_publishing_receivers)Configuring publishing receivers
-
-Publishing receivers are configured using MicroProfile Config. You can supply MicroProfile configurations using:
-
--   properties files
-
--   YAML files
-
--   system properties or environment variables (and more)
-
-
-To point to your config file, you must pass the `magnolia.config.locations` as a system property (for example, using Tomcat VM options in the `setenv.sh` configuration file), pointing to the directory where your config file resides (for example `-Dmagnolia.config.locations=/opt/magnolia/mounted-config`).
-
--   microprofile-config.properties
-
--   microprofile-config.yaml
-
-
-```properties
-magnolia.publishing.receivers[0].name=magnoliaPublic-0
-magnolia.publishing.receivers[0].url=http://dev-magnolia-helm-public-0-svc:8080
-magnolia.publishing.receivers[1].name=magnoliaPublic-1
-magnolia.publishing.receivers[1].url=http://dev-magnolia-helm-public-1-svc:8080
-```
-
-```yaml
-magnolia:
-  publishing:
-    receivers:
-      - name: magnoliaPublic-0
-        url: http://dev-magnolia-helm-public-0-svc:8080
-      - name: magnoliaPublic-1
-        url: http://dev-magnolia-helm-public-1-svc:8080
-```
-
-> **Note:** The default receiver for local development (magnoliaPublic8080) has been removed.Receiver example for local developmentmagnolia.publishing.receivers[0].name=magnoliaPublic
-> magnolia.publishing.receivers[0].url=http://{host}:{port}/magnoliaPublic (1)
-> magnolia.publishing.receivers[0].enabled=true1Put the path magnoliaPublic in the URL for local development.
-
-#### [](#_previous_magnolia_6_2_definition_in_jcr)Previous (Magnolia 6.2) definition in JCR
-
-In Magnolia 6.2, publishing receivers were configured in JCR, under the `publishing-core` module. This made it difficult to provision instances across multiple environments and configure receivers during installation or startup through various JCR *bootstrapping* techniques.
-
 | Node name | Value |
 | --- | --- |
-| 📁 modules |     |
-| 📁 publishing-core |     |
-| 📁 config |     |
-| ⸬ receivers |     |
-| ⸬ magnoliaPublic8080 |     |
+| 📁 modules |  |
+| 📁 publishing-core |  |
+| 📁 config |  |
+| ⸬ receivers |  |
+| ⸬ magnoliaPublic8080 |  |
 | ⬩ url | [http://localhost:8080/magnoliaPublic](http://localhost:8080/magnoliaPublic) |
 | ⬩ enabled | true |
 
@@ -215,33 +141,16 @@ For a list of plugins included in the Magnolia `ckeditor5-build`, see [`ckeditor
 
 > **Tip:** See also Migration from CKEditor 4 (ckeditor.com/docs/).
 
-## [](#extensions-anchor)Old module packs, new extensions
-
-The modules listed in the table below were previously [incubator modules](../../../incubator-modules/) but are now fully-supported [extensions](../Modules/#_module_types) in Magnolia 6.3.
-
 | Module | New license? | Notes |
 | --- | --- | --- |
-| **[ai-accelerator:ROOT:index.adoc](#ai-accelerator:ROOT:index.adoc)** |     | Requires a license renewal and is no longer free.<br><br>  <br><br>If you are already using any of these modules, contact your Magnolia account manager. We will provide you with the required license key(s). |
-| **[Cloudinary External DAM module](../../../cloudinary/1.3/)** |     | Requires a license renewal and is no longer free.<br><br>  <br><br>If you are already using any of these modules, contact your Magnolia account manager. We will provide you with the required license key(s). |
-| **[campaign-manager:ROOT:index.adoc](#campaign-manager:ROOT:index.adoc)** |     | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
-| **[Content Translation Extended module](../../../content-translation-support-ext/)** |     | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
-| **[CTSX DeepL Translator](../../../content-translation-support-ext/deepl/)** |     | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
-| **[ui-framework-javascript:ROOT:index.adoc](#ui-framework-javascript:ROOT:index.adoc)** |     | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
-| **[rest-proxy:ROOT:index.adoc](#rest-proxy:ROOT:index.adoc)** |     | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
-| **[cdp-integration-framework:segment:index.adoc](#cdp-integration-framework:segment:index.adoc)** |     | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
-
-### [](#_previously_bundled_modules)Previously bundled modules
-
-Some of the modules in the new "Extension" category are previously bundled modules that are now unbundled, meaning you need to install them individually.
-
--   [Campaign Publisher](../Modules/List-of-modules/Campaign-Publisher/)
-
--   [LDAP Connector module](../Modules/List-of-modules/LDAP-Connector-module/)
-
--   [Privacy module](../Modules/List-of-modules/Privacy-module/)
-
-
-> **Note:** For the latest information about module bundling, see the List of modules on the Modules page.
+| **AI Accelerator module** | **** | Requires a license renewal and is no longer free. If you are already using any of these modules, contact your Magnolia account manager. We will provide you with the required license key(s). |
+| **Cloudinary External DAM module** | **** | Requires a license renewal and is no longer free. If you are already using any of these modules, contact your Magnolia account manager. We will provide you with the required license key(s). |
+| **Campaign manager module** |  | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
+| **Content Translation Extended module** |  | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
+| **CTSX DeepL Translator** |  | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
+| **JavaScript UI module** |  | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
+| **REST Proxy module** |  | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
+| **Segment CDP extension** |  | Upgrade the module to its latest 6.3-compatible version and benefit from a full SLA. |
 
 ## [](#_multisite_definitions_in_yaml)Multisite definitions in YAML
 
@@ -277,7 +186,7 @@ The Site App module and app are no longer available in Magnolia 6.3.0. Site defi
 
 SSO 4.0.x module introduces several important updates and requirements. This includes compatibility adjustments, mandatory configuration changes, removal of certain classes, optional enhancements like JCR-based fallback login, and considerations for users of the SSO Login Extension module.
 
-For specific actions and modifications needed to ensure a smooth upgrade, see [Upgrading from SSO 3.1.x to 4.0.0](#master@magnolia-sso:ROOT:changelog.adoc#upgrade-sso-anchor).
+For specific actions and modifications needed to ensure a smooth upgrade, see [Upgrading from SSO 3.1.x to 4.0.0](../../../magnolia-sso/changelog/#upgrade-sso-anchor).
 
 ## [](#_content_editor_definitions)Content Editor definitions
 
@@ -541,6 +450,14 @@ The default value for the `maxLimit` property is `100`. Before, it was `1000`.
 
 The `jcrPagesDeliveryEndpoint_v2` is now part of the Pages module. Its class is info.magnolia.pages.rest.v2.JcrPagesDeliveryEndpointDefinition.
 
+#### [](#_lang_parameter_behavior_in_rest_calls)`lang` parameter behavior in REST calls
+
+If you use `info.magnolia.cms.i18n.DefaultI18nContentSupport`, be aware of changes to how the `lang` parameter is handled in REST calls.
+
+While Magnolia 6.2 accepted both underscores (`_`) and dashes (`-`) in the `lang` parameter, Magnolia 6.3.0 through 6.3.20 only support the underscore.
+
+Support for the dash (`-`) was restored in Magnolia 6.3.21.
+
 ## [](#implementation-aspects-anchor)Deprecations from Magnolia code not reported
 
 To minimize the risk of introducing a faulty configuration into your instance, the Definitions app no longer displays select deprecations and other implementation details, specifically those whose origin is in Magnolia code.
@@ -623,7 +540,7 @@ If you rely on MySQL, you must update this.
 
 ## [](#_app_launcher_design)App Launcher design
 
-The Magnolia 6.3 [App Launcher](../Authoring/App-Launcher/) uses a modern naming and groupings. The original Magnolia 6.2 **classic naming and grouping** is no longer available in Magnolia 6.3.
+The Magnolia 6.3 [App Launcher](../../RNs-6-4-3/Authoring/App-Launcher/) uses a modern naming and groupings. The original Magnolia 6.2 **classic naming and grouping** is no longer available in Magnolia 6.3.
 
 If you used a custom configuration of the App Launcher in Magnolia 6.2, you must migrate your definition for the 6.3 App Launcher.
 
@@ -658,7 +575,7 @@ Update the parent `pom.xml` file of your webapp. In the `<properties>` tag of yo
 ```xml
 ...
 <properties>
-  <magnoliaBundleVersion>6.3.20</magnoliaBundleVersion>
+  <magnoliaBundleVersion>6.3.21</magnoliaBundleVersion>
   <foobarModuleVersion>1.2</foobarModuleVersion>
   <javaVersion>17</javaVersion>
 </properties>

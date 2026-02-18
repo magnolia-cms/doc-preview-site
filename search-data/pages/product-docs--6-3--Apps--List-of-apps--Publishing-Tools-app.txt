@@ -14,7 +14,7 @@ This Publishing Tools app is installed by the [Publishing module](../../../Modul
 
 In the Tools subapp, you can generate a new public key and clean the `mgnlSystem` workspace.
 
-![Tools subapp](../../../_images/6-3-appTools.png)
+![Tools subapp](../../../../RNs-6-4-3/_images/6-3-appTools.png)
 
 ## [](#_monitor)Monitor
 
@@ -22,7 +22,7 @@ In the Tools subapp, you can generate a new public key and clean the `mgnlSystem
 
 The Monitor subapp allows you to monitor publishing details. Track who published what and when.
 
-![Monitor subapp](../../../_images/6-3-appMonitor_v2.png)
+![Monitor subapp](../../../../RNs-6-4-3/_images/6-3-appMonitor_v2.png)
 
 -   **Overview**: Number of publishing and unpublishing requests, errors, committed and rollbacked transactions, content size and time needed for publication.
 
@@ -41,11 +41,11 @@ The Monitor subapp allows you to monitor publishing details. Track who published
 -   **Error log**: Publishing error log.
 
 
-See [Publishing security](../../../Administration/Security/Publishing-security/) for more information about using the Publishing Tools app.
+See [Publishing security](../../../../RNs-6-4-3/Administration/Security/Publishing-security/) for more information about using the Publishing Tools app.
 
 ## [](#_configuration)Configuration
 
-The Publishing Tools app is installed by the [Publishing module](../../../Modules/List-of-modules/Publishing-module/). Access to the app is restricted to the `superuser` role in the app configuration and [app launcher layout](../../../Administration/App-Launcher/App-launcher-layout/).
+The Publishing Tools app is installed by the [Publishing module](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-module/). Access to the app is restricted to the `superuser` role in the app configuration and [app launcher layout](../../../../RNs-6-4-3/Administration/App-Launcher/App-launcher-layout/).
 
 The app configuration is bootstrapped from `/publishing-app/apps/publishing.yaml`.
 
@@ -68,7 +68,7 @@ permissions:
     superuser: superuser
 ```
 
-You can access and modify the configuration via the **Resource Files** app or [decorate](../../../Developing/Definition-decoration/) the configuration from another module.
+You can access and modify the configuration via the **Resource Files** app or [decorate](../../../../RNs-6-4-3/Developing/Definition-decoration/) the configuration from another module.
 
 ## [](#_publishing_log_storage)Publishing log storage
 
@@ -78,6 +78,6 @@ You can customize the storage by extending the `MemoryPublishingStorage` interfa
 
 Related topics
 
--   [Audit](../../../Administration/Monitoring/Audit/)
+-   [Audit](../../../../RNs-6-4-3/Administration/Monitoring/Audit/)
 
--   [Monitoring](../../../Administration/Monitoring/)
+-   [Monitoring](../../../../RNs-6-4-3/Administration/Monitoring/)

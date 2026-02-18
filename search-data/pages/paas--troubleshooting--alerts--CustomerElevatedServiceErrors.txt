@@ -25,20 +25,11 @@ It indicates a service is showing a high level of errors (5xx responses) from a 
 
 > **Note:** CustomerElevatedServiceErrors alerts are sent to subscribers via email.
 
-## [](#_observations)Observations
-
-Here are the details on the alert:
-
-### [](#_alert_customerelevatedserviceerrors)Alert: CustomerElevatedServiceErrors
-
-|     |     |
+| Expression |  |
 | --- | --- |
-| Expression |     |
 | Delay | 10 minutes |
 | Labels | team: customer |
-| Annotations | summary, description, tenant, cluster\_id, cluster\_name, namespace, service |
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>service:requests:rate15m{k8s_cluster_name=~".+(prod|production)"} &gt; 0.1 AND service:errors:rate15m{k8s_cluster_name=~".+(prod|production)"} / service:requests:rate15m{k8s_cluster_name=~".+(prod|production)"} &gt; 0.1</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>15</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>service</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>namespace</code></p></li></ul></div></div></td></tr></tbody></table></div>
+| Annotations | summary, description, tenant, cluster_id, cluster_name, namespace, service |
 
 ## [](#_solutions)Solutions
 

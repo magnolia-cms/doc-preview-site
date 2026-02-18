@@ -1,0 +1,87 @@
+---
+title: "SSO module changelog"
+url: https://docs.magnolia-cms.com/magnolia-sso/3.1/changelog/
+category: Modules
+version: modules
+breadcrumb: SSO module > Changelog
+---
+
+# SSO module changelog
+
+The changelog gives you an overview of the changes made to the **SSO module** at each release.
+
+> **Note:** This changelog covers the 3.x branch of the SSO module. For the 2.x changelog, see here.
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-352** | ** | Error in log when scheduled publication finishes successfully. |
+| **MGNLSSO-373** | ** | Security dependency issue. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-328** | ** | Enable SSO users to edit their locale and timezone preferences. |
+| **MGNLSSO-322** | ** | Flat structure of profiles can lead to indexing issues. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-313** | ** | Make the `targetProperty` name configurable for `GroupsAuthorizationGenerator` . |
+| **MGNLSSO-316** | ** | Invalidating/reloading the SSO YAML configuration doesn’t work. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-81** | ** | Add SSO logging to Magnolia access log. |
+| **MGNLSSO-301** | ** | Invalid token issue. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-298** | ** | Module update tasks not working in SSO 3.1.0 and later. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-265** | ** | Possibility to implement custom SSO configuration. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-270** | ** | Custom `authorizationGenerators` configuration not found. |
+| **MGNLSSO-271** | ** | `SsoRedirectClient` callback should not occur for `APP/global` . |
+| **MGNLSSO-283** | ** | [Environment-specific configuration](../#_environment_specific_configuration) . |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-230** | ** | SsoUser does not use transitive groups and roles correctly. |
+| **MGNLSSO-239** | ** | Tasks for publishers are only displayed upon a page refresh using SSO module `3.0.1` . |
+| **MGNLSSO-254** | ** | We have upgraded [pac4j](https://www.pac4j.org/index.html) to version `5.7.1` . ** This upgrade includes a fix for malformed `Accept` headers. | ** | This upgrade includes a fix for malformed `Accept` headers. |
+| ** | This upgrade includes a fix for malformed `Accept` headers. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-250** | ** | Module dependency on Magnolia Core is raised to version `6.2.31` . |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-240** | ** | The Update Task was inadvertently throwing errors instead of logging warnings. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-189** | ** | Offer custom SSO authorization generators. |
+| **MGNLSSO-188** | ** | Refresh SSO configuration when loading YAML config file. ** As part of this change, the module descriptor `<name>` changed from `magnolia-sso` to `sso` . | ** | As part of this change, the module descriptor `<name>` changed from `magnolia-sso` to `sso` . |
+| ** | As part of this change, the module descriptor `<name>` changed from `magnolia-sso` to `sso` . |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-218** | ** | Upload requests attempt to start an indirect flow. ** A new flow logic has been implemented in this release. `Sec-Fetch-Mode` header is `navigate` (indicates a user-originated request, as opposed to one loaded from a script). If the header above is not set, Vaadin excludes typical requests (UIDL, HEARTBEAT, PUSH, etc.) | ** | A new flow logic has been implemented in this release. `Sec-Fetch-Mode` header is `navigate` (indicates a user-originated request, as opposed to one loaded from a script). If the header above is not set, Vaadin excludes typical requests (UIDL, HEARTBEAT, PUSH, etc.) |
+| ** | A new flow logic has been implemented in this release. `Sec-Fetch-Mode` header is `navigate` (indicates a user-originated request, as opposed to one loaded from a script). If the header above is not set, Vaadin excludes typical requests (UIDL, HEARTBEAT, PUSH, etc.) |
+| **MGNLSSO-184** | ** | Property Expansion in `magnolia-sso/config.yaml` fails on creation of `SSOCallbackServlet` . |
+| **MGNLSSO-206** | ** | We have upgraded [pac4j](https://www.pac4j.org/index.html) to version `5.7.0` . ** This upgrade introduces a new property called `clientAuthenticationMethod` to the configuration of the `clients` . | ** | This upgrade introduces a new property called `clientAuthenticationMethod` to the configuration of the `clients` . |
+| ** | This upgrade introduces a new property called `clientAuthenticationMethod` to the configuration of the `clients` . |
+| **MGNLSSO-172** | ** | We have upgraded Mockito to version `4` . |
+| **MGNLSSO-200** | ** | We have updated Guice to version `5.1.0` |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-140** | ** | SSO now builds on JDK 11. |
+| **MGNLSSO-132** | ** | Enhances multiple clients configuration and support a configurable authenticator for direct clients. |
+| **MGNLSSO-105** | ** | We have upgraded [pac4j](https://www.pac4j.org/index.html) to `v5` . |
+| **MGNLSSO-96** | ** | Non-interactive SSO access to REST endpoints. |
+| **MGNLSSO-82** | ** | Map OIDC attributes to Magnolia properties with new `userFieldMappings` config property. |
+| **MGNLSSO-79** | ** | Authorize and validate incoming token for programmatic resource access. |

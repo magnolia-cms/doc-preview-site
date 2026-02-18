@@ -18,33 +18,11 @@ The Bookshelf app is meant to be run as an app in Magnolia, so first you must in
 
 > **Note:** The CLI installation steps are based on Magnolia CLI v4.
 
-## [](#_get_java)Get Java
-
-Magnolia needs at least a **Java Runtime Environment (JRE)** to run. Check if there’s a version of Java already installed on your computer by opening the terminal or command prompt and typing `java -version`. If the system reports a version number, Java is installed on your computer.
-
-> **Important:** See Certified stack to confirm that the version installed is supported.For local development, use 17.0.12-zulu. Example installation using SDKMAN:sdk install java 17.0.12-zulu
-
--   Windows
-
--   Mac
-
--   Linux
-
-
-On Windows, you need a Java SE *Development* Kit (JDK). The Java *Runtime* Environment (JRE) is not enough because the Tomcat application server does not recognize it.
-
--   JRE is for users who run Java programs on their computers.
-
--   JDK is for developers who write Java-based applications.
-
-
-[Download](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and install JDK. By default, JDK is installed at `C:\Program Files\Java\jdk-<version>\`.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 27.2727%;"> <col style="width: 72.7273%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top"></th><th class="tableblock halign-left valign-top">Instructions</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Check for <code>JAVA_HOME</code></strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="olist arabic"><ol class="arabic"><li><p>Open the command prompt.</p></li><li><p>Type <code>set</code> and press <code>ENTER</code>.</p></li><li><p>Find <code>JAVA_HOME</code> in the command output and verify that the path points to your JDK installation directory, for example, <code>C:\Program Files\Java\jdk-&lt;version&gt;&gt;.xx</code>.</p></li><li><p>If <code>JAVA_HOME</code> is missing or it points to the wrong directory, see <strong>Set JAVA_HOME</strong>.</p></li></ol></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Set <code>JAVA_HOME</code></strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="olist arabic"><ol class="arabic"><li><p>Open the Command Prompt as an administrator.</p></li><li><p>Set the path for <code>JAVA_HOME</code>.</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">setx /m JAVA_HOME "path\to\Java\jdk" <i class="conum" data-value="1"></i><b>(1)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Where <code>path\to\Java\jdk</code> is where your Java Development Kit is saved.</td></tr></tbody></table></div></li></ol></div><div class="paragraph"><p>The <code>set</code> command creates the <code>JAVA_HOME</code> environment variable and sets its value to the JDK directory. The command is executed when Magnolia starts.</p></div></div></td></tr></tbody></table></div>
-
-For Mac, you need to download or update to Java `21` or higher. After reviewing and agreeing to the terms of the license agreement, download the file, then double-click it to launch the installation wizard and follow the installation instructions.
-
-The installation directory varies from one Linux system to another. On Debian-based distributions, JREs or JDKs are usually installed in `/usr/lib/jvm/`.
+|  | Instructions |
+| --- | --- |
+| **Check for JAVA_HOME** | • Open the command prompt. • Type `set` and press `ENTER` . • Find `JAVA_HOME` in the command output and verify that the path points to your JDK installation directory, for example, `C:\Program Files\Java\jdk-<version>>.xx` . • If `JAVA_HOME` is missing or it points to the wrong directory, see **Set JAVA_HOME** . |
+| **Set JAVA_HOME** | • Open the Command Prompt as an administrator. • Set the path for `JAVA_HOME` . `setx /m JAVA_HOME "path\to\Java\jdk" (1)` ** **1** Where `path\to\Java\jdk` is where your Java Development Kit is saved. The `set` command creates the `JAVA_HOME` environment variable and sets its value to the JDK directory. The command is executed when Magnolia starts. | ** **1** | Where `path\to\Java\jdk` is where your Java Development Kit is saved. |
+| ** **1** | Where `path\to\Java\jdk` is where your Java Development Kit is saved. |
 
 ## [](#_get_node_js)Get node.js
 
@@ -54,7 +32,51 @@ To check the version of your node installation, run the following command in a s
 
 node -v
 
-Unresolved include directive in modules/ROOT/pages/Administration/Language/My-first-translation.adoc - include::magnolia-cli:ROOT:partial$p\_get-magnolia-cli.adoc\[\]
+## [](#_get_magnolia_cli)Get Magnolia CLI
+
+Run the following command in a shell to install [Magnolia CLI](../../../../../magnolia-cli/):
+
+-   Mac or Linux
+
+-   Windows
+
+
+```console
+sudo npm install @magnolia/cli -g
+```
+
+```console
+npm install @magnolia/cli -g (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Depending on your permissions and the location where you have installed Node.js, you may have to execute the command above with root permissions. Without installation permissions you will notice messages such as `npm ERR!` in the shell. |
+
+Once you have installed Magnolia CLI, test the installation by running the following command in the shell:
+
+```console
+mgnl help
+```
+
+The command should display the following:
+
+```console
+[mgnl 5]
+Usage:   [options] [command]
+
+CLI for light development of Magnolia projects
+
+Options:
+  -V, --Version              output the version number
+  -h, --help                 display help for command
+
+Commands:
+  generate-plugin [options]  generate a basic structure for a new CLI plugin
+  jumpstart [name] [options] download and set up a new headless or freemarker-based project with
+                             Magnolia webapp
+  help [command]             display help for command
+```
 
 ### [](#_git)Git
 
@@ -64,7 +86,44 @@ In this tutorial, you need [Git](https://git-scm.com/) to clone the Bookshelf ap
 
 Now install Magnolia.
 
-Unresolved include directive in modules/ROOT/pages/Administration/Language/My-first-translation.adoc - include::magnolia-cli:ROOT:partial$p\_install-magnolia-with-npm-cli-short.adoc\[\]
+## [](#_installing_magnolia_with_cli_only)Installing Magnolia with CLI only
+
+Use the `jumpstart` command to install Magnolia. This command downloads, unpacks and pre-configures a Magnolia bundle of your choice.
+
+> **Tip:** To install a specific Magnolia version, use the -m flag, for example:npx @magnolia/cli@latest jumpstart --magnolia "6.3.0"To see a list of options available for any Magnolia CLI command, use the command together with the -h flag, for example:npm run mgnl -- create-page -h
+
+Windows users using [PowerShell](https://learn.microsoft.com/en-us/powershell/) must enclose the two consecutive hyphens (`--`) in quotes:
+
+```console
+npm run mgnl "--" ...
+```
+
+To install Magnolia:
+
+1.  Change to the directory to where you want to install the Magnolia bundle. For example:
+
+    ```console
+    cd /Users/<username>/dev/
+    ```
+
+2.  Execute the Magnolia CLI [`jumpstart`](../../../../../magnolia-cli/plugins/available-plugins/jumpstart-plugin/) plugin command:
+
+    ```console
+    mgnl jumpstart
+    ```
+
+3.  Choose the `demo-webapps` template, followed by the `magnolia-community-demo-webapp` template containing Magnolia Community Edition bundled with the [Travel Demo](../../../../6.3/Getting-started-with-Magnolia/Demo/) and a Tomcat server. It creates folders for the Tomcat server and for the light modules according to the CLI configuration.
+
+    Once the setup operation is complete, you should see a message similar to this one:
+
+    ```console
+    info: Project successfully downloaded
+    info: Run "npm run mgnl" to see the list of registered commands
+    info: Start the project using: "npm run mgnl -- start"
+    info: If the "StartPlugin" is not available, install it using: "npm run mgnl -- add-plugin @magnolia/cli-start-plugin"
+    info: For additional plugins and features, refer to the Magnolia CLI documentation: https://docs.magnolia-cms.com/magnolia-cli
+    ```
+
 
 ## [](#_starting_magnolia_with_cli_mgnl_start)Starting Magnolia with CLI mgnl start
 
@@ -90,14 +149,14 @@ Go to `[http://localhost:8080/magnoliaAuthor](http://localhost:8080/magnoliaAuth
 2.  Clone the `bookshelf` Git repository:
 
     ```sh
-    git clone -b release/6.2 --single-branch https://bitbucket.org/magnolia-cms/bookshelf.git
+    git clone -b release/6.2 --single-branch {repo-git-bookshelf}
     ```
 
 3.  The app should now appear in the Apps **Edit** group.
-    ![App Launcher with the Bookshelf icon](../../../_images/6-2-29-my1stTrans-Bookshelf-app.png)
+    ![App Launcher with the Bookshelf icon](../../../../RNs-6-4-3/_images/6-2-29-my1stTrans-Bookshelf-app.png)
 
 4.  In [your user profile](../../IAM/Users/#_editing_user_profile), set the language preference to Spanish. Log out and into Magnolia again. Open the Bookshelf app. Only some of the labels are shown in Spanish. These are typically the more generic message and label keys coming from the UI framework:
-    ![Bookshelf app labels shown in Spanish](../../../_images/6-0-my1stTrans-browserApp-es_locale-rbox.png)
+    ![Bookshelf app labels shown in Spanish](../../../../RNs-6-4-3/_images/6-0-my1stTrans-browserApp-es_locale-rbox.png)
 
 
 ## [](#_translating_the_app_ui_to_spanish)Translating the app UI to Spanish
@@ -185,7 +244,7 @@ confirmation.delete.modified.message=<b>Aviso</b> <br/>Los siguientes subnodos h
 
 When you save the file, Magnolia immediately detects the change. Refresh your browser to see the new app labels.
 
-![Bookshelf browser in Spanish](../../../_images/6-0-bookshelf-browserEs.png)
+![Bookshelf browser in Spanish](../../../../RNs-6-4-3/_images/6-0-bookshelf-browserEs.png)
 
 Related topics
 

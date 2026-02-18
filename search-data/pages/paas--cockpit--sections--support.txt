@@ -8,9 +8,7 @@ breadcrumb: DX Cloud > Manage > Cockpit sections > Support from the Cockpit
 
 # Support from the Cockpit
 
-You can view an overview of support tickets related to your DX Cloud project directly in the Cockpit. This centralized view displays ticket ID, title, status, reporter, type, and creation date for all ongoing support requests. Only tickets explicitly shared with your Organization are visible to you in the Cockpit.
-
-Use the status filters and table columns to quickly track progress and identify tickets that need your attention.
+Unresolved include directive in modules/cockpit/pages/sections/support.adoc - include::cockpit:ROOT:support-tickets.adoc\[\]
 
 In addition to the instructions here, you can find help directly embedded on the applicable Cockpit page.
 
@@ -20,63 +18,13 @@ To view support tickets related to your DX Cloud project:
 
 1.  Go to **Global Features > Support tickets** in the Cockpit.
 
-2.  Filter by the desired [status](#_status) of the support tickets.
+2.  Filter by the desired [status](#Status) of the support tickets.
 
-3.  Click on the [ID](#_id) of a support ticket to view its details.
+3.  Click on the [ID](#ID) of a support ticket to view its details.
 
 
 > **Note:** You must have correct permissions to view support tickets in the Cockpit and in Jira. If you cannot see the Support tickets option, contact your DX Cloud administrator.
 
 ## [](#_key_terms)Key terms
 
-### [](#_status)Status
-
-You can view an overview of support tickets related to your DX Cloud project. Select one or more of the following status filters to narrow down the list of tickets:
-
--   To do
-
--   In progress
-
--   Done
-
-
-🔎 Additionally, you can search for specific tickets using the search bar.
-
-### [](#_id)ID
-
-The ID is a unique identifier for each support ticket. This is typically HELPDESK- followed by a number, such as `HELPDESK-1234`.
-
-### [](#_title)Title
-
-The title information pulled from the support ticket.
-
-### [](#_status_category)Status category
-
-The larger status category of the support ticket. This includes:
-
--   To do
-
--   In progress
-
--   Done
-
-
-### [](#_status_2)Status
-
-The current status of the support ticket.
-
-### [](#_reporter)Reporter
-
-The person who reported the support ticket.
-
-### [](#_type)Type
-
-The type of support ticket.
-
-### [](#_created)Created
-
-The date and time when the support ticket was created.
-
--   **Format**: MONTH DAY, YEAR, TIME
-
--   **Example**: Aug 1, 2026, 12:42 PM
+Unresolved include directive in modules/cockpit/pages/sections/support.adoc - include::cockpit:ROOT:support-tickets/walkthrough.adoc\[\]

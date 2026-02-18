@@ -1,0 +1,109 @@
+---
+title: "Multi Assets Upload module"
+url: https://docs.magnolia-cms.com/multi-assets-upload/
+category: Modules
+version: modules
+breadcrumb: Multi Assets Upload module
+---
+
+# Multi Assets Upload module
+
+> **Warning:** The Multi Assets Upload module is deprecated since the release of Magnolia CMS 6.2.43. This release of Magnolia provides asset management enhancements, including bulk asset upload functionality, that supersede the functionality provided by the Multi Assets Upload module.This module is at the INCUBATOR level.
+
+The **Multi Assets Upload** module provides an action in the [Assets app](../product-docs/RNs-6-4-3/Apps/List-of-apps/Assets-app/) to easily upload multiple digital assets in the `dam-workspace`.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ui</groupId>
+  <artifactId>magnolia-ui-framework-javascript</artifactId>
+  <version>1.1.7</version>
+</dependency>
+```
+
+> **Important:** The above is actually installing the JavaScript UI module. The JavaScript Dialog Fields module is a prerequisite for using the Multi Assets Upload module.
+
+### [](#_export_the_multi_assets_upload_module_repo)Export the Multi Assets Upload module repo
+
+You just need to export the git repo into your `light-module` folder as shown here.
+
+1.  Go to your `light-modules` repository.
+
+2.  Clone the Multi Assets Upload module.
+
+    ```sh
+    git clone https://gitlab.magnolia-platform.com/ps/services/multi-assets-upload.git
+    ```
+
+
+## [](#_usage)Usage
+
+Once installed, you get a new action Multi Upload in your "Assets" App.
+
+### [](#_instructions)Instructions
+
+1.  When clicking on this action, a dialog pops up which allows you to upload digital assets via *Drag and Drop* or a file selection dialog.
+
+    ![multi assets upload](_images/multi-assets-upload.jpg)
+
+2.  When you are happy with your selection, hit the black submit files button. The files are then uploaded with Magnolias [Nodes API](../product-docs/RNs-6-4-3/Developing/API/Nodes-and-properties-APIs/Nodes-API/).
+
+    > **Tip:** After that the files disappear from the dialog, it can be examined in the Assets-App after closing the dialog with "Save Changes".
+
+
+### [](#_good_to_knows)Good-to-knows
+
+-   File size maximum is `20MB`.
+
+    > **Note:** There are no restriction on the file type.
+
+-   Added files are shown as thumbnails after the drop. If a file is bigger than the size restriction a red error box is showing that issue. A user can also remove the added files with the "Remove file" link.
+
+
+## [](#_develop_multi_assets_upload_module)Develop Multi Assets Upload module
+
+The Multi Assets Upload module makes sure of [dropzone](https://github.com/dropzone/dropzone). We configured and adapted it to use the [Nodes API](../product-docs/RNs-6-4-3/Developing/API/Nodes-and-properties-APIs/Nodes-API/).
+
+If you need to update **dropzone**, be aware that we have modified for use in this module in the following places:
+
+-   dropzone lines 8243-8248
+
+-   dropzone lines 10446-10447
+
+
+See [lines 8243-8248](https://gitlab.magnolia-platform.com/ps/archive/multi-assets-upload/-/blob/main/webresources/js/dropzone_5.9.3.js#L8243-8248) for more details.
+
+```js
+this.clickableElements.forEach(function (clickableElement) {
+  return _this2.listeners.push({
+    element: clickableElement,
+    events: {
+      click: function click(evt) {
+        // Only the actual dropzone or the message element should trigger file selection
+        if (clickableElement !== _this2.element || evt.target === _this2.element || Dropzone.elementInside(evt.target, _this2.element.querySelector(".dz-message"))) {
+          // Code executed at first load. Not working if you press too many clicks, it waits 1 second.
+          if(clickEventTimeStamp == null || clickEventTimeStamp + 1000 < evt.timeStamp)
+          {
+            _this2.hiddenFileInput.click(); // Forward the click
+            clickEventTimeStamp = evt.timeStamp;
+          }
+        }
+        return true;
+      }
+    }
+})
+```
+
+See [lines 10446-10447](https://gitlab.magnolia-platform.com/ps/archive/multi-assets-upload/-/blob/main/webresources/js/dropzone_5.9.3.js#L10446-10447) for more details.
+
+```js
+// Prevent double-clicks in Google Chrome Browser
+let clickEventTimeStamp = null;
+```
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

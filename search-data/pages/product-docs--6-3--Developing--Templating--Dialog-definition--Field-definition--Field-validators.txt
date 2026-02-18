@@ -27,134 +27,30 @@ email:
 
 > **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
 
-## [](#_validator_properties)Validator properties
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>validators</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>List of field validator definition items. Any value must be a subtype of <code>info.magnolia.ui.field.FieldValidatorDefinition</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;validator name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Arbitrary validator name. Use a name that describes the validator type.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (unless <code>$type</code> is used)</p></div><div class="paragraph"><p>Validator definition class. Use the fully qualified class name. See <a href="#_validator_types">Validator types</a> for possible values.</p></div><div class="paragraph"><p>You can also <a href="#_custom_validators">create your own validator definition class</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>You can use this as a shortcut for <code>class</code> if the definition class is annotated with <code>info.magnolia.ui.field.ValidatorType</code>. The proper value is defined by the annotation.</p></div><div class="listingblock"><div class="title">Example class annotation</div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ValidatorType("emailValidator")
-public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition {
-...
-}</code></pre></div></div><div class="paragraph"><p>To use the <code>$type</code> property in YAML, see <a href="#_example_definition">Example definition</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>mode</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (used only in node name validation), <em>default is <code>EDIT</code></em></p></div><div class="paragraph"><p>Validation mode when using <code>nodeNameValidator</code>. Validates names for:</p></div><div class="ulist"><ul><li><p>Siblings of the currently selected node when editing an existing node (<code>mode=EDIT</code>).</p></li><li><p>Children of the currently selected node when adding a new node (<code>mode=ADD</code>).</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>pattern</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (used only in node name and regex validation), <em>default is <code>.+</code> for <code>nodeNameValidator</code></em></p></div><div class="paragraph"><p>Regular expression pattern to validate against when using <code>nodeNameValidator</code> and <code>regexpValidator</code>.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content"><div class="paragraph"><p>Do not use <code>pattern</code> to validate empty values. Instead, make sure that <a href="../#_required" class="xref page"><code>required</code></a> is set to <code>true</code>.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>factoryClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Fully qualified name of the Java class that creates the validator. The class must implement <code>info.magnolia.ui.field.FieldValidatorFactory</code>. Validator definitions specify a default factory class. This means that unless you want to use a custom implementation, you do not need to configure a factory class.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>errorMessage</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Error message displayed on invalid input. The value can be literal or retrieved from the <a href="../../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a> with a <a href="../../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a>. Use alphanumeric characters in literal values.</p></div></div></td></tr></tbody></table></div>
-
-## [](#_global_validators)Global validators
-
-Validators can be defined globally for certain types of fields. You can view and edit the default configuration file `config.yaml` in the [Resource Files](../../../../../Apps/List-of-apps/Resource-Files-app/) app under the `ui-framework-core` node.
-
-In the YAML below, the default field validators for `UploadFieldDefinition` would also apply to its extended class `DamUploadFieldDefinition` (and any other extended classes).
-
-```yml
-defaultFieldValidators:
-  info.magnolia.ui.field.UploadFieldDefinition: # applies to its extended classes as well (e.g. DamUploadFieldDefinition)
-    svgValidator:
-      class: info.magnolia.ui.field.SvgUploadValidatorDefinition
-```
-
-The default field validator `SafeHtmlValidatorDefinition` is also configured for `RichTextFieldDefinition` and its extended classes. This validator allows html `tags`, `attributes` and `protocols` in the value of rich text field.
-
-> **Note:** The global SafeHtmlValidatorDefinition configuration is also used by the 5 UI rich text field.
-
-```yml
-defaultFieldValidators:
-  info.magnolia.ui.field.RichTextFieldDefinition:
-    safeHtml: (1)
-      class: info.magnolia.ui.field.SafeHtmlValidatorDefinition (1)
-      allowedTags:
-        a: a
-        div: div
-        ...
-      allowedAttributes:
-        a:
-          tag: a
-          attributes: [ href ]
-        ...
-      allowedProtocols:
-        a:
-          tag: a
-          attribute: href
-          protocols: [ ftp, http, https, mailto ]
-        ...
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | The `safeHtml` section contains the `SafeHtmlValidatorDefinition` class which allows you to specify the allowed tags, attributes, and protocols. |
+| `validators` | **required** List of field validator definition items. Any value must be a subtype of `info.magnolia.ui.field.FieldValidatorDefinition` . |
+| `<validator name>` | **required** Arbitrary validator name. Use a name that describes the validator type. |
+| `class` | **required** (unless `$type` is used) Validator definition class. Use the fully qualified class name. See [Validator types](#_validator_types) for possible values. You can also [create your own validator definition class](#_custom_validators) . |
+| `$type` | You can use this as a shortcut for `class` if the definition class is annotated with `info.magnolia.ui.field.ValidatorType` . The proper value is defined by the annotation. Example class annotation `@ValidatorType("emailValidator") public class EmailValidatorDefinition extends ConfiguredFieldValidatorDefinition { ... }` To use the `$type` property in YAML, see [Example definition](#_example_definition) . |
+| `mode` | **required** (used only in node name validation), *default is EDIT* Validation mode when using `nodeNameValidator` . Validates names for: • Siblings of the currently selected node when editing an existing node ( `mode=EDIT` ). • Children of the currently selected node when adding a new node ( `mode=ADD` ). |
+| `pattern` | **required** (used only in node name and regex validation), *default is .+ for nodeNameValidator* Regular expression pattern to validate against when using `nodeNameValidator` and `regexpValidator` . ** Do not use `pattern` to validate empty values. Instead, make sure that [required](../#_required) is set to `true` . | ** | Do not use `pattern` to validate empty values. Instead, make sure that [required](../#_required) is set to `true` . |
+| ** | Do not use `pattern` to validate empty values. Instead, make sure that [required](../#_required) is set to `true` . |
+| `factoryClass` | **optional** Fully qualified name of the Java class that creates the validator. The class must implement `info.magnolia.ui.field.FieldValidatorFactory` . Validator definitions specify a default factory class. This means that unless you want to use a custom implementation, you do not need to configure a factory class. |
+| `errorMessage` | **optional** Error message displayed on invalid input. The value can be literal or retrieved from the [message bundle](../../../../../Administration/Language/Internationalization/#_i18n_message_bundle) with a [key](../../../../../Administration/Language/Internationalization/#_i18n_message_keys) . Use alphanumeric characters in literal values. |
 
- PropertyDescription
-
-`allowedTags`
-
-List of html `tags` that are allowed in rich text field.
-
-`globallyAllowedAttributes`
-
-List of `attributes` that are allowed in all tags, defined in `allowedTags`.
-
-> **Note:** The tag should be configured to make all globally allowed attributes work.
-
-Example
-
-```yaml
-  allowedTags:
-    a: a
-    b: b
-
-  globallyAllowedAttributes: [style, class] (1)
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | Style and class attributes are allowed in the <a> and <b> tags. |
-
-`<a style="some-styleA" class="some-classA"></a>`
-
-`<b style="some-styleB" class="some-classA"></b>`
-
-`allowedAttributes`
-
-List of `attributes` that are allowed in a tag, defined in `allowedTags`.
-
-> **Note:** The tag should be configured to make all allowed attributes work.
-
-Example
-
-```yaml
-  allowedTags:
-    a: a
-  allowedAttributes:
-    abbr:
-      tag: a
-      attributes: [ title ] (1)
-```
-
-|     |     |
-| --- | --- |
-| **1** | Only `<a title="the title"></a>` is allowed in this example. |
-
-`allowedProtocols`
-
-List of `protocols` that are allowed in attribute value of a tag.
-
-> **Note:** The attribute and tag should be configured to make the allowed protocols work.
-
-Example
-
-```yaml
-  allowedTags:
-    a: a
-  allowedAttributes:
-    a:
-      tag: a
-      attributes: [ href ]
-  allowedProtocols:
-    a:
-      tag: a
-      attribute: href
-      protocols: [ https, mailto ] (1)
-```
-
-|     |     |
-| --- | --- |
-| **1** | In this case, `<a href="https://foo.bar">foo</a>` and `<a href="mailto:info@mail.com">foo</a>` are allowed because of `https` and `mailto` protocols. |
-
-> **Warning:** Global validators do not apply to apps using the Magnolia 5 UI framework. An exception is the SafeHtmlValidator, which loads this configuration explicitly.
+| `allowedTags` | List of html `tags` that are allowed in rich text field. |
+| `globallyAllowedAttributes` | List of `attributes` that are allowed in all tags, defined in `allowedTags` . ** The tag should be configured to make all globally allowed attributes work. Example ` allowedTags: a: a b: b globallyAllowedAttributes: [style, class] (1)` ** **1** Style and class attributes are allowed in the <a> and <b> tags. `<a style="some-styleA" class="some-classA"></a>` `<b style="some-styleB" class="some-classA"></b>` | ** | The tag should be configured to make all globally allowed attributes work. | ** **1** | Style and class attributes are allowed in the <a> and <b> tags. |
+| ** | The tag should be configured to make all globally allowed attributes work. |
+| ** **1** | Style and class attributes are allowed in the <a> and <b> tags. |
+| `allowedAttributes` | List of `attributes` that are allowed in a tag, defined in `allowedTags` . ** The tag should be configured to make all allowed attributes work. Example ` allowedTags: a: a allowedAttributes: abbr: tag: a attributes: [ title ] (1)` ** **1** Only `<a title="the title"></a>` is allowed in this example. | ** | The tag should be configured to make all allowed attributes work. | ** **1** | Only `<a title="the title"></a>` is allowed in this example. |
+| ** | The tag should be configured to make all allowed attributes work. |
+| ** **1** | Only `<a title="the title"></a>` is allowed in this example. |
+| `allowedProtocols` | List of `protocols` that are allowed in attribute value of a tag. ** The attribute and tag should be configured to make the allowed protocols work. Example ` allowedTags: a: a allowedAttributes: a: tag: a attributes: [ href ] allowedProtocols: a: tag: a attribute: href protocols: [ https, mailto ] (1)` ** **1** In this case, `<a href="https://foo.bar">foo</a>` and `<a href="mailto:info@mail.com">foo</a>` are allowed because of `https` and `mailto` protocols. | ** | The attribute and tag should be configured to make the allowed protocols work. | ** **1** | In this case, `<a href="https://foo.bar">foo</a>` and `<a href="mailto:info@mail.com">foo</a>` are allowed because of `https` and `mailto` protocols. |
+| ** | The attribute and tag should be configured to make the allowed protocols work. |
+| ** **1** | In this case, `<a href="https://foo.bar">foo</a>` and `<a href="mailto:info@mail.com">foo</a>` are allowed because of `https` and `mailto` protocols. |
 
 ## [](#_custom_validators)Custom validators
 
@@ -167,12 +63,10 @@ To write your own validator definition class:
 3.  Create a validator definition class that extends `info.magnolia.ui.field.ConfiguredFieldValidatorDefinition`. In the definition class, set the factory class.
 
 
-## [](#_validator_types)Validator types
-
 | $type | class/description |
 | --- | --- |
-| `emailValidator` | `info.magnolia.ui.field.EmailValidatorDefinition`<br><br>Validates an email address. Delegates to Vaadin [`EmailValidator`](https://vaadin.com/api/com/vaadin/data/validator/EmailValidator.html). |
-| `nodeNameValidator` | `info.magnolia.ui.editor.validator.NodeNameValidatorDefinition`<br><br>Validates JCR node names as defined in the `mode` and `pattern` properties. |
-| `regexpValidator` | `info.magnolia.ui.field.RegexpValidatorDefinition`<br><br>Validates text input as defined in the `pattern` property. |
-| `n/a` | `info.magnolia.ui.field.SvgUploadValidatorDefinition`<br><br>Validates SVG file uploads against malicious content. |
-| `n/a` | `info.magnolia.ui.field.SafeHtmlValidatorDefinition`<br><br>Validates text against malicious HTML. |
+| `emailValidator` | `info.magnolia.ui.field.EmailValidatorDefinition` Validates an email address. Delegates to Vaadin [EmailValidator](https://vaadin.com/api/com/vaadin/data/validator/EmailValidator.html) . |
+| `nodeNameValidator` | `info.magnolia.ui.editor.validator.NodeNameValidatorDefinition` Validates JCR node names as defined in the `mode` and `pattern` properties. |
+| `regexpValidator` | `info.magnolia.ui.field.RegexpValidatorDefinition` Validates text input as defined in the `pattern` property. |
+| `n/a` | `info.magnolia.ui.field.SvgUploadValidatorDefinition` Validates SVG file uploads against malicious content. |
+| `n/a` | `info.magnolia.ui.field.SafeHtmlValidatorDefinition` Validates text against malicious HTML. |

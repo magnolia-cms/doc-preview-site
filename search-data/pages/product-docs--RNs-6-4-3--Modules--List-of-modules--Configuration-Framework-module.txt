@@ -1,0 +1,32 @@
+---
+title: "Configuration Framework module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Configuration-Framework-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Configuration Framework module
+---
+
+# Configuration Framework module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MAGNOLIA](https://magnolia-cms.atlassian.net/browse/MAGNOLIA) |
+| Maven site | [Configuration Framework](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcore%2Fmagnolia-configuration%2F6.4.3) |
+| Latest | 6.4.3 |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.core</groupId>
+  <artifactId>magnolia-configuration</artifactId>
+  <version>6.4.3</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |

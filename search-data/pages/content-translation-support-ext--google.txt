@@ -8,13 +8,13 @@ breadcrumb: Content Translation Extended module > CTSX Google Translator
 
 # CTSX Google Translator
 
-[Content management](../../product-docs/7.0/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.0.0 [Magnolia 6.4](../../product-docs/7.0/) compatible
+[Content management](../../product-docs/RNs-6-4-3/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.1.0 [Magnolia 6.4](../../product-docs/RNs-6-4-3/) compatible
 
 The **CTSX Google module** performs translation via the [Google Cloud Translation API](https://cloud.google.com/translate/). The Google Translation API supports more than one hundred different languages, from Afrikaans to Zulu. Used in combination, this enables translation between thousands of language pairs.
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 > **Important:** In order to start the Google translation process, please make sure that the core and apps modules in the Content Translation Extended have already been installed.
 
@@ -22,7 +22,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.translation</groupId>
   <artifactId>magnolia-content-translation-support-ext-google</artifactId>
-  <version>5.0.0</version>
+  <version>5.1.0</version>
 </dependency>
 <dependency>
   <groupId>com.google.cloud</groupId>
@@ -31,95 +31,15 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 </dependency>
 ```
 
-## [](#_configuration)Configuration
-
-The configuration can be done using JCR or YAML.
-
--   Refer to the [JCR Configuration](#_jcr_configuration) for the JCR configuration.
-
--   Refer to the [YAML configuration](#_yaml_configuration) for instructions on how to define settings using YAML.
-
-
-### [](#_jcr_configuration)JCR Configuration
-
-Configuration of the Google service provider is handled in the module config. This provider should be configured with the following path:
-
-```none
-modules
-└── content-translation-support-ext-google
-    └── config
-        └── translationProviders
-            └── googleTranslationProviderConfigFile.yaml
-```
-
-> **Note:** For users upgrading from version 4.0.0 to version 4.1.0, ensure you move your existing translation provider configuration to the correct path.
-
-### [](#_yaml_configuration)YAML configuration
-
-Google service provider configuration is defined within its provider module (`magnolia-content-translation-support-ext-google`) under the following directory structure:
-
-```plaintext
-/src/main/resources/magnolia-content-translation-support-ext-google/translationProviders
-```
-
-#### [](#_required_decorations)Required decorations
-
-This configuration can also be **decorated** to override or extend the default configuration. Decoration file should be placed under the following path:
-
-```plaintext
-<light-module-name>/decorations/magnolia-content-translation-support-ext-google/translationProviders
-```
-
-Below is an example of how to decorate Google service provider configuration within a light module:
-
-```plaintext
-light-modules/
-└── my-module/
-    └── decorations/
-        └── magnolia-content-translation-support-ext-google/
-            └── translationProviders/
-                └── Google.yaml
-```
-
-### [](#_configuration_properties)Configuration properties
-
-This provider can be configured with the following properties.
-
 | Property | Description |
 | --- | --- |
-| `autoTranslationAllowed` | **optional** , default is `false`<br><br>When true the content review process (workflow) is bypassed. |
-| `class` | **required**<br><br>Definition class for the translator to be used.<br><br>See `info.magnolia.translation.ext.provider.google.definition.GoogleProviderDefinition`. |
-| `clientId` | **required**<br><br>Identifies the client application with Google. |
-| `clientToken` | **required**<br><br>Client secret for the client ID. |
-| `configName` | **required**<br><br>Identifies the configuration within Magnolia. |
-| `defaultFlag` | **optional**<br><br>The default configuration used by the system in the case of multiple translation services being used. |
-| `implementationClass` | **required**<br><br>Implementation class for interfacing with Google.<br><br>See `info.magnolia.translation.ext.provider.google.translator.GoogleTranslator`. |
-
-### [](#_sample_jcr_configuration)Sample JCR configuration
-
-```none
-'config':
-  'jcr:primaryType': 'mgnl:content'
-  'translationProviders':
-    'Google':
-      'autoTranslationAllowed': 'false'
-      'class': 'info.magnolia.translation.ext.provider.google.definition.GoogleProviderDefinition'
-      'clientId': 'xxx'
-      'clientToken': 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-      'configName': 'Google.com'
-      'defaultFlag': 'true'
-      'enabledFlag': 'true'
-      'implementationClass': 'info.magnolia.translation.ext.provider.google.translator.GoogleTranslator'
-```
-
-### [](#_sample_yaml_decorated_configuration)Sample YAML decorated configuration
-
-```yaml
-clientId: xxxxxx
-clientToken: xxxxxx-xxxxx-xxxx-xxxx-xxxx
-defaultFlag: true
-enabledFlag: true
-```
+| `autoTranslationAllowed` | **optional** , default is `false` When true the content review process (workflow) is bypassed. |
+| `class` | **required** Definition class for the translator to be used. See `info.magnolia.translation.ext.provider.google.definition.GoogleProviderDefinition` . |
+| `clientId` | **required** Identifies the client application with Google. |
+| `clientToken` | **required** Client secret for the client ID. |
+| `configName` | **required** Identifies the configuration within Magnolia. |
+| `defaultFlag` | **optional** The default configuration used by the system in the case of multiple translation services being used. |
+| `implementationClass` | **required** Implementation class for interfacing with Google. See `info.magnolia.translation.ext.provider.google.translator.GoogleTranslator` . |
 
 ## [](#_usage)Usage
 

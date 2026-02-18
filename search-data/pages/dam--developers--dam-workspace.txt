@@ -36,75 +36,43 @@ Here is the hierarchical structure of the `dam` workspace:
 
 > **Warning:** mgnl:asset: Contains all Asset main properties and DublinCore properties.mgnl:resource: Contains the binary and MagnoliaAssetMetadata properties.Refer to AssetNodeTypes to access the Asset property constant definition and utility methods. AssetNodeTypes should be used to refer to JCR Asset properties and node structure.
 
-## [](#_asset_to_jcr_node_mapping)Asset to JCR node mapping
-
 | Node | Property | Asset Getter | Description |
 | --- | --- | --- | --- |
-| `mgnl:asset` | (not related to a property `node.getName()`) | `Asset.getName()` | JCR `Asset` node name. |
-| `mgnl:asset` | `language` | `Asset.getLanguage()` | String representation of local [ISO 639](http://en.wikipedia.org/wiki/ISO_639). |
-| `mgnl:asset` | (not related to a property `CompositeAssetId`) | `Asset.getItemKey()` | Composite Id build using<br><br>\+ `new ItemKey(DamConstants.DEFAULT_JCR_PROVIDER_ID, assetNode.getIdentifier())`; |
-| `mgnl:asset` | `title` | `Asset.getTitle()` | Title of the `Asset`. |
-| `mgnl:asset` | `subject` | `Asset.getSubject()` | Subject of the `Asset`. |
-| `mgnl:asset` | `description` | `Asset.getDescription()` | Description of the `Asset`. |
-| `mgnl:asset` | `caption` | `Asset.getCaption()` | Caption of the `Asset`. |
-| `mgnl:asset` | `copyright` | `Asset.getCopyright()` | Copyright of the `Asset`. |
-| `mgnl:asset` | `comment` | `Asset.getComment()` | Comment defined on the `Asset`. |
-| `mgnl:asset` | `mgnl:lastModified` | `Asset.getLastModified()` | Last modification date of the `Asset`. |
-| `jcr:content` | `jcr:mimeType` | `Asset.getMimeType()` | Mime Type of the `Asset`. |
-| `jcr:content` | `extension` | `Asset.getFileExtension()` | File extension of the `Asset`. |
-| `jcr:content` | `fileName` | `Asset.getFileName()` | File name of the Asset. This field includes the file extension `` me.tif` ``. |
-| `jcr:content` | `size` | `Asset.getFileSize()` | Size of the `Asset` in bytes. |
-| `jcr:content` | `jcr:data` | `Asset.getContentStream()` | `Asset` content returned as a `java.io.InputStream`. |
+| `mgnl:asset` | (not related to a property `node.getName()` ) | `Asset.getName()` | JCR `Asset` node name. |
+| `mgnl:asset` | `language` | `Asset.getLanguage()` | String representation of local [ISO 639](http://en.wikipedia.org/wiki/ISO_639) . |
+| `mgnl:asset` | (not related to a property `CompositeAssetId` ) | `Asset.getItemKey()` | Composite Id build using + `new ItemKey(DamConstants.DEFAULT_JCR_PROVIDER_ID, assetNode.getIdentifier())` ; |
+| `mgnl:asset` | `title` | `Asset.getTitle()` | Title of the `Asset` . |
+| `mgnl:asset` | `subject` | `Asset.getSubject()` | Subject of the `Asset` . |
+| `mgnl:asset` | `description` | `Asset.getDescription()` | Description of the `Asset` . |
+| `mgnl:asset` | `caption` | `Asset.getCaption()` | Caption of the `Asset` . |
+| `mgnl:asset` | `copyright` | `Asset.getCopyright()` | Copyright of the `Asset` . |
+| `mgnl:asset` | `comment` | `Asset.getComment()` | Comment defined on the `Asset` . |
+| `mgnl:asset` | `mgnl:lastModified` | `Asset.getLastModified()` | Last modification date of the `Asset` . |
+| `jcr:content` | `jcr:mimeType` | `Asset.getMimeType()` | Mime Type of the `Asset` . ** |
+| `jcr:content` | `extension` | `Asset.getFileExtension()` | File extension of the `Asset` . ** |
+| `jcr:content` | `fileName` | `Asset.getFileName()` | File name of the Asset. This field includes the file extension `me.tif`` . ** |
+| `jcr:content` | `size` | `Asset.getFileSize()` | Size of the `Asset` in bytes. ** |
+| `jcr:content` | `jcr:data` | `Asset.getContentStream()` | `Asset` content returned as a `java.io.InputStream` . |
 | `mgnl:asset` | (not related to a property) | `Asset.getPath()` | `Asset` path. + `assetNode.getPath()` |
-| `mgnl:asset` | (not related to a property) | `Asset.getAssetProvider()` | The related `AssetProvider`. |
-| `mgnl:asset` | (not related to a property) | `Asset.getParent()` | Returns the parent `Folder`. Equivalent to `node.getParent()` |
+| `mgnl:asset` | (not related to a property) | `Asset.getAssetProvider()` | The related `AssetProvider` . |
+| `mgnl:asset` | (not related to a property) | `Asset.getParent()` | Returns the parent `Folder` . Equivalent to `node.getParent()` |
 | `mgnl:asset` | (not related to a property) | `Asset.isFolder()` | Returns `false` |
 | `mgnl:asset` | (not related to a property) | `Asset.isAsset()` | Returns `true` |
 
-> **Note:** These fields are required to be at this node level hierarchy ( mgnl:asset. jcr:content) by the current implementation of the Imaging module. They will be moved under the mgnl:asset node level when the Imaging module is updated to work with Assets.
-
-## [](#_folder_to_jcr_node_mapping)Folder to JCR node mapping
-
 | Node | Property | Asset Getter | Description |
 | --- | --- | --- | --- |
-| `mgnl:folder` | (not related to a property `node.getName()`) | `Folder.getName()` | JCR `Folder` node name. |
-| `mgnl:folder` | (not related to a property) | `Folder.getPath()` | `Folder` path.  <br>`folderNode.getPath()` |
-| `mgnl:folder` | (not related to a property) | `Folder.getItemKey()` | Composite Id built using  <br>`new ItemKey(DamConstants.DEFAULT_JCR_PROVIDER_ID, folderNode.getIdentifier())`; |
+| `mgnl:folder` | (not related to a property `node.getName()` ) | `Folder.getName()` | JCR `Folder` node name. |
+| `mgnl:folder` | (not related to a property) | `Folder.getPath()` | `Folder` path. `folderNode.getPath()` |
+| `mgnl:folder` | (not related to a property) | `Folder.getItemKey()` | Composite Id built using `new ItemKey(DamConstants.DEFAULT_JCR_PROVIDER_ID, folderNode.getIdentifier())` ; |
 | `mgnl:folder` | (not related to a property) | `Folder.getItem(String name)` | Returns the item directly under this folder with the given name. |
-| `mgnl:folder` | (not related to a property) | `Folder.getChildren()` | Returns an iterator over the direct elements under this folder. Returns both `Asset` and `Folder`. |
+| `mgnl:folder` | (not related to a property) | `Folder.getChildren()` | Returns an iterator over the direct elements under this folder. Returns both `Asset` and `Folder` . |
 | `mgnl:folder` | (not related to a property) | `Folder.isRoot()` | Returns `true` if the `folderNode.getDepth()==0` |
-| `mgnl:folder` | (not related to a property) | `Folder.getAssetProvider()` | Returns the related `AssetProvider`. |
-| `mgnl:folder` | (not related to a property) | `Folder.getParent()` | Returns the parent `Folder`. Equivalent to `node.getParent()` |
+| `mgnl:folder` | (not related to a property) | `Folder.getAssetProvider()` | Returns the related `AssetProvider` . |
+| `mgnl:folder` | (not related to a property) | `Folder.getParent()` | Returns the parent `Folder` . Equivalent to `node.getParent()` |
 | `mgnl:folder` | (not related to a property) | `Folder.isFolder()` | Returns `true` |
 | `mgnl:folder` | (not related to a property) | `Folder.isAsset()` | Returns `false` |
 
-## [](#_assetmetadata_to_jcr_node_mapping)AssetMetadata to JCR node mapping
-
-`MagnoliaAssetMetadata`
-
 | Node | Property Name | Asset Getter | Description |
 | --- | --- | --- | --- |
-| `jcr:content` | `height` | `MagnoliaAssetMetadata.getHeight()` | File height of the `Asset` for `image` `MediaType`. |
-| `jcr:content` | `width` | `MagnoliaAssetMetadata.getWidth()` | File width of the `Asset` for `image` `MediaType`. |
-
-`DublinCore`
-
-For more Information see [Dublin Core Metadata Element Set](http://dublincore.org/documents/dces/).
-
-| Node | Property | Asset Getter | Description |
-| --- | --- | --- | --- |
-| `mgnl:asset` | `language` | `DublinCore.getLanguage()` | The returned value is equivalent to `Asset.getLanguage()`. |
-| `mgnl:asset` | `title` | `DublinCore.getTitle()` | The returned value is equivalent to `Asset.getTitle()`. |
-| `mgnl:asset` | `subject` | `DublinCore.getSubject()` | The returned value is equivalent to `Asset.getSubject()`. |
-| `mgnl:asset` | `description` | `DublinCore.getDescription()` | The returned value is equivalent to `Asset.getDescription()`. |
-| `mgnl:asset` | `copyright` | `DublinCore.getRight()` | The returned value is equivalent to `Asset.getCopyright()`. |
-| `jcr:content` | `jcr:mimeType` | `DublinCore.getFormat()` | The returned value is equivalent to `Asset.getMimeType()`. |
-| `mgnl:asset` | (not related to a property `CompositeAssetId`) | `DublinCore.getIdentifier()` | The returned value is equivalent to `Asset.getIdentifier()`. |
-| `mgnl:asset` | `creator` | `DublinCore.getCreator()` | The entity primarily responsible for making the resource. |
-| `mgnl:asset` | `mgnl:lastModified` | `DublinCore.getDate()` | The returned value is equivalent to `Asset.getLastModified()`. |
-| `mgnl:asset` | `contributor` | `DublinCore.getContributor()` | The entity responsible for making contributing to the resource. |
-| `mgnl:asset` | `coverage` | `DublinCore.getCoverage()` | The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant. |
-| `mgnl:asset` | `publisher` | `DublinCore.getPublisher()` | The entity responsible for making the resource available. |
-| `mgnl:asset` | `relation` | `DublinCore.getRelation()` | A related resource. |
-| `mgnl:asset` | `source` | `DublinCore.getSource()` | A related resource from which the described resource is derived. |
-| `mgnl:asset` | `type` | `DublinCore.getType()` | The returned value is equivalent to `Asset.getMediaType()`. The `MediaType` is defined based on the `MimeType`. |
+| `jcr:content` | `height` | `MagnoliaAssetMetadata.getHeight()` | File height of the `Asset` for `image` `MediaType` . ** |
+| `jcr:content` | `width` | `MagnoliaAssetMetadata.getWidth()` | File width of the `Asset` for `image` `MediaType` . ** |

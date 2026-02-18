@@ -8,7 +8,7 @@ breadcrumb: DX Core > Administration > Monitoring > Audit
 
 # Audit
 
-Audit trail allows an administrator to record user activity in the system. An audit trail typically captures the **who, what, when and where**. The default implementation is based on [Log4j 2](https://logging.apache.org/log4j/2.x/index.html) and the files used for logging can be configured to suit your requirements. Magnolia also provides a Log Viewer tool, located in the Tools menu, [to visualize these and other log files](../../../Modules/List-of-modules/Log-Tools-module/#_viewing_and_downloading_log_files).
+Audit trail allows an administrator to record user activity in the system. An audit trail typically captures the **who, what, when and where**. The default implementation is based on [Log4j 2](https://logging.apache.org/log4j/2.x/index.html) and the files used for logging can be configured to suit your requirements. Magnolia also provides a Log Viewer tool, located in the Tools menu, [to visualize these and other log files](../../../../RNs-6-4-3/Modules/List-of-modules/Log-Tools-module/#_viewing_and_downloading_log_files).
 
 ## [](#_auditlogging_configuration)`auditLogging` configuration
 
@@ -34,136 +34,32 @@ Here you define the loggers to be used by the audit logging. Here is an example 
 </Async>
 ```
 
-## [](#_configurable_properties_of_a_logconfiguration_object)Configurable properties of a `LogConfiguration` object
-
-A `LogConfiguration` object defines how specific audit logging actions are handled in Magnolia, including where log entries are written, how they’re formatted, and whether they trigger system events.
-
-**Example configuration**
-
-```yaml
-auditLogging:
-  class: info.magnolia.audit.AuditLoggingManager
-  defaultSeparator: ',' (1)
-  logConfigurations:
-    publish:
-      active: true
-      logName: log-audit
-      separator: '|' (2)
-    unpublish:
-      active: true
-      logName: log-audit
-```
-
-|     |     |
-| --- | --- |
-| **1** | The `defaultSeparator` is a property of the main `AuditLoggingManager`. It sets a global, default separator that is used for all audit log messages. |
-| **2** | This separator override applies only to the `publish` action. |
-
-**Properties**
-
 | Property | Description |
 | --- | --- |
-| `name` | **required** (type: `String`)<br><br>A unique but arbitrary identifier node name for the configuration. It’s used to match an incoming logging request’s `action` to its specific configuration. |
-| `logName` | **required** (type: `String`)<br><br>Defines the name of the logger that receives and writes the audit log message. |
-| `active` | **optional** (type: `boolean`), *default is `false`*<br><br>A flag that enables or disables this specific log configuration. |
-| `sendEvents` | **optional** (type: `boolean`), *default is `false`*<br><br>If set to `true`, an `info.magnolia.audit.AuditLoggingManager.AuditLoggingEvent` is fired on Magnolia’s event bus each time a log entry is made.<br><br>This allows other parts of the system, such as a custom `AuditLoggingEventHandler`, to listen for and process these events. |
-| `separator` | **optional** (type: `String`), *default is `,`*<br><br>The character or string used to separate the different fields (action, data) within the final log message.<br><br>If this property isn’t set, a default separator (`,` a comma) from the `AuditLoggingManager` is used instead. |
+| `name` | **required** (type: `String` ) A unique but arbitrary identifier node name for the configuration. It’s used to match an incoming logging request’s `action` to its specific configuration. |
+| `logName` | **required** (type: `String` ) Defines the name of the logger that receives and writes the audit log message. |
+| `active` | **optional** (type: `boolean` ), *default is false* A flag that enables or disables this specific log configuration. |
+| `sendEvents` | **optional** (type: `boolean` ), *default is false* If set to `true` , an `info.magnolia.audit.AuditLoggingManager.AuditLoggingEvent` is fired on Magnolia’s event bus each time a log entry is made. This allows other parts of the system, such as a custom `AuditLoggingEventHandler` , to listen for and process these events. |
+| `separator` | **optional** (type: `String` ), *default is ,* The character or string used to separate the different fields (action, data) within the final log message. If this property isn’t set, a default separator ( `,` a comma) from the `AuditLoggingManager` is used instead. |
 
-### [](#_defining_actions)Defining actions
+| Node name | Value | Type |
+| --- | --- | --- |
+| 📁 server |  |  |
+| …​ |  |  |
+| 📁 auditLogging |  |  |
+| 📁 logConfigurations |  |  |
+| ⸬ excludeWorkspaces |  |  |
+| ⬩ Messages workspace | messages | String |
+| ⬩ User Based Ranker | userranking | String |
+| ⬩ class | info.magnolia.audit.AuditLoggingManager | String |
+| ⬩defaultSeparator | , | String |
+| …​ |  |  |
 
-Define the actions you want to log in `auditLogging` configuration. You can enable the preconfigured actions and define which logger they should use. Define separators for each action or use the default separator (comma) for all of them.
-
-|     |     |
-| --- | --- |
 | Node name | Value |
-| 📁 server |     |
-| 📁 auditLogging |     |
-| ⸬ logConfigurations |     |
-| ⸬ deactivate |     |
-| ⸬ activate |     |
-| ⬩ active | false |
-| ⬩ logName | log-audit |
-| ⸬ copy |     |
-| ⸬ login |     |
-| ⸬ logout |     |
-| ⸬ move |     |
-| ⸬ modify |     |
-| ⸬ create |     |
-| ⸬ delete |     |
+| --- | --- |
+| 📁 auditLogging |  |
+| ⬩ defaultSeparator | , |
 | ⬩ class | info.magnolia.audit.AuditLoggingManager |
-| ⬩ defaultSeparator | ,   |
-
-Below is an extract of the log output. The general pattern is `when, what, who, where`.
-
-```bash
-20.10.2008 11:59:33 , create , superuser , website , /untitled4
-```
-
-The `move` and `copy` actions log the source node path and the destination node path.
-
-The `login` action logs the IP address and the result.
-
-```bash
-21.10.2008 12:21:59, logout, anonymous
-21.10.2008 12:22:05, login, superuser, 127.0.0.1, Success
-```
-
-## [](#_excluding_workspaces)Excluding workspaces
-
-To reduce the amount of noise in your logs, you way want to exclude certain workspaces in the auditLogging configuration even when logging is activated for a certain action. Examples:
-
--   If you have logging activated for the `create` action, you may want to exclude the `messages` workspace from the logs so that the creation of messages isn’t logged.
-
--   If you have logging activated for the `modify` action, you may want to exclude the `userranking` workspace from the logs to avoid the log being flooded with entries every minute when users search for terms.
-
-
-To exclude a workspace from auditLogging:
-
-1.  In the Configuration app, go to `server/auditLogging`.
-
-2.  Add a content node named `excludeWorkspaces`.
-
-3.  Under that node, add a property for each workspace you want to exclude. The value of the node should be the [workspace](../../Architecture/Workspaces/) name.
-
-    |     |     |     |
-    | --- | --- | --- |
-    | Node name | Value | Type |
-    | 📁 server |     |     |
-    | …​  |     |     |
-    | 📁 auditLogging |     |     |
-    | 📁 logConfigurations |     |     |
-    | ⸬ excludeWorkspaces |     |     |
-    | ⬩ Messages workspace | messages | String |
-    | ⬩ User Based Ranker | userranking | String |
-    | ⬩ class | info.magnolia.audit.AuditLoggingManager | String |
-    | ⬩defaultSeparator | ,   | String |
-    | …​  |     |     |
-
-
-## [](#_including_metadata)Including metadata
-
-By default, `auditLogging` ignores changes to properties and nodes prefixed with `jcr:` or `mgnl:`. You can configure a list of properties to audit those property changes. In the example configuration below, page template modifications are included.
-
-To whitelist a property:
-
-1.  In the Configuration app, go to `/server/auditLogging`.
-
-2.  Add a content node named `includeMetadata`.
-
-3.  Under that node, add a property for each node/property name you want to include.
-
-    | Node name | Value |
-    | --- | --- |
-    | 📁 auditLogging |     |
-    | ⬩ defaultSeparator | ,   |
-    | ⬩ class | info.magnolia.audit.AuditLoggingManager |
-    | 📁 logConfigurations |     |
-    | ⸬ includeMetadata |     |
-    | ⬩ template | mgnl:template |
-
-    The `mgnl:template` property is included in the audit logging.
-
-
-Related topics
-
--   Monitor subapp in [Publishing Tools](../../../Apps/List-of-apps/Publishing-Tools-app/)
+| 📁 logConfigurations |  |
+| ⸬ includeMetadata |  |
+| ⬩ template | mgnl:template ** |

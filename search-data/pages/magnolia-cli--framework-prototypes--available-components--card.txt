@@ -1,0 +1,70 @@
+---
+title: "Card"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/card/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Card
+---
+
+# Card
+
+The Card component is a layout component used to group content in a visually consistent block. The component includes an image, a title, and a short description.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `title` (required) - Title displayed below the image.
+
+-   `description` (required) - Short text description shown below the title.
+
+-   `imageChooser` (required, default: `image`) - A switchable field allowing internal or external image selection:
+
+    -   If `image` is selected:
+
+        -   `image` (required) - Chooser for selecting an image from Magnolia DAM.
+
+        -   `altText` (optional) - Alt text for accessibility.
+
+
+    -   If `externalImage` is selected:
+
+        -   `externalImage` (required) - A full URL to the external image.
+
+        -   `externalImageAlt` (optional) - Alt text for accessibility.
+
+
+
+
+## [](#_behavior)Behavior
+
+-   Displays a vertically stacked card layout.
+
+-   All content is wrapped in a padded container.
+
+-   Image spans the full width of the card.
+
+-   Title appears below the image, followed by the description.
+
+-   Width of the card adapts to the parent container.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Card -p card
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

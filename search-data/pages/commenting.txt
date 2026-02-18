@@ -1,0 +1,359 @@
+---
+title: "Commenting module"
+url: https://docs.magnolia-cms.com/commenting/
+category: Modules
+version: modules
+breadcrumb: Commenting module
+---
+
+# Commenting module
+
+[Content management](../product-docs/RNs-6-4-3/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/commenting) Version [2.0.0](https://magnolia-cms.atlassian.net/browse/COMMENTING) [Magnolia 6.3](../product-docs/6.3/) compatible \[[1](#_footnotedef_1 "View footnote.")\]
+
+This module offers commenting features as well as the possibility of liking or disliking comments. You can moderate comments or mark as author´s favourite. The commenting module provides a [REST API](https://magnolia-docs-preview.netlify.app//commenting-api/index.html) for commenting and a [Content App](#_usage) to view comments of an item.
+
+It uses an external database to store the commenting data.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your bundle.
+
+> **Tip:** Don’t forget about the JDBC drivers.
+
+App config
+
+```xml
+<dependency>
+  <groupId>info.magnolia.commenting</groupId>
+  <artifactId>magnolia-commenting-app</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+Rest config
+
+```xml
+<dependency>
+  <groupId>info.magnolia.commenting</groupId>
+  <artifactId>magnolia-commenting-rest</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+> **Important:** Ensure the Tools module is part of your webapp.Webapp<dependency>
+>   <groupId>info.magnolia.tools</groupId>
+>   <artifactId>magnolia-tools</artifactId>
+>   <version>2.0.0</version>
+> </dependency>
+
+### [](#_jdbc_drivers)JDBC drivers
+
+You’ll also need to make sure you have your desired JDBC driver as part of your webapp.
+
+MySQL
+
+```xml
+<dependency>
+  <groupId>mysql</groupId>
+  <artifactId>mysql-connector-java</artifactId>
+  <version>${mysql.version}</version>
+</dependency>
+```
+
+Postgres
+
+```xml
+<dependency>
+  <groupId>org.postgresql</groupId>
+  <artifactId>postgresql</artifactId>
+  <version>${postgresql.version}</version>
+</dependency>
+```
+
+> **Caution:** If you want to use an IDE like Eclipse or IntelliJ, you will need to configure the agent based on the ebean framework as described in the following: https://ebean.io/docs/getting-started/eclipse-ide.
+
+## [](#_usage)Usage
+
+This section guides you on setting up the module.
+
+It contains the following sections:
+
+-   [Define the database connection](#_define_the_database_connection)
+
+-   [Anonymous comments](#_anonymous_comments)
+
+-   [Limit requests](#_limit_requests)
+
+-   [Content App Comments](#_content_app_comments)
+
+
+* * *
+
+### [](#_define_the_database_connection)Define the database connection
+
+You can configure the database connection in the JCR or the File System (YAML) under: `/src/main/resources/commenting-core/config.yaml`.
+
+#### [](#_for_mysql)For MySQL
+
+/commenting-core/config.yaml
+
+```yaml
+datasource:
+    username: user
+    password: password
+    url: jdbc:mysql://127.0.0.1:3306/comments
+    driver: com.mysql.cj.jdbc.Driver
+    migration:
+        path: /commenting-core/dbmigration/mysql
+        run: true
+```
+
+> **Tip:** If you have an error like:error "Error initialising DataSource: The server time zone value 'CEST' is unrecognized or represents more than one time zone. You must configure either the server or JDBC driver"Add the following code to your url property in config.yaml: "?serverTimezone=Europe/Madrid" or your personal time zone, as described bellow:/commenting-core/config.yamldatasource:
+>     username: user
+>     password: password
+>     url: jdbc:mysql://127.0.0.1:3306/comments?serverTimezone=Europe/Madrid (1)
+>     driver: com.mysql.cj.jdbc.Driver
+>     migration:
+>         path: /commenting-core/dbmigration/mysql
+>         run: true1Add your timezone replacing Europe/Madrid with Europe/Dublin for example.
+
+#### [](#_for_postgresql)For PostgreSQL
+
+The snippet below doesn’t actually *create* the database, but rather points to it. Therefore, the defined database must already exist.
+
+> **Important:** Ensure that the existing databse you’re using has the following rights:CREATEDROPALTER
+
+/commenting-core/config.yaml
+
+```yaml
+datasource:
+    username: user
+    password: password
+    url: jdbc:postgresql://localhost:5432/comments
+    driver: org.postgresql.Driver
+    migration:
+        path: /commenting-core/dbmigration/pg
+        run: true
+```
+
+### [](#_database_schema)Database schema
+
+The table(s) required are created automatically by the init scripts in the `magnolia-commenting-core` module. For these scripts to be executed the first time the module is installed (*or whenever the database is empty*) the migration node in the datasource is used:
+
+-   `path`: The path of the init script.
+
+    -   `dbmigration/mysql` for MySQL schema
+
+    -   `dbmigration/pg` for PostgreSQL schema
+
+
+-   `run`: this property needs to be true when the database is empty.
+
+    `Default value: false`
+
+
+### [](#_anonymous_comments)Anonymous comments
+
+If you need anonymous comments in your site, add the following to your commenting-rest module:
+
+commenting-rest/config.yaml
+
+```yaml
+config:
+  allowAnonymous: true
+```
+
+> **Caution:** CacheBe aware on Public instances, anonymous comments is cached on Magnolia by default.To prevent caching, add an entry in cache’s excludes section for URIs starting with "/.rest/commenting".
+
+### [](#_limit_requests)Limit requests
+
+To configure a limit on the request see [Throttling Filter](https://wiki.magnolia-cms.com/display/SERVICES/Throttling+Filter+Module).
+
+### [](#_content_app_comments)Content App Comments
+
+Content App is hidden because it has no sense to view all comments without filter by an item. To view comments of a concrete item you need to select a node from a workspace and then click on "View Comments" action:
+
+![admincentral view comments](_images/admincentral-view-comments.png)
+
+Once you have clicked on the action, you can view the "Comments" app per item selected:
+
+![admincentral view comments list](_images/admincentral-view-comments-list.png)
+
+In this app you can:
+
+-   View comments (and their details).
+
+-   Delete comments.
+
+-   Moderate comments.
+
+-   Author choice: favourite comment from Editors.
+
+
+> **Tip:** You can configure the action on each ContentApp simply by adding "commenting" action like the following example:
+
+Add Commenting Action
+
+```yaml
+subApps:
+  browser:
+    actions:
+      commenting:
+        appName: commenting
+        class: info.magnolia.commenting.action.BrowseCommentingActionDefinition
+        icon: icon-message
+        subAppId: browser
+        availability:
+          writePermissionRequired: false
+          rules:
+            IsNotDeletedRule:
+              implementationClass: info.magnolia.ui.framework.availability.IsNotDeletedRule
+
+    actionbar:
+      sections:
+        pageActions:
+          groups:
+            editActions:
+              items:
+                commenting: {}
+```
+
+## [](#_database_action_triggers)Database action triggers
+
+DB action triggers is a feature that allows triggering (calling) magnolia commands based on database action (CRUD). There are three types of actions that can be triggered:
+
+-   [Persist](#_persist) (Add)
+
+-   [Update](#_update)
+
+-   [Remove](#_remove) (Delete)
+
+
+To allow DB actions to trigger commands, we need to set magnolia property. Please set `ebean.listeners.enabled` to `"true"` in the corresponding magnolia.properties file.
+
+```java
+ebean.listeners.enabled = true
+```
+
+Database trigger pass affected Entity objects to the command through the context. The User is able to get the Entity object (for example: `info.magnolia.commenting.domain.Comment`) from the context (object is passed to context by key `"data"`).
+
+```java
+Comment comment = (Comment) ctx.get("data");
+```
+
+### [](#_persist)Persist
+
+To execute magnolia command on persist (add) DB action:
+
+-   `name` command: prePersist or postPersist
+
+    -   `prePersist` is triggered before persist (add) action
+
+    -   `postPersist` is triggered after persist (add) action
+
+
+-   `put` command definition in catalog that is named based on the database entity for which we want to trigger command
+
+
+Example
+
+```none
+'commenting-core':
+  'commands':
+    'comment':
+      'postPersist':
+        'class': 'info.magnolia.module.mail.commands.MailCommand' (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Sends an email message when a new comment is added to the database. |
+
+### [](#_update)Update
+
+To execute magnolia command on update DB action:
+
+-   `name` command: preUpdate or postUpdate
+
+    -   `preUpdate` is triggered before update action
+
+    -   `postUpdate` is triggered after update action
+
+
+-   `put` command definition in catalog that is named based on the database entity for which we want to trigger command
+
+
+Example
+
+```none
+'commenting-core':
+  'commands':
+    'comment':
+      'postUpdate':
+        'class': 'info.magnolia.module.mail.commands.MailCommand' (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Send an email message when a comment is updated in the database. |
+
+### [](#_remove)Remove
+
+To execute magnolia command on remove DB action:
+
+-   `name` command: preRemove or postRemove
+
+-   `preRemove` is triggered before remove (delete) action
+
+-   `postRemove` is triggered after remove (delete) action
+
+-   `put` command definition in catalog that is named based on the database entity for which we want to trigger command
+
+
+Example
+
+```none
+'commenting-core':
+  'commands':
+    'comment':
+      'postRemove':
+        'class': 'info.magnolia.module.mail.commands.MailCommand' (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Sends an email message when a comment is deleted from the database. |
+
+| Argument | Description |
+| --- | --- |
+| `mgnlWorkspace` | The workspace you are working on. ** The function retrieves item´s comments from this workspace. | ** | The function retrieves item´s comments from this workspace. |
+| ** | The function retrieves item´s comments from this workspace. |
+| `mgnlUuid` | The UUID of the item from where you want to get the comments. |
+| `limit` | Number of results to return. |
+| `offset` | Starting number of the rows to be returned. |
+| `sort` | Sort parameter in form (ie: "created asc", "created desc" or "modified desc") |
+| `parent` | `ParentId` of the comment. optional ** This option allows threaded comments. | ** | This option allows threaded comments. |
+| ** | This option allows threaded comments. |
+
+## [](#_deactivate_ebeans_log)Deactivate ebeans log
+
+Add the following to your `log4js.xml` file to deactivate the ebeans log.
+
+```xml
+<!-- Ebean -->
+<logger name="io.ebean.SQL" level="INFO"/>
+<logger name="io.ebean.TXN" level="INFO"/>
+<logger name="io.ebean.SUM" level="INFO"/>
+<logger name="io.ebean.QUERY" level="INFO"/>
+<logger name="io.ebean.BEAN" level="INFO"/>
+<logger name="io.ebean.COLL" level="INFO"/>
+<logger name="io.ebean.NATKEY" level="INFO"/>
+```
+
+| Version | Notes |
+| --- | --- |
+| `2.0.0` | Release for Magnolia 6.3 compatibility. [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20COMMENTING%20AND%20fixVersion%20%3D%202.0.0) |
+
+* * *
+
+[1](#_footnoteref_1). This module was last tested on Magnolia 6.3.5. If you are using a previous Magnolia release or version, please take this into consideration.

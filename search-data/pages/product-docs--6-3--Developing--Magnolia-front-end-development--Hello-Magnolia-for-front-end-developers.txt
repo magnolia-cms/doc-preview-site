@@ -68,7 +68,7 @@ Open the Resource Files app and see the resource files that make up the hello-ma
 
 > **Tip:** Search for apps or for content across all your apps using the Find Bar. Open an app directly from the Find Bar using the command open <app-title> app, for example, type open pages app. You must use the exact app title, as it appears in the App Launcher.
 
-![hello-magnolia light module in the Resources Files app](../../../_images/6-1-helloMagnolia4FeD-inResourceFilesApp.png)
+![hello-magnolia light module in the Resources Files app](../../../../RNs-6-4-3/_images/6-1-helloMagnolia4FeD-inResourceFilesApp.png)
 
 Note the file icon in the **Origin** column indicating that these resources are file-based. You can double click on any resource to view it directly in Magnolia.
 
@@ -97,13 +97,13 @@ You can use the templates provided by the `hello-magnolia` light module right aw
 6.  Open the page for editing.
 
 
-![Hello Magnolia edit page](../../../_images/6-2-helloMagnolia4FeD-editPage.png)
+![Hello Magnolia edit page](../../../../RNs-6-4-3/_images/6-2-helloMagnolia4FeD-editPage.png)
 
 ## [](#_add_a_component_to_the_page)Add a component to the page
 
 The Hello Magnolia light module contains a component called quotation.
 
-![Adding component to the page](../../../_images/6-2-helloMagnolia4FeD-quotationComponent.png)
+![Adding component to the page](../../../../RNs-6-4-3/_images/6-2-helloMagnolia4FeD-quotationComponent.png)
 
 Add this component to the page you created:
 
@@ -112,7 +112,7 @@ Add this component to the page you created:
 2.  In the **Quotation** dialog box, enter your favorite quote and the author.
 
 
-![Adding quote to the quotation box](../../../_images/6-2-helloMagnolia4FeD-addQuote.png)
+![Adding quote to the quotation box](../../../../RNs-6-4-3/_images/6-2-helloMagnolia4FeD-addQuote.png)
 
 ## [](#_tweak_your_light_module)Tweak your light module
 
@@ -153,7 +153,7 @@ Add a third field called `quoteSource`.
 
 Edit your component on your Hello Magnolia page. You see the field you added at the bottom of the dialog.
 
-![Editing a component on Hello Magnolia page](../../../_images/6-1-helloMagnolia4FeD-addQuoteSource.png)
+![Editing a component on Hello Magnolia page](../../../../RNs-6-4-3/_images/6-1-helloMagnolia4FeD-addQuoteSource.png)
 
 You must now change the template script to render this new content on the page.
 
@@ -178,7 +178,7 @@ Add the following line to the blockquote section to render the **Quotation sourc
 
 Refresh your page in Magnolia to see the **Quotation source** field’s content rendered in the page you created:
 
-![Quotation source rendered](../../../_images/6-2-helloMagnolia4FeD-addQuoteSourceRendered.png)
+![Quotation source rendered](../../../../RNs-6-4-3/_images/6-2-helloMagnolia4FeD-addQuoteSourceRendered.png)
 
 ### [](#_add_an_additional_resource)Add an additional resource
 
@@ -226,7 +226,7 @@ Add the following statement below line 8 in the template script to link to your 
 
 As a result, the new style is applied to the Quotation source rendered on your page:
 
-![Result seen on Hello Magnolia page](../../../_images/6-2-helloMagnolia4FeD-addQuoteSourceRenderedStyled.png)
+![Result seen on Hello Magnolia page](../../../../RNs-6-4-3/_images/6-2-helloMagnolia4FeD-addQuoteSourceRenderedStyled.png)
 
 > **Tip:** Alternatively, you can use resfn to link to all the CSS files in the hello-magnolia module by replacing lines 8 and 9 with a pattern such as:  ${resfn.css("/hello-magnolia/.*css")}
 

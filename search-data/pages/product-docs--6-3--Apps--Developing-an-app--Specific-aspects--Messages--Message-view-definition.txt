@@ -10,45 +10,12 @@ breadcrumb: DX Core > Apps > Developing an app > Messages > Message view definit
 
 A message view defines how a [notification](../Message-types/#_notifications) (a message type) is displayed in the [Notifications app](../../../../List-of-apps/Notifications-app/) and what users can do with it. Magnolia’s `default` message view can display any system notification and allows the user to delete them. For a more advanced example, see the `workflow` message view in `/modules/workflow/messageViews/workflow`.
 
-## [](#_definition)Definition
-
-Here’s how the `default` view is defined in `/modules/admincentral/messageViews/default.yaml`. Copy or extend it as a starting point for your own view.
-
-```yml
-actions:
-  deleteNotification:
-    implementationClass: info.magnolia.admincentral.apps.notifications.action.DeleteNotificationAndCloseAction
-    icon: icon-delete
-    class: info.magnolia.admincentral.apps.notifications.action.DeleteNotificationActionDefinition
-actionbar:
-  defaultAction: delete
-  sections:
-    notifications:
-      groups:
-        actions:
-          items:
-            deleteNotification:
-              name: deleteNotification
-form:
-  tabs:
-    notification:
-      name: notification
-      fields:
-        sender:
-          class: info.magnolia.ui.form.field.definition.TextFieldDefinition
-        subject:
-          class: info.magnolia.ui.form.field.definition.TextFieldDefinition
-        message:
-          class: info.magnolia.ui.form.field.definition.TextFieldDefinition
-          rows: 5
-```
-
 | Property | Description |
 | --- | --- |
-| `<view name>` | **required**<br><br>Name of view. |
-| `actions` | **required**<br><br>An [action definition](../../../../../../../magnolia-5-ui-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI/) that defines what actions the user can perform on the message. For example, a user can approve or reject a published page. |
-| `form` | **required**<br><br>A [form definition](../../../../../Developing/Templating/Dialog-definition/Form-definition/) that defines what message details are displayed in the view, such as the sender and the subject. The form fields are rendered as static text in the message view, not as fillable fields. |
-| `actionbar` | **required**<br><br>An [action bar definition](../../../../App-configuration/Action-bar-definition/) that references actions defined in the message view or somewhere else. The action bar is displayed on side of the message view. |
+| `<view name>` | **required** Name of view. |
+| `actions` | **required** An [action definition](#6.2@Support/Magnolia-5-UI-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI.adoc) that defines what actions the user can perform on the message. For example, a user can approve or reject a published page. |
+| `form` | **required** A [form definition](../../../../../Developing/Templating/Dialog-definition/Form-definition/) that defines what message details are displayed in the view, such as the sender and the subject. The form fields are rendered as static text in the message view, not as fillable fields. |
+| `actionbar` | **required** An [action bar definition](../../../../App-configuration/Action-bar-definition/) that references actions defined in the message view or somewhere else. The action bar is displayed on side of the message view. |
 
 ## [](#_using_a_view_in_code)Using a view in code
 

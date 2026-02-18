@@ -1,0 +1,834 @@
+---
+title: "Upgrading from Magnolia 6.2 to 6.4"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/upgrade/upgrading-magnolia-62-to-64/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Upgrading to Magnolia 6.4 > Upgrading from Magnolia 6.2 to 6.4
+---
+
+# Upgrading from Magnolia 6.2 to 6.4
+
+This guide walks you through upgrading Magnolia DX Core from 6.2 to 6.4 in a single, unified process. It is for developers, integrators, and DevOps engineers with in-depth Magnolia experience who manage project code, configuration, and runtime environments. Follow each section in order. Use the checkpoints at the end of every section before proceeding. Critical steps are indicated with a icon.
+
+This guide is a living document and will be further improved based on feedback from real-world migrations over the next few weeks. Please share your experience and improvement points on [feedback@magnolia-cms.com](mailto:feedback@magnolia-cms.com).
+
+## [](#_prerequisites)Prerequisites
+
+This section lists what you must review and prepare before starting the upgrade.
+
+Before you upgrade:
+
+-    Check what your current version of Magnolia is and if all your custom modules, extensions, and incubators are compatible with 6.4 (only [Tier 1 incubators](../../../../incubator-modules/incubator-module-list/) are compatible at this time).
+
+-    Review the release notes for versions between your current and target versions.
+
+-    Review the [certified stack](../../Administration/Certified-stack/).
+
+
+## [](#_environment_and_backups)Environment and backups
+
+This section covers preparing the runtime environment and creating and verifying full backups.
+
+1.  Upgrade to the latest patch of your current Magnolia version (for example, if on 6.2.x, go to the latest 6.2.x before starting the 6.2→6.4 upgrade).
+
+2.  Clean and optimize your Magnolia instance: remove unused modules/data, [reindex JCR](../../Administration/Architecture/Workspaces/Workspace-reindexing/).
+
+3.  [Back up your system](../../Administration/Instances/Backing-up-instances/).
+
+4.  Test the backup and the ability to restore or roll back.
+
+5.  Verify that your Java environment is 17 (or newer, as certified by Magnolia 6.4).
+
+6.  Review the [certified stack](../../Administration/Certified-stack/) again for server, servlet container (Tomcat 10/11), and database support.
+
+
+### [](#_checkpoint)Checkpoint
+
+-    Upgraded to the latest 6.2.x first and cleaned unused data/reindexed?
+
+-    All unused modules removed?
+
+-    Full backup taken and test restore verified (JCR, DB, files)?
+
+-    Java 17+ verified on target runtime?
+
+-    Certified stack requirements (OS, servlet container, DB) confirmed?
+
+
+## [](#_dependency_and_platform_updates)Dependency and platform updates
+
+This section guides you through updating Magnolia, Jakarta, servlet container, and related build dependencies.
+
+1.  If you have custom code, add the `rewrite-maven-plugin` to your `pom.xml` file to automate the migration from `javax` to `jakarta` packages. This step effectively alters your code.
+
+    Click to see how to declare the `rewrite-maven-plugin`
+
+    1.  Add the following to your `pom.xml` under `<build><plugins>`:
+
+        ```xml
+          <plugin>
+                <groupId>org.openrewrite.maven</groupId>
+                <artifactId>rewrite-maven-plugin</artifactId>
+                <version>6.22.1</version>
+                <configuration>
+                  <activeRecipes>
+                    <recipe>org.openrewrite.java.migrate.jakarta.JavaxMigrationToJakarta</recipe>
+                  </activeRecipes>
+                </configuration>
+                <dependencies>
+                  <dependency>
+                    <groupId>org.openrewrite.recipe</groupId>
+                    <artifactId>rewrite-migrate-java</artifactId>
+                    <version>3.20.0</version>
+                  </dependency>
+                </dependencies>
+          </plugin>
+        ```
+
+    2.  Run the following Maven command to migrate your code from `javax` to `jakarta` packages before updating your Magnolia version:
+
+        ```bash
+        mvn org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.activeRecipes=org.openrewrite.java.migrate.jakarta.JavaxMigrationToJakarta
+        ```
+
+        Run this migration while your project is still on 6.2.x and compiling successfully. This ensures the rewrite tool can analyze and update your code cleanly before you update to 6.4 dependencies.
+
+
+2.  Update the parent `pom.xml` in your webapp. Set `<magnoliaBundleVersion>` to 6.4.3.
+
+3.  If you use extension modules, either update their versions individually or use the latest extensions BOM compatible with 6.4.
+
+4.  Replace `javax.*` dependencies with their Jakarta EE 10 equivalents in all modules.
+
+    How to update Maven dependencies from `javax` group IDs to their Jakarta equivalents
+
+    To update you must:
+
+    -   Use the latest supported Tomcat release.
+
+        For other servlet containers, see the [Certified stack](../../Administration/Certified-stack/).
+
+    -   Update Maven dependencies from `javax` group IDs to their Jakarta equivalents.
+
+        Example dependency changes
+
+        ```properties
+        javax.inject:javax.inject:1 >> jakarta.inject:jakarta.inject-api:2.0
+        javax.json:javax.json-api   >> jakarta.json:jakarta.json-api:2.0
+        ```
+
+        > **Caution:** Do not convert the Jackrabbit JCR APIs.Keep javax.jcr imports intact, for example:import javax.jcr.Node;
+        > import javax.jcr.NodeIterator;
+        > import javax.jcr.RepositoryException;
+
+        > **Tip:** To avoid duplicate classes on the classpath, replace all javax dependencies with their Jakarta EE 10 equivalents.
+
+        Versions of these dependencies are provided in Magnolia’s third-party library BOM via the `jakarta.jakartaee-bom` import. For more details, see [Certified stack: Maven coordinates](../../Administration/Certified-stack/#_maven_coordinates).
+
+        1.  If your project depends on `vaadin-server` or `vaadin-compatibility-server`, update the `artifactId` by appending `-mpr-jakarta` to ensure compatibility with Jakarta EE.
+
+            **For example:**
+
+            1.  Change `vaadin-server` to `vaadin-server-mpr-jakarta`.
+
+            2.  Change `vaadin-compatibility-server` to `vaadin-compatibility-server-mpr-jakarta`.
+
+
+        2.  Verify that no non-Jakarta Vaadin dependencies are included by running:
+
+            ```bash
+            mvn dependency:tree -Dincludes=com.vaadin:vaadin-server,com.vaadin:vaadin-compatibility-server -Dverbose=true
+            ```
+
+            For additional details on integrating Vaadin MPR with Maven for Vaadin 8, see [Vaadin: How to Integrate Vaadin MPR with Maven for Vaadin 8](https://vaadin.com/docs/v8/framework/mpr/mpr-maven.html).
+
+
+
+5.  Update your webapp’s default configuration files.
+
+    Configuration files in `/WEB-INF/config` may change between major versions, including logging, security, and repository settings.
+
+    The most effective way to manage these updates is to use the Maven WAR plugin to overlay the new default webapp over your project. This allows you to easily review all changes in your version control system before committing them.
+
+    Follow these steps to update your configuration:
+
+    1.  Use your version control system (for example, `git diff` or your IDE’s diff view) to review the changes.
+
+    2.  Carefully merge the changes. Accept necessary updates from the new version while preserving your project-specific customizations.
+
+        > **Note:** Dockerized environmentsIf you manage configuration in a Dockerized environment, remember that system properties or environment variables passed to the JVM (for example, via CATALINA_OPTS or JAVA_OPTS) override values in magnolia.properties.Review your Dockerfiles, setenv.sh scripts, and deployment configurations to ensure they align with the new properties and defaults in Magnolia 6.4.
+
+
+6.  If using custom Docker images, update to use base images certified for Magnolia 6.4.
+
+
+### [](#_checkpoint_2)Checkpoint
+
+-    BOMs and all dependencies updated for 6.4 and Jakarta EE 10.
+
+-    No `javax.*` dependencies remain? Vaadin MPR-Jakarta applied where needed?
+
+-    Servlet container/base images/Java JDK match the certified stack?
+
+-    `magnolia.properties` diffed against 6.4 defaults and aligned?
+
+
+## [](#_code_and_configuration_updates)Code and configuration updates
+
+This section details project-level code and pre-startup configuration changes required for 6.4, including MicroProfile configuration, security, search, forms, sites, REST endpoints, database settings, and scripts/automation updates.
+
+1.  Update all publishing receiver and external configuration sources as required. Since 6.3, Magnolia uses [MicroProfile Config](https://download.eclipse.org/microprofile/microprofile-config-3.0/microprofile-config-spec-3.0.html), adding state-of-the-art flexibility for external instance configuration. Magnolia expects MicroProfile-managed [publishing receiver](../../Administration/Instances/Receivers/) configs for instance clustering.
+
+    How to configure publishing receivers
+
+    1.  Magnolia’s MicroProfile implementation can ingest configurations from either a traditional Java properties file or a YAML file. Only one is required; choose the format you find clearer or more maintainable:
+
+        -   `microprofile-config.properties`: Traditional Java properties file format with simple `key=value` syntax.
+
+        -   `microprofile-config.yaml`: YAML format with a hierarchical structure, often more readable for complex configurations.
+
+            -   microprofile-config.properties
+
+            -   microprofile-config.yaml
+
+
+            ```properties
+            magnolia.publishing.receivers[0].name=magnoliaPublic-0
+            magnolia.publishing.receivers[0].url=http://dev-magnolia-helm-public-0-svc:8080
+            magnolia.publishing.receivers[1].name=magnoliaPublic-1
+            magnolia.publishing.receivers[1].url=http://dev-magnolia-helm-public-1-svc:8080
+            ```
+
+            ```yaml
+            magnolia:
+              publishing:
+                receivers:
+                  - name: magnoliaPublic-0
+                    url: http://dev-magnolia-helm-public-0-svc:8080
+                  - name: magnoliaPublic-1
+                    url: http://dev-magnolia-helm-public-1-svc:8080
+            ```
+
+
+    2.  Place the file in a folder that is configured as an external configuration source. In Magnolia, this is commonly the `mounted-config` directory (or any folder you specify). To point Magnolia to that directory, pass `magnolia.config.locations` as a system property (for example, using Tomcat VM options in `setenv.sh`).
+
+        Tomcat VM option for magnolia.config.locations
+
+        ```properties
+        -Dmagnolia.config.locations=/opt/magnolia/mounted-config
+        ```
+
+
+    The default receiver for local development (`magnoliaPublic8080`) has been removed.
+
+    Receiver example for local development
+
+    ```properties
+    magnolia.publishing.receivers[0].name=magnoliaPublic
+    magnolia.publishing.receivers[0].url=http://{host}:{port}/magnoliaPublic (1)
+    magnolia.publishing.receivers[0].enabled=true
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Put the path `magnoliaPublic` in the URL for local development. |
+
+2.  If you use **AI Accelerator** or **Cloudinary External DAM**, obtain your new 6.4 license and set it in your instances before launching Magnolia for the first time.
+
+3.  If you configured IP security, update your filter configuration to use MicroProfile config. Magnolia 6.4 no longer bootstraps `ipSecurity` by default. Either remove the filter manually or migrate the configuration to MicroProfile; otherwise, logs will contain repeated warnings. See [IP security](../../Administration/Security/IP-and-HTTP-permissions/#ipsecurity-microprofile-config).
+
+    ```properties
+    magnolia.server.ipSecurityRules[0].ip=*
+    magnolia.server.ipSecurityRules[0].methods[0]=GET
+    magnolia.server.ipSecurityRules[0].methods[1]=POST
+    magnolia.server.ipSecurityRules[0].methods[2]=DELETE
+    magnolia.server.ipSecurityRules[0].methods[3]=PATCH
+    magnolia.server.ipSecurityRules[1].ip=127.0.0.1
+    magnolia.server.ipSecurityRules[1].methods[0]=GET
+    magnolia.server.ipSecurityRules[1].methods[1]=POST
+    magnolia.server.ipSecurityRules[1].methods[2]=DELETE
+    magnolia.server.ipSecurityRules[1].methods[3]=PATCH
+    ```
+
+4.  Migrate all site and multisite configurations to YAML.
+
+    Since Magnolia 6.3, site definitions are managed in the Definitions app and must be provided in YAML format to support new features and decorations. Legacy JCR-based site configurations are no longer supported and must be migrated.
+
+    This is a critical step; without a valid site configuration, your instance may not work correctly.
+
+    **How to migrate site configurations**
+
+    The migration path depends on how your sites were configured in 6.2.
+
+    -   If you used JCR-based site definitions
+
+    -   If you used YAML-based site definitions
+
+
+    Most projects on 6.2 define sites directly in the JCR at `/modules/multisite/config/sites`. These must be converted to YAML files.
+
+    1.  Before upgrading, use the Definitions app in your 6.2 instance to export your existing JCR-based site definitions to YAML. This provides a solid starting point.
+
+    2.  Place the exported YAML files into the conventional location in your light module: `<your-module>/sites/`. For example, a site named `travel` should be at `<your-module>/sites/travel.yaml`. .Open the exported YAML files and verify the content. You may need to clean up or adjust properties to match the latest 6.4 standards.
+
+
+    If your 6.2 project already used YAML for site definitions (often for decorating JCR sites), the migration is more straightforward.
+
+    1.  Merge any decorations into a single, complete YAML site definition file for each site. Decorations of legacy JCR configurations are no longer supported.
+
+    2.  Ensure the final YAML files are in the correct light module directory: `<your-module>/sites/`. For example, `<your-module>/sites/mysite.yaml`.
+
+
+    **Define a fallback site**
+
+    Magnolia no longer provides a default fallback site out of the box. You **must** define one for your project. The fallback site is used when no other site matches an incoming request.
+
+    1.  Create a file named `fallback.yaml` in the site definition directory of one of your modules (for example, `<your-module>/sites/fallback.yaml`).
+
+    2.  Configure it with the basic properties for your default site, such as i18n, theme, and template availability.
+
+
+    Example `fallback.yaml`
+
+    ```yaml
+    # <your-module>/sites/fallback.yaml
+    theme:
+      name: my-theme
+    i18n:
+      class: info.magnolia.cms.i18n.IetfI18nContentSupport
+      enabled: true
+      fallbackLocale: en
+    ...
+    ```
+
+    **Verify the migration**
+
+    After migrating, the Site app is no longer present. Use the Definitions app to verify that all your site definitions, including the fallback, are loaded correctly.
+
+    ![Site definitions shown in the Definitions app](../../_images/6-3-0-definitionsApp-sites.png)
+
+5.  REST delivery:
+
+    1.  If you have custom Java-based REST endpoints, update them to use the REST 3.0+ packages, such as:
+
+        -   `info.magnolia.rest.delivery.DeliveryContext` (deprecated: `info.magnolia.rest.delivery.jcr.v2.DeliveryContext`).
+
+        -   `info.magnolia.rest.delivery.OutputStreamWrapper` (deprecated: `info.magnolia.rest.delivery.jcr.OutputStreamWrapper`).
+
+
+    2.  `lang` parameter behavior in REST calls
+
+        If you use `info.magnolia.cms.i18n.DefaultI18nContentSupport`, be aware of changes to how the `lang` parameter is handled in REST calls.
+
+        While Magnolia 6.2 accepted both underscores (`_`) and dashes (`-`) in the `lang` parameter, Magnolia 6.4.0 through 6.4.2 only support the underscore.
+
+        Support for the dash (`-`) was restored in Magnolia 6.4.3.
+
+
+6.  [Global Search](../../Authoring/Search/Global-search/) replaces Find Bar and is managed in the `periscope-core` module.
+
+7.  The forms in your project are likely eligible for the [New UI Forms](../../Developing/Templating/Dialog-definition/New-ui-forms/). If you use JavaScript fields from the **JavaScript UI module** together with the New UI Forms, add the dependency below and remove the legacy `implementationClass`.
+
+    1.  Add the integration dependency to your webapp `pom.xml` (the version is managed by the Magnolia BOM):
+
+        ```xml
+        <dependency>
+          <groupId>info.magnolia.ui</groupId>
+          <artifactId>magnolia-ui-framework-javascript-warp-integration</artifactId>
+        </dependency>
+        ```
+
+    2.  A form that includes a `javascriptField` probably has the `implementationClass: info.magnolia.ui.javascript.form.FormViewWithChangeListener`, which causes the form to fall back to Vaadin. If you want to upgrade the form to the New UI, follow these steps:
+
+        1.  Comment out all the JS fields.
+
+        2.  Check whether the form renders in the New UI. If not, adjust the form definition until it does. See also [New UI Forms: Troubleshooting](../../Developing/Templating/Dialog-definition/New-ui-forms/#_troubleshooting).
+
+        3.  Remove the `implementationClass`.
+
+        4.  Uncomment the JS fields.
+
+            If the forms still fall back to Vaadin (for example in the Pages app), do keep the `implementationClass` so that JS fields `changeListeners` can work as expected.
+
+            > **Tip:** Remember that you can also enforce a fallback to Vaadin by appending :vaadinForm to the end of the url. You need to copy the full url and paste it in a new browser tab.For example: …​/Kyoto:edit:vaadinForm.
+
+
+
+
+### [](#_checkpoint_3)Checkpoint
+
+-    6.4 license installed and recognized?
+
+-    Publishing receivers configured via MicroProfile and active?
+
+-    IP security handled (MicroProfile config if used; no stray JCR `/server/filters/ipSecurity`)?
+
+-    Global Search in place (Find Bar removed); any custom search config moved to `periscope-core`? They automatically fall back to Vaadin forms where feature parity doesn’t exist with the New UI Forms.
+
+-    MySQL repo config uses `/WEB-INF/config/repo-conf/jackrabbit-bundle-mysql8-search.xml`?
+
+-    Scripts/automations updated for new registry paths (no legacy definition paths for filters/columns/views).
+
+
+## [](#_module_updates)Module updates
+
+This section explains module-specific migrations and removals needed to align with 6.4-compatible modules.
+
+1.  Remove old compatibility modules (categorization, diff, workflow compatibility, etc.).
+
+2.  Whenever a dependency is renamed or deprecated, update it in both the Magnolia module descriptor and each affected light module’s `module.yaml`.
+
+3.  If you use **CKEditor 4 customizations**, we recommend you migrate to CKEditor 5. [New UI forms](../../Releases/Release-notes-for-Magnolia-DX-Core-6.4/#_new_ui_forms_for_accessibility_and_extensibility) require CKEditor 5, which is the default in Magnolia 6.4.
+
+    If you must keep CKEditor 4, set `ckEditorVersion: CKEDITOR_4`. See [rich text field properties](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/#_field_properties) for details.
+
+    How to migrate to CKEditor 5
+
+    -   Recreate any custom plugins or toolbars with CKEditor 5 equivalents.
+
+    -   For custom builds or plugins (e.g., General HTML Support), see [CKEditor 5 customization](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/CKEditor5-customization/).
+
+    -   If you decorate link behavior, note that `rel`/`target` support was added in the CKEditor 5 `MgnlLink` plugin as of 6.3.9.
+
+
+    Preview all migrated content from CKEditor 4 to ensure it displays and publishes correctly. See the CKEditor 5 migration guides (ckeditor.com/docs/) and the compatibility tables for configuration and plugin differences.
+
+4.  If you use **SSO 3.1 or earlier**, you must migrate configurations per the model introduced in 4.0.0. This includes compatibility adjustments, mandatory configuration changes, removal of certain classes, optional enhancements like JCR-based fallback login, and considerations for users of the SSO Login Extension module. For specific actions and modifications needed to ensure a smooth upgrade, see [Upgrading to SSO 4.0.0](#4.0@magnolia-sso:ROOT:changelog.adoc#upgrade-sso-anchor). Once these steps are followed, you can upgrade to Magnolia 6.4-compatible version SSO 5.0.
+
+5.  If you use [**Hybrid Assets incubator**](#hybrid-assets:ROOT:index.adoc), the functionality offered by the incubator module is replaced by DAM 5.0 and later. If you used the incubator module, you can optionally use the [migration scripts](../../../../dam/migrate/migrate-HA-to-dam/) to move your assets to the new implementation.
+
+6.  If you use [**DAM Focal incubator**](../../../../dam-focal/) (`dam-focal`): In 6.2 and 6.3, DAM Focal was provided as an incubator module. In 6.4, it is promoted to a DX Core extension with a *new module name* `image-focal`. The Magnolia 6.4-compatible version of this extension is 2.0. To upgrade:
+
+    1.  Uninstall all the `dam-focal` incubator submodules.
+
+    2.  Delete the JCR node `/modules/dam-focal-samples`. Note that the `dam/image-focal-samples` submodule is only intended for testing purposes.
+
+    3.  Update dependency management to use the `image-focal` extension version 2.0.x. Existing focal point data is preserved when switching modules.
+
+
+7.  If you use **Live Copy, Dynamic Forms, or other incubator modules** that configured a **custom `I18nAuthoringSupport`** in JCR, you must provide it via your module descriptor from 6.3 on. Deprecated methods have been removed and default implementations consolidated. Configure your class as a regular component mapping instead of an observed JCR component.
+
+    Example: Configure custom I18nAuthoringSupport in the module descriptor
+
+    ```xml
+    <component>
+      <type>info.magnolia.ui.api.i18n.I18NAuthoringSupport</type>
+      <implementation>com.custom.i18n.CustomI18nAuthoringSupport</implementation>
+      <scope>singleton</scope>
+    </component>
+    ```
+
+8.  If you use **Content Editor module**, migrate all v1 definitions to v2 and update multilanguage stories as needed.
+
+9.  If you use **CTSX DeepL Translator incubator**, move the translation provider configuration from `/modules/content-translation-support-ext-deepl/config/Deepl` to `/modules/content-translation-support-ext-deepl/config/**translationProviders**/Deepl`.
+
+
+### [](#_checkpoint_4)Checkpoint
+
+-    Compatibility modules removed (categorization/diff/workflow compat, etc.)?
+
+-    Renamed/deprecated dependencies updated in both the Magnolia module descriptor and each light module’s `module.yaml`?
+
+-    SSO 3.1→4.0 (config migrated) and then to 6.4-compatible SSO 5.0?
+
+-    Hybrid Assets content migrated to DAM 6+?
+
+-    DAM Focal→`image-focal` 2.0; focal data preserved?
+
+-    Custom `I18nAuthoringSupport` moved from JCR to module descriptor?
+
+-    Content Editor v1 definitions migrated to v2?
+
+-    CKEditor: either `ckEditorVersion: CKEDITOR_4` where needed or CKEditor 5 migration completed?
+
+
+## [](#_verification_and_runtime_updates)Verification and runtime updates
+
+This section covers starting Magnolia on a staging instance and completing runtime configuration updates. Use logs and the Definitions app to validate changes (roles, sites, REST, scripts) and confirm the system is ready for go-live.
+
+1.  Start Magnolia 6.4 in a non-production (staging) environment.
+
+2.  Review and update group and role assignments: Magnolia roles and groups changed in 6.3 and later. Magnolia 6.3 introduced a unified role naming convention `<module>-<privilege>` (for example, `pages-publisher`, `admincentral-editor`). Review and update your user groups and roles to align with the new scheme.
+
+    Click to see role and group changes
+
+    -   The `publishers` group now includes additional roles with read/write permissions on pages and assets. Update your configuration if this exceeds your intended access level.
+
+    -   New `developer` group introduced.
+
+    -   New roles added, including:
+
+        -   `admincentral-developer`
+
+        -   `admincentral-editor` (can block access to URLs)
+
+        -   `asset-editor`
+
+        -   `category-editor`
+
+        -   `dam-app-core-editor`
+
+        -   `dam-app-jcr-editor`
+
+        -   `definitions-app-developer`
+
+        -   `diff-viewer`
+
+        -   `graphql-developer`
+
+        -   `imaging-editor`
+
+        -   `marketingTag-editor`
+
+        -   `page-editor`
+
+        -   `pages-app-editor`
+
+        -   `resources-editor`
+
+        -   `story-editor`
+
+        -   `tour-editor`
+
+        -   `tourCategory-editor`
+
+
+    -   Roles renamed:
+
+        -   `editor` → `workflow-editor`
+
+        -   `publisher` → `workflow-publisher`
+
+
+    -   Roles removed:
+
+        -   `contact-base`
+
+        -   `rss-aggregator-base`
+
+
+
+3.  Review configuration decorations. All YAML decorations must have `config` in the filename. Make sure that your decorating configuration files have `config` in the filename, for example, `/rest-services/decorations/cache/config.contentCaching.yaml`.
+
+4.  Update App Launcher layout.
+
+    -   Remove deprecated properties, such as group color, and old group IDs used in automation.
+
+    -   Align launcher groups, categories, and app references with the 6.3+ launcher model.
+
+    -   Confirm that generated layout nodes or files match current IDs.
+
+
+5.  Review app workbench and search configuration. In-app search and filters are now *enabled by default in browser subapps*. If your custom apps rely on column-level `filterComponent` definitions or have custom data providers, update them to use the new workbench-level filters structure and update your custom data provider implementation to support the unified search behavior.
+
+    Click to see details about app workbench and search configuration changes
+
+    -   The search field is *enabled by default* in all apps. If your custom browser subapp doesn’t support search, [disable the search field](../../Administration/Configuring-search/#disable-search-anchor) by setting the `searchEnabled` property to `false`.
+
+    -   If you *don’t* have workbench `filters` configured, the system:
+
+        -   Converts [combobox fields](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Combobox-field/) used as filters in column headers into dropdown filters.
+
+        -   Converts all [text fields](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) into the default search field. For example, in the Pages app the **Name** (previously Page) and **Title** column fields become searchable using the default search field.
+
+
+    -   If you have workbench `filters` defined and an existing `filterComponent` definition in a column definition, the column filter remains as it is. No conversion is executed. Column filter and workbench filter definitions can be defined and used at the same time for the time being even though the `filterComponent` is deprecated.
+
+    -   Only one [view type](../../Apps/App-configuration/Content-view-definition/) can be displayed in a browser subapp.
+
+        The search field and filters are applied to the first view type configured in your app. The view type switcher disappears. If you want to change the view displayed, change the order of the view types defined in your .yaml config (or remove the view types you don’t want).
+
+    -   The **Name** column has changed: the `titleColumn` column type is replaced by `componentColumn` (info.magnolia.ui.contentapp.configuration.column.ComponentColumnDefinition) that supports two rows in the column. Therefore content type-based apps are automatically created with the `componentColumn` type.
+
+        -   No default or fallback icon is provided anymore for nodes.
+
+        -   The icon configuration has changed.
+
+            Examples of configuration updates for displaying icons in columns:
+
+            -   events.yaml
+
+            -   marketing-tags.yaml
+
+
+            Example of a custom Events app `events.yaml`
+
+            ```yaml
+                   contentViews:
+                    tree:
+                      columns:
+                        name:
+            # 6.4+:
+                          nodeTypeToComponents:
+                            mgnl:folder:
+                              icon: icon-folder
+                              showPath: true
+                            event:
+                              icon: icon-datepicker
+                              showPath: true
+            #  6.2.x and 6.3.0:
+                          #nodeTypeToIcon:
+                            #event: icon-datepicker
+            ```
+
+            Example of the Marketing Tags app `marketing-tags/apps/marketing-tags.yaml`
+
+            ```yaml
+            # 6.4+:
+                      columns:
+                        name:
+                          nodeTypeToComponents:
+                            mgnl:marketing-tag:
+                              icon: icon-tag
+                              showPath: true
+
+            # 6.2.x and 6.3.0:
+                       #columns:
+                         #name:
+                          #nodeTypeToIcon:
+                             #mgnl:marketing-tag: icon-tag
+                     #list:
+                       #columns:
+                         #name:
+                           #nodeTypeToIcon:
+                             #mgnl:marketing-tag: icon-tag
+            ```
+
+
+    -   If you have **customized browser subapps**, you must adapt your configuration by updating your custom data provider for search to function.
+
+        Below is an example (migration of the Resource Files app) of how to adapt your configuration.
+
+        -   In the info.magnolia.resources.app.data.ResourceFilteringDataProvider class, the filtering logic is unwrapped.
+
+            See a GitHub diff: [https://github.com/magnolia-cms/doc-migration-example-631/commit/11ceb8ac31c6f2121ca7ea0ba1e462fa1a27aad9](https://github.com/magnolia-cms/doc-migration-example-631/commit/11ceb8ac31c6f2121ca7ea0ba1e462fa1a27aad9)
+
+        -   In the `resources/resources-app/apps/resources.yaml` definition, shown in the tabs, the `filterComponent` properties under `contentViews` are removed and replaced by `filters` under `workbench`.
+
+            -   6.4
+
+            -   6.2
+
+
+            6.4 Resource Files app definition
+
+            ```yaml
+            ...
+                workbench:
+                  filters: (1)
+                    - name: overridden
+                      icon: icon-logs-settings
+                      $type: dropdown
+                      visible: true
+                      datasource:
+                        $type: optionListDatasource
+                        options:
+                          true:
+                            value: true
+                          false:
+                            value: false
+                    - name: origin
+                      icon: icon-language-app
+                      $type: dropdown
+                      filterOperator: STARTS_WITH
+                      textInputAllowed: true
+                      emptySelectionAllowed: true
+                      visible: true
+                      datasource:
+                        class: info.magnolia.resources.app.data.ResourceOriginDataSourceDefinition
+                    - name: status
+                      icon: icon-spinner-full
+                      $type: dropdown
+                      filterOperator: STARTS_WITH
+                      textInputAllowed: true
+                      emptySelectionAllowed: true
+                      visible: true
+                      datasource:
+                        $type: optionListDatasource
+                        options:
+                          - name: 0
+                            label: Not activated
+                            value: 0
+                          - name: 1
+                            label: Modified
+                            value: 1
+                          - name: 2
+                            label: Activated
+                            value: 2
+                  contentViews:
+                    - name: views
+                      $type: treeView
+                      rowStyleGenerator: info.magnolia.resources.app.row.ResourceStatusRowStyleGenerator
+                      multiSelect: false
+                      columns:
+                        name:
+                          class: info.magnolia.resources.app.column.ResourceNameColumnDefinition
+                        overridden:
+                          class: info.magnolia.resources.app.column.IsOverridingColumnDefinition
+                          editor:
+                            field:
+                              $type: checkBoxField
+                        origin:
+                          class: info.magnolia.resources.app.column.ResourceOriginColumnDefinition
+                        type:
+                          class: info.magnolia.resources.app.column.ResourceTypeColumnDefinition
+                        status:
+                          class: info.magnolia.resources.app.column.ResourceStatusColumnDefinition
+            ...
+            ```
+
+            |     |     |
+            | --- | --- |
+            | **1** | `filters` under `workbench`. |
+
+            6.2 Resource Files app definition
+
+            ```yaml
+            ...
+                workbench:
+                  contentViews:
+                    - name: views
+                      $type: treeView
+                      rowStyleGenerator: info.magnolia.resources.app.row.ResourceStatusRowStyleGenerator
+                      multiSelect: false
+                      columns:
+                        name:
+                          class: info.magnolia.resources.app.column.ResourceNameColumnDefinition
+                          filterComponent: (1)
+                            $type: textField
+                        overridden:
+                          class: info.magnolia.resources.app.column.IsOverridingColumnDefinition
+                          editor:
+                            field:
+                              $type: checkBoxField
+                          filterComponent: (1)
+                            $type: checkBoxField
+                        origin:
+                          class: info.magnolia.resources.app.column.ResourceOriginColumnDefinition
+                          filterComponent: (1)
+                            $type: comboBoxField
+                            emptySelectionAllowed: true
+                            textInputAllowed: true
+                            filteringMode: STARTSWITH
+                            datasource:
+                              class: info.magnolia.resources.app.data.ResourceOriginDataSourceDefinition
+                        type:
+                          class: info.magnolia.resources.app.column.ResourceTypeColumnDefinition
+                          filterComponent: (1)
+                            $type: textField
+                        status:
+                          class: info.magnolia.resources.app.column.ResourceStatusColumnDefinition
+                          filterComponent: (1)
+                            $type: comboBoxField
+                            emptySelectionAllowed: true
+                            datasource:
+                              $type: optionListDatasource
+                              options:
+                                - name: 0
+                                  label: Not activated
+                                  value: 0
+                                - name: 1
+                                  label: Modified
+                                  value: 1
+                                - name: 2
+                                  label: Activated
+                                  value: 2
+            ...
+            ```
+
+            |     |     |
+            | --- | --- |
+            | **1** | `filterComponent` properties under `contentViews`. |
+
+        -   Don’t forget to add the i18n properties for your filters. For example:
+
+            ```properties
+            ...
+            # filters
+            resources.browser.filters.overridden.label = Overrides
+            resources.browser.filters.overridden.options.true = True
+            resources.browser.filters.overridden.options.false = False
+            resources.browser.filters.origin.label = Origin
+            resources.browser.filters.status.label = Status
+            ...
+            ```
+
+
+
+6.  For **custom** deletion actions in apps: Magnolia 6.4 standardizes deletion dialogs and confirmation steps. For most users, no configuration changes are needed and the existing actions and dialogs are automatically updated. If you have extended default actions, you may have to revalidate behavior. This automatic replacement *doesn’t* apply to the following apps: Campaign Publisher, Configuration, Cookies, External DAM, JCR, Security, and Tags.
+
+    Click to see details of cases requiring configuration updates
+
+    -   `DeleteNodesConfirmationAction`
+
+        -   If you have extended `DeleteNodesConfirmationAction` and overridden the `execute` method without calling `super.execute();`, the new 6.4 confirmation dialogs will not appear automatically. Update or remove your customization.
+
+        -   If you have overridden `getConfirmationMessage`, your custom message no longer applies. The 6.4 dialogs don’t support customization.
+
+        -   The following properties in `DeleteNodesConfirmationActionDefinition` no longer apply: `confirmationHeader`, `confirmationMessage`, `successActionName`, `cancelActionName`, `proceedLabel`, `cancelLabel`, `defaultCancel`.
+
+
+    -   Marking items for deletion with dependency warnings enabled
+
+        If you are using `DependencyAwareConfirmationActionDefinition` (which extends `DeleteNodesConfirmationActionDefinition`), the same limitations as above apply. Inherited properties no longer affect the action.
+
+    -   Enabling permanent deletion
+
+        If you are using `ConfirmationAlertActionDefinition` with `successActionName` set to `publishDeletion` or `activateDeleted`, the following properties no longer apply: `confirmationHeader`, `confirmationMessage`, `cancelActionName`, `proceedLabel`, `cancelLabel`, `defaultCancel`.
+
+    -   Requesting permanent deletion
+
+        If you are using `OpenDialogActionDefinition` with `dialogId` set to `workflow-pages:publishDeletion`, the following properties no longer apply: `populate`, `alwaysOnTop`, and any properties inherited from its parent class.
+
+    -   Update references to the following action names: `confirmDeletion` → `confirmMarkDeletion`; `delete` → `markDeleted`. Any decorations that overwrite or enhance the confirmDeletion action in the Pages or Assets app must use the new `confirmMarkDeletion` action. Remove any injected confirmation headers or messages. Standardized deletion dialogs in 6.4 do not accept these properties.
+
+
+7.  Update your delivery endpoint definitions. Ensure each endpoint uses the correct `$type` (`jcrDeliveryEndpoint_v2` or `jcrPagesDeliveryEndpoint_v2`) and note the new defaults for the following properties: `depthInReferencedNode = 1` and `maxLimit = 100`.
+
+8.  Magnolia 6.4 brings a New UI (based on React) to the forms in content apps, automatically. Most form features are supported in the New UI. If a feature isn’t supported, the form falls back to the Vaadin UI. Because of this, typically all forms work. You don’t need to make any changes to your forms.
+
+    To be certain, test your content app forms to ensure they are working correctly. If not, you can force a form to fall back to Vaadin by adding `$type: vaadinForm` to the form configuration.
+
+    If a form is rendered in the Vaadin UI, you can choose whether and when to invest time in adjusting the form definition to display it in the New UI.
+
+    For more details, see [Migrating to New UI Forms](../../Developing/Templating/Dialog-definition/New-ui-forms/#_migrating_to_new_ui_forms).
+
+9.  Use the Definitions app, Problems tab, and logs to audit for unsupported, deprecated, or un-migrated configs/modules.
+
+10.  Run a full regression and smoke test according to your test plan (core features, content management, user logins/roles, publishing, custom integrations, REST endpoints, asset upload/download, etc.).
+
+
+### [](#_final_checkpoint)Final checkpoint
+
+-    Magnolia starts; core modules and custom apps accessible?
+
+-    Groups/roles validated on staging (publish permissions and access confirmed)?
+
+-    Sites/multisite load without errors; visible in Definitions; pages resolve as expected?
+
+-    YAML decoration filenames include `config` (for REST/Cache, etc.)?
+
+-    App workbench/search updated (remove `filterComponent` and other deprecated 5‑UI properties).
+
+-    App Launcher layout aligned (remove deprecated launcher properties; update group/app IDs to 6.3+ model).
+
+-    Deletion actions: custom overrides reviewed; unsupported dialog properties removed?
+
+-    Deletion action IDs updated (`confirmDeletion` → `confirmMarkDeletion`; `delete` → `markDeleted`).
+
+-    REST endpoints return expected responses with correct `$type` and defaults, and locale values for the `lang` parameter?
+
+-    Forms in content apps tested and working correctly?
+
+-    Logs/Problems tab clean?
+
+-    Publishing receivers working (author→public), tasks/approvals OK?
+
+-    DAM assets (incl. focal points/external binaries) upload/preview/publish OK?
+
+-    Regression and migration verification tests pass?
+
+
+## [](#_upgrade_complete)Upgrade complete
+
+You are now running Magnolia 6.4. Keep your dependencies up to date, and monitor release notes for future required migrations or critical security advisories.

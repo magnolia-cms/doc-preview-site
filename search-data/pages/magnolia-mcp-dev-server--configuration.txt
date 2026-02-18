@@ -1,0 +1,92 @@
+---
+title: "Configuration reference"
+url: https://docs.magnolia-cms.com/magnolia-mcp-dev-server/configuration/
+category: Modules
+version: modules
+breadcrumb: Magnolia DEV MCP > Configuration reference
+---
+
+# Configuration reference
+
+## [](#_configuration_file)Configuration file
+
+The configuration file is an ES module that exports a default object. Name it `mgnl.mcp.config.js` and place it at the project root or in `~/.magnolia-mcp/`.
+
+Example mgnl.mcp.config.js
+
+```javascript
+import { McpCliPlugin } from '{cli-pkg}';
+import { FigmaPlugin } from '{figma-pkg}';
+import { MagnoliaApiPlugin } from '{api-pkg}';
+import { MagnoliaLogPlugin } from '{log-pkg}';
+
+export default {
+  magnolia: {
+    baseUrl: 'http://localhost:8080',
+    username: 'superuser',
+    password: 'superuser',
+    authorInstance: 'magnoliaAuthor',
+    publicInstances: ['magnoliaPublic'],
+  },
+  nexus: {
+    username: process.env.nexusUsername,
+    password: process.env.nexusPassword,
+  },
+  logger: {
+    filename: '~/.magnolia-mcp-dev-server.log',
+    fileLevel: 'info',
+  },
+  plugins: [
+    new McpCliPlugin({}),
+    new FigmaPlugin({ figmaAccessToken: process.env.FIGMA_ACCESS_TOKEN }),
+    new MagnoliaApiPlugin({}),
+    new MagnoliaLogPlugin({ bufferSize: 1000, correlationWindow: 5000 }),
+  ],
+};
+```
+
+## [](#_precedence)Precedence
+
+Configuration values are resolved in the following order (highest priority first):
+
+1.  **Project-level** — `mgnl.mcp.config.js` in your project root.
+
+2.  **Global** — `~/.magnolia-mcp/mgnl.mcp.config.js`.
+
+3.  **Environment variables** — see [Environment variables](#_environment_variables).
+
+4.  **Defaults** — built-in fallback values.
+
+
+A project-level file is useful when you work on multiple Magnolia projects that connect to different instances or use different plugins.
+
+| Key | Description | Default |
+| --- | --- | --- |
+| `magnolia.baseUrl` | URL of your Magnolia instance. | `http://localhost:8080` |
+| `magnolia.username` | Authentication username. | `superuser` |
+| `magnolia.password` | Authentication password. | `superuser` |
+| `magnolia.authorInstance` | Context path of the Author instance. | `magnoliaAuthor` |
+| `magnolia.publicInstances` | Array of Public instance context paths. | `["magnoliaPublic"]` |
+
+| Key | Description | Default |
+| --- | --- | --- |
+| `logger.filename` | Path to the server log file. | `~/.magnolia-mcp-dev-server.log` |
+| `logger.fileLevel` | Minimum level written to the log file. | `info` |
+
+| Option | Description |
+| --- | --- |
+| `figmaAccessToken` | Figma personal access token. Required for all Figma operations. Can also be set with the `FIGMA_ACCESS_TOKEN` environment variable. |
+
+| Variable | Description | Default |
+| --- | --- | --- |
+| `magnoliaBaseUrl` | URL of your Magnolia instance. | `http://localhost:8080` |
+| `magnoliaUsername` | Magnolia authentication username. | `superuser` |
+| `magnoliaPassword` | Magnolia authentication password. | `superuser` |
+| `magnoliaAuthorInstance` | Context path of the Author instance. | `magnoliaAuthor` |
+| `magnoliaPublicInstances` | JSON array of Public instance context paths. | `["magnoliaPublic"]` |
+| `nexusUsername` | Nexus repository username (enterprise templates). | ` — ` |
+| `nexusPassword` | Nexus repository password (enterprise templates). | ` — ` |
+| `FIGMA_ACCESS_TOKEN` | Figma personal access token. | ` — ` |
+| `FIGMA_FILE_KEY` | Default Figma file key. | ` — ` |
+| `LOG_LEVEL` | Log level ( `debug` , `info` , `warn` , `error` ). | `info` |
+| `MCP_LOG_PATH` | Path to the server log file. | `~/.magnolia-mcp-dev-server.log` |

@@ -1,0 +1,38 @@
+---
+title: "Site module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Site-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Site module
+---
+
+# Site module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLSITE](https://magnolia-cms.atlassian.net/browse/MGNLSITE) |
+| Maven site | [Site](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fsite%2Fmagnolia-site-app%2F{magnolia-site-64}) |
+| Latest | {magnolia-site-64} |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.site</groupId>
+  <artifactId>magnolia-site-app</artifactId>
+  <version>{magnolia-site-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Warning:** The dependency to the site-app is sufficient. Maven will automatically add the site module
+
+## [](#_usage)Usage
+
+See [Site definition](../../../Developing/Templating/Site-definition/).

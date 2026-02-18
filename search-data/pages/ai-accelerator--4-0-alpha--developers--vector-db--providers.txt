@@ -1,0 +1,34 @@
+---
+title: "Providers and models"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/vector-db/providers/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Providers and models
+---
+
+# Providers and models
+
+| Provider Type | Purpose | Examples |
+| --- | --- | --- |
+| **Embedding Provider** | Generates vector embeddings from text | OpenAI, Azure OpenAI, AWS Bedrock, Gemini |
+| **Vector Database** | Stores and searches embeddings | PostgreSQL pgvector |
+
+| Model | Dimensions | Cost/1M tokens | Best For |
+| --- | --- | --- | --- |
+| `text-embedding-3-small` | 1536 | $0.02 | General purpose, cost-effective `modelId: text-embedding-3-small` |
+| `text-embedding-3-large` | 3072 | $0.13 | Higher quality, better accuracy `modelId: text-embedding-3-large` |
+| `text-embedding-ada-002` | 1536 | $0.10 | Legacy model (use 3-small instead) |
+
+| Metric | Operator | Use Case | Description |
+| --- | --- | --- | --- |
+| `cosine` | `<⇒` | **Normalized embeddings** (default) | Best for OpenAI, Cohere, and most cloud embedding providers. Measures the cosine of the angle between vectors. |
+| `l2` | `<→` | Non-normalized embeddings | Euclidean distance. Use for embedding models that don’t normalize output vectors. |
+| `inner_product` | `<#>` | Alternative for normalized | Dot product similarity. Can be used with normalized embeddings as an alternative to cosine. |
+
+## [](#_next_steps)Next steps
+
+-   [Configure your embedding provider](../configuration/)
+
+-   [Start indexing content](../indexing/)
+
+-   [Customize provider behavior](../customization/)

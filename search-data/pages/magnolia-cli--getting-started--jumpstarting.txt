@@ -1,0 +1,113 @@
+---
+title: "Jumpstarting a project"
+url: https://docs.magnolia-cms.com/magnolia-cli/getting-started/jumpstarting/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Jumpstarting a project
+---
+
+# Jumpstarting a project
+
+The [Jumpstart plugin](../../plugins/available-plugins/jumpstart-plugin/) allows you to download a project based on a template defined in the [projectTemplates.json](https://gitlab.magnolia-platform.com/magnolia-cli/plugins/cli-project-templates/-/blob/main/projectTemplates.json) file.
+
+The following project templates are available:
+
+-   Standard webapps
+
+-   Demo webapps
+
+-   Webapps with headless project examples
+
+
+Each template contains a ready-to-use Magnolia Tomcat bundle.
+
+## [](#_nexus_token_credentials)Nexus token credentials
+
+Magnolia webapps installed by the Jumpstart plugin are downloaded from [nexus.magnolia-cms.com](https://nexus.magnolia-cms.com).
+
+For those that require a license, you must supply your *Nexus token* credentials instead of your SSO credentials.
+
+The Jumpstart plugin will notify you about this with the following warning message before a prompt for the credentials appears:
+
+```console
+warn: To download from Nexus, please use your "user token name code" as the username and your "user token pass code" as the password, instead of your SSO login credentials
+For more details, visit: https://docs.magnolia-cms.com/magnolia-cli/getting-started/jumpstarting/#_nexus_token_credentials
+? Username
+```
+
+To obtain the token credentials:
+
+1.  Log into [Nexus](https://nexus.magnolia-cms.com/) with your SSO credentials.
+
+2.  In the top right corner, go to your profile settings.
+
+3.  Select **User Token** in the menu on the left side.
+
+4.  On the User Token page, click the **Access User Token** button.
+
+    (You may now be prompted to log in again.)
+
+5.  Your token name and pass codes are displayed.
+
+
+Then, when the Jumpstart plugin prompts you for the credentials:
+
+-   Use your **user token name code** from Nexus as the username.
+
+-   Use your **user token pass code** from Nexus as the password.
+
+
+## [](#_webapp_from_the_default_templates_only)Webapp from the default templates only
+
+1.  Execute the [Jumpstart plugin](../../plugins/available-plugins/jumpstart-plugin/) with this command:
+
+    ```console
+    npx @magnolia/cli@latest jumpstart [name]
+    ```
+
+    > **Caution:** The project is created in the current working directory when no [name] is provided. When a [name] is specified, the project is created in a directory with that name.
+
+2.  Choose the webapp type you need to create:
+
+    ```console
+    1) standard-webapps (1)
+    2) demo-webapps (2)
+    3) headless (3)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Creates an empty webapp. This is a good starting point for any new project. |
+    | **2** | Creates a webapp similar to the [Magnolia Travel Demo](../../../product-docs/6.3/Getting-started-with-Magnolia/Demo/). |
+    | **3** | Creates a headless webapp such as the [Magnolia Headless Demo](../../../product-docs/6.3/Developing/headless/getting-started-with-Magnolia-headless/). |
+
+3.  Let’s suppose you’ve selected `demo-webapps`. In the next dialog, choose a template.
+
+    ```console
+    1) magnolia-community-demo-webapp
+    2) magnolia-dx-core-demo-webapp (1)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Requires a license. You can [contact us for a trial license](https://www.magnolia-cms.com/get-started/developer-trial.html). |
+
+    The plugin then downloads all the necessary files for you.
+
+    > **Note:** If you’re jumpstarting a project that requires a license, you must supply a username and a password:...
+    > info: Starting download from: https://nexus.magnolia-cms.com/repository/ ...
+    > Downloading [====================] 100% 0.0s
+    > ✔ Extracted to /Users/johndoe/MagnoliaProjects/Project42/apache-tomcat
+    > info: Enter the credentials for "https://nexus.magnolia-cms.com/service/ ...
+    > ? Username jdoe
+    > ? Password [hidden]You can use either your Magnolia LDAP credentials, or a token name and a token pass code provided by the Nexus interface.
+
+    > **Tip:** You can customize the templates list by creating your own project templates file.
+
+4.  All projects from the default [project templates](projectTemplates/) contain the [Start plugin](../../plugins/available-plugins/start-plugin/). Therefore, you can run the webapp with the following command:
+
+    ```console
+    npm run mgnl -- start
+    ```
+
+    > **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...

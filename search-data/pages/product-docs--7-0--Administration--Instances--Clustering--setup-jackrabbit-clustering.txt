@@ -56,7 +56,7 @@ In order to use clustering, the following prerequisites must be met:
 
 ## [](#_prerequisites)Prerequisites
 
-The author and public instances must be installed and setup. Get a Magnolia bundle for this, see [Installing Magnolia](../../../../Getting-started-with-Magnolia/Installing-Magnolia/) for more details.
+The author and public instances must be installed and setup. Get a Magnolia bundle for this, see [Installing Magnolia](../../../../../RNs-6-4-3/Getting-started-with-Magnolia/Installing-Magnolia/) for more details.
 
 ### [](#_the_goal)The goal
 
@@ -343,7 +343,7 @@ cluster-example
 
 6.  Configure the `properties` files.
 
-    Some of the [properties configuration](../../../Architecture/Configuration-management/) will differ between the instances. The author instance uses the `magnoliaAuthor` context while the public instance uses the `magnoliaPublic` context. For the sake of this clustering example, let’s reconfigure the repository creation to be located **centrally**. This will allow for a better overview of what is shared vs what is private.
+    Some of the [properties configuration](../../../../../RNs-6-4-3/Administration/Architecture/Configuration-management/) will differ between the instances. The author instance uses the `magnoliaAuthor` context while the public instance uses the `magnoliaPublic` context. For the sake of this clustering example, let’s reconfigure the repository creation to be located **centrally**. This will allow for a better overview of what is shared vs what is private.
 
     ```xml
     cluster-example

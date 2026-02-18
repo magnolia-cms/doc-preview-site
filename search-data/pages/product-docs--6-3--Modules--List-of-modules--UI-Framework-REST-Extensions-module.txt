@@ -8,31 +8,22 @@ breadcrumb: DX Core > Modules > UI Framework REST Extensions module
 
 # UI Framework REST Extensions module
 
-[Developer productivity](../../../use-cases/developer-productivity/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLRESTUI](https://magnolia-cms.atlassian.net/browse/MGNLRESTUI) |
-| Maven site | [Nexus](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Frestclient%2Fmagnolia-rest-client-ui%2F2.0.0) |
-| Latest | 2.0.0 |
-
-The Magnolia UI Framework REST Extensions module is a DX Core Edition feature which complements the [REST Client module](../REST-Client-module/) by enabling configured REST clients as:
-
--   Datasources of subapps and UI elements such as the [link field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Link-field/) or [Combobox field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Combobox-field/).
-
--   [Search result suppliers](REST-search-result-suppliers-for-Periscope/) for the [Find Bar](../../../Authoring/Search/Searching-for-content/).
-
+| Maven site | [Nexus](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Frestclient%2Fmagnolia-rest-client-ui%2F{magnolia-rest-client-ui-63}) |
+| Latest | {magnolia-rest-client-ui-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.restclient</groupId>
   <artifactId>magnolia-rest-client-ui</artifactId>
-  <version>2.0.0</version> (1)
+  <version>{magnolia-rest-client-ui-63}</version> (1)
 </dependency>
 ```
 

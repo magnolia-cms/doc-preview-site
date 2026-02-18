@@ -8,7 +8,7 @@ breadcrumb: DX Core > Developing > Templating > Template scripts > Templating fu
 
 # restfn
 
-[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+[FreeMarker development only](../../../../../../RNs-6-4-3/Developing/Templating/Renderers/#_renderers_provided_by_magnolia)
 
 `restfn` templating functions give access to REST clients configured with the [REST Client module](../../../../../Modules/List-of-modules/REST-Client-module/).
 
@@ -16,251 +16,41 @@ breadcrumb: DX Core > Developing > Templating > Template scripts > Templating fu
 
 > **Note:** Using Magnolia REST clients with restfn in FTL template scripts could slow or even block the rendering of the scripts, because the call is synchronous and waits till the request returns. Before an actual implementation, always consider at least the following:The reliability of the endpoint.Implementing restfn in an asynchronous way via a client side request.Accessing the endpoint directly with client side code.How any of your page caching configurations will affect content delivered from restfn.
 
-## [](#_call_response)Call response
-
-Invokes a call for a full response to a configured REST client, with optional assignment of custom template values for request parameters or body, and with optional specific error handler.
-
-Returns a full response as a map of clients and call names, with error handlers and/or custom template values, if available.
-
-### [](#_method_signature)Method signature
-
-`Response callForResponse(String restClientName, String restCallName, Map<String, Object> customValues, RestClientExceptionHandler errorHandler)`
-
-### [](#_arguments)Arguments
+| Argument | Description |
+| --- | --- |
+| `restClientName` | **required** Name of a configured client. |
+| `restCallName` | **required** Name of a configured call. See also below [the form of the REST call name](#_the_form_of_the_restcallname) . |
+| `customValues` | **optional** A map of custom values passed to the endpoint with the call. |
+| `errorHandler` | **optional** Specification of a handler for errors, for example `{"code": 404}` . |
 
 | Argument | Description |
 | --- | --- |
-| `restClientName` | **required**<br><br>Name of a configured client. |
-| `restCallName` | **required**<br><br>Name of a configured call.<br><br>See also below [the form of the REST call name](#_the_form_of_the_restcallname). |
-| `customValues` | **optional**<br><br>A map of custom values passed to the endpoint with the call. |
-| `errorHandler` | **optional**<br><br>Specification of a handler for errors, for example `{"code": 404}`. |
-
-### [](#_usage)Usage
-
-`restfn.callForResponse(restClientName, restCallName, customValues, errorHandler)`
-
-## [](#_call_client)Call client
-
-Invokes a call to a configured REST client with optional assignment of custom template values for request parameters or body.
-
-Returns an object. The actual type of the returned object conforms with the `entityClass` configured for the REST call.
-
-### [](#_method_signature_2)Method signature
-
-`Object call(String restClientName, String restCallName, Map<String, Object> customValues)`
-
-### [](#_arguments_2)Arguments
+| `restClientName` | **required** Name of a configured client. |
+| `restCallName` | **required** Name of a configured call. See also below [the form of the REST call name](#_the_form_of_the_restcallname) . |
+| `customValues` | **optional** A map of custom values passed to the endpoint with the call. |
 
 | Argument | Description |
 | --- | --- |
-| `restClientName` | **required**<br><br>Name of a configured client. |
-| `restCallName` | **required**<br><br>Name of a configured call.<br><br>See also below [the form of the REST call name](#_the_form_of_the_restcallname). |
-| `customValues` | **optional**<br><br>A map of custom values passed to the endpoint with the call. |
-
-### [](#_usage_2)Usage
-
-`restfn.call(restClientName, restCallName, customValues)`
-
-\[#assign firstPost = restfn.call("restfn-posts", "single")\]
-
-\[#-- with a custom value --\]
-\[#assign customValues = {"id":"2"} /\]
-\[#assign secondPost = restfn.call("restfn-posts", "single", customValues) /\]
-
-#### [](#_example_with_custom_values)Example with custom values
-
-Client definition:
-
-/my-light-module/restClients/fooClient-restfn.yaml
-
-```yaml
-baseUrl: http://localhost:8081
-restCalls:
-  random:
-    method: post
-    body: {"name": "{name}", "email": "{email}"}
-    entityClass: com.fasterxml.jackson.databind.JsonNode
-    responseContentType: application/json
-    path: /alumni
-    headers:
-      Content-Type: "application/json; charset=UTF-8"
-```
-
-Page template definition and script:
-
-/my-light-module/templates/pages/myPage\_restfn.yaml
-
-```yaml
-title: My Home Page
-templateScript: /my-light-module/templates/pages/myPage_restfn.ftl
-renderType: freemarker
-visible: true
-```
-
-/my-light-module/templates/pages/myPage\_restfn.ftl
-
-```none
-<!doctype html>
-<html lang="${cmsfn.language()}">
-
-<head>
-    [@cms.page /]
-    <meta charset="utf-8">
-</head>
-
-[#assign customValues = {"name": "JohnDoe", "email": "johndoe@example.com"} /]
-[#assign post = restfn.call("fooClient-restfn", "random", customValues) /]
-
-<h1>${post}</h1>
-
-<body>
-    <h1>Hello, world!</h1>
-</body>
-
-</html>
-```
-
-> **Note:** The return type of restfn depends on the entityClass configured for the respective REST call. If the entityClass returns a JSON node com.fasterxml.jackson.databind.JsonNode, see Client configuration and Component template script for more information.
-
-### [](#_the_form_of_the_restcallname)The form of the restCallName
-
-By default, the name is mapped to this pattern: `method:/path/pathAction`. An [`operationId`](https://swagger.io/specification/#operationObject), a unique string used to identify the operation in [the OpenAPI specification](https://swagger.io/specification/), is an optional alias for the call name.
-
-In the following configuration snippet, an `operationId` has been set to `findByStatus`:
-
-```yml
-paths:
-  /pet/findByStatus:
-    get:
-      operationId: findByStatus
-```
-
-You could then invoke the call using not only
-
-restfn.invoke("get:/pet/findByStatus", "available")
-
-but also with
-
- restfn.invoke("findByStatus", "available")
-
-## [](#_get_proxy_implementation)Get proxy implementation
-
-Obtains a client proxy implementation for a given client and configured proxy class.
-
-Returns an object mapping each client to its proxy.
-
-### [](#_method_signature_3)Method signature
-
-`Object getProxy(String restClientName, String proxyClassName)`
-
-### [](#_arguments_3)Arguments
+| `restClientName` | **required** Name of a configured client. |
+| `proxyClassName` | **required** Name of a proxy class. |
 
 | Argument | Description |
 | --- | --- |
-| `restClientName` | **required**<br><br>Name of a configured client. |
-| `proxyClassName` | **required**<br><br>Name of a proxy class. |
-
-### [](#_usage_3)Usage
-
-`restfn.getProxy(restClientName, proxyClassName)`
-
-## [](#_call_proxy)Call proxy
-
-Invokes a method on a proxy with given parameters.
-
-Returns a result according to the return type of the method called.
-
-### [](#_method_signature_4)Method signature
-
-`Object call(Object proxy, String methodName, Object…​ args)`
-
-### [](#_arguments_4)Arguments
+| `proxy` | **required** Instance of a declared proxy. |
+| `methodName` | **required** Name of the method of the proxy. |
+| `args` | **required** A [varargs](https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html) parameter. In FreeMarker context, just pass an array of arguments. |
 
 | Argument | Description |
 | --- | --- |
-| `proxy` | **required**<br><br>Instance of a declared proxy. |
-| `methodName` | **required**<br><br>Name of the method of the proxy. |
-| `args` | **required**<br><br>A [varargs](https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html) parameter. In FreeMarker context, just pass an array of arguments. |
-
-### [](#_usage_4)Usage
-
-`restfn.call(proxy, methodName, args)`
-
-## [](#_call_client_with_a_proxy_implementation)Call client with a proxy implementation
-
-Invokes a method on a client with a specified proxy implementation and with given parameters.
-
-Returns a result according to the return type of the method called.
-
-### [](#_method_signature_5)Method signature
-
-`Object call(String restClientName, String proxyClass, String methodName, Object…​ args)`
-
-### [](#_arguments_5)Arguments
+| `restClientName` | **required** Name of a configured client. |
+| `proxyClass` | **required** Name of a proxy class. |
+| `methodName` | **required** Name of the method. |
+| `args` | **required** A [varargs](https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html) parameter. In FreeMarker context, just pass an array of arguments. |
 
 | Argument | Description |
 | --- | --- |
-| `restClientName` | **required**<br><br>Name of a configured client. |
-| `proxyClass` | **required**<br><br>Name of a proxy class. |
-| `methodName` | **required**<br><br>Name of the method. |
-| `args` | **required**<br><br>A [varargs](https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html) parameter. In FreeMarker context, just pass an array of arguments. |
-
-### [](#_usage_5)Usage
-
-`restfn.call(restClientName, proxyClass, methodName, args)`
-
-## [](#_convert_jsonnode_to_map)Convert JsonNode to Map
-
-Converts a JsonNode object to a hash map. Use either this or the [asList()](#_convert_jsonnode_to_list) function depending on what type of JSON the API your query returns.
-
-Returns a hash map.
-
-### [](#_method_signature_6)Method signature
-
-`Map<String, Object> asMap(jsonNode)`
-
-### [](#_arguments_6)Arguments
+| `jsonNode` | **required** Variable of type `com.fasterxml.jackson.databind.JsonNode` . |
 
 | Argument | Description |
 | --- | --- |
-| `jsonNode` | **required**<br><br>Variable of type `com.fasterxml.jackson.databind.JsonNode`. |
-
-### [](#_usage_6)Usage
-
-`restfn.asMap(jsonNode)`
-
-\[#assign colombia = restfn.asMap(restfn.call("countries", "colombia"))\]
-
-\[#-- Note: Provided the restfn.call("countries", "colombia") is defined
-using the com.fasterxml.jackson.databind.JsonNode entity class.--\]
-
-## [](#_convert_jsonnode_to_list)Convert JsonNode to List
-
-Converts a JsonNode object to an array list. Use either this or the [asMap()](#_convertnbspjsonnode_to_map) function depending on what type of JSON the API your query returns.
-
-Returns an array list.
-
-### [](#_method_signature_7)Method signature
-
-`List<Object> asList(jsonNode)`
-
-### [](#_arguments_7)Arguments
-
-| Argument | Description |
-| --- | --- |
-| `jsonNode` | **required**<br><br>Variable of type `com.fasterxml.jackson.databind.JsonNode`. |
-
-### [](#_usage_7)Usage
-
-`restfn.asList(jsonNode)`
-
-\[#assign countriesList = restfn.asList(restfn.call("countries", "allCountriesArray"))\]
-
-\[#-- Note: Provided the restfn.call("countries", "allCountriesArray") is defined
-using the com.fasterxml.jackson.databind.JsonNode entity class.--\]
-
-Related topics
-
--   [REST Client module](../../../../../Modules/List-of-modules/REST-Client-module/)
-
--   info.magnolia.rest.client.templating.RestTemplatingFunctions
+| `jsonNode` | **required** Variable of type `com.fasterxml.jackson.databind.JsonNode` . |

@@ -8,11 +8,11 @@ breadcrumb: DX Core > Developing > Headless docs > SPA development > Personaliza
 
 # Personalization of headless SPA projects
 
-Magnolia’s personalization features can be used on headless projects, including support for the Visual SPA Editor, as well as traditional FreeMarker-based projects. These features are available on headless and SPA with [Personalization module](../../../../Modules/List-of-modules/Personalization-module/) (version 2.1.0 and later) and the Magnolia `react-editor`, `vue-editor`, `angular-editor` [npm packages](https://www.npmjs.com/~magnolia) (version 1.1.0 and later).
+Magnolia’s personalization features can be used on headless projects, including support for the Visual SPA Editor, as well as traditional FreeMarker-based projects. These features are available on headless and SPA with [Personalization module](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/) (version 2.1.0 and later) and the Magnolia `react-editor`, `vue-editor`, `angular-editor` [npm packages](https://www.npmjs.com/~magnolia) (version 1.1.0 and later).
 
-As described on [Requesting personalized content with the delivery endpoint](#rest:api:Requesting-personalized-content-with-the-delivery-endpoint.adoc), the Personalization module brings personalization to the REST delivery endpoint as well as new simple request-based traits. These traits are ideal for headless scenarios where you would like to provide the trait information explicitly on the request via a cookie, header, query string, or body parameter.
+As described on [Requesting personalized content with the delivery endpoint](../../../../../../rest/api/Requesting-personalized-content-with-the-delivery-endpoint/), the Personalization module brings personalization to the REST delivery endpoint as well as new simple request-based traits. These traits are ideal for headless scenarios where you would like to provide the trait information explicitly on the request via a cookie, header, query string, or body parameter.
 
-This page describes how to implement personalization in an SPA project, using a [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos) as a concrete example.
+This page describes how to implement personalization in an SPA project, using a [`minimal-headless-spa-demos`]({spa-headless-demo-url}) as a concrete example.
 
 ## [](#_configure_a_personalized_delivery_endpoint)Configure a personalized delivery endpoint
 
@@ -22,13 +22,13 @@ To enable this behavior, add this property to the delivery endpoint that you use
 
 personalized: true
 
-See in [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos).
+See in [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
 
 ## [](#_configure_one_or_more_traits)Configure one or more traits
 
 Traits are what authors can use in Magnolia to define the audience for any content variants that they create in the page editor. When developers define traits, they are then available to authors in the Choose audience dialog, and can also be used in defining segments.
 
-Magnolia has several traits available out-of-the-box, or you can add traits with [a simple configuration](../../../../Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Cookies-trait-configuration/) or [with Java](../../../../Modules/List-of-modules/Personalization-module/Creating-custom-traits/).
+Magnolia has several traits available out-of-the-box, or you can add traits with [a simple configuration](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Cookies-trait-configuration/) or [with Java](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits/).
 
 There are three trait types that enable developers to easily add traits commonly used in headless scenarios. The trait values are included directly on the http request to the delivery endpoint:
 
@@ -39,13 +39,13 @@ There are three trait types that enable developers to easily add traits commonly
 -   `cookieTrait`
 
 
-The name of the trait definition determines the name the system will look for in the request. For example, the demo project provides a `headerTrait` named `x-mgnl-age`. The system will personalize based on headers named `x-mgnl-age`. See in the [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos).
+The name of the trait definition determines the name the system will look for in the request. For example, the demo project provides a `headerTrait` named `x-mgnl-age`. The system will personalize based on headers named `x-mgnl-age`. See in the [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
 
 > **Note:** Cookie considerationsKeep in mind that browsers are becoming stricter about cross-site cookies, with varying behavior in different browsers.If your SPA is hosted on a different host (for example a different domain) than your Magnolia instance, then cookies might not make it from Magnolia to your SPA or vice versa. This can also interfere with Magnolia’s session handling. It is possible to use cookies, but out of the scope of this document.
 
 ## [](#_adjust_your_spa_or_frontend_project)Adjust your SPA or frontend project
 
-In your `package.json`, ensure you are using version 1.1.1 (or higher) of the `react-editor`, `vue-editor` or `angular-editor`. See in the [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos).
+In your `package.json`, ensure you are using version 1.1.1 (or higher) of the `react-editor`, `vue-editor` or `angular-editor`. See in the [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
 
 How you adjust the code of your frontend is dependent on your particular use case. There are, however, some general requirements.
 
@@ -61,7 +61,7 @@ Otherwise, the key thing that the frontend must do is include any special header
 >
 > iframe src: example.com/foobar.html?mgnlPreview=true&mgnlChannel=desktopbut not to the preview-as-visitor mode:iframe src: example.com/foobar.html?mgnlPreviewAsVisitor=true
 
-In this demo project, a user enters their age in a form, and then an `x-mgnl-age` header is included in the request with the value "Child", "Adult" or "Senior". See in the [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos).
+In this demo project, a user enters their age in a form, and then an `x-mgnl-age` header is included in the request with the value "Child", "Adult" or "Senior". See in the [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
 
 ## [](#_result)Result
 
@@ -79,7 +79,7 @@ Renders all the content it receives. It does not *know* or have to do anything a
 
 ### [](#_variant_aware_template_annotations)Variant-aware template annotations
 
-Personalization support is provided automatically if the [Personalization module](../../../../Modules/List-of-modules/Personalization-module/) is installed. In this case the Template annotations endpoint is automatically updated to use the `info.magnolia.personalization.rest.spa.VariantAwareTemplateAnnotationEndpoint` implementation class.
+Personalization support is provided automatically if the [Personalization module](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/) is installed. In this case the Template annotations endpoint is automatically updated to use the `info.magnolia.personalization.rest.spa.VariantAwareTemplateAnnotationEndpoint` implementation class.
 
 No additional configuration of the endpoint is required.
 

@@ -1,0 +1,171 @@
+---
+title: "Module structure"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/Module-structure/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Module structure
+---
+
+# Module structure
+
+![Modular architecture](../../_images/modular-architecture.png)
+
+A Magnolia module can be purely file based or it can be wrapped in a Maven project.
+
+-   Typical Maven Structure
+
+-   Light module
+
+
+Magnolia module wrapped in a typical Maven module structure before it is built.
+
+```xml
+<maven-module-name>/
+    ├── pom.xml
+    └── src/
+        └── main/
+            ├── java/
+            └── resources/
+                ├── META-INF/
+                │ └── magnolia/
+                │ └── module-name.xml
+                └── <module-name>/
+                    ├── apps/
+                    ├── config.yaml
+                    ├── dialogs/
+                    │ └── myDialog.yaml
+                    ├── webresources/
+                    └── templates/
+                        ├── components/
+                        │ ├── myComponent.ftl
+                        │ └── myComponent.yaml
+                        └── pages/
+                            ├── myTemplate.ftl
+                            └── myTemplate.yaml
+```
+
+File-based Magnolia module under $magnolia.resources.dir = Light module
+
+```none
+$magnolia.resources.dir/
+└── <module-name>/
+    ├── apps/
+    ├── dialogs/
+    │ └── myDialog.yaml
+    ├── module.yaml
+    ├── webresources/
+    └── templates/
+        ├── components/
+        │ ├── myComponent.ftl
+        │ └── myComponent.yaml
+        └── pages/
+            ├── myTemplate.ftl
+            └── myTemplate.yaml
+```
+
+> **Note:** These two folder trees show typical folder structures rather than structures with all folders possible.
+
+`magnolia.resources.dir` is a property defining the directory from which [resources](../../Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../Apps/List-of-apps/About-Magnolia-app/).
+
+> **Note:** You can use symbolic links (symlinks or soft links) in the resources directory to include light modules located elsewhere on your system.
+
+Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../Administration/Architecture/Configuration-management/#_defining_properties) section.)
+
+The `<module-name>` folder contains exactly the same content in a Maven module and folder-based module. In a Maven module this folder is within `src/main/resources`. In a folder-based modules this folder is within `$magnolia.resources.dir`.
+
+> **Caution:** A module name must match the [a-zA-Z0-9-_] regular expression.Reserved namesThe following names cannot be used for a module name:META-INFVAADINcom.oracle.javacom.oracle.toolscom.sungwt-unitCachejavajakartajavaxjdklombokoracleorg.apachesunReserved charactersDo not use the following characters in a module name:the space characteraccented characters such as é, à, ç, ä, ö, üspecial characters such as slashes /, \ and so on.
+
+The `create-light-module` command in the [Magnolia CLI](../../../../magnolia-cli/) creates the module folder structure on the file system automatically.
+
+| Subfolder | Description |
+| --- | --- |
+| `apps` | **optional** Configuration data (YAML files) for apps. |
+| `decorations` | **optional** Definition decorators (YAML files). Contains subfolders. |
+| `dialogs` | **optional** Dialogs (YAML files). May contain subfolders. |
+| `fieldTypes` | **optional** Field type definitions (YAML files) for *Magnolia 5 UI* . |
+| `i18n` | **optional** i18n message bundles ( `.properties` files). |
+| `messageViews` | **optional** Message view definitions (YAML files). |
+| `renderers` | **optional** Renderer definitions. |
+| `restEndpoints` | **optional** REST endpoint definitions (YAML files) with subfolders. |
+| `templates` | **optional** Template definitions (YAML files) and scripts with subfolders. |
+| `virtualURImappings` | **optional** Virtual URI mapping definitions (YAML files) to redirect incoming requests to actual content locations. |
+| `webResources` | **optional** All web resources (typically contains subfolders). Folder name is arbitrary. |
+
+## [](#_magnolia_module_specific_files)Magnolia module specific files
+
+### [](#_module_descriptor)Module descriptor
+
+In a Magnolia file-based module (light module), the descriptor is located at `$magnolia.resources.dir/example-light-module/module.yaml`.
+
+> **Tip:** See YAML-based module descriptor more for information.
+
+> **Caution:** For Magnolia light modules, module descriptors currently support module dependencies only.
+
+### [](#_the_config_yaml_module_configuration_file)The `config.yaml` module configuration file
+
+A Magnolia Maven-based module may contain the `src/main/resources/<module-name>/config.yaml` file. It contains configuration data, which is applied to the Java bean properties of the Magnolia module class.
+
+> **Tip:** See Module configuration for more information.
+
+## [](#_light_modules_file_based_modules_in_magnolia_resources_dir)Light modules: file-based modules in `$magnolia.resources.dir`
+
+You can add a file-based module in the `$magnolia.resources.dir` directory.
+
+By default, `$magnolia.resources.dir` is the webapp folder (for example, `magnoliaAuthor` or `magnoliaPublic`).
+
+> **Tip:** See Installing a module for more information about $magnolia.home.
+
+## [](#_creating_a_light_module_with_magnolia_cli)Creating a light module with Magnolia CLI
+
+Using the [Magnolia CLI](../../../../magnolia-cli/) you can create the folder structure for a light module with the command `create-light-module`.
+
+1.  Ensure you have [Magnolia CLI](../../../../magnolia-cli/) v5 installed:
+
+    ```sh
+    mgnl -V
+    ```
+
+    You should see something similar to the following:
+
+    ```console
+    Magnolia CLI: 5.0.0 (node.js: v20.13.1)
+    ```
+
+
+2.  Go to your light modules directory, and execute the following command:
+
+    ```console
+    npm run mgnl -- create-light-module <light-module>
+    ```
+
+
+> **Important:** When creating a name for a module, do not use spaces, accented characters such as é, à, ç, ä, ö, ü or special characters (e.g. slashes /, \ and so on). The name must match the regular expression [a-zA-Z0-9-_].
+
+## [](#_magnolia_maven_module)Magnolia Maven module
+
+If you are familiar with Java and Maven, you can use Maven to create and build your Magnolia module. Using Maven streamlines the process of creating a JAR file, deployment, and dependency management of your modules. All modules provided by Magnolia are built with Maven. This makes it easy to install or uninstall them by adding or removing a JAR file.
+
+### [](#_creating_a_magnolia_maven_module_with_maven_archetypes)Creating a Magnolia Maven module with Maven archetypes
+
+Magnolia provides a set of Maven archetypes for various tasks, one of which is creating a Magnolia Maven module.
+
+Before running the Maven `archetype` command, please read [How to use Magnolia Maven archetypes](../../Developing/Development-how-tos/How-to-use-Magnolia-Maven-archetypes/).
+
+#### [](#_executing_the_archetype_plugin_command)Executing the archetype plugin command
+
+1.  Open a shell and change to the directory where you want the Magnolia Maven module skeleton to be created.
+
+    ```sh
+    cd /Users/jdoe/repositories/magnolia
+    ```
+
+2.  Run the following command:
+
+    ```sh
+    mvn archetype:generate -DarchetypeGroupId=info.magnolia.maven.archetypes -DarchetypeArtifactId=magnolia-module-archetype -DarchetypeVersion=RELEASE
+    ```
+
+
+Maven prompts you to specify values for several parameters. Use values that fit your requirements.
+
+After you have finished entering the values, the archetype plugin displays their list and asks you to confirm it. If you confirm by pressing `ENTER`, the plugin generates the skeleton of your archetype. You should see a `BUILD SUCCESS` message at the end of the process. If you press `N` or `CTRL` + `C`, nothing is generated.

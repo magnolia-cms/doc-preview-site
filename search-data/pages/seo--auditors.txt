@@ -1,0 +1,46 @@
+---
+title: "Auditors"
+url: https://docs.magnolia-cms.com/seo/auditors/
+category: Modules
+version: modules
+breadcrumb: SEO module > Auditors
+---
+
+# Auditors
+
+[Deprecated](../../incubator-modules/deprecations/)
+
+Auditors are java classes which perform validation routines on content. All auditors have a set of common properties.
+
+The SEO module contains several types of individual auditors:
+
+-   [ExternalAuditor](ExternalAuditor/)
+
+-   [HtmlCrossReferenceAuditor](HtmlCrossReferenceAuditor/)
+
+-   [HtmlElementAuditor](HtmlElementAuditor/)
+
+-   [I18NAuditor](I18NAuditor/)
+
+-   [I18NPropertyDefinitionAuditor](I18NPropertyDefinitionAuditor/)
+
+-   [I18NPropertyValidationAuditor](I18NPropertyValidationAuditor/)
+
+-   [LinkAuditor](LinkAuditor/)
+
+-   [MetaDescriptionAuditor](MetaDescriptionAuditor/)
+
+-   [ParagraphLengthAuditor](ParagraphLengthAuditor/)
+
+-   [PropertyDefinitionAuditor](PropertyDefinitionAuditor/)
+
+-   [PropertyValidatorAuditor](PropertyValidatorAuditor/)
+
+-   [ValidHtmlAuditor](ValidHtmlAuditor/)
+
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `name` | The name of the auditor, usually the node name (either from JCR or YAML configuration). It’s important that each auditor have a unique name among all configured auditors. Auditors will save some results by their name. | **yes** |
+| `description` | A short description of the auditor. The description be displayed when selecting audits. | **yes** |
+| `active` | Defines if the auditor is active. • `AuditPageAction` - only executes active auditors, inactive auditors are skipped. • `FlexiAuditPageAction` - allows users to select what auditors are run and both active and inactive auditors can be selected. | **yes** |

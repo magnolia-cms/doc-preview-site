@@ -21,11 +21,11 @@ Choose this option if the module is delivered as a folder or a ZIP file. This ty
 
 ## [](#_what_is_magnolia_resources_dir)What is `magnolia.resources.dir`?
 
-`magnolia.resources.dir` is a property defining the directory from which [resources](../../Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../Apps/List-of-apps/About-Magnolia-app/).
+`magnolia.resources.dir` is a property defining the directory from which [resources](../../../RNs-6-4-3/Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../../RNs-6-4-3/Apps/List-of-apps/About-Magnolia-app/).
 
 > **Note:** You can use symbolic links (symlinks or soft links) in the resources directory to include light modules located elsewhere on your system.
 
-Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../Administration/Architecture/Configuration-management/#_defining_properties) section.)
+Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../../RNs-6-4-3/Administration/Architecture/Configuration-management/#_defining_properties) section.)
 
 ## [](#_jar_files)JAR files
 

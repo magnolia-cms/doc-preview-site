@@ -8,36 +8,29 @@ breadcrumb: DX Core > Modules > Resources module
 
 # Resources module
 
-[Developer productivity](../../../use-cases/developer-productivity/) Bundled: Community edition
-
-|     |     |
+| Edition | CE |
 | --- | --- |
-| Edition | CE  |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLRES](https://magnolia-cms.atlassian.net/browse/MGNLRES) |
-| Maven site | [Resources](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fresources%2Fmagnolia-resources-app%2F4.0.4) |
-| Latest | 4.0.4 |
-
-The Resources module loads [resource files](../../../Developing/Resources/) from all sources - JCR, file system and [classpath](../../../Getting-started-with-Magnolia/Glossary/#_classpath). The module includes the [Resource Files app](../../../Apps/List-of-apps/Resource-Files-app/) to manage your resources.
-
-## [](#_module_structure)Module structure
+| Maven site | [Resources](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fresources%2Fmagnolia-resources-app%2F{magnolia-resources-63}) |
+| Latest | {magnolia-resources-63} |
 
 | ArtifactId | Description |
 | --- | --- |
 | `magnolia-resources-parent` | Parent reactor |
-| `magnolia-resources` | Contains the API and core functionalities, such as info.magnolia.module.resources.ResourcesServlet. |
-| `magnolia-resources-app` | Hosts the [Resources Files app](../../../Apps/List-of-apps/Resource-Files-app/). |
-| `magnolia-resources-templating` | Contains the [resfn](../../../Developing/Templating/Template-scripts/Templating-functions/resfn/) templating functions. |
+| `magnolia-resources` | Contains the API and core functionalities, such as info.magnolia.module.resources.ResourcesServlet . |
+| `magnolia-resources-app` | Hosts the [Resources Files app](../../../../RNs-6-4-3/Apps/List-of-apps/Resource-Files-app/) . |
+| `magnolia-resources-templating` | Contains the [resfn](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/resfn/) templating functions. |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.resources</groupId>
   <artifactId>magnolia-resources-app</artifactId>
-  <version>4.0.4</version> (1)
+  <version>{magnolia-resources-63}</version> (1)
 </dependency>
 ```
 
@@ -49,7 +42,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.resources</groupId>
   <artifactId>magnolia-resources-templating</artifactId>
-  <version>4.0.4</version> (1)
+  <version>{magnolia-resources-63}</version> (1)
 </dependency>
 ```
 
@@ -61,6 +54,6 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 
 Related topics
 
--   [Resources](../../../Developing/Resources/)
+-   [Resources](../../../../RNs-6-4-3/Developing/Resources/)
 
--   [Resource Files app](../../../Apps/List-of-apps/Resource-Files-app/)
+-   [Resource Files app](../../../../RNs-6-4-3/Apps/List-of-apps/Resource-Files-app/)

@@ -1,0 +1,58 @@
+---
+title: "Logging and monitoring"
+url: https://docs.magnolia-cms.com/performance-tuning/Logging-and-monitoring/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Logging and monitoring
+---
+
+# Logging and monitoring
+
+## [](#_overview)Overview
+
+All subpages in this section emphasize monitoring and logging activities, as well as the use of headers and logger entries for troubleshooting and data capture.
+
+Tuning tips - Logging and monitoring
+
+-   **Loggers**
+
+    -   Adjusting your App Launcher layout configuration and removing any unused apps can help optimize performance.
+
+    -   Track issues by adding logger entries for classes or packages depending on the scope of the issue.
+
+        For more, see [Loggers](Monitoring/#_loggers).
+
+
+-   **Log Tools app**
+
+    -   View and download log files conveniently.
+
+    -   Remember that logging changes made in the Log Tools app only stay in effect until Magnolia is shut down. To permanently change your logging configuration, you must modify the `log4j2.xml` file.
+
+        For more, see [Log Tools app](Log-tools-app/).
+
+
+-   **JMX monitoring**
+
+    -   Use MBeans, added in Magnolia 6.3, to optimize your custom code.
+
+    -   You can use Tools like JConsole to visually represent performance and resource consumption.
+
+        For more, see [JMX Monitoring](JMX-monitoring/).
+
+
+
+## [](#_subpages_in_this_section)Subpages in this section
+
+-   [Log Tools app](Log-tools-app/)
+
+-   [Monitoring](Monitoring/)
+
+-   [JMX Monitoring](JMX-monitoring/)
+
+
+Related topics
+
+-   [Extended Health Check module](../../healthcheck/)
+
+-   [Health check API](../../product-docs/RNs-6-4-3/Developing/API/Health-check-API/)

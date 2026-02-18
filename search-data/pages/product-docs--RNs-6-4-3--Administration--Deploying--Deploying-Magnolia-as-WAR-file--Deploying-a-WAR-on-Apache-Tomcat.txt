@@ -1,0 +1,114 @@
+---
+title: "Deploying a WAR on Apache Tomcat"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Deploying/Deploying-Magnolia-as-WAR-file/Deploying-a-WAR-on-Apache-Tomcat/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Deploying WAR files > Deploying Magnolia as WAR file > Deploying a WAR on Apache Tomcat
+---
+
+# Deploying a WAR on Apache Tomcat
+
+A WAR file is provided for the Apache Tomcat installation that contains many of the files needed for Magnolia. When the WAR file is deployed, the files in the WAR file are extracted and placed in the server’s `webapps` directory. The remaining directories and files, including the repositories, are retrieved during the deployment and installation.
+
+> **Note:** Server configuration with relaxedQueryCharsAdvanced query filters in the Delivery API require extra Tomcat configuration, namely setting relaxedQueryChars="[]|".
+
+## [](#_deploy_war)Deploy WAR
+
+Tomcat should not be running when executing the following procedure.
+
+To deploy WAR file:
+
+1.  Download [DX Core](http://files.magnolia-cms.com/) or [Community Edition](http://sourceforge.net/projects/magnolia/files/) WAR file.
+
+2.  Put WAR file into server’s `webapps` directory.
+
+3.  Adapt JVM heap size by editing the applicable file in the `/bin` directory in the Apache Tomcat directory:
+
+    -   On Unix, edit `setenv.sh` file and add:
+        `export CATALINA_OPTS="-server -Xmx1024m"`
+
+    -   On Windows, create `setenv.bat` file and add:
+        `set CATALINA_OPTS=-server -Xmx1024m`
+
+
+4.  (Optional) Use headless mode.
+
+    > **Tip:** When running on a system without a GUI, you should set the java.awt.headless system property to true.
+
+    -   On Unix:
+        `export CATALINA_OPTS="-server -Xmx1024m -Djava.awt.headless=true"`
+
+    -   On Windows:
+        `set CATALINA_OPTS=-server -Xmx1024m-Djava.awt.headless=true`
+
+
+5.  Start Tomcat and wait until it is completely started.
+
+
+> **Note:** When deploying the Magnolia WAR file Tomcat will need time and heap size to extract the file and bootstrap repositories. Once bootstrapped, Tomcat will not need that much heap anymore.
+
+A directory containing the content of the WAR file and retrieved files is created in the server’s `webapps` directory.
+
+## [](#_tomcat_configuration)Tomcat configuration
+
+If you need to configure Tomcat to use virtual hosts, data sources and so on, see the [Tomcat Documentation](http://tomcat.apache.org/).
+
+## [](#_disclosing_potentially_sensitive_information)Disclosing potentially sensitive information
+
+By default, the `magnolia-tomcat-barebone` provided by [Magnolia](../../../../Developing/Bundles-and-webapps/) ([Nexus](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/tomcat/barebone/magnolia-tomcat-barebone/)) will not disclose potentially sensitive information, such as details about errors or server type and version.
+
+Any custom error page for errors which can’t be mapped to pages declared in `web.xml` can be changed accordingly by modifying the configuration in `server.xml`.
+
+### [](#_examples)Examples
+
+```xml
+<Valve className="org.apache.catalina.valves.ErrorReportValve"
+        errorCode.0="webapps/ROOT/errorOthers.html"
+        showReport="false"
+        showServerInfo="false" />
+```
+
+```xml
+<Valve className="org.apache.catalina.valves.ErrorReportValve"
+        errorCode.400="webapps/myMagnoliaApp/docroot/my400.html"
+        showReport="false"
+        showServerInfo="false" />
+```
+
+In Tomcat’s log, an admin can still see what caused the error, though.
+
+For instance in `localhost_access_log_xxx.txt`, one could see:
+
+```sh
+0:0:0:0:0:0:0:1 - - [30/Jun/2022:09:50:53 +0200] "GET /magnoliaAuthor/()%7B%7D[] HTTP/1.1" 400 435
+```
+
+### [](#_known_issues)Known issues
+
+-   [SSO and OpenID login issues](../../../Troubleshooting/SSO-and-OpenID-login-issues/)
+
+
+## [](#_using_tomcat_with_apache)Using Tomcat with Apache
+
+Magnolia recommends using Tomcat with Apache due to the high availability of skilled staff to configure Apache and the ability to configure Apache to serve static fallback content when Tomcat is down.
+
+-   [Apache Tomcat Connector Web Server How To](http://tomcat.apache.org/connectors-doc/webserver_howto/apache)
+
+-   [Tomcat connectors FAQ](http://wiki.apache.org/tomcat/FAQ/Connectors)
+
+
+### [](#_securing_session_cookies)Securing session cookies
+
+When Tomcat operates behind a proxy, it has no direct knowledge of the original scheme or port used by the client’s browser to reach it. This configuration relies on the `X-Forwarded-*` headers added by the proxy to reconstruct the correct request information and generate URLs that are valid from the client’s perspective. Without these headers, Tomcat might assume that the request was made over HTTP (as received from the proxy), even though the client actually connected via HTTPS. In such a setup, ensure that your proxy is configured to add the appropriate `X-Forwarded-*` headers. Most cloud environments do this automatically when using an Ingress or LoadBalancer, but note that Apache HTTPd and Nginx *do not* add these headers by default — they must be explicitly enabled. Additionally, you may need to adjust the valve’s `internalProxies` parameter to match your own network’s IP range.
+
+> **Warning:** When Tomcat is behind a proxy, a missing or incorrect RemoteIpValve or missing X-Forwarded-* headers can cause JSESSIONID cookies not to be marked as Secure and can produce incorrect absolute URLs, even when clients connect via HTTPS.
+
+Add the `RemoteIpValve` to your Tomcat `server.xml`:
+
+```xml
+<Valve className="org.apache.catalina.valves.RemoteIpValve" />
+```
+
+Ensure your proxy forwards at least `X-Forwarded-Proto`, `X-Forwarded-For`, `X-Forwarded-Host`, `X-Forwarded-Port`, and `Host`, and adjust `internalProxies` if needed.
+
+For end-to-end guidance and proxy examples, see [Configuring Magnolia behind a proxy](../../Configuring-Magnolia-behind-a-proxy/). For valve options, see the [Tomcat RemoteIpValve](https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html#Remote_IP_Valve).

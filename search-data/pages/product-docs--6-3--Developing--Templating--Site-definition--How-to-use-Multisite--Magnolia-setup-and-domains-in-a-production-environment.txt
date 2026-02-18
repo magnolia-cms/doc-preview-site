@@ -8,20 +8,16 @@ breadcrumb: DX Core > Developing > Templating > Site definition > How to use Mul
 
 # Magnolia setup and domains in a production environment
 
-Magnolia is distributed as two web-applications: author and public. Among other things, editors create pages on the author instance and publish content from the author instance to public instances. Public instances serve the content to visitors. In a typical production setup you have one author and several public [Instances](../../../../../Administration/Instances/).
+Magnolia is distributed as two web-applications: author and public. Among other things, editors create pages on the author instance and publish content from the author instance to public instances. Public instances serve the content to visitors. In a typical production setup you have one author and several public [Instances](../../../../../../RNs-6-4-3/Administration/Instances/).
 
 In a production setup, the author instance and public instance are typically accessed via distinct domains.
 
 In a multisite setup with one Magnolia installation, you assign multiple domains to the public instance. However, it is sufficient and recommended to have only one domain pointing to your author instance. The domain of the author instance is different from the domains of the public instance.
 
-## [](#_example_of_domains_in_a_production_environment)Example of domains in a production environment
-
-This sample below shows the difference between domains when pointing to author or public instances in a production environment.
-
 | Site | Author Instance | Public Instance |
 | --- | --- | --- |
-| site a/b | `author.yourdomain.net` | `www.yourdomain.net` (**a**)<br><br>`www.another-domain.net` (**b**) |
-| Main/German/French | `author.xyzdomain.net` | www.xyzdomain.com (**Main**)<br><br>www.xyzdomain.de (**DE**)  <br>www.xyzdomain.fr (**FR**) |
+| site a/b | `author.yourdomain.net` | `www.yourdomain.net` ( **a** ) `www.another-domain.net` ( **b** ) |
+| Main/German/French | `author.xyzdomain.net` | www.xyzdomain.com ( **Main** ) www.xyzdomain.de ( **DE** ) www.xyzdomain.fr ( **FR** ) |
 
 ## [](#_serving_the_webapps_from_root_context)Serving the webapps from root context
 

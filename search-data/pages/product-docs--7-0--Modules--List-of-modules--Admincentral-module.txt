@@ -8,181 +8,33 @@ breadcrumb: DX Core > Modules > Admincentral module
 
 # Admincentral module
 
-[Content management](../../../use-cases/content-management/) Bundled: Community edition
-
-|     |     |
+| Edition | CE |
 | --- | --- |
-| Edition | CE  |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [ADMINCTR](https://magnolia-cms.atlassian.net/browse/ADMINCTR) |
-| Maven site | [ADMINCTR](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fadmincentral%2Fmagnolia-admincentral%2F6.4.0) |
-| Latest | 6.4.0 |
-
-The Admincentral module is used to configure the layout and availability of apps in the [App launcher](../../../Administration/App-Launcher/App-launcher-layout/).
-
-## [](#_installing_with_maven)Installing with Maven
-
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
-
-```xml
-<dependency>
-  <groupId>info.magnolia.admincentral</groupId>
-  <artifactId>magnolia-admincentral</artifactId>
-  <version>6.4.0</version> (1)
-</dependency>
-```
-
-|     |     |
-| --- | --- |
-| **1** | Should you need to specify the module version, do it using `<version>`. |
-
-```xml
-<dependency>
-  <groupId>info.magnolia.admincentral</groupId>
-  <artifactId>magnolia-global-search-integration</artifactId>
-  <version>6.4.0</version> (1)
-</dependency>
-```
-
-|     |     |
-| --- | --- |
-| **1** | Should you need to specify the module version, do it using `<version>`. |
-
-> **Note:** The UI Admincentral is a different module. Its groupId is info.magnolia.ui, and its artifactId is magnolia-ui-admincentral.In Magnolia 6.4, the configuration for the Global Search (formerly the Find Bar) is in the periscope-core module.
-
-Properties to configure the App launcher layout.
+| Maven site | [ADMINCTR](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fadmincentral%2Fmagnolia-admincentral%2F{magnolia-admincentral-64}) |
+| Latest | {magnolia-admincentral-64} |
 
 | Property | Description |
 | --- | --- |
-| `favouriteAppConfiguration` | Configuration for favorite applications.<br><br>Example:<br><br>```yaml<br>favouriteAppConfiguration:<br>  maxApps: 12<br>  favouriteApps:<br>    - pages-app<br>``` |
-| `favouriteApps` | **optional** (type: `List`)<br><br>List of favorite application names. |
-| `maxApps` | **optional** (type: `int`)<br><br>Maximum number of favorite apps allowed. |
+| `favouriteAppConfiguration` | Configuration for favorite applications. Example: `favouriteAppConfiguration: maxApps: 12 favouriteApps: - pages-app` |
+| ` favouriteApps` | **optional** (type: `List` ) List of favorite application names. |
+| ` maxApps` | **optional** (type: `int` ) Maximum number of favorite apps allowed. |
 | `layout` | Configuration for layout settings. |
-| `defaultGroup` | **optional** (type: `String`)<br><br>Default group name for apps. |
-| `hiddenApps` | **optional** (type: `List`)<br><br>List of apps to hide. |
-| `groups` | **optional** (type: `List`)<br><br>List of group configurations.<br><br>Example:<br><br>```yaml<br>layout:<br>  groups:<br>    - name: content<br>      apps:<br>        - name: pages-app<br>        - name: dam<br>    - name: marketing<br>      apps:<br>        - name: analytics<br>        - name: campaigns<br>    - name: admin<br>      apps:<br>        - name: security-app<br>      permissions:<br>        groups:<br>          - developers<br>``` |
-| `name` | **required** (type: `String`)<br><br>Name of the group. |
-| `label` | **optional** (type: `String`)<br><br>Display label for the group. |
-| `apps` | **optional** (type: `List`)<br><br>List of app configurations within the group. |
-| `name` | **required** (type: `String`)<br><br>Name of the app within the group. |
-| `permissions` | **optional** (type: `Object`)<br><br>Permission settings for the group. |
-| `groups` | **optional** (type: `List`)<br><br>List of groups with access permissions. |
-| `rows` | **optional** (type: `List`)<br><br>List of row configurations.<br><br>Example:<br><br>```yaml<br>laayout:<br>  rows:<br>    - name: one<br>      cssClass: editor<br>      groups:<br>        content: content<br>        marketing: marketing<br>    - name: two<br>      cssClass: editor<br>      groups:<br>        - personalisation<br>``` |
-| `name` | **required** (type: `String`)<br><br>Name of the row. |
-| `displayed` | **optional** (type: `boolean`)<br><br>Indicates whether the row is displayed (default: `true`). |
-| `cssClass` | **optional** (type: `String`)<br><br>CSS class to apply to the row. |
-| `groups` | **optional** (type: `List` or `Map`)<br><br>List or map of groups to include in the row. |
-
-Example configuration:
-
-/admincentral/config.yaml
-
-```yaml
-favouriteAppConfiguration:
-  maxApps: 12
-  favouriteApps:
-    - pages-app
-
-layout:
-  defaultGroup: custom
-  hiddenApps:
-    dam-chooser: dam-chooser
-    preview: preview
-    assets: assets
-    categories: categories
-    notifications: notifications
-    tasks-app: tasks-app
-    personas: personas
-    tourCategories: tourCategories
-    pages: pages
-    segmentation: segmentation
-    ecommerce-category-chooser: ecommerce-category-chooser
-    ecommerce-connection-chooser: ecommerce-connection-chooser
-    ecommerce-product-chooser: ecommerce-product-chooser
-  groups:
-    - name: content
-      apps:
-        - name: pages-app
-        - name: dam
-        - name: stories
-        - name: tours
-    - name: marketing
-      apps:
-        - name: analytics
-        - name: campaigns
-        - name: marketing-tags
-        - name: abn-testing
-    - name: personalisation
-      apps:
-        - name: personas-app
-        - name: segmentation-app
-        - name: preview-app
-    - name: categorisation
-      apps:
-        - name: content-tags
-        - name: categories-app
-    - name: translation
-      apps:
-        - name: pages-translation
-    - name: development
-      apps:
-        - name: jcr-browser-app
-        - name: backup
-        - name: mail
-        - name: cacheTools
-        - name: logTools
-        - name: publishing
-        - name: tools
-        - name: jcr-tools
-        - name: pages-translation
-        - name: messages
-        - name: groovy
-        - name: sample
-        - name: graphql
-        - name: restclient
-        - name: resources
-        - name: site
-        - name: configuration
-        - name: definitions-app
-      permissions:
-        groups:
-          - developers
-    - name: admin
-      apps:
-        - name: security-app
-        - name: password-manager
-        - name: visitors
-        - name: cookies
-        - name: about
-        - name: ecommerce
-        - name: rssAggregator
-      permissions:
-        groups:
-          - developers
-    - name: custom
-      apps: []
-  rows:
-    - name: one
-      cssClass: editor
-      groups:
-        content: content
-        marketing: marketing
-    - name: two
-      cssClass: editor
-      groups:
-        - personalisation
-        - categorisation
-        - translation
-    - name: three
-      cssClass: editor
-      groups:
-        - custom
-    - name: four
-      cssClass: developer
-      groups:
-        - development
-        - admin
-```
+| ` defaultGroup` | **optional** (type: `String` ) Default group name for apps. |
+| ` hiddenApps` | **optional** (type: `List` ) List of apps to hide. |
+| ` groups` | **optional** (type: `List` ) List of group configurations. Example: `layout: groups: - name: content apps: - name: pages-app - name: dam - name: marketing apps: - name: analytics - name: campaigns - name: admin apps: - name: security-app permissions: groups: - developers` |
+| ` name` | **required** (type: `String` ) Name of the group. |
+| ` label` | **optional** (type: `String` ) Display label for the group. |
+| ` apps` | **optional** (type: `List` ) List of app configurations within the group. |
+| ` name` | **required** (type: `String` ) Name of the app within the group. |
+| ` permissions` | **optional** (type: `Object` ) Permission settings for the group. |
+| ` groups` | **optional** (type: `List` ) List of groups with access permissions. |
+| ` rows` | **optional** (type: `List` ) List of row configurations. Example: `laayout: rows: - name: one cssClass: editor groups: content: content marketing: marketing - name: two cssClass: editor groups: - personalisation` |
+| ` name` | **required** (type: `String` ) Name of the row. |
+| ` displayed` | **optional** (type: `boolean` ) Indicates whether the row is displayed (default: `true` ). |
+| ` cssClass` | **optional** (type: `String` ) CSS class to apply to the row. |
+| ` groups` | **optional** (type: `List` or `Map` ) List or map of groups to include in the row. |
 
 ## [](#_global_password_policy_validation)Global password policy validation
 
@@ -240,4 +92,4 @@ Related topics
 
 -   [App Launcher layout](../../../Administration/App-Launcher/App-launcher-layout/)
 
--   [App Launcher](../../../Authoring/App-Launcher/)
+-   [App Launcher](../../../../RNs-6-4-3/Authoring/App-Launcher/)

@@ -12,7 +12,7 @@ breadcrumb: DX Core > Developing > API > SPA templating API
 
 Magnolia SPA template annotations make content from a front-end project editable in Magnolia. This is achieved by injecting annotations (HTML comments) around components which the Magnolia Page editor transforms into controls for web content editors.
 
-Annotations are created on the server and can be retrieved through a dedicated *Template annotation endpoint*. The advantage is the server renders everything from the attributes. Before, the annotations were created in [Magnolia frontend helpers](../../headless/spa-development/magnolia-front-end-sdk/).
+Annotations are created on the server and can be retrieved through a dedicated *Template annotation endpoint*. The advantage is the server renders everything from the attributes. Before, the annotations were created in [Magnolia frontend helpers](../../../../RNs-6-4-3/Developing/headless/spa-development/magnolia-front-end-sdk/).
 
 > **Note:** Version 6.2.17 of the Pages module also introduced the site-aware template annotations endpoint (info.magnolia.rendering.spa.rest.v1.SiteAwareTemplateAnnotationEndpoint), which is aware of site-defined prototype templates.
 
@@ -75,7 +75,7 @@ To enhance security, the `bypassWorkspaceAcls` property was removed from the tem
     bypassWorkspaceAcls: true
     ```
 
--   As a third approach, you can use an SSO token. You must get the token from the IDP and use it for the template annotations endpoint. However, be aware that for this to work you must configure an `http.bearer` client on your Magnolia author instance. For more details, see [SSO module: Configuring via yaml](#magnolia-sso:ROOT:index.adoc#_http-bearer-client).
+-   As a third approach, you can use an SSO token. You must get the token from the IDP and use it for the template annotations endpoint. However, be aware that for this to work you must configure an `http.bearer` client on your Magnolia author instance. For more details, see [SSO module: Configuring via yaml](../../../../../magnolia-sso/#_http-bearer-client).
 
 
 We also suggest enhancing the security of the author instance through additional measures, such as restricting access to specific IP addresses (through `/server/IPConfig`) or placing it behind a firewall.
@@ -109,4 +109,4 @@ http://localhost:8080/magnoliaAuthor/.rest/template-definitions/v1/mtk:component
 
 Related topics
 
--   [Magnolia frontend helpers](../../headless/spa-development/magnolia-front-end-sdk/)
+-   [Magnolia frontend helpers](../../../../RNs-6-4-3/Developing/headless/spa-development/magnolia-front-end-sdk/)

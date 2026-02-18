@@ -1,0 +1,127 @@
+---
+title: "REST Client app"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/List-of-apps/REST-Client-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > REST Client app
+---
+
+# REST Client app
+
+The Magnolia REST Client app allows testing and debugging of configured REST clients.
+
+## [](#_installing)Installing
+
+The app is installed by the [Rest Client module](../../../Modules/List-of-modules/REST-Client-module/) and is included in all Magnolia 6.2 [preconfigured Magnolia bundles](../../../Developing/Bundles-and-webapps/#_magnolia_bundles_and_webapps).
+
+> **Note:** This excludes the magnolia-tomcat-barebone bundle.
+
+## [](#_using)Using
+
+The REST Client app consists of two subapps, the REST Client subapp and the Debug subapp. Use the REST Client subapp to send a request using a configured REST client, together with specific parameters and/or request body. The response will be shown in the Response area.
+
+Use the Debug subapp to check for possible issues connected with calls sent with the REST Client subapp.
+
+### [](#_rest_client_subapp)REST Client subapp
+
+To test a configured REST client:
+
+1.  Go to **Apps** > **REST Client**.
+
+2.  In the **Rest client** field, select a configured client.
+
+    > **Note:** If the client already includes a pre-configured REST call definition, a note about this will be displayed just below the field.
+
+
+One or more of the following configuration fields and options will be either shown or hidden depending on the extent of the actual configuration:
+
+1.  **Rest calls**. The call to be executed on the given client
+
+2.  **Rest service**. The REST service class name.
+
+    > **Note:** Configure pre-seeded services under /module/rest-client-app/config/serviceClasses.
+
+3.  **Service method**. The method to be executed on the given client.
+
+4.  **Method annotations**. The annotations of the service method and method parameters of the selected REST client. The parameter without annotations is the request body.
+
+5.  **Method parameters**. The service method parameters or the `queryParameters` and `defaultValues` of the call. Enter one per line. Leave the line for the `body` parameter empty.
+
+6.  **Authentication**. The options are `None`, ``Basic`and `Bearer``, with the last two requiring additional configuration data such as **Username** and **Password** (`Basic`), and **Token** (`Bearer`).
+
+7.  **Request body**. An optional request body. The value will be used as the service method parameter without annotations, if present.
+
+
+Click **Send request** when you have completed the fields.
+
+> **Note:** The Response field displays the response received from the endpoint.
+
+![UI api testing](../../../_images/rest-client-app-overview.png)
+
+#### [](#_example_configuration)Example configuration
+
+books.yaml
+
+```yaml
+baseUrl: http://openlibrary.org/api (1)
+restCalls: (2)
+  searchByIsbn: (3)
+    method: get
+    entityClass: java.lang.String
+    path: /volumes/brief/isbn/{isbn}.json
+```
+
+|     |     |
+| --- | --- |
+| **1** | Specify the base URL for your API. |
+| **2** | Declare the `restCalls` section. This is where your REST API calls will be. |
+| **3** | Specify your REST call.<br><br>Typically, REST calls require a `method`, `entityClass`, and `path`. |
+
+> **Tip:** Use the Definitions app to check that your REST client definition has been registered in the instance.
+
+### [](#_debug_subapp)Debug subapp
+
+To debug or inspect a REST request or response:
+
+1.  Go to **Apps** > **REST Client**.
+
+2.  Open the Debug subapp.
+
+3.  In the **Available Definitions**, select the client(s) whose requests/responses you would like to inspect and move the selected item(s) to the **Debugging Definitions** field.
+
+    Optionally, using the selectors further to the right, you can also specify:
+
+    -   **Maximum records**. The maximum number of REST calls to be recorded.
+
+    -   **Response code**. The type(s) of response code that should be taken into account: **Successful**, **Client error**, **Server error** or **All**.
+
+
+4.  Issue a REST call using the selected REST client(s).
+
+    > **Tip:** You can do this from any app that utilizes the configured REST client(s). Alternatively, you can also use the REST Client subapp for this:Switch back to the REST Client subapp.Select the desired REST client and together with a specific call, call parameters or call body, initiate a REST call.
+
+5.  In the **Debug Content** selector of the Debug subapp, you should see one or more timestamped REST call records.
+
+6.  Select the record you wish to inspect.
+
+7.  In the two areas below the selector, you can then inspect the request and the response of the call.
+
+
+Depending on what format or which part of call you prefer to see or work with, click one of the following tabs:
+
+-   For a REST request, the **All Request**, **Headers**, **Body**, **Cookies** or **as Curl** tab.
+
+-   For a REST response, the **All Response**, **Headers** or **Body** tab.
+
+    Example debug content
+
+    ![REST Debug subapp](../../../_images/6-2-3-RestDebugApp-MGNLRESTCL133.png)
+
+
+Related topics
+
+-   [REST Client module](../../../Modules/List-of-modules/REST-Client-module/)
+
+-   [Getting started with REST](../../../Getting-started-with-Magnolia/Getting-started-with-REST/)
+
+-   [Example REST client configurations](../../../Modules/List-of-modules/REST-Client-module/Example-REST-client-configurations/)

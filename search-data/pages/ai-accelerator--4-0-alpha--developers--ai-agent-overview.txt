@@ -1,0 +1,72 @@
+---
+title: "AI Agent framework"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/ai-agent-overview/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Agents
+---
+
+# AI Agent framework
+
+AI Agents are extensible conversational AI assistants that can be integrated into Magnolia CMS. They enable LLM-powered automation and assistance through a chat interface, with support for tool execution, streaming responses, and context-aware operations.
+
+## [](#_overview)Overview
+
+The AI Agent framework provides:
+
+-   **Conversational AI** - Multi-turn conversations with LLMs (currently OpenAI)
+
+-   **Tool execution** - Agents can execute tools to perform actions in Magnolia
+
+-   **Context awareness** - Tools receive user’s current location and selection
+
+-   **Streaming responses** - Real-time SSE (Server-Sent Events) for responsive feedback
+
+-   **Extensibility** - Custom tools, renderers, and agent implementations
+
+
+### [](#_how_it_works)How it works
+
+1.  User sends a message through the chat interface
+
+2.  The agent processes the message using an LLM (such as OpenAI GPT-4o)
+
+3.  The agent can call tools to perform actions in Magnolia
+
+4.  Results are streamed back to the chat UI in real-time
+
+
+The agent framework consists of:
+
+-   **Agent definitions** – YAML files defining agents
+
+-   **Tool definitions** – YAML files defining tools used by agents
+
+-   **Frontend components** – React chat interface with custom renderers
+
+
+Your agent configuration directly enables the features authors see in [Smart Chat](../../authors/ai-chat/):
+
+-   The `name` property becomes the chat interface title
+
+-   `tools` define the actions authors can request
+
+-   `systemPrompt` controls how the AI responds to author requests
+
+-   Tool requirements ensure context-aware assistance
+
+
+## [](#_getting_started)Getting started
+
+To configure AI agents for authors, complete these steps in order:
+
+1.  [Install](../) and configure the AI Accelerator module.
+
+2.  Configure the OpenAI [provider](../provider-config/openai-config/) and [model](../model-configuration/).
+
+3.  [Create your agent definition](../ai-agent/#agent-definitions).
+
+4.  [Define the required tools and tasks](../ai-agent/#tool-configuration).
+
+
+> **Note:** Currently only openAiAgent is supported.

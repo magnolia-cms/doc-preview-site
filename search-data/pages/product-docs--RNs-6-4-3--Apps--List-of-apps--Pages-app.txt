@@ -1,0 +1,29 @@
+---
+title: "Pages app"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/List-of-apps/Pages-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Pages app
+---
+
+# Pages app
+
+The Pages app allows you to build complete web pages. This tool gives editors most freedom to order, organize and lay out content elements as they wish through the use of different templates. If you need more control over the content entry process, choose a [content app](../../Developing-an-app/My-first-content-app/) or [Stories app](../Stories-app/) instead.
+
+In the Pages app, you enter content directly onto the page. You can also render content that comes from another Magnolia app. The Pages app displays the site as a tree. In the tree you can create new pages and create a site structure. The site hierarchy translates into navigation automatically.
+
+## [](#_configuration)Configuration
+
+The Pages app is installed by the [Pages module](../../../Modules/List-of-modules/Pages-module/). The app is configured in `/pages-app/apps/pages-app.yaml`.
+
+### [](#_workspace)Workspace
+
+The Pages app operates on the `website` workspace. The `website` workspace stores the site pages and their content.
+
+### [](#_node_types)Node types
+
+The Pages app operates on the custom `mgnl:page` [node type](../../../Administration/Architecture/Node-types/) and on folders.
+
+## [](#_using_the_app)Using the app
+
+See [Authoring](../../../Authoring/) on how to use the Pages app.

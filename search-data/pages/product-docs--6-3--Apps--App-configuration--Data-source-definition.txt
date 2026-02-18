@@ -25,24 +25,9 @@ A data source can be flexibly configured as follows:
 -   Module component mappings can be defined in the context of the current data source (a component section should have an id in the form of `<id>datasource-<ds-name></id>`, where `<ds-name>` is configured in the definition).
 
 
-## [](#_data_source_types)Data source types
-
 | $type | class |
 | --- | --- |
 | `enumDatasource` | `info.magnolia.ui.datasource.enumeration.EnumDatasourceDefinition` |
 | `jcrDatasource` | `info.magnolia.ui.datasource.jcr.JcrDatasourceDefinition` |
 | `jsonDatasource` | `info.magnolia.rest.ui.JsonDatasourceDefinition` |
 | `optionListDatasource` | `info.magnolia.ui.datasource.optionlist.OptionListDefinition` |
-
-For more information, refer to the following pages:
-
--   [JCR data source](JCR-data-source/)
-
--   [JSON data source](../../../Modules/List-of-modules/REST-Client-module/JSON-data-source/)
-
--   [Option list data source](Option-list-data-source/)
-
--   [Enum data source](Enum-data-source/)
-
-
-> **Tip:** If you are looking for a bean-based content app implementation that uses data source definition, check out Tasks app, Notifications app and Definitions app.

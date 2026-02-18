@@ -18,20 +18,20 @@ subApps:
     actions:
       addToTranslationBatch: (1)
         label: Add to translation batch
-        dialogName: content-translation-support-ext-core:addToTranslationBatch
+        $type: openDialogAction
+        dialogId: content-translation-support-ext-core:addToTranslationBatch
         icon: icon-add-folder
-        class: info.magnolia.translation.ext.core.app.batch.action.OpenMultiEditDialogAction$Definition
         availability:
           writePermissionRequired: true
           access:
             roles: (2)
               superuser: superuser
           nodeTypes: (3)
-            asset: mgnl:asset
-            configuration: mgnl:contentNode
-            content: mgnl:page
-            folder: mgnl:folder
-            templateOrResource: mgnl:content
+            - mgnl:asset
+            - mgnl:contentNode
+            - mgnl:page
+            - mgnl:folder
+            - mgnl:content
           rules:
             - name: IsNotDeletedRule
               implementationClass: info.magnolia.ui.framework.availability.IsNotDeletedRule

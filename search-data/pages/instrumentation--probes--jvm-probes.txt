@@ -1,0 +1,39 @@
+---
+title: "JVM probes"
+url: https://docs.magnolia-cms.com/instrumentation/probes/jvm-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > JVM probes
+---
+
+# JVM probes
+
+| Property | Default | Description |
+| --- | --- | --- |
+| `class` |  | The fully qualified class name of the probe to instantiate. ** The class must implement the `info.magnolia.services.instrumentation.probes.LaunchableProbe` interface. | ** | The class must implement the `info.magnolia.services.instrumentation.probes.LaunchableProbe` interface. |
+| ** | The class must implement the `info.magnolia.services.instrumentation.probes.LaunchableProbe` interface. |
+| `enabled` | **true** | Flag controlling if the probe is active and can provide measurements ( `true` ) or is disabled and not providing measurements ( `false` ). |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.jvm.JVMProbe` . |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.jvm.ClassLoadingProbe` . |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.jvm.GarbageCollectionProbe` . |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.jvm.MemoryProbe` . |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.jvm.ThreadsProbe` . |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.jvm.VersionInfoProbe` . |  |

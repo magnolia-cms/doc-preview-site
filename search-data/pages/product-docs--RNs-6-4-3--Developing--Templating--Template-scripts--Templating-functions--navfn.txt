@@ -1,0 +1,36 @@
+---
+title: "navfn"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/navfn/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > navfn
+---
+
+# navfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`navfn` templating functions allow you to create navigation for your site. There are methods to access standard pages and also content stored in apps and rendered on virtual pages. The `navfn` templating function library is included in the [MTE module](../../../../../Modules/List-of-modules/MTE-module/).
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required** The node whose ancestors you want to get. |
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required** The page whose child pages you want to get. |
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required** The page whose template you want to check. |
+| `template` | **required** The template to check for. |
+
+| Argument | Description |
+| --- | --- |
+| `page` | **required** The page whose URL you want to get. |
+| `content` | **required** The content from the content app. For example contact, tour, etc. |
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required** The current content node (page/area/component). |
+| `navigationItem` | **required** The navigation item. |

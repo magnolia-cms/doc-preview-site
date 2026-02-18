@@ -1,0 +1,70 @@
+---
+title: "Maven Plugin Configuration"
+url: https://docs.magnolia-cms.com/rest-api-guidelines/1.0/plugin-config/
+category: Modules
+version: modules
+breadcrumb: REST API Guidelines > Maven Plugin Configuration
+---
+
+# Maven Plugin Configuration
+
+The [Zally Maven Plugin](https://github.com/ethlo/zally-maven-plugin) validates your OpenAPI specification against Magnolia’s API guidelines during the build. This chapter describes how to configure it in your module.
+
+> **Note:** The Zally Maven plugin is pre-configured in magnolia-parent-pom version 70-SNAPSHOT or above. All version management, rulesets, and Magnolia-specific rule adjustments are handled by the parent POM.
+
+## [](#_approach_1_module_level_configuration)Approach 1: Module-Level Configuration
+
+The simplest approach is to add the plugin directly in your module’s `pom.xml`. This is explicit and works well for modules that always contain an OpenAPI specification.
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>com.ethlo.zally</groupId>
+            <artifactId>zally-maven-plugin</artifactId>
+            <!-- Version and configuration inherited from magnolia-parent-pom -->
+            <configuration>
+                <source>${project.basedir}/openapi.yaml</source>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+```
+
+## [](#_approach_2_profile_based_auto_activation)Approach 2: Profile-Based Auto-Activation
+
+For multi-module projects, you can define a profile that automatically activates when an `openapi.yaml` file exists. This keeps individual module POMs clean and ensures linting happens wherever a spec is present.
+
+Define this profile in your project’s parent POM:
+
+```xml
+<profiles>
+    <profile>
+        <id>api-linting</id>
+        <activation>
+            <file>
+                <exists>${basedir}/openapi.yaml</exists>
+            </file>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
+                    <groupId>com.ethlo.zally</groupId>
+                    <artifactId>zally-maven-plugin</artifactId>
+                    <configuration>
+                        <source>${project.basedir}/openapi.yaml</source>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </build>
+    </profile>
+</profiles>
+```
+
+With this profile, any module containing an `openapi.yaml` file will automatically have API linting enabled during builds.
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `source` | *required* | Path to your OpenAPI specification file |
+| `failOn` | `MUST` | Minimum severity that causes build failure. Options: `MUST` , `SHOULD` , `MAY` , `HINT` |
+| `resultFile` | `target/zally-api-linting-report.yaml` | Output location for the linting report |

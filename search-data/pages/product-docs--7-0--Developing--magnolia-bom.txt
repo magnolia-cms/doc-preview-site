@@ -78,69 +78,11 @@ A list of licenses of third-party libraries used by Magnolia as part of the buil
 
 On Magnolia Cloud, there is no other option to get an overview of these libraries and their licenses.
 
-## [](#_extensions_bom)Extensions BOM
-
-The extensions BOM (`magnolia-extensions-bom`) manages third-party library versions specifically required by DX Core extensions. This BOM was introduced in Magnolia 6.3 to provide better isolation and version management for extension-specific dependencies.
-
-### [](#_when_to_use_2)When to use
-
-Use the extensions BOM when:
-
--   Your project uses DX Core extensions
-
--   You’re upgrading to Magnolia 6.3 or later from an earlier version
-
-
-### [](#_adding_to_your_project_2)Adding to your project
-
-Add the extensions BOM to your `dependencyManagement` section after the third-party BOM:
-
-```xml
-<dependencyManagement>
-  <dependencies>
-    <!-- Third-party BOM -->
-    <dependency>
-      <groupId>info.magnolia.boms</groupId>
-      <artifactId>magnolia-external-dependencies</artifactId>
-      <version>{magnola-latest-version}</version> (1)
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-
-    <!-- Extensions BOM (DX Core only) -->
-    <dependency>
-      <groupId>info.magnolia.boms</groupId>
-      <artifactId>magnolia-extensions-bom</artifactId>
-      <version>{magnola-latest-version}</version> (1)
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-
-    <!-- Module BOM -->
-    <dependency>
-      <groupId>info.magnolia.dx</groupId>
-      <artifactId>magnolia-dx-core-parent</artifactId>
-      <version>{magnola-latest-version}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-```
-
-|     |     |
-| --- | --- |
-| **1** | The latest version is `7.0.0`. |
-
-### [](#_version_compatibility)Version compatibility
-
 | Magnolia DX Core Version | Extensions BOM Version | Notes |
 | --- | --- | --- |
 | `6.4.x` | `6.4` | Required for extensions compatibility |
 | `6.3.x` | `6.3` | First version with extensions BOM |
-| `6.2.x and earlier` |     | Extensions BOM not available |
-
-> **Note:** The extensions BOM is only available for DX Core editions starting with version 6.3.
+| `6.2.x and earlier` |  | Extensions BOM not available |
 
 ## [](#_best_practices)Best practices
 

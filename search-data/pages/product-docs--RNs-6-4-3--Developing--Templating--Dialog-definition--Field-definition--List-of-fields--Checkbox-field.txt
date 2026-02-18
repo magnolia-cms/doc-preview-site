@@ -1,0 +1,99 @@
+---
+title: "Checkbox field"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Checkbox-field/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Checkbox field
+---
+
+# Checkbox field
+
+`CheckBoxFieldDefinition` renders a single checkbox. It is a simpler alternative to [`CheckBoxGroupFieldDefinition`](../Checkbox-group-field/).
+
+> **Note:** This checkbox field definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.field.CheckBoxFieldDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+checkbox:
+  $type: checkBoxField
+  label: Show title
+  buttonLabel: Select checkbox to display title
+```
+
+> **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
+
+| Property | Description |
+| --- | --- |
+| `buttonLabel` | **required** Label displayed next to the checkbox. The value is [i18n](../../../../../../Administration/Language/Internationalization/#_i18n_message_keys) -able. If you do not want to have any label, set the property to an empty string in YAML or in a [message bundle](../../../../../../Administration/Language/Internationalization/#_i18n_message_bundle) . |
+
+## [](#_example_scenario)Example scenario
+
+The [formFile](../../../../../../Modules/List-of-modules/Form-module/#_fields) component enables developers to add an upload field to forms. Adding it would result in the following component dialog in the Pages app without any alteration to the out-of-the-box setup.
+
+![formFile in Pages app](../../../../../../_images/6-2-formFile_Pages-app.png)
+
+In some cases, you want to validate whether a file has been uploaded and display an error message if no file is uploaded when the completed form is submitted. A checkbox can be added to the template by using decorations. A walk-through of important aspects of this scenario is given below:
+
+-   The YAML excerpt below adds a `formFile` to the respective template’s `main` area.
+
+    ```yaml
+    ...
+    areas:
+      main:
+        availableComponents:
+          formFile:
+            id: form:components/formFile
+    ...
+    ```
+
+-   The [`cms.area` directive](../../../../Template-scripts/Directives/#_example_of_directive_rendering) in the FTL file calls the main area to be rendered in the excerpt below.
+
+    ```yaml
+        ...
+        <div class="container">
+          [@cms.area name="main" /]
+        </div>
+        ...
+    ```
+
+-   The `Label` dialog for the `formFile` component at the beginning of this section does not need to be specified and is part of the [Form module](../../../../../../Modules/List-of-modules/Form-module/), which is bundled with both the community edition and DX Core.
+
+-   In order to add a checkbox to the dialog, a [decoration](../../../../../Definition-decoration/) YAML file is necessary in the [light modules](../../../../../../Modules/Light-modules/) folder, such as the example shown below.
+
+    my-module/decorations/form/dialogs/formFile.yaml
+
+    ```yaml
+    form:
+        tabs:
+            tabMain:
+                fields: !override
+                    mandatory:
+                        type: Boolean
+                        class: info.magnolia.ui.form.field.definition.CheckboxFieldDefinition
+                        defaultValue: false
+                        name: mandatory
+                    validation:
+                        class: info.magnolia.ui.form.field.definition.TwinColSelectFieldDefinition
+                        path: /modules/form/config/validators
+                        repository: config
+    ```
+
+-   Adding the decoration creates a new field in the component dialog as shown below.
+
+    ![formFile in Pages app](../../../../../../_images/6-2-formFile_decoration_Pages-app.png)
+
+-   Use of [model objects](../../../../Rendering-content/Model/#_how_does_a_model_work), for which all public methods of any Java model class may be accessed from template scripts, allows developers to check fields. For example, whether the field is valid and displaying the `requiredSymbol` in the rendered form if the `mandatory` checkbox in its component dialog is selected. An example FTL snippet to do these checks and rendering is given below.
+
+    my-module/templates/components/formFile.ftl
+
+    ```yaml
+        ...
+        [#if !model.isValid()]
+            <em>${i18n['form.error.field']}</em>
+        [/#if]
+        [#if content.mandatory!false]
+            <dfn title="required">${model.requiredSymbol!}</dfn>
+        [/#if]
+        ...
+    ```

@@ -1,0 +1,311 @@
+---
+title: "Using ProjectTemplates"
+url: https://docs.magnolia-cms.com/magnolia-cli/getting-started/jumpstarting/projectTemplates/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Jumpstarting a project > Using ProjectTemplates
+---
+
+# Using ProjectTemplates
+
+The [Jumpstart plugin](../../../plugins/available-plugins/jumpstart-plugin/) relies on `*ProjectTemplate*` - a file which defines a structured template of items and plugins to be downloaded, actions to be executed after download, and other project configuration.
+
+By default, the plugin leverages the [projectTemplates.json](https://gitlab.magnolia-platform.com/magnolia-cli/plugins/cli-project-templates/-/blob/main/projectTemplates.json) file. You can create your own project template to define your custom templates for your developers.
+
+To use a custom project with the [Jumpstart plugin](../../../plugins/available-plugins/jumpstart-plugin/), append `--project-templates <source>` to the command.
+
+## [](#_creating_a_custom_projecttemplate)Creating a custom ProjectTemplate
+
+Templates simplify preparation of a project. In `projectTemplates`, a project points to resources such as Apache Tomcat, Magnolia bundles, or various frontend projects.
+
+### [](#_structure_and_types)Structure and types
+
+The templates file structure provides an organized way to represent project templates. Below is a breakdown of its structure and the types used:
+
+#### [](#_template_interfaces)Template interfaces
+
+```typescript
+interface TemplateBase {
+    name: string; (1)
+    auth?: boolean;
+}
+
+interface TemplateWithChildren extends TemplateBase {
+    children: Array<Template>(4)
+    bundles?: never;
+    plugins?: never;
+}
+
+interface TemplateWithBundles extends TemplateBase {
+    bundles: Array<Bundle>(2)
+    children?: never;
+    plugins?: never;
+}
+
+interface TemplateWithPlugins extends TemplateBase {
+    plugins: Array<PluginRequirement>(3)
+    bundles?: never;
+    children?: never;
+}
+
+interface TemplateWithBundlesAndPlugins extends TemplateBase {
+    bundles: Array<Bundle>(2)
+    plugins: Array<PluginRequirement>(3)
+    children?: never;
+    configVars?: {[key: string]: any}; (5)
+}
+
+type TemplateWithoutChildren =
+    | TemplateWithBundles
+    | TemplateWithPlugins
+    | TemplateWithBundlesAndPlugins;
+
+type Template = TemplateWithChildren | TemplateWithoutChildren;
+```
+
+|     |     |
+| --- | --- |
+| **1** | A unique name for the project template. |
+| **2** | An array of bundles or resources that the template references and downloads. |
+| **3** | An array of plugins for CLI that will be installed with the template. |
+| **4** | An array of project templates that provides a hierarchical structure of the project templates. |
+| **5** | A configuration object that will be automatically extracted and added to the `mgnl.config.js` file as global arguments. It should contain key-value pairs. |
+
+#### [](#_bundle_interface)Bundle interface
+
+```typescript
+interface Bundle {
+    url: string; (1)
+    auth?: boolean; (2)
+    dest?: string; (3)
+    postCommand?: string[]; (4)
+    version?: string; (5)
+    noVersion?: boolean; (6)
+    alternative?: {
+      groupId: string,
+      artifactId: string
+    }
+}
+```
+
+<div class="joplin-table-wrapper"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>A URL where the bundle or resource can be downloaded from.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>(optional): Set to <code>true</code> if the URL endpoint requires an authentication.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>(optional): Specifies where the resource should be downloaded and/or extracted to.</td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td>(optional): An array of commands to be executed after downloading the bundle. Commands available:<div class="ulist"><ul><li><p><code>extract</code>: Extract the resource after it’s been downloaded.</p></li><li><p><code>extract and unfold</code>: Extract the contents of a compressed folder directly into the destination folder.</p></li><li><p><code>extract and override</code>: Extract the resource without checking whether it exists already. This is useful for Magnolia webapp updates in Tomcat.</p></li><li><p><code>npm install</code>: Execute the <code>npm install</code> command in the downloaded frontend project.</p></li></ul></div></td></tr><tr><td><i class="conum" data-value="5"></i><b>5</b></td><td>(optional): Set to a specific Magnolia version. By default, the <code>latest</code> version is always downloaded.</td></tr><tr><td><i class="conum" data-value="6"></i><b>6</b></td><td>(optional): If set to <code>true</code>, the latest version is fetched, providing that the git tags are available.</td></tr></tbody></table></div>
+
+#### [](#_pluginrequirement_interface)PluginRequirement interface
+
+```typescript
+interface PluginRequirement {
+    plugin: string, (1)
+    pluginArgs: object (2)
+}
+```
+
+**1**A reference required to install a particular package. It can be either the URL of a git repository or the name of a plugin available in the `npm` repository. String pattern: `npm install <plugin>`.**2**This refers to a configuration object that will be automatically extracted and passed as an argument during the instantiation of the plugin. It should contain key-value pairs.
+
+> **Note:** To use a specific version of a package, include <name>@<version> in the plugin property.
+
+### [](#_example_templates)Example templates
+
+#### [](#_example_a)Example A
+
+A `projectTemplates.json` that provides a template to download:
+
+-   the latest Tomcat,
+
+-   Magnolia DX Core,
+
+-   the Next.js frontend,
+
+-   light-module definitions,
+
+-   demo content,
+
+
+and add various plugins to the available plugins:
+
+Click to see the JSON
+
+```json
+{
+  "projectTemplates": [
+    {
+      "name": "headless",
+      "children": [
+        {
+          "name": "nextjs-starter",
+          "children": [
+            {
+              "name": "dx-core",
+              "bundles": [
+                {
+                  "url": "https://gitlab.magnolia-platform.com/demos/nextjs-starter/-/archive/main/nextjs-starter-main.zip",
+                  "dest": "./spa",
+                  "postCommand": [
+                    "extract and unfold",
+                    "npm install"
+                  ]
+                },
+                {
+                  "url": "https://gitlab.magnolia-platform.com/demos/common-lm/-/archive/main/common-lm-main.zip",
+                  "dest": "./light-modules",
+                  "postCommand": [
+                    "extract and unfold"
+                  ]
+                },
+                {
+                  "url": "https://gitlab.magnolia-platform.com/demos/dx-core-lm/-/archive/6.3/dx-core-lm-6.3.zip",
+                  "dest": "./light-modules/spa-lm",
+                  "postCommand": [
+                    "extract and unfold"
+                  ]
+                },
+                {
+                  "url": "https://nexus.magnolia-cms.com/service/rest/v1/search/assets?sort=version&repository=public&maven.groupId=info.magnolia.tomcat.barebone&maven.artifactId=magnolia-tomcat-barebone&maven.extension=zip",
+                  "dest": "./magnolia",
+                  "postCommand": [ "extract" ]
+                },
+                {
+                  "url": "https://nexus.magnolia-cms.com/service/rest/v1/search/assets?sort=version&repository=enterprise&maven.groupId=info.magnolia.dx&maven.artifactId=magnolia-dx-core-webapp&maven.extension=war",
+                  "auth": true,
+                  "version": "latest",
+                  "dest": "./magnolia/apache-tomcat/webapps/magnoliaAuthor",
+                  "postCommand": [
+                    "extract and override"
+                  ]
+                },
+                {
+                  "url": "https://gitlab.magnolia-platform.com/demos/demo-content/-/archive/dx-core/demo-content-dx-core.zip",
+                  "dest": "./.magnolia/apache-tomcat/webapps/magnoliaAuthor/WEB-INF/bootstrap/common",
+                  "postCommand": [
+                    "extract and unfold"
+                  ]
+                }
+              ],
+              "plugins": [
+                {
+                  "plugin": "@magnolia/cli-start-plugin",
+                  "pluginArgs": {
+                    "tomcatPath": "./magnolia/apache-tomcat"
+                  }
+                },
+                {
+                  "plugin": "@magnolia/cli-create-component-plugin",
+                  "pluginArgs": {
+                    "framework": "@magnolia/cli-react-prototypes",
+                    "templateArgs": {
+                      "removeExtension": true
+                    }
+                  }
+                },
+                {
+                  "plugin": "@magnolia/cli-create-page-plugin",
+                  "pluginArgs": {
+                    "framework": "@magnolia/cli-react-prototypes",
+                    "templateArgs": {
+                      "removeExtension": true
+                    },
+                    "templateData": {
+                      "port": "8181"
+                    }
+                  }
+                }
+              ],
+              "configVars": {
+                "type": "tsx",
+                "lightModulesPath": "./light-modules",
+                "lightModule": "spa-lm",
+                "componentMappingFilePath": "./spa/src/magnolia.config.ts",
+                "componentsSpaPath": "./spa/src/app/templates/components",
+                "pagesSpaPath": "./spa/src/app/templates/pages"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+#### [](#_example_b)Example B
+
+A `projectTemplates.json` that provides a template to:
+
+-   download and install the latest version or version 6.2.11 of the Magnolia Empty Webapp,
+
+-   add the `StartPlugin` to the available plugins.
+
+
+Click to see the JSON
+
+```json
+{
+  "projectTemplates": [
+    {
+      "name": "standard-webapps",
+      "children": [
+        {
+          "name": "magnolia-empty-webapp",
+          "children": [
+            {
+              "name": "latest",
+              "bundles": [
+                {
+                  "url": "https://nexus.magnolia-cms.com/service/rest/v1/search/assets?sort=version&repository=public&maven.groupId=info.magnolia.tomcat.barebone&maven.artifactId=magnolia-tomcat-barebone&maven.extension=zip",
+                  "postCommand": [
+                    "extract"
+                  ]
+                },
+                {
+                  "url": "https://nexus.magnolia-cms.com/service/rest/v1/search/assets?sort=version&repository=public&maven.groupId=info.magnolia&maven.artifactId=magnolia-empty-webapp&maven.extension=war",
+                  "version": "latest",
+                  "dest": "./apache-tomcat/webapps/magnoliaAuthor",
+                  "postCommand": [
+                    "extract and override"
+                  ]
+                }
+              ],
+              "plugins": [
+                {
+                  "plugin": "@magnolia/cli-start-plugin",
+                  "pluginArgs": {
+                    "tomcatPath": "./magnolia/apache-tomcat"
+                  }
+                }
+              ]
+            },
+            {
+              "name": "6.2.11",
+              "bundles": [
+                {
+                  "url": "https://nexus.magnolia-cms.com/service/rest/v1/search/assets?sort=version&repository=public&maven.groupId=info.magnolia.tomcat.barebone&maven.artifactId=magnolia-tomcat-barebone&maven.extension=zip",
+                  "postCommand": [
+                    "extract"
+                  ]
+                },
+                {
+                  "url": "https://nexus.magnolia-cms.com/service/rest/v1/search/assets?sort=version&repository=public&maven.groupId=info.magnolia&maven.artifactId=magnolia-empty-webapp&maven.extension=war",
+                  "version": "6.2.11",
+                  "dest": "./apache-tomcat/webapps/magnoliaAuthor",
+                  "postCommand": [
+                    "extract and override"
+                  ]
+                }
+              ],
+              "plugins": [
+                {
+                  "plugin": "@magnolia/cli-start-plugin",
+                  "pluginArgs": {
+                    "tomcatPath": "./magnolia/apache-tomcat"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+> **Tip:** For a more complex example, see the default projectTemplates.json file.

@@ -14,10 +14,6 @@ Sending emails from Magnolia is typically an automated process. An event acts as
 
 Other Magnolia modules (such as [Form](../../Form-module/), [Observation](../../Observation-module/), and [Public User Registration](../../Public-User-Registration-module/)) use the Mail module for messaging.
 
-## [](#_configuration)Configuration
-
-The Mail module is configured in `/modules/mail`. Besides [configuring SMTP](#_configuring_smtp) settings the module is ready to use.
-
 | Node name |
 | --- |
 | 📁 modules |
@@ -27,19 +23,13 @@ The Mail module is configured in `/modules/mail`. Besides [configuring SMTP](#_c
 | 📁 config |
 | 📁 commands |
 
-## [](#_mail_command)Mail command
-
-info.magnolia.module.mail.commands.MailCommand is used to send all mails in Magnolia. The command can execute on events such as user actions, workflow steps and scheduled jobs. You can write message templates and test them manually in the [Mail tools app](#_configuring_smtp) before automating the process for production use.
-
-The command is registered in `/modules/mail/commands/default/sendMail`.
-
 | Node name | Values |
 | --- | --- |
-| 📁 modules |     |
-| 📁 mail |     |
-| 📁 commands |     |
-| 📁 default |     |
-| ⸬ sendMail |     |
+| 📁 modules |  |
+| 📁 mail |  |
+| 📁 commands |  |
+| 📁 default |  |
+| ⸬ sendMail |  |
 | ⬩ class | info.magnolia.module.mail.commands.MailCommand |
 
 ## [](#_configuring_smtp)Configuring SMTP
@@ -283,106 +273,29 @@ To enable session debugging:
     ```
 
 
-## [](#_templates_configuration)Templates configuration
-
-Templates are configured in `/modules/mail/config/templateConfiguration`. The `testFreemarker` template is provided as an example.
-
-info.magnolia.module.mail.MailTemplate allows for a number of configuration nodes and properties. The following are the most commonly used:
-
 | Node name | Value |
 | --- | --- |
-| 📁 config |     |
-| 📁 templatesConfiguration |     |
-| ⸬ testFreemarker |     |
-| ⸬ attachments |     |
-| ⸬ parameters |     |
+| 📁 config |  |
+| 📁 templatesConfiguration |  |
+| ⸬ testFreemarker |  |
+| ⸬ attachments |  |
+| ⸬ parameters |  |
 | ⬩ contentType | html |
 | ⬩ from | [testfreemarker@example.com](mailto:testfreemarker@example.com) |
 | ⬩ subject | This is a test email for freemarker template |
 | ⬩ templateFile | testFreemarker.html |
 | ⬩ type | freemarker |
-| ⸬ pageCommentsNotification |     |
-
- PropertyDescription
-
-`templatesConfiguration`
-
-**required**
-
-Templates configuration node.
-
-     `<template name>`
-
-**required**
-
-Template name.
-
-         `attachments`
-
-**optional**
-
-info.magnolia.module.mail.templates.MailAttachment provides for a number of [attachment](#_attachments) options.
-
-         `parameters`
-
-**optional**
-
-Any parameters to be passed to the script.
-
-> **Warning:** Do not use parameter names type and contentType.
-
-             `templateFile`
-
-**required**
-
-Relative path to the template script.
-
-             `type`
-
-**required**
-
-Scripting language used in the template.
-
-             `contentType`
-
-**optional**
-
-Type of content for the message body. It’s only necessary to include this property for HTML emails.
-
-             `from`
-
-**optional**
-
-Email address that will appear in the From field of the message, unless defined elsewhere, for example in the [Form module](../../Form-module/).
-
-             `subject`
-
-**optional**
-
-Subject line of the email, unless defined elsewhere for example in the Form module.
-
-`pageCommentsNotification` is used by the Commenting module.
-
-## [](#_template_renderers)Template renderers
-
-Template renderers are registered in `/modules/mail/config/factory/renderers`:
+| ⸬ pageCommentsNotification |  |
 
 | Node name | Value |
 | --- | --- |
-| 📁 config |     |
-| ⸬ factory |     |
-| ⸬ renderers |     |
+| 📁 config |  |
+| ⸬ factory |  |
+| ⸬ renderers |  |
 | ⬩ freemarker | info.magnolia.module.mail.templates.impl.FreemarkerEmail |
 | ⬩ magnolia | info.magnolia.module.mail.templates.impl.MgnlPageEmail |
 | ⬩ simple | info.magnolia.module.mail.templates.impl.SimpleEmail |
 | ⬩ class | info.magnolia.module.mail.MgnlMailFactory |
-
-| Properties | Description |
-| --- | --- |
-| `renderers` | **optional**<br><br>Renderers node. |
-| `freemarker` | **optional**<br><br>Renders FreeMarker email templates. |
-| `magnolia` | **optional**<br><br>Renders Magnolia web pages in an email. |
-| `simple` | **optional**<br><br>Renders simple text emails that do not require a specific scripting language to be parsed. |
 
 ## [](#_template_script)Template script
 
@@ -403,70 +316,23 @@ user=jsmith
 path=/my/path
 ```
 
-## [](#_attachments)Attachments
-
-In the `attachments` node you can define properties for the parameters called by the script. For example, the `testFreemarker.html` template script references `img src="cid:0001"`. The `cid` property identifies the attachment as an image, while the `url` property sets the image location.
-
 | Node name | Value |
 | --- | --- |
-| ⸬ testFreemarker |     |
-| ⸬ attachments |     |
-| ⸬ 0001 |     |
+| ⸬ testFreemarker |  |
+| ⸬ attachments |  |
+| ⸬ 0001 |  |
 | ⬩ cid | img |
 | ⬩ url | http://www.magnolia-cms.com/.imaging/amplify-miami-2014/imageForTeaserBinary/miami.png |
 
-The `mimeMultipart` property can be used to define the structure of info.magnolia.module.mail.templates.MgnlMultipartEmail:
-
 | Node name | Value |
 | --- | --- |
-| ⸬ <template configuration> |     |
-| ⸬ attachments |     |
-| ⸬ <attachment name> |     |
-| ⬩ mimeMultipart | mixed |
-| ⬩ url | http://www.magnolia-cms.com/.imaging/amplify-miami-2014/imageForTeaserBinary/miami.png |
-| ⸬ <attachment name> |     |
-| ⬩ mimeMultipart | related |
-| ⬩ url | http://www.magnolia-cms.com/.imaging/amplify-miami-2014/imageForTeaserBinary/miami.png |
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;attachment name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Attachment name.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>mimeMulitpart</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is `related`</em></p></div><div class="paragraph"><p>Defines the structure of <span class="inlineBean">info.magnolia.module.mail.templates.MgnlMultipartEmail</span>.</p></div><div class="paragraph"><p>Values:</p></div><div class="ulist"><ul><li><p><code>mixed</code>: Standard email attachment.</p></li><li><p><code>related</code>: Attachment shown inline.</p></li></ul></div><div class="paragraph"><p>MailAttachment does not use Content-ID properties but uses attachment names (not file names).</p></div></div></td></tr></tbody></table></div>
-
-## [](#_custom_templates)Custom templates
-
-To create a custom template:
-
-1.  In your light module, create a FreeMarker template script named for example `simpleTemplate.html`.
-
-    <your-light-module>/templates/simpleTemplate.html
-
-    ```xml
-    <html>
-      <body>
-        <p>Dear ${fullName},</p>
-        <p>Please follow this link in order to validate your account:
-        <a href="${href}">Verify your user</a></p>
-        <p>Thank you!</p>
-      </body>
-    </html>
-    ```
-
-2.  Register the new template in the `/mail/config/templatesConfiguration` by decorating the Mail module configuration.
-
-    | Node name | Value |
-    | --- | --- |
-    | 📁 config |     |
-    | 📁 templatesConfiguration |     |
-    | ⸬ newUserRegistration |     |
-    | ⸬ attachments |     |
-    | ⸬ parameters |     |
-    | ⬩ contentType | html |
-    | ⬩ from | info@registrations.com |
-    | ⬩ subject | New User Registration |
-    | ⬩ templateFile | <your-light-module>/templates/simpleTemplate.html |
-    | ⬩ type | freemarker |
-
-
-> **Note:** Email applications and clients on the market display emails in different ways. The main reason for this is varied support for CSS styles.You can use a web based service such as Mailchimp Inbox Inspector to preview the message in various clients and work towards consistency.
-
-Related topics
-
--   [Mail module](../)
+| 📁 config |  |
+| 📁 templatesConfiguration |  |
+| ⸬ newUserRegistration |  |
+| ⸬ attachments |  |
+| ⸬ parameters |  |
+| ⬩ contentType | html |
+| ⬩ from | info@registrations.com |
+| ⬩ subject | New User Registration |
+| ⬩ templateFile | <your-light-module>/templates/simpleTemplate.html |
+| ⬩ type | freemarker |

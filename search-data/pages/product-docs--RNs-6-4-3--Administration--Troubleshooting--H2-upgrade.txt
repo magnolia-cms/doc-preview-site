@@ -1,0 +1,108 @@
+---
+title: "H2 database"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Troubleshooting/H2-upgrade/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > H2 database
+---
+
+# H2 database
+
+> **Warning:** We do not recommend using the H2 database for production environments.
+
+## [](#_corrupted_repository_after_restart)Corrupted repository after restart
+
+When using H2 version `2.1.x` or `2.3.x` on Java `17`, the repository can get corrupted upon shutdown.
+
+> **Note:** H2 versions 2.3.x had several issues related to data loss in different scenarios. Version 2.4.240 addresses those issues.
+
+Sample error
+
+```bash
+18-Dec-2023 12:02:08.198 INFO [main] org.apache.catalina.startup.Catalina.start Server startup in [169049] milliseconds
+2023-12-18 12:21:46,165 ERROR info.magnolia.cms.security.JCRSessionOp: Error caught while loading the system user anonymous: javax.jcr.PathNotFoundException: /system/anonymous
+javax.jcr.PathNotFoundException: /system/anonymous
+    at org.apache.jackrabbit.core.ItemManager.getNode(ItemManager.java:576) ~[jackrabbit-core-2.20.13.jar:2.20.13]
+```
+
+A workaround for this issue is to update the version of H2:
+
+1.  Override the managed version in your BOM file to use version `2.4.240` or later.
+
+2.  Run the H2 migration script, as explained in the next section.
+
+
+### [](#_production_environment_recommendations)Production environment recommendations
+
+> **Warning:** If H2 is used for production purposes (which we strongly advise against), consider the following to minimize the risk of data loss:Reduce the WRITE_DELAY property to 0 in the repository configuration’s JDBC string to ensure immediate writes to disk.Without this setting, there remains a legitimate chance for data loss in case of a system crash.
+
+### [](#_development_environment_best_practices)Development environment best practices
+
+For best results in development environments:
+
+-   Always use graceful shutdown procedures (via stop scripts).
+
+-   Avoid forcefully killing Tomcat (for example, with `kill -9`), as this can lead to database corruption.
+
+
+## [](#_running_the_migration_script)Running the migration script
+
+> **Warning:** Jackrabbit creates one H2 database per workspace, plus one for content versions in the version folder. They all need to be backed up and recreated from H2 SQL scripts, as per the H2 Upgrade tutorial, without specifying the -user parameter.
+
+Example JDBC URLs are listed below:
+
+-   `jdbc:h2:~/<magnolia.home>/repositories/magnolia/workspaces/website/db`
+
+-   `jdbc:h2:~/<magnolia.home>/repositories/magnolia/workspaces/dam/db`
+
+-   `jdbc:h2:~/<magnolia.home>/repositories/magnolia/version/db`
+
+
+For each of these databases:
+
+1.  Export your database into an SQL script using version `2.1.214` or `2.3.x` (the version you were using).
+
+2.  Create a new database using version `2.4.240` or later.
+
+3.  Run the SQL script to restore the database, using the file created with your earlier version.
+
+
+### [](#_h2_migration_script)H2 Migration script
+
+A migration script for exporting and restoring your databases is given below.
+
+h2-db-migration.sh
+
+```bash
+#!/bin/bash
+# h2-2.1.214.jar (or h2-2.3.x.jar) and h2-2.4.240.jar files must be present in the current working directory.
+# The older version can be found in your current Magnolia webapp, the newer version should be downloaded from the H2 project.
+
+OLD_VERSION="2.1.214"  # or "2.3.232" depending on your current version
+NEW_VERSION="2.4.240"
+
+path=/path/to/webapps/magnoliaAuthor/repositories/magnolia #repeat on public
+
+for filepath in $(find $path -name '*.mv.db'); do
+    parentdir="$(dirname "$filepath")"
+
+    # Export data from old db file to backup.zip
+    echo "Exporting database $parentdir/db..."
+    java -cp h2-$OLD_VERSION.jar org.h2.tools.Script -url jdbc:h2:$parentdir/db -script $parentdir/backup.zip -options compression zip
+    rm -f $parentdir/db.mv.db
+
+    # Import data from the backup.zip to the new db file
+    echo "Importing data..."
+    java -cp h2-$NEW_VERSION.jar org.h2.tools.RunScript -url jdbc:h2:$parentdir/db -script $parentdir/backup.zip -options compression zip variable_binary
+    rm -f $parentdir/backup.zip
+    echo "$parentdir/db migrated successfully"
+done
+```
+
+> **Note:** If you are experiencing index-related errors while upgrading H2 databases, try running the script below to remove indexes before using the migration script.if [ -d "$parentdir/index" ]
+> then
+>     rm -r $parentdir/index
+>     echo "Directory $parentdir/index removed"
+> else
+>     echo "Note: Directory $parentdir/index does not exist (expected for version folder)"
+> fi

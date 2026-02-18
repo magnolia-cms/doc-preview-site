@@ -152,11 +152,42 @@ Tasks that have been successfully executed are marked as "resolved" and retained
 
 Scheduling task cleanups help keep AdminCentral performing at an optimal level.
 
-You can do this by writing a [command](../../product-docs/7.0/Developing/Commands/) or using the [Tasks cleaner module](../../taskscleaner/).
+You can do this by writing a [command](../../product-docs/RNs-6-4-3/Developing/Commands/) or using the [Tasks cleaner module](../../taskscleaner/).
 
 > **Note:** The Tasks cleaner module is currently only tested against Magnolia 6.2.
 
-Unresolved include directive in modules/ROOT/pages/best-practices.adoc - include::6.3@product-docs:ROOT:partial$general/r\_best-practices.adoc\[\]
+## [](#_rest)REST
+
+### [](#_delivery_api_response_time_and_performance)Delivery API response time and performance
+
+Following these best practices help improve the response times and performance for the Delivery API.
+
+1.  **Minimize references.**
+
+    Using reference resolvers can impact the response times significantly. If the data contains a lot of referenced properties, the request processing times may be considerably longer.
+
+2.  **Minimize asset renditions.**
+
+    Each asset rendition config added to the endpoint definition increases the request processing overhead regardless of whether the asset renditions do or do not exist.
+
+3.  **Minimize response size.**
+
+    A large response can take longer to generate and return.
+
+4.  **Minimize the value of the `depth` property.**
+
+    Extra but unnecessary depths configured may have a major impact on response times. Even just one extra depth level can have an adverse effect on the responsiveness of the endpoint.
+
+    For example, setting `depth` to `4` may take five seconds to process, whereas `depth: 5` could easily increase it to twenty seconds.
+
+    When needing to retrieve a hierarchical collection of nodes such as to build a sitemap, a navigation, or to represent the hierarchy of content in a content app, consider retrieving just one or two depths of content at once, and then making further requests as necessary.
+
+5.  **Adjust the caching configuration.**
+
+    Using cache can boost the performance of your endpoint. The default cache response threshold value is `500`. This means that responses for data larger than 500 kilobytes are not cached.
+
+    If your endpoint will be handling much larger chunks of data, consider modifying the `cacheResponseThreshold` property accordingly. For more details, see [cache threshold](../../product-docs/6.3/Modules/List-of-modules/Cache-modules/Cache-core/#_cache_threshold).
+
 
 ## [](#_best_practice_topics)Best practice topics
 

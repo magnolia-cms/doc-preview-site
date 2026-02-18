@@ -16,7 +16,7 @@ Content type items can be managed by a content app. The content can be embedded 
 
 > **Note:** The base interfaces for content type definition are agnostic of data source type.However, the Magnolia Content Types module provides also specific definition classes for JCR data to define custom JCR workspaces, node types, and namespaces.
 
-The definition item can be supplied via any [Magnolia Resource origin](../../Resources/). You can create them in a light module, in a Magnolia Maven module or in the JCR `configuration` workspace (see [Location of content type definitions](#_location_of_content_type_definitions)). New content type definition items are detected by the `magnolia-content-types` module and registered in info.magnolia.types.ContentTypeRegistry using the name of the definition as the ID.
+The definition item can be supplied via any [Magnolia Resource origin](../../../../RNs-6-4-3/Developing/Resources/). You can create them in a light module, in a Magnolia Maven module or in the JCR `configuration` workspace (see [Location of content type definitions](#_location_of_content_type_definitions)). New content type definition items are detected by the `magnolia-content-types` module and registered in info.magnolia.types.ContentTypeRegistry using the name of the definition as the ID.
 
 ## [](#_properties)Properties
 
@@ -134,7 +134,7 @@ my-maven-module/
 
 Add the configuration to the `/modules/<module-name>/contentTypes` folder.
 
-![JCR configuration workspace](../../../_images/ADVT-CT-def.png)
+![JCR configuration workspace](../../../../RNs-6-4-3/_images/ADVT-CT-def.png)
 
 Name of the definition: `boat-content-type`
 

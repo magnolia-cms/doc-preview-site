@@ -1,0 +1,350 @@
+---
+title: "MCP client"
+url: https://docs.magnolia-cms.com/magnolia-mcp/developers/mcp-client/
+category: Modules
+version: modules
+breadcrumb: Magnolia MCP module > Configure > MCP client
+---
+
+# MCP client
+
+The MCP client discovers and connects to external [Model Context Protocol (MCP)](https://modelcontextprotocol.io) servers, making their tools available to Magnolia’s AI Agent system. This enables you to federate tools from multiple MCP servers and use them seamlessly within Magnolia.
+
+## [](#_overview)Overview
+
+The MCP client provides:
+
+-   **Server discovery**: Automatic discovery of tools and resources from external MCP servers
+
+-   **Multiple transports**: HTTP/HTTPS, stdio (subprocess), and embedded (in-process) connections
+
+-   **Tool federation**: Makes external tools available to AI agents with filtering options
+
+-   **Caching**: TTL-based caching of server capabilities
+
+-   **Dynamic updates**: Automatic rediscovery when server configuration changes on the Magnolia side
+
+
+## [](#_configuration)Configuration
+
+MCP servers are configured using YAML files in your light module’s `mcpServers` folder. The filename (without `.yaml`) becomes the server ID.
+
+### [](#_httphttps_servers)HTTP/HTTPS servers
+
+Use HTTP transport to connect to remote MCP servers.
+
+`<light-module>/mcpServers/my-http-server.yaml`
+
+```yaml
+$type: httpMcpServer
+name: My HTTP MCP Server (1)
+description: Remote MCP server via HTTP
+enabled: true (2)
+url: https://<mcp-server-host>:<port>/mcp (3)
+headers: (4)
+  Authorization: Bearer <your-token>
+  X-Custom-Header: <custom-value>
+discoveryDelay: 5000 (5)
+cacheTtl: 3600000 (6)
+connectionTimeout: 30000 (7)
+requestTimeout: 60000
+retries: 3 (8)
+retryDelay: 1000
+```
+
+|     |     |
+| --- | --- |
+| **1** | Display name for the server |
+| **2** | Enable or disable the server |
+| **3** | URL of the MCP server endpoint |
+| **4** | Optional HTTP headers for authentication or custom requirements |
+| **5** | Delay before initial discovery (milliseconds), useful if the server needs time to initialize |
+| **6** | Cache time-to-live (milliseconds), default: 1 hour |
+| **7** | Connection timeout (milliseconds) |
+| **8** | Number of retry attempts on failure |
+
+### [](#_stdio_servers)Stdio servers
+
+Use stdio transport to run MCP servers as subprocesses, communicating via standard input/output.
+
+`<light-module>/mcpServers/filesystem-server.yaml`
+
+```yaml
+$type: stdioMcpServer
+name: Filesystem MCP Server
+description: Local filesystem operations
+enabled: true
+command: npx (1)
+args: (2)
+  - -y
+  - "@modelcontextprotocol/server-filesystem"
+  - /path/to/allowed/directory
+env: (3)
+  NODE_ENV: production
+  API_KEY: <your-api-key>
+connectionTimeout: 10000
+requestTimeout: 30000
+retries: 2
+cacheTtl: 1800000
+```
+
+|     |     |
+| --- | --- |
+| **1** | Command to execute (must be in PATH or absolute path) |
+| **2** | Command arguments as array |
+| **3** | Optional environment variables for the subprocess |
+
+### [](#_embedded_mcp_server)Embedded MCP server
+
+Use the embedded server type to access Magnolia’s built-in MCP server running in the same JVM. This server type uses direct in-process execution, avoiding HTTP overhead completely.
+
+`<light-module>/mcpServers/embedded.yaml`
+
+```yaml
+$type: embeddedMcpServer
+name: Magnolia Embedded MCP Server (1)
+description: Magnolia's built-in MCP server (2)
+enabled: true
+cacheTtl: 3600000 (3)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Display name for the server |
+| **2** | Optional description |
+| **3** | Cache time-to-live (milliseconds), default: 1 hour |
+
+Key characteristics of the embedded server:
+
+-   **No URL required**: Tools are executed directly via in-process method calls, not HTTP
+
+-   **No authentication needed**: Since execution is in-process, no credentials are required
+
+-   **No discovery delay needed**: Unlike remote servers, embedded server discovery uses direct registry access
+
+-   **Author-only**: The embedded server is only available on author instances
+
+-   **Cluster-safe**: Each Magnolia instance executes tools on its own embedded server; there are no cross-instance calls
+
+
+## [](#_tool_federation)Tool federation
+
+Tools discovered from MCP servers are automatically made available to AI agents through the AI Agent system configuration.
+
+### [](#_ai_agent_configuration)AI agent configuration
+
+Configure which MCP servers and tools to include in your AI agent:
+
+`<light-module>/aiAgents/my-agent.yaml`
+
+```yaml
+$type: aiAgent
+name: My AI Agent
+includeMcpServers: (1)
+  - filesystem-server
+  - my-http-server
+excludeMcpServers: (2)
+  - dangerous-server
+excludeMcpToolPatterns: (3)
+  - "delete_*"
+  - "*_dangerous"
+  - "rm_*"
+```
+
+|     |     |
+| --- | --- |
+| **1** | Include only these MCP servers (omit to include all) |
+| **2** | Exclude specific servers even if included above |
+| **3** | Exclude tools matching glob patterns (\* = any characters, ? = single character) |
+
+If `includeMcpServers` is omitted or null, all enabled servers are included. If `includeMcpServers` is an empty list, MCP tools are disabled for that agent.
+
+## [](#_discovery_process)Discovery process
+
+The MCP client discovers server capabilities automatically:
+
+1.  **On startup**: All enabled servers are discovered asynchronously
+
+2.  **On configuration change**: Modified servers are rediscovered when the server definition changes in Magnolia, cache is invalidated
+
+3.  **On demand**: Via REST API or when cache expires
+
+
+Discovery process:
+
+1.  Connect to server (with retry logic)
+
+2.  Initialize connection (JSON-RPC `initialize` request)
+
+3.  Discover tools (`tools/list`)
+
+4.  Discover resources (`resources/list`)
+
+5.  Cache results with TTL
+
+6.  Close connection
+
+
+If discovery fails after retries, the server status is marked as `FAILED` and an error message is logged.
+
+> **Note:** Dynamic updates occur when the MCP server definition changes on the Magnolia side. If the remote MCP server itself changes its capabilities, those changes are only reflected after the cache expires or Magnolia restarts.
+
+## [](#_rest_api)REST API
+
+The MCP client provides a REST API for management and inspection at `/.rest/mcp-servers/v1`.
+
+### [](#_list_all_servers)List all servers
+
+```bash
+GET /.rest/mcp-servers/v1/servers
+```
+
+Returns all configured servers with their discovery status.
+
+### [](#_get_server_details)Get server details
+
+```bash
+GET /.rest/mcp-servers/v1/servers/{serverId}
+```
+
+Returns detailed configuration for a specific server.
+
+### [](#_get_server_capabilities)Get server capabilities
+
+```bash
+GET /.rest/mcp-servers/v1/servers/{serverId}/capabilities
+```
+
+Returns discovered tools and resources for a server (from cache if available).
+
+### [](#_list_all_tools)List all tools
+
+```bash
+GET /.rest/mcp-servers/v1/tools
+```
+
+Returns all discovered tools from all successfully discovered servers.
+
+### [](#_list_all_resources)List all resources
+
+```bash
+GET /.rest/mcp-servers/v1/resources
+```
+
+Returns all discovered resources from all successfully discovered servers.
+
+## [](#_caching_behavior)Caching behavior
+
+-   Cache entries expire after `cacheTtl` milliseconds
+
+-   Expired entries trigger automatic rediscovery on next access
+
+-   Configuration changes immediately invalidate cache for affected servers
+
+
+## [](#_error_handling)Error handling
+
+The MCP client handles various error scenarios:
+
+-   **Connection failures**: Automatic retry with configurable delay
+
+-   **Discovery failures**: Server marked as `FAILED`, error logged
+
+-   **Tool execution errors**: Errors propagated to AI agent with context
+
+-   **Configuration errors**: Validation errors logged, server disabled
+
+
+## [](#_example_using_filesystem_tools)Example: Using filesystem tools
+
+Here is a complete example of setting up and using a filesystem MCP server:
+
+1.  Configure the server:
+
+    `my-light-module/mcpServers/filesystem.yaml`
+
+    ```yaml
+    $type: stdioMcpServer
+    name: Filesystem Operations
+    enabled: true
+    command: npx
+    args:
+      - -y
+      - "@modelcontextprotocol/server-filesystem"
+      - /tmp
+    ```
+
+2.  Configure AI agent:
+
+    `my-light-module/aiAgents/content-assistant.yaml`
+
+    ```yaml
+    $type: aiAgent
+    name: Content Assistant
+    includeMcpServers:
+      - filesystem
+    excludeMcpToolPatterns:
+      - "delete_*"  # Safety: exclude deletion operations
+    ```
+
+3.  Use in AI task.
+
+    The AI agent can now use filesystem tools like `read_file`, `write_file`, `list_directory` (but not `delete_file` due to exclusion pattern).
+
+4.  Verify discovery:
+
+    ```bash
+    curl http://<host>:<port>/<context-path>/.rest/mcp-servers/v1/servers/filesystem/capabilities
+    ```
+
+
+## [](#_troubleshooting)Troubleshooting
+
+### [](#_server_not_discovering_tools)Server not discovering tools
+
+-   Check server is `enabled: true` in configuration
+
+-   For HTTP/stdio servers, verify `discoveryDelay` is sufficient if the server needs time to initialize
+
+-   Check server logs for connection errors
+
+-   For HTTP servers, test connectivity manually with curl
+
+-   For HTTP servers, verify authentication headers are correct
+
+-   For embedded servers, ensure the MCP server module is installed and Magnolia is running as an author instance
+
+
+### [](#_tools_not_appearing_in_ai_agent)Tools not appearing in AI agent
+
+-   Confirm server ID is in `includeMcpServers` list
+
+-   Check `excludeMcpToolPatterns` is not filtering the tools
+
+-   Verify AI agent configuration is correct
+
+-   Check REST API to confirm tools are discovered: `GET /.rest/mcp-servers/v1/tools`
+
+
+### [](#_stdio_server_fails_to_start)Stdio server fails to start
+
+-   Verify `command` is in PATH or use absolute path
+
+-   Check `args` array syntax (YAML array format)
+
+-   Review server logs for subprocess errors
+
+-   Test command manually in terminal
+
+-   Verify required dependencies are installed (e.g., `npm install -g @modelcontextprotocol/server-filesystem`)
+
+
+### [](#_cache_not_updating)Cache not updating
+
+-   Configuration changes automatically invalidate cache
+
+-   Wait for `cacheTtl` to expire for automatic refresh
+
+-   Restart Magnolia to force fresh discovery
+
+-   Check server’s `cacheTtl` setting (default: 1 hour)

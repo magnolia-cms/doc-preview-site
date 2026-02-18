@@ -8,39 +8,22 @@ breadcrumb: DX Core > Modules > Content Dependencies module
 
 # Content Dependencies module
 
-[Content management](../../../use-cases/content-management/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLCDEP](https://magnolia-cms.atlassian.net/browse/MGNLCDEP) |
-| Maven site | [Content Dependencies](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fdependencies%2Fmagnolia-content-dependencies-core%2F3.0.0) |
-| Latest | 3.0.0 |
-
-Content dependencies are references between content items.
-
-When a page links to another page, a dependency is created. Similarly, when a page uses an asset from the [DAM](../../../use-cases/Digital-asset-management/), a dependency is created between the page and the asset.
-
-The Content Dependencies module enables you to display dependencies between a selected content item and other items, whether the items reside in the same Magnolia workspace or in different ones.
-
-Using the Content Dependencies module, you can configure:
-
--   A Dependencies tab in a content app to list where the item links to and where it’s linked from. This is useful if you want to see any related content that needs to be published with the item.
-
--   A warning dialog to appear when content that has dependencies is marked for deletion. This warns editors of the consequences of proceeding with their deletion operation, such as breaking links.
-
-
-> **Note:** Deletion warning dialogs are configured by default in the Pages and Assets apps.This means that, by default, dependencies are only checked between pages and assets, not against other content apps. For example, if an editor deletes an asset used in the Tours app, no warning appears. Warnings are only shown when deleting a page or an asset linked to a page.You can configure this functionality to include additional content apps if needed.
+| Maven site | [Content Dependencies](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fdependencies%2Fmagnolia-content-dependencies-core%2F{magnolia-content-dependencies-63}) |
+| Latest | {magnolia-content-dependencies-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.dependencies</groupId>
   <artifactId>magnolia-content-dependencies-core</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-content-dependencies-63}</version> (1)
 </dependency>
 ```
 
@@ -52,7 +35,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dependencies</groupId>
   <artifactId>magnolia-content-dependencies-ui</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-content-dependencies-63}</version> (1)
 </dependency>
 ```
 
@@ -60,98 +43,24 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 | --- | --- |
 | **1** | Should you need to specify the module version, do it using `<version>`. |
 
-## [](#_adding_a_dependencies_tab_to_a_dialog)Adding a dependencies tab to a dialog
-
-A typical use case is to add a dependencies tab to a page properties dialog. This is useful if you want to see any related content that needs to be published with the page.
-
-In this example, we add a dependencies tab to [MTK’s](../MTE-module/) `basic` page dialog. The dependencies tab has two fields:
-
-1.  List of content items that link to the item.
-
-2.  List of content items the item links to.
-
-
-`<light-module-folder>/<light-module-name>/decorations/mtk2/dialogs/pages/basic.yaml`
-
-```yaml
-form:
-  properties:
-    referencesTo:
-      class: info.magnolia.module.dependencies.ui.field.DependenciesViewDefinition
-      referencesTo: true
-      references:
-        pages:
-          appMapping: app:pages-app:browser
-          workspace: website
-          referenceProperties:
-            - link
-            - linkTypepage #teaser component
-    referencesFrom:
-      class: info.magnolia.module.dependencies.ui.field.DependenciesViewDefinition
-      referencesTo: false
-      references:
-        pages:
-          appMapping: app:pages-app:browser
-          workspace: website
-          referenceProperties:
-            - link
-            - linkTypepage #teaser component
-        assets:
-          appMapping: app:dam:jcrBrowser
-          workspace: dam
-          referenceProperties:
-            - image
-            - thumbnail
-          pathResolver:
-            class: info.magnolia.module.dependencies.field.resolver.AssetPathResolverImpl
-          appLocationFactory:
-            class: info.magnolia.module.dependencies.field.factory.DamAppLocationFactoryImpl
-
-  layout:
-    tabs:
-      - name: tabDependencies
-        fields:
-          - name: referencesTo
-          - name: referencesFrom
-```
-
-Here is the dependencies tab after adding it to the Travel Demo’s Page properties dialog and viewing it on the About page.
-
--   **This content is depended upon by**:
-
-    -   **Pages**: Lists pages that link to the page.
-
-
--   **This content depends on**:
-
-    -   **Pages**: Lists pages the page links to.
-
-    -   **Assets**: Lists assets added to the page.
-
-
-
-All links are clickable and open the item in the target app.
-
-![Dependencies tab in Page properties](../../../_images/6-1-contentDependenciesModule-aboutPageDeps.png)
-
 | Property | Description |
 | --- | --- |
-| `tabDependencies` | **required**<br><br>Dependencies tab. |
-| `fields` | **required**<br><br>Fields node. |
-| `<field name>` | **required**<br><br>`referencesFrom` and `referencesTo` fields extend the generic `references` field. |
-| `references` | **required**<br><br>References node. |
-| `<workspace name>` | **required**<br><br>Arbitrary node name. One for each workspace you want to track. |
-| `appMapping` | **required**<br><br>Subapp in `app:<app name>:<subapp name>` format. |
-| `workspace` | **required**<br><br>Workspace name. |
-| `nodeType` | **required**<br><br>Node type. |
-| `referenceProperties` | **required**<br><br>See [Reference properties](#_reference_properties). |
-| `pathResolver` | **optional**<br><br>Path resolver node. |
-| `class` | **optional**, *default is \`info.magnolia.module.dependencies.field.resolver.PathResolverImpl\`*<br><br>Default implementation returns a node’s path. info.magnolia.module.dependencies.field.resolver.AssetPathResolverImpl implements `PathResolver` for assets. |
-| `appLocationFactory` | **optional**<br><br>App location factory node. |
-| `class` | **optional**, *default is \`info.magnolia.module.dependencies.field.factory.AppLocationFactoryImpl\`*<br><br>Default implementation creates an app’s location. info.magnolia.module.dependencies.field.factory.DamAppLocationFactoryImpl implements `AppLocationFactory` for the Assets app. |
-| `label` | **optional**<br><br>Label displayed in dialog. |
-| `class` | **required**<br><br>info.magnolia.module.dependencies.ui.field.DependenciesViewDefinition shows dependencies to and from workspaces. |
-| `referencesTo` | **optional**, default is `false`<br><br>Whether items linking to the item should be included. |
+| `tabDependencies` | **required** Dependencies tab. |
+| `fields` | **required** Fields node. |
+| `<field name>` | **required** `referencesFrom` and `referencesTo` fields extend the generic `references` field. |
+| `references` | **required** References node. |
+| `<workspace name>` | **required** Arbitrary node name. One for each workspace you want to track. |
+| `appMapping` | **required** Subapp in `app:<app name>:<subapp name>` format. |
+| `workspace` | **required** Workspace name. |
+| `nodeType` | **required** Node type. |
+| `referenceProperties` | **required** See [Reference properties](#_reference_properties) . |
+| `pathResolver` | **optional** Path resolver node. |
+| `class` | **optional** , *default is `info.magnolia.module.dependencies.field.resolver.PathResolverImpl`* Default implementation returns a node’s path. info.magnolia.module.dependencies.field.resolver.AssetPathResolverImpl implements `PathResolver` for assets. |
+| `appLocationFactory` | **optional** App location factory node. |
+| `class` | **optional** , *default is `info.magnolia.module.dependencies.field.factory.AppLocationFactoryImpl`* Default implementation creates an app’s location. info.magnolia.module.dependencies.field.factory.DamAppLocationFactoryImpl implements `AppLocationFactory` for the Assets app. |
+| `label` | **optional** Label displayed in dialog. |
+| `class` | **required** info.magnolia.module.dependencies.ui.field.DependenciesViewDefinition shows dependencies to and from workspaces. |
+| `referencesTo` | **optional** , default is `false` Whether items linking to the item should be included. |
 
 ## [](#_reference_properties)Reference properties
 
@@ -163,40 +72,13 @@ If you don’t include any reference properties, the three default values (`imag
 
 > **Tip:** To find the correct reference properties to configure, export the JCR content or look in the JCR Browser app.
 
-## [](#_deletion_warnings)Deletion warnings
-
-The module displays dependency-aware deletion warning messages in the [Pages](../../../Apps/List-of-apps/Pages-app/) and [Assets](../../../Apps/List-of-apps/Assets-app/) (for JCR-stored assets only) apps by default. The confirmation dialog lists the broken links that are created when the deletion is complete.
-
-![Marking multiple items for deletion confirmation pop-up" width=600](../../../_images/6-2-deletingRestoring-deleteMultipleConfirm.png)
-
-Deletion warnings are configured in the `confirmDeleteAsset` and `confirmMarkDeletion` [action definitions](../../../Apps/App-configuration/Action-definition/). The configuration patterns follow those outlined in the [Dependencies tab](#dependencies-tab-properties-anchor) section above.
-
-You can configure dependency-aware delete warnings in any app by adding a `references` node to `deleteConfirmationAction`.
-
-### [](#_confirmmarkdeletion_action_in_the_assets_app)`confirmMarkDeletion` action in the Assets app
-
-magnolia-content-dependencies-ui/src/main/resources/content-dependencies-ui/decorations/dam-assets-app/apps/dam.yaml
-
-```yaml
-subApps:
-  jcrBrowser:
-    actions:
-      confirmMarkDeletion:
-        icon: icon-trash
-        $type: contentDependencies:deleteConfirmationAction
-        references:
-          website:
-            nodeType: mgnl:page
-            workspace: website
-```
-
 | Property | Description |
 | --- | --- |
-| `<action name>` | **required**<br><br>Action node. |
-| `references` | **required**<br><br>References node. |
-| `<workspace name>` | **required**<br><br>Arbitrary node name. One for each workspace you want to track. |
-| `workspace` | **required**<br><br>Workspace name. |
-| `nodeType` | **required**<br><br>Node type. |
-| `class` | **required**<br><br>info.magnolia.module.dependencies.ui.action.DependencyAwareConfirmationActionDefinition adds dependency awareness to the action. |
-| `icon` | **optional**<br><br>CSS class that identifies an icon used for the action. For available names, see [Icons](../../../Apps/Developing-an-app/General-aspects/Designing-an-app/Icons/). |
-| `successActionName` | **required**<br><br>Name of action to execute on confirmation. |
+| `<action name>` | **required** Action node. |
+| `references` | **required** References node. |
+| `<workspace name>` | **required** Arbitrary node name. One for each workspace you want to track. |
+| `workspace` | **required** Workspace name. |
+| `nodeType` | **required** Node type. |
+| `class` | **required** info.magnolia.module.dependencies.ui.action.DependencyAwareConfirmationActionDefinition adds dependency awareness to the action. |
+| `icon` | **optional** CSS class that identifies an icon used for the action. For available names, see [Icons](../../../Apps/Developing-an-app/General-aspects/Designing-an-app/Icons/) . |
+| `successActionName` | **required** Name of action to execute on confirmation. |

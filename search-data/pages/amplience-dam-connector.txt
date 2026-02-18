@@ -1,0 +1,62 @@
+---
+title: "Amplience DAM Connector module"
+url: https://docs.magnolia-cms.com/amplience-dam-connector/
+category: Modules
+version: modules
+breadcrumb: Amplience DAM Connector module
+---
+
+# Amplience DAM Connector module
+
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/archive/amplience-dam-connector) |
+| --- | --- |
+| Latest | 1.0 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.external.dam</groupId>
+  <artifactId>magnolia-amplience-dam-connector</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+Add the following configuration to your `config.yaml file.`
+
+Example
+
+`your_module/decorations/amplience-dam-connector/config.yaml`
+
+```yaml
+authUrl: https://auth.url.com
+apiUrl: https://api.url.com
+clientId: A_CLIENT_ID
+username: A_USER_NAME
+password: A_USER_PASSWORD
+version: v1.5.0
+bucketId: A_BUCKET_ID
+filter: "type:image" (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | This is an example for filtering by the `type:image`. |
+
+## [](#_usage)Usage
+
+Using the dam link field with the dam chooser:
+
+```yaml
+image:
+  $type: damLinkField
+```
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

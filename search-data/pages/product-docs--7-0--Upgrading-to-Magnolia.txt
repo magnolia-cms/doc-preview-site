@@ -12,7 +12,7 @@ Upgrading to Magnolia 7.0 introduces important platform updates, new features, a
 
 > **Tip:** If you are currently running on Magnolia 6.2 and wish to upgrade to Magnolia 6.4, see Upgrading Magnolia 6.2 to 6.4.
 
--   Update to the latest maintenance release of Magnolia 6.3 first. You can find this at [Magnolia 6.3 releases](#6.3@product-docs:ROOT:Releases.adoc).
+-   Update to the latest maintenance release of Magnolia 6.3 first. You can find this at [Magnolia 6.3 releases](../../6.3/Releases/).
 
 -   Read the [Magnolia 7.0 Release notes](../Releases/Release-notes-for-Magnolia-DX-Core-6.4/).
 
@@ -139,7 +139,7 @@ You must:
 
 -   Use the latest supported Tomcat release.
 
-    For other servlet containers, see the [Certified stack](../Administration/Certified-stack/).
+    For other servlet containers, see the [Certified stack](../../RNs-6-4-3/Administration/Certified-stack/).
 
 -   Update Maven dependencies from `javax` group IDs to their Jakarta equivalents.
 
@@ -156,7 +156,7 @@ You must:
 
     > **Tip:** To avoid duplicate classes on the classpath, replace the javax dependencies with their Jakarta EE 10 equivalents.
 
-    Versions of these dependencies are provided in Magnolia’s third-party library BOM via the `jakarta.jakartaee-bom` import. For more details, see [Certified stack: Maven coordinates](../Administration/Certified-stack/#_maven_coordinates).
+    Versions of these dependencies are provided in Magnolia’s third-party library BOM via the `jakarta.jakartaee-bom` import. For more details, see [Certified stack: Maven coordinates](../../RNs-6-4-3/Administration/Certified-stack/#_maven_coordinates).
 
 
 To upgrade to Magnolia 7.0 with custom code, follow these steps:
@@ -222,7 +222,7 @@ For more details, see [Migrating to New UI Forms](../Developing/Templating/Dialo
 
 ### [](#_migrating_ckeditor)Migrating CKEditor
 
-> **Warning:** CKEditor 4 is End-of-Life (EOL) since 2023. It’s no longer maintained and doesn’t receive security updates. The preferred option in Magnolia is to use CKEditor 5.
+> **Warning:** CKEditor 4 is End-of-Life (EOL) since 2023 (at ckeditor.com). It’s no longer maintained and doesn’t receive security updates.In Magnolia, it is deprecated (and in the maintenance mode) since the Magnolia 6.4.2 release, which brought the upgrade of the CKEditor 5 to version 47.3.The preferred option in Magnolia is to use CKEditor 5.
 
 -   If you use **CKEditor 4 customizations**, we recommend you migrate to CKEditor 5. [New UI forms](../Releases/Release-notes-for-Magnolia-DX-Core-6.4/#_new_ui_forms_for_accessibility_and_extensibility) require CKEditor 5, which is the default in Magnolia 7.0.
 
@@ -246,7 +246,7 @@ In Magnolia 7.0, [Global Search](../Authoring/Search/Global-search/) takes cente
 
 Global Search is optimized for most use cases, so you typically don’t need to modify the default search settings.
 
-If you need to update the configuration, note it has moved from the [Admincentral module](#6.3@product-docs:ROOT:Modules/List-of-modules/Admincentral-module.adoc) to the [`periscope-core`](../Modules/List-of-modules/Periscope-module/) module in 7.0 (now located in `/periscope-core/config.yaml`).
+If you need to update the configuration, note it has moved from the [Admincentral module](../../6.3/Modules/List-of-modules/Admincentral-module/) to the [`periscope-core`](../Modules/List-of-modules/Periscope-module/) module in 7.0 (now located in `/periscope-core/config.yaml`).
 
 ## [](#_deletion_action_changes)Deletion action changes
 
@@ -296,7 +296,7 @@ The functionality offered by the incubator module is replaced by DAM 5.0 and lat
 
 ## [](#_upgrade_from_the_dam_focal_incubator)Upgrade from the DAM Focal incubator
 
-This step applies only if you used the [DAM Focal incubator module](#dam-focal:ROOT:index.adoc) (`dam-focal`).
+This step applies only if you used the [DAM Focal incubator module](../../../dam-focal/) (`dam-focal`).
 
 In 6.2 and 6.3, DAM Focal was provided as an incubator module. In 6.4, it is promoted to a DX Core extension with a new module name: `image-focal`. The Magnolia 6.4-compatible version of this extension is 2.0.
 

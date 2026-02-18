@@ -1,0 +1,147 @@
+---
+title: "commercetools connector configuration"
+url: https://docs.magnolia-cms.com/ecommerce/1.3/config/config-commercetools/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > commercetools connector configuration
+---
+
+# commercetools connector configuration
+
+| Property | Description |
+| --- | --- |
+| `class` | **required** `info.magnolia.ecommerce.common.EcommerceDefinition` |
+| `type` | **required** Your e-commerce solution: `commercetools` |
+| `enabled` | **required** `true` or `false` |
+| `connections` |  |
+| `connectionName` |  |
+| `authUrl` | **required** Authentication URL. |
+| `baseUrl` | **required** Base URL. |
+| `enabled` | **required** Shows if the connection is enabled or not: `true` or `false` |
+| `parameters` |  |
+| `clientId` | **required** Username for commercetools. |
+| `clientSecret` | **required** Client secret for commercetools or the path to the Magnolia password manager. |
+| `apiUrl` | **required** API URL. |
+| `projectKey` | **required** The `project_key` from commercetools. |
+| `limit` []() | **optional** Set your own query limit. ** If the `limit` property is not explicitly set in your configuration file, it defaults to [commercetools API query limit](https://docs.commercetools.com/api/limits#queries) . | ** | If the `limit` property is not explicitly set in your configuration file, it defaults to [commercetools API query limit](https://docs.commercetools.com/api/limits#queries) . |
+| ** | If the `limit` property is not explicitly set in your configuration file, it defaults to [commercetools API query limit](https://docs.commercetools.com/api/limits#queries) . |
+| `locale` []() | **optional** The locale used for product/category names or descriptions. • `en` : ENGLISH • `fr` : FRENCH • `de` : GERMAN • `it` : ITALIAN • `ja` : JAPANESE • `ko` : KOREAN • `zh` : CHINESE How does this work? If the `locale` parameter is configured, then the parameter value is used if it exists in the list of locales from the API. If the value does not exist in the API list, then the first available alternative is returned instead. If the `locale` parameter is *not* configured, then the `en` locale is used by default. If the `en` locale does not exist in the API list, then the first available alternative is returned instead. |
+
+### [](#_api_client)API client
+
+See the [commercetools documentation](https://docs.commercetools.com/merchant-center/api-clients) for instructions about creating an API client. Grant the API client the permissions required for your project.
+
+Minimum recommended scopes:
+
+-   **Manage**
+
+    -   Orders
+
+    -   Payments
+
+    -   Project Settings
+
+    -   Shipping Methods
+
+
+-   **View** (Manage list plus the following)
+
+    -   Categories
+
+    -   Customers
+
+    -   Product Selections
+
+    -   Products (all)
+
+    -   Tax Categories
+
+
+-   **Tokens**
+
+    -   Create Anonymous Token
+
+    -   Introspect OAuth Tokens
+
+
+
+For more information, see the [commercetools OAuth 2.0 scopes reference](https://docs.commercetools.com/api/scopes).
+
+## [](#_viewing_and_testing_connections)Viewing and testing connections
+
+This section explains how to view and test the connection between the Magnolia E-commerce add-on module and your external commerce solution using the [E-commerce app](../../ecommerce-app/).
+
+1.  Open the E-commerce app **Configuration** tab.
+
+2.  Select a connection.
+
+3.  Click **View** to see the details of your connection to an external e-commerce solution.
+
+    ![View connection dialog](../../../_images/6-1-ecom-view-connection-dialog.png)
+
+
+Depending on your external e-commerce solution, the connection information displayed may be:
+
+-   **Definition name** - The unique definition name. This name appears in the Catalogs subapp.
+
+-   **Connection name** - The unique name for the connection configured.
+
+-   **E-commerce type** - The type of external e-commerce solution you are connected to.
+
+-   **Authentication URL** - Authentication URL for the solution you are connected to.
+
+-   **Base URL** - Base URL for the solution you are connected to.
+
+-   **Username** and **Password** - Credentials to access the external solution. Passwords or client secrets can be managed in the [Passwords app](#6.2@product-docs:ROOT:/Apps/List-of-apps/Passwords-app.adoc).
+
+-   **Connection enabled** - Shows if the connection is enabled or not. You may choose to disable the configuration, for example, to improve performance times or to test a connection in one environment before enabling it in another.
+
+
+Click **Test connection** to check the connection configuration is correct. A message appears indicating if the test is successful or not.
+
+Once you’ve tested your connection, go to the E-commerce tab. You can see the connections you have configured listed with the catalogs they contain.
+
+| Property | Description |
+| --- | --- |
+| `images` | **required** |
+| `label` | **optional** Field label displayed to editors. The value can be literal or a [key](#6.2@product-docs:ROOT:/Administration/Language/Internationalization.adoc) of a [message bundle](#6.2@product-docs:ROOT:Administration/Language/Internationalization.adoc) . If you do not provide the property, Magnolia will fall back to a generated i18n key. If you do not want a label at all, define the property and set its value to a blank space such as `label: " "` in YAML. |
+| `$type` | **required** Field type: • `multipleImageField` displays all images for the product (use with `URLsToStrings` converter). • `URLImageField` displays only the first image for the product (use with `ListOfURLsToString` converter). |
+| `converterClass` | **required** `info.magnolia.ecommerce.app.productdetail.field.URLsToStrings` converts all images for the product. `info.magnolia.ecommerce.app.productdetail.field.ListOfURLsToString` converts only the first image for the product. |
+| `imageRatio` | **optional** Defines the ratio of displayed images to the original images in percentage. In the example above, the value `60` is 60% of the original image size. If the property isn’t set, the images are displayed in their original size. |
+
+## [](#_configure_the_maximum_number_of_items_in_api_responses)Configure the maximum number of items in API responses
+
+E-commerce module 1.3.9 introduces the info.magnolia.ecommerce.common.LimitProvider interface to define the maximum number of items that can be retrieved in a single REST endpoint request from an e-commerce API.
+
+The default limit is set to `20` in the `getDefaultLimit()` method. Each Commerce integration framework extension has it’s own default limit, which is the maximum batch size allowed by that platform’s API.
+
+For the commercetools extension, the info.magnolia.ecommerce.commercetools.common.CommercetoolsLimitProvider is set to `500` by default.
+
+To configure, decorate the extension configuration to add the `limitProvider` under the `implementation` node:
+
+/commercetools/ecommerces/commercetools.yaml
+
+```yaml
+class: info.magnolia.ecommerce.common.EcommerceDefinition
+type: commercetools
+enabled: true
+implementation:
+  products:
+    all: info.magnolia.ecommerce.commercetools.products.All
+    byId: info.magnolia.ecommerce.commercetools.products.ById
+    byCategoryId: info.magnolia.ecommerce.commercetools.products.ByCategoryId
+    searchByText: info.magnolia.ecommerce.commercetools.products.SearchByText
+  categories:
+    all: info.magnolia.ecommerce.commercetools.categories.All
+    byId: info.magnolia.ecommerce.commercetools.categories.ById
+    byParentCategoryId: info.magnolia.ecommerce.commercetools.categories.ByParentCategoryId
+    byProductId: info.magnolia.ecommerce.commercetools.categories.ByProductId
+  connectionValidator: info.magnolia.ecommerce.commercetools.common.CommercetoolsConnectionValidator
+  limitProvider: info.magnolia.ecommerce.commercetools.common.CommercetoolsLimitProvider (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Add the `limitProvider` for your e-commerce extension. |
+
+> **Note:** You can’t change the default limitProvider value set.

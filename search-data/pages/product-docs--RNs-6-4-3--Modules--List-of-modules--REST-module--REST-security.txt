@@ -1,0 +1,89 @@
+---
+title: "REST security"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/REST-module/REST-security/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > REST module > REST security
+---
+
+# REST security
+
+There are three levels of control when REST requests are issued:
+
+-   Web access
+
+-   JCR access
+
+-   Command-level access
+
+
+Permissions to issue REST requests are controlled using Magnolia’s standard [role-based security mechanism](../../../../Administration/IAM/Roles-and-access-control-lists/).
+
+## [](#_security_strategy)Security strategy
+
+REST endpoints are a powerful tool but can also make your site vulnerable. Make sure you understand how to implement a strong security strategy to safeguard your system.
+
+### [](#_web_access_security)Web access security
+
+Web access security is checked by info.magnolia.cms.security.URISecurityFilter. The filter checks whether the role(s) of the requesting user allow the user to request a given path with given method.
+
+Web permissions are granted as [web access lists](../../../../Administration/IAM/Roles-and-access-control-lists/) per role. They grant access to a path for **Get** or **Get & Post**.
+
+-   **Get** - Grants the HTTP method `GET` for a given URI.
+
+-   **Get & Post** - Grants the HTTP methods `GET`, `PUT`, `POST` and `DELETE` for a given URI.
+
+
+> **Note:** Web access is checked for every endpoint.
+
+## [](#_jcr_access_security)JCR access security
+
+JCR access security is a feature of the JCR standard (defined by JCR [JSR-170](https://www.jcp.org/en/jsr/detail?id=170) and [JSR-283](https://jcp.org/en/jsr/detail?id=283)). JCR access is granted per workspace on path level. It can grant **Read-only** or **Read/Write** permission. [Grant JCR access lists per role](../../../../Administration/IAM/Roles-and-access-control-lists/).
+
+When using endpoints dealing with JCR repositories (`nodes` and `properties` to read and write, `delivery` to read only) the user must have an appropriate role that provides JCR permissions for the given method.
+
+JCR access security is checked on every endpoint that reads or writes JCR data.
+
+JCR access security can be bypassed for the `delivery` endpoint for testing purposes.
+
+### [](#_role_based_security_for_commands)Role-based security for commands
+
+Command level security access only applies to the commands endpoint.
+
+Role-based access to specific commands are configured in the `rest-services` module:
+
+`/modules/rest-services/rest-endpoints/commands/enabledCommands/`
+
+## [](#_command)Command
+
+Commands are custom actions executed at pre-defined trigger points. Magnolia uses commands to publish content, send email, flush the cache, take backups, import and export data, and to do many other tasks. Commands can perform duties within the system or connect to external resources.
+
+|  | Method | Web access security required | JCR access security | Specific role-based security |
+| --- | --- | --- | --- | --- |
+| **delivery** | `GET` | `/.rest/delivery/*` | **Read-only** access for the delivery API path | - |
+| **nodes** | `GET` | `/.rest/nodes/v1/{workspace}/{path}` | **Read-only** access for a path on a workspace | - |
+| `PUT` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `POST` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `DELETE` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| **properties** | `GET` | `/.rest/nodes/v1/{workspace}/{path}` | **Read-only** access for a path on a workspace | - |
+| `PUT` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `POST` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `DELETE` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| **commands** | `POST` | `/.rest/commands/v2/{catalogName}/{command}` | - | required |
+
+## [](#_rest_roles)REST roles
+
+The REST module installs four default roles with the following permissions:
+
+-   `rest-admin` - The REST administrator role grants GET/POST permissions to all Magnolia’s REST APIs.
+
+-   `rest-editor` - The REST editor role grants GET/POST permissions to REST services APIs (nodes, properties), for a limited set of workspaces.
+
+-   `rest-anonymous` - The REST anonymous consumer role grants GET permissions to Magnolia’s content delivery REST API.
+
+-   `rest-backup` - The REST backup role grants permission to execute the `backup` command from a running Magnolia instance.
+
+
+| Permission | Path |
+| --- | --- |
+| Get & Post | `/.rest/*` |

@@ -14,7 +14,7 @@ You must have an appropriate account and credentials to connect to GA4.
 
 ## [](#_licensing)Licensing
 
-The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../Administration/License/).
+The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../../RNs-6-4-3/Administration/License/).
 
 ## [](#_ga4_account_prerequisites)GA4 account prerequisites
 
@@ -55,7 +55,7 @@ You must generate Google Analytics data API key for authentication.
     }
     ```
 
-    ![An example of configuration with an email](../../../../_images/example-config-ga4.png)
+    ![An example of configuration with an email](../../../../../RNs-6-4-3/_images/example-config-ga4.png)
 
     The client email is linking GA4 to collect data.
 
@@ -63,80 +63,32 @@ You must generate Google Analytics data API key for authentication.
 
 6.  Switch to Magnolia, and go to the **Resource Files** app. In the action bar, click on **Upload file** and upload the `credentials.json`. Type *“Google”* in the **Name search** to make sure the newly generated `json` file and the supplier `yaml` files are both there.
 
-    ![Resource file list with supplier .yaml and .json key files highlighted](../../../../_images/supplier-json-files.png)
+    ![Resource file list with supplier .yaml and .json key files highlighted](../../../../../RNs-6-4-3/_images/supplier-json-files.png)
 
 7.  Select the `json` key file from the list and copy the path that appears in the bottom-left corner.
 
-    ![Highlighted location of the path](../../../../_images/json-path.png)
+    ![Highlighted location of the path](../../../../../RNs-6-4-3/_images/json-path.png)
 
 8.  Now, open the *google4supplier* file and paste the path under `serviceAccountJsonPath`.
 
 9.  In the same supplier file, modify the `propertyId` which can be found in your GA account, and click on **Save changes**.
 
 
-## [](#_connecting_ga4_as_your_data_supplier)Connecting GA4 as your data supplier
-
-Data suppliers are defined under: `/<module name>/dataSuppliers/<dataSupplierRegistryFile.yaml>`.
-
-/google-analytics-4/dataSuppliers/google4Supplier.yaml
-
-```yml
-class: info.magnolia.analytics.google4.datasource.GoogleAnalytics4DataSupplier
-credentials:
-  applicationName: Magnolia Analytics 4
-  serviceAccountJsonPath: <YOUR-JSON-PRIVATE-KEY-PATH> (1)
-parameters:
-  propertyId: <YOUR-PROPERTY-ID> (2)
-  startDate: 28daysAgo
-  endDate: today
-  dimensionName: audienceName
-  metricExpression: activeUsers
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | Replace by the path to the `json` file with your private key (this can be found in the bottom-left corner when searching for `key.json` and then highlighting it).<br><br>![GA4 JSON key in Resource Files app](../../../../_images/ga4-json-key.png) |
-| **2** | Replace with your `propertyId` than can be found in your GA4 account dashboard. |
+| `class` | info.magnolia.analytics.google.datasource.GoogleDataSupplier |
+| `credentials` | **required** |
+| `applicationName` | **required** [Name of the application](https://developers.google.com/api-client-library/java/google-api-java-client/reference/1.20.0/com/google/api/client/googleapis/services/AbstractGoogleClient.Builder#setApplicationName%28java.lang.String%29) requesting the data from the Google Analytics reporting service. For example: Magnolia Analytics |
+| `serviceAccountJsonPath` | **required** Path to JSON file with service account credentials for your [Google Analytics Service Account](https://console.developers.google.com/projectselector2/iam-admin/serviceaccounts) . For example: `/analytics-google-connector/analytics/google/private_key.json` . |
+| `parameters` | **required** The parameters used in the REST call to configure the JSON results retrieved. These parameters vary depending on the data supplier used. Each parameter is a key-value pair. For Google Analytics, at least the `viewId` parameter is **required** : • Sign in to your [Google Analytics](https://www.google.com/analytics/web/#home/) account • Click **Admin** . • In the `VIEW` column, click **View Settings** . • The **View ID** is under **Basic Settings** . See the [Google Analytics API documentation](https://developers.google.com/analytics/devguides/reporting/core/dimsmets) to find valid parameters for Google Analytics. |
+| `filteringSubSetExpression` | **optional** Use to configure segment filtering. |
+| `filtersExpression` | **optional** Expression to filter a segment. For example: `ga:pagePath=~%s*` |
 
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><caption class="title">Table 1. Properties</caption> <colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="inlineBean">info.magnolia.analytics.google.datasource.GoogleDataSupplier</span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>credentials</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>applicationName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><a href="https://developers.google.com/api-client-library/java/google-api-java-client/reference/1.20.0/com/google/api/client/googleapis/services/AbstractGoogleClient.Builder#setApplicationName%28java.lang.String%29" target="_blank" rel="noopener">Name of the application</a> requesting the data from the Google Analytics reporting service.</p></div><div class="paragraph"><p>For example: Magnolia Analytics</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>serviceAccountJsonPath</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Path to JSON file with service account credentials for your <a href="https://console.developers.google.com/projectselector2/iam-admin/serviceaccounts" target="_blank" rel="noopener">Google Analytics Service Account</a>.</p></div><div class="paragraph"><p>For example: <code>/analytics-google-connector/analytics/google/private_key.json</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>parameters</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The parameters used in the REST call to configure the JSON results retrieved. These parameters vary depending on the data supplier used.</p></div><div class="paragraph"><p>Each parameter is a key-value pair.</p></div><div class="paragraph"><p>For Google Analytics, at least the <code>viewId</code> parameter is <strong>required</strong>:</p></div><div class="olist arabic"><ol class="arabic"><li><p>Sign in to your <a href="https://www.google.com/analytics/web/#home/" target="_blank" rel="noopener">Google Analytics</a> account</p></li><li><p>Click <strong>Admin</strong>.</p></li><li><p>In the <code>VIEW</code> column, click <strong>View Settings</strong>.</p></li><li><p>The <strong>View ID</strong> is under <strong>Basic Settings</strong>.</p><div class="paragraph"><p>See the <a href="https://developers.google.com/analytics/devguides/reporting/core/dimsmets" target="_blank" rel="noopener">Google Analytics API documentation</a> to find valid parameters for Google Analytics.</p></div></li></ol></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>filteringSubSetExpression</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Use to configure segment filtering.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>filtersExpression</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Expression to filter a segment.</p></div><div class="paragraph"><p>For example: <code>ga:pagePath=~%s*</code></p></div></div></td></tr></tbody></table></div>
-
-## [](#_ga4_metrics_dimensions_and_dates)GA4 Metrics, dimensions and dates
-
-GA4 in Magnolia are metrics, dimensions, and dates.
-These can be modified in the same supplier file we've worked on in the steps above.
-
-![Metrics](../../../../_images/ga4-metrics-dimensions-date.png)
-
-In GA4, metrics and dimensions don’t contain the **ga** prefix as seen in previous versions. Read more about metrics and dimensions in the [Google documentation](https://ga-dev-tools.google/ga4/dimensions-metrics-explorer/).
-
-**Example of user dimensions**
-
-|     |     |
-| --- | --- |
 | `audienceId` | The numeric identifier of an Audience. Users are reported in the audiences to which they belonged during the report’s date range. Current user behavior doesn’t affect historical audience membership in reports. |
+| --- | --- |
 | `audienceName` | The given name of an Audience. Users are reported in the audiences to which they belonged during the report’s date range. Current user behavior doesn’t affect historical audience membership in reports. |
 | `newVsReturning` | New users have 0 previous sessions, and returning users have 1 or more previous sessions. This dimension returns two values: 'new' or 'returning'. |
-| `signedInWithUserId` | The string 'yes' if the user signed in with the User-ID feature. To learn more about User-ID, see [User-ID for cross-platform analysis](https://support.google.com/analytics/answer/9213390). |
-
-**Example of user metrics**
-
-|     |     |
-| --- | --- |
-| `active1DayUsers` | The number of distinct active users on your site or app within a 1 day period. The 1 day period includes the last day in the report’s date range. Note: this is the same as Active Users. |
-| `active28DayUsers` | The number of distinct active users on your site or app within a 28 day period. The 28 day period includes the last day in the report’s date range. |
-| `active7DayUsers` | The number of distinct active users on your site or app within a 7 day period. The 7 day period includes the last day in the report’s date range. |
-| `activeUsers` | The number of distinct users who visited your site or app. |
-| `activeUsers` | The number of distinct users who visited your site or app. |
-
-The way you write the date slightly differs from the previous version (for example, before with UA = `7DaysAgo`, now with GA4= `7daysAgo`.) Read more about dates over [here](https://developers.google.com/analytics/devguides/reporting/data/v1/rest/v1beta/DateRange).
-
-**Example of dates**
-
-|     |     |
-| --- | --- |
-| `startDate` | The inclusive start date for the query in the format `YYYY-MM-DD`. Can’t be after `endDate`. The format `NdaysAgo`, `yesterday`, or `today` is also accepted, and in that case, the date is inferred based on the property’s reporting time zone. |
-| `endDate` | The inclusive end date for the query in the format `YYYY-MM-DD`. Can’t be before `startDate`. The format `NdaysAgo`, `yesterday`, or `today` is also accepted, and in that case, the date is inferred based on the property’s reporting time zone. |
-| `name` | Assigns a name to this date range. The dimension `dateRange` is valued to this name in a report response. If set, can’t begin with `date_range_` or `RESERVED_`. If not set, date ranges are named by their zero based index in the request: `date_range_0`, `date_range_1`, etc. |
+| `signedInWithUserId` | The string 'yes' if the user signed in with the User-ID feature. To learn more about User-ID, see [User-ID for cross-platform analysis](https://support.google.com/analytics/answer/9213390) . |
 
 ## [](#_google_site_tags)Google site tags
 

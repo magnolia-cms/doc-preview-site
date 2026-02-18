@@ -1,0 +1,61 @@
+---
+title: "Workflow integration"
+url: https://docs.magnolia-cms.com/seo/workflow-integration/
+category: Modules
+version: modules
+breadcrumb: SEO module > Workflow integration
+---
+
+# Workflow integration
+
+[Deprecated](../../incubator-modules/deprecations/)
+
+Search Engine Optimization auditors can be executed within a Magnolia workflow. You can use the results of executed auditors in a workflow.
+
+> **Note:** This feature was added in v5.6.1.
+
+| Property | Description |
+| --- | --- |
+| `status` | String, either `passed` or `failed` . The status depends on the settings of `failOnErrors` , `failOnWarnings` and `failOnNotes` for the `ExecuteAuditHandler` instance and the results of the audit. |
+| `errors` | Integer, the number of errors found by the executed auditors. |
+| `warnings` | Integer, the number of warnings found by the executed auditors. |
+| `notes` | Integer, the number of notes found by the executed auditors. |
+
+## [](#_example)Example
+
+Here is an example of a configured `ExecuteAuditHandler` definition from the SEO module. You can find this configuration here: `/modules/seo/workItemHandlers/audit`.
+
+```yaml
+audit:
+  class: info.magnolia.services.seo.workflow.ExecuteAuditHandlerDefinition
+  failOnNotes: false
+  failOnWarnings: false
+  auditors:
+    windowTitleDefined:
+      value: windowTitleDefined
+    windowTitleValid:
+      value: windowTitleValid
+    titleRendered:
+      value: titleRendered
+    metaDescriptionDefined:
+      value: metaDescriptionDefined
+    metaDescriptionValid:
+      value: metaDescriptionValid
+    metaDescriptionRendered:
+      value: metaDescriptionRendered
+    metaKeywordsDefined:
+      value: metaKeywordsDefined
+    metaKeywordsValid:
+      value: metaKeywordsValid
+    metaKeywordsRendered:
+      value: metaKeywordsRendered
+```
+
+| Placeholder | Message |
+| --- | --- |
+| `0` | The node type (e.g., `mgnl:page` ) of the audited node. |
+| `1` | The node path of the audited node. |
+| `2` | The audit status, `passed` or `failed` . |
+| `3` | The number of errors found in the audit. |
+| `4` | The number of warnings found in the audit. |
+| `5` | The number of notes found in the audit. |

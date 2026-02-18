@@ -8,27 +8,23 @@ breadcrumb: DX Core > Getting Started > Demo > Travel Demo for developers
 
 # Travel Demo for developers
 
-The Travel Demo project is a great use case to understand how Magnolia projects are put together. Have a look at the [Hello Magnolia](../../Hello-Magnolia/) tutorial first for an introduction to basic templating. This tutorial begins by guiding you through installing a Community Edition version of Magnolia., which this page is based on.
+The Travel Demo project is a great use case to understand how Magnolia projects are put together. Have a look at the [Hello Magnolia](../../../../RNs-6-4-3/Getting-started-with-Magnolia/Hello-Magnolia/) tutorial first for an introduction to basic templating. This tutorial begins by guiding you through installing a Community Edition version of Magnolia., which this page is based on.
 
-This page is based on the Community Edition version of the demo. The main difference in DX Core is the use of the [Multisite module](../../../Modules/List-of-modules/Multisite-module/).
+This page is based on the Community Edition version of the demo. The main difference in DX Core is the use of the [Multisite module](../../../../RNs-6-4-3/Modules/List-of-modules/Multisite-module/).
 
 ## [](#_clone_project)Clone project
 
 Use Git to get a copy of the Travel Demo code.
 
 ```none
-git clone --single-branch --branch release/1.6 https://bitbucket.org/magnolia-cms/travel-demo.git
+git clone --single-branch --branch {repo-git-travelDemo-branch} {repo-git-travelDemo}
 ```
-
-## [](#_project_organization)Project organization
-
-The project comprises three Maven modules
 
 | **Module** | **Description** |
 | --- | --- |
 | `magnolia-travel-demo-parent` | A parent project for the other two modules. Specifies dependencies and their versions. |
 | `magnolia-travel-demo` | A simple page-based website. |
-| `magnolia-travel-tours` | Tour and Tour Categories content apps, and templating components that make use of them. Depends on `magnolia-travel-demo`. |
+| `magnolia-travel-tours` | Tour and Tour Categories content apps, and templating components that make use of them. Depends on `magnolia-travel-demo` . |
 
 ## [](#_component_template)Component template
 
@@ -36,7 +32,7 @@ The project comprises three Maven modules
 
 Open `magnolia-travel-tours/src/main/resources/tours`. This is the key directory for the module where templates, dialogs, web resources and c
 
-![Key directory](../../../_images/demo-developer-component-travel-tours.png)
+![Key directory](../../../../RNs-6-4-3/_images/demo-developer-component-travel-tours.png)
 
 ### [](#_component_template_definition)Component template definition
 
@@ -86,7 +82,7 @@ Lets take a look at the home page template in the `magnolia-travel-demo` module.
 
 Open `magnolia-travel-demo/src/main/resources/travel-demo`. Further paths are relative to this directory.
 
-![Travel demo directory](../../../_images/demo-developer-page-travel-demo.png)
+![Travel demo directory](../../../../RNs-6-4-3/_images/demo-developer-page-travel-demo.png)
 
 ### [](#_page_template_definition)Page template definition
 
@@ -120,10 +116,10 @@ The [site definition](../../../Developing/Templating/Site-definition/) contains 
 
 You can configure a site definition in the `sites` folder of any module using YAML. See, for example, the following site definition:
 
--   `[travel.yaml](https://bitbucket.org/magnolia-cms/travel-demo)`
+-   `[travel.yaml]({repo-travelDemo})`
 
 
-A DX Core instance can contain [multiple site definitions.](../../../Developing/Templating/Site-definition/How-to-use-Multisite/)
+A DX Core instance can contain [multiple site definitions.](../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/)
 
 ### [](#_template_availability)Template availability
 
@@ -171,7 +167,7 @@ The [template prototype](../../../Developing/Templating/Site-definition/Template
 
 This configuration is in a YAML file in `/templates/pages/prototype.yaml` that is referenced in the site definition `templates`.
 
-![Image showing folder structure for template prototype](../../../_images/ADVT-Demo-proto.png)
+![Image showing folder structure for template prototype](../../../../RNs-6-4-3/_images/ADVT-Demo-proto.png)
 
 ### [](#_content_languages)Content Languages
 
@@ -179,7 +175,7 @@ The site defines in which [languages](../../../Administration/Language/) (`local
 
 This configuration is in `i18n`.
 
-![Image showing folder structure content languages](../../../_images/ADVT-Demo-lang.png)
+![Image showing folder structure content languages](../../../../RNs-6-4-3/_images/ADVT-Demo-lang.png)
 
 ## [](#_web_resources)Web resources
 
@@ -199,7 +195,7 @@ The [theme](../../../Developing/Templating/Theme/) name is `travel-demo-theme`, 
 
 The modules contain additional configuration and content that is loaded to the JCR repository when the module is installed. The XML format of these files is specific to JCR repositories and is not easy read or edit by hand. These files are created by editing configuration in AdminCentral and exporting them. These files are stored in two directories in a module, `mgnl-bootstrap` and `mgnl-bootstrap-samples`.
 
-![Developer bootstraps for demo](../../../_images/demo-developer-bootstraps.png)
+![Developer bootstraps for demo](../../../../RNs-6-4-3/_images/demo-developer-bootstraps.png)
 
 `mgnl-bootstrap`
 

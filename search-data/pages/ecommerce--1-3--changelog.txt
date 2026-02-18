@@ -1,0 +1,571 @@
+---
+title: "Commerce Connector Pack releases"
+url: https://docs.magnolia-cms.com/ecommerce/1.3/changelog/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > Changelog
+---
+
+# Commerce Connector Pack releases
+
+This page provides a list of [releases](#Changelog list) and a [compatibility matrix](#_commerce_connector_pack_compatibility) for the module to Magnolia version.
+
+## [](#_e_commerce_module_changelog)E-commerce module changelog
+
+### [](#_e_commerce_module_1_3_9)E-commerce module 1.3.9
+
+Released on April 10, 2025.
+
+This release brings improvements to pagination.
+
+-   [ECOMMERCE-659](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-659) Verify and improve pagination on the Salesforce Commerce Cloud connector.
+
+-   [ECOMMERCE-678](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-678) Verify and improve pagination on the SAP connector.
+
+-   [ECOMMERCE-683](https://magnolia-cms.atlassian.net/browse/ECOMMERCE—​683) Introduce a limit provider interface for each provider and ensure REST endpoints work well on connectors.
+
+
+### [](#_e_commerce_module_1_3_8)E-commerce module 1.3.8
+
+Released on November 4, 2024.
+
+This release brings an improvement to the commercetools extension.
+
+-   [ECOMMERCE-590](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-590) Improve commercetools app infinite scrolling for performance
+
+
+### [](#_e_commerce_module_1_3_7)E-commerce module 1.3.7
+
+Released on July 22, 2024.
+
+This release brings an improvement to the [E-commerce template](../ecommerce-app/#_adding_e_commerce_content_to_a_page) available in the Pages app.
+
+-   [ECOMMERCE-648](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-648) Update the E-commerce template
+
+
+### [](#_e_commerce_module_1_3_6)E-commerce module 1.3.6
+
+Released on November 30, 2023.
+
+This release brings an option to customize the query limit for improved performance if needed. For more details, see [commercetools connector configuration](../config/config-commercetools/).
+
+-   [ECOMMERCE-543](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-543) Commerce tools: queries search only within 20 first items
+
+
+### [](#_e_commerce_module_1_3_5)E-commerce module 1.3.5
+
+Released on October 4, 2023.
+
+This release brings some notable bug fixes.
+
+-   [ECOMMERCE-587](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-587) The timeouts values for e-commerce connectors are too high
+
+-   [ECOMMERCE-564](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-564) `magnolia-ecommerce-sap-connector` requires price for all products
+
+-   [ECOMMERCE-565](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-565) Cannot select the product on SAP connector in ecommerce chooser
+
+
+### [](#_e_commerce_module_1_3_4)E-commerce module 1.3.4
+
+Released on March 21, 2023.
+
+This release brings some important bug fixes.
+
+-   [ECOMMERCE-527](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-527) Function fix for: `info.magnolia.ecommerce.commercetools.integrationtest.CheckoutProviderIntegrationTest.setShippingAddressWithCartNotFound`.
+
+    For more on this topic
+
+    See [Implementing data suppliers and required cart and checkout functionalities](../config/how-to-configure-a-custom-ecommerce-connector/#_implement_the_data_suppliers_and_required_cart_and_checkout_functionality)
+
+-   [ECOMMERCE-523](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-523) Invalid (old) data in jcr breaks app in combination with `ecommerceProductLinkField`.
+
+-   [ECOMMERCE-520](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-520) Remove `info.magnolia` from log4j2.xml file from `magnolia-ecommerce-commercetools-connector` project.
+
+
+### [](#_e_commerce_module_1_3_3)E-commerce module 1.3.3
+
+Released on May 2, 2022.
+
+This release significantly improves seeing which products are selected when adding e-commerce content to a page and introduces two new fields for product choosers.
+
+> **Note:** This release is only compatible with Magnolia 6.2.18.
+
+**Improvements**
+
+-   [ECOMMERCE-477](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-477)
+
+    -   Display JSON in text fields of e-commerce meaningfully. The new implementation displays a product’s name and SKU or the category path for categories.
+
+        See for yourself!
+
+        ![Adding e-commerce content](../../_images/6-2_e-commerce_product-detail.gif)
+
+    -   Two new fields `ecommerceProductLinkField` and `ecommerceProductListLinkField` extend `ecommerceLinkField`. See [here](https://gitlab.magnolia-platform.com/pd/extensions/ecommerce/-/tree/master/magnolia-ecommerce-ui/src/main/java/info/magnolia/ecommerce/app/field/ecommercechooser) for a full list of choosers and the E-commerce module documentation for more information on [configuring chooser dialogs](../ecommerce-module/#_configuring_chooser_dialogs_v1_3).
+
+        -   product-detail-v3.yaml
+
+            ```yaml
+            form:
+              properties:
+                productDetail:
+                  $type: ecommerceProductLinkField
+            ```
+
+            See what it looks like…​
+
+            ![E-commerce product detail](../../_images/6-2_ecom-product-detail-comp.png)
+
+        -   product-teaser-v3.yaml
+
+            ```yaml
+            form:
+              properties:
+                productTeaser:
+                  $type: ecommerceProductLinkField
+            ```
+
+        -   product-list-v3.yaml
+
+            ```yaml
+            form:
+              properties:
+                productList:
+                  $type: ecommerceProductListLinkField
+            ```
+
+            See what it looks like…​
+
+            ![E-commerce product detail](../../_images/6-2_ecom-product-list-comp.png)
+
+
+
+
+### [](#_e_commerce_module_1_3_2)E-commerce module 1.3.2
+
+Released on March 28, 2022.
+
+This release brings a number of improvements as well as bug and security fixes.
+
+#### [](#_endpointapi_updates_and_improvements)Endpoint/API updates and improvements
+
+-   [ECOMMERCE-491](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-491) Following an upgrade to [commercetools SDK v2](../ecommerce-module/#_commerce_connector_pack_compatibility), you must reconfigure its [endpoint](../ecommerce-module/#_connection_configuration_and_implementation) to continue using this connector.
+
+
+Where can I update the endpoint?
+
+In the Resource Files app, you can find the endpoint in the `commercetools.yaml` file.
+
+![commercetools YAML file](../../_images/6-2_resource-files_commercetools-yaml.png)
+
+In particular, you need to update `authUrl` and `apiUrl` to the endpoint given below.
+
+/ecommerce-commercetools-connector/ecommerces/commercetools.yaml
+
+```yaml
+class: info.magnolia.ecommerce.common.EcommerceDefinition
+type: commercetools
+enabled: true
+implementation:
+  products:
+    all: info.magnolia.ecommerce.commercetools.products.All
+    byId: info.magnolia.ecommerce.commercetools.products.ById
+    byCategoryId: info.magnolia.ecommerce.commercetools.products.ByCategoryId
+    searchByText: info.magnolia.ecommerce.commercetools.products.SearchByText
+  categories:
+    all: info.magnolia.ecommerce.commercetools.categories.All
+    byId: info.magnolia.ecommerce.commercetools.categories.ById
+    byParentCategoryId: info.magnolia.ecommerce.commercetools.categories.ByParentCategoryId
+    byProductId: info.magnolia.ecommerce.commercetools.categories.ByProductId
+  connectionValidator: info.magnolia.ecommerce.commercetools.common.CommercetoolsConnectionValidator
+connections:
+  connectionName:
+    enabled: true
+    authUrl: https://auth.sphere.io
+    parameters:
+      clientId: <client_id>
+      clientSecret: <client_secret_or_path_to_password_manager>
+      apiUrl: https://api.sphere.io
+      projectKey: <project_key>
+      limit: 400 (1)
+      locale: en (2)
+```
+
+-   [ECOMMERCE-491](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-491) The API of version 7.6.0 was adapted for commercetools SDK v2 following the [deprecation of SDK v1](https://docs.commercetools.com/sdk/jvm-sdk#java-sdk-v1).
+
+-   [ECOMMERCE-481](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-491) Resolves a typo in the [Cart endpoint API v2](../ecommerce-rest-endpoints/cart-endpoint-v2/). Previously, `quoteId` was written as `qouteId`.
+
+-   [ECOMMERCE-497](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-497) Category key exposed for [E-commerce REST category endpoint](../ecommerce-rest-endpoints/category-endpoint/) as depicted (`“key”: “1234”`) in the example response below.
+
+    ![Category endpoint JSON response](../../_images/6-2_ecommerce_category-endpoint.png)
+
+-   [ECOMMERCE-480](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-480) Cannot create a cart for Commercetools from its `CartEndpoint`.
+
+-   [ECOMMERCE-482](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-482) Magento - Cannot use checkout endpoint for authentication user.
+
+-   [ECOMMERCE-484](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-484) Throwing the SocketException when calling the rest endpoint `ProductByCategoryId`.
+
+
+#### [](#_new_sap_security_and_timeouts)New SAP security and timeouts
+
+-   [ECOMMERCE-492](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-461) You must use the SAP `Application Interface Key` (AIR) for any API call to an SAP system since the end of 2021.
+
+-   [ECOMMERCE-495](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-461) You can adjust the connection timeout if required using the variables `connectionTimeoutInSeconds` and `readTimeoutInSeconds`.
+
+
+#### [](#_product_selection_enhancements)Product selection enhancements
+
+-   [ECOMMERCE-476](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-476) Product chooser default width widened to show all columns optimally.
+
+-   [ECOMMERCE-508](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-508) Error when selecting a product.
+
+
+#### [](#_other_fixes_and_improvements)Other fixes and improvements
+
+-   [ECOMMERCE-464](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-464) Salesforce seems to lose connection from time to time.
+
+-   [ECOMMERCE-488](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-488) Manage netty version in core BOMs.
+
+-   [ECOMMERCE-502](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-502) Should not see trace logs from the commercetools client.
+
+-   [ECOMMERCE-510](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-510) Commercetools: getShippingMethods throws RestExceptionMapper error.
+
+
+### [](#_e_commerce_module_1_3_1)E-commerce module 1.3.1
+
+Released on October 6, 2021.
+
+This release brings a number of improvements.
+
+#### [](#_new_ecommercelinkfield_field)New `ecommerceLinkField` field
+
+A new `ecommerceLinkField` field has been introduced.
+
+> **Note:** The ecommerceLinkField replaces the ecommerceChooserField, which is deprecated.
+
+Here are the default configurations for the different [e-commerce components provided](../ecommerce-app/#_using_your_e_commerce_content):
+
+/ecommerce-templating/dialogs/components/category-list-v3.yaml
+
+```yaml
+form:
+  properties:
+    categoryList:
+      $type: ecommerceLinkField
+      enableCategorySelection: false
+```
+
+/ecommerce-templating/dialogs/components/product-detail-v3.yaml
+
+```yaml
+form:
+  properties:
+    productDetail:
+      $type: ecommerceLinkField
+```
+
+/ecommerce-templating/dialogs/components/product-list-v3.yaml
+
+```yaml
+form:
+  properties:
+    productList:
+      $type: ecommerceLinkField
+      enableProductSelection: false
+```
+
+/ecommerce-templating/dialogs/components/product-teaser-v3.yaml
+
+```yaml
+form:
+  properties:
+    productTeaser:
+      $type: ecommerceLinkField
+```
+
+[ECOMMERCE-461](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-461)
+
+#### [](#_new_validators)New validators
+
+New `EcommerceChooserValidator` classes have been added to ensure the connection, category and product selected are valid when adding e-commerce content to a page.
+
+[(ECOMMERCE-472)](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-472)
+
+#### [](#_connection_status_message_display_improved)Connection status message display improved
+
+When you test a connection, the result message is now displayed for longer to make it easier to read.
+
+[(ECOMMERCE-465)](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-465)
+
+### [](#_e_commerce_module_1_2_6)E-commerce module 1.2.6
+
+Released on October 6, 2021.
+
+This maintenance release:
+
+-   Improves the connection status message: when you test a connection, the result message is now displayed for longer to make it easier to read. [(ECOMMERCE-465)](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-465)
+
+-   Fixes an exception that occurred when selecting a product detail component from the list of previously added products in the dialog. [(ECOMMERCE-447)](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-447)
+
+
+### [](#_e_commerce_module_1_3)E-commerce module 1.3
+
+Released on July 21, 2021.
+
+This Magnolia CMS 6.2.9+ compatible release brings improvements and bug fixes:
+
+#### [](#_intuitive_product_chooser)Intuitive product chooser
+
+A user-friendly product chooser makes [finding and selecting](../ecommerce-app/#_adding_e_commerce_content_to_a_page) categories and products faster and simpler for end users.
+
+![Product chooser dialog](../../_images/ecom-product-chooser.png)
+
+Each column provides a filter at the top.
+
+The chooser dialog can also be [configured](../ecommerce-module/#_configuring_chooser_dialogs_v1_3) to enable or disable certain columns.
+
+#### [](#_updated_component_definitions_and_template_files)Updated component definitions and template files
+
+You can find component definitions and template files configured under `/ecommerce-templating/templates/components`.
+
+The components introduced in v1.3 are suffixed with `-v3`.
+
+Those with no suffix are provided for backwards compatibility with E-commerce v1.2.x.
+
+You can still view and edit the 1.2.x version components but we recommend you recreate your e-commerce pages using the new component definitions to benefit from the new product chooser dialog and other improvements.
+
+### [](#_e_commerce_module_1_2_5)E-commerce module 1.2.5
+
+Released on July 21, 2021.
+
+This Magnolia CMS 6.2.2+ compatible maintenance release brings improvements and bug fixes:
+
+#### [](#_category_list_and_product_list_components_updated)Category list and Product list components updated
+
+The sample components **Category list** and **Product list** have been aligned with the other e-commerce page components and now provide chooser dialogs for selecting the e-commerce content to be displayed.
+
+The chooser dialogs only store the `connectionId` property, which consists of `{definitionName}/{connectionName}` in JCR instead of the previously stored properties `definition` and `connection`.
+
+The related template files `category-list.ftl` and `product-list.ftl` were adapted accordingly.
+
+To ensure backward compatibility with the previous template files, an `ecommerce-freemarker` renderer was introduced and configured for the `renderType` property in the component configuration yaml files:
+
+-   `ecommerce-templating/dialogs/components/category-list.yaml`
+
+-   `ecommerce-templating/dialogs/components/product-list.yaml`
+
+
+The `ecommerce-freemarker` renderer parses the definition and connection names from the `connectionId` property and wraps the component content with the `definition` and `connection` properties with the parsed values.
+
+([ECOMMERCE-389](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-389), [ECOMMERCE-389](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-389))
+
+#### [](#_commercetools_locale_configuration_in_yaml_file)commercetools `locale` configuration in YAML file
+
+A new `locale` parameter used for product/category names or descriptions can be set in the commercetools configuration.
+
+See the parameter description in the [tab for commercetools](../ecommerce-module/#_connection_configuration_and_implementation).
+
+[ECOMMERCE-389](https://magnolia-cms.atlassian.net/browse/ECOMMERCE-389)
+
+See the [1.2.5 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.2.5) for all the changes.
+
+### [](#_e_commerce_module_1_2_4)E-commerce module 1.2.4
+
+Released on April 13, 2021.
+
+This release brings full compatibility with [Magnolia 6.2.7](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.7.adoc) as well as some bug and security fixes.
+
+Notable fixes:
+
+-   Added the `info.magnolia.ecommerce.common.ConnectionValidator` interface and its implementations to [check if a connection configuration is valid](../ecommerce-module/#_connection_configuration_validator). ([ECOMMERCE-322](https://jira.magnolia-cms.com/browse/ECOMMERCE-322)).
+
+-   Third-party library update: Netty updated to 4.1.59.Final ([ECOMMERCE-365](https://jira.magnolia-cms.com/browse/ECOMMERCE-365)).
+
+    We keep the details of security-related fixes private in line with our [security policy](#6.2@product-docs:ROOT:Administration/Security/Security-policy.adoc). [Contact our Support team](#6.2@product-docs:ROOT:Support.adoc) if you need more information.
+
+
+See the [1.2.4 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.2.4) for all the changes.
+
+### [](#_e_commerce_module_1_2_3)E-commerce module 1.2.3
+
+Released on December 1, 2020.
+
+E-commerce module 1.2.3 is a bug-fixing release.
+
+See the [1.2.3 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.2.3) for all the changes.
+
+### [](#_e_commerce_module_1_2_2)E-commerce module 1.2.2
+
+Released on November 30, 2020.
+
+This release brings full compatibility with [Magnolia 6.2.5](#6.2@product-docs:ROOT:/Releases/Release-notes-for-Magnolia-CMS-6.2.5.adoc) as well as some bug fixes.
+
+See the [1.2.2 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.2.2) for all the changes.
+
+### [](#_e_commerce_module_1_2_1)E-commerce module 1.2.1
+
+Released on September 16, 2020.
+
+This release brings full compatibility with [Magnolia 6.2.3](#6.2@product-docs:ROOT:/Releases/Release-notes-for-Magnolia-CMS-6.2.3.adoc) as well as some bug fixes.
+
+See the [1.2.1 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.2.1) for all the changes.
+
+### [](#_e_commerce_module_1_2)E-commerce module 1.2
+
+Released on August 20, 2020.
+
+**SAP Commerce Cloud Connector**
+
+This release delivers a new connector for [SAP Commerce Cloud](../ecommerce-module/) (formerly Hybris).
+
+The connector includes a new User endpoint for SAP:
+
+-   `/users/{userId}/accessToken` — To log in a user and obtain the user’s access token.
+
+-   `/users/{userId}/addresses` — To handle stored addresses of users.
+
+-   `/users/{userId}/paymentMethods` — To handle stored payment methods of users.
+
+
+```java
+accessToken
+@POST
+@Path("/v2/users/{userId}/accessToken")
+
+getUserAddresses
+@GET
+@Path("/v2/users/{userId}/addresses")
+
+createUserAddress
+@POST
+@Path("/v2/users/{userId}/addresses")
+
+deleteUserAddress
+@DELETE
+@Path("/v2/users/{userId}/addresses/{addressId}")
+
+updateUserAddress
+@PUT
+@Path("/v2/users/{userId}/addresses/{addressId}")
+
+getUserPaymentMethods
+@GET
+@Path("/v2/users/{userId}/paymentMethods")
+
+updateUserPaymentMethod
+@PUT
+@Path("/v2/users/{userId}/paymentMethods/{paymentMethodId}")
+
+deleteUserPaymentMethod
+@DELETE
+@Path("/v2/users/{userId}/paymentMethods/{paymentMethodId}")
+```
+
+See the [User REST endpoint page](../ecommerce-rest-endpoints/user-endpoint-v2/).
+
+#### [](#_cart_and_checkout_endpoint_updates)Cart and Checkout endpoint updates
+
+This release provides a V2 of two endpoints:
+
+-   **Checkout endpoint** — In v2, the checkout endpoint sets the address of a `cartId` to ensure the correct resource is consistently identified. For example, the v1 `/checkouts/address/{cartId}` becomes in v2 `/checkouts/carts/{cartId}/address`.
+
+    ```java
+    setAddress
+    @PUT
+    @Path("/checkouts/cart/{cartId}/address")
+
+    setShippingMethod
+    @PUT
+    @Path("/checkouts/cart/{cartId}/shippingmethod")
+
+    createOrder
+    @POST
+    @Path("/checkouts/cart/{cartId}/order")
+
+    getShippingMethods
+    @POST
+    @Path("/checkouts/cart/{cartId}/shippingmethods")
+    ```
+
+-   **Cart endpoint** — In v2, `cartId` is a path parameter instead of form parameter in the REST calls. For example the v1 `/carts/items` becomes in v2 `/carts/{cartId}/items`. The other parts of the call are unchanged.
+
+    ```java
+    addItem
+    @POST
+    @Path("/v2/carts/{cartId}/items")
+
+    removeItem
+    @DELETE
+    @Path("/v2/carts/{cartId}/items/{itemId}")
+
+    updateItemQuantity
+    @POST
+    @Path("/v2/carts/{cartId}/items/{itemId}")
+    ```
+
+
+The `ecommerce-rest-role` has been updated to allow the v2 endpoints.
+
+See the [V2 endpoint pages](../ecommerce-rest-endpoints/).
+
+> **Note:** V1 of the Cart and Checkout endpoints are deprecated from this release on. They will be removed in the next major version of the Commerce Connector Pack.
+
+#### [](#_product_chooser)Product chooser
+
+This release also improves the sample template provided in the Pages app. Magnolia provides a dialog to select the connection, category and product instead of requiring you to manually enter the connection name, definition name and a product ID. If you only have one connection configured, you choose the category and product directly.
+
+#### [](#_list_of_changes)List of changes:
+
+-   \[[ECOMMERCE-304](https://jira.magnolia-cms.com/browse/ECOMMERCE-304)\] - SAP Cloud Commerce connector
+
+-   \[[ECOMMERCE-310](https://jira.magnolia-cms.com/browse/ECOMMERCE-304)\] - Improvements required for SAP (new User endpoint API)
+
+-   \[[ECOMMERCE-305](https://jira.magnolia-cms.com/browse/ECOMMERCE-305)\] - Cart method (v2)
+
+-   \[[ECOMMERCE-307](https://jira.magnolia-cms.com/browse/ECOMMERCE-307)\] - Checkout method (v2)
+
+-   \[[ECOMMERCE-258](https://jira.magnolia-cms.com/browse/ECOMMERCE-258)\] - Create Link field to select products from E-commerce app
+
+-   \[[ECOMMERCE-318](https://jira.magnolia-cms.com/browse/ECOMMERCE-318)\] - Update `ecommerce-rest-role` to allow v2 endpoints
+
+
+See the [1.2.2 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.2.2) for all the changes.
+
+### [](#_e_commerce_module_1_1_1)E-commerce module 1.1.1
+
+Released on July 7, 2020.
+
+This release introduces compatibility with Magnolia 6.2.2 and an improvement that means images are displayed instead of the URL now in the E-commerce app (see [Configuring the images displayed in the E-commerce app](#_configuring_the_images_displayed_in_the_e_commerce_app)). List of changes:
+
+-   \[[ECOMMERCE-226](https://jira.magnolia-cms.com/browse/ECOMMERCE-226)\] - Prod detail sub-app - image field displays image instead of path
+
+-   \[[ECOMMERCE-295](https://jira.magnolia-cms.com/browse/ECOMMERCE-295)\] - Use i18n keys instead of literals for labels in product detail view
+
+-   \[[ECOMMERCE-254](https://jira.magnolia-cms.com/browse/ECOMMERCE-254)\] - Manual tagging action should tag a product even if the product has a tag already
+
+
+See the [1.2.1 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.2.1) for all the changes.
+
+### [](#_e_commerce_module_1_1)E-commerce module 1.1
+
+Released on April 6, 2020.
+
+This release delivers a new connector for Salesforce Commerce.
+
+See the [1.1 changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20ECOMMERCE%20AND%20fixVersion%20%3D%201.1) for all the changes.
+
+### [](#_e_commerce_module_1_0)E-commerce module 1.0
+
+Released on July 9, 2019.
+
+Initial release of the Commerce Connector Pack for connecting to e-commerce systems such as Magento and commercetools.
+
+See [Commerce Connector Pack](../) for an overview of the functionality provided.
+
+| Module version | Magnolia CMS version |
+| --- | --- |
+| 1.3.3+ | 6.2.18+ |
+| 1.3+ | 6.2.9+ |
+| 1.2+ | 6.2.2+ |
+| 1.1.1 | 6.2.2 |
+| 1.1 | 6.2 |
+| 1.0 | 6.1 |

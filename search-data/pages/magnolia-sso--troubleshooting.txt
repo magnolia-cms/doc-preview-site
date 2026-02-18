@@ -1,0 +1,163 @@
+---
+title: "Troubleshooting"
+url: https://docs.magnolia-cms.com/magnolia-sso/troubleshooting/
+category: Modules
+version: modules
+breadcrumb: SSO module > Troubleshooting
+---
+
+# Troubleshooting
+
+This page contains troubleshooting tips for the Magnolia SSO module.
+
+## [](#_unable_to_log_in_with_an_ssoopenid_setup)Unable to log in with an SSO/OpenID setup
+
+In your Tomcat configuration, make sure that the `CookieProcessor` component doesn’t have the `sameSiteCookies` property set to `strict`. Instead, set the property to `Lax`:
+
+```xml
+<CookieProcessor sameSiteCookies="Lax" />
+```
+
+This supports [OpenID](https://en.wikipedia.org/wiki/OpenID) top-level redirects while maintaining decent protection against [Cross-Site Request Forgery](https://en.wikipedia.org/wiki/Cross-site_request_forgery) (CSRF).
+
+## [](#_missing_permissions_after_login)Missing permissions after login
+
+After a successful SSO login, the user may land on a `403 Forbidden` page, see `ERR_TOO_MANY_REDIRECTS` in the browser, or appear authenticated but can’t access AdminCentral.
+
+A common cause is failing to properly configure the group mapping. The login sequence technically succeeds, but the system rejects the user due to missing permissions. Most commonly, the user’s assigned role lacks the `Web Access` permission required to access AdminCentral.
+
+### [](#_solution)Solution
+
+1.  Verify your SSO group mapping in `config.yaml` correctly assigns groups/roles to the authenticated user:
+
+    1.  Open your SSO `config.yaml` file.
+
+    2.  Check the [`authorizationGenerators`](../#sso-yamlConfig-authGeneratorSection) section and ensure the `mappings` include `targetGroups` or `targetRoles` that exist in Magnolia.
+
+    3.  Confirm the IDP group name in the `name` field matches what your identity provider returns.
+
+        ```yaml
+        authorizationGenerators:
+          - name: groupsAuthorization
+            groups:
+              targetProperty: groups
+              mappings:
+                - name: my-idp-group  (1)
+                  targetGroups:
+                    - publishers
+                  targetRoles:
+                    - superuser
+        ```
+
+        |     |     |
+        | --- | --- |
+        | **1** | The IDP group name. Must match what your identity provider returns. |
+
+
+2.  Ensure the role you specified in `targetRoles` has the `Web Access` permission configured:
+
+    1.  Navigate to **Security** app > **Roles**.
+
+    2.  Edit your role and check that it has the required permissions. You can use the `admincentral-editor` role as a reference because it defines the base permissions for AdminCentral access.
+
+    3.  Under **Web access**, add a permission entry:
+
+        -   **Path**: `*` (or specific paths as needed)
+
+        -   **Access type**: `Get & Post`
+
+            ![Web Access permission configuration](../_images/web-access-permission.png)
+
+
+
+
+> **Tip:** Enable DEBUG logs to verify which groups/roles the system assigns during authentication.
+
+## [](#_turn_on_debug_logs)Turn on `DEBUG` logs
+
+When facing authentication or configuration issues with the SSO module, it may be helpful to turn on your `DEBUG` logs. [Pac4j](https://www.pac4j.org) logs in particular are highly informative regarding request handling, redirects, and validating credentials.
+
+### [](#_instructions)Instructions
+
+1.  Add the following [loggers](../../product-docs/6.3/Administration/Monitoring/#_loggers) to your `log4j2.xml` configuration file:
+
+    log4j2.xml
+
+    ```xml
+    <Logger name="org.pac4j" level="DEBUG"/>
+    <Logger name="info.magnolia.sso" level="DEBUG"/>
+    ```
+
+
+### [](#_sample_output)Sample output
+
+Here is a partial sample output for a login attempt, against a [mock OIDC server](../guides/using-a-mock-oidc-server/). Note the various stages of the OIDC [authorization code flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth) such as redirect and callback handling.
+
+pac4j-debug-logs.txt
+
+pac4j-debug-logs.txt
+
+```txt
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : === SECURITY ===
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : url: http://localhost:8080/.magnolia/admincentral
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : clients: OidcClient,DirectBearerAuthClient | matchers: start-sso-flow
+[DEBUG] c4j.core.client.finder.DefaultSecurityClientFinder: Provided clientNames: OidcClient,DirectBearerAuthClient
+[DEBUG] c4j.core.client.finder.DefaultSecurityClientFinder: clientNameOnRequest: Optional.empty
+[DEBUG] org.pac4j.core.client.Clients                     : Found client: #OidcClient# | name: OidcClient | callbackUrl: http://localhost:8080/.auth | callbackUrlResolver: org.pac4j.core.http.callback.NoParameterCallbackUrlResolver@4b68fcea | ajaxRequestResolver: org.pac4j.core.http.ajax.DefaultAjaxRequestResolver@3f9f0acb | redirectionActionBuilder: org.pac4j.oidc.redirect.OidcRedirectionActionBuilder@126da69f | credentialsExtractor: org.pac4j.oidc.credentials.extractor.OidcExtractor@479c141a | authenticator: org.pac4j.oidc.credentials.authenticator.OidcAuthenticator@43ab19a7 | profileCreator: org.pac4j.oidc.profile.creator.OidcProfileCreator@4a58a4b | logoutActionBuilder: org.pac4j.oidc.logout.OidcLogoutActionBuilder@7b839d1e | authorizationGenerators: [info.magnolia.sso.oidc.GroupsAuthorizationGenerator@49e56b9b] | configuration: #OidcConfiguration# | clientId: my-client | secret: [protected] | discoveryURI: http://localhost:9090/.well-known/openid-configuration | scope: openid profile email | customParams: {} | clientAuthenticationMethod: null | useNonce: false | preferredJwsAlgorithm: RS256 | maxAge: null | maxClockSkew: 30 | connectTimeout: 500 | readTimeout: 5000 | resourceRetriever: com.nimbusds.jose.util.DefaultResourceRetriever@5c987ab0 | responseType: code | responseMode: null | logoutUrl: null | withState: true | stateGenerator: org.pac4j.core.util.generator.RandomValueGenerator@431f79e4 | logoutHandler: #DefaultLogoutHandler# | store: #GuavaStore# | size: 10000 | timeout: 30 | timeUnit: MINUTES | | destroySession: false | | tokenValidator: org.pac4j.oidc.profile.creator.TokenValidator@3d0a61f1 | mappedClaims: {} | allowUnsignedIdTokens: false | SSLFactory: null | | for name: OidcClient
+[DEBUG] org.pac4j.core.client.Clients                     : Found client: #DirectBearerAuthClient# | name: DirectBearerAuthClient | credentialsExtractor: org.pac4j.core.credentials.extractor.BearerAuthExtractor@47e526a5 | authenticator: info.magnolia.sso.authenticator.TokenIntrospectionAuthenticator@4f1c42c1 | profileCreator: org.pac4j.core.profile.creator.AuthenticatorProfileCreator@5d1b00c4 | authorizationGenerators: [info.magnolia.sso.oidc.FixedRoleAuthorizationGenerator@68591e1d] | realmName: authentication required | for name: DirectBearerAuthClient
+[DEBUG] c4j.core.client.finder.DefaultSecurityClientFinder: result: [OidcClient, DirectBearerAuthClient]
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : currentClients: [#OidcClient# | name: OidcClient | callbackUrl: http://localhost:8080/.auth | callbackUrlResolver: org.pac4j.core.http.callback.NoParameterCallbackUrlResolver@4b68fcea | ajaxRequestResolver: org.pac4j.core.http.ajax.DefaultAjaxRequestResolver@3f9f0acb | redirectionActionBuilder: org.pac4j.oidc.redirect.OidcRedirectionActionBuilder@126da69f | credentialsExtractor: org.pac4j.oidc.credentials.extractor.OidcExtractor@479c141a | authenticator: org.pac4j.oidc.credentials.authenticator.OidcAuthenticator@43ab19a7 | profileCreator: org.pac4j.oidc.profile.creator.OidcProfileCreator@4a58a4b | logoutActionBuilder: org.pac4j.oidc.logout.OidcLogoutActionBuilder@7b839d1e | authorizationGenerators: [info.magnolia.sso.oidc.GroupsAuthorizationGenerator@49e56b9b] | configuration: #OidcConfiguration# | clientId: my-client | secret: [protected] | discoveryURI: http://localhost:9090/.well-known/openid-configuration | scope: openid profile email | customParams: {} | clientAuthenticationMethod: null | useNonce: false | preferredJwsAlgorithm: RS256 | maxAge: null | maxClockSkew: 30 | connectTimeout: 500 | readTimeout: 5000 | resourceRetriever: com.nimbusds.jose.util.DefaultResourceRetriever@5c987ab0 | responseType: code | responseMode: null | logoutUrl: null | withState: true | stateGenerator: org.pac4j.core.util.generator.RandomValueGenerator@431f79e4 | logoutHandler: #DefaultLogoutHandler# | store: #GuavaStore# | size: 10000 | timeout: 30 | timeUnit: MINUTES | | destroySession: false | | tokenValidator: org.pac4j.oidc.profile.creator.TokenValidator@3d0a61f1 | mappedClaims: {} | allowUnsignedIdTokens: false | SSLFactory: null | |, #DirectBearerAuthClient# | name: DirectBearerAuthClient | credentialsExtractor: org.pac4j.core.credentials.extractor.BearerAuthExtractor@47e526a5 | authenticator: info.magnolia.sso.authenticator.TokenIntrospectionAuthenticator@4f1c42c1 | profileCreator: org.pac4j.core.profile.creator.AuthenticatorProfileCreator@5d1b00c4 | authorizationGenerators: [info.magnolia.sso.oidc.FixedRoleAuthorizationGenerator@68591e1d] | realmName: authentication required |]
+[DEBUG] agnolia.sso.pac4j.AuthenticationServicePathMatcher: Sec-Fetch-Mode: navigate
+[DEBUG] agnolia.sso.pac4j.AuthenticationServicePathMatcher: /.magnolia/admincentral starts with /.magnolia/admincentral
+[DEBUG] pac4j.core.matching.checker.DefaultMatchingChecker: Checking matcher: info.magnolia.sso.pac4j.AnyMatcher@6bbc61bc -> true
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: false, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Get value: null for key: pac4jUserProfiles
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : Loaded profiles (from session: true): []
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : Performing authentication for direct client: #DirectBearerAuthClient# | name: DirectBearerAuthClient | credentialsExtractor: org.pac4j.core.credentials.extractor.BearerAuthExtractor@47e526a5 | authenticator: info.magnolia.sso.authenticator.TokenIntrospectionAuthenticator@4f1c42c1 | profileCreator: org.pac4j.core.profile.creator.AuthenticatorProfileCreator@5d1b00c4 | authorizationGenerators: [info.magnolia.sso.oidc.FixedRoleAuthorizationGenerator@68591e1d] | realmName: authentication required |
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : credentials: Optional.empty
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : Starting authentication
+[DEBUG] ore.engine.savedrequest.DefaultSavedRequestHandler: requestedUrl: http://localhost:8080/.magnolia/admincentral
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: true, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Set key: pac4jRequestedUrl for value: http://localhost:8080/.magnolia/admincentral
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: false, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Get value: null for key: OidcClient$attemptedAuthentication
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: true, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Set key: OidcClient$stateSessionParameter for value: 303fa1a5ec
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: true, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Set key: OidcClient$codeVerifierSessionParameter for value: com.nimbusds.oauth2.sdk.pkce.CodeVerifier@d868d683
+[DEBUG] g.pac4j.oidc.redirect.OidcRedirectionActionBuilder: Authentication request url: http://localhost:9090/auth?scope=openid+profile+email&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2F.auth&state=303fa1a5ec&code_challenge_method=S256&client_id=my-client&code_challenge=Ot3OBYNNRwTc1NIT8qv3CRknICBCnUZt_obq8DMgH-M
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : === SECURITY ===
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : url: http://localhost:8080/.auth?code=8fyXB8oY_gTflXh1i3iJ4WnSt5cwmwLlnWPbX5AKCst&state=303fa1a5ec
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : clients: OidcClient,DirectBearerAuthClient | matchers: start-sso-flow
+[DEBUG] c4j.core.client.finder.DefaultSecurityClientFinder: Provided clientNames: OidcClient,DirectBearerAuthClient
+[DEBUG] c4j.core.client.finder.DefaultSecurityClientFinder: clientNameOnRequest: Optional.empty
+[DEBUG] org.pac4j.core.client.Clients                     : Found client: #OidcClient# | name: OidcClient | callbackUrl: http://localhost:8080/.auth | callbackUrlResolver: org.pac4j.core.http.callback.NoParameterCallbackUrlResolver@4b68fcea | ajaxRequestResolver: org.pac4j.core.http.ajax.DefaultAjaxRequestResolver@3f9f0acb | redirectionActionBuilder: org.pac4j.oidc.redirect.OidcRedirectionActionBuilder@126da69f | credentialsExtractor: org.pac4j.oidc.credentials.extractor.OidcExtractor@479c141a | authenticator: org.pac4j.oidc.credentials.authenticator.OidcAuthenticator@43ab19a7 | profileCreator: org.pac4j.oidc.profile.creator.OidcProfileCreator@4a58a4b | logoutActionBuilder: org.pac4j.oidc.logout.OidcLogoutActionBuilder@7b839d1e | authorizationGenerators: [info.magnolia.sso.oidc.GroupsAuthorizationGenerator@49e56b9b] | configuration: #OidcConfiguration# | clientId: my-client | secret: [protected] | discoveryURI: http://localhost:9090/.well-known/openid-configuration | scope: openid profile email | customParams: {} | clientAuthenticationMethod: null | useNonce: false | preferredJwsAlgorithm: RS256 | maxAge: null | maxClockSkew: 30 | connectTimeout: 500 | readTimeout: 5000 | resourceRetriever: com.nimbusds.jose.util.DefaultResourceRetriever@5c987ab0 | responseType: code | responseMode: null | logoutUrl: null | withState: true | stateGenerator: org.pac4j.core.util.generator.RandomValueGenerator@431f79e4 | logoutHandler: #DefaultLogoutHandler# | store: #GuavaStore# | size: 10000 | timeout: 30 | timeUnit: MINUTES | | destroySession: false | | tokenValidator: org.pac4j.oidc.profile.creator.TokenValidator@3d0a61f1 | mappedClaims: {} | allowUnsignedIdTokens: false | SSLFactory: null | | for name: OidcClient
+[DEBUG] org.pac4j.core.client.Clients                     : Found client: #DirectBearerAuthClient# | name: DirectBearerAuthClient | credentialsExtractor: org.pac4j.core.credentials.extractor.BearerAuthExtractor@47e526a5 | authenticator: info.magnolia.sso.authenticator.TokenIntrospectionAuthenticator@4f1c42c1 | profileCreator: org.pac4j.core.profile.creator.AuthenticatorProfileCreator@5d1b00c4 | authorizationGenerators: [info.magnolia.sso.oidc.FixedRoleAuthorizationGenerator@68591e1d] | realmName: authentication required | for name: DirectBearerAuthClient
+[DEBUG] c4j.core.client.finder.DefaultSecurityClientFinder: result: [OidcClient, DirectBearerAuthClient]
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : currentClients: [#OidcClient# | name: OidcClient | callbackUrl: http://localhost:8080/.auth | callbackUrlResolver: org.pac4j.core.http.callback.NoParameterCallbackUrlResolver@4b68fcea | ajaxRequestResolver: org.pac4j.core.http.ajax.DefaultAjaxRequestResolver@3f9f0acb | redirectionActionBuilder: org.pac4j.oidc.redirect.OidcRedirectionActionBuilder@126da69f | credentialsExtractor: org.pac4j.oidc.credentials.extractor.OidcExtractor@479c141a | authenticator: org.pac4j.oidc.credentials.authenticator.OidcAuthenticator@43ab19a7 | profileCreator: org.pac4j.oidc.profile.creator.OidcProfileCreator@4a58a4b | logoutActionBuilder: org.pac4j.oidc.logout.OidcLogoutActionBuilder@7b839d1e | authorizationGenerators: [info.magnolia.sso.oidc.GroupsAuthorizationGenerator@49e56b9b] | configuration: #OidcConfiguration# | clientId: my-client | secret: [protected] | discoveryURI: http://localhost:9090/.well-known/openid-configuration | scope: openid profile email | customParams: {} | clientAuthenticationMethod: null | useNonce: false | preferredJwsAlgorithm: RS256 | maxAge: null | maxClockSkew: 30 | connectTimeout: 500 | readTimeout: 5000 | resourceRetriever: com.nimbusds.jose.util.DefaultResourceRetriever@5c987ab0 | responseType: code | responseMode: null | logoutUrl: null | withState: true | stateGenerator: org.pac4j.core.util.generator.RandomValueGenerator@431f79e4 | logoutHandler: #DefaultLogoutHandler# | store: #GuavaStore# | size: 10000 | timeout: 30 | timeUnit: MINUTES | | destroySession: false | | tokenValidator: org.pac4j.oidc.profile.creator.TokenValidator@3d0a61f1 | mappedClaims: {} | allowUnsignedIdTokens: false | SSLFactory: null | |, #DirectBearerAuthClient# | name: DirectBearerAuthClient | credentialsExtractor: org.pac4j.core.credentials.extractor.BearerAuthExtractor@47e526a5 | authenticator: info.magnolia.sso.authenticator.TokenIntrospectionAuthenticator@4f1c42c1 | profileCreator: org.pac4j.core.profile.creator.AuthenticatorProfileCreator@5d1b00c4 | authorizationGenerators: [info.magnolia.sso.oidc.FixedRoleAuthorizationGenerator@68591e1d] | realmName: authentication required |]
+[DEBUG] agnolia.sso.pac4j.AuthenticationServicePathMatcher: Sec-Fetch-Mode: navigate
+[DEBUG] pac4j.core.matching.checker.DefaultMatchingChecker: Checking matcher: info.magnolia.sso.pac4j.AnyMatcher@6bbc61bc -> false
+[DEBUG] org.pac4j.core.engine.DefaultSecurityLogic        : no matching for this request -> grant access
+[DEBUG] org.pac4j.core.engine.DefaultCallbackLogic        : === CALLBACK ===
+[DEBUG] c4j.core.client.finder.DefaultCallbackClientFinder: result: []
+[DEBUG] c4j.core.client.finder.DefaultCallbackClientFinder: Defaulting to the only client: #OidcClient# | name: OidcClient | callbackUrl: http://localhost:8080/.auth | callbackUrlResolver: org.pac4j.core.http.callback.NoParameterCallbackUrlResolver@4b68fcea | ajaxRequestResolver: org.pac4j.core.http.ajax.DefaultAjaxRequestResolver@3f9f0acb | redirectionActionBuilder: org.pac4j.oidc.redirect.OidcRedirectionActionBuilder@126da69f | credentialsExtractor: org.pac4j.oidc.credentials.extractor.OidcExtractor@479c141a | authenticator: org.pac4j.oidc.credentials.authenticator.OidcAuthenticator@43ab19a7 | profileCreator: org.pac4j.oidc.profile.creator.OidcProfileCreator@4a58a4b | logoutActionBuilder: org.pac4j.oidc.logout.OidcLogoutActionBuilder@7b839d1e | authorizationGenerators: [info.magnolia.sso.oidc.GroupsAuthorizationGenerator@49e56b9b] | configuration: #OidcConfiguration# | clientId: my-client | secret: [protected] | discoveryURI: http://localhost:9090/.well-known/openid-configuration | scope: openid profile email | customParams: {} | clientAuthenticationMethod: null | useNonce: false | preferredJwsAlgorithm: RS256 | maxAge: null | maxClockSkew: 30 | connectTimeout: 500 | readTimeout: 5000 | resourceRetriever: com.nimbusds.jose.util.DefaultResourceRetriever@5c987ab0 | responseType: code | responseMode: null | logoutUrl: null | withState: true | stateGenerator: org.pac4j.core.util.generator.RandomValueGenerator@431f79e4 | logoutHandler: #DefaultLogoutHandler# | store: #GuavaStore# | size: 10000 | timeout: 30 | timeUnit: MINUTES | | destroySession: false | | tokenValidator: org.pac4j.oidc.profile.creator.TokenValidator@3d0a61f1 | mappedClaims: {} | allowUnsignedIdTokens: false | SSLFactory: null | |
+[DEBUG] org.pac4j.core.engine.DefaultCallbackLogic        : foundClient: #OidcClient# | name: OidcClient | callbackUrl: http://localhost:8080/.auth | callbackUrlResolver: org.pac4j.core.http.callback.NoParameterCallbackUrlResolver@4b68fcea | ajaxRequestResolver: org.pac4j.core.http.ajax.DefaultAjaxRequestResolver@3f9f0acb | redirectionActionBuilder: org.pac4j.oidc.redirect.OidcRedirectionActionBuilder@126da69f | credentialsExtractor: org.pac4j.oidc.credentials.extractor.OidcExtractor@479c141a | authenticator: org.pac4j.oidc.credentials.authenticator.OidcAuthenticator@43ab19a7 | profileCreator: org.pac4j.oidc.profile.creator.OidcProfileCreator@4a58a4b | logoutActionBuilder: org.pac4j.oidc.logout.OidcLogoutActionBuilder@7b839d1e | authorizationGenerators: [info.magnolia.sso.oidc.GroupsAuthorizationGenerator@49e56b9b] | configuration: #OidcConfiguration# | clientId: my-client | secret: [protected] | discoveryURI: http://localhost:9090/.well-known/openid-configuration | scope: openid profile email | customParams: {} | clientAuthenticationMethod: null | useNonce: false | preferredJwsAlgorithm: RS256 | maxAge: null | maxClockSkew: 30 | connectTimeout: 500 | readTimeout: 5000 | resourceRetriever: com.nimbusds.jose.util.DefaultResourceRetriever@5c987ab0 | responseType: code | responseMode: null | logoutUrl: null | withState: true | stateGenerator: org.pac4j.core.util.generator.RandomValueGenerator@431f79e4 | logoutHandler: #DefaultLogoutHandler# | store: #GuavaStore# | size: 10000 | timeout: 30 | timeUnit: MINUTES | | destroySession: false | | tokenValidator: org.pac4j.oidc.profile.creator.TokenValidator@3d0a61f1 | mappedClaims: {} | allowUnsignedIdTokens: false | SSLFactory: null | |
+[DEBUG] org.pac4j.oidc.credentials.extractor.OidcExtractor: Authentication response successful
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: false, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Get value: 303fa1a5ec for key: OidcClient$stateSessionParameter
+[DEBUG] org.pac4j.oidc.credentials.extractor.OidcExtractor: Request state: 303fa1a5ec/response state: 303fa1a5ec
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: false, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Get value: com.nimbusds.oauth2.sdk.pkce.CodeVerifier@d868d683 for key: OidcClient$codeVerifierSessionParameter
+[DEBUG] j.oidc.credentials.authenticator.OidcAuthenticator: Token response: status=200, content={"access_token":"f4urbf-6txACnfGc31c0WnN5s1u0HNGPRipiDzKXvG0","expires_in":3600,"id_token":"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleXN0b3JlLUNIQU5HRS1NRSJ9.eyJzdWIiOiJtaWthIiwiYXRfaGFzaCI6ImxGQ0ZMbFE3MXkxVWkyVEJrWXRzbnciLCJhdWQiOiJteS1jbGllbnQiLCJleHAiOjE2Njc1NzY3NjMsImlhdCI6MTY2NzU3MzE2MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDkwIn0.kjX9xjHUO56CJEEoXPc2XdMIDcR8kIx6XyPqFY6Pe6ad3BBliuP6dJe7seFt4aN6muDKi0dfFpQmpT_sl5VnfVbYivFjF3DXdxVvOwfBmBiJUq_h9OlvaeEnPljCjIdcvQAbgEk4mzXGMSamNKEbxG8kCy1aLi49AI4I006ncS0JlbD1sqJdmVIQ0dBF03k1RWtDpXp8wGAiZZtaIY4usUUZYNT3JcNgzWFQhqMrmxde95GZqVYUpMHP2qo4dx0Hvib0kd64ZwuvSLuMlen7ygpdH4cDvmNS3yUsBFjc6UM8xzr2Sjq5tVZDra9RC1Nv8pM_eSETNTd-q9lk6bNOqQ","scope":"openid profile email","token_type":"Bearer"}
+[DEBUG] j.oidc.credentials.authenticator.OidcAuthenticator: Token response successful
+[DEBUG] org.pac4j.oidc.client.OidcClient                  : Credentials validation took: 13 ms
+[DEBUG] org.pac4j.oidc.client.OidcClient                  : clean authentication attempt from session
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : createSession: false, retrieved session: org.apache.catalina.session.StandardSessionFacade@7a6b79a5
+[DEBUG] org.pac4j.jee.context.session.JEESessionStore     : Remove value for key: OidcClient$attemptedAuthentication
+[DEBUG] org.pac4j.core.engine.DefaultCallbackLogic        : credentials: Optional[#OidcCredentials# | code: 8fyXB8oY_gTflXh1i3iJ4WnSt5cwmwLlnWPbX5AKCst | accessToken: f4urbf-6txACnfGc31c0WnN5s1u0HNGPRipiDzKXvG0 | refreshToken: null | idToken: com.nimbusds.jwt.SignedJWT@9df610 |]
+[DEBUG] org.pac4j.oidc.client.OidcClient                  : credentials : #OidcCredentials# | code: 8fyXB8oY_gTflXh1i3iJ4WnSt5cwmwLlnWPbX5AKCst | accessToken: f4urbf-6txACnfGc31c0WnN5s1u0HNGPRipiDzKXvG0 | refreshToken: null | idToken: com.nimbusds.jwt.SignedJWT@9df610 |
+[DEBUG] org.pac4j.oidc.profile.OidcProfile                : adding => key: access_token / value: f4urbf-6txACnfGc31c0WnN5s1u0HNGPRipiDzKXvG0 / class com.nimbusds.oauth2.sdk.token.BearerAccessToken
+[DEBUG] org.pac4j.oidc.profile.OidcProfile                : adding => key: expiration / value: 1667576763662 / class java.lang.Long
+[DEBUG] org.pac4j.oidc.profile.OidcProfile                : adding => key: id_token / value: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtleXN0b3JlLUNIQU5HRS1NRSJ9.eyJzdWIiOiJtaWthIiwiYXRfaGFzaCI6ImxGQ0ZMbFE3MXkxVWkyVEJrWXRzbnciLCJhdWQiOiJteS1jbGllbnQiLCJleHAiOjE2Njc1NzY3NjMsImlhdCI6MTY2NzU3MzE2MywiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDkwIn0.kjX9xjHUO56CJEEoXPc2XdMIDcR8kIx6XyPqFY6Pe6ad3BBliuP6dJe7seFt4aN6muDKi0dfFpQmpT_sl5VnfVbYivFjF3DXdxVvOwfBmBiJUq_h9OlvaeEnPljCjIdcvQAbgEk4mzXGMSamNKEbxG8kCy1aLi49AI4I006ncS0JlbD1sqJdmVIQ0dBF03k1RWtDpXp8wGAiZZtaIY4usUUZYNT3JcNgzWFQhqMrmxde95GZqVYUpMHP2qo4dx0Hvib0kd64ZwuvSLuMlen7ygpdH4cDvmNS3yUsBFjc6UM8xzr2Sjq5tVZDra9RC1Nv8pM_eSETNTd-q9lk6bNOqQ / class java.lang.String
+[DEBUG] org.pac4j.oidc.profile.creator.OidcProfileCreator : User info response: status=200, content={"sub":"test","name":"test","preferred_username":"test","groups":["local-development"],"email":"test@example.ch"}
+```

@@ -1,0 +1,94 @@
+---
+title: "Digital asset management (DAM)"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/use-cases/Digital-asset-management/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Magnolia DXP > Digital asset management (DAM)
+---
+
+# Digital asset management (DAM)
+
+![Digital Asset Management overview](../../_images/features/useCase-dam.jpg)
+
+Magnolia’s Digital Asset Management (DAM) system organizes, stores, and retrieves images, videos, and documents efficiently. It combines robust native features with seamless integrations to external DAM tools, giving both content and technical teams flexibility and interoperability. AI-powered tagging, recognition, image generation, and editing enhance discovery, organization, and creative workflows.
+
+The DAM supports multiple storage models:
+
+-   Store assets entirely in Magnolia’s JCR
+
+-   Store binaries externally (for example, in Amazon S3) while keeping metadata in JCR via the [DAM module](../../../../dam/)
+
+-   Integrate with an external DAM solution using the [External DAM Integration Framework](../../Modules/extensions-and-frameworks/external-dam-integration-framework/)
+
+
+These options optimize performance and integration for different organizational needs.
+
+In the Assets app, you can [manage](../../Authoring/Managing-assets/) and [edit](../../Authoring/Editing-images/) assets, embed them in webpages, or link them as downloadable files.
+
+![Magnolia Assets app with Image Focal module installed](../../_images/dam-assets-app-with-focal.png)
+
+## [](#_features)Features
+
+The Assets app supports a wide range of capabilities for efficient asset management:
+
+-   **Upload** multiple assets at once, including .zip files to preserve folder structures
+
+-   **Store** all common media types (images, video, audio, documents) in one place
+
+-   **Use** assets on webpages and in custom content types
+
+-   **Edit** images directly in the app (crop, resize)
+
+-   **Tag** assets with AI-generated metadata for easy search and organization
+
+-   **Generate** images with AI assistance
+
+-   **Edit** images with AI-powered tools
+
+-   **Apply** metadata that follows Dublin Core by default, or extend with custom schemas
+
+-   **Control** access with permissions to ensure security and governance
+
+-   **Define** focal points, areas, and hotspots for responsive display and interactivity
+
+-   **Store** binaries externally while metadata remains in JCR
+
+-   **Support** animated GIFs natively
+
+
+The DAM focuses on practical, everyday asset management for websites, complementing rather than replacing advanced media tools for archiving or complex editing.
+
+## [](#_benefits)Benefits
+
+The Magnolia DAM offers advantages for both content and technical teams:
+
+-   **Centralize**: Keep all assets in one place, accessible across sites on a Magnolia instance.
+
+-   **Reuse**: Avoid duplicates by using the same asset across multiple pages; updates apply everywhere automatically.
+
+-   **Ensure consistency**: Update an asset once in the Assets app and changes propagate to all references.
+
+-   **Standardize**: Apply the same file properties each time the asset is referenced.
+
+-   **Integrate**: Connect external DAM systems or cloud storage (for example, S3, Bynder).
+
+-   **Improve performance**: Decouple binaries and metadata to reduce repository size and speed up publishing and search.
+
+-   **Enforce quality**: Make [metadata fields](../../Authoring/Managing-assets/#_asset_metadata) mandatory so editors include relevant content.
+
+
+| Module | CE ** | DX Core ** | Unbundled ** |
+| --- | --- | --- | --- |
+| **Digital Asset Management module** | ** | ** |  |
+| **DAM App module** | ** | ** |  |
+| **Imaging module** | ** | ** |  |
+| **Image Recognition module** |  |  | ** |
+| **Amplience DAM Connector module** |  |  | ** |
+| [Bynder extension](../../Modules/extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_bynder_connection_configuration) See Bynder’s [official site]({bynder}) to learn more. |  |  | ** |
+| **Celum DAM Connector module** |  |  | ** |
+| **Cloudinary External DAM module introduction** |  |  | ** |
+| **External DAM integration framework** |  |  | ** |
+| **Frontify DAM connector** |  |  | ** |
+| **Image Focal module** |  |  | ** |
+| **Image placement module** |  |  | ** |
+| **Microsoft DAM Connector module** |  |  | ** |

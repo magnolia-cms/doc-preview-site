@@ -8,37 +8,32 @@ breadcrumb: DX Core > Modules > Solr module
 
 # Solr module
 
-[Search and discovery](../../../use-cases/search-and-discovery/) Unbundled: Extension
-
-|     |     |
-| --- | --- |
 | **Edition** | DX Core |
+| --- | --- |
 | **License** | [MLA](https://www.magnolia-cms.com/mla.html) |
-| **Issues** | [MGNLEESOLR](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR) |
-| **Maven site** | [Solr](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fsolr%2Fmagnolia-content-indexer%2F10.0.0) |
-| **Latest** | 10.0.0<br><br>See [here](Installing-Apache-Solr/#_solr_module_compatibility_with_apache_solr) for module to Solr compatibility. |
+| **Issues** | ** [MGNLEESOLR](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR) |
+| **Maven site** | ** [Solr](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fsolr%2Fmagnolia-content-indexer%2F{magnolia-solr-search-provider-64}) |
+| **Latest** | {magnolia-solr-search-provider-64} See [here](../../../../RNs-6-4-3/Modules/List-of-modules/Solr-module/Installing-Apache-Solr/#_solr_module_compatibility_with_apache_solr) for module to Solr compatibility. |
 
-The Solr module (full name Magnolia Solr Search Provider Module) allows you to use [Apache Solr](http://solr.apache.org/), a standalone enterprise-grade search server with a REST-like API, for indexing and crawling Magnolia content, especially if you need to [manage assets](../../../Authoring/Managing-assets/#_how_to_handle_large_amount_of_assets) in high volumes (100,000+ DAM assets).
-
-> **Tip:** For a brief overview of Solr’s main features see the Solr search page.
-
-## [](#_module_structure)Module structure
-
-The module (parent) consists of five submodules. The first two – Content Indexer and Solr Search Provider – are required for correct functioning of the Solr search feature.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 40%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">ArtifactID</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-solr-search-provider-parent</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Parent reactor.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia-content-indexer</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Indexes Magnolia workspaces. It can also crawl a published website.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia-solr-search-provider</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides:</p></div><div class="ulist"><ul><li><p>Classes for connecting into Solr.</p></li><li><p>Classes for Solr indexing.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia-solr-templating</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides <a href="../../../Developing/Templating/Template-scripts/Templating-functions/solrfn/" class="xref page">solrfn</a> <a href="../../../Developing/Templating/Template-scripts/Templating-functions/" class="xref page">templating functions</a> for creating a search page based on results from Solr.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia-solr-workbench-compatibility</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides a Solr container for .</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Compatible with the old Magnolia 5 UI only.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia-solr-ui</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides support for 6 UI fields.</p></div></div></td></tr></tbody></table></div>
-
-> **Caution:** Version 2.0 of the Solr module didn’t support migration from the older version. The older version had to be uninstalled first.
+| ArtifactID | Description |
+| --- | --- |
+| `magnolia-solr-search-provider-parent` | Parent reactor. |
+| `magnolia-content-indexer` | Indexes Magnolia workspaces. It can also crawl a published website. |
+| `magnolia-solr-search-provider` | Provides: • Classes for connecting into Solr. • Classes for Solr indexing. |
+| `magnolia-solr-templating` | Provides [solrfn](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/solrfn/) [templating functions](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/) for creating a search page based on results from Solr. |
+| `magnolia-solr-workbench-compatibility` | Provides a Solr container for . ** Compatible with the old Magnolia 5 UI only. | ** | Compatible with the old Magnolia 5 UI only. |
+| ** | Compatible with the old Magnolia 5 UI only. |
+| `magnolia-solr-ui` | Provides support for 6 UI fields. |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.solr</groupId>
   <artifactId>magnolia-content-indexer</artifactId>
-  <version>10.0.0</version> (1)
+  <version>{magnolia-solr-search-provider-64}</version> (1)
 </dependency>
 ```
 
@@ -50,7 +45,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.solr</groupId>
   <artifactId>magnolia-solr-search-provider</artifactId>
-  <version>10.0.0</version> (1)
+  <version>{magnolia-solr-search-provider-64}</version> (1)
 </dependency>
 ```
 
@@ -62,7 +57,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.solr</groupId>
   <artifactId>magnolia-solr-templating</artifactId>
-  <version>10.0.0</version> (1)
+  <version>{magnolia-solr-search-provider-64}</version> (1)
 </dependency>
 ```
 
@@ -74,7 +69,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.solr</groupId>
   <artifactId>magnolia-solr-ui</artifactId>
-  <version>10.0.0</version> (1)
+  <version>{magnolia-solr-search-provider-64}</version> (1)
 </dependency>
 ```
 
@@ -86,7 +81,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.solr</groupId>
   <artifactId>magnolia-solr-workbench-compatibility</artifactId>
-  <version>10.0.0</version> (1)
+  <version>{magnolia-solr-search-provider-64}</version> (1)
 </dependency>
 ```
 
@@ -100,13 +95,13 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 
 For the installation information about Apache Solr server and for further configuration details see the following pages:
 
--   [Installing Apache Solr](Installing-Apache-Solr/)
+-   [Installing Apache Solr](../../../../RNs-6-4-3/Modules/List-of-modules/Solr-module/Installing-Apache-Solr/)
 
--   [App configuration with Solr](App-configuration-with-Solr/) (with the older Magnolia 5 UI)
+-   [App configuration with Solr](../../../../RNs-6-4-3/Modules/List-of-modules/Solr-module/App-configuration-with-Solr/) (with the older Magnolia 5 UI)
 
--   [Indexing and crawling a website with Solr](Indexing-and-crawling-a-website-with-Solr/)
+-   [Indexing and crawling a website with Solr](../../../../RNs-6-4-3/Modules/List-of-modules/Solr-module/Indexing-and-crawling-a-website-with-Solr/)
 
--   [Providing a Solr search](Providing-a-Solr-search/)
+-   [Providing a Solr search](../../../../RNs-6-4-3/Modules/List-of-modules/Solr-module/Providing-a-Solr-search/)
 
 
 Related topics

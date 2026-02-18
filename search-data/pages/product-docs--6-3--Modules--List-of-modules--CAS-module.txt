@@ -8,30 +8,22 @@ breadcrumb: DX Core > Modules > CAS module
 
 # CAS module
 
-[Security and authentication](../../../use-cases/security-and-authentication/) Unbundled: Extension
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLCAS](https://magnolia-cms.atlassian.net/browse/MGNLCAS) |
-| Maven site | [CAS](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmagnolia-module-cas%2F1.3.2) |
-| Latest | 1.3.2 |
-
-> **Note:** CAS module 1.1 requires LDAP Connector module 1.6 which authenticates against only one LDAP or Active Directory server at a time. If you have multiple servers and want users to be authenticated against all of them, use the earlier CAS module 1.0 and LDAP Connector 1.4.
-
-[Central Authentication Service](https://en.wikipedia.org/wiki/Central_Authentication_Service) (CAS) provides a single sign-on (SSO) protocol for the Web. CAS enables applications to authenticate a user without needing to access the user’s security credentials (login and password). The name CAS also refers to a software package that implements this protocol.
-
-To use the Magnolia CAS module, you must download the appropriate software. The CAS authentication system was originally created by Yale University to provide a secure means for an application to authenticate a user and, as such, still forms part of the [Jasig project](http://www.jasig.org/cas).
+| Maven site | [CAS](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmagnolia-module-cas%2F{magnolia-module-cas}) |
+| Latest | {magnolia-module-cas} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia</groupId>
   <artifactId>magnolia-module-cas</artifactId>
-  <version>1.3.2</version> (1)
+  <version>{magnolia-module-cas}</version> (1)
 </dependency>
 ```
 
@@ -72,7 +64,7 @@ In a real world situation, a company can use a customized Jasig CAS application 
 
 ## [](#_configuration)Configuration
 
-Note that at present the CAS module 1.1 requires and only works in conjunction with the [LDAP Connector Module 1.6](../LDAP-Connector-module/). The LDAP Connector is a standard JAAS login module and connects to any LDAP V3 supported directory service. In addition, before using the CAS functionality with Magnolia, you must have a Jasig CAS environment set up.
+Note that at present the CAS module 1.1 requires and only works in conjunction with the [LDAP Connector Module 1.6](../../../../RNs-6-4-3/Modules/List-of-modules/LDAP-Connector-module/). The LDAP Connector is a standard JAAS login module and connects to any LDAP V3 supported directory service. In addition, before using the CAS functionality with Magnolia, you must have a Jasig CAS environment set up.
 
 ### [](#_ldap_properties)ldap.properties
 
@@ -103,7 +95,7 @@ magnolia-cas {
 
 In the Magnolia Configuration app, set the `jaasChain` property to `magnolia-cas`:
 
-![Configuration](../../../_images/ADVT-cas-jass.png)
+![Configuration](../../../../RNs-6-4-3/_images/ADVT-cas-jass.png)
 
 > **Note:** You can’t use the LDAP Connector module in jaas.config because the module requires a user password that CAS doesn’t provide.
 
@@ -120,13 +112,13 @@ Go to **Configuration >**`/modules/cas/config`.
 4.  Set `casValidateURL` to point to your CAS server.
 
 
-![Configuration](../../../_images/ADVT-cas-config.png)
+![Configuration](../../../../RNs-6-4-3/_images/ADVT-cas-config.png)
 
 > **Warning:** Provided you haven’t changed this parameter in the CAS server implementation, you shouldn’t need to adjust casTicketRequestParameter.
 
 > **Warning:** 1.3+ You may add the parameter casServiceURL to the value of the casLogoutURL. This causes the CAS server to provide a link back to the application after logging out.
 
-![Logout](../../../_images/ADVT-cas-logout.png)
+![Logout](../../../../RNs-6-4-3/_images/ADVT-cas-logout.png)
 
 ### [](#_setting_the_cas_server)Setting the CAS server
 
@@ -137,7 +129,7 @@ Go to **Configuration >**`/modules/cas/config`.
 3.  The next time a user log outs and logs in again, they will be redirected to the CAS server login page.
 
 
-![Configuration](../../../_images/ADVT-cas-server.png)
+![Configuration](../../../../RNs-6-4-3/_images/ADVT-cas-server.png)
 
 ## [](#_troubleshooting)Troubleshooting
 

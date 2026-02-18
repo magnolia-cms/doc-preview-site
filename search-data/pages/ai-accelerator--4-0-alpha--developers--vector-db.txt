@@ -1,0 +1,111 @@
+---
+title: "Vector Database integration"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/vector-db/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Overview
+---
+
+# Vector Database integration
+
+The Vector Database integration provides semantic search and RAG (Retrieval-Augmented Generation) capabilities for Magnolia CMS. It enables AI to understand and retrieve relevant content based on meaning rather than just keywords.
+
+The system indexes your Magnolia content (pages, assets, and structured content) as vector embeddings, enabling semantic search, context-aware AI, multi-modal search across text and metadata, permission-aware results, and multi-site and multi-language support.
+
+The system uses an embedded architecture with PostgreSQL pgvector for vector storage. All embedding generation happens within Magnolia using the AI task framework. No external microservices required.
+
+| Component | Description |
+| --- | --- |
+| **context-core** *(Magnolia module)* | Content extraction, indexing triggers, embedding generation, secure search, and REST APIs. Runs within Magnolia JVM. |
+| **context-pgvector** *(Magnolia module)* | PostgreSQL pgvector integration for vector storage and similarity search. |
+| **PostgreSQL + pgvector** *(Database)* | Stores embeddings and performs similarity search. Uses the pgvector extension for efficient vector operations. |
+
+## [](#_key_features)Key features
+
+### [](#_content_indexing)Content indexing
+
+-   **Automatic indexing**: Content is automatically indexed when created or modified via JCR observation
+
+-   **Manual re-indexing**: Trigger full workspace re-indexing via dashboard or REST API
+
+-   **Configurable**: Choose which workspaces, paths, and content types to index
+
+-   **Multi-language**: Create separate embeddings per language for multilingual sites
+
+
+### [](#_search_and_retrieval)Search and retrieval
+
+-   **Three-layer security**:
+
+    -   Layer 1: ACL pre-filtering at query time
+
+    -   Layer 2: JCR permission verification on results
+
+    -   Layer 3: TF-IDF relevance reranking
+
+
+-   **Workspace filtering**: Search across multiple workspaces with permission checks
+
+-   **Metadata filtering**: Filter by language, content type, workspace, and custom metadata
+
+
+### [](#_management)Management
+
+-   **Context Dashboard**: React-based UI for monitoring indexing status, viewing sync state, and triggering re-indexing
+
+-   **Job tracking**: Track indexing job progress with callbacks and status updates
+
+-   **Startup validation**: Automatic validation on startup to detect data loss and trigger recovery
+
+-   **Stale job cleanup**: Automatically clean up jobs from crashed instances
+
+
+| Feature | Status |
+| --- | --- |
+| Core extraction (PAGE, ASSET, CONTENT) | ✅ Complete |
+| Three-layer security model (ACL, JCR verification, TF-IDF reranking) | ✅ Complete |
+| Multi-language indexing | ✅ Complete |
+| Job tracking and monitoring | ✅ Complete |
+| Context Dashboard UI | ✅ Complete |
+| REST APIs | ✅ Complete |
+| Property discovery strategies (ContentType, Editor, Delivery) | ✅ Complete |
+
+## [](#_getting_started)Getting started
+
+To get started with Vector Database integration:
+
+1.  [Install and configure](installation/) the module
+
+2.  [Configure indexing](configuration/) for your workspaces
+
+3.  [Configure your embedding provider](providers/) (OpenAI, Azure, AWS Bedrock, or Gemini)
+
+4.  [Index your content](indexing/) via dashboard or REST API
+
+5.  [Search your content](search/) via REST API or AI tasks
+
+
+## [](#_use_cases)Use cases
+
+-   **Author assistance**: "Find similar pages to this one", "Generate SEO metadata based on existing content"
+
+-   **Content discovery**: "Find all blog posts about sustainability", "Show me assets related to this topic"
+
+-   **AI chatbots**: Provide relevant context for chat-based authoring assistance
+
+-   **Content audits**: "Find pages missing meta descriptions", "Identify outdated content"
+
+-   **Recommendations**: "Suggest related articles", "Find the best hero image for this page"
+
+
+## [](#_next_steps)Next steps
+
+-   [Installation & Setup](installation/)
+
+-   [Configuration Guide](configuration/)
+
+-   [Indexing Content](indexing/)
+
+-   [Searching Content](search/)
+
+-   [Security & Permissions](security/)

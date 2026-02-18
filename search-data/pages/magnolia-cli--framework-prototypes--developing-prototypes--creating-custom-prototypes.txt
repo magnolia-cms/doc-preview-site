@@ -1,0 +1,830 @@
+---
+title: "Creating custom prototypes"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/developing-prototypes/creating-custom-prototypes/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Creating custom prototypes
+---
+
+# Creating custom prototypes
+
+This page describes how you can create custom CLI framework prototypes.
+
+## [](#_prototypehelper_class)`PrototypeHelper` class
+
+The `PrototypeHelper` class is responsible for the process of creation of a component or page based on a framework prototype. It can be customized through the `config.js` file in the prototype directory.
+
+### [](#_key_class_properties)Key class properties
+
+-   `options: IPrototypeHelperOptions`: Options passed by the user and other arguments provided by the plugin.
+
+    -   `context`: Specifies "components" or "pages".
+
+    -   `framework`: Name or path of the framework used.
+
+    -   `frameworkFolder`: Directory path where the downloaded framework is stored.
+
+    -   `lightModulePath`: Path to the project’s light module folder.
+
+    -   `prototype`: Prototype name or a boolean flag indicating that user input is required.
+
+    -   `type`: Component or page type (for example, `js`, `ts`).
+
+        > **Note:** The prototype must contain a template of the chosen type.
+
+    -   `componentMappingFilePath`: Path to a file containing the `componentMapping` or `componentMappings` property, where the new component or page will be registered.
+
+    -   `spaPath`: Destination path for the new component or page.
+
+    -   `templateData`: Optional key-value pairs containing additional `Handlebars` data, provided by the user in `mgnl.config.js`, to be merged with `this.templateData`.
+
+    -   `templateArgs`: Optional key-value pairs modifying the behavior of the `PrototypeHelper`, provided by the user in `mgnl.config.js`, to be merged with `this.templateArgs`.
+
+
+-   `templateData: ITemplateData`: Key-value pairs containing additional `Handlebars` data used in component or page creation. It’s possible to provide additional values in the `config.js` file. The default key-value pairs are:
+
+    -   `name`: Name provided by the user.
+
+    -   `exportName`: Same as `name`, but can be modified in `config.js`.
+
+    -   `lightModuleName`: Derived from the `options.lightModulePath` property.
+
+    -   `magnoliaHost`: Default is `[http://localhost:8080](http://localhost:8080)`, can be used in prototypes to point to a resource stored on the server.
+
+    -   `templateScript`: Path to the template script. The default value is `/${lightModuleName}/templates/${options.context}/${name}.ftl` (FreeMarker only).
+
+    -   `modelName`: Camelcased and capitalized version of the name (FreeMarker only).
+
+    -   `lightDevModuleFolder`: Camelcased and capitalized version of the name (FreeMarker only).
+
+    -   `dialog`: A combination of `lightModuleName`, `options.context`, and `name`. For example `${lightModuleName}:${options.context}/${name}`.
+
+        > **Note:** The property can differ based on the light module folder. The correct value is determined in the start function after async getPathToPrototypeLM(pathToPrototype: string): Promise<string> is called. Consider dialog as a reserved key that’s not to be modified.
+
+    -   `package`: Contains `package.json` data for headless frameworks.
+
+        > **Note:** The property is available only for headless frameworks (containing the spa folder). The value is determined in the start function after async getPathToPrototypeSPA(pathToPrototype: string): Promise<string> is called. Consider package as a reserved key.
+
+
+-   `templateArgs: ITemplateArgs`: Arguments that modify `PrototypeHelper` behavior.
+
+    -   `useDefaultLightModuleTemplate`: Indicates the use of a default light module template if the frameworks prototype doesn’t provide its own custom light module template. If set to `false`, the prototype must provide a custom light module template folder. Default is `true`.
+
+    -   `removeExtension`: Removes file extensions from the import strings in mappings. Default is `false`.
+
+    -   `namedImport`: Uses named imports if set to `true`. Default is `false`.
+
+    -   `importSource`: Specifies which file to use as the import source.
+
+
+-   `preparedComponent: IPreparedComponentItem[]`: Details of processed prototype files.
+
+    -   `srcPath`: Source path in the prototype folder.
+
+    -   `destPath`: Destination path for the created component.
+
+    -   `hbDestPath`: Handlebars-processed destination path.
+
+    -   `content`: Raw content of the file.
+
+    -   `hbContent`: Handlebars-processed content.
+
+
+-   `configUpdates: any`: Object for properties to be added to `mgnl.config.js`.
+
+    -   `sharedProps`: Shared properties to be added.
+
+    -   `pluginProps`: Plugin-specific properties for the [Create Component plugin](../../../plugins/available-plugins/create-component-plugin/) or the [Create Page plugin](../../../plugins/available-plugins/create-page-plugin/).
+
+
+
+### [](#_key_class_methods)Key class methods
+
+-   `async loadPrototypeConfigFile(pathToPrototype: string): Promise<void>`
+
+-   `async loadTemplateDataAndArgsFromOptions(): Promise<void>`
+
+-   `async getPathToPrototype(): Promise<string>`
+
+-   `async getPathToPrototypeLM(pathToPrototype: string): Promise<string>`
+
+-   `async getCorrectDialogValue(pathToPrototypeLM: string): Promise<string>`
+
+-   `async validateHeadlessOptions(): Promise<void>`
+
+-   `async getPathToPrototypeSPA(pathToPrototype: string): Promise<string>`
+
+-   `async getProjectPJ(): Promise<any>`
+
+-   `async prepareComponentFromPrototype(prototypeTemplatePath: string, componentDestinationPath: string): Promise<void>`
+
+-   `async getMissingPlaceholders(fileContent: string): Promise<void>`
+
+-   `async preventDuplicates(): Promise<void>`
+
+-   `async create(): Promise<void>`
+
+-   `async buildMappingObject(): Promise<string>`
+
+-   `async buildImportObject(): Promise<string>`
+
+-   `async getImportString(name: string, source: string): Promise<string>`
+
+-   `async getMappingString(name: string, source: string): Promise<string>`
+
+-   `async promptForPotentialDuplicity(item: { first: string | undefined, second: string | undefined }, condition: boolean, stringBuilder: (arg1: string, arg2: string) ⇒ Promise<string>, expectedString: string, msgConfig: {type: 'import' | 'mapping', first: string, second: string}): Promise<string>`
+
+-   `async getAndValidateImportString(componentMappingFileContent: string, importObj: { name: string, source: string }): Promise<string>`
+
+-   `async getAndValidateMappingString(match: RegExpMatchArray | null, mappingObj: { id: string, name: string, postfix: string }): Promise<string>`
+
+-   `async promptUser(msg: string): Promise<boolean>`
+
+-   `async writeComponentMapping(importObj: {name: string, source: string}, mappingObj: { id: string, name: string, postfix: string }): Promise<void>`
+
+
+For more information about the properties and methods, see [prototype-helper.ts](https://gitlab.magnolia-platform.com/magnolia-cli/plugins/cli-template-helper/-/blob/main/lib/prototype-helper.ts) and the example below.
+
+## [](#_example)Example
+
+> **Note:** Following example can also be found in git.
+
+Let’s assume you want to create custom `_default` and `complex` prototypes of components and pages. The folder with the prototypes should look like this:
+
+```shell
+cli-example-prototypes/
+├── package.json (1)
+├── components/
+│ └── _default/
+│   └── ...
+│ └── complex/
+│   └── ...
+├── pages/
+│ └── _default/
+│   └── ...
+│ └── complex/
+│   └── ...
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `package.json` file is not required. |
+
+### [](#_package_json)`package.json`
+
+Create the `package.json` file if:
+
+-   you need to store the project in an npm repository, or
+
+-   you want to use the `PrototypeHelper` class (from the `@magnolia/cli-template-helper` package) to test your prototypes.
+
+
+```json
+{
+  "name": "cli-example-prototypes",
+  "version": "1.0.0",
+  "description": "Example components and pages prototypes for @magnolia/cli-create-component-plugin and @magnolia/cli-create-page-plugin",
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@magnolia/cli-template-helper": "preview",
+    "@types/fs-extra": "^11.0.4",
+    "fs-extra": "^11.2.0",
+    "jest": "^29.7.0"
+  }
+}
+```
+
+Otherwise, you can only create the `components` and `pages` folders.
+
+### [](#_component_prototypes)Component prototypes
+
+#### [](#_default_component_prototype)"\_default" component prototype
+
+```shell
+cli-example-prototypes/
+├── components/
+│ └── _default/
+│   └── spa/
+│     └── js/
+│       └── {{name}}.js.hbs
+│     └── jsx/
+│       └── {{name}}.jsx.hbs
+│     └── tsx/
+│       └── {{name}}.tsx.hbs
+├── ...
+```
+
+Create the following files with the content shown below:
+
+-   `components/_default/spa/js/{{name}}.js.hbs`
+
+-   `components/_default/spa/jsx/{{name}}.jsx.hbs`
+
+    ```javascript
+    import React from 'react';
+
+    const {{name}} = props => <h2>{props.text}</h2>;
+
+    export default {{exportName}};
+    ```
+
+-   `components/_default/spa/tsx/{{name}}.tsx.hbs`
+
+    ```javascript
+    import React from 'react';
+
+    interface I{{name}}Props {
+      text: string;
+    }
+
+    const {{name}} = (props: I{{name}}Props) => <h2>{props.text}</h2>;
+
+    export default {{exportName}};
+    ```
+
+
+#### [](#_complex_component_prototype)"complex" component prototype
+
+```shell
+cli-example-prototypes/
+├── components/
+│ └── complex/
+│   └── light-module/
+│   │ └── dialogs/
+│   │  │ └── components/
+│   │  │   └── {{name}}.yaml.hbs
+│   │  └── templates/
+│   │    └── components/
+│   │      └── {{name}}.yaml.hbs
+│   └── spa/
+│   │  └── js/
+│   │  │ └── {{name}}/
+│   │  │   └── {{name}}.js.hbs
+│   │  │   └── {{name}}.stories.js.hbs
+│   │  │   └── {{name}}.model.js.hbs
+│   │  └── jsx/
+│   │  │ └── {{name}}/
+│   │  │   └── {{name}}.jsx.hbs
+│   │  │   └── {{name}}.stories.jsx.hbs
+│   │  │   └── {{name}}.model.js.hbs
+│   │  └── tsx/
+│   │    └── {{name}}/
+│   │      └── {{name}}.tsx.hbs
+│   │      └── {{name}}.stories.tsx.hbs
+│   │      └── {{name}}.model.ts.hbs
+│   └── config.js
+├── ...
+```
+
+Create the following files the content shown below:
+
+-   `components/complex/light-module/dialogs/components/{{name}}.yaml.hbs`
+
+    ```yaml
+    label: {{name}}
+    form:
+      properties:
+        title:
+          label: title
+          $type: textField
+          i18n: true
+        description:
+          label: description
+          $type: textField
+          i18n: true
+        image:
+          label: image
+          $type: damLinkField
+    ```
+
+-   `components/complex/light-module/templates/components/{{name}}.yaml.hbs`
+
+    ```yaml
+    title: {{name}}
+    dialog: {{dialog}}
+    ```
+
+-   `components/complex/spa/js/{{name}}/{{name}}.stories.js`
+
+-   `components/complex/spa/jsx/{{name}}/{{name}}.stories.jsx`
+
+    ```javascript
+    import React from 'react';
+    import {{name}} from './{{name}}';
+    import { {{name}}Model } from './{{name}}.model';
+
+    export default {
+      title: '{{name}}',
+      component: {{name}},
+    };
+
+    const Template = (args) => <{{name}} {...args} />;
+
+    export const Default = Template.bind({});
+    Default.args = new {{name}}Model('Title text', 'Description text', {"@link": "Add link to image here, e.g.: \"/magnoliaAuthor/dam/jcr:7279fb99-094f-452b-ac4c-3b4defb56203\""});
+    ```
+
+-   `components/complex/spa/js/{{name}}/{{name}}.js`
+
+-   `components/complex/spa/jsx/{{name}}/{{name}}.jsx`
+
+    ```javascript
+    import React from 'react';
+    import PropTypes from 'prop-types';
+    import { {{name}}Model } from './{{name}}.model';
+    import randomImage from '../images/{{name}}.png';
+
+    const {{name}} = ( props ) => {
+      return (
+        <div>
+          <img src={ '{{magnoliaHost}}' + props.image['@link']} alt="image" />
+          <h2>{props.name}</h2>
+          <p>{props.description}</p>
+          <img src={randomImage} alt="randomImage" />
+        </div>
+      );
+    };
+
+    {{name}}.propTypes = PropTypes.instanceOf({{name}}Model).isRequired;
+
+    export default {{name}};
+    ```
+
+-   `components/complex/spa/js/{{name}}/{{name}}.model.js`
+
+-   `components/complex/spa/jsx/{{name}}/{{name}}.model.js`
+
+    ```javascript
+    export class {{name}}Model {
+      constructor(name, description, image) {
+        this.name = name;
+        this.description = description;
+        this.image = image;
+      }
+    }
+    ```
+
+-   `components/complex/spa/tsx/{{name}}/{{name}}.stories.tsx`
+
+    ```typescriptjsx
+    import React from 'react';
+    import {{name}}, { {{name}}Props } from './{{name}}';
+    import { {{name}}Model } from './{{name}}.model';
+    import { Story, Meta } from '@storybook/react';
+
+    export default {
+        title: '{{name}}',
+        component: {{name}},
+    } as Meta;
+
+    const Template: Story<{{name}}Props> = (args) => <{{name}} {...args} />;
+
+    export const Default = Template.bind({});
+    Default.args = new {{name}}Model('Title text', 'Description text', {"@link": "Add link to image here, e.g.: \"/magnoliaAuthor/dam/jcr:7279fb99-094f-452b-ac4c-3b4defb56203\""});
+    ```
+
+-   `components/complex/spa/tsx/{{name}}/{{name}}.tsx`
+
+    ```typescriptjsx
+    import React from 'react';
+    import { {{name}}Model } from './{{name}}.model';
+    import randomImage from '../images/{{name}}.png';
+
+    const {{name}}: React.FC<{{name}}Model> = ( props ) => {
+        return (
+            <div>
+                <img src={ '{{magnoliaHost}}' + props.image['@link']} alt="image" />
+                <h2>{props.name}</h2>
+                <p>{props.description}</p>
+                <img src={randomImage} alt="randomImage" />
+            </div>
+        );
+    };
+
+    export default {{name}};
+    ```
+
+-   `components/complex/spa/tsx/{{name}}/{{name}}.model.ts`
+
+    ```typescriptjsx
+    export class {{name}}Model {
+        name: string;
+        description: string;
+        image: any;
+
+        constructor(name: string, description: string, image: any) {
+            this.name = name;
+            this.description = description;
+            this.image = image;
+        }
+    }
+    ```
+
+-   `components/complex/config.js`
+
+    ```javascript
+    // WARNING: requires node v18 and higher to use native fetch function
+    import path from "path";
+    import * as fs from "fs";
+    import { pipeline } from 'stream/promises';
+
+    export function getTemplateArgs() {
+        return {
+            importSource: `{{name}}.${this.options.type}.hbs`
+        }
+    }
+
+    export async function create(superCreate) {
+        // Call original create from PrototypeHelper class
+        superCreate();
+        // Download random image from https://source.unsplash.com and add it to images folder
+        try {
+            const url = `https://source.unsplash.com/random/200x200`;
+            const response = await fetch(url);
+            if (!response.ok) {
+                console.error(`Failed to fetch image: ${response.statusText}`);
+                return
+            }
+            const folderPath = path.join(this.options.spaPath, 'images')
+            if (!fs.existsSync(folderPath)) {
+                fs.mkdirSync(folderPath, {recursive: true});
+            }
+            const filePath = path.join(folderPath, `${this.templateData.name}.png`);
+            const fileStream = fs.createWriteStream(filePath);
+            await pipeline(response.body, fileStream);
+            console.log(`Image successfully downloaded to: ${filePath}`);
+        } catch (error) {
+            console.error('Error downloading random image:', error);
+        }
+    }
+    ```
+
+    > **Note:** The importSource parameter in the getTemplateArgs function is required to specify which file should be used as the import source in the components mapping file. This specification is crucial because the complex prototype includes multiple files within the spa folder.
+
+
+### [](#_page_prototypes)Page prototypes
+
+#### [](#_default_pages_prototype)"\_default" pages prototype
+
+```shell
+cli-example-prototypes/
+├── pages/
+│ └── _default/
+│   └── light-module/
+│     └── dialogs/
+│       └── pages/
+│         └── {{name}}.yaml.hbs
+│     └── templates/
+│       └── pages/
+│         └── {{name}}.yaml.hbs
+│   └── spa/
+│     └── js/
+│       └── {{name}}.js.hbs
+│     └── jsx/
+│       └── {{name}}.jsx.hbs
+│     └── tsx/
+│       └── {{name}}.tsx.hbs
+├── ...
+```
+
+Create the following files with the content shown below:
+
+-   `pages/_default/light-module/dialogs/pages/{{name}}.yaml.hbs` file
+
+    ```yaml
+    label: Page Properties
+    form:
+      properties:
+        title:
+          label: Title
+          $type: textField
+          i18n: true
+    ```
+
+-   `pages/_default/light-module/templates/pages/{{name}}.yaml.hbs` file
+
+    ```yaml
+    renderType: spa
+    class: info.magnolia.rendering.spa.renderer.SpaRenderableDefinition
+
+    title: {{name}}
+    dialog: {{dialog}}
+    baseUrl: http://localhost:3000
+    routeTemplate: '/{language}\{{@path}}'
+    # templateScript: /{{lightModuleName}}/webresources/build/index.html
+
+    areas:
+      main:
+        title: Main Area
+
+      extras:
+        title: Extras Area
+    ```
+
+-   `pages/_default/spa/js/{{name}}.js.hbs`
+
+-   `pages/_default/spa/jsx/{{name}}.jsx.hbs`
+
+    ```javascript
+    import React from 'react';
+    import { EditableArea } from '@magnolia/react-editor';
+
+    const {{name}} = props => {
+      const { main, extras, title } = props;
+
+      return (
+        <div className="{{name}}">
+          <div>[Basic Page]</div>
+          <h1>{title || props.metadata['@name']}</h1>
+
+          <main>
+            <div>[Main Area]</div>
+            {main && <EditableArea className="Area" content={main} />}
+          </main>
+
+          <div>
+            <div>[Secondary Area]</div>
+            {extras && <EditableArea className="Area" content={extras} />}
+          </div>
+        </div>
+      )
+    };
+
+    export default {{name}};
+    ```
+
+-   `pages/_default/spa/tsx/{{name}}.tsx.hbs`
+
+    ```typescriptjsx
+    import React from 'react';
+    // @ts-ignore
+    import { EditableArea } from '@magnolia/react-editor';
+
+    interface I{{name}} {
+      metadata?: any;
+      main?: any;
+      extras?: any;
+      title?: string;
+    }
+
+    const {{name}} = (props: I{{name}}) => {
+      const { main, extras, title } = props;
+
+      return (
+        <div className="{{name}}">
+          <div>[Basic Page]</div>
+          <h1>{title || props.metadata['@name']}</h1>
+
+          <main>
+            <div>[Main Area]</div>
+            {main && <EditableArea className="Area" content={main} />}
+          </main>
+
+          <div>
+            <div>[Secondary Area]</div>
+            {extras && <EditableArea className="Area" content={extras} />}
+          </div>
+        </div>
+      )
+    };
+
+    export default {{name}};
+    ```
+
+
+#### [](#_complex_pages_prototype)"complex" pages prototype
+
+```shell
+cli-example-prototypes/
+├── pages/
+│ └── complex/
+│   └── light-module/
+│   │ └── dialogs/
+│   │  │ └── pages/
+│   │  │   └── {{name}}.yaml.hbs
+│   │  └── templates/
+│   │    └── pages/
+│   │      └── {{name}}.yaml.hbs
+│   └── spa/
+│   │  └── js/
+│   │  │ └── {{name}}/
+│   │  │   └── {{name}}.js.hbs
+│   │  │   └── {{name}}.model.js.hbs
+│   │  └── jsx/
+│   │  │ └── {{name}}/
+│   │  │   └── {{name}}.jsx.hbs
+│   │  │   └── {{name}}.model.js.hbs
+│   │  └── tsx/
+│   │    └── {{name}}/
+│   │      └── {{name}}.tsx.hbs
+│   │      └── {{name}}.model.tsx.hbs
+│   └── config.js
+├── ...
+```
+
+Create the following files with the content shown below:
+
+-   `pages/complex/light-module/dialogs/pages/{{name}}.yaml.hbs`
+
+    ```yaml
+    label: Page Properties
+    form:
+      properties:
+        title:
+          $type: textField
+          i18n: true
+        navigationTitle:
+          $type: textField
+          i18n: true
+        windowTitle:
+          $type: textField
+          i18n: true
+        abstract:
+          $type: textField
+          rows: 5
+          i18n: true
+        keywords:
+          $type: textField
+          rows: 3
+          i18n: true
+        description:
+          $type: textField
+          rows: 5
+          i18n: true
+      layout:
+        $type: tabbedLayout
+        tabs:
+          - name: tabMain
+            fields:
+              - name: title
+              - name: navigationTitle
+              - name: windowTitle
+              - name: abstract
+          - name: tabMeta
+            fields:
+              - name: keywords
+              - name: description
+    ```
+
+-   `pages/complex/light-module/templates/pages/{{name}}.yaml.hbs`
+
+    ```handlebars
+    renderType: spa
+    class: info.magnolia.rendering.spa.renderer.SpaRenderableDefinition
+
+    title: {{name}}
+    dialog: {{dialog}}
+    baseUrl: http://localhost:3000
+    routeTemplate: '/{language}\{{@path}}'
+    # templateScript: /{{lightModuleName}}/webresources/build/index.html
+
+    areas:
+      main:
+        title: Main Area
+
+      extras:
+        title: Extras Area
+    ```
+
+-   `pages/complex/spa/js/{{name}}/{{name}}.js.hbs`
+
+-   `pages/complex/spa/jsx/{{name}}/{{name}}.jsx.hbs`
+
+    ```handlebars
+    import React from 'react';
+    import PropTypes from 'prop-types';
+    import { EditableArea } from '@magnolia/react-editor';
+    import { Helmet } from 'react-helmet';
+    import { {{name}}Model } from './{{name}}.model'
+
+    const {{name}} = props => {
+      const { main, extras, title, navigationTitle, description, keywords, abstract } = props;
+
+      return (
+        <div className="{{name}}">
+          <Helmet>
+            <title>{title}</title>
+            <meta name="description" content={description} />
+            <meta name="keywords" content={keywords} />
+            <meta name="abstract" content={abstract} />
+          </Helmet>
+          <h1>{navigationTitle}</h1>
+          <p>{description}</p>
+
+          <div>[Basic Page]</div>
+          <h1>{title || props.metadata['@name']}</h1>
+
+          <main>
+            <div>[Main Area]</div>
+            {main && <EditableArea className="Area" content={main} />}
+          </main>
+
+          <div>
+            <div>[Secondary Area]</div>
+            {extras && <EditableArea className="Area" content={extras} />}
+          </div>
+        </div>
+      )
+    };
+
+    {{name}}.propTypes = PropTypes.instanceOf({{name}}Model).isRequired;
+
+    export default {{name}};
+    ```
+
+-   `pages/complex/spa/js/{{name}}/{{name}}.js.hbs`
+
+-   `pages/complex/spa/jsx/{{name}}/{{name}}.jsx.hbs`
+
+    ```handlebars
+    export class {{name}}Model {
+      constructor(metadata, main, extras, title, navigationTitle, windowTitle, abstract, keywords, description) {
+        this.metadata = metadata;
+        this.main = main;
+        this.extras = extras;
+        this.title = title;
+        this.navigationTitle = navigationTitle;
+        this.windowTitle = windowTitle;
+        this.abstract = abstract;
+        this.keywords = keywords;
+        this.description = description;
+      }
+    }
+    ```
+
+-   `pages/complex/spa/tsx/{{name}}/{{name}}.tsx.hbs`
+
+    ```handlebars
+    import React from 'react';
+    import PropTypes from 'prop-types';
+    //@ts-ignore
+    import { EditableArea } from '@magnolia/react-editor';
+    import { Helmet } from 'react-helmet';
+    import { {{name}}Model } from './{{name}}.model'
+
+    const {{name}} = props => {
+      const { main, extras, title, navigationTitle, description, keywords, abstract } = props;
+
+      return (
+        <div className="{{name}}">
+          <Helmet>
+            <title>{title}</title>
+            <meta name="description" content={description} />
+            <meta name="keywords" content={keywords} />
+            <meta name="abstract" content={abstract} />
+          </Helmet>
+          <h1>{navigationTitle}</h1>
+          <p>{description}</p>
+
+          <div>[Basic Page]</div>
+          <h1>{title || props.metadata['@name']}</h1>
+
+          <main>
+            <div>[Main Area]</div>
+            {main && <EditableArea className="Area" content={main} />}
+          </main>
+
+          <div>
+            <div>[Secondary Area]</div>
+            {extras && <EditableArea className="Area" content={extras} />}
+          </div>
+        </div>
+      )
+    };
+
+    {{name}}.propTypes = PropTypes.instanceOf({{name}}Model).isRequired;
+
+    export default {{name}};
+    ```
+
+-   `pages/complex/spa/tsx/{{name}}/{{name}}.model.ts.hbs` file
+
+    ```handlebars
+    export class testPageModel {
+      constructor(metadata: any, main: any, extras: any, title: string, navigationTitle: string, windowTitle: string, abstract: string, keywords: string, description: string) {
+        this.metadata = metadata;
+        this.main = main;
+        this.extras = extras;
+        this.title = title;
+        this.navigationTitle = navigationTitle;
+        this.windowTitle = windowTitle;
+        this.abstract = abstract;
+        this.keywords = keywords;
+        this.description = description;
+      }
+    }
+    ```
+
+-   `complex/spa/config.js.hbs`
+
+    ```handlebars
+    export function getTemplateArgs() {
+        return {
+            importSource: `{{name}}.${this.options.type}.hbs`
+        }
+    }
+    ```

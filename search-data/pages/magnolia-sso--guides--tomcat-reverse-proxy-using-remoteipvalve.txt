@@ -1,0 +1,25 @@
+---
+title: "SSO redirect URLs and reverse proxies"
+url: https://docs.magnolia-cms.com/magnolia-sso/guides/tomcat-reverse-proxy-using-remoteipvalve/
+category: Modules
+version: modules
+breadcrumb: SSO module > SSO redirect URLs and reverse proxies
+---
+
+# SSO redirect URLs and reverse proxies
+
+When deployed behind a load balancer or reverse proxy, Magnolia may infer SSO redirect URLs incorrectly. This can cause unnecessary redirects, a protocol downgrade to HTTP, or no longer match authorized redirect URLs configured in the IDP in the worst case, breaking the login flow.
+
+As stated in our [security best practices](../../../product-docs/RNs-6-4-3/Administration/Security/Security-best-practices/), using `HTTPS` is always recommended for communication. Therefore, we advise you to use [RemoteIpValve](https://tomcat.apache.org/tomcat-8.5-doc/api/org/apache/catalina/valves/RemoteIpValve.html) in Tomcat to handle requests coming through a proxy or load balancer.
+
+In particular, it replaces the apparent client IP address using headers such as `X-Forwarded-For` and the apparent scheme (HTTP/HTTPS) via headers like `X-Forwarded-Proto`. It ensures that any redirect URL matches the original request URL with the correct scheme by default for all requests.
+
+You can find the default configuration in the `server.xml` file.
+
+/apache-tomcat/conf/server.xml
+
+```none
+...
+<Valve className="org.apache.catalina.valves.RemoteIpValve" />
+...
+```

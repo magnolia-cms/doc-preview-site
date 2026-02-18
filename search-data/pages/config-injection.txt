@@ -8,48 +8,16 @@ breadcrumb: Configuration Injection module
 
 # Configuration Injection module
 
-
-
-Edition
-
-Incubator (*services*)
-
-Issues
-
-Coming soon!
-
-Git
-
-[Git](https://gitlab.magnolia-platform.com/ps/services/config-injection)
-
-Latest
-
-1.2
-
-> **Note:** Compatible with Magnolia 6.2.
-
-The **Configuration Injection** module lets you create and modify Magnolia configuration through a Magnolia property when Magnolia starts up. This can come in handy when running Magnolia in a container or when you want to modify the configuration of a Magnolia instance on starting up.
-
-You can:
-
--   Set your Magnolia license key
-
--   Enable or disable publication receivers
-
--   Add nodes in the config workspace
-
--   Set or modify properties of nodes in the config workspace
-
--   Bootstrap content from a file into any workspace
-
--   Change the ordering of nodes
-
-
-> **Warning:** This module is at the INCUBATOR level.
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | Coming soon! |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/services/config-injection) |
+| Latest | 1.2 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
@@ -173,8 +141,6 @@ There are a couple of things to note about this example:
 
 -   The system property value is enclosed in double quotes to ensure is is correctly interpreted by the shell.
 
-
-## [](#_changelog)Changelog
 
 | Version | Notes |
 | --- | --- |

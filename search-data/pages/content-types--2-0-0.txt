@@ -1,0 +1,50 @@
+---
+title: "Content Types module"
+url: https://docs.magnolia-cms.com/content-types/2.0.0/
+category: Modules
+version: modules
+breadcrumb: Content Types module
+---
+
+# Content Types module
+
+| **License** | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| --- | --- |
+| **Issues** | [MGNLCT](https://magnolia-cms.atlassian.net/browse/MGNLCT) |
+| **Git** | Modules / [content-types](https://gitlab.magnolia-platform.com/pd/modules/content-types) |
+| **Maven site** | [Content Types](https://nexus.magnolia-cms.com/content/sites/magnolia.public.sites/modules/magnolia-content-types-parent/) |
+| **Latest** | 2.0.0 |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your bundle:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.types</groupId>
+  <artifactId>magnolia-content-types</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.types</groupId>
+  <artifactId>magnolia-content-types-jcr</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+See the following pages for more information about:
+
+-   [Content type definitions](../../product-docs/RNs-6-4-3/Developing/Content-Types/Content-type-definition/)
+
+    -   [Content type Data source definition](../../product-docs/RNs-6-4-3/Developing/Content-Types/Content-type-definition/Content-type-Data-source-definition/)
+
+    -   [Content type Model definition](../../product-docs/RNs-6-4-3/Developing/Content-Types/Content-type-definition/Content-type-Model-definition/)
+
+
+
+> **Tip:** Follow the Content Types tutorial to learn how to use Magnolia content types, create content type definitions and corresponding apps.

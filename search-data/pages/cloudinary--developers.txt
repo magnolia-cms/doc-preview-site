@@ -1,0 +1,107 @@
+---
+title: "Cloudinary External DAM module"
+url: https://docs.magnolia-cms.com/cloudinary/developers/
+category: Modules
+version: modules
+breadcrumb: Cloudinary External DAM module > Install the module
+---
+
+# Cloudinary External DAM module
+
+[Cloudinary External DAM module repo](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/cloudinary) [Jira: CLOUDINARY](https://magnolia-cms.atlassian.net/browse/CLOUDINARY)
+
+The **Cloudinary External DAM** module lets you connect to Magnolia with Cloudinary. It consists of the Cloudinary DAM Connector and the Cloudinary Media Widget Integration module.
+
+The **Cloudinary DAM Connector** module provides a connector to [Cloudinary](https://cloudinary.com/) to use assets form this service. It provides an app to browse and manage assets, and a dialog to use these assets in your website.
+
+The **Cloudinary Media Widget Integration** module lets you integrate Cloudinary asset management directly into your dialogs and apps. With this widget, you can select, upload, and even remove assets from within a dialog.
+
+> **Tip:** This project exposes the cloudinaryWidgetField field. This field is used as a replacement for the Cloudinary damLinkfield to select assets from your Cloudinary account.
+
+> **Warning:** This module is at the INCUBATOR level.The richTextField does not support selecting external DAM assets. It just sees JCR assets. See MGNLUI-6143 for more details.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+> **Note:** You must have a Connector Pack license in order to use this module.
+
+-   DAM Connector
+
+-   Media Widget Integration
+
+
+```xml
+<dependency>
+  <groupId>info.magnolia.external.dam</groupId>
+  <artifactId>magnolia-external-dam-cloudinary</artifactId>
+  <version>3.0.2</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.external.dam</groupId>
+  <artifactId>cloudinary-media-widget-integration</artifactId>
+  <version>3.0.2</version>
+</dependency>
+```
+
+## [](#_cloudinary_starter_templates)Cloudinary starter templates
+
+The Cloudinary External DAM module includes basic starter component templates. You can extend the templates as needed.
+
+### [](#_whats_included_in_the_templates)What’s included in the templates?
+
+The component template renders an image (or video) from [Cloudinary](https://cloudinary.com/). It does not include any CSS or design elements.
+
+You can find the template(s) at `/src/main/resources/cloudinary-media-widget-integration/templates/components/<template>`.
+
+-   Cloudinary image
+
+-   Cloudinary video
+
+
+cloudinary-image.yaml
+
+```yaml
+templateScript: /cloudinary-media-widget-integration/templates/components/cloudinary-image.ftl
+dialog: cloudinary-media-widget-integration:components/cloudinary-image
+renderType: freemarker
+title: Cloudinary image
+```
+
+cloudinary-image.ftl
+
+```html
+<div class>
+    [#if content.image?has_content]
+        [#assign asset = damfn.getAsset(content.image)!]
+        [#if asset?has_content && asset.link?has_content]
+            <img src="${asset.link}" alt="">
+        [/#if]
+    [/#if]
+</div>
+```
+
+cloudinary-video.yaml
+
+```yaml
+templateScript: /cloudinary-media-widget-integration/templates/components/cloudinary-video.ftl
+dialog: cloudinary-media-widget-integration:components/cloudinary-video
+renderType: freemarker
+title: Cloudinary video
+```
+
+cloudinary-video.ftl
+
+```html
+<div class>
+    [#assign videoAsset = damfn.getAsset(content.cloudinaryVideo)!]
+    [#if videoAsset?has_content && videoAsset.link?has_content && videoAsset.mimeType?starts_with("video/")]
+        <video controls playsinline width="100%">
+            <source src="${videoAsset.link}" type="${videoAsset.mimeType!}">
+        </video>
+    [/#if]
+</div>
+```

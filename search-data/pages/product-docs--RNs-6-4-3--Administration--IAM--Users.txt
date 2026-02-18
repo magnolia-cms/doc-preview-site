@@ -1,0 +1,109 @@
+---
+title: "Users"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/IAM/Users/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Identity and access management (IAM) > Users
+---
+
+# Users
+
+A user is an account that identifies the person accessing Magnolia. In addition to a username, Magnolia [stores](User-profile-storage/) the user preferences such as full name, email address, language, and time zone. These settings can be [edited](User-preferences/) by the users themselves.
+
+Every user has a certain set of permissions to grant access to resources, content, apps, and so on. Users inherit their permissions from the groups and roles they’re attached to (see [Organizing users](#_organizing_users)). Use the Security app to [edit the permissions of a user](#_editing_user_permissions).
+
+## [](#_types_of_users)Types of users
+
+Different user types are used for different accounts:
+
+Users
+
+Accounts for people who work on site content such as authors, editors, and publishers. The Security app `/admin/` folder stores users who have access to Admincentral.
+
+System users
+
+Technical accounts such as `superuser` and `anonymous`. The Security app `/system/` folder is for users with administrative permissions.
+
+Public users
+
+End users or visitors of the site. They can be registered through the [Public User Registration (PUR) module](../../../Modules/List-of-modules/Public-User-Registration-module/). Registering visitors allows you to provide them with personalized content such as members-only sections of the site, newsletters, and mailing lists. The Security app `/public/` folder users are visitors who register and log into a public Magnolia site using the PUR module.
+
+### [](#_superuser_user)`superuser` user
+
+The term `superuser` may refer either to a *system user* (an account type) or to a *role* (a definition of what a user is allowed to do in the system). In a typical installation of Magnolia, the `superuser` role is assigned to the `superuser` account. In addition to the `superuser` role, the `superuser` account has some other roles too (see [Default roles, groups and users](../Roles-groups-and-users/#_system_users)).
+
+As the name implies, the permissions of the superuser account are usually unrestricted in any way. For instance, superuser can read and write to all default JCR workspaces on `/`.
+
+On a production system, create specific users with distinct roles and deactivate the superuser account.
+
+### [](#_anonymous_user)`anonymous` user
+
+The term `anonymous` may refer either to a *system user* or to a *role*. The latter is assigned to the former. Apart from the `anonymous` role, the `anonymous` system user is by default assigned other roles too (see [Default roles, groups and users](../Roles-groups-and-users/#_system_users)).
+
+Every Magnolia resource intended to be accessible without authentication must be enabled for the anonymous system user. A users that interacts with Magnolia without authentication is determined as an anonymous user.
+
+> **Note:** On most systems, the rights and permissions of the anonymous role differ between author and public instances: allowing read access to all on the public instance, while denying the same on the author instance. That’s why you shouldn’t publish the anonymous role.
+
+## [](#_organizing_users)Organizing users
+
+In Magnolia, users are organized as follows:
+
+-   Users can have both roles and groups.
+
+-   Groups can have groups and roles.
+
+-   Roles can have only Access Control Lists (ACLs).
+
+
+![Organizing users diagram](../../../_images/organizing-users.png)
+
+Permissions are defined in the [ACLs](../Roles-and-access-control-lists/). Users inherit permissions from the roles and groups assigned to them.
+
+> **Tip:** You can duplicate existing users to speed up creation. The duplicated user is created with all the same groups and roles as the original.
+
+On a small site, you can manage users and groups in Magnolia. On a larger site (hundreds of users), it’s better to manage users and groups in an enterprise-grade user management infrastructure, such as Microsoft Active Directory. You would define roles and ACLs in Magnolia but manage users and groups in the external system.
+
+### [](#_editing_user_permissions)Editing user permissions
+
+Every user known to Magnolia is granted a set of permissions defined by roles. You can either assign roles directly to a user, or assign a user to a group that itself grants a set of roles (see [Organizing users](#_organizing_users) above).
+
+Use the [Security app](../../../Apps/List-of-apps/Security-app/) to edit the permissions. The app is available in the **Admin** group of AdminCentral. By default, the `superuser` role is required to access the app.
+
+![Security icon](../../../_images/6-1-Users-securityAppTile.png)
+
+The Security app provides subapps to edit users, groups, and roles. In the **Users** subapp, select the user you want to edit and click **Edit user** in the action bar.
+
+![Editing user permissions.](../../../_images/security-app-select-user.png)
+
+A tab opens showing the user details. It has three sections:
+
+-   User info: Edit the user’s name and full name, the password, the email address, and the language. The language can also be edited in the [**Edit user profile**](#_editing_user_profile) dialog. You can use the tab to enable or disable a user account.
+
+-   Groups: Assign the user to existing groups.
+
+-   Roles: Grant roles to the user.
+
+    ![User edit screen](../../../_images/security-app-edit-user.png)
+
+
+> **Tip:** Select any user and click User permissions in the action bar to view the permissions granted to that user.
+
+| Node name | Value |
+| --- | --- |
+| 📁 server |  |
+| 📁 security |  |
+| ⸬ userManagers |  |
+| ⸬ system |  |
+| ⬩ class | info.magnolia.cms.security.SystemUserManager |
+| ⬩ lockTimePeriod | 0 |
+| ⬩ maxFailedLoginAttempts | 5 |
+| ⬩ realmName | system |
+| ⸬ admin |  |
+| ⬩ class | info.magnolia.cms.security.MgnlUserManager |
+| ⬩ lockTimePeriod | 0 |
+| ⬩ maxFailedLoginAttempts | 5 |
+| ⬩ realmName | admin |
+
+## [](#_external_services)External services
+
+The [LDAP Connector module](../../../Modules/List-of-modules/LDAP-Connector-module/) is a standard [JAAS](http://java.sun.com/products/jaas/) login module that connects to any LDAP V3 supported directory service. This module is useful where an enterprise-grade user management infrastructure already exists. With the JAAS standard support, you can meet single sign-on requirements or connect to legacy LDAP/ADS directory servers.

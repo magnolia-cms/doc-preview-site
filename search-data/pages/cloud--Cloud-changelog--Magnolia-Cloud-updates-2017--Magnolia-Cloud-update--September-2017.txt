@@ -1,0 +1,46 @@
+---
+title: "Magnolia Cloud update - September 2017"
+url: https://docs.magnolia-cms.com/cloud/Cloud-changelog/Magnolia-Cloud-updates-2017/Magnolia-Cloud-update---September-2017/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Magnolia Cloud update - September 2017
+---
+
+# Magnolia Cloud update - September 2017
+
+These changes are available in the latest update of Magnolia in the cloud.
+
+## [](#_magnolia_core)Magnolia CORE
+
+With this update you can use Magnolia CORE 5.5.6 when [setting up your environments](../../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+## [](#_additional_modules)Additional modules
+
+We now [support](../../../Supported-modules-in-the-cloud/) the following additional Magnolia modules in our cloud offering:
+
+-   [Content Editor module](../../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/) – Produce simple interfaces for rich content. This module comes with the [Stories app](../../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Stories-app/), an example of a custom content editor that your authors can use to quickly create and publish flexible content in Magnolia.
+
+-   [JavaScript Models module](../../../../javascript-models/) – Develop and use models written in JavaScript.
+
+-   [Password Manager module](../../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Password-Manager-module/) – Store passwords in encrypted form and retrieve their plain text value programmatically. This module comes with the [Passwords app](../../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Passwords-app/), which centralizes the management of passwords.
+
+-   [Synchronization module](../../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Synchronization-module/) – Synchronize a target Magnolia instance with a source instance and publish a large amount of content selectively.
+
+-   [Messages App module](../../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Messages-App-module/) – Send messages to other users via Pulse.
+
+-   [Virtual URI module](../../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Virtual-URI-module/) – Repackaged and updated functionality originally handled by the Virtual URI Manager.
+
+
+## [](#_backup_frequency_changed)Backup frequency changed
+
+Magnolia now automatically backs up the Live environment once every day, week and month.
+
+Backups include both [content and configuration data](../../../Managing-environments-using-the-Magnolia-cockpit/Backing-up-and-restoring/).
+
+In addition to these automated backups, you can [create manual backups](../../../Managing-environments-using-the-Magnolia-cockpit/Backing-up-and-restoring/Creating-a-backup-manually/). Only the most recent manual backup is stored.
+
+## [](#_more_information_about_git_commits)More information about Git commits
+
+During and after the installation of a development snapshot, the [Cockpit](../../../Cockpit/) provides more information about the associated Git commit, such as the committer’s name, commit message and commit date (if based on the latest commit) or tag name (if based on a tag):
+
+![image](../../../_images/overviewIntegrationHover_clip2.png)

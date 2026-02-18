@@ -8,26 +8,22 @@ breadcrumb: DX Core > Modules > About App module
 
 # About App module
 
-[Administration](../../../use-cases/administration/) Bundled: [Community edition](../../../Administration/License/#_community_edition)
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [ABOUT](https://magnolia-cms.atlassian.net/browse/ABOUT) |
-| Maven site | [About](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fabout%2Fmagnolia-about-app%2F{infoMagnoliaAbout-magnoliaAboutApp-version}) |
-| Latest | {infoMagnoliaAbout-magnoliaAboutApp-version} |
-
-[About Magnolia app](../../../Apps/List-of-apps/About-Magnolia-app/) provides an overview of relevant installation information.
+| Maven site | [About](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fabout%2Fmagnolia-about-app%2F6.2.19) |
+| Latest | 6.2.19 |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.about</groupId>
   <artifactId>magnolia-about-app</artifactId>
-  <version>{infoMagnoliaAbout-magnoliaAboutApp-version}</version> (1)
+  <version>6.2.19</version> (1)
 </dependency>
 ```
 

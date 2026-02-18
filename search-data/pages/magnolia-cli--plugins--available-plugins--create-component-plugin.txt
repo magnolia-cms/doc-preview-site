@@ -1,0 +1,69 @@
+---
+title: "Create Component plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/create-component-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Create Component plugin
+---
+
+# Create Component plugin
+
+| Package name | `@magnolia/cli-create-component-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-create-component-plugin](https://www.npmjs.com/package/@magnolia/cli-create-component-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md](https://unpkg.com/@magnolia/cli-create-component-plugin/CHANGELOG.md) |
+
+## [](#_installing)Installing
+
+The plugin doesn’t come pre-installed with Magnolia CLI. You must add it to the `mgnl.config.js` project file.
+
+> **Note:** The plugin is installed automatically by the Jumpstart plugin if it is defined in a project template.
+
+### [](#_with_add_plugin)With add-plugin
+
+Run the following command in the project folder.
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-create-component-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+The command automatically downloads, installs, and registers the plugin in `mgnl.config.js`.
+
+### [](#_manually)Manually
+
+1.  Run the following command in the project folder.
+
+    ```console
+    npm install @magnolia/cli-create-component-plugin
+    ```
+
+2.  Modify the `mgnl.config.js` file accordingly.
+
+    ```js
+    import CreateComponentPlugin from "@magnolia/cli-create-component-plugin";
+
+    export default {
+      plugins: [
+        new CreateComponentPlugin()
+      ]
+    };
+    ```
+
+
+| Form (short and long) | Description |
+| --- | --- |
+| `-a [[lm-name:]page-template[@area]]` `--available [[lm-name:]page-template[@area]]` | Specifies the page to make the component available to. The default values for `[lm-name:]page-template[@area]` are as follows: • `[lm-name:]` takes the `lightModule` value in `mgnl.config.js` . • `[@area]` becomes `main` if not specified. Example: `my-lm:basic@main` |
+| `-lm [name]` `--light-module [name]` | Defines the light module for the component template. By default, uses the directory specified in the `mgnl.config.js` file. |
+| `-p [name]` `--prototype [name]` | Selects a prototype for component creation. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+| Property name | Description |
+| --- | --- |
+| `lightModulesPath` | The path to a directory containing all light modules. |
+| `lightModule` | The name of a light module where the component will be created. Alternative forms: `-lm [name]` , `--light-module [name]` |
+| `componentMappingFilePath` | The path to the file containing the `componentMapping` object. |
+| `type` | The file type or extension used in the project’s framework (for example `tsx` , `jsx` , or `vue` ). It determines which version of the prototype files is used and the file extensions for the generated code. |

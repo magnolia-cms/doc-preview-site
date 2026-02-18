@@ -1,0 +1,63 @@
+---
+title: "Identity and access management (IAM)"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Managing-users/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Identity and access management (IAM)
+---
+
+# Identity and access management (IAM)
+
+This page gives an overview of user management in Magnolia.
+
+## [](#_jaas_users_groups_roles_and_permissions)JAAS, users, groups, roles and permissions
+
+Magnolia security is based on *Java Authentication and Authorization Service* ([JAAS](https://en.wikipedia.org/wiki/Java_Authentication_and_Authorization_Service)).
+
+JAAS provides a standardized way for:
+
+-   Authentication: Reliably and securely determine **who** is using the system and provide them with means to sign into the application.
+
+-   Authorization: Ensure that users have the **permissions** to do the actions required such as editing pages or creating categories.
+
+
+The system always checks whether a certain user has the required (set of) permissions to access a certain resource such as a web page, document, template or some other type of data. *Permissions* such as *Access Control Lists* (ACLs) are assigned to user *roles*. The roles can be assigned to *groups* or directly to the *users*. Finally, users can be assigned to a group.
+
+For more details, refer to:
+
+-   [Users](../IAM/Users/)
+
+-   [Groups](../IAM/Groups/)
+
+-   [Roles and access control lists](../IAM/Roles-and-access-control-lists/)
+
+-   [Group and role strategies](../IAM/Group-and-role-strategies/)
+
+-   [Default roles, groups and users](../IAM/Roles-groups-and-users/)
+
+-   [Default permissions](../IAM/Default-permissions/)
+
+-   [JAAS security setup](../Security/JAAS-security-setup/)
+
+
+## [](#_magnolia_security_app)Magnolia Security app
+
+Use the Magnolia [Security app](../../Apps/List-of-apps/Security-app/) to administer users groups, and roles with ACLs that Magnolia provides. By default, the app stores the user, group and role data in the `users`, `usergroups`, and `userroles` JCR workspaces.
+
+## [](#_authentication)Authentication
+
+Magnolia also provides connectors to integrate with third-party systems.
+
+CAS module
+
+[CAS module](../../Modules/List-of-modules/CAS-module/) enables [Central Authentication Service](https://en.wikipedia.org/wiki/Central_Authentication_Service) (CAS) in Magnolia. CAS is a single sign-on (SSO) Web protocol that permits a user to log in once to a system and then automatically gain access to all related systems to which they have been granted permission as per their credentials. This avoids the need to log into each system individually. The Magnolia CAS module handles authentication only. When a user logs into CAS, the system authenticates their identity to participating services because the user has been authenticated to CAS.
+
+LDAP module
+
+[LDAP Connector module](../../Modules/List-of-modules/LDAP-Connector-module/) is a [JAAS](http://java.sun.com/products/jaas/) login module that connects to any LDAP v3 directory service. The LDAP Connector is used in intranet environments where an enterprise user management infrastructure already exists. With JAAS you can meet single sign-on requirements or connect to legacy LDAP servers.
+
+SSO module
+
+The Magnolia SSO (single sign-on) module delegates authentication from a Magnolia instance to an OpenID Connect identity and access management application. The current iteration of the module has been successfully tested with open source [Keycloak](https://www.keycloak.org) and cloud identity management software [Okta](https://www.okta.com), but all providers that follow the protocol should also be supported.
+
+As Magnolia is already capable of full-fledged security, the intent is to only replace the authentication mechanism. A user on a third-party system with roles and groups is mapped to the equivalent Magnolia user roles and groups.

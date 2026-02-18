@@ -1,0 +1,301 @@
+---
+title: "Debugging package"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Troubleshooting/Debugging-package/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Troubleshooting > Debugging package
+---
+
+# Debugging package
+
+The Core module comes equipped with several classes to troubleshoot and debug your Magnolia instance. This page covers each of these classes and explains how you can use them.
+
+Servlet filters intercept and process requests or responses. They can do this either before the requests are sent to servlets or before the servlets send the responses back to clients. The [Servlets filter chain](../../Architecture/Request-processing-and-filters/Filters/#_servlets_filter_chain) defines the order in which filters are applied.
+
+Always use caution when placing a filter in the chain manually and keep in mind that position in the chain matters. Depending on what you are trying to debug you may need to use a filter many times or even move it to different positions within the chain.
+
+> **Warning:** Never place a filter before the ContextFilter. Doing so will break your filter chain, generating a system failure in the Magnolia instance.
+
+> **Tip:** In recent Java versions, you can enable the Java Flight Recorder (JFR), a light recording feature (consuming about 1% of CPU processing) to record all your system’s events into a file, which you can download and analyze later.
+
+## [](#_enabling_filters)Enabling filters
+
+The general procedure for enabling filters is as follows.
+
+1.  Download the filter.
+
+    -   [Call tracking](#_call_tracking) filter download link: [config.server.filters.callTrackingFilter.xml](../../../_attachments/config.server.filters.callTrackingFilter.xml)
+
+    -   [Dump headers](#_dump_headers) filter download link: [config.server.filters.dumpHeaders.xml](../../../_attachments/config.server.filters.dumpHeaders.xml)
+
+    -   [Performance test](#_performance_test) filter download link: [config.server.filters.performanceTestFilter.xml](../../../_attachments/config.server.filters.performanceTestFilter.xml)
+
+    -   [Session debugger](#_session_debugger) filter download link: [config.server.filters.sessionDebugger.xml](../../../_attachments/config.server.filters.sessionDebugger.xml)
+
+
+2.  To enable a filter follow the steps below.
+
+    1.  Open the [Configuration app](../../../Apps/List-of-apps/Configuration-app/) and click the node: `/server/filters`.
+
+    2.  From the Action bar, click `Import`.
+
+        The filter appears at the bottom of the chain.
+
+    3.  Drag (or move) the filter into position.
+
+    4.  Enable the filter by changing the `enabled` property to `true`.
+
+
+
+## [](#_disabling_filters)Disabling filters
+
+To disable a filter:
+
+1.  Open the [Configuration app](../../../Apps/List-of-apps/Configuration-app/) and click the node: `/server/filters`.
+
+2.  Select the filter you want to disable
+
+3.  Change the `enabled` property to `false`.
+
+4.  (Optional) Move the filter back down to the bottom of the chain.
+
+
+## [](#_filters)Filters
+
+### [](#_call_tracking)Call tracking
+
+**class**: info.magnolia.debug.CallTrackingFilter
+
+This filter logs everything from the `TrackingStatus`.
+
+#### [](#_usage)Usage
+
+Sometimes, when debugging code, you might need to track the number of calls made to method executed deep down in the hierarchy on a per-request basis. Analyzing this with profiler can be cumbersome. While it’s straightforward to see the total time required for complete operations, you might need to see what each request thread was executing and how long that took. To get that data, this filter analyzes the stacktrace and provides aggregated information about the call hierarchy.
+
+Like the other filters in this package, you need to enable the `CallTrackingFilter` in the filter chain. You also need to call the `track()` method at the place where you want to see aggregated info from all the invocations.
+
+Finally, here is an example output that shows the aggregated stacktrace from all invocations including counts of each execution path. With this information in hand, you can find (and hopefully fix) excessive calls.
+
+Click to show the stacktrace
+
+```shell
+...
+INFO info.magnolia.debug:
+/magnoliaAuthor/demo-project.html:inits: 54, total calls: 14714, total time: 191947000
+   14714;info.magnolia.debug.TrackingStatus.track(TrackingStatus.java:82)
+     14714;info.magnolia.cms.util.SimpleUrlPattern.match(SimpleUrlPattern.java:212)
+       4;info.magnolia.voting.voters.URIPatternVoter.boolVote(URIPatternVoter.java:60)
+...
+4;info.magnolia.cms.beans.config.DefaultVirtualURIMapping.mapURI(DefaultVirtualURIMapping.java:56)
+    14706;info.magnolia.cms.security.PermissionImpl.match(PermissionImpl.java:89)
+      4;info.magnolia.voting.voters.AbstractBoolVoter.vote(AbstractBoolVoter.java:62)
+      4;info.magnolia.cms.beans.config.VirtualURIManager.getURIMapping(VirtualURIManager.java:107)
+      14706;info.magnolia.cms.security.AccessManagerImpl.getPermissions(AccessManagerImpl.java:87)
+        4;info.magnolia.cms.filters.VirtualUriFilter.getURIMapping(VirtualUriFilter.java:100)
+        14706;info.magnolia.cms.security.AccessManagerImpl.isGranted(AccessManagerImpl.java:64)
+        4;info.magnolia.voting.DefaultVoting.vote(DefaultVoting.java:56)
+          14706;info.magnolia.cms.core.Access.isGranted(Access.java:63)
+          4;info.magnolia.cms.filters.AbstractMgnlFilter.bypasses(AbstractMgnlFilter.java:121)
+          4;info.magnolia.cms.filters.VirtualUriFilter.doFilter(VirtualUriFilter.java:66)
+...
+3742;info.magnolia.cms.core.DefaultHierarchyManager.isGranted(DefaultHierarchyManager.java:422)
+    4;info.magnolia.cms.filters.AbstractMgnlFilter.doFilter(AbstractMgnlFilter.java:88)
+    47;info.magnolia.cms.core.DefaultHierarchyManager.isExist(DefaultHierarchyManager.java:396)
+    4;info.magnolia.cms.filters.AbstractMgnlFilter.matches(AbstractMgnlFilter.java:94)
+    10915;info.magnolia.cms.core.DefaultContent.newNodeDataInstance(DefaultContent.java:229)
+    2;info.magnolia.cms.security.URISecurityFilter.isAuthorized(URISecurityFilter.java:98)
+      2;info.magnolia.cms.security.URISecurityFilter.isAllowed(URISecurityFilter.java:82)
+      4;info.magnolia.cms.filters.MgnlFilterChain.doFilter(MgnlFilterChain.java:81)
+      246;info.magnolia.cms.core.DefaultContent.(DefaultContent.java:126)
+      4;info.magnolia.cms.filters.MgnlFilterChain.doFilter(MgnlFilterChain.java:82)
+...
+```
+
+#### [](#_removal)Removal
+
+If the filter is no longer needed, it’s a good idea to remove it or at least turn it off so that it stops logging.
+
+> **Caution:** Since every request produces an output, the log can grow quickly.
+
+The best thing to do is to [disable the filter](#_disabling_filters). This way if you need it again in the future, you can turn it back on.
+
+### [](#_derby_test_persistence_manager)Derby test persistence manager
+
+**class**: info.magnolia.debug.DerbyTestPersistenceManager
+
+The persistence manager implementation measures the time spent saving data. You must also enable the `PerformanceTestFilter`.
+
+> **Tip:** While this specific implementation is intended for the Derby database, it should be quite straightforward to create an implementation for any other database.
+
+#### [](#_deployment)Deployment
+
+To deploy this class:
+
+1.  Create a new repository configuration which uses the test persistence manager. Here is an example:
+
+    jackrabbit-bundle-derby-test-search.xml
+
+    ```xml
+    <PersistenceManager class="info.magnolia.debug.DerbyTestPersistenceManager">
+      <param name="url" value="jdbc:derby:${wsp.home}/db;create=true" />
+      <param name="schemaObjectPrefix" value="${wsp.name}_" />
+    </PersistenceManager>
+    ```
+
+2.  In your properties file, update the JR configuration to point to the test configuration.
+
+    ```shell
+    magnolia.repositories.home=${magnolia.home}/repositories-test
+    magnolia.repositories.jackrabbit.config=WEB-INF/config/repo-conf/jackrabbit-bundle-derby-test-search.xml
+    ```
+
+3.  Start up the instance and let it create a new test repository.
+
+4.  Configure the `PerformanceTestFilter` behind the context filter (see the instructions below).
+
+    You need the `PerformanceTestFilter` because this is the filter that prints the time data to the standard log. The time data is stored in a `PerformanceTestStatus` object.
+
+
+#### [](#_usage_2)Usage
+
+The point of this class is to examine how long it takes to persist (store) data.
+
+> **Note:** It’s not a good idea to use an embedded database in a production environment. The embedded database has to share memory with the application.
+
+Let’s look at an example where you upload a large file (100M+) into the DAM to measure the time it takes to persist it.
+
+Create a new asset in the DAM and upload the new file in the detail subapp. Once you click Save, you should see some information printed to the standard log through the `PerformanceTestFilter`. The times are in milliseconds.
+
+```shell
+INFO info.magnolia.debug : /magnoliaAuthor/.magnolia/admincentral/UIDL/ : performanceTestFilter: 2092, pm-store: 680, pm-blob: 670
+```
+
+#### [](#_removal_2)Removal
+
+Once the test is complete, revert to your repository.
+
+1.  In your properties file, update the JR configuration to point to the original configuration.
+
+    ```shell
+    magnolia.repositories.home=${magnolia.home}/repositories
+    magnolia.repositories.jackrabbit.config=WEB-INF/config/repo-conf/jackrabbit-bundle-derby-search.xml
+    ```
+
+
+### [](#_dump_headers)Dump headers
+
+**class**: info.magnolia.debug.DumpHeadersFilter
+
+This filter dumps the headers for the request and the response.
+
+#### [](#_usage_3)Usage
+
+The point of the `DumpHeadersFilter` is to print header information for each request and response to the standard log. This can be helpful for examining requests and their origin, especially when the request passes through other servers before arriving in Magnolia.
+
+On the response side of things, double check that a specific header is being set before leaving Magnolia.
+
+Let’s look at a specific example of deploying to filter at the top of the chain. This is probably the most common use case of the filter.
+
+You must place the filter near the top of the chain right behind the context filter. Never place the filter above context because this would break the system.
+
+Once the filter is deployed, you can begin examining the requests. The request doesn’t need to be for a website.
+
+Remember that all requests, even those for the Admincentral, go through the filter chain. This means any request could be examined and (with this filter deployed) *all* requests will produce output in the log.
+
+An example of requesting the Travel Home page.
+
+Click to show the example
+
+> **Tip:** Each request has a number associated with it. This way you can match the request to the response. In the example below, that number is 8.
+
+```shell
+# Request
+INFO info.magnolia.debug : 8 uri: /magnoliaPublic/travel.html
+INFO info.magnolia.debug : 8 session: true
+INFO info.magnolia.debug : 8 parameters:
+INFO info.magnolia.debug : 8 method: GET
+INFO info.magnolia.debug : 8 header: host=localhost:8080
+INFO info.magnolia.debug : 8 header: connection=keep-alive
+INFO info.magnolia.debug : 8 header: cache-control=max-age=0
+INFO info.magnolia.debug : 8 header: upgrade-insecure-requests=1
+INFO info.magnolia.debug : 8 header: user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36 OPR/60.0.3255.160
+INFO info.magnolia.debug : 8 header: accept=text/html,application/xhtml-xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+INFO info.magnolia.debug : 8 header: accept-encoding=gzip, deflate, br
+INFO info.magnolia.debug : 8 header: accept-language=en-US,en;q=0.9
+INFO info.magnolia.debug : 8 header: cookie=JSESSIONID=214520A11DA4335D81735380B0BA06F8; _first_pageview=1; _jsuid=4186500974; no_tracky_100843699=1
+
+# Response
+INFO info.magnolia.debug : 8 response status: 200
+INFO info.magnolia.debug : 8 response length: 5483
+INFO info.magnolia.debug : 8 response mime type: text/html;charset=UTF-8
+INFO info.magnolia.debug : /magnoliaPublic/travel.html response: X-Magnolia-Registration = Registered
+```
+
+#### [](#_removal_3)Removal
+
+After using the filter, it’s a good idea to remove it or at least turn it off so that it stops logging. Every request produces an output and the log could grow quickly.
+
+> **Tip:** Probably the best thing to do is disable the filter. This way if you need it again in the future, you can turn it back on.
+
+### [](#_logging_response)Logging response
+
+**class**: info.magnolia.debug.LoggingResponse
+
+This class wraps a response and records the set headers and http status for debugging purposes.
+
+### [](#_performance_test)Performance test
+
+**class**: info.magnolia.debug.PerformanceTestFilter
+
+The point of this filter is to log the round-trip time it takes to fulfill the requests. The filter logs the data recorded by the `PerformanceTestStatus` class to the standard output, providing more details about the system’s performance in milliseconds.
+
+#### [](#_usage_4)Usage
+
+To use the filter, you need to decide where to place it in the [filter chain](../../Architecture/Request-processing-and-filters/Filters/). In the standard output below, the filter was the second filter in the chain (after the `context` filter). Everything below the filter is included in the time measurement, and so, in this case, it is about the total time to fulfill the request.
+
+```shell
+INFO info.magnolia.debug : /magnoliaPublic/travel.html : performanceTestFilter: 154
+```
+
+Sometimes, you should move this filter down the chain. For example, putting it just before the `cms` subchain tells you how long it takes to render a specific request. Again, the time is printed to the standard output in milliseconds.
+
+#### [](#_removal_4)Removal
+
+When not using the filter, it’s a good idea to remove it or at least turn it off so that it stops logging. Every request produces some output and the log can therefore grow fast.
+
+> **Tip:** The best thing to do is to disable the filter. This way if you need it again in the future, you can turn it back on.
+
+### [](#_session_debugger)Session debugger
+
+**class**: info.magnolia.debug.SessionDebugger
+
+This is a filter and listener that can help to debug session issues.
+
+#### [](#_usage_5)Usage
+
+The point of this filter is to log session information. Configure it behind the `context` filter to see all session data in the log.
+
+Click to see an example output
+
+```shell
+WARN info.magnolia.debug : -- Session found
+-- Session attributes :
+    com.vaadin.server.VaadinSession.AdminCentral = com.vaadin.server.VaadinSession@1ea60cc1
+    Key[type=info.magnolia.personalization.trait.storage.StorageAwareTraitCollector$SessionScopedTraitStorage, annotation=[none]] = info.magnolia.personalization.trait.storage.StorageAwareTraitCollector$SessionScopedTraitStorage@1d4950db
+    AdminCentral.lock = java.util.concurrent.locks.ReentrantLock@2f872e69[Unlocked]
+    javax.security.auth.Subject = Subject:
+    Principal: MgnlUser - superuser [51ae3379-67cf-4994-9e05-f97cb8bc3e4a]
+    Principal: info.magnolia.cms.security.Realm$RealmImpl@179a1
+    Principal: RoleListImpl[name=roles,list=[workflow-base, rest-admin, publisher, superuser]]
+    Principal: GroupListImpl[name=groups,list=[publishers]]
+    Principal: PrincipalCollectionImpl[name=PrincipalCollection]
+
+-- Session is new : false
+----------
+```
+
+#### [](#_removal_5)Removal
+
+If not used, it’s a good idea to remove the filter or turn it off so that it stops logging. Every request produces some output, the log can grow fast.
+
+> **Tip:** The best thing to do is to disable the filter. This way if you need it again in the future, you can turn it back on.

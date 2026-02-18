@@ -271,7 +271,7 @@ model:
 
 Open the `tourOffices-app` app with the app launcher tile and add a tour guide to a tour office.
 
-![Tour offices for Germany](../../../../_images/6-1-my1stContentType-tourOffices1.png)
+![Tour offices for Germany](../../../../../RNs-6-4-3/_images/6-1-my1stContentType-tourOffices1.png)
 
 ## [](#_creating_and_linking_submodels)Creating and linking submodels
 
@@ -283,7 +283,7 @@ The default `nodeType` for a submodels is `mgnl:contentNode`.
 
 We defined the content type for tour vehicles at the beginning of this part of the tutorial. A tour vehicle has the properties: name, vehicle type, number of seats and description.
 
-![Tour vehicles app](../../../../_images/6-1-my1stContentType-tourVehiclesApp.png)
+![Tour vehicles app](../../../../../RNs-6-4-3/_images/6-1-my1stContentType-tourVehiclesApp.png)
 
 Now we will extend the tour office to make it possible to add tour vehicles to it. We need to be able to specify the number of different vehicles. For example, the tour office in Ho Chi Minh City currently owns five Yamaha Nuovo 135 bikes.
 
@@ -362,7 +362,7 @@ model:
 
 Now the tour offices app is ready to handle vehicles as described in the use case:
 
-![Tour vehicles country info ](../../../../_images/6-1-my1stContentType-tourOffices2.png)
+![Tour vehicles country info ](../../../../../RNs-6-4-3/_images/6-1-my1stContentType-tourOffices2.png)
 
 #### [](#_complete_touroffice_content_type_definition)Complete `tourOffice` content type definition
 
@@ -399,7 +399,7 @@ model:
 
 ## [](#_linking_to_items_in_existing_content_apps)Linking to items in existing content apps
 
-We’ve looked at how to link from one content type to another. You can also link from a content type to an already existing app such as the [Magnolia Assets subapp](#dam-app:ROOT:developers/dam-app-jcr.adoc), which is *not* based on a content type definition.
+We’ve looked at how to link from one content type to another. You can also link from a content type to an already existing app such as the [Magnolia Assets subapp](../../../../../../dam-app/developers/dam-app-jcr/), which is *not* based on a content type definition.
 
 To demonstrate this, we will extend the tour guide content type (and its app) with a new `image` property to assign an asset (an image) to a tour guide.
 
@@ -460,7 +460,7 @@ model:
 
 This is what the adapted `tourVehicles-app` looks like:
 
-![Asset image in the Tour app](../../../../_images/6-2-my1stContentTYpe-assetImage.png)
+![Asset image in the Tour app](../../../../../RNs-6-4-3/_images/6-2-my1stContentTYpe-assetImage.png)
 
 ## [](#_localizing_content)Localizing content
 
@@ -526,48 +526,19 @@ model:
 
 If you have no site definition, configure a site where you define at least its `i18n` node as shown below.
 
-## [](#_how_to_define_locales_in_site)How to define locales in site
-
-Define the languages that editors should be able to choose as locales in the [site definition](../../../Templating/Site-definition/) under `<site>/i18n/locales`.
-
-**Example**: `en`, `de` and `cs` locales in an example `test` site definition.
-
-```yaml
-test:
-  i18n:
-    enabled: true
-    class: info.magnolia.cms.i18n.DefaultI18nContentSupport
-    fallbackLocale: en
-    defaultLocale: cs
-    locales:
-      cz:
-        country: CZ
-        language: cs
-        enabled: true
-      de:
-        country: DE
-        language: de
-        enabled: true
-```
-
-**Properties**
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables support for localized content. Used to rewrite URIs and getting nodes based on the current language.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Class that implements <span class="inlineBean">info.magnolia.cms.i18n.I18nContentSupport</span> such as:</p></div><div class="ulist"><ul><li><p>Implementations for a site organized into <a href="../../../../Administration/Language/Multilanguage-structure/#_single_tree" class="xref page">a single tree</a>, in which the locale prefix usually points to the root of a site.</p><div class="ulist"><ul><li><p><code>info.magnolia.cms.i18n.IetfI18nContentSupport</code>. This is the default implementation, which supports <a href="https://en.wikipedia.org/wiki/IETF_language_tag" target="_blank" rel="noopener">IETF BCP 47 language Tags</a>.</p><div class="listingblock"><div class="title">Example</div><div class="content"><pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">test:
-  i18n:
-    enabled: true
-    class: info.magnolia.cms.i18n.IetfI18nContentSupport
-    fallbackLocale: en
-    defaultLocale: cs
-    locales:
-      cz:
-        languageTag: cs-CZ
-        enabled: true</code></pre></div></div></li><li><p><code>info.magnolia.cms.i18n.DefaultI18nContentSupport</code>, which supports a language prefix such as <code>/en/*</code> in the URL and <a href="#_storing_and_serving_localized_content">stores localized content</a> in a node using the naming pattern <code>&lt;name&gt;_&lt;locale&gt;</code>, for example <code>subtitle_en</code>.</p><div class="paragraph"><p>Use this implementation if your site is organized into <a href="../../../../Administration/Language/Multilanguage-structure/#_single_tree" class="xref page">a single tree</a>, in which the locale prefix usually points to the root of a site.</p></div></li></ul></div></li><li><p><code>info.magnolia.cms.i18n.HierarchyBasedI18nContentSupport</code>, which stores and serves localized content in a hierarchical structure.</p><div class="paragraph"><p>Use this implementation if your site is organized into <a href="../../../../Administration/Language/Multilanguage-structure/#_multiple_trees" class="xref page">multiple trees</a>, in which site roots are usually named after the locales.<br></p></div></li><li><p><code>info.magnolia.cms.i18n.RequestLocaleAwareI18nContentSupport</code>, which reads the locale from the request.</p><div class="paragraph"><p>This implementation does not render language specific URLs.</p></div></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>fallbackLocale</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>en</code></em></p></div><div class="paragraph"><p>Content is served for the fallback locale if content is not available for the current locale.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultLocale</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>If no locale can be determined, the default locale will be set. If no default locale is defined, the fallback locale is used.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>locales</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;locale&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>An arbitrary locale ID. For example, one that consists of language and country such as <code>zh-TW</code> for traditional Chinese or <code>pt-BR</code> for Brazilian Portuguese.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>country</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, for configurations using the <code>language</code> property</p></div><div class="paragraph"><p>Country code such as <code>BR</code> for Brazil. See <a href="https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html">Java 8 locale IDs</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>language</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, unless a configuration with the <code>languageTag</code> property is used</p></div><div class="paragraph"><p>Language code such as <code>pt</code> for Portuguese. See <a href="https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html">Java 8 locale IDs</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>languageTag</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, unless a configuration with the <code>language</code> property is used</p></div><div class="paragraph"><p>An <a href="https://en.wikipedia.org/wiki/IETF_language_tag" target="_blank" rel="noopener">IETF BCP 47</a> language tag.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Available since Magnolia 6.2.45.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables the locale.</p></div></div></td></tr></tbody></table></div>
-
-> **Caution:** Configure locales for the fallback siteIf i18n is enabled in the configuration of your content app, you need to configure locales for the fallback site or extend a site definition with locales.Then, when editing structured content, the locales of the fallback site will be used while showing the language dropdown.
-
-### [](#_result)Result
-
-![Language dropdown](../../../../_images/6-1-my1stContentType-addi18n.png)
+| Property | Description |
+| --- | --- |
+| `enabled` | **optional** , *default is false* Enables support for localized content. Used to rewrite URIs and getting nodes based on the current language. |
+| `class` | **required** Class that implements info.magnolia.cms.i18n.I18nContentSupport such as: • Implementations for a site organized into [a single tree](../../../../Administration/Language/Multilanguage-structure/#_single_tree) , in which the locale prefix usually points to the root of a site. • `info.magnolia.cms.i18n.IetfI18nContentSupport` . This is the default implementation, which supports [IETF BCP 47 language Tags](https://en.wikipedia.org/wiki/IETF_language_tag) . Example `test: i18n: enabled: true class: info.magnolia.cms.i18n.IetfI18nContentSupport fallbackLocale: en defaultLocale: cs locales: cz: languageTag: cs-CZ enabled: true` • `info.magnolia.cms.i18n.DefaultI18nContentSupport` , which supports a language prefix such as `/en/*` in the URL and [stores localized content](#_storing_and_serving_localized_content) in a node using the naming pattern `<name>_<locale>` , for example `subtitle_en` . Use this implementation if your site is organized into [a single tree](../../../../Administration/Language/Multilanguage-structure/#_single_tree) , in which the locale prefix usually points to the root of a site. • `info.magnolia.cms.i18n.HierarchyBasedI18nContentSupport` , which stores and serves localized content in a hierarchical structure. Use this implementation if your site is organized into [multiple trees](../../../../Administration/Language/Multilanguage-structure/#_multiple_trees) , in which site roots are usually named after the locales. • `info.magnolia.cms.i18n.RequestLocaleAwareI18nContentSupport` , which reads the locale from the request. This implementation does not render language specific URLs. |
+| `fallbackLocale` | **optional** , *default is en* Content is served for the fallback locale if content is not available for the current locale. |
+| `defaultLocale` | **optional** If no locale can be determined, the default locale will be set. If no default locale is defined, the fallback locale is used. |
+| `locales` | **required** |
+| `<locale>` | **required** An arbitrary locale ID. For example, one that consists of language and country such as `zh-TW` for traditional Chinese or `pt-BR` for Brazilian Portuguese. |
+| `country` | **optional** , for configurations using the `language` property Country code such as `BR` for Brazil. See [Java 8 locale IDs](https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html) . |
+| `language` | **required** , unless a configuration with the `languageTag` property is used Language code such as `pt` for Portuguese. See [Java 8 locale IDs](https://www.oracle.com/java/technologies/javase/jdk8-jre8-suported-locales.html) . |
+| `languageTag` | **required** , unless a configuration with the `language` property is used An [IETF BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) language tag. ** Available since Magnolia 6.2.45. | ** | Available since Magnolia 6.2.45. |
+| ** | Available since Magnolia 6.2.45. |
+| `enabled` | **optional** , *default is false* Enables the locale. |
 
 ## [](#_setting_up_security)Setting up security
 
@@ -619,7 +590,7 @@ Add a role with read and write permissions for the JCR workspaces: `tourguides`,
 
 Here is a screenshot from the JCR ACLs for the `ct-examples-editor` role:
 
-![Access control lists](../../../../_images/6-1-complexContentTypesPII-ACL.png)
+![Access control lists](../../../../../RNs-6-4-3/_images/6-1-complexContentTypesPII-ACL.png)
 
 #### [](#_assigning_the_ct_examples_editor_role_to_eric_the_editor)Assigning the `ct-examples-editor` role to `eric` the editor
 

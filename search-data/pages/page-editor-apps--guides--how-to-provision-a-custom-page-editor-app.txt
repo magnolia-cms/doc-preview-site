@@ -1,0 +1,142 @@
+---
+title: "How to provision a custom Page-editor app"
+url: https://docs.magnolia-cms.com/page-editor-apps/guides/how-to-provision-a-custom-page-editor-app/
+category: Modules
+version: modules
+breadcrumb: Page-editor apps extension > How to provision a custom Page-editor app
+---
+
+# How to provision a custom Page-editor app
+
+This page describes how you can provision a custom Page-editor app. The example showcased below creates "Digital Signs", an app for digital signage.
+
+> **Tip:** The source files for the app are available in the bitbucket.org/magnolia-cms/demo-page-editor-app/ demo repository.The light-modules folder there contains both FreeMarker (signs-lm subfolder) and ReactJS (signs-react-lm subfolder) light module implementations.
+
+## [](#_required_definitions)Required definitions
+
+### [](#_content_type)Content type
+
+Create a content type definition. A content type is needed to provision a workspace for the content of the app.
+
+`/<path-to-your-light-module>/contentTypes/sign.yaml`
+
+```yaml
+datasource:
+  workspace: signs
+  autoCreate: true
+```
+
+### [](#_app)App
+
+Define an app. You can use the `!page-editor-app` directive to create the entire app definition. This is similar to how you can create a content app with the `!content-app` directive.
+
+You can supply any additional parts of the app definition if you want to override or augment the auto-generated definition, for example to add a custom action.
+
+`/<path-to-your-light-module>/apps/signs.yaml`
+
+```yaml
+!page-editor-app:signs (1)
+name: signs
+```
+
+|     |     |
+| --- | --- |
+| **1** | The value assigned to `!page-editor-app` supplies the name of the content type to use, just like the content app system. |
+
+> **Tip:** Alternatively, you can supply the complete app definition yourself and not rely on the !page-editor-app directive.
+
+### [](#_site)Site
+
+Add a site definition. It is needed to configure:
+
+-   Which workspace the content is stored in.
+
+-   Which templates can be used in the custom app.
+
+-   What Additional languages (if any) the content can be edited in.
+
+
+> **Tip:** Optionally, you can utilize a definition decoration to supply the site configuration.
+
+`/<path-to-your-light-module>/decorations/multisite/config.yaml`
+
+```yaml
+sites:
+  signs:
+    mappings:
+      signs:
+        URIPrefix: /
+        handlePrefix: /signs-site-root (1)
+        repository: signs
+    templates:
+      availability:
+        templates:
+          sign:
+            id: signs-lm:pages/sign
+    i18n:
+      class: info.magnolia.cms.i18n.DefaultI18nContentSupport
+      enabled: true
+      fallbackLocale: en
+      locales:
+        en:
+          country:
+          enabled: true
+          language: en
+        de:
+          country:
+          enabled: true
+          language: de
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `handlePrefix` property must match the root page name. |
+
+### [](#_root_content_node)Root content node
+
+Make sure there’s a node (a page) at the root in the custom Page-editor app. This node is mapped to **the site** through the `handlePrefix` value in the site definition. All items (pages) must be created as children (descendants) of this root node.
+
+This is required so that a site definition could apply to all the nodes (pages). It is identical to how sites in the Pages app work.
+
+Pages which aren’t descendants of this node won’t function properly. Such pages will have the fallback site applied, which uses the `website` workspace. This, however, isn’t correct for the custom Page-editor app.
+
+> **Note:** If the custom Page-editor app will only manage one site, then you can help prevent authors from creating content in the wrong place.You can achieve this by configuring the app to only display the content under the root node using the 'rootPath' property.
+
+To implement this best practice, in the app definition, set the `rootPath` property of the datasource to the name of the root node (that is the name of the site). This has the effect in the app of hiding the root node. Then, every node created is automatically created under the root node.
+
+`/<path-to-your-light-module>/apps/signs.yaml`
+
+```yaml
+!page-editor-app:signs
+name: signs
+
+datasource:
+  rootPath: /signs-site-root/
+
+subApps:
+  detail:
+    datasource:
+      rootPath: /signs-site-root/
+```
+
+The name of the root node in the custom Page-editor app should be something that no author would name a page in the Pages app. For example, use a name like `signs-site-root` rather than just `signs`.
+
+> **Note:** The system prevents an author from creating a page with the same name in the stock Pages app.
+
+## [](#_optional_definitions)Optional definitions
+
+### [](#_i18n_properties)i18n properties
+
+By default, generic labels are created in the app, with i18n phrases such as "Add item", "Edit item" and so on. You can override these by providing your own labels to the UI elements of the app.
+
+`/<path-to-your-light-module>/i18n/signs-app-messages_en.properties`
+
+...
+signs.app=Digital Signs
+signs.app.label=Digital Signs
+signs.browser.label=Digital Signs
+...
+
+### [](#_page_and_component_templates)Page and component templates
+
+Additional page and component templates aren’t always required as you may already have some configured. Typically, though, a custom Page-editor app will use specific page and component templates.

@@ -92,7 +92,7 @@ Create a page template with a [template definition](../../../../../../Developing
 
 cookiePage.yaml
 
-[light-modules/visits-cookie-365/templates/pages/cookiePage.yaml](https://bitbucket.org/magnolia-cms/cookie-trait-examples)
+[light-modules/visits-cookie-365/templates/pages/cookiePage.yaml]({repo-cookieTraitExamples})
 
 This template defines an area in the page that may contain the `textImage` component. The component will be used to create content variants. Add this template definition as the `cookiePage.yaml` file to the `pages` subfolder in the module.
 
@@ -102,7 +102,7 @@ Add the following template script as the `cookiePage.ftl` file to the `pages` su
 
 cookiePage.ftl
 
-[light-modules/visits-cookie-365/templates/pages/cookiePage.ftl](https://bitbucket.org/magnolia-cms/cookie-trait-examples)
+[light-modules/visits-cookie-365/templates/pages/cookiePage.ftl]({repo-cookieTraitExamples})
 
 -   line 9: Includes the js-cookie library.
 
@@ -119,15 +119,15 @@ which will allow you to test component personalization based on cookie values. :
 
 Use the light module on a running Magnolia instance. Go to the [Pages app](../../../../../../Apps/List-of-apps/Pages-app/) and create a page with the template called *Visits cookie 365*.
 
-![Add page dialog](../../../../../../_images/dialog365.png)
+![Add page dialog](../../../../../../../RNs-6-4-3/_images/dialog365.png)
 
 Add a `textImage` component to the page and personalize it, i.e. [create several variants](../../../../../../Features/Personalization/Component-personalization/) of it defined by the custom `visits` cookie trait. The following screenshot, for example, shows a message for a variant called VISITS1.
 
-![Variants of textImage component](../../../../../../_images/var1crop.png)
+![Variants of textImage component](../../../../../../../RNs-6-4-3/_images/var1crop.png)
 
-Publish your page and check the result. The screenshot below shows page content for any value > 4 of the `visits` cookie, as set in the [website.Cookie-Test-Page.xml file](https://bitbucket.org/magnolia-cms/cookie-trait-examples) page configuration file available in the [cookie-trait-examples](https://bitbucket.org/magnolia-cms/cookie-trait-examples/) repository:
+Publish your page and check the result. The screenshot below shows page content for any value > 4 of the `visits` cookie, as set in the [website.Cookie-Test-Page.xml file]({repo-cookieTraitExamples}) page configuration file available in the [cookie-trait-examples]({repo-cookieTraitExamples}/) repository:
 
-![Published page](../../../../../../_images/any_crop.png)
+![Published page](../../../../../../../RNs-6-4-3/_images/any_crop.png)
 
 Related topics
 

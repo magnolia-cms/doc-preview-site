@@ -1,0 +1,43 @@
+---
+title: "sitefn"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/sitefn/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > sitefn
+---
+
+# sitefn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`sitefn` templating functions provide information about the current [site](../../../Site-definition/). You can access the `Site` object and the `Theme` currently applied to the site.
+
+## [](#_get_the_current_site)Get the current site
+
+Gets the current `Site`.
+
+### [](#_method_signature)Method signature
+
+[`Site`](../Templating-function-arguments-and-return-types/#_info.magnolia.module.site.site)`site()`
+
+### [](#_arguments)Arguments
+
+none
+
+### [](#_returns)Returns
+
+Returns the current `Site`.
+
+### [](#_usage)Usage
+
+`sitefn.site()`
+
+ \[#assign mySite=sitefn.site()\]
+
+| Argument | Description |
+| --- | --- |
+| `content` | **required** The content map whose site you want to get. |
+
+| Argument | Description |
+| --- | --- |
+| `site` | **required** The site whose theme you want to get. |

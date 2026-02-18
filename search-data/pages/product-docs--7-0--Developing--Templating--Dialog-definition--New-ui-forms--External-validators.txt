@@ -34,114 +34,23 @@ The validation system comprises several components that work together to route a
 > **Note:** The core of Magnolia’s internal routing is the ValidationEndpoint, defined in validation-endpoint.yaml, which is responsible for receiving and dispatching validation calls.form-content-handler/restEndpoints/validation-endpoint.yamlclass: info.magnolia.rest.registry.ConfiguredEndpointDefinition
 > implementationClass: info.magnolia.warp.engine.form.endpoint.ValidationEndpoint
 
-## [](#_validator_definition)Validator definition
-
-Everything starts in your form definition YAML.
-
-> **Important:** To use a external validator, you add an entry to the validators list with the name remote.
-
-**Properties**
-
- PropertyDescription
-
-`name`
-
-**required**
-
-The type of validator. Set to `remote` for external validators.
-
-`validatorId`
-
-**required**
-
-The unique identifier for the specific validator type (for example, `sku-exists-validator`). This is used in the URL path for validation requests (for example, `/validate/{validatorId}`).
-
-`provider`
-
-**optional**
-
-The identifier for the external service (for example, `my-erp-system`). Determines the destination URL for external validation requests (for example, `https://{provider}.example.com`). If omitted, Magnolia assumes an internal validator.
-
-`errorMessage`
-
-**optional**
-
-The default error message to display if validation fails (for example, `This SKU does not exist in the ERP.`). Used by the frontend when the validator response doesn’t provide a custom `message`.
-
-`config`
-
-**optional**
-
-A map of additional configuration specific to the validator (for example, `{ "region": "eu-west-1" }`). Contains settings or parameters needed by the validator.
-
-> **Note:** Sensitive data, such as API keys, should be configured at the provider level, not in the form definition.
-
-Example form field definition
-
-```yaml
-form:
-  fields:
-    - name: productSku
-      label: 'Product SKU'
-      type: 'textfield'
-      validators:
-        - name: 'remote'
-          validatorId: 'sku-exists-validator' (1)
-          provider: 'my-erp-system' (2)
-          errorMessage: 'This SKU does not exist in the ERP.'
-          config: (3)
-            region: 'eu-west-1'
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | This ID is used in the URL path: `/validate/{validatorId}`. |
-| **2** | The `provider` property is crucial. It determines the request’s destination URL. If omitted, Magnolia assumes an internal validator. When present, the frontend uses it to construct the external URL. |
-| **3** | You can pass a static config to your remote service. |
+| `name` | **required** The type of validator. Set to `remote` for external validators. |
+| `validatorId` | **required** The unique identifier for the specific validator type (for example, `sku-exists-validator` ). This is used in the URL path for validation requests (for example, `/validate/{validatorId}` ). |
+| `provider` | **optional** The identifier for the external service (for example, `my-erp-system` ). Determines the destination URL for external validation requests (for example, `https://{provider}.example.com` ). If omitted, Magnolia assumes an internal validator. |
+| `errorMessage` | **optional** The default error message to display if validation fails (for example, `This SKU does not exist in the ERP.` ). Used by the frontend when the validator response doesn’t provide a custom `message` . |
+| `config` | **optional** A map of additional configuration specific to the validator (for example, `{ "region": "eu-west-1" }` ). Contains settings or parameters needed by the validator. ** Sensitive data, such as API keys, should be configured at the provider level, not in the form definition. | ** | Sensitive data, such as API keys, should be configured at the provider level, not in the form definition. |
+| ** | Sensitive data, such as API keys, should be configured at the provider level, not in the form definition. |
 
-## [](#_validation_payload_and_routing)Validation payload and routing
-
-Based on the form definition, the frontend sends a request containing a standardized payload to the appropriate destination.
-
-### [](#_the_validation_request_payload)The validation request payload
-
-The body of the `POST` request is a JSON object with a consistent structure, defined by the `ValidationRequest.java` and `ValidationContext.java` records.
-
-The validator ID is specified in the URL path (`/validate/{validatorId}`), and the provider ID is used to determine the routing destination for external validators (for example, `{provider}.example.com`).
-
-**Properties**
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 25%;"> <col style="width: 75%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>fieldPath</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The name or path of the field being validated (for example, <code>productSku</code>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>fieldValue</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required for external validators</strong></p></div><div class="paragraph"><p>The current value of the field being validated, extracted from the form content (for example, <code>PROD-123</code>).</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">This field is required for external validators but may not be sent for internal validators.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>content</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>A JSON object representing the entire form’s current data, useful for cross-field validation.</p></div><div class="paragraph"><p>Example:</p></div><div class="paragraph"><p><code>{ "productSku": "PROD-123", "productName": "My Awesome Product", "stock": 100 }</code>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>config</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The static <code>config</code> object from the form definition YAML (for example, <code>{ "region": "eu-west-1" }</code>).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>context</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Standardized information about the request context. It contains the following fields:</p></div><div class="ulist"><ul><li><p><code>itemId</code> (string): The ID of the content item being validated (for example, <code>d14950fc-7fc2-4631-92f1-b6f60a1fe40a</code>).</p></li><li><p><code>contentType</code> (string): The name of the content app (for example, <code>contacts</code>).</p></li><li><p><code>mode</code> (string): The validation mode, either <code>ADD</code> or <code>EDIT</code>.</p></li><li><p><code>locale</code> (string): The current locale (for example, <code>en</code>).</p></li></ul></div></div></td></tr></tbody></table></div>
-
-Example JSON request body
-
-```json
-{
-  "fieldPath": "productSku",
-  "fieldValue": "PROD-123",
-  "content": {
-    "productSku": "PROD-123",
-    "productName": "My Awesome Product",
-    "stock": 100
-  },
-  "context": {
-    "itemId": "d14950fc-7fc2-4631-92f1-b6f60a1fe40a",
-    "contentType": "products-app",
-    "mode": "EDIT",
-    "locale": "en"
-  },
-  "config": {
-    "region": "eu-west-1"
-  }
-}
-```
-
-### [](#_routing_the_request)Routing the request
-
--   For Internal Validators (no `provider` specified): The request is sent to Magnolia’s local endpoint at `/warp/v0/validate/{validatorId}`, where the Validation Dispatcher routes it to the appropriate internal validator service via the Validator Provider Registry.
-
--   For External Validators (a `provider` specified): The request is sent to an external URL like `https://{provider}.example.com/validate/{validatorId}`, routed through the CDN to the customer’s validator service.
-
+| Property | Description |
+| --- | --- |
+| `fieldPath` | **required** The name or path of the field being validated (for example, `productSku` ). |
+| `fieldValue` | **required for external validators** The current value of the field being validated, extracted from the form content (for example, `PROD-123` ). ** This field is required for external validators but may not be sent for internal validators. | ** | This field is required for external validators but may not be sent for internal validators. |
+| ** | This field is required for external validators but may not be sent for internal validators. |
+| `content` | **required** A JSON object representing the entire form’s current data, useful for cross-field validation. Example: `{ "productSku": "PROD-123", "productName": "My Awesome Product", "stock": 100 }` ). |
+| `config` | **required** The static `config` object from the form definition YAML (for example, `{ "region": "eu-west-1" }` ). |
+| `context` | **required** Standardized information about the request context. It contains the following fields: • `itemId` (string): The ID of the content item being validated (for example, `d14950fc-7fc2-4631-92f1-b6f60a1fe40a` ). • `contentType` (string): The name of the content app (for example, `contacts` ). • `mode` (string): The validation mode, either `ADD` or `EDIT` . • `locale` (string): The current locale (for example, `en` ). |
 
 ## [](#_validation_response)Validation response
 

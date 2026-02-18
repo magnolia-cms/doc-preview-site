@@ -16,7 +16,7 @@ Publishing too many nodes at the same time can cause massive numbers of publicat
 
 Consider the tour categories depicted below in the **Tour Categories** app.
 
-![Tour Categories app](../../../../_images/6-2_tour-categories.png)
+![Tour Categories app](../../../../../RNs-6-4-3/_images/6-2_tour-categories.png)
 
 If you publish the root node, it’ll generate `15` requests as it is with the out-of-the-box configuration.
 
@@ -85,72 +85,8 @@ Log entries when publishing with itemsPerRequest equal to 10
 2023-08-08 09:57:37,455 INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path [/root/destinations].
 ```
 
-Please go to the [Configuring itemsPerRequest](../../../../Modules/List-of-modules/Publishing-module/#_configuring_itemsperrequest) section for more information on the configuration details for `itemsPerRequest`.
-
-## [](#_additional_settings)Additional settings
-
-### [](#_optimizing_ordering_on_the_public_instance)Optimizing ordering on the public instance
-
-Concurrently publishing nodes may have a negative impact on performance depending on your setup, for example, if you use a Postgres database and have a large, flat data structure in JCR.
-
-To mitigate this, use the `ordering` property to avoid large numbers of nodes being published simultaneously. The `ordering` property defines the order in which nodes and their siblings are published on a public instance.
-
-> **Note:** The ordering property was introduced with Magnolia 6.2.39.Previous versions used the orderSiblings property to configure ordering on public instances. If you have configured orderSiblings: false (/modules/publishing-core/config) on the public or both instances, items might become unordered on public instances.
-
-The ordering options that you can use for publishing actions are described below.
-
--   fast Default
-
--   full
-
--   none
-
-
-Best for balance between performance and ordering content.
-
-`fast`: The published node precedes the nearest next sibling existing on all author and public instances when the publication was approved. The order of siblings of published nodes on public instances is not otherwise affected.
+Please go to the [Configuring itemsPerRequest](../../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-module/#_configuring_itemsperrequest) section for more information on the configuration details for `itemsPerRequest`.
 
 | Author instance before publication | Public instance before publication | Public instance after publication |
 | --- | --- | --- |
-| ![Author instance before publishing](../../../../_images/6-2_author_before_publishing.png) | ![Public instance before publishing](../../../../_images/6-2_public_before_publishing.png) | ![Public instance after publishing - ordering fast](../../../../_images/6-2_public-after-publishing_ordering-fast.png) |
-
-Best for properly ordering content.
-
-`full`: The published node and all its siblings appear in the same order as on the author instance when the publication was approved.
-
-| Author instance before publication | Public instance before publication | Public instance after publication |
-| --- | --- | --- |
-| ![Author instance before publishing](../../../../_images/6-2_author_before_publishing.png) | ![Public instance before publishing](../../../../_images/6-2_public_before_publishing.png) | ![Public instance after publishing - ordering full](../../../../_images/6-2_public-after-publishing_ordering-full.png) |
-
-Best for performance. Does not order nodes on the public instance.
-
-`none`: The published node appears after any sibling nodes on the public instance.
-
-| Author instance before publication | Public instance before publication | Public instance after publication |
-| --- | --- | --- |
-| ![Author instance before publishing](../../../../_images/6-2_author_before_publishing.png) | ![Public instance before publishing](../../../../_images/6-2_public_before_publishing.png) | ![Public instance after publishing - ordering none](../../../../_images/6-2_public-after-publishing_ordering-none.png) |
-
-An example configuration for a `publish` action is given below, including the `ordering` property, which needs to be inside the `params` section.
-
-```yaml
-publish:
-  icon: icon-publish
-  $type: jcrCommandAction
-  command: publish
-  catalog: versioned
-  params:
-    ordering: fast
-```
-
-An example of the `full` ordering configuration for a `commit` action in the `workflow-pages` module is given below.
-
-```yaml
-commit:
-  class: info.magnolia.module.workflow.action.WorkflowCommandActionDefinition
-  params:
-    ordering: full
-```
-
-### [](#_optimizing_dead_nodes_in_postgresql)Optimizing dead nodes in PostgreSQL
-
-If you are using a PostgreSQL database, you can adjust some vacuuming options to improve publishing performance. For more on this topic, please look at the section on [publishing massive numbers of publication requests](../../../../Getting-started-with-Magnolia/Installing-Magnolia/Database-sizing-and-setup/#_which_database_modifications_should_i_consider_when_publishing_massive_numbers_of_publication_requests).
+|  |  |  |

@@ -19,170 +19,34 @@ The DAM Core module is a Magnolia Maven module.
 
 For installation information, see [DAM module](../install/).
 
-## [](#_asset_providers_and_renderers)Asset providers and renderers
-
-In order to have a working DAM, you must have configured at least:
-
--   info.magnolia.dam.api.AssetProvider
-
--   info.magnolia.dam.api.AssetRenderer
-
-
-### [](#_configuring_an_asset_provider)Configuring an asset provider
-
-To enable DAM, at least one asset provider must be configured as a subnode of `/modules/dam/config/providers/`.
-
 | Node name | Value |
 | --- | --- |
-| ⸬ providers |     |
-| ⸬ example-provider |     |
+| ⸬ providers |  |
+| ⸬ example-provider |  |
 | ⬩ class | com.example.dam.MyAssetProvider |
 | ⬩ identifier | foo |
 
-| Property | Description |
-| --- | --- |
-| `class` | **required**<br><br>A class that must implement info.magnolia.dam.api.AssetProvider. |
-| `identifier` | **required**<br><br>The identifier of the asset provider. Must be unique within all asset providers. |
-| `enabled` | **optional**, *default is `true`*<br><br>Allows you to disable the provider if, for instance, it doesn’t have the necessary credentials to access the assets.<br><br>Setting the property to `false` hides the related DAM subapp in the UI and prevents it from starting. |
-
-### [](#_configuring_an_asset_renderer)Configuring an asset renderer
-
-info.magnolia.dam.api.AssetRenderer objects can be configured:
-
--   Globally
-
--   Per AssetProvider
-
-
-When an asset rendition is requested, `AssetProviderRegistry#getRendererFor(Asset asset, MediaType to)` first looks for a provider-specific renderer but falls back to the globally defined renderer if no specific provider is found.
-
 | Node name | Value |
 | --- | --- |
-| ⸬ providers |     |
-| ⸬ example-provider |     |
-| 📁 renderers |     |
-| ⸬ imaging |     |
-| ⬩ class | info.magnolia.dam.imaging.ImagingBasedAssetRenderer |
-| ⬩ class | com.example.dam.MyAssetProvider |
-| ⬩ identifier | foo |
-| ⸬ renderers |     |
-| ⸬ noOp |     |
-| ⬩ class | info.magnolia.dam.core.NoOpAssetRenderer |
-
-The example configuration above has two renderers defined:
-
--   `/modules/dam/config/providers/example-provider/renderers/imaging` - configures a renderer for images specifically for the `example-provider`.
-
--   `/modules/dam/config/renderers/noOp` - a global fallback if a provider lacks a renderer for the requested media type.
-
-
-#### [](#_noopassetrenderer)`NoOpAssetRenderer`
-
-The `magnolia-dam-core` module provides info.magnolia.dam.core.NoOpAssetRenderer, which can be used to define a global asset renderer. By default, the `NoOpAssetRenderer` only wraps the original asset.
-
-> **Note:** magnolia-dam-core module doesn’t manage the specific asset provider implementation used.An asset provider and renderer should be configured from a module that contains a specific implementation, not from magnolia-dam-core itself.
-
-## [](#_download_servlet)Download servlet
-
-info.magnolia.dam.core.download.DamDownloadServlet handles [asset downloads](../../../product-docs/7.0/Authoring/Managing-assets/downloading-assets/). The main task is to retrieve an `Asset` object based on the current URI:
-
--   If no `Asset` is found, an error is sent to the response.
-
--   If an `Asset` is found, the response header is set and the asset binary is put in the response.
-
-
-The servlet is backwards compatible and maps static UUIDs to the new DAM format.
-
-`DamDownloadServlet` is registered in the [filter chain](../../../product-docs/7.0/Administration/Architecture/Request-processing-and-filters/Filters/) at `/server/filters/servlets/DamDownloadServlet`.
-
-| Node name | Value |
-| --- | --- |
-| ⸬ DamDownloadServlet |     |
+| ⸬ DamDownloadServlet |  |
 | ⬩ enabled | true |
 | ⬩ servletName | DamDownloadServlet |
 | ⬩ class | info.magnolia.cms.filters.ServletDispatchingFilter |
 | ⬩ servletClass | info.magnolia.dam.core.download.DamDownloadServlet |
 | ⬩ comment | DAM download servlet |
-| ⸬ mappings |     |
-| ⸬ -dam-- |     |
-| ⬩ pattern | /dam/\* |
-| ⸬ -dam-static-- |     |
-| ⬩ pattern | /dam-static/\* |
-| ⸬ parameters |     |
-
-## [](#_content_disposition)Content disposition
-
-Content-disposition is a [HTTP header](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields). If the Content-disposition field is set in a HTTP response header, the browser opens the `save file as` dialog instead of rendering the requested resource.
-
-By default, the `DamDownloadServlet` serves assets whose `Content-Disposition` header is set. However, you can define exceptions to omit the content disposition header.
-
-### [](#_disabling_content_disposition_headers_per_media_mime_type)Disabling content disposition headers per media (MIME) type
-
-The standard DAM configuration already defines two exceptions based on media types:
-
--   `application/x-shockwave-flash`
-
--   `video/mp4`
-
-
-To disable the Content-Disposition header for other content types, add their media types to `/dam/config/contentDisposition/contentType/rejected`.
+| ⸬ mappings |  |
+| ⸬ -dam-- |  |
+| ⬩ pattern | /dam/* |
+| ⸬ -dam-static-- |  |
+| ⬩ pattern | /dam-static/* |
+| ⸬ parameters |  |
 
 | Node name | Value |
 | --- | --- |
-| ⸬ contentDisposition |     |
-| ⸬ contentType |     |
-| ⸬ rejected |     |
+| ⸬ contentDisposition |  |
+| ⸬ contentType |  |
+| ⸬ rejected |  |
 | ⬩ 1 | application/x-shockwave-flash |
 | ⬩ 2 | video/mp4 |
 | ⬩ class | info.magnolia.voting.voters.ResponseContentTypeVoter |
 | ⬩ class | info.magnolia.voting.voters.VoterSet |
-
-Nodes and properties:
-
--   `contentDisposition`: Defines content disposition header exceptions.
-
-    -   `contentType`: Arbitrary node name
-
-        -   `rejected`: Content map of MIME types for which content disposition headers are not served.
-
-        -   `class`: info.magnolia.voting.voters.ResponseContentTypeVoter is a [Voters](../../../product-docs/7.0/Administration/Voters/) that checks the content type set on the response object against a list of allowed and/or rejected content types. It is typed to Object, as it can vote on both a passed `HttpServletRequest`, or the current `MgnlContext.webContext`, if any.
-
-
-    -   `class`: info.magnolia.voting.voters.VoterSet supports a set of voters. Voting can be set, and a level returned. If the level is not set (`0`), the voting result is returned.
-
-
-
-### [](#_disabling_content_disposition_headers_based_on_path)Disabling content disposition headers based on path
-
-To disable serving `Content-Disposition` headers based on path:
-
-1.  Create a new node `inline` under `contentDisposition`.
-
-2.  Under the new content node, create three property nodes:
-
-    1.  `class` and set the value to `info.magnolia.voting.voters.URIStartsWithVoter`.
-
-    2.  `not` and set the value to `true`.
-
-    3.  `pattern` and set the value to `/dam/inline`.
-
-
-3.  Under the `contentDisposition` node, add the `op` property and set its value to `and`. This acts as an operator between voters and is only necessary if there are more than one voter in the set.
-
-
-This configures all files in the `inline` folder to be sent without content disposition headers. The new content node should look like this:
-
-| Node name | Value |
-| --- | --- |
-| ⸬ contentDisposition |     |
-| ⸬ contentType |     |
-| ⸬ inline |     |
-| ⬩ class | info.magnolia.voting.voters.URIStartsWithVoter |
-| ⬩ not | true |
-| ⬩ pattern | /dam/inline |
-| ⬩ class | info.magnolia.voting.voters.VoterSet |
-| ⬩ op | and |
-
-Related topics
-
-[Magnolia DAM JCR implementation](../dam-jcr/)

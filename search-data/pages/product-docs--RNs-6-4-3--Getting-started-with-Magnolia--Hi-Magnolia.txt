@@ -1,0 +1,131 @@
+---
+title: "Hi Magnolia"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Getting-started-with-Magnolia/Hi-Magnolia/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Hi Magnolia
+---
+
+# Hi Magnolia
+
+| A preview of the finished page. | In page edit view, you’d see green component bars. |
+| --- | --- |
+
+## [](#_prerequisites)Prerequisites
+
+-   First, you’ll need to [get Magnolia](../Hello-Magnolia/Getting-Magnolia/) if you haven’t installed it already.
+
+
+## [](#_what_are_we_going_to_do)What are we going to do?
+
+**Tutorial overview**
+
+-   We’ll locate the *light module* folder in the Magnolia installation directory.
+
+-   Then, we’ll add *page and component templates* in subfolders.
+
+-   Next, we’ll add *dialog files* in subfolders.
+
+-   Finally, we’ll create a page using the dialogs and templates from the previous steps.
+
+
+Key
+
+-   📁 You’ll create one folder.
+
+-   📁📁 You’ll create two folders.
+
+-   📄 You’ll add one file into a folder.
+
+-   📄📄 You’ll add two files into a folder.
+
+-   ⤓ You’ll need to download one file.
+
+-   ⤓⤓ You’ll need to download two files.
+
+
+| Steps and explanations | Folders and files |
+| --- | --- |
+| • Find the `light-modules` folder inside the Magnolia installation directory. For example purposes, let’s say you named the installation folder `magnolia` . The CLI v5 `npx @magnolia/cli jumpstart` command created the `light-modules` for you when installing Magnolia. ** Your Magnolia installation continually monitors the `light-modules` folder, and any folders or files created there are added to the definitions available in Magnolia. | ** | Your Magnolia installation continually monitors the `light-modules` folder, and any folders or files created there are added to the definitions available in Magnolia. | The default root folder structure after installation with [Magnolia CLI v5](../../../../magnolia-cli/getting-started/jumpstarting/) is below. 📁 magnolia 📁 apache-tomcat 📁 light-modules 📁 node_modules | 📁 magnolia | 📁 apache-tomcat | 📁 light-modules | 📁 node_modules |
+| ** | Your Magnolia installation continually monitors the `light-modules` folder, and any folders or files created there are added to the definitions available in Magnolia. |
+| 📁 magnolia |
+| 📁 apache-tomcat |
+| 📁 light-modules |
+| 📁 node_modules |
+| • Creating the `hi-magnolia` module folder, a template folder and adding template files. • 📁📁 In `light-modules` , create the `hi-magnolia` subfolder and then the `templates` folder inside it. • 📁 In `templates` , create another subfolder called `pages` . • 📄📄 Add both page template files ⤓⤓ [magnolia123.yaml](../../_attachments/hi-magnolia/templates/pages/magnolia123.yaml) and [magnolia123.ftl](../../_attachments/hi-magnolia/templates/pages/magnolia123.ftl) . ** *Page templates* (files with the `.yaml` extension) contain details about areas on a page and how pages are turned into HTML. *Template scripts* (ones with the `.ftl` extension) turn those templates into final HTML page files. | ** | *Page templates* (files with the `.yaml` extension) contain details about areas on a page and how pages are turned into HTML. *Template scripts* (ones with the `.ftl` extension) turn those templates into final HTML page files. | 📁 light-modules 📁 hi-magnolia 📁 templates 📁 pages magnolia123.yaml magnolia123.ftl | 📁 light-modules | 📁 hi-magnolia | 📁 templates | 📁 pages | magnolia123.yaml | magnolia123.ftl |
+| ** | *Page templates* (files with the `.yaml` extension) contain details about areas on a page and how pages are turned into HTML. *Template scripts* (ones with the `.ftl` extension) turn those templates into final HTML page files. |
+| 📁 light-modules |
+| 📁 hi-magnolia |
+| 📁 templates |
+| 📁 pages |
+| magnolia123.yaml |
+| magnolia123.ftl |
+| • Creating the component template folder and files. • 📁 Create the `components` subfolder inside the `templates` folder. • 📄📄 Add the `paragraph` component files ⤓⤓ [paragraph.yaml](../../_attachments/hi-magnolia/templates/components/paragraph.yaml) and [paragraph.ftl](../../_attachments/hi-magnolia/templates/components/paragraph.ftl) inside it. • 📄📄 Add the `title` component files ⤓⤓ [title.yaml](../../_attachments/hi-magnolia/templates/components/title.yaml) and [title.ftl](../../_attachments/hi-magnolia/templates/components/title.ftl) inside it as well. ** *Component templates* refer to single components on a page such as text, images, and links, much in the same way page templates refer to areas as a whole. | ** | *Component templates* refer to single components on a page such as text, images, and links, much in the same way page templates refer to areas as a whole. | 📁 hi-magnolia 📁 templates 📁 components paragraph.yaml paragraph.ftl title.yaml title.ftl | 📁 hi-magnolia | 📁 templates | 📁 components | paragraph.yaml | paragraph.ftl | title.yaml | title.ftl |
+| ** | *Component templates* refer to single components on a page such as text, images, and links, much in the same way page templates refer to areas as a whole. |
+| 📁 hi-magnolia |
+| 📁 templates |
+| 📁 components |
+| paragraph.yaml |
+| paragraph.ftl |
+| title.yaml |
+| title.ftl |
+| • Creating the dialog folders and files. • 📁 Create the `dialogs` subfolder inside the `hi-magnolia` folder. • 📁📁 Under that, create two subfolders, `components` and `pages` . • 📄📄 Copy the component dialog files ⤓⤓ [paragraph.yaml](../../_attachments/hi-magnolia/dialogs/components/paragraph.yaml) and [title.yaml](../../_attachments/hi-magnolia/dialogs/components/paragraph.yaml) into the `components` folder, as depicted on the right. • 📄 Copy the page dialog file ⤓ [magnolia123.yaml](../../_attachments/hi-magnolia/dialogs/pages/magnolia123.yaml) into the `pages` folder, as depicted on the right. ** *Dialogs* are how authors enter content into Magnolia. Dialog definitions specify editable fields where editors can add or update the content itself. In addition, they may define operations that authors can do on the content, for example, commit or cancel. | ** | *Dialogs* are how authors enter content into Magnolia. Dialog definitions specify editable fields where editors can add or update the content itself. In addition, they may define operations that authors can do on the content, for example, commit or cancel. | 📁 hi-magnolia 📁 dialogs 📁 components paragraph.yaml title.yaml 📁 pages magnolia123.yaml | 📁 hi-magnolia | 📁 dialogs | 📁 components | paragraph.yaml | title.yaml | 📁 pages | magnolia123.yaml |
+| ** | *Dialogs* are how authors enter content into Magnolia. Dialog definitions specify editable fields where editors can add or update the content itself. In addition, they may define operations that authors can do on the content, for example, commit or cancel. |
+| 📁 hi-magnolia |
+| 📁 dialogs |
+| 📁 components |
+| paragraph.yaml |
+| title.yaml |
+| 📁 pages |
+| magnolia123.yaml |
+
+## [](#_creating_a_page_with_dialogs_based_on_templates)Creating a page with dialogs based on templates
+
+1.  Start up your Magnolia instance.
+
+2.  Log in and open the Pages app.
+
+3.  Create the page that is displayed at the beginning of this tutorial:
+
+    1.  Click **Add page** in the Action bar on the right.
+
+    2.  In the *Add page* dialog, call the page *Hello World*, choose the *hi-magnolia* template for it, and click Next:
+
+        ![Add page dialog](../../_images/getting-started/hi-magnolia/add-page-dialog.png)
+
+    3.  In the *Add page* dialog, enter also *Hello World* in the Page name field and click Save changes.
+
+    4.  Click **Edit page** in the Action bar on the right.
+
+    5.  Start adding components to the page. Click the plus button in the New Main Component bar.
+
+        1.  In the *Add component* dialog, select the *Title* option and hit Next.
+
+        2.  In the *Title* dialog, type "My first title in Magnolia" and click Save changes.
+
+
+    6.  Click the New Main Component plus button again.
+
+        1.  In the *Add component* dialog, select the *Paragraph* option and press Next.
+
+        2.  In the *Paragraph* dialog, type "This is my first sentence in Magnolia." and click Save changes.
+
+
+
+
+## [](#_publishing_the_page)Publishing the page
+
+To publish the page to the public instance:
+
+1.  Go back to the page browser view of the Pages app.
+
+2.  Select the page and click **Publish** in the Action bar on the right.
+
+
+**Excellent.**
+
+You’ve created and published your first Magnolia page with two components in it.
+
+Related topics
+
+-   [Hello Magnolia complete tutorial](../Hello-Magnolia/)

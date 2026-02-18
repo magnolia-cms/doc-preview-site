@@ -8,15 +8,15 @@ breadcrumb: DX Core > Getting Started > Getting started with REST
 
 # Getting started with REST
 
-REST endpoints enable other software to get real, raw content directly from Magnolia. This is how mobile apps, front-end JavaScript apps, or systems, like e-commerce or banking systems, can connect with Magnolia. With our out-of the-box [delivery endpoint](#rest:api:delivery-endpoint.adoc), this is easy and fast to set up, more powerful and more performant than ever.
+REST endpoints enable other software to get real, raw content directly from Magnolia. This is how mobile apps, front-end JavaScript apps, or systems, like e-commerce or banking systems, can connect with Magnolia. With our out-of the-box [delivery endpoint](../../../../rest/api/delivery-endpoint/), this is easy and fast to set up, more powerful and more performant than ever.
 
 This beginner’s tutorial is intended for developers who want to start using Magnolia REST features.
 
 ## [](#_setting_up_magnolia_for_rest)Setting up Magnolia for REST
 
-In this section, you use [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) to install and start a [preconfigured Magnolia bundle](../../Developing/Bundles-and-webapps/#_list_of_webapps) with the required modules for Magnolia REST features.
+In this section, you use [Magnolia CLI](../../../../magnolia-cli/) to install and start a [preconfigured Magnolia bundle](../../../RNs-6-4-3/Developing/Bundles-and-webapps/#_list_of_webapps) with the required modules for Magnolia REST features.
 
-If you don’t have Magnolia CLI, install it as described [Getting started: Installing CLI](#magnolia-cli:ROOT:getting-started/index.adoc#_installing_cli). Then, install Magnolia as follows:
+If you don’t have Magnolia CLI, install it as described [Getting started: Installing CLI](../../../../magnolia-cli/getting-started/#_installing_cli). Then, install Magnolia as follows:
 
 1.  Change to the directory where you want to install the Magnolia bundle. In our example, we use the directory `~/dev/mgnl-rest-test`:
 
@@ -76,15 +76,15 @@ In the context of this tutorial and to get started quickly, we use *users* with 
 
 ## [](#_using_the_delivery_endpoint)Using the delivery endpoint
 
-The [delivery endpoint](#rest:api:delivery-endpoint.adoc) is a REST API provided by Magnolia out-of-the-box. Use it for obtaining JCR data as JSON.
+The [delivery endpoint](../../../../rest/api/delivery-endpoint/) is a REST API provided by Magnolia out-of-the-box. Use it for obtaining JCR data as JSON.
 
 With version 2 of the Delivery API, you can define multiple endpoint configurations, deliver localized content and resolve references to nodes of other workspaces including assets and asset renditions.
 
-You must provide at least one [endpoint configuration](#rest:api:delivery-endpoint.adoc#_configuration) to use the delivery API.
+You must provide at least one [endpoint configuration](../../../../rest/api/delivery-endpoint/#_configuration) to use the delivery API.
 
 ### [](#_configuring_the_endpoint)Configuring the endpoint
 
-We will create a [light module](../../Modules/Light-modules/) to provide the YAML-based configuration required for the delivery endpoint.
+We will create a [light module](../../../RNs-6-4-3/Modules/Light-modules/) to provide the YAML-based configuration required for the delivery endpoint.
 
 > **Note:** The folder structure and endpoint definition configuration file names you create now may later be used as the value of the endpointPath property. The endpoint path is used as part of the URL so we recommend you think ahead when naming your files.
 
@@ -114,7 +114,7 @@ childNodeTypes:
   - mgnl:component
 ```
 
-You can find a full explanation of the properties on [Delivery endpoint API configuration](#rest:api:delivery-endpoint.adoc#_configuration).
+You can find a full explanation of the properties on [Delivery endpoint API configuration](../../../../rest/api/delivery-endpoint/#_configuration).
 
 ### [](#_requesting_website_content)Requesting website content
 
@@ -269,10 +269,10 @@ The examples below show how to get content from the out-of-the-box `tours_v1` de
 
 Related topics
 
--   [How to create a custom Java-based REST endpoint](../../Developing/Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/)
+-   [How to create a custom Java-based REST endpoint](../../../RNs-6-4-3/Developing/Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/)
 
--   [Tools to test REST requests](../../Modules/List-of-modules/REST-module/Tools-to-test-REST-requests/)
+-   [Tools to test REST requests](../../../RNs-6-4-3/Modules/List-of-modules/REST-module/Tools-to-test-REST-requests/)
 
--   [How to add an asset with REST](../../Developing/Development-how-tos/How-to-add-an-asset-with-REST/)
+-   [How to add an asset with REST](../../../RNs-6-4-3/Developing/Development-how-tos/How-to-add-an-asset-with-REST/)
 
--   [Headless docs](../../Developing/headless/)
+-   [Headless docs](../../../RNs-6-4-3/Developing/headless/)

@@ -12,24 +12,20 @@ See [Feeds](../../../Authoring/Feeds/) for more information about using the app.
 
 The Feeds app allows you to set up feeds for use in components on pages.
 
-![Feeds app with the action bar](../../../_images/6-2-feedsApp.png)
-![Feeds displayed in action](../../../_images/6-1-feedsApp-pageEditMode.png)
-
-## [](#_configuration)Configuration
-
-The Feeds app is installed by the [RSS Aggregator module](../../../Modules/List-of-modules/RSS-Aggregator-module/). The configuration of the `browser` and `detail` subapps is typical of any content app. The `config` subapp uses the custom subapp class `RSSAggregatorConfigurationSubApp`. The app is configured in `/modules/rssaggregator/apps/rssAggregator`.
+![Feeds app with the action bar](../../../../RNs-6-4-3/_images/6-2-feedsApp.png)
+![Feeds displayed in action](../../../../RNs-6-4-3/_images/6-1-feedsApp-pageEditMode.png)
 
 | Node name | Value |
 | --- | --- |
-| 📁 modules |     |
-| 📁 rssaggregator |     |
-| 📁 apps |     |
-| ⸬ rssAggregator |     |
-| ⸬ subapps |     |
-| ⸬ browser |     |
-| ⸬ detail |     |
-| ⸬ config |     |
-| ⸬ formDefinitions |     |
+| 📁 modules |  |
+| 📁 rssaggregator |  |
+| 📁 apps |  |
+| ⸬ rssAggregator |  |
+| ⸬ subapps |  |
+| ⸬ browser |  |
+| ⸬ detail |  |
+| ⸬ config |  |
+| ⸬ formDefinitions |  |
 | ⬩ class | info.magnolia.module.rssaggregator.app.subapps.aggregationconfig.RSSAggregatorSimpleConfigSubAppDescriptor |
 | ⬩ closable | false |
 | ⬩ subAppClass | info.magnolia.module.rssaggregator.app.subapps.aggregationconfig.RSSAggregatorSimpleConfigSubApp |
@@ -37,11 +33,3 @@ The Feeds app is installed by the [RSS Aggregator module](../../../Modules/List-
 | ⬩ class | info.magnolia.ui.contentapp.ConfiguredContentAppDescriptor |
 | ⬩ icon | icon-rss-feed |
 | ⬩ name | rssAggregator |
-
-### [](#_workspace)Workspace
-
-The Feeds app operates on the `rss` workspace that stores the feeds and related content.
-
-### [](#_node_types)Node types
-
-The Feeds app registers the `mgnl:rssAggregator` custom node type. The app operates on nodes of this type and on `mgnl:folder` nodes.

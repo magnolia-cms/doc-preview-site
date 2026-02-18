@@ -8,27 +8,22 @@ breadcrumb: DX Core > Modules > Admincentral module
 
 # Admincentral module
 
-[Content management](../../../use-cases/content-management/) Bundled: Community edition
-
-|     |     |
+| Edition | CE |
 | --- | --- |
-| Edition | CE  |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLUI](https://magnolia-cms.atlassian.net/browse/MGNLUI) |
-| Maven site | [UI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fadmincentral%2Fmagnolia-admincentral%2F6.3.7) |
-| Latest | 6.3.7 |
-
-The Admincentral module allows you to customize certain functional aspects of the [Find Bar](#_configuring_find_bar_search_results), namely configuration of search filters and sizes of search result collections.
+| Maven site | [UI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fadmincentral%2Fmagnolia-admincentral%2F{magnolia-admincentral-63}) |
+| Latest | {magnolia-admincentral-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.admincentral</groupId>
   <artifactId>magnolia-admincentral</artifactId>
-  <version>6.3.7</version> (1)
+  <version>{magnolia-admincentral-63}</version> (1)
 </dependency>
 ```
 
@@ -38,62 +33,14 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 
 > **Note:** The UI Admincentral is a different module. Its groupId is info.magnolia.ui, and its artifactId is magnolia-ui-admincentral. You can use it to configure, for example, the availability and layout of apps in the App launcher.
 
-## [](#_configuring_find_bar_search_results)Configuring Find Bar search results
-
-You can configure how many search results are displayed. To do so, use the [definition decoration](../../../Developing/Definition-decoration/) mechanism.
-
-For example, the following light module configuration updates the `defaultCountPerSupplier` to `3`, allowing you to see only up to 3 search results.
-
-<my-module>/decorations/admincentral/config.yaml
-
-```yaml
-findBar:
-   defaultCountPerSupplier: 3
-```
-
-### [](#_configurable_properties_for_find_bar_search)Configurable properties for Find Bar search
-
-The table below lists properties in the [Admincentral module](./) that affect how search results appear.
-
- PropertyDescription
-
-`defaultCountPerSupplier`
-
-**optional**, *default is `10`*
-
-Integer defining the maximum number of search results shown from any single search supplier.
-
-`editorRoles`
-
-**optional**
-
-List of user roles allowed in the **Last editor** search filter:
-![List of authorized user roles](../../../_images/6-1-admincentralModule-lastEditor.png)
-
-All users are available unless specified otherwise.
-
-> **Warning:** By allowing all user roles in editorRoles, you may experience performance issues, especially when a large number of public users are registered in a shared user repository on the author instance and you open a Find Bar filter.
-
-`minimumSearchLength`
-
-**optional**, *default is `3`*
-
-Configure the minimum number of necessary characters that are shown in a text hint in the find bar to help the user understand how to use the search feature.
-![Findbar with text hint](../../../_images/findbar-enter-min-characters.png)
-
-`suppliers`
-
-**optional**
-
-List of search result suppliers. If undefined, it defaults to all suppliers provided by the [Periscope module](../Periscope-module/).
-
-See also [Search result suppliers](../Periscope-module/#_search_result_suppliers).
-
-`supplierOrder`
-
-**optional**, *default is `apps, pages, stories, assets, tours`*
-
-List defining the ordering of search result groups.
+| Property | Description |
+| --- | --- |
+| `defaultCountPerSupplier` | **optional** , *default is 10* Integer defining the maximum number of search results shown from any single search supplier. |
+| `editorRoles` | **optional** List of user roles allowed in the **Last editor** search filter: All users are available unless specified otherwise. ** By allowing all user roles in `editorRoles` , you may experience performance issues, especially when a large number of public users are registered in a shared user repository on the author instance and you open a Find Bar filter. | ** | By allowing all user roles in `editorRoles` , you may experience performance issues, especially when a large number of public users are registered in a shared user repository on the author instance and you open a Find Bar filter. |
+| ** | By allowing all user roles in `editorRoles` , you may experience performance issues, especially when a large number of public users are registered in a shared user repository on the author instance and you open a Find Bar filter. |
+| `minimumSearchLength` | **optional** , *default is 3* Configure the minimum number of necessary characters that are shown in a text hint in the find bar to help the user understand how to use the search feature. |
+| `suppliers` | **optional** List of search result suppliers. If undefined, it defaults to all suppliers provided by the [Periscope module](../Periscope-module/) . See also [Search result suppliers](../Periscope-module/#_search_result_suppliers) . |
+| `supplierOrder` | **optional** , *default is apps, pages, stories, assets, tours* List defining the ordering of search result groups. |
 
 ## [](#_global_password_policy_validation)Global password policy validation
 
@@ -151,4 +98,4 @@ Related topics
 
 -   [App Launcher layout](../../../Administration/App-Launcher/App-launcher-layout/)
 
--   [App Launcher](../../../Authoring/App-Launcher/)
+-   [App Launcher](../../../../RNs-6-4-3/Authoring/App-Launcher/)

@@ -8,28 +8,22 @@ breadcrumb: DX Core > Modules > RSS Aggregator module
 
 # RSS Aggregator module
 
-[Content management](../../../use-cases/content-management/) Unbundled: Community edition
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLRSSAGG](https://magnolia-cms.atlassian.net/browse/MGNLRSSAGG/issues) |
-| Maven site | [RSS Aggregator](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fmagnolia-module-rssaggregator%2F2.6.6) |
-| Latest | 2.6.6 |
-
-See [Feeds](../../../Authoring/Feeds/) for more information about using the module and the [Feeds app](../../../Apps/List-of-apps/Feeds-app/).
-
-> **Caution:** Due to performance issues, we do not recommend using this module as part of your Magnolia Cloud deployment.
+| Maven site | [RSS Aggregator](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fmagnolia-module-rssaggregator%2F{magnolia-rssaggregator-63}) |
+| Latest | {magnolia-rssaggregator-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia</groupId>
   <artifactId>magnolia-module-rssaggregator</artifactId>
-  <version>2.6.6</version> (1)
+  <version>{magnolia-rssaggregator-63}</version> (1)
 </dependency>
 ```
 

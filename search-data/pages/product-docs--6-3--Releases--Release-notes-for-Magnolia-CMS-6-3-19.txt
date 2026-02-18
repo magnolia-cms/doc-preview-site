@@ -8,62 +8,24 @@ breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.19
 
 # Release notes for Magnolia CMS 6.3.19
 
-[LTS release](../../../../support/) • Delivered on January 13, 2026 • Changelog: [22262](https://magnolia-cms.atlassian.net/issues/?filter=22262)
+[LTS release](#support:ROOT:index.adoc) • Delivered on January 13, 2026 • Changelog: [22262](https://magnolia-cms.atlassian.net/issues/?filter=22262)
 
 **Magnolia 6.3.19** is a maintenance release centered on enhancing search performance, system stability, and administrative efficiency. This update prioritizes optimizations to the underlying repository structure and resolves specific interface latencies to ensure a smoother experience for operators and developers.
 
 The release optimizes indexing by offering lighter full-text search configurations and removing document merge limits, alongside a new configuration for trailing slashes in multisite setups. Notable fixes include resolving asset chooser latency, fixing H2 repository startup hangs on macOS, and correcting ordering inconsistencies in multi-link fields.
 
--   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.19/magnolia-dx-core-webapp-6.3.19.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.19/magnolia-dx-core-webapp-6.3.19.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.19/travel-demo-webapp-6.3.19.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.19/travel-demo-webapp-6.3.19.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.19/travel-demo-community-webapp-6.3.19.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-community-webapp-6.3.19.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.19/travel-demo-community-webapp-6.3.19.war)
 
--   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
 
-
-## [](#_improvements)Improvements
-
--   [MAGNOLIA-9746](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9746) Offer lighter full-text search index configurations
-
--   [MAGNOLIA-9825](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9825) Remove `maxMergeDocs` limit from the `configuration` workspace
-
-    For more, see [Indexing performance](../../Administration/Architecture/Workspaces/workspace-configuration/#_performance).
-
--   [MGNLUI-9312](https://magnolia-cms.atlassian.net/browse/MGNLUI-9312) Check file headers when uploading an image using `DamUploadField`
-
--   [MULTISITE-227](https://magnolia-cms.atlassian.net/browse/MULTISITE-227) A configurable way to end links with a slash
-
-    For more, see [Link management](../../Administration/Architecture/configuration-management/link-management/).
-
-
-### [](#_security_improvements)Security improvements
-
-[BUILD-1501](https://magnolia-cms.atlassian.net/browse/BUILD-1501), [BUILD-1502](https://magnolia-cms.atlassian.net/browse/BUILD-1502), [BUILD-1506](https://magnolia-cms.atlassian.net/browse/BUILD-1506), [MGNLGQL-202](https://magnolia-cms.atlassian.net/browse/MGNLGQL-202), [MGNLGQL-203](https://magnolia-cms.atlassian.net/browse/MGNLGQL-203), [MGNLREST-885](https://magnolia-cms.atlassian.net/browse/MGNLREST-885)
-
-We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](../../../../support/) if you need more information.
-
-#### [](#_security_hardening_in_the_graphql_module)Security hardening in the GraphQL module
-
-This release introduces query complexity analysis and depth limiting to the [GraphQL module](../../Modules/List-of-modules/GraphQL-module/), protecting instances against potential denial-of-service (DoS) attacks. Existing queries continue to function with the new conservative default limits.
-
-What’s new:
-
--   Query complexity limiting: By default, queries are limited to a maximum of `200` fields.
-
--   Query depth limiting: The maximum depth of a query is now `15` levels by default.
-
--   Field duplication detection: Duplicate fields in a query now count toward the complexity limit.
-
-
-You can adjust these limits through the module’s configuration.
-
-Additionally, client applications now receive more accurate HTTP response status codes, distinguishing between client-side and server-side errors. This change improves the debugging experience and aligns with REST/HTTP best practices.
 
 | Scenario | HTTP code before | HTTP code now |
 | --- | --- | --- |
-| `ValidationError` (for example, `DuplicateDirectiveName`, `FieldUndefined`, `UnusedVariable`) | `500` | `400` |
+| `ValidationError` (for example, `DuplicateDirectiveName` , `FieldUndefined` , `UnusedVariable` ) | `500` | `400` |
 | Query batching (JSON array format) | `500` | `400` |
 | Malformed JSON in request body | `500` | `400` |
 

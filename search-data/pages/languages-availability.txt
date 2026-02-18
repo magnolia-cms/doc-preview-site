@@ -1,0 +1,106 @@
+---
+title: "Language Availability module"
+url: https://docs.magnolia-cms.com/languages-availability/
+category: Modules
+version: modules
+breadcrumb: Language Availability module
+---
+
+# Language Availability module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/languages-availability) |
+| Latest | 1.0 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.i18n</groupId>
+  <artifactId>magnolia-languages-availability</artifactId>
+  <version>1.0</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.i18n</groupId>
+  <artifactId>magnolia-languages-availability-livecopy</artifactId> (1)
+  <version>1.0</version>
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | This is only needed if using [Live Copy](../live-copy/4.x/). |
+
+## [](#_configuration)Configuration
+
+### [](#_i18n_authoring_support)i18n authoring support
+
+The module automatically changes the implementation of the `i18n` authoring support with the following:
+
+-   Standard
+
+-   With Live Copy
+
+
+```yaml
+server:
+  i18n:
+    authoring:
+      class: info.magnolia.i18n.language.availability.MultiSiteI18nAuthoringSupportWithSecurity
+```
+
+```yaml
+server:
+  i18n:
+    authoring:
+      class: info.magnolia.i18n.language.availability.livecopy.LiveCopyI18nContentSupportWithSecurity
+```
+
+### [](#_i18n_content_support)i18n content support
+
+In order to use the languages availability feature on your website, you will need first to change the `i18n` content support of the related site definition with the following implementation:
+
+-   Standard
+
+-   With Live Copy
+
+
+```yaml
+mySiteDefinition:
+  i18n:
+    class: info.magnolia.i18n.language.availability.MultiSiteI18nContentSupportWithSecurity
+```
+
+```yaml
+mySiteDefinition:
+  i18n:
+    class: info.magnolia.i18n.language.availability.livecopy.LiveCopyI18nContentSupportWithSecurity
+```
+
+You can then assign availabilities per language as following:
+
+```yaml
+mySiteDefinition:
+  i18n:
+    class: info.magnolia.i18n.language.availability.livecopy.LiveCopyI18nContentSupportWithSecurity.
+    locales: ...
+    localesAvailabilities: (1)
+      en:
+        access:
+          roles:
+            - role1
+            - role2
+```
+
+|     |     |
+| --- | --- |
+| **1** | The name of the nodes under `localesAvailabilities` must match the names of the nodes under `locales`. |
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

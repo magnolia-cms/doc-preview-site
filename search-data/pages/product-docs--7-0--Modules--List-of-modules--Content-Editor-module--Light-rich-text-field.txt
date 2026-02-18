@@ -8,7 +8,7 @@ breadcrumb: DX Core > Modules > Content Editor module > Light rich text field
 
 # Light rich text field
 
-info.magnolia.editor.field.LightRichTextFieldDefinition is a special type of [rich text field](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/) provided by the [Content Editor module](../).
+info.magnolia.editor.field.LightRichTextFieldDefinition is a special type of [rich text field](../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/) provided by the [Content Editor module](../../../../../RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/).
 
 > **Note:** The field can only be used as a content block element in a custom content editor.
 
@@ -16,11 +16,11 @@ Compared to the rich text field, the text formatting functions and configuration
 
 A light rich text field
 
-![Light rich text field block with control box](../../../../_images/6-2-developingRenderingCustomContentBlocks-lightRichTextFieldBlock.png)
+![Light rich text field block with control box](../../../../../RNs-6-4-3/_images/6-2-developingRenderingCustomContentBlocks-lightRichTextFieldBlock.png)
 
 A full-featured rich text field
 
-![Rich text Field example](../../../../_images/6-2-11-lightRichTextField-richTextFieldExample.png)
+![Rich text Field example](../../../../../RNs-6-4-3/_images/6-2-11-lightRichTextField-richTextFieldExample.png)
 
 ## [](#_example_definition)Example definition
 
@@ -40,27 +40,10 @@ block:
         - dam-chooser
 ```
 
-## [](#_field_properties)Field properties
-
 | Property | Description |
 | --- | --- |
-| `linkableApps` | **required**<br><br>List of Magnolia apps which the editor may choose from for linking of a text element in the field with a Magnolia content item. The apps configured will be displayed in a separate choose dialog. |
-| `configJsFile` | **optional**<br><br>Location of a custom configuration file.<br><br>For more details, see the section [Customization](#_customization) below. |
-
-> **Note:** In the pre-5 UI versions of the Content Editor module (versions 1.3.x), the linkableApps definition was part of the contentDefinition in the configuration of the Stories app. The names of the linkable apps were also different: pages and assets (5 UI apps) versus pages-app and dam-chooser (6 UI apps, Content Editor 2.x)./stories-app/apps/stories.yamlicon: icon-stories-app
-> appClass: info.magnolia.ui.contentapp.ContentApp
-> class: info.magnolia.ui.contentapp.contenttypes.ConfiguredContentTypeAppDescriptor
-> contentType: story
-> subApps:
->   browser:
-> ...
->   editor:
-> ...
->     contentDefinition:
-> ...
->       linkableApps:
->         - pages
->         - assets
+| `linkableApps` | **required** List of Magnolia apps which the editor may choose from for linking of a text element in the field with a Magnolia content item. The apps configured will be displayed in a separate choose dialog. |
+| `configJsFile` | **optional** Location of a custom configuration file. For more details, see the section [Customization](#_customization) below. |
 
 ## [](#_customization)Customization
 
@@ -135,4 +118,4 @@ Related topics
 
 -   [Setting CKEditor 4 Configuration](https://ckeditor.com/docs/ckeditor4/latest/guide/dev_configuration.html#using-the-configjs-file)
 
--   [Rich text field](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/)
+-   [Rich text field](../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/)

@@ -1,0 +1,21 @@
+---
+title: "API error handling"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/API/API-error-handling/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > API > API error handling
+---
+
+# API error handling
+
+This page describes the most common types of errors (exceptions) that may occur when issuing API requests.
+
+| Exception | HTTP Status Code | Error code | Description |
+| --- | --- | --- | --- |
+| `NotAuthorizedException` | 401 | `notAuthorized` | Unauthorized. |
+| `BadRequestException` | 400 | `badRequest` | Bad request. |
+| `NotAllowedException` | 405 | `methodNotAllowed` | The request method is not supported. |
+| `NotAcceptableException` | 406 | `notAcceptable` | The requested media type is not supported. |
+| `NotFoundException` | 404 | `notFound` | The resource was not found. |
+| `ReaderException` | 400 | `readerError` | A JAX-RS exception. |
+| `WriterException` | 500 | `writerError` | A JAX-RS exception. |

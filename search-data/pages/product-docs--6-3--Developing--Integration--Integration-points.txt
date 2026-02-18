@@ -34,13 +34,13 @@ The [REST Client module](../../../Modules/List-of-modules/REST-Client-module/) e
 
 ## [](#_connecting_to_non_jcr_data)Connecting to non-JCR data
 
-[Content app with non-JCR content](../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/Content-app-with-non-JCR-content-5-UI/) tutorial provides a step-by-step guide to creating an app that operates on data stored outside the JCR repository. The tutorial shows you how to create a custom [content connector](../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/App-configuration-5-UI/Content-connector-5-UI/) which is key to connecting to external content. The example app uses the [content app framework](../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/Content-app-framework-5-UI/) but stores data on the local file system. It is an example of connecting to a custom data source. Editors don’t have to leave Magnolia in order to work on third-party data.
+[Content app with non-JCR content](#6.2@Support/Magnolia-5-UI-documentation/Content-apps-5-UI/Content-app-with-non-JCR-content-5-UI.adoc) tutorial provides a step-by-step guide to creating an app that operates on data stored outside the JCR repository. The tutorial shows you how to create a custom [content connector](#6.2@Support/Magnolia-5-UI-documentation/Content-apps-5-UI/App-configuration-5-UI/Content-connector-5-UI.adoc) which is key to connecting to external content. The example app uses the [content app framework](#6.2@Support/Magnolia-5-UI-documentation/Content-apps-5-UI/Content-app-framework-5-UI.adoc) but stores data on the local file system. It is an example of connecting to a custom data source. Editors don’t have to leave Magnolia in order to work on third-party data.
 
 ## [](#_custom_filter)Custom filter
 
 Additional filters can be added in the filter chain or `web.xml` file. If you add them in the filter chain you benefit from Magnolia features such as security and caching. The additional filter can take over the handling of the request or delegate it to the remaining filter chain.
 
-![Filter chain integration](../../../_images/filter-chain-integration.png)
+![Filter chain integration](../../../../RNs-6-4-3/_images/filter-chain-integration.png)
 
 [Custom filters](../../../Administration/Architecture/Request-processing-and-filters/Custom-filters/) explains how to create and configure a custom Filter.
 
@@ -57,7 +57,7 @@ An independent servlet can be registered in the servlet filter. The easiest way 
 3.  The servlet handles the response.
 
 
-![Responding to a request with servlet](../../../_images/responding-to-request-with-servlet.png)
+![Responding to a request with servlet](../../../../RNs-6-4-3/_images/responding-to-request-with-servlet.png)
 
 [Registering a servlet](../../../Administration/Architecture/Request-processing-and-filters/Registering-a-servlet/) explains how to create and register a servlet.
 
@@ -78,7 +78,7 @@ As the Magnolia main filter is registered on forward, any servlet or filter can 
 5.  A page is rendered.
 
 
-![Forwarding a request](../../../_images/forwarding-a-request.png)
+![Forwarding a request](../../../../RNs-6-4-3/_images/forwarding-a-request.png)
 
 ## [](#_custom_renderer)Custom renderer
 

@@ -27,46 +27,46 @@ Light modules can be built with a simple text editor, with no special tools (suc
 
 ## [](#_what_items_can_be_defined_in_a_light_module)What items can be defined in a light module?
 
-The following items can be defined within a light module using YAML. Items defined by YAML can be [decorated](../../../product-docs/7.0/Developing/Definition-decoration/), or can be reused with [YAML inherit and include](../../../product-docs/7.0/Developing/Reusing-configuration/YAML-inherit-and-include/).
+The following items can be defined within a light module using YAML. Items defined by YAML can be [decorated](../../../product-docs/RNs-6-4-3/Developing/Definition-decoration/), or can be reused with [YAML inherit and include](../../../product-docs/RNs-6-4-3/Developing/Reusing-configuration/YAML-inherit-and-include/).
 
--   [App definitions](../../../product-docs/7.0/Apps/App-configuration/App-descriptor/)
+-   [App definitions](../../../product-docs/RNs-6-4-3/Apps/App-configuration/App-descriptor/)
 
 -   Content type definitions
 
--   [Dialog definitions](../../../product-docs/7.0/Developing/Templating/Dialog-definition/)
+-   [Dialog definitions](../../../product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/)
 
--   [Field type definitions](../../../product-docs/7.0/Developing/Templating/Dialog-definition/Field-definition/Custom-fields/)
+-   [Field type definitions](../../../product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/Custom-fields/)
 
--   [Media editor definitions](../../../product-docs/7.0/Modules/List-of-modules/UI-module/UI-Media-Editor-module/)
+-   [Media editor definitions](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/UI-module/UI-Media-Editor-module/)
 
--   [Message view definitions](../../../product-docs/7.0/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
+-   [Message view definitions](../../../product-docs/RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
 
--   [Module configurations](../../../product-docs/7.0/Modules/Module-configuration/)
+-   [Module configurations](../../../product-docs/RNs-6-4-3/Modules/Module-configuration/)
 
--   [Renderer definitions](../../../product-docs/7.0/Developing/Templating/Renderers/)
+-   [Renderer definitions](../../../product-docs/RNs-6-4-3/Developing/Templating/Renderers/)
 
--   [REST endpoint definitions](../../../product-docs/7.0/Developing/Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/)
+-   [REST endpoint definitions](../../../product-docs/RNs-6-4-3/Developing/Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/)
 
--   [Site definitions](../../../product-docs/7.0/Developing/Templating/Site-definition/#_configuring_a_site_definition)
+-   [Site definitions](../../../product-docs/RNs-6-4-3/Developing/Templating/Site-definition/#_configuring_a_site_definition)
 
--   [Template definitions](../../../product-docs/7.0/Developing/Templating/Template-definition/)
+-   [Template definitions](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-definition/)
 
--   [Theme definitions](../../../product-docs/7.0/Developing/Templating/Theme/)
+-   [Theme definitions](../../../product-docs/RNs-6-4-3/Developing/Templating/Theme/)
 
--   [Virtual URI mappings](../../../product-docs/7.0/Administration/URI-mapping/Virtual-URI-mapping/)
+-   [Virtual URI mappings](../../../product-docs/RNs-6-4-3/Administration/URI-mapping/Virtual-URI-mapping/)
 
--   [Workflow definitions](../../../product-docs/7.0/Modules/List-of-modules/Workflow-module/Workflow-processes/)
+-   [Workflow definitions](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Workflow-module/Workflow-processes/)
 
--   [Work item handler definitions](../../../product-docs/7.0/Modules/List-of-modules/Workflow-module/Custom-tasks/)
+-   [Work item handler definitions](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Workflow-module/Custom-tasks/)
 
 
-> **Note:** Non YAML-based items can also be used/found in light modules.i18n message bundles and related pagesjavascript-models:ROOT:index.adoc
+> **Note:** Non YAML-based items can also be used/found in light modules.i18n message bundles and related pagesJavascript Models
 
 ## [](#_creating_a_light_module_with_magnolia_cli)Creating a light module with Magnolia CLI
 
-Using the [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) you can create the folder structure for a light module with the command `create-light-module`.
+Using the [Magnolia CLI](../../../magnolia-cli/) you can create the folder structure for a light module with the command `create-light-module`.
 
-1.  Ensure you have [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) v5 installed:
+1.  Ensure you have [Magnolia CLI](../../../magnolia-cli/) v5 installed:
 
     ```sh
     mgnl -V

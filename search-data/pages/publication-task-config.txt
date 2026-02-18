@@ -1,0 +1,43 @@
+---
+title: "Publication Task Config"
+url: https://docs.magnolia-cms.com/publication-task-config/
+category: Modules
+version: modules
+breadcrumb: Publication Task Config
+---
+
+# Publication Task Config
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [PUBTSKCONF](https://magnolia-cms.atlassian.net/browse/PUBTSKCONF) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/publication-task-config) |
+| Latest | 6.2.1 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.workflow</groupId>
+  <artifactId>magnolia-publication-task-config</artifactId>
+  <version>6.2.1</version>
+</dependency>
+```
+
+| Property | Description |
+| --- | --- |
+| `scheduleTracking` | **optional** , *defaults to `true`* Enable or disable the module with true/false. |
+| `dateTimePattern` | **optional** , *defaults to `MMM dd, yyyy hh:mm aa Z`* Set the format of the date to be displayed in the tooltip. |
+
+| Version | Notes |
+| --- | --- |
+| `6.2.1` | [PUBTSKCONF-8](https://magnolia-cms.atlassian.net/browse/PUBTSKCONF) |
+| `6.2` | [PUBTSKCONF-7](https://magnolia-cms.atlassian.net/browse/PUBTSKCONF) |
+| `6.1.2` | [PUBTSKCONF-5](https://magnolia-cms.atlassian.net/browse/PUBTSKCONF) |
+| `6.1.1` | Skip this version. |
+| `6.1` |  |
+| `5.6.1` | [PUBTSKCONF-1](https://magnolia-cms.atlassian.net/browse/PUBTSKCONF) |
+| `5.6` | Initial release of the module. |

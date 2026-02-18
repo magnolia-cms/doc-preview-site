@@ -37,13 +37,38 @@ JCR-based users have the following information stored:
 
 
 
-Unresolved include directive in modules/ROOT/pages/Administration/IAM/Users/User-profile-storage.adoc - include::magnolia-sso:ROOT:partial$r\_sso-user-info-storage.adoc\[\]
+User profile preferences related to the Magnolia instance for SSO users is stored in the `profiles` workspace that may only be accessed by the `superuser`.
+
+The following information is stored in the `profiles` workspace for SSO users:
+
+-   Full name
+
+-   Email
+
+-   Favorite apps
+
+-   Language
+
+-   Last login
+
+-   Previous login
+
+-   Timezone
+
+-   Completed intro status (Magnolia app launcher tour)
+
+-   Usage metrics acknowledgement status
+
+
+> **Tip:** SSO users can set their user preferences for timezone and language in AdminCentral.
+
+The information for each user is stored based on the username from the third-party IdP. If you change a user’s username in your IdP, their preferences are reset in Magnolia.
 
 ## [](#_paths_to_user_profiles_in_the_profiles_workspace)Paths to user profiles in the `profiles` workspace
 
 The `profiles` workspace is hierarchically structured and encrypted to avoid performance issues when storing many user profiles.
 
-![Profiles workspace open in JCR browser](../../../../_images/JCR-browser-profiles-workspace.png)
+![Profiles workspace open in JCR browser](../../../../../RNs-6-4-3/_images/JCR-browser-profiles-workspace.png)
 
 > **Note:** User profiles are created automatically. We don’t recommend bootstrapping profiles because the structure is created automatically and could change in future.
 

@@ -1,0 +1,50 @@
+---
+title: "Progress bar"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/progress-bar/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Progress bar
+---
+
+# Progress bar
+
+The Progress bar component visually indicates progress or completion as a percentage.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `slider` (required) - A slider field:
+
+    -   Range: `0` to `100`.
+
+    -   Default: `50`.
+
+
+
+## [](#_behavior)Behavior
+
+-   Displays a progress bar filled based on the selected percentage value.
+
+-   The numeric percentage is shown below the bar for clarity.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component ProgressBar -p progressBar
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

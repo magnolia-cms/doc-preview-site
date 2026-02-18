@@ -1,0 +1,19 @@
+---
+title: "Configuration"
+url: https://docs.magnolia-cms.com/image-recognition/developers/configure/
+category: Modules
+version: modules
+breadcrumb: Image Recognition module > Configure
+---
+
+# Configuration
+
+Magnolia integrates with two providers to offer image recognition functionality:
+
+-   [Amazon Rekognition](../configure_amazon-recognition/)
+
+    The Amazon Rekognition service enables image recognition in Magnolia by tagging images using Amazon’s AI capabilities. Configure the service provider and connection settings to integrate this functionality. For detailed configuration, see the sections below.
+
+-   [AI Accelerator module](../configure_ai-accelerator/)
+
+    The AI Accelerator image recognition service enables Magnolia to automatically tag images using multimodal large language models (LLMs). It works as a service provider for the Image Recognition module, delegating image analysis to an `AiTask` executed inside the AI Accelerator Module.

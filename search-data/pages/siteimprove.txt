@@ -8,80 +8,18 @@ breadcrumb: Siteimprove module
 
 # Siteimprove module
 
-[Analytics and optimization](../product-docs/7.0/use-cases/analytics-and-optimization/) [Unbundled: Extension](https://gitlab.magnolia-platform.com/ps/incubator/siteimprove) Version [3.0.0](https://magnolia-cms.atlassian.net/browse/SIMPROVE) [Magnolia 6.4](#master@product-docs:ROOT:index.adoc) compatible
+[Analytics and optimization](../product-docs/RNs-6-4-3/use-cases/analytics-and-optimization/) [Unbundled: Extension](https://gitlab.magnolia-platform.com/ps/incubator/siteimprove) Version [3.1.0](https://magnolia-cms.atlassian.net/browse/SIMPROVE) [Magnolia 6.4](../product-docs/RNs-6-4-3/) compatible
 
 The **Siteimprove module** lets you perform SEO checks by using [Siteimprove](https://www.siteimprove.com/). It helps your site score higher rankings in search engines and checks how your content is performing overall.
 
-## [](#_installing_with_maven)Installing with Maven
-
-Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
-
-```xml
-<dependency>
-  <groupId>info.magnolia.seo</groupId>
-  <artifactId>magnolia-siteimprove</artifactId>
-  <version>3.0.0</version>
-</dependency>
-```
-
-### [](#_configuration)Configuration
-
-The module provides the following configuration options.
-
 | Property | Description |
 | --- | --- |
-| `mapperClass` | **optional**, *defaults to \`info.magnolia.connector.siteimprove.mapper.SiteDefinitionDomainMapper\`*<br><br>The default mapping implementation relies on the related site definition domain. You can add your custom implementation of the page mapping by implementing `info.magnolia.connector.siteimprove.mapper.SiteImproveMapper` and changing the related configuration. |
+| `mapperClass` | **optional** , *defaults to `info.magnolia.connector.siteimprove.mapper.SiteDefinitionDomainMapper`* The default mapping implementation relies on the related site definition domain. You can add your custom implementation of the page mapping by implementing `info.magnolia.connector.siteimprove.mapper.SiteImproveMapper` and changing the related configuration. |
 | `token` | **required** Token provided by Siteimprove. The first time Siteimprove is contacted the token is stored here. There is no need to set the token manually. |
-| `username` | **required**, *if using prepublish check*<br><br>The username (email) used to log into Siteimprove dashboard |
-| `apiKey` | **required**, *if using prepublish check*<br><br>To generate an api key for prepublish check visit Siteimprove dashboard → Integrations → API → API keys → Create API key ([Manage API keys](https://my2.siteimprove.com/Integrations/Api/ManageApiKeys)\]) |
-
-### [](#_usage)Usage
-
-Using the Siteimprove connector helps you fix and improve website accessibility, SEO, content quality and more. Siteimprove crawls websites through public URLs, which means that all pages are indexed from their public addresses.
-
-#### [](#_accessing_the_siteimprove_dashboard)Accessing the Siteimprove dashboard
-
-To access the Siteimprove dashboard for the first time:
-
-1.  Log into Magnolia.
-
-2.  Open a page in the Pages app.
-
-3.  Click the Siteimprove icon ![Siteimprove icon](_images/siteimprove-icon.gif) to the right of the page.
-
-4.  In the pop up window that opens, enter your Siteimprove credentials.
-
-    The Siteimprove dashboard then displays the SEO results for the page you have open (and site the page belongs to).
-
-
-![Siteimprove example](_images/site-improve.png)
-
-Once you have logged in for the first time, the Siteimprove dashboard remains available via the icon for each page you open.
-
-> **Tip:** If the Siteimprove icon is greyed out, log out of Magnolia and back in again.
-
-#### [](#_setting_your_website_to_be_observed)Setting your website to be observed
-
-Before any SEO check can be performed, you must set your website to be observed by Siteimprove. You can do this in the [Siteimprove application](https://my2.siteimprove.com/Settings/Sites/Index) itself.
-
-![Site and group access section](_images/site-improve-observed-website.png)
-
-#### [](#_performing_an_seo_check)Performing an SEO check
-
-To perform an SEO check on your site, tree or page, click **Check page** in the Siteimprove dashboard. Siteimprove analyzes the page’s content and displays results such as the DCI page score, number of broken links, misspellings and more.
-
-> **Note:** The default spell checker integration we provide is to an external service TextGears, Siteimprove offers its own.
-
-#### [](#_performing_a_prepublish_check)Performing a prepublish check
-
-> **Note:** To enable the prepublish check, you need to provide a valid username and apiKey.
-
-To perform a prepublish check click `**Siteimprove: Prepublish check**` in the page editor action bar. ![Siteimprove: Prepublish check action](_images/prepublish-init.png) The Siteimprove overlay will show a progress indicator during it’s processing ![Siteimprove: Prepublish check in progress](_images/prepublish-progress.png) Once the processing is done the prepublish check results can be viewed on the results page ![Siteimprove: Prepublish check done](_images/prepublish-done.png) ![Siteimprove: Prepublish results page](_images/prepublish-results.png)
-
-## [](#_changelog)Changelog
-
-### [](#_siteimprove_module_compatibility)Siteimprove module compatibility
+| `username` | **required** , *if using prepublish check* The username (email) used to log into Siteimprove dashboard |
+| `apiKey` | **required** , *if using prepublish check* To generate an api key for prepublish check visit Siteimprove dashboard → Integrations → API → API keys → Create API key ( [Manage API keys](https://my2.siteimprove.com/Integrations/Api/ManageApiKeys) ]) |
 
 | Module version | Magnolia version |
 | --- | --- |
-| `3.0.0` | Release for Magnolia 6.4 compatibility.<br><br>[Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20SIMPROVE%20AND%20fixVersion%20%3D%203.0.0) |
+| `3.1.0` | Site Improve SDK v2 integration [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20SIMPROVE%20AND%20fixVersion%20%3D%203.1.0) |
+| `3.0.0` | Release for Magnolia 6.4 compatibility. [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20SIMPROVE%20AND%20fixVersion%20%3D%203.0.0) |

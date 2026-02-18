@@ -31,7 +31,7 @@ The following types of messages are symptomatic of corruption in the repository:
 
     -   Error: `NodeState CHILD_UUID references inexistent parent uuid PARENT_UUID`
 
-    -   Resolution: Use [Magnolia tools](../../../Modules/List-of-modules/Tools-module/) to remove the node.
+    -   Resolution: Use [Magnolia tools](../../../../RNs-6-4-3/Modules/List-of-modules/Tools-module/) to remove the node.
 
 
 -   **Parent referencing inexistent child**
@@ -45,14 +45,14 @@ The following types of messages are symptomatic of corruption in the repository:
 
     -   Error: `ChildNode has invalid parent uuid: INVALID_PARENT_UUID (instead of VALID_PARENT_UUID)`
 
-    -   Resolution: Use [Magnolia tools](../../../Modules/List-of-modules/Tools-module/) to remove the node.
+    -   Resolution: Use [Magnolia tools](../../../../RNs-6-4-3/Modules/List-of-modules/Tools-module/) to remove the node.
 
 
 -   **Parent not referencing existing child**
 
     -   Error: `javax.jcr.ItemNotFoundException: failed to build path of CHILD_UUID: PARENT_UUID has no child entry for CHILD_UUID`
 
-    -   Resolution: Use [Magnolia tools](../../../Modules/List-of-modules/Tools-module/) to remove the node.
+    -   Resolution: Use [Magnolia tools](../../../../RNs-6-4-3/Modules/List-of-modules/Tools-module/) to remove the node.
 
 
 -   **Node already exists**

@@ -16,14 +16,14 @@ The page is an extension to [Hello Magnolia](../../Getting-started-with-Magnolia
 
 The product of the Hello Magnolia tutorial is a light module called `hello-magnolia` that contains a component used on a page called `hello`. When published to the public instance, the page displays two elements in addition to the page title: a quotation and the quotation’s author. On the author instance, editors can change the content of both these elements in a dialog called `quotation`:
 
-![Hello Magnolia](../../_images/helloPage_final.png) ![Quotation dialog](../../_images/6-1-HelloMagnolia-quotationComponent.png)
+![Hello Magnolia](../../../RNs-6-4-3/_images/helloPage_final.png) ![Quotation dialog](../../../RNs-6-4-3/_images/6-1-HelloMagnolia-quotationComponent.png)
 
 ## [](#_prerequisite_a_magnolia_setup)Prerequisite: A Magnolia setup
 
 Let’s proceed from here, but first make sure that:
 
 1.  Magnolia CLI is installed on your system.
-    If it isn’t, please install it by following the instructions on the [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) page.
+    If it isn’t, please install it by following the instructions on the [Magnolia CLI](../../../../magnolia-cli/) page.
 
 2.  You have a running Magnolia instance.
     If you don’t have Magnolia installed and running, go to the page called [Installing Magnolia through npm CLI](../../Getting-started-with-Magnolia/Installing-Magnolia/Installing-Magnolia-through-npm-CLI/) and complete the steps described on it.
@@ -42,7 +42,7 @@ Let’s proceed from here, but first make sure that:
     Clone the module to the `light-modules` folder by executing this command:
 
     ```sh
-    git clone --branch lmo-tutorial-base/6.1 https://bitbucket.org/magnolia-cms/hello-magnolia.git
+    git clone --branch lmo-tutorial-base/6.1 {repo-git-helloMagnolia}
     ```
 
 
@@ -132,9 +132,9 @@ restCalls:
     path: /Quotes/random/
 ```
 
-After saving the file, you can check in the [Definitions app](../../Apps/List-of-apps/Definitions-app/) that this client configuration has been registered:
+After saving the file, you can check in the [Definitions app](../../../RNs-6-4-3/Apps/List-of-apps/Definitions-app/) that this client configuration has been registered:
 
-![Definitions app](../../_images/6-2-helloMagnoliaWithARESTfulEnhancement-inDefinitionsApp.png)
+![Definitions app](../../../RNs-6-4-3/_images/6-2-helloMagnoliaWithARESTfulEnhancement-inDefinitionsApp.png)
 
 ### [](#_creating_a_restful_component)Creating a RESTful component
 
@@ -244,10 +244,10 @@ All the necessary changes in the code are now done. In the next steps you:
 2.  Click the **New Main Component** + button.
 
 3.  Select the `Random Programming Quotation` component:
-    ![Adding the RESTful component](../../_images/6-2-helloMagnoliaWithARESTfulEnhancement-addNewComponent.png)
+    ![Adding the RESTful component](../../../RNs-6-4-3/_images/6-2-helloMagnoliaWithARESTfulEnhancement-addNewComponent.png)
     Click **Next**.
     At this point, you should be already receiving some content from the quotation API service. For example, a quotation by Joseph Yoder:
-    ![New component result](../../_images/6-2-helloMagnoliaWithARESTfulEnhancement-addNewComponent-ContentFetched.png)
+    ![New component result](../../../RNs-6-4-3/_images/6-2-helloMagnoliaWithARESTfulEnhancement-addNewComponent-ContentFetched.png)
 
 4.  Preview the page by clicking **Preview page** in the Action bar on the left. The Preview action should fetch a new quotation from the API.
 
@@ -258,7 +258,7 @@ All the necessary changes in the code are now done. In the next steps you:
 
 Finally, access the web page on the public instance: [http://localhost:8080/magnoliaPublic/hello-rest.html](http://localhost:8080/magnoliaPublic/hello-rest.html). The following screenshot shows a quotation by Bob Carr, fetched from the quotations API:
 
-![Result on Public instance](../../_images/6-2-HelloMagnoliaWithRESTfulRandomQuotes-finalResult.png)
+![Result on Public instance](../../../RNs-6-4-3/_images/6-2-HelloMagnoliaWithRESTfulRandomQuotes-finalResult.png)
 
 Related topics
 
@@ -270,4 +270,4 @@ Related topics
 
 -   [Example REST client configurations](../../Modules/List-of-modules/REST-Client-module/Example-REST-client-configurations/)
 
--   [Magnolia CLI](#magnolia-cli:ROOT:index.adoc)
+-   [Magnolia CLI](../../../../magnolia-cli/)

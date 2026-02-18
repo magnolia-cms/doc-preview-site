@@ -8,7 +8,7 @@ breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.0
 
 # Release notes for Magnolia CMS 6.3.0
 
-[LTS release](../../../../support/) • Delivered on September 4, 2024 • Changelog: [11643](https://magnolia-cms.atlassian.net/issues/?filter=11643)
+Delivered on September 4, 2024 • Changelog: [11643](https://magnolia-cms.atlassian.net/issues/?filter=11643)
 
 **Magnolia 6.3.0** is the next step in the digital experience hub for omnichannel. In this major release, we focus particularly on the following areas:
 
@@ -19,15 +19,15 @@ breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.0
 -   Refined flexibility of configuration
 
 
-As with any Magnolia release, this release also delivers critical bug and security fixes. We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+As with any Magnolia release, this release also delivers critical bug and security fixes. We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
 
--   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.0/magnolia-dx-core-webapp-6.3.0.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.0/magnolia-dx-core-webapp-6.3.0.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.0/travel-demo-webapp-6.3.0.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.0/travel-demo-webapp-6.3.0.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.0/travel-demo-community-webapp-6.3.0.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-community-webapp-6.3.0.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.0/travel-demo-community-webapp-6.3.0.war)
 
--   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.0.zip](../../_attachments/mtk2_3.0.0.zip) (*as a light module*)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [mtk2\_3.0.0.zip](../../_attachments/mtk2_3.0.0.zip) (*as a light module*)
 
 
 ## [](#_whats_new)What’s new
@@ -58,7 +58,7 @@ Version 5 is a modern, state-of-the-art, modular, and highly customizable editor
 
 A full-featured rich text field with the CKEditor functions bar
 
-![Rich text Field example](../../_images/6-2-11-lightRichTextField-richTextFieldExample.png)
+![Rich text Field example](../../../RNs-6-4-3/_images/6-2-11-lightRichTextField-richTextFieldExample.png)
 
 > **Tip:** See also the following resources on the ckeditor.com site:Differences between CKEditor 4 and CKEditor 5Migration from CKEditor 4
 
@@ -76,15 +76,15 @@ Use the slider to see the current and previous view.
 
 This release brings significant performance-related improvements:
 
--   A technical preview of [Swift publishing](#performance-tuning:ROOT:Content-structure-and-organization/Internal-vs-external-publication.adoc#_swift_publication)
+-   A technical preview of [Swift publishing](../../../../performance-tuning/Content-structure-and-organization/Internal-vs-external-publication/#_swift_publication)
 
--   Reworked [observation handling](#performance-tuning:ROOT:Search-and-indexing/JCR-observation-definition.adoc) and its effect on the UI
+-   Reworked [observation handling](../../../../performance-tuning/Search-and-indexing/JCR-observation-definition/) and its effect on the UI
 
--   Introduced two new flush cache policies not based on observation: [FlushAllFromPublishingEventPolicy](../../Modules/List-of-modules/Cache-modules/Cache-core/#_flush_policy) and [SiteAwareFlushFromPublishingEventPolicy](#performance-tuning:ROOT:Caching-strategies/Advanced-cache-modules.adoc#_multisite_cache_configuration) in the multisite cache configuration
+-   Introduced two new flush cache policies not based on observation: [FlushAllFromPublishingEventPolicy](../../Modules/List-of-modules/Cache-modules/Cache-core/#_flush_policy) and [SiteAwareFlushFromPublishingEventPolicy](../../../../performance-tuning/Caching-strategies/Advanced-cache-modules/#_multisite_cache_configuration) in the multisite cache configuration
 
--   Published a [large-scale content guide and metrics](#performance-tuning:ROOT:index.adoc)
+-   Published a [large-scale content guide and metrics](../../../../performance-tuning/)
 
--   [JMX endpoints for performance and load monitoring](#performance-tuning:ROOT:Logging-and-monitoring/JMX-monitoring.adoc)
+-   [JMX endpoints for performance and load monitoring](../../../../performance-tuning/Logging-and-monitoring/JMX-monitoring/)
 
 
 ### [](#_configuration)Configuration
@@ -95,7 +95,7 @@ Magnolia 6.3 embraces [MicroProfile Config](https://download.eclipse.org/micropr
 
 For more details, see the following links:
 
--   [MicroProfile Config](../../Administration/Architecture/configuration-management/microprofile-config/)
+-   [MicroProfile Config](../../../RNs-6-4-3/Administration/Architecture/configuration-management/microprofile-config/)
 
     -   [External configuration for publishing receivers](../../Administration/Architecture/configuration-management/microprofile-config/external-configuration-for-publishing-receivers/)
 
@@ -147,13 +147,13 @@ Magnolia 6.3 introduces a *modular privilege pattern* to increase the coherence 
 
 Each Magnolia module is now responsible for providing roles describing access (privileges) to the resources it provides.
 
-For more details, see [Roles, groups and users](../../Administration/IAM/Roles-groups-and-users/).
+For more details, see [Roles, groups and users](../../../RNs-6-4-3/Administration/IAM/Roles-groups-and-users/).
 
 #### [](#_multiple_login_providers_for_sso)Multiple login providers for SSO
 
 Magnolia 6.3 provides the ability to use default Magnolia users as well as SSO-based users to log into Magnolia. This guarantees that you can always access the Magnolia instance even if your Identity Provider (IdP) is down.
 
-For more details on SSO updates, see the [master@magnolia-sso:ROOT:changelog.adoc](#master@magnolia-sso:ROOT:changelog.adoc).
+For more details on SSO updates, see the [SSO module changelog](../../../../magnolia-sso/changelog/).
 
 #### [](#_ietf_language_tags)IETF language tags
 
@@ -301,7 +301,7 @@ The support is done through a more permissive `languageTag` property in [languag
 
 ## [](#_java_17)Java 17
 
-Java 17 is the build baseline of Magnolia 6.3. Magnolia 6.3 also runs on the latest Java versions, as specified in the [Certified stack](../../Administration/Certified-stack/).
+Java 17 is the build baseline of Magnolia 6.3. Magnolia 6.3 also runs on the latest Java versions, as specified in the [Certified stack](../../../RNs-6-4-3/Administration/Certified-stack/).
 
 ## [](#_artifact_changes)Artifact changes
 
@@ -322,7 +322,7 @@ The Community and DX Core Demo webapps are now part of the Magnolia Demo project
 
 ### [](#_local_image_recognition_module_discontinued)Local image recognition module discontinued
 
-We are discontinuing the option to use a local, pre-trained neural network for the [Image Recognition module](#image-recognition:ROOT:index.adoc). This feature was experimental and relied on outdated and unmaintained libraries. Amazon Rekognition becomes the reference implementation for the Image Recognition module.
+We are discontinuing the option to use a local, pre-trained neural network for the [Image Recognition module](../../../../image-recognition/). This feature was experimental and relied on outdated and unmaintained libraries. Amazon Rekognition becomes the reference implementation for the Image Recognition module.
 
 ## [](#_key_bug_fixes)Key bug fixes
 
@@ -420,7 +420,7 @@ See [Upgrading to Magnolia 6.3](../../Upgrading-to-Magnolia/).
 
 ### [](#_performance_tuning)Performance tuning
 
-The [Performance tuning guide](#master@performance-tuning:ROOT:index.adoc) provides an overview of performance-related topics that could help improve the operation and capabilities of your upgraded Magnolia setup.
+The [Performance tuning guide](../../../../performance-tuning/) provides an overview of performance-related topics that could help improve the operation and capabilities of your upgraded Magnolia setup.
 
 ## [](#_known_issues)Known issues
 
@@ -581,38 +581,38 @@ For the latest information, see the [6.3 list of known issues](https://magnolia-
 
 -   A/B/n Testing [`2.0.0`](../../Modules/List-of-modules/ABn-testing/ABn-testing-module/#_changelog)
 
--   AI Accelerator [`2.0.0`](#ai-accelerator:ROOT:index.adoc)
+-   AI Accelerator [`2.0.0`](../../../../ai-accelerator/4.0-alpha/)
 
 -   Blossom [`4.0.0`](../../Modules/List-of-modules/Blossom-module/)
 
--   Cloudinary External DAM [`2.0.0`](../../../../cloudinary/1.3/)
+-   Cloudinary External DAM [`2.0.0`](../../../../cloudinary/)
 
--   Campaign Manager [`4.0.0`](#campaign-manager:ROOT:index.adoc)
+-   Campaign Manager [`4.0.0`](../../../../campaign-manager/)
 
 -   CTSX DeepL Translator [`3.4.14`](../../../../content-translation-support-ext/deepl/)
 
--   JavaScript UI module [`2.1.0`](#ui-framework-javascript:ROOT:index.adoc)
+-   JavaScript UI module [`2.1.0`](../../../../ui-framework-javascript/)
 
--   Live Copy [`4.0.0`](#live-copy:ROOT:changelog.adoc)
+-   Live Copy [`4.0.0`](../../../../live-copy/4.x/changelog/)
 
 -   Privacy [`3.0.0`](../../Modules/List-of-modules/Privacy-module/)
 
--   REST Proxy [`2.0.0`](#rest-proxy:ROOT:index.adoc)
+-   REST Proxy [`2.0.0`](../../../../rest-proxy/)
 
--   Segment CDP extension [`1.1.1`](#cdp-integration-framework:segment:index.adoc)
+-   Segment CDP extension [`1.1.1`](../../../../cdp-integration-framework/segment/)
 
 -   Solr Search Provider [`8.0.0`](../../Modules/List-of-modules/Solr-module/)
 
--   SSO [`4.0.0`](#master@magnolia-sso:ROOT:changelog.adoc)
+-   SSO [`4.0.0`](../../../../magnolia-sso/changelog/)
 
 
 ### [](#_integration_frameworks)Integration frameworks
 
 -   Analytics integration framework [`2.0.0`](../../Modules/extensions-and-frameworks/analytics-integration-framework/analytics-changelog/)
 
--   CDP integration framework [`1.1.1`](#cdp-integration-framework:ROOT:index.adoc)
+-   CDP integration framework [`1.1.1`](../../../../cdp-integration-framework/)
 
--   Commerce integration framework [`2.0.0`](#ecommerce:ROOT:changelog.adoc)
+-   Commerce integration framework [`2.0.0`](../../../../ecommerce/changelog/)
 
 -   Content Translation Extended framework [`3.4.14`](../../../../content-translation-support-ext/)
 

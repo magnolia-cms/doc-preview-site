@@ -24,7 +24,7 @@ Magnolia uses a custom Jackrabbit/Lucene indexing configuration. The indexing co
 
 The generic indexing configuration used for all [workspaces](../Architecture/Workspaces/) *except* the `website` workspace is stored in `/info/magnolia/jackrabbit/indexing_configuration_default.xml`. The indexing configuration for the [website workspace](#_website_indexing_configuration_file) is in `/info/magnolia/jackrabbit/indexing_configuration_website.xml`. You can configure indexing for additional workspaces by setting the workspace name in `<param name="indexingConfiguration" value="/info/magnolia/jackrabbit/indexing_configuration_${wsp.name}.xml"/>` in the `workspace.xml` configuration file.
 
-These configurations fine-tune the default Jackrabbit search configuration for best results. The sections that follow detail the enhancements. See also [Search index configuration file](#performance-tuning:ROOT:Search-and-indexing/Search-index-configuration-file.adoc#_configuration_files) for more information.
+These configurations fine-tune the default Jackrabbit search configuration for best results. The sections that follow detail the enhancements. See also [Search index configuration file](../../../../performance-tuning/Search-and-indexing/Search-index-configuration-file/#_configuration_files) for more information.
 
 > **Tip:** Special charactersJackrabbit stores all character data (node names and values) in Unicode. This ensures that special characters such as accents and umlauts are indexed and can be used in search. Issues with special characters are often due to character set conversion problems in the application server.
 
@@ -103,7 +103,7 @@ Default indexing\_configuration\_website.xml file
 | **2** | Excludes specific properties from indexing. Explicitly defined for `mgnl:area` and `mgnl:component` because the `excludeProperty` doesn’t support inheritance or regular expressions, requiring separate index rules for each node type. |
 | **3** | Excludes specific properties from indexing for `mgnl:contentNode` to optimize search performance by omitting irrelevant metadata. |
 | **4** | New entries required to make content nodes searchable. |
-| **5** | Areas, components, contentNodes can be nested. See [Configuration files](#performance-tuning:ROOT:Search-and-indexing/Search-index-configuration-file.adoc#_configuration_files) for details on recursion and nested areas. |
+| **5** | Areas, components, contentNodes can be nested. See [Configuration files](../../../../performance-tuning/Search-and-indexing/Search-index-configuration-file/#_configuration_files) for details on recursion and nested areas. |
 | **6** | The `root` attribute (default `true`) can be set to `false`. When `false`, the node index is created with only the content it contains, and is used only for nested aggregation (for example in a `mgnl:page`). This helps create a lighter full-text search index. |
 
 > **Note:** When you add aggregates, it can increase your index size when indexing and reindexing.
@@ -208,163 +208,12 @@ Here’s the relevant extract from `workspace.xml` in the `contacts` workspace.
 
 > **Warning:** If you have used fields which allow for the storing of HTML, then that HTML will be indexed along with content. There is potential for the excerpt to contain HTML tags which are not closed.
 
-## [](#_implementing_search_using_templating_functions)Implementing search using templating functions
-
-Templating functions are used to render search results on a site without the need for a component model or Java knowledge. Although they are not directly related to the indexing process, you can use them to display the search results retrieved from the index.
-
-There are many ways to implement search on a site. This section explains how to do it using [templating functions](../../Developing/Templating/Template-scripts/Templating-functions/) and uses the Magnolia Travel Demo site as an example. If the demo modules are not installed your can download the `magnolia-travel-demo-parent module` and [install](../../Modules/Installing-a-module/) the demo and tours modules.
-
-The [MTE module](../../Modules/List-of-modules/MTE-module/) provides [search templating functions](../../Developing/Templating/Template-scripts/Templating-functions/searchfn/) that allow front-end developers to render search results using only a template script.
-
-### [](#_template_function_methods)Template function methods
-
-There are methods for searching pages and other content, such as content stored in content apps. The methods are exposed in templates as `searchfn` and you can find templating examples at [searchfn](../../Developing/Templating/Template-scripts/Templating-functions/searchfn/).
-
-All you need to implement search on a site is a component to retrieve the results from the search index and display them on the page.
-
-This is how search works on the Magnolia Travel Demo site.
-
--   `searchResults` component searches pages and content apps for relevant results and `searchResults.ftl` renders this component.
-
--   `searchResultsPage` template [autogenerates](../../Developing/Templating/Template-definition/Area-definition/Component-autogeneration/) the `searchResults` component.
-
--   Search results display on the `/travel/meta/search-results` page that is based on the `searchResultsPage` template.
-
--   `/search-results` page is assigned as the search page for the site in the `homePageProperties` dialog.
-
-
-> **Tip:** See the travel-demo repository for specific examples.
-
-### [](#_displaying_pages_in_the_website_workspace)Displaying pages in the website workspace
-
-The `searchPages` [method](../../Developing/Templating/Template-scripts/Templating-functions/searchfn/#_search_pages) displays pages stored in the `website` workspace in the search results. This method retrieves pages whose content (text, image and other properties) was added manually in the [Pages app](../../Apps/List-of-apps/Pages-app/), as opposed to content retrieved from an app or another source. Set the root path of the site to return the relevant items.
-
-Here’s the snippet from `searchResults.ftl` in the Travel Demo. The root path is `/travel`.
-
-```xml
-[#-------------- ASSIGNMENTS --------------]
-[#assign queryStr = ctx.getParameter('queryStr')!?html]
-
-[#-------------- RENDERING --------------]
-[#if content.headline?has_content]
-    <h2>${content.headline}</h2>
-[/#if]
-
-[#if queryStr?has_content]
-    [#assign searchResults = searchfn.searchPages(queryStr, '/travel') /]
-    [#assign recordsFound = searchResults?size /]
-
-    <h3><em>${recordsFound}</em> ${i18n['search.pagesFoundFor']} "${queryStr}"</span></h3>
-
-    <div class="list-group">
-        [#if searchResults?has_content]
-            [#list searchResults as item]
-                <a href="${cmsfn.link(item)}" class="list-group-item">
-                    <h4 class="list-group-item-heading">${item.title!}</h4>
-                    <p class="list-group-item-text">${item.excerpt!}</p>
-                </a>
-            [/#list]
-       [/#if]
-    </div>
-
-    <#-- More processing here, not shown in snippet >
-
-[/#if]
-```
-
-Here are the results for the term `contact`. [Excerpts and highlighting](#_providing_excerpts_and_highlighting_search_results) are provided automatically by the [indexing configuration](#_magnolia_index_configuration).
-
-![Search results](../../_images/search-results-pages.png)
-
-### [](#_displaying_content_stored_in_apps)Displaying content stored in apps
-
-The `searchContent` [method](../../Developing/Templating/Template-scripts/Templating-functions/searchfn/#_search_any_content) allows you to search any content in the JCR. The method is useful to display `pages` whose content is stored in another workspace. In this scenario, you need to set the [workspace](../Architecture/Workspaces/) where the content is stored, the parent URL within that workspace and the [node type](../Architecture/Node-types/).
-
-In the Magnolia Travel Demo site, all Tour content (text, images and more) is entered in the **Tours** app and retrieved by a component that displays the content on pages. The app content is stored in the `tours` workspace, under `/magnolia-travels` and is of node type `mgnl:content`.
-
-Here’s the snippet from `searchResults.ftl` that retrieves **Tours** app content.
-
-```xml
-[#assign searchResults = searchfn.searchContent('tours', queryStr, '/magnolia-travels', 'mgnl:content') /]
-[#assign recordsFound = searchResults?size /]
-
-    <h3><em>${recordsFound}</em> ${i18n['search.toursFoundFor']} "${queryStr}"</span></h3>
-
-    <div class="list-group">
-    [#if searchResults?has_content]
-        [#list searchResults as item]
-            <a href="${cmsfn.link(item)}" class="list-group-item">
-               <h4 class="list-group-item-heading">${item.description!}</h4>
-               <img src="${damfn.getAssetLink(item.image)}" class="img-responsive img-rounded" height="80" width="160" alt="${item.description!}"/>
-               <p class="list-group-item-text">${item.excerpt!}</p>
-            </a>
-        [/#list]
-    [/#if]
-    </div>
-```
-
-Here are the results for the term `swiss`.
-
-![Search results in Tours](../../_images/search-results-tours.png)
-
-### [](#_uri_mappings)URI mappings
-
-You can use URI mappings to redirect incoming requests to the location of content, ensuring that the content is included in the search index. This means that URI mappings play a role in determining which content is indexed and how it is indexed in the search configuration.
-
-> **Note:** When you display results from content app workspaces, build a link to a detail page that displays the content item in question using URI mappings.URI mapping is used in the Demo Travels example to display app content on pages and ensure that the content is included in the search index.
-
-#### [](#_configuring_uri2repository_mapping)Configuring URI2Repository mapping
-
-The URI2Repository mapping [URI mapping](../URI-mapping/) mechanism determines which repository node should be served when a particular URI is requested.
-
-Here’s the URI2Repository mapping for the `tours` workspace in `/server/URI2RepositoryMapping/mappings/tours`.
-
 | Node name | Value |
 | --- | --- |
-| ⸬ tours |     |
+| ⸬ tours |  |
 | ⬩ repository | tours |
-| ⬩ handlePrefix |     |
+| ⬩ handlePrefix |  |
 | ⬩ URIPrefix | /tours/ |
-
-| Property | Description |
-| --- | --- |
-| `tours` | `tours` URI2Repository mapping node. |
-| `URIPrefix` | Injects the `/tours/` path into the request URL. |
-| `repository` | Repository the mapping applies to. |
-
-#### [](#_configuring_virtualuri_mapping)Configuring VirtualURI mapping
-
-Virtual URI mapping allows you to create short, convenient URLs.
-
-Here’s the virtual URI mapping for the **Tours** app:
-
-/tours/virtualUriMappings/travelToursMapping.yaml
-
-```yml
-class: info.magnolia.virtualuri.mapping.RegexpVirtualUriMapping
-fromUri: ^/(?!\.\w+/)(.*/)?tours/(.*).html
-toUri: forward:/$1travel/tour?tour=/$2
-```
-
- PropertyDescription
-
-`toursMapping`
-
-Tours virtual URI mapping node.
-
-> **Note:** optional property
-
-     `class`
-
-`RegexpVirtualURIMapping` allows you to specify a regexp pattern that matches a sequence of characters. A pattern can match a variety of URIs.
-
-     `fromURI`
-
-Path to tours in the tours workspace as mapped in the `URI2Repository` mapping configuration.
-
-     `toURI`
-
-URI to which tours are forwarded `/travel` is the root node of the site and `/tour` is injected by the URI2Repository mapping configuration.
 
 ## [](#_customizing_search)Customizing search
 
@@ -374,7 +223,7 @@ Write queries in a language supported by the JCR repository such as SQL-2 ([gram
 
 You can test your queries in the [Query subapp](../../Apps/List-of-apps/JCR-Tools-app/). When you get the result set you want, implement the query in code.
 
-![Query subapp](../../_images/6-0-JCR-tools-query-app.png)
+![Query subapp](../../../RNs-6-4-3/_images/6-0-JCR-tools-query-app.png)
 
 ### [](#_example_queries)Example queries
 

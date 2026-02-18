@@ -8,182 +8,23 @@ breadcrumb: DX Core > Administration > App Launcher layout definition > Migratin
 
 # Migrating to the 6.3 App Launcher design
 
-The Magnolia 6.3 [App Launcher](../../../Authoring/App-Launcher/) uses a modern naming and groupings. The original Magnolia 6.2 **classic naming and grouping** is no longer available in Magnolia 6.3.
+The Magnolia 6.3 [App Launcher](../../../../RNs-6-4-3/Authoring/App-Launcher/) uses a modern naming and groupings. The original Magnolia 6.2 **classic naming and grouping** is no longer available in Magnolia 6.3.
 
 If you used a custom configuration of the App Launcher in Magnolia 6.2, you must migrate your definition for the 6.3 App Launcher.
 
 ## [](#_migration_notes)Migration notes
 
--   In Magnolia 6.3, the `layout` property defines [the grouping and layout of the App launcher](../App-launcher-layout/).
+-   In Magnolia 6.3, the `layout` property defines [the grouping and layout of the App launcher](../../../../RNs-6-4-3/Administration/App-Launcher/App-launcher-layout/).
 
 -   The respective YAML syntax differs from the [compatibilityLayout](#6.2@product-docs:ROOT:Administration/App-Launcher/Compatibility-app-launcher-layout.adoc) property, which is no longer available in Magnolia `6.3`.
 
 -   Migration is possible for on-premise Magnolia installations or PaaS (Platform as a Service) subscriptions that still use the `compatibilityLayout` property.
 
 
-## [](#_definition_changes)Definition changes
-
-This section compares definitions for the `compatibilityLayout` property and the `layout` property. The `compatibilityLayout` property retrieves which apps are in which groups from the `appLauncherLayout` property.
-
-### [](#_moving_an_app_from_one_group_to_another)Moving an app from one group to another
-
--   JCR before 6.2.22
-
--   `compatibilityLayout` for 6.2.22 or later
-
--   `layout` decoration for 6.2.26 or later
-
-
-To move apps between groups, you must move the respective app(s) in JCR.
-
-|     |     |
-| --- | --- |
 | Node name | Value |
-| ⸬ appLauncherLayout |     |
-| ⸬ groups |     |
-| ⸬ <GROUP\_NAME> |     |
-| ⸬ apps |     |
-| ⸬ <APP\_NAME> |     |
-
-An `apps` property can’t be added under the `compatibilityLayout` property in the YAML definition. To move apps between groups, you must move the respective app(s) in JCR.
-
-|     |     |
 | --- | --- |
-| Node name | Value |
-| ⸬ appLauncherLayout |     |
-| ⸬ groups |     |
-| ⸬ <GROUP\_NAME> |     |
-| ⸬ apps |     |
-| ⸬ <APP\_NAME> |     |
-
-Apps are listed for each group under the group name.
-
-/<LIGHT\_MODULE>/decorations/admincentral/config.yaml
-
-```yaml
-layout:
-  groups:
-    - name: <GROUP_NAME>
-      apps:
-      - name: <APP_NAME>
-```
-
-### [](#_hiding_apps)Hiding apps
-
--   JCR before 6.2.22
-
--   `compatibilityLayout` for 6.2.22 or later
-
--   `layout` decoration for 6.2.26 or later
-
-
-You must add the respective app(s) under the `hiddenApps` node in JCR to hide apps.
-
-|     |     |
-| --- | --- |
-| Node name | Value |
-| ⸬ appLauncherLayout |     |
-| ⸬ hiddenApps |     |
-| ⬩ <APP\_NAME> | <APP\_NAME> |
-
-A `hiddenApps` property can’t be added under the `compatibilityLayout` property in the YAML definition. You must add the respective app(s) under the `hiddenApps` property in JCR to hide apps.
-
-|     |     |
-| --- | --- |
-| Node name | Value |
-| ⸬ appLauncherLayout |     |
-| ⸬ hiddenApps |     |
-| ⬩ <APP\_NAME> | <APP\_NAME> |
-
-Add apps in the format below under the `hiddenApps` property.
-
-/<LIGHT\_MODULE>/decorations/admincentral/config.yaml
-
-```yaml
-layout:
-  hiddenApps:
-    <APP_NAME>: <APP_NAME>
-```
-
-### [](#_removing_a_row_from_the_layout)Removing a row from the layout
-
--   JCR before 6.2.22
-
--   `compatibilityLayout` for 6.2.22 or later
-
--   `layout` decoration for 6.2.26 or later
-
-
-There was no `rows` property before 6.2.22. To remove a row, you must delete the `<GROUP_NAME>` content node and its subnodes.
-
-|     |     |
-| --- | --- |
-| Node name | Value |
-| ⸬ appLauncherLayout |     |
-| ⸬ groups |     |
-| ⸬ <GROUP\_NAME> |     |
-
-There is one `rows` property under which each `groups` property represents a row in the App Launcher layout.
-
-/admincentral/config.yaml
-
-```yaml
-compatibilityLayout:
-  rows:
-    - groups: (1)
-        - edit
-        - target
-      cssClass: editor
-    - groups: (2)
-        - manage
-      cssClass: editor
-    - groups: (3)
-        - tools
-        - dev
-        - stk
-      cssClass: developer
-```
-
-|     |     |
-| --- | --- |
-| **1** | The first row in the App Launcher layout contains two groups. |
-| **2** | The second row in the App Launcher layout contains one group. |
-| **3** | The third row in the App Launcher layout contains three groups. |
-
-The first example shows part of the `config.yaml`, which you can inspect in the **Resource Files** app. The second example shows you how to decorate so that a row is not displayed.
-
-/admincentral/config.yaml
-
-```yaml
-layout:
-  groups:
-    - name: content
-      apps:
-        - name: pages-app
-        - name: dam
-        - name: stories
-        - name: tours
-        - name: contacts
-- ...
-  rows:
-    - name: one
-      cssClass: editor
-      groups:
-        content: content
-        marketing: marketing
-  ...
-```
-
-/<LIGHT\_MODULE>/decorations/admincentral/config.yaml
-
-```yaml
-layout:
-  rows:
-    - name: one
-      displayed: false (1)
-  ...
-```
-
-|     |     |
-| --- | --- |
-| **1** | Add the `displayed` property to your decoration and set it to `false` to hide the respective row. |
+| ⸬ appLauncherLayout |  |
+| ⸬ groups |  |
+| ⸬ <GROUP_NAME> |  |
+| ⸬ apps |  |
+| ⸬ <APP_NAME> |  |

@@ -48,7 +48,7 @@ What makes a Magnolia module are files specific to Magnolia in a particular fold
 ├── themes/
 ```
 
-You can use [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) to create all the folders and files in the right location.
+You can use [Magnolia CLI](../../../../magnolia-cli/) to create all the folders and files in the right location.
 
 Advanced topics:
 
@@ -76,7 +76,7 @@ A template consists of:
 -   Optionally, a model - the model can be a [JavaBean](../../Developing/Templating/Rendering-content/Model/) implementing complex logic or a JavaScript model.
 
 
-![Templating diagram](../../_images/mgnl-basic-templating-files.png)
+![Templating diagram](../../../RNs-6-4-3/_images/mgnl-basic-templating-files.png)
 
 In Magnolia light development, you [configure definitions in YAML files](../../Modules/Module-configuration/) and scripts in a templating language such as [FreeMarker](http://freemarker.org/).
 
@@ -88,9 +88,9 @@ A page template outputs an entire web page. A page template typically includes s
 
 As a developer, you provide the page and component templates, and specify which components are available in which areas.
 
-![Basic areas components](../../_images/mgnl-basic-areas-components.png)
+![Basic areas components](../../../RNs-6-4-3/_images/mgnl-basic-areas-components.png)
 
-![Basic templating structure](../../_images/6-x-magnoliaBasics-templatingStructure-rbox-v3.png)
+![Basic templating structure](../../../RNs-6-4-3/_images/6-x-magnoliaBasics-templatingStructure-rbox-v3.png)
 
 ### [](#_templating_definitions)Templating definitions
 
@@ -100,7 +100,7 @@ Magnolia uses different types of template definitions to control how content is 
 
 A page template definition describes the appearance of an entire page. When an author creates a page in Magnolia, they select one of the page templates you have defined.
 
-![Page templates dropdown](../../_images/6-2-magnoliaBasics-pageTemplates.png)
+![Page templates dropdown](../../../RNs-6-4-3/_images/6-2-magnoliaBasics-pageTemplates.png)
 
 The page template definition contains an areas section which lists the areas on the page. An area in Magnolia is a defined section of a page where authors can add and arrange components.
 
@@ -117,7 +117,7 @@ A component is the smallest block of content that authors can edit, delete, copy
 
 A component can also specify areas - enabling an author to add a component within a component.
 
-![Type of component dropdown](../../_images/6-2-magnoliaBasics-componentTemplate.png)
+![Type of component dropdown](../../../RNs-6-4-3/_images/6-2-magnoliaBasics-componentTemplate.png)
 
 Components render content entered by authors in dialogs.
 
@@ -184,8 +184,8 @@ More information:
 
 Get started by:
 
--   [Choosing between FreeMarker and headless](../Choosing-the-right-front-end-approach/)
+-   [Choosing between FreeMarker and headless](../../../RNs-6-4-3/Magnolia-front-end-development/Choosing-the-right-front-end-approach/)
 
--   [Jumpstarting a headless Magnolia project](../Jumpstarting-a-headless-magnolia-project/)
+-   [Jumpstarting a headless Magnolia project](../../../RNs-6-4-3/Magnolia-front-end-development/Jumpstarting-a-headless-magnolia-project/)
 
--   [Jumpstarting a FreeMarker-based Magnolia project](../Jumpstarting-a-freemarker-based-magnolia-project/)
+-   [Jumpstarting a FreeMarker-based Magnolia project](../../../RNs-6-4-3/Magnolia-front-end-development/Jumpstarting-a-freemarker-based-magnolia-project/)

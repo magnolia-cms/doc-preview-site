@@ -102,54 +102,12 @@ The following audio formats *are* supported:
 -   `audio/mp3`
 
 
-## [](#_character_restrictions)Character restrictions
-
-Website content, asset, configuration and everything else is stored in the content repository. Each item is stored in a node. The node name is generally displayed in the first column in AdminCentral, for example the page name in the `website` workspace and asset name in the `dam` workspace. Besides being an internal reference to the node, the name is also used for various purposes such to create a page URL.
-
-Character restrictions apply only to node names and not to other user-entered content. For example, you can only use certain characters in a page or asset name but any character in the page or asset title. When a disallowed character is used it is automatically substituted with a hyphen (`-`).
-
-The info.magnolia.cms.core.Path class governs character restrictions. All alphanumeric characters (`a-z`, `A-Z`, `0-9`), hyphen (`-`) and underscore (`_`) are safe to use in node names. We recommend that you use lowercase letters separated by a hyphen.
-
-### [](#_invalid_characters)Invalid characters
-
-[JCR 2.0 specification](https://developer.adobe.com/experience-manager/reference-materials/spec/jcr/2.0/3_Repository_Model.html#3.2.4%20Naming%20Restrictions) defines the following invalid characters in a local name.
-
-|     | Common Name | Unicode Code and Name |
+|  | Common Name | Unicode Code and Name |
 | --- | --- | --- |
-|     | Space | `0020` `SPACE` |
+|  | Space | `0020` `SPACE` |
 | `*` | Asterisk (Star) | `002A` `ASTERISK` |
 | `/` | Forward slash | `002F` `SOLIDUS` |
 | `:` | Colon | `003A` `COLON` |
 | `[` | Left square bracket | `005B` `LEFT SQUARE BRACKET` |
 | `]` | Right square bracket | `005D` `RIGHT SQUARE BRACKET` |
-| `\|` | Vertical bar (Pipe) | `007C` `VERTICAL LINE` |
-
-Node names are used to create URLs and cannot contain characters that are disallowed or have special meaning in URLs. These conventions are established by the Internet Engineering Task Force ([IETF](http://www.ietf.org/)) [Network Working Group on URLs](http://www.ietf.org/rfc/rfc1738.txt).
-
-|     | Common Name | Unicode Code and Name |
-| --- | --- | --- |
-| `!` | Exclamation mark | `0021` `EXCLAMATION MARK` |
-| `#` | Number sign (Hash) | `0023` `NUMBER SIGN` |
-| `%` | Percent sign | `0025` `PERCENT SIGN` |
-| `'` | Apostrophe | `0027` `APOSTROPHE` |
-| `(` | Left parenthesis | `0028` `LEFT PARENTHESIS` |
-| `)` | Right parenthesis | `0029` `RIGHT PARENTHESIS` |
-| `+` | Plus sign | `002B` `PLUS SIGN` |
-| `/` | Forward slash | `002F` `SOLIDUS` |
-| `;` | Semicolon | `003B` `SEMICOLON` |
-| `?` | Question mark | `003F` `QUESTION MARK` |
-| `^` | Caret | `005E` `CIRCUMFLEX ACCENT` |
-
-### [](#_characters_disallowed_by_magnolia)Characters disallowed by Magnolia
-
-|     | Common Name | Unicode Code and Name |
-| --- | --- | --- |
-| `&` | Ampersand | `0026` `AMPERSAND` |
-| `=` | Equals sign | `003D` `EQUALS SIGN` |
-| `@` | At sign | `0040` `COMMERCIAL AT` |
-
-Apart from the exceptions above, Magnolia allows you to use the full [UTF-8](http://en.wikipedia.org/wiki/UTF-8) character set for node names and other properties, but UTF-8 encoding is disabled by default.
-
-See [UTF-8 in pages names](../../Administration/Language/Language-configuration/#_utf_8_page_names) for instructions on how to enable it. When enabled, all special characters and notations covered by the Unicode specification can also be used.
-
-The dot character (full stop, Unicode 2E) can be used in node names with the single limitation that it cannot be the first character. You can create a user `john.smith`, a page `article.one`, a document `Magnolia-Flyer-4.0.pdf`, a configuration node `option.one` or a JavaScript file `jquery.tabtree`.
+| `|` | Vertical bar (Pipe) | `007C` `VERTICAL LINE` |

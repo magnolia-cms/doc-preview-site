@@ -29,7 +29,7 @@ The mapping between a work item and its handler is based on the work item name. 
 
 Here are the default work item handlers registered in Magnolia:
 
-![Default work item handlers](../../../../_images/default-work-item-handlers.png)
+![Default work item handlers](../../../../../RNs-6-4-3/_images/default-work-item-handlers.png)
 
 The expanded `rejectNotification` handler shows the properties needed to register a handler:
 
@@ -46,7 +46,7 @@ Decorator configuration is similar to handler configuration. A decorator needs a
 
 Error handling is an example of decoration. A technical error during execution throws an exception:
 
-![Exception because of an technical error](../../../../_images/work-item-handler-decorator-configuration.png)
+![Exception because of an technical error](../../../../../RNs-6-4-3/_images/work-item-handler-decorator-configuration.png)
 
 ## [](#_error_handling)Error handling
 
@@ -60,13 +60,13 @@ As described in [jBPM Technical Exceptions](http://docs.jboss.org/jbpm/v6.0.1/us
 
 The exception can then be caught as part of the process using an *Error Boundary Event*, letting the process take care of error handling. The advantage of this approach is that you clearly see where errors can happen and the associated handling is evident at process level. You can re-use the pattern for other custom tasks that may fail.
 
-![Error handling diagram](../../../../_images/Screen-Shot-2014-06-19-at-17-00-35.png)
+![Error handling diagram](../../../../../RNs-6-4-3/_images/Screen-Shot-2014-06-19-at-17-00-35.png)
 
 Apart from using Magnolia’s own exception decorator you can also use the decorators provided by jBPM such as `SignallingTaskHandlerDecorator` or `LoggingTaskHandlerDecorator`. Set the `HandlerDecoratorDefinition` in the `class` property and the decorator implementation in the `implementationClass` property in your configuration.
 
 ### [](#_error_handler_decorator_configuration)Error handler decorator configuration
 
-![Error handler decorator configuration](../../../../_images/error-handler-decorator-configuration.png)
+![Error handler decorator configuration](../../../../../RNs-6-4-3/_images/error-handler-decorator-configuration.png)
 
 `ThrowExceptionHandlerDecorator` properties:
 
@@ -81,11 +81,11 @@ Apart from using Magnolia’s own exception decorator you can also use the decor
 
 Define the error at the process level in the BPMN2 editor:
 
-![BPMN2 Editor](../../../../_images/Screen-Shot-2014-06-19-at-17-07-13.png)
+![BPMN2 Editor](../../../../../RNs-6-4-3/_images/Screen-Shot-2014-06-19-at-17-07-13.png)
 
 Reference the error from the Error Boundary Event:
 
-![Error Boundary Event](../../../../_images/Screen-Shot-2014-07-08-at-13-48-35.png)
+![Error Boundary Event](../../../../../RNs-6-4-3/_images/Screen-Shot-2014-07-08-at-13-48-35.png)
 
 ## [](#_asynchronous_execution)Asynchronous execution
 

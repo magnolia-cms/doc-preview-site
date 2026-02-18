@@ -1,0 +1,63 @@
+---
+title: "Switchable field"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Switchable-field/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Switchable field
+---
+
+# Switchable field
+
+info.magnolia.ui.field.ConfiguredSwitchableFieldDefinition renders a complex field that displays alternative forms depending on user choice. Use the field to switch, for example, between:
+
+-   Plain text and rich text editors.
+
+-   Unauthenticated and authenticated SMTP settings.
+
+-   Same and different addresses for shipping and billing.
+
+
+> **Note:** This switchable field definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.field.ConfiguredSwitchableFieldDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+switchable:
+  $type: switchableField
+  label: Foo or bar options
+  field:
+    $type: radioButtonGroupField
+    layout: horizontal
+    datasource:
+      $type: optionListDatasource
+      options:
+        - name: foo
+          label: Foo
+          value: foo
+        - name: bar
+          label: Bar
+          value: bar
+  itemProvider:
+    $type: jcrChildNodeProvider
+  forms:
+    - name: foo
+      properties:
+        foo:
+          $type: textField
+          label: Foo text
+    - name: bar
+      properties:
+        bar:
+          $type: richTextField
+          label: Bar rich text
+```
+
+> **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
+
+| Property | Description |
+| --- | --- |
+| `field` | **required** Node containing a [select field](../Select-field/) and [data source](../../../../../../Apps/App-configuration/Data-source-definition/) to switch between forms. As `$type` , only [comboBoxField](../Combobox-field/) and [radioButtonGroupField](../Radio-button-group-field/) are supported. As `datasource` , only [optionListDatasource](../../../../../../Apps/App-configuration/Data-source-definition/Option-list-data-source/) can be used. ** Options in `radioButtonGroupField` are positioned vertically by default. A horizontal layout can be configured using the common `layout` property of [option group field](../Option-group-field/) . | ** | Options in `radioButtonGroupField` are positioned vertically by default. A horizontal layout can be configured using the common `layout` property of [option group field](../Option-group-field/) . |
+| ** | Options in `radioButtonGroupField` are positioned vertically by default. A horizontal layout can be configured using the common `layout` property of [option group field](../Option-group-field/) . |
+| `forms` | **required** List of forms to switch between. Forms define fields and similar components as well as their layout. See [Form definition](../../../Form-definition/) for more information. |
+| `removePreviouslySelected` | **optional** , *default is true* ** The value is always `true` in the [New UI Forms](../../../New-ui-forms/) . For more details, see [Migrating the removePreviouslySelected property](../../switchable-field/Migrating-removePreviouslySelected-property/) . A switchable field has different options, in which each option may have one or more fields. However, depending on the radio button selection, only one option is visible in the UI. An example switchable field is shown below. If the `removePreviouslySelected` property is set to `true` , only data for the selected (visible when viewed in the UI) option is saved. | ** | The value is always `true` in the [New UI Forms](../../../New-ui-forms/) . For more details, see [Migrating the removePreviouslySelected property](../../switchable-field/Migrating-removePreviouslySelected-property/) . |
+| ** | The value is always `true` in the [New UI Forms](../../../New-ui-forms/) . For more details, see [Migrating the removePreviouslySelected property](../../switchable-field/Migrating-removePreviouslySelected-property/) . |

@@ -1,0 +1,66 @@
+---
+title: "Tab completion"
+url: https://docs.magnolia-cms.com/magnolia-cli/getting-started/tab-completion/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Tab completion
+---
+
+# Tab completion
+
+The Magnolia CLI provides tab autocompletion support for Bash and Windows PowerShell.
+
+## [](#_enabling_tab_completion)Enabling tab completion
+
+Navigate to your project root and run the following command:
+
+```console
+npm run mgnl -- tab-completion
+```
+
+You’ll be prompted to choose the installation type:
+
+```console
+? Which tab completion installation do you want? (Use arrow keys)
+❯ Local only (using: `npm run mgnl` or `yarn mgnl` command)
+  Global only (using: `mgnl` command)
+  Both local and global
+```
+
+To reinstall tab completion with a different option, use:
+
+```console
+npm run mgnl -- tab-completion --reinstall
+```
+
+After a successful installation, the CLI adds the a completion script to the appropriate configuration files and sets `tabCompletion: true` in the `mgnl.config.js` file.
+
+> **Tip:** You must restart your terminal for the changes to take effect.
+
+To test whether tab completion is working, type `npm run mgnl` (or `mgnl` if installed globally) and press the **Tab** key to view the list of available commands and options.
+
+![Example animation showing tab completion](../../_images/tabCompletionExample.gif)
+
+> **Note:** On the first run, there might be a short delay while the script loads and caches available commands.
+
+## [](#_disabling_tab_completion)Disabling tab completion
+
+To disable tab completion for the current project, run:
+
+```console
+npm run mgnl -- tab-completion --disable
+```
+
+Alternatively, you can manually set `tabCompletion: false` in the `mgnl.config.js` file.
+
+> **Note:** The --disable flag doesn’t remove the installed script. It only disables autocompletion for the current project. Other projects with tabCompletion: true will still support command suggestions.
+
+## [](#_uninstalling_tab_completion)Uninstalling tab completion
+
+To completely remove tab completion, use the following command:
+
+```console
+npm run mgnl -- tab-completion --uninstall
+```
+
+> **Note:** This command sets tabCompletion: false in the current project and removes the installed scripts. Projects with tabCompletion: true will no longer support tab completion unless the scripts are reinstalled.

@@ -1,0 +1,64 @@
+---
+title: "Configure story generation"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/story-generation/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Story generation
+---
+
+# Configure story generation
+
+Generate compelling stories with the click of a button. `Story-Gen` allows you to generate complete story outlines followed by a refining step in which the outlines are refined.
+
+## [](#_activation)Activation
+
+To activate the feature:
+
+1.  Go to the `<light-module-folder>/<light-module-name>/decorations/stories/apps/stories.yaml` file in your project.
+
+2.  Ensure that you have the following in the file:
+
+    `<light-module-folder>/<light-module-name>/decorations/stories/apps/stories.yaml`
+
+    ```yaml
+    subApps:
+      browser:
+        actions:
+          generateBlogPost: (1)
+            label: Generate Story
+            icon: icon-import
+            $type: openDialogAction
+            dialogId: ai-accelerator-ui:generateStory
+            populate: false
+            availability:
+              root: true
+              writePermissionRequired: true
+              nodeTypes:
+                folder: mgnl:folder
+              rules:
+                notDeleted: &notDeleted
+                  $type: jcrIsDeletedRule
+                  negate: true
+        actionbar: (2)
+          sections:
+            story:
+              groups:
+                addActions:
+                  items:
+                    - name: generateBlogPost
+            folder:
+              groups:
+                addActions:
+                  items:
+                    - name: generateBlogPost
+            root:
+              groups:
+                addActions:
+                  items:
+                    - name: generateBlogPost
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Generate story action. |
+    | **2** | Ensure it’s available in your action bar. |

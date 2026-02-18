@@ -10,7 +10,7 @@ breadcrumb: DX Core > Developing > Development how-tos > How to define JCR node 
 
 This page provides an overview of all ways to define custom [JCR node types](../../../Administration/Architecture/Node-types/) and create new workspaces with Magnolia.
 
-Even though it has always been possible to define node types and create workspaces within [Magnolia Maven modules](../../../Modules/#_maven_module), the [Content Types module](#content-types:ROOT:index.adoc) brings this functionality also to the [light modules](../../../Modules/Light-modules/). Both approaches are valid.
+Even though it has always been possible to define node types and create workspaces within [Magnolia Maven modules](../../../Modules/#_maven_module), the [Content Types module](../../../../../content-types/2.0.0/) brings this functionality also to the [light modules](../../../Modules/Light-modules/). Both approaches are valid.
 
 > **Note:** Whichever approach you choose, we recommend not to develop and refine these definitions in a productive environment.Editing node type and workspace definitions can lead to new node type definitions and workspaces which are registered again, whereas the system keeps the old ones which become obsolete.
 
@@ -192,7 +192,7 @@ To define and register new node types requires two things:
 
 Related topics
 
--   [Content Types module](#content-types:ROOT:index.adoc)
+-   [Content Types module](../../../../../content-types/2.0.0/)
 
 -   [Content type definition](../../Content-Types/Content-type-definition/)
 

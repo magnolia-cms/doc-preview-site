@@ -1,0 +1,81 @@
+---
+title: "MicroProfile Config"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Architecture/configuration-management/microprofile-config/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Configuration management > MicroProfile Config
+---
+
+# MicroProfile Config
+
+MicroProfile Config defines a set of supported default `ConfigSources` for environment variables, system properties, and `META-INF/microprofile-config.properties` files on the classpath with specific ordinals.
+
+## [](#_smallrye_config_library)SmallRye Config library
+
+Magnolia can scan more locations for configuration properties files and uses the [SmallRye Config](https://smallrye.io/smallrye-config/Main/config-sources/locations/) library for implementation. It supports passing such locations through the `magnolia.config.locations` configuration property, which is defined as a system or environment property.
+
+-   Mac and Linux
+
+-   Windows
+
+
+Java system property from command line
+
+```sh
+-Dmagnolia.config.locations=../WEB-INF/config/default/microprofile-config.properties
+```
+
+To specify the path on Windows, write it as a URI, as shown below.
+
+Java system property from command line
+
+```properties
+-Dmagnolia.config.locations=file:///c:/magnolia/.../WEB-INF/config/default/microprofile-config.properties
+```
+
+> **Note:** You can also specify locations via magnolia.properties.magnolia.properties filemagnolia.config.locations=${magnolia.home}/WEB-INF/config/magnoliaAuthor/microprofile-config.properties
+
+This enables developers to build containerized images of Magnolia once, and deploy anywhere; for example, when using Docker [bind mounts](https://docs.docker.com/storage/bind-mounts/) or Kubernetes [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/).
+
+## [](#_setting_different_profiles_in_microprofile_configs)Setting different profiles in MicroProfile Configs
+
+Using [profile-specific property names](https://download.eclipse.org/microprofile/microprofile-config-2.0/microprofile-config-spec-2.0.html#_how_config_profile_works), you can support different profiles for author and public instances. For example, you might have different public instances for your intranet and the internet.
+
+In the example MicroProfile configuration file below, when `mp.config.profile` is set to `intranet`, one receiver is returned: `magnoliaPublic8080`. However, when set to `internet`, two receivers, `magnoliaPublic-0` and `magnoliaPublic-1`, are returned.
+
+microprofile-config-author.properties
+
+```properties
+mp.config.profile=internet
+
+%intranet.magnolia.publishing.receivers[0].name=magnoliaPublic8080
+%intranet.magnolia.publishing.receivers[0].url=http://localhost:8080/magnoliaPublic
+%intranet.magnolia.publishing.receivers[0].enabled=true
+
+%internet.magnolia.publishing.receivers[0].name=magnoliaPublic-0
+%internet.magnolia.publishing.receivers[0].url=http://dev-magnolia-helm-public-0-svc:8080
+%internet.magnolia.publishing.receivers[1].name=magnoliaPublic-1
+%internet.magnolia.publishing.receivers[1].url=http://dev-magnolia-helm-public-1-svc:8080
+```
+
+> **Note:** It’s also possible to have separate configurations at the config source level. For example, one microprofile-config.properties for properties that aren’t profiled and another microprofile-config-<PROFILE_NAME>.properties for development profile properties.
+
+## [](#_raw_view_of_microprofile_config_values)Raw view of MicroProfile Config values
+
+To see exactly where a specific MicroProfile Config property is coming from, what precedence and values it has, see the *Config info* tab in the About app.
+
+To locate a property, start typing its name in the Configuration column\`s filter field:
+
+![Viewing MicroProfile Config properties in the About app](../../../../_images/6-3-microProfileConfig-aboutApp.png)
+
+## [](#_property_injection)Property injection
+
+While Magnolia supports injecting `@ConfigProperty` fields into managed components, it’s not fully interoperable with the CDI specification.
+
+> **Note:** Magnolia uses Google Guice for dependency injection.
+
+Related topics
+
+-   [External configuration for publishing receivers](external-configuration-for-publishing-receivers/)
+
+-   [microprofile.io/specifications/microprofile-config/](https://microprofile.io/specifications/microprofile-config/)

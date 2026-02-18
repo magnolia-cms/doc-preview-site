@@ -1,0 +1,191 @@
+---
+title: "Edit images with AI"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/authors/edit-images/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Authors > Edit images with AI
+---
+
+# Edit images with AI
+
+The AI Image Editor is a visual composition tool that lets you create layered image compositions by combining existing assets with AI-generated images. Use the editor to:
+
+-   Arrange, transform, and style layers
+
+-   Generate new images from text prompts
+
+-   Remove backgrounds
+
+-   Add text and shapes
+
+-   Export your work
+
+
+The interface includes a layers panel for organization, a central canvas for editing, a tools menu for transformations and AI operations, and a properties panel for configuring selected elements.
+
+## [](#_open_the_ai_image_editor)Open the AI Image Editor
+
+Select the asset you want to edit and click **AI Image Editor**.
+
+Tip: You can also open the editor without selecting an asset and click **Generate image** to start from scratch.
+
+![ai image editor 1](../_images/ai-image-editor-1.png)
+
+## [](#_ai_image_editor_ui)AI Image Editor UI
+
+The AI Image Editor interface includes:
+
+-   [Layers panel](#_layers_panel) - on the left, to manage and organize image layers.
+
+-   [Center panel editor canvas](#_center_panel_editor_canvas) - in the center, where the image displays.
+
+-   [Tools menu](#_tools_menu) - overlays the canvas, providing editing tools.
+
+-   [Properties panel](#_properties_panel) - on the right, showing settings for the selected asset.
+
+
+![ai image editor 2](../_images/ai-image-editor-2.png)
+
+## [](#_layers_panel)Layers panel
+
+The UI shows a table with the layers on the left-hand side. Layers can contain images. Once there are multiple layers and images, they can be sorted by dragging the headers. The submenu on the layers lets you execute actions on the layer or image, for example to hide/show or to delete a layer. You can also duplicate layers or images.
+
+## [](#_center_panel_editor_canvas)Center panel editor canvas
+
+You can see the editor canvas in the center.
+
+In the middle at the bottom, the Tools menu lets you select the current tool or execute the actions for image generation or background removal.
+
+At the bottom left a Zoom menu is present with the following functionality:
+
+-   The rightmost icon allows you to reset the canvas view.
+
+-   The plus and minus icons allow to zoom in and out.
+
+    Useful tips
+
+-   You can scroll with both a mouse wheel or trackpad.
+
+-   You can pan by moving the pushed mouse while holding the space-bar pressed.
+
+-   Select images with mouse clicks.
+
+-   Move, resize, rotate, or crop the selected image with the appropriate tool.
+
+-   You can undo/redo actions with CTRL+Z and CTRL+SHIFT+Z, respectively CMD+Z and CMD+SHIFT+Z.
+
+    > **Caution:** The amount of undo steps is limited and the complete history is not available for undo.
+
+
+### [](#_tools_menu)Tools menu
+
+The Tools menu displays at the bottom of the Center panel.
+
+![ai image editor tools panel](../_images/ai-image-editor-tools-panel.png)
+
+The following tools are available:
+
+1.  `Undo`: Undo last step (the number of steps that can be undone is limited).
+
+2.  `Redo`: Redo a step previously undone.
+
+3.  `Select`: Selection of image layers, you can choose between pixel or bounding box selection.
+
+4.  `Move`: Move selected layers (selection is also possible using a bounding box).
+
+5.  `Rotate`: Rotate selected layers. Use the corner handles to adjust the angle.
+
+6.  `Cropping`: Crop selected layers. Use the corner handles to adjust the cropping area.
+
+7.  `Text`: Add text to the composition.
+
+8.  `Rectangle`: Add a rectangle shape to the composition.
+
+9.  `Generate Image`: Generate a new image with a prompt. If multiple models are available, you can select one. Otherwise, the default model is used. You can generate multiple images and select the best one.
+
+    ![ai image editor tools panel generate](../_images/ai-image-editor-tools-panel-generate.png)
+
+    ![ai image editor 4](../_images/ai-image-editor-4.png)
+
+    ![ai image editor 5](../_images/ai-image-editor-5.png)
+
+10.  `Remove Background`: Remove the background of the selected image.
+
+     ![ai image editor tools panel remove](../_images/ai-image-editor-tools-panel-remove.png)
+
+     ![ai image editor 4](../_images/ai-image-editor-4.png)
+
+11.  `Edit Image`: Edit an image with a prompt. If multiple models are available, you can select one. Otherwise, the default model is used.
+
+     ![ai image editor tools panel edit](../_images/ai-image-editor-tools-panel-edit.png)
+
+     ![ai image editor 7](../_images/ai-image-editor-7.png)
+
+
+## [](#_properties_panel)Properties panel
+
+The properties panel on the right includes three parts: Canvas, Layer, and Actions. In the Canvas part you are able to change the name of the current image composition. The middle part depends on the current selection.
+
+### [](#_canvas)Canvas
+
+![ai image editor canvas](../_images/ai-image-editor-canvas.png)
+
+In the canvas properties the name of the image can be changed. The size of the editor canvas can be adjusted, use the lock icon at the very right to indicate whether the aspect ratio should be locked. The background color can be set. If background color is not set, the canvas is transparent.
+
+1.  `Save as Asset` allows to save the current version as a new asset or save back to the original asset.
+
+    It is not currently possible to store as hybrid asset or to save in an external asset provider. By default, the asset will be stored as PNG but the file format can be changed. Saving back to the original asset the file format of the original asset will be used by default. Mind that file format might not support transparency.
+
+2.  `Import` imports a previously exported image composition through a file upload.
+
+3.  `Export` exports an image composition for download.
+
+
+### [](#_image)Image
+
+When you select an image, you see an Image section in the Properties panel.
+
+For images it is possible to adjust (fix or unfix) the aspect ratio for resize operations. If the image was generated, the prompt used to generate it is shown. You can also configure both `border` and `blur` properties.
+
+![ai image editor properties object generated image](../_images/ai-image-editor-properties-object-generated-image.png)
+
+### [](#_layer)Layer
+
+When you select a layer on the left, you see a Layer section in the Properties panel.
+
+You can delete or rename a layer here. Other layer-related actions must be done from the [Layers panel](#_layers_panel) on the left.
+
+### [](#_text)Text
+
+When you select a text box in the image, you see a Text section in the Properties panel.
+
+The text can only be changed in the text editor tool displayed here.
+
+![ai image editor text details](../_images/ai-image-editor-text-details.png)
+
+### [](#_shape)Shape
+
+When you select a shape in the image, you see a Shape section in the Properties panel.
+
+For shapes, you can configure `color`, `border`, and `blur`.
+
+![ai image editor shape details](../_images/ai-image-editor-shape-details.png)
+
+### [](#_actions)Actions
+
+Several actions are available:
+
+-   **Add Asset**: Add an asset as a new layer. This is useful in cases where multiple assets should be combined into one image.
+
+-   **Upload Image**: Upload an image as a new layer.
+
+-   **Generate Image**: Generate a new image with a prompt.
+
+    Generated images are always added on top. If you want to use it as a background, you have to move it back in the Layers panel.
+
+    ![ai image editor 6](../_images/ai-image-editor-6.png)
+
+
+## [](#_known_issues_and_limitations)Known issues and limitations
+
+-   Refreshing the browser or switching between apps within Magnolia results in a loss of the current work in progress. If you want to store your current work, use the `Export` action to download the current image composition. It can be loaded again using the `Import` action.

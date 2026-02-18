@@ -1,0 +1,38 @@
+---
+title: "Block definition"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/Developing-an-app/Developing-a-custom-content-editor-app/Block-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > Developing a custom content editor app > Block definition
+---
+
+# Block definition
+
+This page describes definition properties and template definition properties of a `block`, a component-like content element provided by the [Content editor module](../../../../Modules/List-of-modules/Content-Editor-module/).
+
+> **Note:** Compatibility noteCustom content editor and block definitions created in the Magnolia 5 UI framework must be migrated.For block definition properties in the Magnolia 5 UI framework, see instead.
+
+## [](#_overview)Overview
+
+A block is the smallest piece of content in an implementation of the [Content editor](../../../../Modules/List-of-modules/Content-Editor-module/), such as the [Stories app](../../../List-of-apps/Stories-app/). A block definition gives a block a name and specifies the content allowed to form a single block. A block template definition specifies which template should be used to render a block in an area or a page.
+
+## [](#_the_mgnlblock_nodetype)The `mgnl:block` nodetype
+
+Block content is stored using the `mgnl:block` [node type](../../../../Administration/Architecture/Node-types/) in the JCR. `mgnl:block` is similar to the custom node type `mgnl:content`, but it cannot be versioned on its own. Block content is usually grouped into block compositions (`mgnl:composition`), which are versionable.
+
+| Definition | Location |
+| --- | --- |
+| Block definition | `/<module-name>/blocks/<block-name>.yaml` * |
+| Template definition | `/<module-name>/templates/<path>/<block-name>.yaml` ** |
+| Template script | `/<module-name>/templates/<path>/<block-name>.ftl` ** |
+| i18n file (optional) | `/<module-name>/i18n/` |
+
+| Property | Description |
+| --- | --- |
+| `templateId` | **optional** *required if using FTL templates* The ID of the template definition in `<module name>:<path to block definition>` format, for example `my-module:blocks/quotation` . Using a headless approach? If you’re in a headless environment where no FTL templates are being created, you don’t need the `templateId` property. Be sure to remove or comment it out for headless environments; otherwise, you may receive an error. |
+| `icon` | **optional** , default is *icon-text-block* The icon used by the block picker box. |
+| `name` | **optional** A custom i18n base name to generate a key for the block, for example the name `singleTextRow` in the i18n key `blocks.singleTextRow.label` . By default the block’s name in the JCR is used. |
+| `block` | **required** A node containing a specification of the block. |
+| `implementationClass` | **optional** , default is `info.magnolia.ui.editor.FormView` Specifies the implementation used to create the block fields. For a block with a [light rich text field](../../../../Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/) , the `implementationClass` must be `info.magnolia.editor.field.LightRichTextFormView` . |
+| `label` | **optional** An i18n label for the block, for example the value `Text` in the key-value pair `blocks.text.label=Text` . |
+| `properties` | **required** A list of arbitrarily named nodes for the fields creating the block. Example: ` properties: image: $type: damLinkField label: Image placeholder: Add image... buttonSelectNewLabel: Select new... imageAltText: label: Alt text $type: textField placeholder: Add alt text...` |

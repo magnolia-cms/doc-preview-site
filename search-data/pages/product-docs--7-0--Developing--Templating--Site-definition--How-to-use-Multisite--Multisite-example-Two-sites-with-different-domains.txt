@@ -14,20 +14,10 @@ This page contains an example of how to configure multiple sites to manage diffe
 
 > **Caution:** Since version 3.0.0 of the Multisite module, site definitions are no longer configured in the config folder of this module, but in the sites subfolder of any module.You can configure a site in a YAML definition (preferred) or directly in the JCR Configuration app.
 
-## [](#_setting_up_domains)Setting up domains
-
-Eric has registered two domains: one for comics and one for vinyl. Since comics is his primary business, he registered the domain `www.best-comics.net` for the comics first, so this will be his *main* domain.
-
 | Type | Author | Public |
 | --- | --- | --- |
 | comics | `author.best-comics.net` | `www.best-comics.net` |
 | vinyl | `author.best-comics.net` | `www.best-vinyl.net` |
-
-Use only one domain - a subdomain of the main domain - to access the author instance (see [Magnolia setup and domains](../#_magnolia_setup_and_domains_in_a_production_environment)).
-
-## [](#_setting_up_content)Setting up content
-
-Eric has created a lot of pages. When simplified, his website workspace has a structure with two pages in root directory as shown below. The two pages act as the home pages for the two different websites (both have many subpages not shown here).
 
 | Page | Title |
 | --- | --- |
@@ -38,7 +28,7 @@ Eric has created a lot of pages. When simplified, his website workspace has a st
 
 This table shows the configuration of the site definitions required by Eric.
 
-![Site definitions required by user Eric](../../../../../_images/ADVT-multi2-site.png)
+![Site definitions required by user Eric](../../../../../../RNs-6-4-3/_images/ADVT-multi2-site.png)
 
 Note the following points which reflect common practice and the scenario:
 
@@ -62,7 +52,7 @@ Use the [Global Search](../../../../../Authoring/Search/Global-search/) to searc
 
 On a standard Magnolia bundle, you typically find the following node: `/modules/ui-admincentral/virtualURIMapping.`
 
-![Virtual URI mapping in the Configuration app](../../../../../_images/ADVT-multi2-remove.png)
+![Virtual URI mapping in the Configuration app](../../../../../../RNs-6-4-3/_images/ADVT-multi2-remove.png)
 
 Delete the node `/modules/ui-admincentral/virtualURIMapping/default`.
 
@@ -76,13 +66,13 @@ Test the setup. Make sure you have pages shown in [Setting up content](#_setting
 
 `www.best-comics.net`
 
-![Best comics site on Public instance](../../../../../_images/PUB_best-comics-root-page.png)
+![Best comics site on Public instance](../../../../../../RNs-6-4-3/_images/PUB_best-comics-root-page.png)
 
 `/vinyl`
 
 `www.best-vinyl.net`
 
-![Best vinyl site on Public instance](../../../../../_images/PUB_best-vinyl-root-page.png)
+![Best vinyl site on Public instance](../../../../../../RNs-6-4-3/_images/PUB_best-vinyl-root-page.png)
 
 ### [](#_author_instance)Author instance
 
@@ -90,13 +80,13 @@ Test the setup. Make sure you have pages shown in [Setting up content](#_setting
 
 `author.best-comics.net/comics-site`
 
-![Best comics site on Author instance](../../../../../_images/author_best-comics-root-page.png)
+![Best comics site on Author instance](../../../../../../RNs-6-4-3/_images/author_best-comics-root-page.png)
 
 `/vinyl`
 
 `author.best-comics.net/vinyl-site`
 
-![Best vinyls site on Author instance](../../../../../_images/author_best-vinyl-root-page.png)
+![Best vinyls site on Author instance](../../../../../../RNs-6-4-3/_images/author_best-vinyl-root-page.png)
 
 > **Tip:** To access the root page of a site in the author instance, which is accessed on a domain that is not mapped to a site, use the following URL:<protocol>://<author-domain>/<context>/<site-definition-name>Note that Magnolia creates these links automatically, for example, when you open the Preview tab in the author instance.
 
@@ -110,7 +100,7 @@ In this example, on the root page of the `comics-site` we add a link to the root
 
 When Magnolia resolves links in a multisite context, it creates links that start with the domain:
 
-![Link on the Public instance](../../../../../_images/cross-site-linl-with-domain.png)
+![Link on the Public instance](../../../../../../RNs-6-4-3/_images/cross-site-linl-with-domain.png)
 
 ## [](#_managing_cross_site_access)Managing cross-site access
 

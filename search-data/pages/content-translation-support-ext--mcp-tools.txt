@@ -1,0 +1,46 @@
+---
+title: "CTSX MCP tools"
+url: https://docs.magnolia-cms.com/content-translation-support-ext/mcp-tools/
+category: Modules
+version: modules
+breadcrumb: Content Translation Extended module > MCP tools
+---
+
+# CTSX MCP tools
+
+The Content Translation Support Extended (CTSX) module exposes translation and metadata capabilities as [MCP (Model Context Protocol)](https://modelcontextprotocol.io) tools. These tools are served by the [Magnolia embedded MCP server](../../magnolia-mcp/developers/mcp-server/) and consumed by the AI Accelerator agent, which acts as an AI assistant in the Magnolia Smart Chat.
+
+## [](#_what_are_mcp_tools)What are MCP tools?
+
+MCP tools are structured operations that an AI agent can discover and execute on behalf of a user. Instead of navigating dialogs or running manual workflows, content authors interact with the AI agent in natural language. The agent interprets the request, selects the appropriate tool, fills in the required parameters, and executes the operation.
+
+| Tool name | Purpose | Module |
+| --- | --- | --- |
+| `translation.instant` | Translates a content node from one language to another using a configured translation provider. | [Instant Translation Tool](translation-instant/) |
+| `metadata.generate_localized` | Generates SEO-optimized metadata (title, description, keywords) for all configured locales. | [Localized Metadata Tool](metadata-generate-localized/) |
+
+| What you type in the chat | Tool used |
+| --- | --- |
+| "Translate the page /travel/destinations/spain from English to German" | `translation.instant` |
+| "Translate this page to French using DeepL" | `translation.instant` |
+| "Generate SEO metadata for /travel/destinations/spain" | `metadata.generate_localized` |
+| "Create meta tags for all locales on /about-us" | `metadata.generate_localized` |
+| "Optimize the SEO title and description for /products/shoes" | `metadata.generate_localized` |
+
+## [](#_architecture_overview)Architecture overview
+
+The following diagram illustrates how MCP tools flow from CTSX through the embedded MCP server to the AI agent:
+
+![diagram](https://kroki.io/mermaid/svg/eNqNk01v4jAQhu_8CoteQUJtqSiHlYghq0hkFZUcKll7cOOBROvYyHFaWvHja8fe1JTSXUuJMh_PzPh1vOXypSip0mj9MEBmNe3TTtF9iRatLqUiQyyFBqG9PfzdZdmFS6rJpras_XQBEGzwqc7O0GS4SNCiKICDoloq5w2KrdcpMc-lIinOyHBVPwFjwKyFNqCeIRwnz0iuqGg41ZUUuZQ8U_K5YqA-ctKMpKApo5qeJ5x3xfnm0Qhg3gjLuqaCNUHDBJNENJoKHfT1eUFLTH6CsLuGtSwor96A_Z3hJLlvb8VE4_GP4y-qW0U54lTsWrqDo1Vp4NXqMrTZBDJF-dFs_1IkdZE86wJwgKLVplaCB06SU3eK3RQFp02zhC2i3bmjbcX5_Cq6Wa3w3ajRSv6B-dVksrie3ntz_FIxXc6v94dPBexRez6Ol_j-tufjKMKTyT_4utj33Ze3cdzTN9Es6s1LdKGbg8dXs-U0wGfRFMd35_gH747CCRB4rcbdpgJfno2MkmbUwJfgUYq7Afx_pV85-HvU62HXf-np6RMxT-DvxHSwvTdfot8p6dDuEnzJXpDxHShNVw8=)
+
+The flow works as follows:
+
+1.  The author types a request in the Smart Chat (such as, "Translate this page to French").
+
+2.  The AI Accelerator agent (LLM) interprets the request and selects the appropriate MCP tool.
+
+3.  The embedded MCP server routes the tool call to the corresponding CTSX tool provider.
+
+4.  The tool provider delegates to a Magnolia command that performs the actual operation.
+
+5.  The result is returned to the agent, which reports back to the author in the chat.

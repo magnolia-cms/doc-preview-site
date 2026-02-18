@@ -22,11 +22,11 @@ Compared to [pages](../../../Authoring/Editing-pages/), stories are ideal for qu
 
 You create stories in the Stories app.
 
-![Stories app tile in App launcher](../../../_images/6-2-3-storiesApp-tileFocus.png)
+![Stories app tile in App launcher](../../../../RNs-6-4-3/_images/6-2-3-storiesApp-tileFocus.png)
 
 You can organize your stories by adding folders. To add a new story, click **Add story**.
 
-![Story browser](../../../_images/6-2-3-storiesApp-storyBrowser.png)
+![Story browser](../../../../RNs-6-4-3/_images/6-2-3-storiesApp-storyBrowser.png)
 
 ### [](#_demo_stories)Demo stories
 
@@ -38,7 +38,7 @@ In the demo, the Stories app has been [decorated](../../../Developing/Definition
 
 When you create a new story, the outline section provides the title and lead text fields as well as several collapsible multi-field sections where you can fill in some key properties.
 
-![Outline and block sections in a story](../../../_images/6-2-3-storiesApp-newStoryStructure.png)
+![Outline and block sections in a story](../../../../RNs-6-4-3/_images/6-2-3-storiesApp-newStoryStructure.png)
 
 By default, the outline consists of the following fields and collapsible sections (the asterisk indicates mandatory fields).
 
@@ -168,7 +168,7 @@ To define a custom block, use a [YAML definition file](../../../Developing/YAML/
 
 To add blocks to your story, click the plus icon in your story to expand the **Block chooser** menu and select the block type you want.
 
-![Block hooser Toolbar](../../../_images/6-2-3-storiesApp-blockChooserToolbar-rbox.png)
+![Block hooser Toolbar](../../../../RNs-6-4-3/_images/6-2-3-storiesApp-blockChooserToolbar-rbox.png)
 
 The **… Others** option at the bottom of the menu opens the **Block chooser** dialog.
 
@@ -182,7 +182,7 @@ By default, blocks are not internationalized but you can create a block structur
 
 Select a new language in the language selector at the bottom left and press the **Copy blocks from <language>** button next to it. The app will create a new set of blocks (and content) by copying it from the original language variant of the story.
 
-![Copy blocks button in the Stories app](../../../_images/6-2-3-contentEditorModule-copyBlocksButton.png)
+![Copy blocks button in the Stories app](../../../../RNs-6-4-3/_images/6-2-3-contentEditorModule-copyBlocksButton.png)
 
 > **Note:** The Copy blocks function cannot be used (the button is disabled) if the target language variant of the story already exists and has more than one content block in it.
 
@@ -192,7 +192,7 @@ Add text blocks to write paragraphs or headings. Each paragraph or heading must 
 
 You can format the text and insert or remove links to external content or to Magnolia items using the formatting bar displayed when you are editing a text block.
 
-![Text block example](../../../_images/6-2-storiesApp-textBlockToolbar.png)
+![Text block example](../../../../RNs-6-4-3/_images/6-2-storiesApp-textBlockToolbar.png)
 
 If you apply a header style to text in a block, the entire block becomes a heading.
 
@@ -219,7 +219,7 @@ Click **browse** to open the [Assets chooser](../../../use-cases/Digital-asset-m
 
 Use the Embedded content block to embed content from another external website. This block type uses link *unfurling*: it scans the URL you enter for metadata and provides a preview in the story. For example, this YouTube link displays a thumbnail preview, title and lead text:
 
-![Embedded content block](../../../_images/6-2-storiesApp-embeddedContent-withURL.png)
+![Embedded content block](../../../../RNs-6-4-3/_images/6-2-storiesApp-embeddedContent-withURL.png)
 
 The preview displayed for external links depends on the metadata the site owner embedded in their web page header.
 
@@ -248,7 +248,7 @@ Together with the Save and Save and publish buttons, the locale selector combo b
 
 > **Note:** If an i18n incompatibility like this is detected, a pop-up message will inform the editor about it.
 
-![Actions are disabled due to incompatibility of JCR sctructures for Stories content](../../../_images/6-2-i18nStoriesStructureIncompatibility-actionsDisabled.png)
+![Actions are disabled due to incompatibility of JCR sctructures for Stories content](../../../../RNs-6-4-3/_images/6-2-i18nStoriesStructureIncompatibility-actionsDisabled.png)
 
 #### [](#_new_language_variant_is_empty)New language variant is empty
 
@@ -258,29 +258,7 @@ Use the locale selector to create a new language variant of the current story. E
 
 When you publish a story where multilanguage content is enabled and present, the whole story node is published, that is all language variants of the blocks in the story are always published.
 
-## [](#_shortcuts)Shortcuts
-
-The Stories app supports a few keyboard shortcuts to speed up content editing.
-
-### [](#_selecting_blocks_and_entering_the_edit_mode)Selecting blocks and entering the edit mode
-
-Use the `Tab` key to select the next block and, after pressing the key again, to enter the edit mode in the selected block.
-
-The `Esc` key functions as a toggle key for block select and block edit modes.
-
-### [](#_moving_blocks)Moving blocks
-
-When a block is selected, you can use `Alt-J` and `Alt-K` to move the block.
-
-### [](#_editing_in_text_blocks)Editing in text blocks
-
 | Action | Shortcut |
 | --- | --- |
 | Create new text block at the position of the cursor in a non-empty text block. | Enter |
 | Delete the current block and merge the text to the right of the cursor with the text in the preceding block. | Backspace |
-
-Related topics
-
--   [Content Editor](../../../Modules/List-of-modules/Content-Editor-module/) (feature page)
-
--   [Content Editor module](../../../Modules/List-of-modules/Content-Editor-module/)

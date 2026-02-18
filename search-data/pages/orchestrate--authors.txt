@@ -1,0 +1,152 @@
+---
+title: "Authors"
+url: https://docs.magnolia-cms.com/orchestrate/authors/
+category: Modules
+version: modules
+breadcrumb: Orchestrate module > Authors
+---
+
+# Authors
+
+The **Orchestrate module** helps plan and manage content-related tasks and campaigns in a structured manner. It provides tools for task creation, tracking, and visualization, allowing you to organize your content workflow. You can plan tasks, track your progress, and organize them into campaigns, all while utilizing interactive UI components like calendars and task boards for better planning and task management.
+
+**Content Watch** extends Orchestrate module with AI-powered content idea generation. Monitor external URLs — such as competitor blogs, industry publications, or partner websites — and automatically generate content ideas that become tasks in Orchestrate module. Content Watch works entirely through Smart Chat, requiring no additional setup for authors.
+
+## [](#_why_use_orchestrate)Why use Orchestrate?
+
+The Orchestrate module is an essential tool for marketers looking to manage and execute high-impact campaigns, such as product launches and Black Friday promotions. It has an intuitive interface and allows you to map out detailed campaign strategies by breaking them down into manageable tasks and timelines. You can create, track, and organize content workflows, ensuring that every element from social media posts to promotional emails are delivered on time. By leveraging the interactive calendar and task board features, you and your teams can easily collaborate on tasks, visualize deadlines, and adjust plans in real-time, ensuring streamlined execution and maximum impact for key marketing initiatives.
+
+With Content Watch, you can stay ahead of industry trends and competitor movements by automatically monitoring relevant URLs and generating fresh content ideas. These AI-generated ideas flow directly into Orchestrate module as tasks, keeping your content pipeline full and your team focused on execution rather than ideation.
+
+## [](#_for_authors)For authors
+
+For authors, the Orchestrate module streamlines the content creation process by providing a structured way to manage writing tasks, deadlines, and campaigns. Whether you’re organizing blog series or coordinating with editorial teams, Orchestrate’s task boards and calendars help ensure timely and efficient delivery of your content.
+
+This page gives you a general overview of the UI views and features. For a full usage example, see [Orchestrate walk-through](use-case/).
+
+## [](#_dashboard)Dashboard
+
+The Dashboard is the default entry point when opening the Orchestrate app. It provides an overview and statistics for the currently logged-in user.
+
+The dashboard includes:
+
+-   **Task Statistics** - Pie charts showing task distribution by status (overall, current month, next month)
+
+-   **Team Workload** - Bar chart showing task distribution across team members
+
+-   **AI Suggestions** - Smart task recommendations based on workload and priorities (requires orchestrate-ai module)
+
+-   **Upcoming Tasks** - Calendar view of the current week’s tasks
+
+
+## [](#_kanban_board)Kanban Board
+
+The Kanban Board provides a visual way to manage tasks using drag-and-drop functionality.
+
+![campaign board subapp overview](_images/campaign-board-subapp-overview.jpg)
+
+Features:
+
+-   Three columns by default: **To-do**, **In Progress**, **Done**
+
+-   Drag tasks between columns to update their status (changes are saved automatically)
+
+-   Filter tasks by campaign, assignee, or search term
+
+-   Click any task card to open the Task Drawer for editing
+
+-   Add new tasks directly to a specific column using the **+** button
+
+
+## [](#_list_view)List View
+
+The List View provides a table-based interface for managing tasks.
+
+Features:
+
+-   Sortable columns (name, status, priority, due date, assignee, campaign)
+
+-   Search and filter functionality
+
+-   Click any row to open the Task Drawer for editing
+
+
+## [](#_calendar_view)Calendar View
+
+The Calendar View displays tasks on a timeline based on their due dates.
+
+![campaign calendar subapp overview](_images/campaign-calendar-subapp-overview.jpg)
+
+Features:
+
+-   Month, week, and day views
+
+-   Drag tasks to change their due dates
+
+-   Tasks are color-coded by priority
+
+-   Filter by campaign to focus on specific initiatives
+
+-   Click any task to open the Task Drawer
+
+
+| Field | Type | Description |
+| --- | --- | --- |
+| **Name** | `Text field` | The task name/title. |
+| **Content brief** | `Text area` | Description or instructions for the task. |
+| **Campaign** | `Select field` | The campaign this task belongs to. |
+| **Assignee** | `Select field` | The user responsible for completing the task. |
+| **Due date** | `Date picker` | When the task should be completed. |
+| **Status** | `Select field` | Current state of the task (configured in config.yaml). |
+| **Priority** | `Select field` | Task priority level. Options • Highest • High • Medium • Low |
+| **References** | `Custom field` | Links to content in other workspaces (pages, assets, etc.). |
+| **Recurrence** | `Select field` | Schedule for recurring tasks. Options • None (default) • Daily • Weekly (with day selection) • Monthly • Yearly • Custom interval |
+
+| Field | Type | Description |
+| --- | --- | --- |
+| **Name** | `Text field` | The campaign name. |
+| **From** | `Date picker` | Campaign start date. |
+| **To** | `Date picker` | Campaign end date. |
+| **Brief** | `Text area` | Description and goals for the campaign. |
+
+## [](#_recurring_tasks)Recurring Tasks
+
+Tasks can be configured to repeat automatically based on a schedule. When you set a recurrence on a task:
+
+1.  The original task becomes the "parent" task
+
+2.  Instance tasks are automatically generated for each occurrence within the campaign duration
+
+3.  Updating the parent’s recurrence regenerates all instances
+
+4.  Deleting the parent removes all associated instances
+
+
+This is useful for tasks like weekly status meetings, monthly reports, or daily content reviews.
+
+## [](#_content_references)Content References
+
+Tasks can be linked to content from other Magnolia workspaces using the References field. This allows you to associate a task with specific pages, assets, or other content items that the task relates to.
+
+The available workspaces for linking are configured via decoration.
+
+## [](#_notifications)Notifications
+
+When notifications are enabled, you can receive email and/or Slack notifications about task updates.
+
+### [](#_email_notifications)Email Notifications
+
+As a task assignee, you automatically receive email notifications when:
+
+-   A task is created and assigned to you
+
+-   A task is reassigned to you
+
+-   The status of one of your assigned tasks changes
+
+
+> **Note:** To receive email notifications, your Magnolia user account must have an email address configured.
+
+### [](#_slack_notifications)Slack Notifications
+
+If Slack integration is configured, notifications are posted to a designated Slack channel for team visibility. This includes notifications for task creation, assignment changes, status updates, and new campaigns.

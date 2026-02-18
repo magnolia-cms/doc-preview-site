@@ -24,11 +24,11 @@ The virtual file system passed to the persistence manager and search index.
 
 Jackrabbit provides a lot of choices for how you can configure the `FileSystem`. Choose the class that best fits your use case.
 
--   [local](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/local/LocalFileSystem.html)
+-   [local](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/local/LocalFileSystem.html)
 
--   [db](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/db/package-summary.html)
+-   [db](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/db/package-summary.html)
 
--   [in-mem](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/mem/MemoryFileSystem.html)
+-   [in-mem](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/mem/MemoryFileSystem.html)
 
 
 ## [](#_persistence_manager)Persistence manager
@@ -44,189 +44,19 @@ Each workspace in a Jackrabbit content repository uses separate persistence mana
 
 Jackrabbit provides a lot of choices for how you can configure the `PersistenceManager`. Choose the class that best fits your use case.
 
--   [pool](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/persistence/pool/package-summary.html)
+-   [pool](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/persistence/pool/package-summary.html)
 
--   [in-mem](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/persistence/mem/InMemPersistenceManager.html)
+-   [in-mem](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/persistence/mem/InMemPersistenceManager.html)
 
-
-## [](#_search_index)Search index
-
-Node names and property values are indexed as soon as the data is saved or as soon as the transaction is committed.
-
-Text extraction is done asynchronously in a background thread. That means text that’s changed or added isn’t available immediately, but rather after a short delay. You can configure the exact behaviour using the extractor settings.
-
-Jackrabbit provides the following options in the class `SearchIndex`. All parameters (except `path`) have default values and you can omit them and use the default value instead.
-
-> **Tip:** See Jackrabbit Search for more details.
-
-### [](#_basic_configuration)Basic configuration
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Parameter</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>path</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The location of the index directory. A reasonable value is: <code>${wsp.home}/index</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>indexingConfiguration</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>When not set, all properties of a node are indexed. Magnolia provides a default indexing configuration file located in the Core module.</p></div><div class="ulist"><ul><li><p><a href="https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/master/magnolia-core/src/main/resources/info/magnolia/jackrabbit/indexing_configuration_default.xml" target="_blank" rel="noopener">indexing_configuration_default.xml</a></p></li><li><p><a href="https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/master/magnolia-core/src/main/resources/info/magnolia/jackrabbit/indexing_configuration_website.xml" target="_blank" rel="noopener">indexing_configuration_website.xml</a></p><div class="paragraph"><p>You can also create a custom indexing configuration file on a <em>per-workspace</em> basis to adjust the indexing behavior. For example, the <code>magnolia-dam-jcr</code> module provides DAM-specific configuration for aggregating asset metadata with its binary data.</p></div></li><li><p><a href="https://gitlab.magnolia-platform.com/pd/modules/dam/-/blob/master/magnolia-dam-jcr/src/main/resources/info/magnolia/jackrabbit/indexing_configuration_dam.xml" target="_blank" rel="noopener">indexing_configuration_dam.xml</a></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>indexingConfigurationClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>The name of the class that implements <code>IndexingConfiguration</code>. <code>IndexingConfigurationImpl</code> implements a concrete indexing configuration.</p></div><div class="paragraph"><p>Example configuration using a custom Magnolia class introduced with Magnolia 6.3.8 to streamline and improve indexing performance:</p></div><div class="listingblock"><div class="title">workspace.xml</div><div class="content"><pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">...
-&lt;param name="indexingConfigurationClass" value="info.magnolia.jackrabbit.lucene.MagnoliaIndexingConfiguration"/&gt;
-...</code></pre></div></div><div class="paragraph"><p>See also <a href="../../../Jackrabbit-search/#_skipping_properties" class="xref page">Skipping properties</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>analyzer</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Sets the default analyzer in use for indexing. The default value is the <code>StandardAnalyzer</code>.</p></div><div class="paragraph"><p>This analyzer uses an English-language stop word set. Lucene provides language-specific analyzers, which you can configure property-by-property in the indexing configuration file.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>directoryManager</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>The name of the class that implements <code>DirectoryManager</code>. <code>FSDirectoryManager</code> implements a directory manager for <code>FSDirectory</code> instances. <code>RAMDirectoryManager</code> implements a directory manager for <code>RAMDirectory</code> instances.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>useSimpleFSDirectory</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Indicates whether the <code>DirectoryManager</code> should use the <code>SimpleFSDirectory</code> instead of letting Lucene automatically pick an implementation based on the platform you’re running on. Default is <code>false</code>.</p></div></div></td></tr></tbody></table></div>
-
-### [](#_performance)Performance
-
-You can tune indexing performance with the following parameters.
-
-> **Tip:** For more performance ideas, see Improve Indexing Speed in the Lucene documentation.Refer also to the description of the supportHighlighting parameter, which warns of potential index bloat if configured incorrectly.
-
- ParameterDescription
-
-`useCompoundFile`
-
-**optional**
-
-All files belonging to a segment have the same name with varying extensions. When using the Compound File format, these files are collapsed into a single `.cfs` file. Useful for systems that frequently run out of file handles.
-
-`minMergeDocs`
-
-**optional**
-
-This setting no longer exists in Lucene 3.x.
-
-`volatileIdleTime`
-
-**optional**
-
-The Lucene indexer doesn’t write changes to the permanent index immediately. At first, the indexer writes the changes to a volatile index. Once the volatile index reaches a certain size, it’s persisted to the permanent index. Also there is the option to set a timer, in seconds, to control how often changes are written.
-
-`maxMergeDocs`
-
-**optional**, *default is `Integer.MAX_VALUE`*
-
-While merging segments, Lucene ensures that no segment with more than `maxMergeDocs` is created.
-
-> **Note:** We recommend using the default value. A small value doesn’t allow proper index consolidation, which degrades query performance. The default setting ensures segments are merged into fewer, larger ones, making searches faster and more efficient.
-
-`mergeFactor`
-
-**optional**
-
-This value tells Lucene how many documents to store in memory before writing them to the disk, as well as how often to merge multiple segments together. With the default value of 10, Lucene stores 10 documents in memory before writing them to a single segment on the disk.
-
-`maxFieldLength`
-
-**optional**
-
-Deprecated in Lucene 3.x.
-
-`bufferSize`
-
-**optional**
-
-Maximum number of documents that are held in a pending queue until added to the index.
-
-`cacheSize`
-
-**optional**
-
-Size of the document number cache. This cache maps UUIDs to Lucene document numbers. If the doc number cache hits are poor, then increasing this number could help.
-
-`maxVolatileIndexSize`
-
-**optional**
-
-The maximum volatile index size in bytes until it’s written to disk. The default value is 1MB.
-
-`maxHistoryAge`
-
-**optional**
-
-The maximum age (in seconds) of the index history. The default value is 0, which means that index commits are deleted as soon as they’re not used anymore.
-
-`initializeHierarchyCache`
-
-**optional**
-
-With the default value of `true`, the hierarchy cache is initialized on startup and control is only given back when the initialization has completed.
-
-When set to `false`, the cache is populated during regular use.
-
-### [](#_consistency)Consistency
-
-Repository consistency settings are covered in more detail in the [Troubleshooting section](../../../Troubleshooting/Repository-inconsistency/).
 
 | Parameter | Description |
 | --- | --- |
-| `forceConsistencyCheck` | **optional**<br><br>Runs a consistency check on every startup.<br><br>If `false`, a consistency check is only performed when the search index detects a prior forced shutdown. When a consistency check is performed, it can delay the start of the system. So this should only be run when a search index inconsistency is suspected. For example, a "node not found" error. A UUID exists in the search index, but the corresponding node isn’t found. On the other hand, a node exists but isn’t recorded in the index. In both cases, the index is inconsistent with the data. |
-| `autoRepair` | **optional**<br><br>Errors detected by a consistency check are automatically repaired. If `false`, errors are only written to the log. |
-| `enableConsistencyCheck` | **optional**<br><br>If set to `true`, a consistency check is performed depending on the parameter `forceConsistencyCheck`.<br><br>If set to `false` no consistency check is performed on startup, even if a redo log was applied. |
-| `redoLogFactoryClass` | **optional**<br><br>The name of the class that implements `RedoLogFactory`.<br><br>A redo log keeps track of changes that haven’t been committed to disk. While nodes are added and removed from the volatile index (held in memory), a redo log is maintained to keep track of the changes. If the Jackrabbit process terminates unexpectedly, the redo log is applied when Jackrabbit is restarted the next time.<br><br>The default value is `DefaultRedoLogFactory`. |
-
-### [](#_search)Search
-
-| Parameter | Description |
-| --- | --- |
-| `queryClass` | **optional**<br><br>Class used to perform JCR Queries. `QueryImpl` provides the default implementation for a JCR query. Raising the log level on `QueryImpl` to `DEBUG` prints query execution times to the log. |
-| `respectDocumentOrder` | **optional**<br><br>If `true` and the query doesn’t contain an `order by` clause, result nodes are in document order (the order in which they were indexed by the system). |
-| `resultFetchSize` | **optional**<br><br>The number of results the query handler should initially fetch when a query is executed. Keep in mind that ACL checks must be performed on the result set. The larger the set, the more time to load and check. |
-| `termInfosIndexDivisor` | **optional**<br><br>An `indexDivisor` for `TermInfosReader`, so that on opening a reader, you could further sub-sample the `termIndexInterval` to use less RAM. Set to `1` by default, meaning all terms are loaded into RAM. Set to `2` loads every other term into RAM but the trade off is you might have to scan twice. See [LUCENE-1052](https://issues.apache.org/jira/browse/LUCENE-1052). |
-
-### [](#_extraction)Extraction
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Parameter</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>extractorPoolSize</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Defines the maximum number of background threads that are used to extract text from binary properties. If set to <code>0</code>, then no background threads are allocated and text extractors run in the current thread. If you are using Jackrabbit version 1.5 or later, then there are twice the number of available processors.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>extractorTimeout</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>A text extractor is executed using a background thread if it doesn’t finish within this timeout (defined in milliseconds). This parameter has no effect if <code>extractorPoolSize</code> is <code>0</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>extractorBackLogSize</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>The size of the extractor pool back log. If all threads in the pool are busy, incoming work is put into a wait queue. If the wait queue reaches the back log size, incoming extractor work isn’t queued anymore but is executed with the current thread.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxExtractLength</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Positive values are used as they are, negative values are interpreted as factors of the <code>maxFieldLength</code> parameter.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>forkJavaCommand</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Java command used to fork external parser processes, or <code>null</code> (the default) for in-process text extraction. Use this to better control system stability and reliability by forcing indexing of binary documents into separate JVM processes. Any problems caused by parsing large or malformed documents don’t affect the main process.</p></div><div class="tabset is-loading"><div class="ulist tabs"><ul><li><p><a id="tabset1_linux"></a>Linux</p></li><li><p><a id="tabset1_windows"></a>Windows</p></li></ul></div><div class="content"><div class="tab-pane" aria-labelledby="tabset1_linux"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">nice java -Xmx512m</code></pre></div></div></div><div class="tab-pane" aria-labelledby="tabset1_windows"><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">cmd /c start /low /wait /b java -Xmx512m</code></pre></div></div></div></div></div></div></td></tr></tbody></table></div>
-
-### [](#_term_identification)Term identification
-
-You can configure the Lucene index to provide excerpts and highlighting in the search results.
-
-For example, the `workspace.xml` file in each workspace enables highlighting in search results. The `workspace.xml` files are in `/<CATALINA_HOME>/webapps/<contextPath>/repositories/magnolia/workspaces/<workspace name>`. Below’s the relevant extract from `workspace.xml` in the `contacts` workspace.
-
-```xml
-<!-- needed to highlight the searched term -->
-<param name="supportHighlighting" value="true"/>
-<!-- custom provider for getting an HTML excerpt in a query result with rep:excerpt() -->
-<param name="excerptProviderClass" value="info.magnolia.jackrabbit.lucene.SearchHTMLExcerpt"/>
-```
-
-> **Tip:** If you have configured your own app that operates on its own workspace and provides content for the website, you need to add these parameters to the searchIndex element of your workspace.xml file to show excerpts and highlighting in Web search results.
-
-> **Warning:** If you have used fields which allow for the storing of HTML, then that HTML will be indexed along with content. There is potential for the excerpt to contain HTML tags which are not closed.
-
- ParameterDescription
-
-`supportHighlighting`
-
-**optional**, *default is `true`*
-
-If `true`, additional information is stored in the index to support highlighting using the `rep:excerpt()` function.
-
-> **Important:** If you don’t need the highlighting feature, we recommend setting this parameter to false.Keeping the default setting (true) significantly increases index size, leading to index bloat and performance degradation.
-
-`excerptProviderClass`
-
-**optional**
-
-The name of the class that implements `ExcerptProvider` and should be used for the `rep:excerpt()` function in a query. By default, this is set to `SearchHTMLExcerpt`.
-
-### [](#_parsing)Parsing
-
-| Parameter | Description |
-| --- | --- |
-| `textFilterClasses` | **optional**<br><br>Deprecated in Jackrabbit 2.x. With Jackrabbit 2.x, [Apache Tika](https://tika.apache.org) was introduced as the default binaries parser. By default, Jackrabbit comes with a default `tika-config.xml` file that contains the configuration for the mime-types to parse and extract. |
-| `tikaConfigPath` | **optional**<br><br>Sets the location of the `tika-config.xml`. For example, `${wsp.home}/tika-config.xml`.<br><br>See [Configuring Tika](https://tika.apache.org/2.9.1/configuring.html) for some example configurations, such as using the `DefaultParser` to exclude PDFs and other files. |
-
-### [](#_synonym_provider)Synonym provider
-
-This allows users to use generalized language-dependent synonyms and, more importantly, domain-specific synonyms like abbreviations or product names.
-
-| Parameter | Description |
-| --- | --- |
-| `synonymProviderClass` | **optional**<br><br>The name of a class that implements `SynonymProvider`. The default value is `null`, which means no class set. Jackrabbit provides the `PropertiesSynonymProvider` which implements a synonym provider based on a properties file. The location of the properties file is specified by the `synonymProviderConfigPath`. |
-| `synonymProviderConfigPath` | **optional**<br><br>The path to the synonym provider configuration file. This path interpreted relative to the `path` parameter. If there is a `FileSystem` element inside the `SearchIndex` element, then this path is interpreted relative to the root path of the `FileSystem`. Whether this parameter is mandatory or not depends on the synonym provider implementation. The default value is `null`, which means no class set. |
-
-### [](#_spellchecking)Spellchecking
-
-| Parameter | Description |
-| --- | --- |
-| `spellCheckerClass` | **optional**<br><br>The name of a class that implements `SpellChecker`. No known implementation exists. |
-
-### [](#_scoring)Scoring
-
-| Parameter | Description |
-| --- | --- |
-| `similarityClass` | **optional**<br><br>The name of a class that extends `Similarity`. Similarity defines the components of [Lucene scoring](https://lucene.apache.org/core/3_5_0/scoring.html). |
+| `path` | **required** The location of the index directory. A reasonable value is: `${wsp.home}/index` |
+| `indexingConfiguration` | **optional** When not set, all properties of a node are indexed. Magnolia provides a default indexing configuration file located in the Core module. • [indexing_configuration_default.xml](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/master/magnolia-core/src/main/resources/info/magnolia/jackrabbit/indexing_configuration_default.xml) • [indexing_configuration_website.xml](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/master/magnolia-core/src/main/resources/info/magnolia/jackrabbit/indexing_configuration_website.xml) You can also create a custom indexing configuration file on a *per-workspace* basis to adjust the indexing behavior. For example, the `magnolia-dam-jcr` module provides DAM-specific configuration for aggregating asset metadata with its binary data. • [indexing_configuration_dam.xml](https://gitlab.magnolia-platform.com/pd/modules/dam/-/blob/master/magnolia-dam-jcr/src/main/resources/info/magnolia/jackrabbit/indexing_configuration_dam.xml) |
+| `indexingConfigurationClass` | **optional** The name of the class that implements `IndexingConfiguration` . `IndexingConfigurationImpl` implements a concrete indexing configuration. Example configuration using a custom Magnolia class introduced with Magnolia 6.3.8 to streamline and improve indexing performance: workspace.xml `... <param name="indexingConfigurationClass" value="info.magnolia.jackrabbit.lucene.MagnoliaIndexingConfiguration"/> ...` See also [Skipping properties](../../../Jackrabbit-search/#_skipping_properties) . |
+| `analyzer` | **optional** Sets the default analyzer in use for indexing. The default value is the `StandardAnalyzer` . This analyzer uses an English-language stop word set. Lucene provides language-specific analyzers, which you can configure property-by-property in the indexing configuration file. |
+| `directoryManager` | **optional** The name of the class that implements `DirectoryManager` . `FSDirectoryManager` implements a directory manager for `FSDirectory` instances. `RAMDirectoryManager` implements a directory manager for `RAMDirectory` instances. |
+| `useSimpleFSDirectory` | **optional** Indicates whether the `DirectoryManager` should use the `SimpleFSDirectory` instead of letting Lucene automatically pick an implementation based on the platform you’re running on. Default is `false` . |
 
 ## [](#_workspace_security)Workspace security
 
@@ -234,32 +64,23 @@ Workspace security is handled by the `MagnoliaAccessProvider`.
 
 > **Tip:** See the workspace security section for more details.
 
-## [](#_synchronize_workspaces_between_magnolia_instances)Synchronize workspaces between Magnolia instances
-
-When using Magnolia, you often store content in a variety of workspaces. Typically, workspaces are kept under your `magnolia.repositories.home` in the `WEB-INF/config/default/magnolia.properties` file. The [content-types:ROOT:index.adoc](#content-types:ROOT:index.adoc) creates node types, workspaces, and namespaces on-the-fly. If using, make sure your repository configuration and workspaces are properly synchronized as this on-the-fly feature makes changes to repository configuration files.
-
-The following should be considered when creating a new content type:
-
-|     |
-| --- |
 | 📁 repo |
+| --- |
 | 📁 magnolia |
 | 📁 repository |
 | 📁 datastore |
 | 📁 meta |
 | ⸬ rootUUID |
-| 📁 namespaces |
-| ⬩ ns\_idx.properties |
-| ⬩ ns\_reg.properties |
-| 📁 nodetypes |
-| ⬩ custom\_nodetypes.xml |
+| 📁 namespaces ** |
+| ⬩ ns_idx.properties |
+| ⬩ ns_reg.properties |
+| 📁 nodetypes ** |
+| ⬩ custom_nodetypes.xml |
 | ⬩ db.mv.db |
-| 📁 workspaces |
-| 📁 config |
+| 📁 workspaces ** |
+| 📁 config ** |
 | ⬩ db.mv.db |
 | ⬩ workspace.xml |
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Item</th><th class="tableblock halign-left valign-top">Notes</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Namespace definitions</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Found in the <code>repository/namespaces</code> folder, you can find your custom namespace registry and its index which are stored as a text file in <code>ns_idx.properties</code> and <code>ns_reg.properties</code>.</p></div><div class="paragraph"><p>Copy your custom namespace registry and index to the target environment to synchronize them.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Node type definitions</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Custom node type definitions are stored in the <code>repository/nodetypes</code> folder in the <code>custom_nodetypes.xml</code> file.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">This is not automatically generated if you aren’t starting up a clean Magnolia instance. So you would also have to merge your existing definition (in the target environment) with the one defined there.Otherwise, an invalid nodetype error may occur when accessing content with that nodetype after your data synchronization.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Workspace configuration</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Your workspace configuration stores the detailed workspace configuration in the <code>workspaces/&lt;your_workspace_name&gt;/workspace.xml</code> file.</p></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">If you want to change the <code>PersistenceManager</code> class, <code>SearchIndex</code> class, <code>excerptProviderClass</code> or <code>AccessControlProvider</code> class, change it in each of your workspace configuration files. These files are then used in the next system startup process.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Index and lock</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>You can remove all files and folder under the <code>index</code> folder. The system then regenerates, reindexing the entire workspace for you at restart.</p></div><div class="exampleblock"><div class="title">Why is this important?</div><div class="content"><div class="paragraph"><p>This ensures repository consistency and cleans up all <em>unsynchronized</em> indexes.</p></div><div class="paragraph"><p>For content synchronization, this folder <strong>should not be copied</strong> over different instances. It need to be cleaned up in the target instance instead.</p></div></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>The actual content</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The actual content is typically stored in your configured database tables with the name prefix according to "schemaObjectPrefix" name where <code>{wsp.name}</code> is the workspace name.</p></div><div class="ulist"><div class="title">For example</div><ul><li><p><code>pm_${wsp.name}_NODE</code> (table)</p></li><li><p><code>pm_${wsp.name}_NODE_IDX</code> (index)</p></li><li><p><code>pm_${wsp.name}_PROP</code> (table)</p></li><li><p><code>pm_${wsp.name}_PROP_IDX</code> (index)</p></li><li><p><code>pm_${wsp.name}_REFS</code> (table)</p></li><li><p><code>pm_${wsp.name}_REFS_IDX</code> (index)</p></li><li><p><code>pm_${wsp.name}_BINVAL</code> (table)</p></li><li><p><code>pm_${wsp.name}_BINVAL_IDX</code> (index)</p></li></ul></div></div></td></tr></tbody></table></div>
 
 ## [](#_disabling_indexing_for_the_mgnlversion_workspace_manually)Disabling indexing for the `mgnlVersion` workspace manually
 

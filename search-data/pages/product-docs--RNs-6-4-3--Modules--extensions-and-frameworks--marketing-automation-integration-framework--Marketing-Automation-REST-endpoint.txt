@@ -1,0 +1,19 @@
+---
+title: "Marketing Automation REST endpoint"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-REST-endpoint/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Marketing automation integration framework > Marketing Automation REST endpoint
+---
+
+# Marketing Automation REST endpoint
+
+This page describes the `MarketingLeadEndpoint` endpoint, which can be used to get data about marketing leads.
+
+| Parameter | Description | Type | Data Type |
+| --- | --- | --- | --- |
+| `definitionName` | **required** The definition name. For example: `marketo` or `salesforce` . | `query` | `string` |
+| `filterType` | **required** The type of filter applied to the results. For example: `email` | `query` | `string` |
+| `filterValues` | **required** The value of the filter. For example: `jane.doe@email.com` | `query` | `string` |
+| `fields` | **required** The fields whose data you want to get. For example: `FirstName,LastName,Email` | `query` | `string` |
+| `checkFormPrefilling` | **optional** • If set to `true` , checks if form pre-filling is enabled. • If it is enabled, lead data is returned. • If it is disabled, no lead data is returned. This means you can use this parameter to effectively enable/disable form pre-filling. If not used or `false` , then form pre-filling configuration is not checked. | `query` | `boolean` |

@@ -1,0 +1,32 @@
+---
+title: "Managing updates using the Magnolia cockpit"
+url: https://docs.magnolia-cms.com/cloud/managing-updates-using-the-Magnolia-cockpit/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Managing updates using the Magnolia cockpit
+---
+
+# Managing updates using the Magnolia cockpit
+
+After developing locally and [pushing your changes](../Developing-for-Magnolia-in-the-cloud/Committing-and-pushing-to-the-remote-Magnolia-Git-repository/) to the remote Magnolia Git repository, use the Magnolia [cockpit](../Cockpit/) to retrieve your work.
+
+> **Tip:** To do so, go to the Manage updates page in the Magnolia cockpit.
+
+## [](#_here_you_can)Here you can:
+
+1.  [Deploy a snapshot](deploying-snapshot/).
+
+2.  [Create a release](creating-a-release/).
+
+3.  [Promote a release in the UAT](promoting-a-release-to-UAT/) or in [Live environment](promoting-a-release-to-Live/).
+
+4.  [Copy content for testing](Copying-content-for-testing/).
+
+5.  [Change the version of Magnolia used in your environments](Upgrading-Magnolia-in-the-cloud/).
+
+
+![cloud-user-interface](../_images/InstallAnUpdate.jpg)
+
+
+
+> **Note:** The options available in Manage updates depend on the current state of your setup: You cannot deploy a snapshot or promote a release until you have set up a new environment.If no snapshot is deployed, you cannot create and promote a release.

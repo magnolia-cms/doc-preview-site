@@ -1,0 +1,68 @@
+---
+title: "Create Page plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/create-page-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Create Page plugin
+---
+
+# Create Page plugin
+
+| Package name | `@magnolia/cli-create-page-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-create-page-plugin](https://www.npmjs.com/package/@magnolia/cli-create-page-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md](https://unpkg.com/@magnolia/cli-create-page-plugin/CHANGELOG.md) |
+
+## [](#_installing)Installing
+
+The plugin doesn’t come pre-installed with Magnolia CLI. You must add it to the `mgnl.config.js` project file.
+
+> **Note:** The plugin is installed automatically by the Jumpstart plugin if it is defined in a project template.
+
+### [](#_with_add_plugin)With add-plugin
+
+Run the following command in the project folder.
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-create-page-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+The command automatically downloads, installs, and registers the plugin in `mgnl.config.js`.
+
+### [](#_manually)Manually
+
+1.  Run the following command in the project folder.
+
+    ```console
+    npm install @magnolia/cli-create-page-plugin
+    ```
+
+2.  Modify the `mgnl.config.js` file accordingly.
+
+    ```js
+    import CreatePagePlugin from "@magnolia/cli-create-page-plugin";
+
+    export default {
+      plugins: [
+        new CreatePagePlugin()
+      ]
+    };
+    ```
+
+
+| Form (short and long) | Description |
+| --- | --- |
+| `-lm [name]` `--light-module [name]` | Sets a light module for the page template. By default, uses the directory specified in the `mgnl.config.js` file. |
+| `-p [name]` `--prototype [name]` | Selects a page prototype. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+| Property name | Description |
+| --- | --- |
+| `lightModulesPath` | The path to a directory containing all light modules. |
+| `lightModule` | The name of a light module where the page will be created. Alternative forms: `-lm [name]` , `--light-module [name]` |
+| `componentMappingFilePath` | The path to the file containing the `componentMapping` object. |
+| `type` | The file type or extension used in the project’s framework (for example `tsx` , `jsx` , or `vue` ). It determines which version of the prototype files is used and the file extensions for the generated code. |

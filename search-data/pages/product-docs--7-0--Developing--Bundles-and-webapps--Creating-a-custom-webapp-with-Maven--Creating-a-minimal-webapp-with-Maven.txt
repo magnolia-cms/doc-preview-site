@@ -18,18 +18,18 @@ Using Maven to create a webapp allows you to customize your webapp through the P
 
 In the steps below, you use the `magnolia-empty-webapp` as the base and add the following modules to it:
 
--   [Magnolia Rest modules](#rest:ROOT:index.adoc)
+-   [Magnolia Rest modules](../../../../../../rest/)
 
--   [Magnolia Assets subapp](#dam-app:ROOT:developers/dam-app-jcr.adoc), which also brings in other modules from the Magnolia [DAM](../../../../../../dam/developers/install/) and [DAM App](#dam-app:ROOT:developers/install.adoc) modules
+-   [Magnolia Assets subapp](../../../../../../dam-app/developers/dam-app-jcr/), which also brings in other modules from the Magnolia [DAM](../../../../../../dam/developers/install/) and [DAM App](../../../../../../dam-app/developers/install/) modules
 
--   [Site module](#site:ROOT:index.adoc)
+-   [Site module](../../../../../../site/)
 
 -   [jsonfn](../../../Templating/Template-scripts/Templating-functions/jsonfn/)
 
 
 The resulting webapp could be used to run Magnolia in a headless approach.
 
-This set of modules is just an example. We cannot guarantee that the given module composition is best practice for a headless bundle. With the exception of the jsonfn module, dependency management and versioning of all the other modules on the list is already handled by [the `dependencyManagement` section](../#_inherited_dependency_management) of the webapp’s parent POM file. The dependency of the jsonfn module has to be set manually.
+This set of modules is just an example. We cannot guarantee that the given module composition is best practice for a headless bundle. Dependency management and versioning of all the modules on the list is handled by [the `dependencyManagement` section](../#_inherited_dependency_management) of the webapp’s parent POM file.
 
 ## [](#_creating_the_webapp_skeleton)Creating the webapp skeleton
 
@@ -74,28 +74,12 @@ In the next two steps, you edit the two `pom.xml` files.
 
 ## [](#_editing_the_parent_pom)Editing the parent POM
 
-1.  Edit the `properties` section. Add a new property called `jsonfnVersion` and give it the value `1.0.8`.
-
-    ```xml
-    <jsonfnVersion>1.0.8</jsonfnVersion>
-    ```
-
-2.  Edit the `dependencyManagement` section.
+1.  Edit the `dependencyManagement` section.
 
     -   Remove the commented *Option B*.
 
-    -   Add a dependency section for the jsonfn module:
 
-        ```xml
-        <dependency>
-          <groupId>info.magnolia.templating</groupId>
-          <artifactId>magnolia-jsonfn</artifactId>
-          <version>${jsonfnVersion}</version>
-        </dependency>
-        ```
-
-
-3.  Remove the other commented sections, as well as the sections that you do not need right now.
+2.  Remove the other commented sections, as well as the sections that you do not need right now.
 
 
 Here is the resultant parent POM:
@@ -115,7 +99,6 @@ custom-project-minimal/pom.xml
   <properties>
     <magnoliaBundleVersion>{magnolia-latest-version}</magnoliaBundleVersion>
     <javaVersion>{base-java-version}</javaVersion>
-    <jsonfnVersion>1.0.8</jsonfnVersion>
   </properties>
 
   <!-- Fill the following in, so you can use the release plugin -->
@@ -137,11 +120,6 @@ custom-project-minimal/pom.xml
         <version>${magnoliaBundleVersion}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>info.magnolia.templating</groupId>
-        <artifactId>magnolia-jsonfn</artifactId>
-        <version>${jsonfnVersion}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -244,7 +222,7 @@ In the webapp POM, you have to modify the `dependencies` section.
     ```xml
     <dependency>
       <groupId>info.magnolia.templating</groupId>
-      <artifactId>magnolia-jsonfn</artifactId>
+      <artifactId>magnolia-templating-essentials-jsonfn</artifactId>
     </dependency>
     ```
 
@@ -307,7 +285,7 @@ custom-project-minimal/custom-project-minimal-webapp/pom.xml
     </dependency>
     <dependency>
       <groupId>info.magnolia.templating</groupId>
-      <artifactId>magnolia-jsonfn</artifactId>
+      <artifactId>magnolia-templating-essentials-jsonfn</artifactId>
     </dependency>
   </dependencies>
 
@@ -352,4 +330,4 @@ Related topics
 
 -   [Apache Maven](https://maven.apache.org/)
 
--   [Maven setup](../../../Development-environment/Maven/)
+-   [Maven setup](../../../../../RNs-6-4-3/Developing/Development-environment/Maven/)

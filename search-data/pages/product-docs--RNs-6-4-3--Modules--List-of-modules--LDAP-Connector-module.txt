@@ -1,0 +1,143 @@
+---
+title: "LDAP Connector module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/LDAP-Connector-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > LDAP Connector module
+---
+
+# LDAP Connector module
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLLDAP](https://magnolia-cms.atlassian.net/browse/MGNLLDAP) |
+| Maven site | [LDAP](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmagnolia-ldap%2F{magnolia-ldap-63}) |
+| Latest | {magnolia-ldap-63} |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>magnolia-ldap</artifactId>
+  <version>{magnolia-ldap-63}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_module_configuration)Module configuration
+
+Since module version 1.9, the configuration of the following is done directly in the [User Manager](#_user_manager):
+
+-   `allowPartialResults`
+
+-   `ignoreGroupsWithIllegalName`
+
+-   `pageSize`
+
+-   `envPropertiesPredicate`
+
+
+| File(s) | Property | Description |
+| --- | --- | --- |
+| both | `java.naming.provider.url` | **required** URL of the LDAP/AD service provider. Example: `ldap://ldap.example.com/` |
+| both | `java.naming.security.principal` | **required** , *default is the LDAP provider’s default* User or program doing the authentication. Use an appropriate DN/CN for your server. Example: `CN=Administrator,CN=Users,dc=example,dc=com` Originally interchangeable with the now deprecated `adminUserDN` property but takes precedence if both are specified in the file. |
+| both | `java.naming.security.credentials` | **required** Password or encrypted data such as a digital certificate that the implementation uses to authenticate the client. Originally interchangeable with the now deprecated `adminUserPassword` property but takes precedence if both are specified in the file. |
+| both | `java.naming.security.authentication` | **optional** , *default is `none`* Authentication mechanism (password encryption) used. Possible values are `none` , `simple` , or a specific authentication mechanism such as `DIGEST-MD5` . |
+| both | `java.naming.referral` | **optional** , *default is `ignore`* Indicates to the service provider how to handle [referrals](http://docs.oracle.com/javase/jndi/tutorial/ldap/referral/overview.html) . Valid values are `ignore` , `follow` and `throw` . If the LDAP/AD service provider receives a referral despite you having set the property to `ignore` , it throws a `PartialResultException` to indicate that more results may be coming if the referral was followed. In this case, the server doesn’t support the Manage Referral control and supports referral updates in some other way. See [Oracle: Referrals in the JNDI](http://docs.oracle.com/javase/jndi/tutorial/ldap/referral/jndi.html) . Windows Active Directory is an example of a directory service which doesn’t support Manage Referral control. To deal with the `PartialResultException` , create a property in **Configuration** > `/modules/ldap/config/allowPartialResults` and set it to `true` . |
+| both | `java.naming.factory.initial` | **optional** (but recommended) The class name of the initial context. The class must implement the `jakarta.naming.directory.DirContext` interface or LDAP requests from Magnolia fail. The default value for `java.naming.factory.initial` depends on your container or Java configuration. For example, the default configuration for Apache Tomcat specifies the class `org.apache.naming.SelectorContext` , which doesn’t implement the `java.naming.directory.DirContext` interface. When running in Tomcat, the class `com.sun.jndi.ldap.LdapCtxFactory` can be used. |
+| both | `initialSearchAttributes` | **required** Defines the initial connect point to the directory service. Example: `initialSearchAttributes` = `CN=Users,dc=example,dc=com` |
+| both | `Organization\ OrganizationUnit\ CommonName\ Surname\ GivenName\ uid\ dn\ mail\ Password\ Language` | **required** Name mapping(s) taking the form `<property>=<value>` , for example: `CommonName=cn mail=mail Password=pass Language=language` ** The properties shown on the left are just a few examples. If necessary, more (custom) properties may be created to allow smooth mapping of names. See also: [Accessing properties from LDAP](#_accessing_properties_from_ldap) . | ** | The properties shown on the left are just a few examples. If necessary, more (custom) properties may be created to allow smooth mapping of names. |
+| ** | The properties shown on the left are just a few examples. If necessary, more (custom) properties may be created to allow smooth mapping of names. |
+| both | `userSearchFilter` | **optional** When searching a user from a wide `initialSearchAttribute` , a custom filter may be useful. Be aware that attribute used for resolving `LDAP_USER_ID` needs to be same as mapped `uid` attribute (see mappings above). Example: `userSearchFilter=(&(objectClass=user)(sAMAccountName=LDAP_USER_ID))` ** It’s also possible to reuse the mapped `uid` attribute from the configuration above: `allUsersSearchFilter=(&(objectClass=user)(UID_ATTRIBUTE=LDAP_USER_ID))` | ** | It’s also possible to reuse the mapped `uid` attribute from the configuration above: `allUsersSearchFilter=(&(objectClass=user)(UID_ATTRIBUTE=LDAP_USER_ID))` |
+| ** | It’s also possible to reuse the mapped `uid` attribute from the configuration above: `allUsersSearchFilter=(&(objectClass=user)(UID_ATTRIBUTE=LDAP_USER_ID))` |
+| both | `userSearchFilter` | **optional** A custom filter can be used also when searching all users from a wide `initialSearchAttribute` . Example: `allUsersSearchFilter=(objectClass=user)` ADUserManager default users search filter is: `(&(objectCategory=person)(objectClass=user))` |
+| both | `groupResolverClass` | **required** (if `roleResolverClass` is not used) The value is a class responsible for resolving groups assigned to a user. The class must implement the info.magnolia.jaas.sp.ldap.resolver.NameResolver interface. Implementations: • info.magnolia.jaas.sp.ldap.resolver.OpenLDAPGroupResolver resolves groups from any LDAP directory. • info.magnolia.jaas.sp.ldap.resolver.ADGroupResolver resolves groups from Active Directory. • info.magnolia.jaas.sp.ldap.resolver.MagnoliaGroupResolver resolves groups from Magnolia. |
+| both | `roleResolverClass` | **required** (if `groupResolverClass` is not used) A class responsible for resolving roles assigned to a user. The class must implement the info.magnolia.jaas.sp.ldap.resolver.NameResolver interface. Roles can’t be maintained in LDAP, they must be in Magnolia. Implementation: • info.magnolia.jaas.sp.ldap.resolver.MagnoliaRoleResolver resolves roles from Magnolia. |
+| ad. | `ssoSlave` | **optional** , default is *false* Set `ssoSlave=true` if this Magnolia instance is a slave server in a single sign-on (SSO) environment. |
+| ad. | `userMembershipAttribute` | **required** (only if `ADGroupResolver` is used) The name of the user attribute which specifies the groups the user is a member of. Example: `userMembershipAttribute=memberOf` |
+| ldap. | `groupSearchFilter` | **required** (if `OpenLDAPGroupResolver` is used) A filter used to find groups the user is a member of. Example: `groupSearchFilter=(&(objectClass=groupOfNames)(member=MEMBERSHIP_VALUE))` |
+| ldap. | `groupMembershipAttributeValue` | **required** (if `OpenLDAPGroupResolver` is used) The value of the `dn` attribute to be passed to MEMBERSHIP_VALUE in `groupSearchFilter` . Example: `groupMembershipAttributeValue=dn` |
+| both | `groupIdAttribute` | **required** (only if either `OpenLDAPGroupResolver` or `ADGroupResolver` is used) The name of the group ID attribute in LDAP/AD. Example: `groupIdAttribute=cn` |
+| both | `groupSearchContext` | **optional** (only if either `OpenLDAPGroupResolver` or `ADGroupResolver` is used) A subtree for groups in the LDAP/AD structure if groups are managed in a different subtree than the users. If not set, then the `initialSearchAttributes` is used. Example: `groupSearchContext=cn=groups,dc=example,dc=com` |
+| both | `groupsSearchFilter` | **optional** (only if either `OpenLDAPGroupResolver` or `ADGroupResolver` is used), *default values are* : • For the LDAP resolver: `(&(objectClass=groupOfNames)GROUP_IDS_SUBSTITUTION)` • For the AD resolver: `(&(objectClass=group)GROUP_IDS_SUBSTITUTION)` A filter for searching groups in LDAP/AD. |
+| both | `groupMembershipAttribute` | **required** (only if either `OpenLDAPGroupResolver` or `ADGroupResolver` is used) The name of the group attribute which specifies the members belonging to the group. Example: `groupMembershipAttribute=member` Deprecated properties: • `adminUserDN` • `adminUserPassword` Instead, use `java.naming.security.principal` and `java.naming.security.credentials` properties respectively. |
+
+| Property | Description |
+| --- | --- |
+| `LoginModule` | **required** A class that implements the desired authentication technology. Implementations: • info.magnolia.jaas.sp.jcr.JCRAuthenticationModule authenticates against Magnolia. • info.magnolia.jaas.sp.ldap.LDAPAuthenticationModule authenticates against any LDAP directory. • info.magnolia.jaas.sp.ldap.ADAuthenticationModule authenticates against Active Directory. • info.magnolia.jaas.sp.jcr.JCRAuthorizationModule retrieves the user’s ACLs. Set also the `groupResolverClass` and `roleResolverClass` properties in [ldap.properties](#_ldap_configuration) . |
+| `flag` | **required** The flag indicates whether success of the preceding `LoginModule` is `required` , `requisite` , `sufficient` , or `optional` . If you only have one `LoginModule` then the flag must be `required` . See the `flag` values in [javax.security.auth.login.Configuration](http://docs.oracle.com/javase/8/docs/api/javax/security/auth/login/Configuration.html) . |
+| `options` | **optional** Options is a space-separated list of `LoginModule` -specific values which are passed directly to the `LoginModule` . The options are defined by the `LoginModule` itself, and control its behavior. Options for `JCRAuthenticationModule` module: • `realm` : Restrict the login to a certain realm. Valid values: `system` , `external` , `admin` , `public` . • `use_realm_callback` : Allow the client to define the realm they log into. Values: `true` , `false` . Default is `false` . • `skip_on_previous_success` : A Magnolia-specific option to define if this module needs to be skipped based on previous (in JAAS module chain) module status. Values: `true` , `false` . If `true` this module is skipped if the previous module did a successful login. Example 1 : Authenticate against Magnolia on Tomcat `jaas.config` `magnolia { info.magnolia.jaas.sp.jcr.JCRAuthenticationModule requisite; info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required; };` Example 2 : Authenticate against LDAP on Tomcat `jaas.config` `magnolia { info.magnolia.jaas.sp.jcr.JCRAuthenticationModule optional; (1) info.magnolia.jaas.sp.ldap.LDAPAuthenticationModule requisite skip_on_previous_success=true; (2) info.magnolia.jaas.sp.jcr.JCRAuthorizationModule required; (3) };` ** **1** `JCRAuthenticationModule` authenticates users who are stored only in Magnolia such as `superuser` and `anonymous` . `optional` means the module isn’t required to succeed. Authentication proceeds to the next module whether the user is found or not. ** **2** `LDAPAuthenticationModule` authenticates users who are stored in LDAP. `requisite` means that if the login module succeeds, authentication continues down the list. If the module fails, authentication doesn’t proceed down the list. This module is skipped if the previous module was successful. This module could also be info.magnolia.jaas.sp.ldap.ADAuthenticationModule . ** **3** `JCRAuthorizationModule` is `required` to succeed. | ** **1** | `JCRAuthenticationModule` authenticates users who are stored only in Magnolia such as `superuser` and `anonymous` . `optional` means the module isn’t required to succeed. Authentication proceeds to the next module whether the user is found or not. | ** **2** | `LDAPAuthenticationModule` authenticates users who are stored in LDAP. `requisite` means that if the login module succeeds, authentication continues down the list. If the module fails, authentication doesn’t proceed down the list. This module is skipped if the previous module was successful. This module could also be info.magnolia.jaas.sp.ldap.ADAuthenticationModule . | ** **3** | `JCRAuthorizationModule` is `required` to succeed. |
+| ** **1** | `JCRAuthenticationModule` authenticates users who are stored only in Magnolia such as `superuser` and `anonymous` . `optional` means the module isn’t required to succeed. Authentication proceeds to the next module whether the user is found or not. |
+| ** **2** | `LDAPAuthenticationModule` authenticates users who are stored in LDAP. `requisite` means that if the login module succeeds, authentication continues down the list. If the module fails, authentication doesn’t proceed down the list. This module is skipped if the previous module was successful. This module could also be info.magnolia.jaas.sp.ldap.ADAuthenticationModule . |
+| ** **3** | `JCRAuthorizationModule` is `required` to succeed. |
+
+| Property | Description |
+| --- | --- |
+| `allowCrossRealmDuplicateNames` | **optional** , *default is false* Allows duplicate usernames in different realms. Only applicable to `admin` realm. |
+| `class` | **required** A class that implements the info.magnolia.cms.security.UserManager interface. Implementations: • info.magnolia.cms.security.MgnlUserManager manages users stored in Magnolia. • info.magnolia.cms.security.ExternalUserManager manages JAAS users. • info.magnolia.cms.security.HierarchicalUserManager is a variation of `MgnlUserManager` that stores users hierarchically using the structure `/<path>/<first letter of username>/<first two letters of username>` such as `/public/j/js/jsmith` . • info.magnolia.cms.security.DelegatingUserManager retrieves the user’s ACLs. • info.magnolia.cms.security.SystemUserManager manages system users such as `anonymous` and `superuser` . |
+| `disableCache` | **optional** , *default is false* Allows to disable caching if set to `true` . |
+| `realmName` | **required** Realm name corresponding to JAAS login configuration. |
+| `allowPartialResults` | **optional** , *default is false* Indicates what methods are used to deal with the `PartialResultException` exception thrown by the LDAP service provider (see the `java.naming.referral` property). • `true` uses the `hasMoreElements()` and `nextElement()` methods. • `false` uses the `hasMore()` and `next()` methods. |
+| `connectionFactory` | **optional** A subnode that allows you to specify a custom `connectionFactory` . |
+| `class` | The class that implements the `connectionFactory` . The default class used is magnolia.jaas.sp.ldap.connection.DefaultConnectionFactory . Two additional implementations are available: • magnolia.jaas.sp.ldap.connection.JavaBeanBasedConnectionFactory This implementation supports defining properties `securityPrincipal` and `securityCredentials` . For usage please see Apache’s [Generic JavaBean Resources](https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#Generic_JavaBean_Resources) . • magnolia.jaas.sp.ldap.connection.JNDIResourceConnectionFactory This is a JNDI resource based factory. It can be used with `com.sun.jndi.ldap.LdapCtxFactory` or with magnolia.jaas.sp.ldap.connection.jndiresources.MagnoliaLdapContextFactory . For usage please see Apache’s [Adding Custom Resource Factories](https://tomcat.apache.org/tomcat-8.0-doc/jndi-resources-howto.html#Adding_Custom_Resource_Factories) . |
+| `envPropertiesPredicate` | **optional** A subnode that specifies the `envPropertiesPredicate` . If not defined explicitly, then the predicate accepts anything within the following namespaces: • `java.naming.*` (except `credentials` and `principal` ) • `com.sun.jndi.ldap.*` |
+| `class` | The class that implements the `envPropertiesPredicate` . The default class is magnolia.jaas.sp.ldap.connection.EnvPropertiesDefaultPredicate . |
+| `passwordDecoder` | **optional** A subnode that defines the decoding method of the admin password used by the `connectionFactory` . ** The decoder is available only with the `DefaultConnectionFactory` and `JavaBeanBasedConnectionFactory` connection classes. However, you can also write your own password decoder. | ** | The decoder is available only with the `DefaultConnectionFactory` and `JavaBeanBasedConnectionFactory` connection classes. However, you can also write your own password decoder. |
+| ** | The decoder is available only with the `DefaultConnectionFactory` and `JavaBeanBasedConnectionFactory` connection classes. However, you can also write your own password decoder. |
+| `class` | The decoder is available in three implementations: • magnolia.jaas.sp.ldap.connection.password.NoOpPasswordDecoder This implementation returns a password without any decoding. • magnolia.jaas.sp.ldap.connection.password.ActivationKeyBasedPasswordDecoder This implementation uses the same set of keys as activation. To get an encoded password, use the `SecurityUtil.encrypt("password")` method. • magnolia.jaas.sp.ldap.connection.password.PasswordManagerBasedPasswordDecoder This implementation loads the admin’s LDAP password from the [Password Manager module](../Password-Manager-module/) . |
+| `pageSize` | **optional** , *default is 500* Specifies the number of objects to be returned in a single search result. |
+
+| Magnolia | LDAP |
+| --- | --- |
+| **Roles** | **Groups** | **Groups** | **Users** |
+| • `editor` • `workflow-base` | `editors` | `editors` | • `jsmith` • `eallen` • `cappleton` |
+| • `publisher` • `workflow-base` | `publishers` | `publishers` | • `bleroy` • `dmillet` • `vrobbins` |
+
+## [](#_testing_and_validating_ldap_configuration)Testing and validating LDAP configuration
+
+You can use the `magnolia-ldap-tester`, a standalone module for testing ldap/ad configuration outside of Magnolia. The module is available from Magnolia Nexus: [magnolia-ldap-tester-{magnolia-ldap-63}.jar](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/magnolia-ldap-tester/{magnolia-ldap-63}/magnolia-ldap-tester-{magnolia-ldap-63}.jar)
+
+Use the following command to execute the jar:
+
+```bash
+java -jar magnolia-ldap-tester-{magnolia-ldap-63}.jar <LoginModule class name> <config.properties> <username> <password>
+```
+
+`<LoginModule class name>` should be either info.magnolia.jaas.sp.ldap.LDAPAuthenticationModule or info.magnolia.jaas.sp.ldap.ADAuthenticationModule, depending on which one you’re using in `jaas.config` (or `login-config.xml` with JBoss).
+
+The tool simulates a user login with the given credentials and configuration, outputs the main results, and logs everything else in `magnolia-ldap-tester.log`.
+
+A successful login attempt looks like this in the log:
+
+```bash
+INFO i.m.jaas.sp.ldap.ConnectionFactory - Trying to log in as
+   cn=jsmith,dc=example,dc=com with a password.
+DEBUG i.m.jaas.sp.ldap.ConnectionFactory - Login succeeded.
+DEBUG i.m.j.s.l.Tester$MockSecuritySupport - Getting user jsmith from realm admin
+INFO info.magnolia.ldap.tool.LDAPTester - Login result: true
+INFO info.magnolia.ldap.tool.LDAPTester - Commit result: true
+DEBUG info.magnolia.ldap.tool.LDAPTester - Subject:
+DEBUG info.magnolia.ldap.tool.LDAPTester - User: null
+INFO info.magnolia.ldap.tool.LDAPTester -
+   Properties: {title=jsmith,
+   email=john.smith@example.com,
+   name=jsmith,
+   fullName=jsmith,
+   password=secret}
+DEBUG info.magnolia.ldap.tool.LDAPTester -
+   State: {groupNames=[],
+   statusValue=1,
+   roleNames=[]}
+INFO info.magnolia.ldap.tool.LDAPTester - Group names: (none)
+INFO info.magnolia.ldap.tool.LDAPTester - Role names: (none)
+DEBUG info.magnolia.ldap.tool.LDAPTester - AttributesMap
+```
+
+Don’t expect to see any groups or roles assigned. The tester tool doesn’t connect to Magnolia in any way. It connects to the LDAP. It’s normal for group assignments handled in Magnolia to not show up.

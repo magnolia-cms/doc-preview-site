@@ -1,0 +1,60 @@
+---
+title: "Caching strategies"
+url: https://docs.magnolia-cms.com/performance-tuning/Caching-strategies/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Caching strategies
+---
+
+# Caching strategies
+
+## [](#_overview)Overview
+
+The cache subpage is about caching strategies in Magnolia, including policy configuration, compression to save bandwidth, setting a cache threshold, and cache flush events. Advanced cache modules introduce caching strategies such as eager re-caching and site-aware caching, which only caches content in the same subtree in JCR. High-performance caching modules focus on configuring the caching of dynamic and personalized content.
+
+Tuning tips - Caching strategies
+
+-   **Cache policies**
+
+    -   Speed up your site by using compression to save bandwidth.
+
+        For more, see [Compression](Cache-modules/#_compression).
+
+
+-   **Advanced strategies**
+
+    -   Use the `ServeUntilRecached` caching strategy where the cache isn’t completely cleaned. Instead, when content is updated, fresh cache entries are generated when the first page requests come in.
+
+        For more, see [Serving old content while re-caching](Advanced-cache-modules/#_serving_old_content_while_re_caching).
+
+    -   Enable eager re-caching to refresh the most frequently used pages as soon as an update is detected (Magnolia doesn’t wait for a page request before refreshing the cache).
+
+        For more, see [Eager re-caching](Advanced-cache-modules/#_eager_re_caching).
+
+    -   Configure multiple cache configurations to ensure that only cache entries belonging to the same subtree (site) as the published content are flushed.
+
+        For more, see [Multisite cache configuration](Advanced-cache-modules/#_multisite_cache_configuration).
+
+
+-   **Dynamic and personalized content**
+
+    -   Improve performance by caching page variants and fragments of pages, especially for sites with a lot of dynamic and personalized content.
+
+        For more, see [High performance caching modules](Advanced-cache-modules/#_personalized_content).
+
+
+-   **Memcached implementation**
+
+    -   You can significantly improve the rendering process performance by configuring this high-performance, distributed memory object caching system.
+
+        For more, see [Cache modules](Cache-modules/#_cache_modules).
+
+
+
+## [](#_subpages_in_this_section)Subpages in this section
+
+-   [Cache](Cache-modules/)
+
+-   [Advanced cache modules](Advanced-cache-modules/)
+
+-   [Public instances and CDN caching](Public-instances-and-CDN-caching/)

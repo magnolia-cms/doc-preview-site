@@ -1,0 +1,41 @@
+---
+title: "I18NPropertyValidationAuditor"
+url: https://docs.magnolia-cms.com/seo/auditors/I18NPropertyValidationAuditor/
+category: Modules
+version: modules
+breadcrumb: SEO module > Auditors > I18NPropertyValidationAuditor
+---
+
+# I18NPropertyValidationAuditor
+
+[Deprecated](../../../incubator-modules/deprecations/)
+
+The info.magnolia.services.seo.audit.impl.I18NPropertyValidationAuditor is a companion to `PropertyValidationAuditor`. Instead of validating the definition of a node property for the default language, the auditor can validate the values of a designated property for all or some of the available languages for the site.
+
+> **Note:** The auditor only validates the property values and will not check that all language variants of a property defined. Use I18NPropertyDefinitionAuditor to check that all required language variants of a property are defined.
+
+Class
+
+`info.magnolia.services.seo.audit.impl.I18NPropertyValidationAuditor`
+
+| Property | Description |
+| --- | --- |
+| `propertyName` | **required** Defines the node property name to be checked. |
+| `level` | **optional** Determines how a failed audit will be counted: • Error (auditErrors) • Warning (auditWarnings) • Note (auditNotes) |
+| `validateAll` | **optional** Controls what languages for the property will be checked. • `true` : all the properties will be checked for language values for all languages defined for the site. • `false` : only the languages defined by the expectedLanguages property will be checked. |
+| `expectedLanguages` | **optional** Defines a list of the languages to be checked for language variants of the property. It can be a subset of the languages defined for the site. Languages not included in will not be checked. This property will be used only if `validateAll` is set to `false` . |
+| `valuePatterns` | **optional** Defines a validation pattern as a [Java regular expression](https://docs.oracle.com/javase/tutorial/essential/regex/) to validate the property for a particular language. If the property values does not match the value pattern for the language the audit will fail. If it does not have an entry for a particular language, `defaultValuePattern` will be used to validate the property value for the language. |
+| `defaultValuePattern` | **optional** Defines a default validation pattern as a [Java regular expression](https://docs.oracle.com/javase/tutorial/essential/regex/) . |
+
+## [](#_example)Example
+
+Here is an example from the SEO module. You can find this configuration here: `/modules/seo/config/auditManager/auditors/i18nWindowTitleValid`.
+
+```yaml
+i18nWindowTitleValid:
+  active: true
+  class: info.magnolia.services.seo.audit.impl.I18NPropertyValidationAuditor
+  defaultValuePattern: .{5,}
+  description: Check for valid I18N window title (pre-prod)
+  propertyName: title
+```

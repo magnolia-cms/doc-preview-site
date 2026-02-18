@@ -1,0 +1,72 @@
+---
+title: "Security"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Security/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Security
+---
+
+# Security
+
+This page provides a list of hardening measures to improve the security of your Magnolia setup.
+
+> **Tip:** For information about how to manage users, groups, roles, permissions, and authentication, see Identity and access management (IAM).
+
+## [](#_underlying_technologies)Underlying technologies
+
+### [](#_jcr)JCR
+
+Magnolia uses the Jackrabbit reference implementation of the Java Content Repository (JCR) 2.0 standard. ACL checks are performed at the JCR level. This low-level check has the following benefits:
+
+-   Better performance than checking in the application code.
+
+-   Repository can be exposed to third-party apps. Access Control Lists (ACLs) still apply.
+
+-   Use JCR API directly without the need to wrap objects.
+
+
+> **Caution:** Resources on classpath should not contain sensitive information (for example passwords or api keys) as this type of information could be exposed via the Resource Files app.
+
+## [](#_filters)Filters
+
+### [](#_web_access)Web access
+
+Every request sent to Magnolia is checked by info.magnolia.cms.security.URISecurityFilter. The filter checks whether the role(s) of the requesting user allow(s) the user to request a given path with the given method.
+
+Web permissions are granted as web access lists per role. They grant access to a path for **Get** or **Get & Post**.
+
+-   **Get** - Grants the HTTP `GET` method for a given URI.
+
+-   **Get & Post** - Grants the HTTP `GET`, `PUT`, `POST`, and `DELETE` methods for a given URI.
+
+
+### [](#_cross_site_security)Cross-site security
+
+The cross-site security filter is executed in the Magnolia filter chain before the URI security filter. A user must pass the cross-site filter before authentication or authorization through ACLs. The cross-site filter allows or denies permission to a site based on its domain name. For more information, see [Cross-site security](../Architecture/Request-processing-and-filters/Filters/#_cross_site_security).
+
+### [](#_app_permissions)App permissions
+
+Provision apps only to users who need them, following the Principle of Least Privilege ([PoLP](https://en.wikipedia.org/wiki/Principle_of_least_privilege)). Each user should only have access to the resources necessary for their role, and no more. For more information, see [App permissions](../IAM/App-permissions/).
+
+| 📁 server |  |
+| --- | --- |
+| 📁 filters |  |
+| 📁 HeaderFilterOne |  |
+| ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
+| ⬩ enabled | true |
+| 📁 headers |  |
+| ⬩ Content-Security-Policy | default-src `self' `unsafe-inline' `unsafe-eval' [https://ga-dev-tools.appspot.com](https://ga-dev-tools.appspot.com) [https://apis.google.com](https://apis.google.com) [https://www.google.com](https://www.google.com) [https://content.googleapis.com](https://content.googleapis.com) [https://ajax.googleapis.com](https://ajax.googleapis.com) ; img-src `self' data:; |
+
+## [](#_policies)Policies
+
+When it comes to ensuring a secure platform, there are a few things you need to keep in mind. You’ll want to take steps to minimize risks, follow established standards, and proactively manage any vulnerabilities or security issues that may arise. Doing so can help ensure that your platform stays safe and secure for all users. For more information, see [Security policy](Security-policy/#_magnolia_is_only_as_secure_as_your_project_implementation).
+
+A short checklist of important security considerations is summed up in [Best practices for a secure Magnolia environment](Security-best-practices/#_best_practices_for_a_secure_magnolia_environment).
+
+## [](#_external_security)External security
+
+External security is achieved via servlet container features. The strength of security depends on the container used to run Magnolia. To improve security, Magnolia recommends that you run the Apache Web Server or another proxy server in front of the application server.
+
+To minimize the risk of attacks on user accounts on a public instance, limit user accounts to the required number and type.
+
+Disable external access to AdminCentral (URIs starting with `./magnolia`) from public IP addresses. Then specify the IP addresses from which users should have permission to log into AdminCentral. See [IP and HTTP permissions](IP-and-HTTP-permissions/).

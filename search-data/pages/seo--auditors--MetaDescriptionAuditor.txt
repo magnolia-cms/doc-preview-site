@@ -1,0 +1,36 @@
+---
+title: "MetaDescriptionAuditor"
+url: https://docs.magnolia-cms.com/seo/auditors/MetaDescriptionAuditor/
+category: Modules
+version: modules
+breadcrumb: SEO module > Auditors > MetaDescriptionAuditor
+---
+
+# MetaDescriptionAuditor
+
+[Deprecated](../../../incubator-modules/deprecations/)
+
+The info.magnolia.services.seo.audit.impl.MetaDescriptionAuditor checks a node for a property named "description" and if defined, checks the length of the value. Many search engines ignore long meta descriptions. Typically all text after about 160 to 180 characters is ignored. This auditor can help you check pages for long meta descriptions.
+
+This auditor assumes that the node property "description" contains the meta description text.
+
+Class
+
+`info.magnolia.services.seo.audit.impl.MetaDescriptionAuditor`
+
+| Property | Description |
+| --- | --- |
+| `length` | **optional** Defines the maximum meta description length. Lengths above the maximum will fail with a warning. If no length is defined, then the maximum length will be `160` . |
+
+## [](#_example)Example
+
+Here is an example from the SEO module. You can find this configuration here: `/modules/seo/config/auditManager/auditors/metaDescriptionLength`.
+
+```yaml
+metaDescriptionLength:
+  active: true
+  class: info.magnolia.services.seo.audit.impl.MetaDescriptionAuditor
+  description: Check length of defined meta description (pre-prod)
+  length: 160
+  propertyName: description
+```

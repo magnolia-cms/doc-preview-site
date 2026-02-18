@@ -1,0 +1,134 @@
+---
+title: "Content Importer module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Content-Importer-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Content Importer module
+---
+
+# Content Importer module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLCI](https://magnolia-cms.atlassian.net/browse/MGNLCI) |
+| Maven site | [Content Importer](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcontent%2Fmagnolia-content-importer%2F{magnolia-content-importer-64}) |
+| Latest | {magnolia-content-importer-64} |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.content</groupId>
+  <artifactId>magnolia-content-importer</artifactId>
+  <version>{magnolia-content-importer-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_how_content_import_works)How content import works
+
+To demonstrate how content import works, we bootstrap a `cruise-manager` page into the `/travel/about/careers` section in the Pages app.
+
+> **Tip:** To create a bootstrap file for testing, create a page in the Pages app, export it, and save it to a temporary location on your computer. Next, delete the page in the Pages app and add the file to your bootstrap directory on the file system. See Importing and exporting JCR data for bootstrapping for more.
+
+Here’s how bootstrapping files from the file system works in the UI:
+
+1.  An XML file is added to the [bootstrap directory](#_bootstrap_directory).
+
+    **Example**: Add `website.travel.about.careers.cruise-manager.xml` to `/magnoliaAuthor/data`.
+
+    ```none
+    └─<magnoliaAuthor>
+     └─data
+         └─website.travel.about.careers.cruise-manager.xml
+    ```
+
+2.  A message is logged to the user:
+
+    ```none
+    2026-03-28 14:27:06,676 INFO gnolia.content.observer.TaskCreatorWatcherCallback: File change detected at '/magnoliaAuthor/data/website.travel.about.careers.cruise-manager.xml', pulse task has been sent.
+    ```
+
+3.  A task is sent to the Tasks app.
+
+    **Example**: Import request task and Import action for `cruise-manager` page in the Tasks app.
+
+    ![Import request task and Import action for cruise-manager page in the Tasks app](../../../_images/6-2-contentImporterModule.png)
+
+4.  `superuser` assigns himself the task and clicks **Import** to import the content into the corresponding workspace in the repository. He can also **Reject** or **Abort** the import.
+
+    ![Content Import Request tab](../../../_images/6-2-contentImporterModule-import.png)
+
+5.  The bootstrapped content is available in the relevant app. The bootstrap directory is monitored, and a new task is sent to the Tasks app when a change in the XML is detected.
+
+    **Example**: Cruise Manager page in the Pages app
+
+    -   Directory view
+
+    -   Edit view
+
+
+    ![Cruise Manager page in the Pages app](../../../_images/6-2-contentImporterModule-imported.png)
+
+    ![Cruise Manager in edit mode](../../../_images/6-2-30-contentImporterModule-CMpage.png).
+
+
+> **Note:** Observation only occurs if the bootstrap directory is set in the magnolia.properties file.Deletions aren’t removed automatically. To remove content, delete it in the JCR and the bootstrap directory.
+
+## [](#_bootstrapping_settings)Bootstrapping settings
+
+You can use the Server configuration page in the About app to check the current bootstrapping settings.
+
+### [](#_bootstrap_directory)Bootstrap directory
+
+To set the bootstrap directory, add the `magnolia.content.bootstrap.dir` property in the `magnolia.properties` file. The bootstrap directory can reside anywhere on the file system and be named anything.
+
+**Example**: Setting the bootstrap directory as a subdirectory of the resources directory.
+
+```yaml
+# The directory to expose file system resources from
+magnolia.resources.dir=${magnolia.home}/modules
+......
+# The directory to import file system content files from
+ magnolia.content.bootstrap.dir=${magnolia.resources.dir}/data
+```
+
+Subdirectories of the bootstrap directory are also monitored. You can structure your bootstrap files within the bootstrap directory.
+
+### [](#_filename_pattern)Filename pattern
+
+Use the `magnolia.content.bootstrap.pattern` property to specify which filenames will be imported and observed in the content bootstrap directory.
+
+Example: `magnolia.content.bootstrap.pattern=*.{yaml,xml}`
+
+### [](#_bootstrapping_strategy)Bootstrapping strategy
+
+You can use two properties to configure a content bootstrapping strategy: `magnolia.content.bootstrap.onlyImportAtInstall` and `magnolia.content.bootstrap.createTasks`.
+
+-   `onlyImportAtInstall=true` and `createTasks=always`: the most restrictive strategy. Content is bootstrapped only at installation, not at every instance startup. No content is bootstrapped automatically.
+
+-   `createTasks=onchange`: the most permissive strategy. Content is bootstrapped automatically if the path does not exist in JCR. If the path exists, a task is created.
+
+-   `createTasks=never`: content is bootstrapped at every startup and after every change.
+
+
+The default configuration is `onlyImportAtInstall=false` and `createTasks=always`.
+
+Possible values for `createTasks` are `always`, `onchange` and `never`.
+
+| Property | Description |
+| --- | --- |
+| `tasks` | **optional** Tasks folder. |
+| `content` | **required** Task name. |
+| `users` | **optional** Users who can view and assign tasks. ** Please note that you should define at least one user or group (see the following property) to display bootstrap messages. The default configuration comes with `superuser` . | ** | Please note that you should define at least one user or group (see the following property) to display bootstrap messages. The default configuration comes with `superuser` . |
+| ** | Please note that you should define at least one user or group (see the following property) to display bootstrap messages. The default configuration comes with `superuser` . |
+| `groups` | **optional** User groups who can view and assign tasks. |
+| `viewMapping` | **optional** Message view displayed in detail view. |
+| `taskView` | **required** `content` [message view](#_content_import_request_message_view) definition. |
+| `title` | **optional** Task title. |

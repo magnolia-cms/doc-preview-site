@@ -1,0 +1,115 @@
+---
+title: "SAP extension configuration"
+url: https://docs.magnolia-cms.com/ecommerce/config/config-sap/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > SAP extension configuration
+---
+
+# SAP extension configuration
+
+Commerce Unbundled: [Extension](../../../product-docs/RNs-6-4-3/Modules/#_module_types) License: [Special license](../../../product-docs/RNs-6-4-3/Administration/License/#_special_licenses){frameworks-and-extensions-license-note}
+
+To create or edit the configuration, [decorate](../../../product-docs/RNs-6-4-3/Developing/Definition-decoration/) the extension under `<light-module>/decorations/sap-commerce/ecommerces/sap-commerce.yaml`.
+
+## [](#_licensing)Licensing
+
+The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../product-docs/RNs-6-4-3/Administration/License/).
+
+| Property | Description |
+| --- | --- |
+| `class` | **required** `info.magnolia.ecommerce.common.EcommerceDefinition` |
+| `type` | **required** Your e-commerce solution: `sap-commerce` |
+| `enabled` | **required** `true` or `false` |
+| `connections` |  |
+| `connectionName` |  |
+| `name` | **required** The name of the connection must match the SAP baseSiteId as described in the [SAP documentation](https://help.sap.com/doc/3da0702c50df4367883c48e7f7ff3b58/2005/en-US/index.html#_getcatalogs) . With the configuration in the example above, we use this URL to get catalogs: [https://00.111.222.333:9002/occ/v2/electronics/catalogs](https://00.111.222.333:9002/occ/v2/electronics/catalogs) The `baseUrl` (see below) is [https://00.111.222.333:9002/occ/v2/](https://00.111.222.333:9002/occ/v2/) `electronics` is the name of the connection that corresponds to the SAP `baseSiteId` . |
+| `authUrl` | **required** Authentication URL. |
+| `baseUrl` | **required** Base URL. |
+| `enabled` | **required** Shows if the connection is enabled or not: `true` or `false` |
+| `credentials` |  |
+| `username` | **required** Administrator username for SAP Commerce Cloud. |
+| `password` | **required** Password for SAP Commerce Cloud or the path to the Magnolia password manager where the password is stored. |
+| `parameters` |  |
+| `clientId` | **required** Username for SAP Commerce Cloud. |
+| `clientSecret` | **required** Client secret for SAP Commerce Cloud or the path to the Magnolia password manager. |
+| `imagePrefix` | **required** The first part of the URL needed to compose the complete URL of images when using the API. For example : `https://00.111.222.333:9002` |
+
+## [](#_viewing_and_testing_connections)Viewing and testing connections
+
+This section explains how to view and test the connection between the Magnolia E-commerce add-on module and your external commerce solution using the [E-commerce app](../../ecommerce-app/).
+
+1.  Open the E-commerce app **Configuration** tab.
+
+2.  Select a connection.
+
+3.  Click **View** to see the details of your connection to an external e-commerce solution.
+
+    ![View connection dialog](../../_images/6-1-ecom-view-connection-dialog.png)
+
+
+Depending on your external e-commerce solution, the connection information displayed may be:
+
+-   **Definition name** - The unique definition name. This name appears in the Catalogs subapp.
+
+-   **Connection name** - The unique name for the connection configured.
+
+-   **E-commerce type** - The type of external e-commerce solution you are connected to.
+
+-   **Authentication URL** - Authentication URL for the solution you are connected to.
+
+-   **Base URL** - Base URL for the solution you are connected to.
+
+-   **Username** and **Password** - Credentials to access the external solution. Passwords or client secrets can be managed in the [Passwords app](../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Passwords-app/).
+
+-   **Connection enabled** - Shows if the connection is enabled or not. You may choose to disable the configuration, for example, to improve performance times or to test a connection in one environment before enabling it in another.
+
+
+Click **Test connection** to check the connection configuration is correct. A message appears indicating if the test is successful or not.
+
+Once you’ve tested your connection, go to the E-commerce tab. You can see the connections you have configured listed with the catalogs they contain.
+
+| Property | Description |
+| --- | --- |
+| `images` | **required** |
+| `label` | **optional** Field label displayed to editors. The value can be literal or a [key](../../../product-docs/RNs-6-4-3/Administration/Language/Internationalization/) of a [message bundle](../../../product-docs/RNs-6-4-3/Administration/Language/Internationalization/) . If you do not provide the property, Magnolia will fall back to a generated i18n key. If you do not want a label at all, define the property and set its value to a blank space such as `label: " "` in YAML. |
+| `$type` | **required** Field type: • `multipleImageField` displays all images for the product (use with `URLsToStrings` converter). • `URLImageField` displays only the first image for the product (use with `ListOfURLsToString` converter). |
+| `converterClass` | **required** `info.magnolia.ecommerce.app.productdetail.field.URLsToStrings` converts all images for the product. `info.magnolia.ecommerce.app.productdetail.field.ListOfURLsToString` converts only the first image for the product. |
+| `imageRatio` | **optional** Defines the ratio of displayed images to the original images in percentage. In the example above, the value `60` is 60% of the original image size. If the property isn’t set, the images are displayed in their original size. |
+
+## [](#_configure_the_maximum_number_of_items_in_api_responses)Configure the maximum number of items in API responses
+
+E-commerce module 2.0.3 introduces the info.magnolia.ecommerce.common.LimitProvider interface to define the maximum number of items that can be retrieved in a single REST endpoint request from an e-commerce API.
+
+The default limit is set to `20` in the `getDefaultLimit()` method. Each Commerce integration framework extension has it’s own default limit, which is the maximum batch size allowed by that platform’s API.
+
+For the SAP extension, the info.magnolia.ecommerce.salesforce.common.SapLimitProvider is set to `100` by default.
+
+To configure, decorate the extension configuration to add `limitProvider` under the `implementation` node:
+
+/sap-commerce/ecommerces/sap-commerce.yaml
+
+```yaml
+class: info.magnolia.ecommerce.common.EcommerceDefinition
+type: sap-commerce
+enabled: true
+implementation:
+  products:
+    all: info.magnolia.ecommerce.sap.products.All
+    byId: info.magnolia.ecommerce.sap.products.ById
+    byCategoryId: info.magnolia.ecommerce.sap.products.ByCategoryId
+    searchByText: info.magnolia.ecommerce.sap.products.SearchByText
+  categories:
+    all: info.magnolia.ecommerce.sap.categories.All
+    byId: info.magnolia.ecommerce.sap.categories.ById
+    byParentCategoryId: info.magnolia.ecommerce.sap.categories.ByParentCategoryId
+    byProductId: info.magnolia.ecommerce.sap.categories.ByProductId
+  connectionValidator: info.magnolia.ecommerce.sap.common.SapConnectionValidator
+  limitProvider: info.magnolia.ecommerce.commercetools.common.SapLimitProvider(1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Add the `limitProvider` for your e-commerce extension. |
+
+> **Note:** You can’t change the default limitProvider value set.

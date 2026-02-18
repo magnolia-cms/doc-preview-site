@@ -1,0 +1,138 @@
+---
+title: "Managing assets"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Authoring/Managing-assets/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Authoring > Managing assets
+---
+
+# Managing assets
+
+Magnolia’s Digital Asset Management (DAM) system is the core component that manages all your digital files within Magnolia. It’s the powerful system working in the background that stores your files, manages their metadata, handles versioning, and creates different variations (renditions) of images.
+
+The Assets App is your window into the DAM. When you use the Assets app to upload an image, video, or document, the DAM system organizes it, stores its associated information, and makes it available for use across your digital content.
+
+## [](#_asset_storage)Asset storage
+
+Magnolia offers different storage configurations based on your requirements:
+
+-   Magnolia’s internal storage (JCR)
+
+    Your files (binaries) and their metadata (like names and tags) are stored together in Magnolia’s internal system. This is the out-of-the-box setup and works well for most projects.
+
+-   Hybrid storage with an external provider
+
+    If you deal with a large number of files or very large files, like high-resolution videos, Magnolia can be configured to store the file metadata internally but keep the binaries in a third party tool, such as Amazon S3. Even with external binary storage, Magnolia continues to manage all asset metadata internally, which optimizes search and publishing performance.
+
+-   Using an external DAM system
+
+    If you already use a separate DAM system (like Bynder), Magnolia can connect to it. All your binaries and metadata stay in that external system, but you can still browse and use them within Magnolia. Magnolia provides out-of-the-box connectors for S3 and Bynder, and other third-party tools can be connected using our APIs.
+
+
+Regardless of the underlying storage method, the Assets app within Magnolia remains your primary interface for managing all your digital assets. This means you consistently use the same tools to view, organize, and prepare your images, videos, and documents for use across your digital content.
+
+## [](#_browsing_assets)Browsing assets
+
+The Assets app shows your assets in a hierarchical tree, including the folder structure.
+
+![Assets app hierarchy](../../_images/authoring/assets-app-hierarchy.png)
+
+> **Tip:** Your Magnolia administrator can enable other views:List view - Displays the items individually in a flat list.This is the view you see when you search or filter assets.Thumbnail view - Displays thumbnail images of the assets. There is a zoom control at the top for resizing.
+
+## [](#_how_to_handle_many_assets)How to handle many assets
+
+The DAM can handle a very large number of assets and is used in installations with hundreds of thousands or even millions of files. To keep both JCR operations and the Assets app UI fast and usable, avoid very flat hierarchies and organize assets into folders, aiming for roughly 500 assets per folder and using subfolders where needed.
+
+When your total volume of assets or the size of individual binaries starts to impact publication times, storage footprint, or operational workflows, consider offloading binaries to [DAM 6.0](../../../../dam/), our [External DAM integration framework](../../Modules/extensions-and-frameworks/external-dam-integration-framework/), our [DAM API](../../Developing/API/Java-Server-APIs/DAM-API/), or one of our [Incubator modules](../../../../incubator-modules/) extensions.
+
+How many assets should I put in a folder?
+
+For best performance with JCR assets, limit each folder to around 500 assets regardless of type (images, PDFs, etc.)
+
+Use subfolders to stay organized and avoid performance issues.
+
+-   Avoid placing too many assets in a single folder.
+
+-   Use subfolders to improve performance and maintain structure.
+
+
+## [](#_supported_file_formats_for_preview_generation)Supported file formats for preview generation
+
+### [](#_image_formats)Image formats
+
+Most common image formats are supported.
+
+However, we **don’t support** the following formats:
+
+-   `image/x-icon`
+
+-   `image/x-portable-bitmap`
+
+-   `image/x-xpixmap`
+
+-   `image/x-portable-graymap`
+
+-   `image/x-cmu-raster`
+
+-   `image/x-portable-pixmap`
+
+-   `image/x-xbitmap`
+
+-   `image/x-rgb`
+
+-   `image/x-xwindowdump`
+
+-   `image/x-cmx`
+
+-   `image/cis-cod`
+
+-   `image/ief`
+
+
+### [](#_video_formats)Video formats
+
+The following video formats *are* supported:
+
+-   `video/mpeg`
+
+-   `video/webm`
+
+-   `video/mp4`
+
+-   `video/ogg`
+
+
+### [](#_audio_formats)Audio formats
+
+The following audio formats *are* supported:
+
+-   `audio/mpeg`
+
+-   `audio/webm`
+
+-   `audio/mp4`
+
+-   `audio/ogg`
+
+-   `audio/aac`
+
+-   `audio/aacp`
+
+-   `audio/flac`
+
+-   `audio/wav`
+
+-   `audio/x-wav`
+
+-   `audio/mp3`
+
+
+|  | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+|  | Space | `0020` `SPACE` |
+| `*` | Asterisk (Star) | `002A` `ASTERISK` |
+| `/` | Forward slash | `002F` `SOLIDUS` |
+| `:` | Colon | `003A` `COLON` |
+| `[` | Left square bracket | `005B` `LEFT SQUARE BRACKET` |
+| `]` | Right square bracket | `005D` `RIGHT SQUARE BRACKET` |
+| `|` | Vertical bar (Pipe) | `007C` `VERTICAL LINE` |

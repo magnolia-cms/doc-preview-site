@@ -21,13 +21,13 @@ We’re happy to announce Magnolia 6.4.0, which reflects our commitment to relia
 -   **Future-proofing**: Simplified release support and a move toward Magnolia 7, with a focus on modern technology and security.
 
 
--   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.4.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.4.0/magnolia-dx-core-webapp-6.4.0.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [magnolia-dx-core-webapp-6.4.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.4.0/magnolia-dx-core-webapp-6.4.0.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.4.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.4.0/travel-demo-webapp-6.4.0.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-webapp-6.4.0.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.4.0/travel-demo-webapp-6.4.0.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.4.0.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.4.0/travel-demo-community-webapp-6.4.0.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-community-webapp-6.4.0.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.4.0/travel-demo-community-webapp-6.4.0.war)
 
--   ![Download icon](../../_images/icons/download.svg) [mtk2\_4.0.0.zip](../../_attachments/mtk2_4.0.0.zip) (*as a light module*)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [mtk2\_4.0.0.zip](../../_attachments/mtk2_4.0.0.zip) (*as a light module*)
 
 
 ## [](#_platform_upgrade)Platform upgrade
@@ -44,7 +44,7 @@ For more details, see [Certified stack: Java](../../Administration/Certified-sta
 
 The AI Accelerator for Magnolia 6.4 transforms your content strategy with advanced features built on a foundation of assisted content creation, AI-powered image editing, intelligent SEO optimization, and robust content classification tools. Discover the future of content management with:
 
--   **6.4 compatibility**: Added a [JS Field extensibility layer](#ui-framework-javascript:ROOT:index.adoc) to enable 6.4 compatibility for the AI Accelerator module.
+-   **6.4 compatibility**: Added a [JS Field extensibility layer](../../../../ui-framework-javascript/) to enable 6.4 compatibility for the AI Accelerator module.
 
     [AIACC-258](https://magnolia-cms.atlassian.net/browse/AIACC-258)
 
@@ -52,11 +52,11 @@ The AI Accelerator for Magnolia 6.4 transforms your content strategy with advanc
 
     The AI Accelerator extension integrates with the Image Recognition extension to automatically tag images using multimodal large language models (LLMs).
 
-    ![Animation showing the process of generating tags for an asset](../../_images/release-notes/ai-image-recognition.gif)
+    ![Animation showing the process of generating tags for an asset](../../../RNs-6-4-3/_images/release-notes/ai-image-recognition.gif)
 
     This feature detects objects, concepts, and other relevant labels in supported formats (PNG, JPG, JPEG) and returns a configurable number of tags. By leveraging multimodal LLMs such as Google Gemini, OpenAI GPT-4o, and Anthropic Claude, it provides more context-aware and semantically rich tagging than traditional computer vision services.
 
-    For more details, see [Image Recognition](#image-recognition:ROOT:index.adoc).
+    For more details, see [Image Recognition](../../../../image-recognition/).
 
     [IMGREC-139](https://magnolia-cms.atlassian.net/browse/IMGREC-139)
 
@@ -64,9 +64,9 @@ The AI Accelerator for Magnolia 6.4 transforms your content strategy with advanc
 
     The AI Accelerator extension enables you to generate asset metadata quickly. Specify which fields to generate: description, caption, title, and subject. You can trigger the action manually or run it in bulk across the Assets app using a script. It supports multiple languages with SEO-friendly output and works with any AI model you configure.
 
-    ![Animation showing the process of generating a caption in English and German for an asset in the Assets app](ai-accelerator:ROOT:image-metadata-gen.gif)
+    ![Animation showing the process of generating a caption in English and German for an asset in the Assets app](../../../../ai-accelerator/4.0-alpha/_images/image-metadata-gen.gif)
 
-    For more details, see [AI Accelerator](#ai-accelerator:ROOT:features.adoc#_ai_generated_asset_metadata).
+    For more details, see [AI Accelerator](../../../../ai-accelerator/4.0-alpha/features/#_ai_generated_asset_metadata).
 
     [AIACC-271](https://magnolia-cms.atlassian.net/browse/AIACC-271)
 
@@ -83,7 +83,7 @@ New UI Forms replace Vaadin with a React-based UI, leveraging a custom design sy
 
 -   To help you migrate, use the new **Export filtered problems** action in the Definitions app. It exports all problems for all definitions based on the current filter settings.
 
--   To create custom fields, JavaScript fields (provided by the [JavaScript UI module](#ui-framework-javascript:ROOT:index.adoc)) are the supported way to extend New UI Forms.
+-   To create custom fields, JavaScript fields (provided by the [JavaScript UI module](../../../../ui-framework-javascript/)) are the supported way to extend New UI Forms.
 
     [WARPFORM-5](https://magnolia-cms.atlassian.net/browse/WARPFORM-5)
 
@@ -115,7 +115,7 @@ Main improvements:
 
 Deletion actions are enhanced with updated dialogs for mark-for-deletion, permanent delete, and dependency warnings, improving accessibility and usability.
 
-![Mark for deletion, Permanently delete and View links dialogs](../../_images/release-notes/deletion-dialogs.png)
+![Mark for deletion, Permanently delete and View links dialogs](../../../RNs-6-4-3/_images/release-notes/deletion-dialogs.png)
 
 The new **View links** action in the action bar allows users to see related content and its publication state.
 
@@ -131,7 +131,7 @@ The *Page-editor apps* extension brings the visual editing experience beyond the
 
 [PAGES-896](https://magnolia-cms.atlassian.net/browse/PAGES-896)
 
-For more details, see [page-editor-apps:ROOT:index.adoc](#page-editor-apps:ROOT:index.adoc).
+For more details, see [Page-editor apps extension](../../../../page-editor-apps/).
 
 ### [](#_seamless_dam_external_binary_storage)Seamless DAM external binary storage
 
@@ -151,7 +151,7 @@ Additional details:
 
 -   Migration scripts are available: [Migrate from DAM 4 JCR-based storage to DAM 6](../../../../dam/migrate/migrate-jcr-to-dam/).
 
--   Successor to the [Hybrid Assets incubator](#hybrid-assets:ROOT:index.adoc) ([migration scripts provided](../../../../dam/migrate/migrate-HA-to-dam/)) and the [External DAM Integration Framework S3 extension](../../Modules/extensions-and-frameworks/external-dam-integration-framework/), which now enters maintenance mode.
+-   Successor to the [Hybrid Assets incubator](#hybrid-assets:ROOT:index.adoc) ([migration scripts provided](../../../../dam/migrate/migrate-HA-to-dam/)) and the [External DAM Integration Framework S3 extension](../../../RNs-6-4-3/Modules/extensions-and-frameworks/external-dam-integration-framework/), which now enters maintenance mode.
 
 -   Version information:
 
@@ -165,7 +165,7 @@ Additional details:
 
 ### [](#_image_focal_extension)Image Focal extension
 
-The [Image Focal extension](#image-focal:ROOT:index.adoc), previously a popular incubator, is now a fully maintained product extension:
+The [Image Focal extension](../../../../image-focal/), previously a popular incubator, is now a fully maintained product extension:
 
 -   Allows authors to select points of interest in images for dynamic rendering across formats.
 
@@ -190,7 +190,7 @@ For more details, see [DAM API](../../../../dam/developers/dam-api/).
 
 The `ImageRecogniser.recognise` method signature changes from `byte[]` to `ImageBinary`.
 
-[Custom implementations](#image-recognition:ROOT:developers/configure.adoc#_using_other_image_recognition_solutions) of the `ImageRecogniser` interface will fail to compile or run unless updated to use the new `ImageBinary` parameter.
+[Custom implementations](../../../../image-recognition/developers/configure/#_using_other_image_recognition_solutions) of the `ImageRecogniser` interface will fail to compile or run unless updated to use the new `ImageBinary` parameter.
 
 ### [](#_automatic_license_retrieval_and_monitoring)Automatic license retrieval and monitoring
 
@@ -273,7 +273,7 @@ This change ensures consistent content security while maintaining full variant f
 
 ## [](#_security_improvements)Security improvements
 
-We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](../../../../support/) if you need more information.
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
 
 [ADMINCTR-589](https://magnolia-cms.atlassian.net/browse/ADMINCTR-589), [ADMINCTR-631](https://magnolia-cms.atlassian.net/browse/ADMINCTR-631), [BUILD-1025](https://magnolia-cms.atlassian.net/browse/BUILD-1025), [BUILD-1311](https://magnolia-cms.atlassian.net/browse/BUILD-1311), [BUILD-1495](https://magnolia-cms.atlassian.net/browse/BUILD-1495), [MAGNOLIA-9550](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9550), [MAGNOLIA-9552](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9552), [MAGNOLIA-9563](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9563), [MAGNOLIA-9634](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9634), [MAGNOLIA-9688](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9688), [MAGNOLIA-9725](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9725), [MGNLDAM-1828](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1828), [MGNLDEMO-458](https://magnolia-cms.atlassian.net/browse/MGNLDEMO-458), [MGNLFORM-409](https://magnolia-cms.atlassian.net/browse/MGNLFORM-409), [MGNLREST-880](https://magnolia-cms.atlassian.net/browse/MGNLREST-880), [MGNLUI-9073](https://magnolia-cms.atlassian.net/browse/MGNLUI-9073), [MGNLUI-9211](https://magnolia-cms.atlassian.net/browse/MGNLUI-9211), [MGNLUI-9214](https://magnolia-cms.atlassian.net/browse/MGNLUI-9214), [MGNLUI-9223](https://magnolia-cms.atlassian.net/browse/MGNLUI-9223), [MGNLUI-9289](https://magnolia-cms.atlassian.net/browse/MGNLUI-9289), [PAGES-1698](https://magnolia-cms.atlassian.net/browse/PAGES-1698), [SECURITY-156](https://magnolia-cms.atlassian.net/browse/SECURITY-156)
 
@@ -436,11 +436,11 @@ The following unbundled modules are 6.4 compatible and include [Frameworks](#_fr
 
 -   [Analytics integration framework](../../Modules/extensions-and-frameworks/analytics-integration-framework/)
 
--   [cdp-integration-framework:ROOT:index.adoc](#cdp-integration-framework:ROOT:index.adoc)
+-   [CDP integration framework](../../../../cdp-integration-framework/)
 
 -   [Content Translation Extended module](../../../../content-translation-support-ext/)
 
--   [ecommerce:ROOT:index.adoc](#ecommerce:ROOT:index.adoc)
+-   [Commerce integration framework](../../../../ecommerce/)
 
 -   [External DAM integration framework](../../Modules/extensions-and-frameworks/external-dam-integration-framework/)
 
@@ -451,25 +451,25 @@ The following unbundled modules are 6.4 compatible and include [Frameworks](#_fr
 
 -   [A/B/n Testing module](../../Modules/List-of-modules/ABn-testing/ABn-testing-module/)
 
--   [ai-accelerator:ROOT:index.adoc](#ai-accelerator:ROOT:index.adoc)
+-   [AI Accelerator module](../../../../ai-accelerator/4.0-alpha/)
 
 -   [Blossom module](../../Modules/List-of-modules/Blossom-module/)
 
--   [campaign-manager:ROOT:index.adoc](#campaign-manager:ROOT:index.adoc)
+-   [Campaign manager module](../../../../campaign-manager/)
 
 -   [Campaign Publisher module](../../Modules/List-of-modules/Campaign-Publisher-module/Campaign-Publisher-module/)
 
--   [Cloudinary External DAM module introduction](../../../../cloudinary/1.3/)
+-   [Cloudinary External DAM module introduction](../../../../cloudinary/)
 
 -   [Groovy module](../../Modules/List-of-modules/Groovy-module/)
 
--   [image-focal:ROOT:index.adoc](#image-focal:ROOT:index.adoc)
+-   [Image Focal module](../../../../image-focal/)
 
--   [image-recognition:ROOT:index.adoc](#image-recognition:ROOT:index.adoc)
+-   [Image Recognition](../../../../image-recognition/)
 
--   [ui-framework-javascript:ROOT:index.adoc](#ui-framework-javascript:ROOT:index.adoc)
+-   [JavaScript UI module](../../../../ui-framework-javascript/)
 
--   [live-copy:ROOT:index.adoc](#live-copy:ROOT:index.adoc)
+-   [Live Copy](../../../../live-copy/4.x/)
 
 -   [Observation module](../../Modules/List-of-modules/Observation-module/)
 
@@ -477,13 +477,13 @@ The following unbundled modules are 6.4 compatible and include [Frameworks](#_fr
 
 -   [Public User Registration module](../../Modules/List-of-modules/Public-User-Registration-module/)
 
--   [rest-proxy:ROOT:index.adoc](#rest-proxy:ROOT:index.adoc)
+-   [REST Proxy module](../../../../rest-proxy/)
 
 -   [Siteimprove module](../../../../siteimprove/)
 
 -   [Solr module](../../Modules/List-of-modules/Solr-module/)
 
--   [magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc)
+-   [SSO module](../../../../magnolia-sso/)
 
 -   [Swift publication module](../../Modules/List-of-modules/Swift-publication-module/Swift-publication-module/)
 
@@ -498,15 +498,15 @@ See [Incubator module list](../../../../incubator-modules/incubator-module-list/
 
 -   [CTSX ChatGPT Translator](../../../../content-translation-support-ext/chatgpt/)
 
--   [Dynamic Form module](../../../../dynamic-form/)
+-   [dynamic-form:ROOT:index.adoc](#dynamic-form:ROOT:index.adoc)
 
 -   [Frontify DAM connector](../../../../frontify-dam-connector/)
 
--   [Instrumentation module](../../../../instrumentation/2.0/)
+-   [Instrumentation module](../../../../instrumentation/)
 
 -   [URL Translation Module](../../../../url-translation/)
 
--   [VWO AB Testing module](../../../../vwo-abtesting/1.0/)
+-   [VWO AB Testing module](../../../../vwo-abtesting/)
 
 
 ## [](#_known_issues)Known issues

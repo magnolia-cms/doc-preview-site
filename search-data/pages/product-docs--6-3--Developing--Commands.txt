@@ -12,7 +12,7 @@ Magnolia uses commands to publish and unpublish content, send email, flush cache
 
 Commands can perform duties within the system or connect to external resources.
 
-Commands are typically executed by [actions](../../../../magnolia-5-ui-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI/) or scheduled for execution by the [Scheduler module](../../Modules/List-of-modules/Scheduler-module/).
+Commands are typically executed by [actions](#6.2@product-docs:ROOT:Support/Magnolia-5-UI-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI.adoc) or scheduled for execution by the [Scheduler module](../../Modules/List-of-modules/Scheduler-module/).
 
 Characteristics of commands:
 
@@ -20,7 +20,7 @@ Characteristics of commands:
 
 -   Back-end executable
 
--   Executed by UI (for example by an [action](../../../../magnolia-5-ui-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI/)), Web services or other modules such as the [Workflow](../../Modules/List-of-modules/Workflow-module/) and [Scheduler](../../Modules/List-of-modules/Scheduler-module/)
+-   Executed by UI (for example by an [action](#6.2@product-docs:ROOT:Support/Magnolia-5-UI-documentation/Dialog-definition-5-UI/Dialog-action-definition-5-UI.adoc)), Web services or other modules such as the [Workflow](../../Modules/List-of-modules/Workflow-module/) and [Scheduler](../../Modules/List-of-modules/Scheduler-module/)
 
 
 You can write your own [custom commands](#_custom_commands) and execute them on-demand or scheduled.
@@ -33,7 +33,7 @@ A command definition makes the command available to the system.
 
 Here are the command definitions for the basic commands that are used throughout Magnolia, configured in **Configuration >** `/modules/ui-admincentral/commands/default`.
 
-![Command definition](../../_images/ADVT-Cmds-cmds.png)
+![Command definition](../../../RNs-6-4-3/_images/ADVT-Cmds-cmds.png)
 
 ## [](#_catalogs)Catalogs
 
@@ -62,7 +62,7 @@ It is a group of two commands that are executed one after the other:
 
 In the UI, commands are executed by actions. Here is an example action definition for the `activate` action in the Pages app. You can find it in **Configuration** → `/modules/pages/apps/pages/subApps/browser/actions/activate`. See [Action definition](../../Apps/App-configuration/Action-definition/) for the properties and their values.
 
-![Activate action definition](../../_images/ADVT-Cmds-act.png)
+![Activate action definition](../../../RNs-6-4-3/_images/ADVT-Cmds-act.png)
 
 ## [](#_scheduling)Scheduling
 
@@ -81,7 +81,7 @@ You can use the [Scheduler module](../../Modules/List-of-modules/Scheduler-modul
 -   `active`: Set value to `true` to activate the job.
 
 
-![Scheduler module configuration](../../_images/ADVT-Cmds-sched.png)
+![Scheduler module configuration](../../../RNs-6-4-3/_images/ADVT-Cmds-sched.png)
 
 ## [](#_observation)Observation
 
@@ -220,7 +220,7 @@ To create a command definition:
 4.  Create a `class` property. Set its value to the fully-qualified name of the Java class that contains the command logic such as `info.magnolia.module.mail.commands.MailCommand`. The Java class should reside inside the module JAR.
 
 
-![Command definition](../../_images/ADVT-Cmds-cust.png)
+![Command definition](../../../RNs-6-4-3/_images/ADVT-Cmds-cust.png)
 
 You don’t necessarily need to create a new module if you just want to add a command. You can put the command definition into any existing module and copy the class file to `WEB-INF/classes` under the Magnolia webapp. However, it is easier to maintain your own classes, templates and configuration when you organize them in a module rather than leaving them scattered around.
 

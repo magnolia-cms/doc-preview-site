@@ -1,0 +1,64 @@
+---
+title: "Item providers"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/Item-providers/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Field definition > Item providers
+---
+
+# Item providers
+
+Item providers are a means for accessing items from data sources. On this page, we provide more details about their characteristics and main advantages, and we show a few examples of using them.
+
+## [](#_overview)Overview
+
+The concept of Item providers is an abstraction aiming to give developers a flexible way to specify which item a form field (simple or complex) should bind to and how an item should be accessed.
+
+Item providers allow you to bind form views to complex nested data structures and to fine tune such bindings. For example, if a form binds a contact address as a separate sub-form (a composite field in the Magnolia 5 UI context), a Magnolia user might want to:
+
+-   Use a contact’s child node to store the data, in which case an item provider that resolves a sub-node can be used.
+
+-   Store the properties directly on the contact node and keep it flat. This would represent a self-reference item provider use case.
+
+
+Item providers get reference items as context. Applied to the contact address example, an address editor will get the root contact node so that it would be trivial to resolve the corresponding sub-node, if needed.
+
+Typically, item providers are executed only:
+
+-   When fetching data from the back-end (to populate a form).
+
+-   When some updated data needs to be flushed from the Vaadin components back to the back-end (on a form commit).
+
+
+Last but not least, item providers yield items wrapped into the [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) container, so it is fine not to return anything from the item provider implementation. In this case, however, the form data may not be populated or saved back to the back-end.
+
+## [](#_main_advantages)Main advantages
+
+Item providers represent a much simpler solution than the field transformers in Magnolia 5 UI.
+
+-   An item provider only needs to know how to access the data. In contrast, the transformers in the 5 UI framework were responsible for both types of data operations – reading and writing. In Magnolia 6 UI, data updates should be piped into back-end items via simple fields by means of Vaadin 8 data binding (Binder objects).
+
+-   Unlike transformers, item providers do not have to deal with the deprecated Vaadin 7 Item API and do not require manual verifications that child properties are populated within an item.
+
+-   Item providers have a clearer concept of chaining. They get a reference of an item from a previous level in the hierarchy, making the whole complex data binding process recursive.
+
+-   The number of provider types is much lower in Magnolia 6 UI, compared to a relatively high number of field transformers in the 5 UI.
+
+-   There’s also provider implementations that can handle JSON structures, task and notifications items, assets or specific product content items.
+
+
+## [](#_where_they_can_be_used)Where they can be used
+
+Item providers can be used in:
+
+-   Item provider definition in a [detail subapp](../../../../../Apps/App-configuration/Subapp-descriptor/#_detail_subapp_descriptor).
+
+-   Item provider definition In a form containing composite and complex fields. In this use, the provider replaces the former field transformer functionality that is part of the UI framework 5, but no longer part of the Magnolia 6 UI.
+
+
+| $type | Description |
+| --- | --- |
+| `currentItemProvider` | `info.magnolia.ui.editor.CurrentItemProviderDefinition` Returns the parent node. Suitable for sub-forms only since it relies on a parent. ** Do not use `currentItemProvider` with [multi fields](../List-of-fields/Multi-field/) . The same nodes could be resolved by multiple fields that use `currentItemProvider` , which means their content would be overwritten. Additionally, if a multi field is not configured to resolve nodes strictly (the `strict` property is set to `false` by default), it will resolve irrelevant nodes from the parent and likely result in errors. ** If you use `currentItemProvider` with [composite](../List-of-fields/Composite-field/) or [switchable](../List-of-fields/Switchable-field/) fields, make sure that none of the inner field names clash with: • Other inner field names at the level where `currentItemProvider` is used • Other field names one level up where the composite or switchable field is defined That is, every field at every level must have a unique name. Otherwise, nodes sharing the same name could be resolved by multiple fields that use `currentItemProvider` , which means their content would be overwritten. Example name conflict `form: properties: first_compositeField: $type: compositeField itemProvider: $type: currentItemProvider properties: inner_simple: # duplicate name $type: textField # first text inner_simple2: $type: textField # second text second_compositeField: $type: compositeField itemProvider: $type: currentItemProvider properties: inner_simple3: $type: textField # third text inner_simple: # duplicate name $type: textField # fourth text # Problem with using currentItemProvider edited_node: inner_simple: fourth text # first text is overwritten by second inner_simple inner_simple2: second text inner_simple3: third text # Using nestedContentProvider with both composite fields would fix the problem edited_node: first_compositeField: inner_simple: first text inner_simple2: second text second_compositeField: inner_simple3: third text inner_simple: fourth text # no name conflict` | ** | Do not use `currentItemProvider` with [multi fields](../List-of-fields/Multi-field/) . The same nodes could be resolved by multiple fields that use `currentItemProvider` , which means their content would be overwritten. Additionally, if a multi field is not configured to resolve nodes strictly (the `strict` property is set to `false` by default), it will resolve irrelevant nodes from the parent and likely result in errors. | ** | If you use `currentItemProvider` with [composite](../List-of-fields/Composite-field/) or [switchable](../List-of-fields/Switchable-field/) fields, make sure that none of the inner field names clash with: • Other inner field names at the level where `currentItemProvider` is used • Other field names one level up where the composite or switchable field is defined That is, every field at every level must have a unique name. Otherwise, nodes sharing the same name could be resolved by multiple fields that use `currentItemProvider` , which means their content would be overwritten. Example name conflict `form: properties: first_compositeField: $type: compositeField itemProvider: $type: currentItemProvider properties: inner_simple: # duplicate name $type: textField # first text inner_simple2: $type: textField # second text second_compositeField: $type: compositeField itemProvider: $type: currentItemProvider properties: inner_simple3: $type: textField # third text inner_simple: # duplicate name $type: textField # fourth text # Problem with using currentItemProvider edited_node: inner_simple: fourth text # first text is overwritten by second inner_simple inner_simple2: second text inner_simple3: third text # Using nestedContentProvider with both composite fields would fix the problem edited_node: first_compositeField: inner_simple: first text inner_simple2: second text second_compositeField: inner_simple3: third text inner_simple: fourth text # no name conflict` |
+| ** | Do not use `currentItemProvider` with [multi fields](../List-of-fields/Multi-field/) . The same nodes could be resolved by multiple fields that use `currentItemProvider` , which means their content would be overwritten. Additionally, if a multi field is not configured to resolve nodes strictly (the `strict` property is set to `false` by default), it will resolve irrelevant nodes from the parent and likely result in errors. |
+| ** | If you use `currentItemProvider` with [composite](../List-of-fields/Composite-field/) or [switchable](../List-of-fields/Switchable-field/) fields, make sure that none of the inner field names clash with: • Other inner field names at the level where `currentItemProvider` is used • Other field names one level up where the composite or switchable field is defined That is, every field at every level must have a unique name. Otherwise, nodes sharing the same name could be resolved by multiple fields that use `currentItemProvider` , which means their content would be overwritten. Example name conflict `form: properties: first_compositeField: $type: compositeField itemProvider: $type: currentItemProvider properties: inner_simple: # duplicate name $type: textField # first text inner_simple2: $type: textField # second text second_compositeField: $type: compositeField itemProvider: $type: currentItemProvider properties: inner_simple3: $type: textField # third text inner_simple: # duplicate name $type: textField # fourth text # Problem with using currentItemProvider edited_node: inner_simple: fourth text # first text is overwritten by second inner_simple inner_simple2: second text inner_simple3: third text # Using nestedContentProvider with both composite fields would fix the problem edited_node: first_compositeField: inner_simple: first text inner_simple2: second text second_compositeField: inner_simple3: third text inner_simple: fourth text # no name conflict` |
+| `nestedContentProvider` | `info.magnolia.ui.editor.NestedContentProvider$Definition` Default provider for most of complex fields. Creates a child content node of the parent using the name of the field definition. |

@@ -8,19 +8,19 @@ breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.8
 
 # Release notes for Magnolia CMS 6.3.8
 
-[LTS release](../../../../support/) • Delivered on April 28, 2025 • Page updated on May 5, 2025 • Changelog: [17305](https://magnolia-cms.atlassian.net/issues/?filter=17305)
+[LTS release](#support:ROOT:index.adoc) • Delivered on April 28, 2025 • Page updated on May 5, 2025 • Changelog: [17305](https://magnolia-cms.atlassian.net/issues/?filter=17305)
 
 **Magnolia 6.3.8** is a bug-fixing and security-focused release, introducing key enhancements for performance and efficiency. Notable updates include support for Elliptic Curve Cryptography (ECC) to sign publication requests and the new `canSkipProperty` and `excludeProperty` indexing rules, which significantly optimize indexing.
 
-We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
 
--   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.8/magnolia-dx-core-webapp-6.3.8.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.8/magnolia-dx-core-webapp-6.3.8.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.8/travel-demo-webapp-6.3.8.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.8/travel-demo-webapp-6.3.8.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.8/travel-demo-community-webapp-6.3.8.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-community-webapp-6.3.8.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.8/travel-demo-community-webapp-6.3.8.war)
 
--   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
 
 
 ## [](#_breaking_changes)Breaking changes
@@ -90,7 +90,7 @@ For more, see [Skipping properties](../../Administration/Jackrabbit-search/#_ski
 
 -   **Magnolia CLI version 4 reached end-of-life (EOL)** on April 16, 2025 and will receive no further updates, including security fixes.
 
-    Use [CLI v5](#magnolia-cli:ROOT:getting-started/index.adoc), which was released on October 16, 2024 and is fully supported. Version 5 is a plugin-based CLI designed for developers seeking modularity and the ability to extend functionalities through custom CLI commands.
+    Use [CLI v5](../../../../magnolia-cli/getting-started/), which was released on October 16, 2024 and is fully supported. Version 5 is a plugin-based CLI designed for developers seeking modularity and the ability to extend functionalities through custom CLI commands.
 
 
 ## [](#_third_party_library_updates)Third-party library updates
@@ -141,19 +141,19 @@ Bundled modules included with this release.
 
 Unbundled modules released since Magnolia 6.3.7.
 
--   [AI Accelerator](#ai-accelerator:ROOT:changelog.adoc) `2.2.0`
+-   [AI Accelerator](../../../../ai-accelerator/4.0-alpha/changelog/) `2.2.0`
 
--   [Celum DAM Connector](#celum-dam-connector:ROOT:index.adoc#_changelog) `3.0.1`
+-   [Celum DAM Connector](../../../../celum-dam-connector/#_changelog) `3.0.1`
 
--   [Content Locking](#content-locking:ROOT:index.adoc#_changelog) `3.0.0`
+-   [Content Locking](../../../../content-locking/#_changelog) `3.0.0`
 
 -   [Content Translation Extended](../../../../content-translation-support-ext/#_changelog) `4.1.2`
 
--   [E-commerce](#ecommerce:ROOT:changelog.adoc) `2.0.3`
+-   [E-commerce](../../../../ecommerce/changelog/) `2.0.3`
 
--   [Piano Analytics Connector](#magnolia-analytics-piano-connector:ROOT:index.adoc#_changelog) `2.0.1`
+-   [Piano Analytics Connector](../../../../magnolia-analytics-piano-connector/#_changelog) `2.0.1`
 
--   [VWO AB Testing](../../../../vwo-abtesting/1.0/changelog/) `1.0.1`
+-   [VWO AB Testing](../../../../vwo-abtesting/changelog/) `1.0.1`
 
 
 ## [](#_acknowledgements)Acknowledgements

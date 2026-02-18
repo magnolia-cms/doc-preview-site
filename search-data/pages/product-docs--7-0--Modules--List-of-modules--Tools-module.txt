@@ -8,30 +8,23 @@ breadcrumb: DX Core > Modules > Tools module
 
 # Tools module
 
-[Content management](../../../use-cases/content-management/) Bundled: DX Core
-
-|     |     |
+| Download | [magnolia-tools-{magnolia-jcr-tools-64}.jar](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/tools/magnolia-tools/1.9.1/magnolia-tools-1.9.1.jar) |
 | --- | --- |
-| Download | [magnolia-tools-3.0.0.jar](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/tools/magnolia-tools/1.9.1/magnolia-tools-1.9.1.jar) |
 | Edition | DX Core |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLTOOLS](https://magnolia-cms.atlassian.net/browse/MGNLTOOLs) |
-| Maven site | [Tools](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Ftools%2Fmagnolia-tools%2F3.0.0) |
-| Latest | 3.0.0 |
-
-The Tools module provides an app and some commands useful for manipulating repository content. The app, known as Repository Tools, can be found under the Tools menu of admincentral.
-
-> **Note:** = Module artifacts have changedPlease note that the artifact IDs (Maven groupId and artifactId) have changed since Magnolia 5.5.If you have custom Java code relying on this module, you need to install a compatibility module too.Check Gitlab repo for the new module structure.
+| Maven site | [Tools](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Ftools%2Fmagnolia-tools%2F{magnolia-jcr-tools-64}) |
+| Latest | {magnolia-jcr-tools-64} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.tools</groupId>
   <artifactId>magnolia-tools</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-jcr-tools-64}</version> (1)
 </dependency>
 ```
 
@@ -58,7 +51,7 @@ Add the following snippet to your POM file:
 <dependency>
   <groupId>info.magnolia.tools</groupId>
   <artifactId>magnolia-tools-compatibility</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-jcr-tools-64}</version> (1)
 </dependency>
 ```
 

@@ -8,32 +8,22 @@ breadcrumb: DX Core > Modules > Content Editor module
 
 # Content Editor module
 
-[Content management](../../../use-cases/content-management/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [CONTEDIT](https://magnolia-cms.atlassian.net/browse/CONTEDIT) |
-| Maven site | [Content Editor](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Feditor%2Fmagnolia-content-editor%2F3.0.3) |
-| Latest | 3.0.3 |
+| Maven site | [Content Editor](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Feditor%2Fmagnolia-content-editor%2F{magnolia-content-editor-63}) |
+| Latest | {magnolia-content-editor-63} |
 
-The Content Editor module provides a platform for handling well-defined blocks of content in Magnolia.
-
-The core of the platform is the Magnolia Content Editor submodule, implemented as the `stories-app` submodule, which allows editors to create and edit stories in the Author instance using the [Stories app](../../../Apps/List-of-apps/Stories-app/).
-
-> **Note:** Compatibility noteCustom content editor and block definitions created in the Magnolia 5 UI framework must be migrated.
-
-## [](#_module_structure)Module structure
-
-| artifactID |     |
+| artifactID |  |
 | --- | --- |
 | `content-editor-parent` | Parent reactor. |
 | `magnolia-content-editor` | Provides a free-form content editor. |
 | `magnolia-content-editor-widgetset-v2` | Provides a custom widgetset for the Content Editor. |
-| `stories-app` | Provides the [Stories app](../../../Apps/List-of-apps/Stories-app/), the default Magnolia editor implementation.<br><br>The app is not bundled with preconfigured Magnolia webapps. |
+| `stories-app` | Provides the [Stories app](../../../Apps/List-of-apps/Stories-app/) , the default Magnolia editor implementation. The app is not bundled with preconfigured Magnolia webapps. |
 | `magnolia-block-api` | Provides a basic API for the *blocks* (content sections). |
 | `magnolia-block-templating` | Provides the functionality to render the blocks. |
-| `magnolia-link-unfurl` | Provides utilities for unfurling external web links.<br><br>*Unfurling* means fetching and displaying metadata for a given URL, for example, a preview image, a title and description. |
+| `magnolia-link-unfurl` | Provides utilities for unfurling external web links. *Unfurling* means fetching and displaying metadata for a given URL, for example, a preview image, a title and description. |
 
 ## [](#_installing)Installing
 
@@ -45,7 +35,7 @@ If you want to build your own custom implementation, add this dependency to your
 <dependency>
   <groupId>info.magnolia.editor</groupId>
   <artifactId>magnolia-content-editor</artifactId>
-  <version>3.0.3</version> (1)
+  <version>{magnolia-content-editor-63}</version> (1)
 </dependency>
 ```
 
@@ -59,7 +49,7 @@ If you intend to build custom blocks, add this dependency to your webapp:
 <dependency>
   <groupId>info.magnolia.block</groupId>
   <artifactId>magnolia-block-templating</artifactId>
-  <version>3.0.3</version> (1)
+  <version>{magnolia-content-editor-63}</version> (1)
 </dependency>
 ```
 

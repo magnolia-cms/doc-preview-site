@@ -1,0 +1,99 @@
+---
+title: "Release notes for Magnolia CMS 6.3.21"
+url: https://docs.magnolia-cms.com/product-docs/6.3/Releases/Release-notes-for-Magnolia-CMS-6.3.21/
+category: Magnolia 6.3
+version: 6.3
+breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.21
+---
+
+# Release notes for Magnolia CMS 6.3.21
+
+[LTS release](#support:ROOT:index.adoc) • Delivered on February 19, 2026 • Changelog: [23469](https://magnolia-cms.atlassian.net/issues/?filter=23469)
+
+**Magnolia 6.3.21** is a maintenance release prioritizing UI stability and core functional fixes. It improves internationalization by restoring support of language codes with dashes in the REST Delivery API and ensures page links correctly handle special characters within site handler paths.
+
+This version fixes intermittent double-click failures in browser tables, ensures the Switchable field properly clears multi-link data, and resolves specific regressions in the administrative interface and content delivery logic. Furthermore, it addresses critical backend stability by ensuring `MgnlContext` is correctly set when reading assets from the DAM and fixing a lifecycle issue that prevented the Magnolia instance from shutting down properly while the Solr module was active.
+
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.21.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.21/magnolia-dx-core-webapp-6.3.21.war)
+
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-webapp-6.3.21.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.21/travel-demo-webapp-6.3.21.war)
+
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-community-webapp-6.3.21.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.21/travel-demo-community-webapp-6.3.21.war)
+
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [mtk2\_3.0.3.zip](../../_attachments/mtk2_3.0.3.zip) (*as a light module*)
+
+
+## [](#_breaking_changes)Breaking changes
+
+### [](#_restricted_access_over_non_https_by_default)Restricted access over non-HTTPS by default
+
+This release changes a security-related default setting for the `secureCookie` property. For all non-HTTPS environments (except localhost), `secureCookie` must be set to `false` for users to log in successfully.
+
+The CSRF `cookieSecure` property now follows the request protocol by default. Previously, the cookie was always marked as secure regardless of the request scheme, which caused browsers such as Safari to reject the cookie over HTTP. That led to breaking the CSRF mechanism when running locally or in non-HTTPS environments.
+
+The `secureCookie` property now defaults to `not set`, meaning the cookie is marked secure only when the request is received over HTTPS. You can override this explicitly via the `secureCookie` property or the `magnolia.cookie.csrf.secure` configuration property. Additionally, the `sameSite` attribute now accepts `None` and `Omitted` as valid values, in addition to `Strict` (default) and `Lax`.
+
+See [Security cookie attributes](../../Administration/Architecture/Request-processing-and-filters/Filters/#_csrfcookietokenfilter_and_csrfsessiontokenfilter).
+
+## [](#_improvements)Improvements
+
+### [](#_security_improvements)Security improvements
+
+[MAGNOLIA-9829](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9829), [MGNLEESOLR-275](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-275), [SECURITY-169](https://magnolia-cms.atlassian.net/browse/SECURITY-169)
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
+
+## [](#_bug_fixes)Bug fixes
+
+-   [MAGNOLIA-9713](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9713) Page links contain full JCR path if path handled by `siteHandler` contains special characters
+
+-   [MGNLEESOLR-276](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-276) `MgnlContext` isn’t set when reading assets from dam
+
+-   [MGNLEESOLR-277](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-277) Magnolia instance doesn’t shut down properly when Solr module is active
+
+-   [MGNLREST-921](https://magnolia-cms.atlassian.net/browse/MGNLREST-921) `DefaultI18nContentSupport` doesn’t support language code with dash
+
+    For more details and migration information, see also [`lang` parameter behavior in REST calls](../../Upgrading-to-Magnolia/#_lang_parameter_behavior_in_rest_calls).
+
+-   [MGNLUI-9303](https://magnolia-cms.atlassian.net/browse/MGNLUI-9303) Double-click on a row in a browser table often doesn’t work (Vaadin)
+
+-   [MGNLUI-9319](https://magnolia-cms.atlassian.net/browse/MGNLUI-9319) Switchable field: `jcrMultiLinkField` isn’t cleared within a form
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MGNLTOMCAT-68](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-68) Update `org.apache.tomcat:tomcat` to `9.0.115`
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Barebones Tomcat Bundle `1.2.44`
+
+-   Community Edition `6.3.21`
+
+-   DX Core `6.3.21`
+
+-   Demo Projects `6.3.21`
+
+-   Magnolia `6.3.21`
+
+-   REST Framework `3.1.8`
+
+-   Resources `4.0.5`
+
+-   Security `7.0.5`
+
+-   Solr Search Provider `9.0.2`
+
+-   Third-party library BOM for Extensions `6.3.21`
+
+-   Third-party library BOM `6.3.21`
+
+-   UI `6.3.21`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues.

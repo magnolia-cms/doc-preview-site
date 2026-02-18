@@ -65,7 +65,7 @@ For **DX Core** projects, add the following repository to your project POM (or M
 </repositories>
 ```
 
-This also applies to Community Edition releases in [maintenance mode](../../support/).
+This also applies to Community Edition releases in [maintenance mode](#support:ROOT:index.adoc).
 
 > **Note:** Magnolia provides additional regional repositories for US and APAC. Choose the appropriate regional URL for your environment.
 
@@ -167,7 +167,7 @@ Create a custom cloud bundle from the following Maven Archetypes:
 mvn archetype:generate \
     -DarchetypeGroupId=info.magnolia.maven.archetypes \
     -DarchetypeArtifactId=magnolia-dx-core-custom-cloud-archetype \
-    -DarchetypeVersion=1.10 \
+    -DarchetypeVersion={paas-archetype-version} \
     -DarchetypeRepository=https://nexus.magnolia-cms.com/content/repositories/magnolia.public.releases <1>
 ```
 
@@ -276,7 +276,7 @@ Load the project in your IDE and configure the Tomcat server with the following 
 
 **The custom cloud parent project automatically excludes the following modules**:
 
--   [Backup module](../../product-docs/7.0/Modules/List-of-modules/Backup-module/): It will be part of an outside feature.
+-   [Backup module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Backup-module/): It will be part of an outside feature.
 
 
 **It includes the following modules**:

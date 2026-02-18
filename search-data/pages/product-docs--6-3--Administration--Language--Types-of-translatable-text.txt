@@ -8,29 +8,21 @@ breadcrumb: DX Core > Administration > Language > Types of translatable text
 
 # Types of translatable text
 
-You should make all text displayed to website visitors and editors translatable. This page explains what text in Magnolia is translatable and where it is stored.
-
-There are three major groups of translatable text:
-
 | Translatable text | Audience | Stored in |
 | --- | --- | --- |
-| 1\. [Editorial content](#_editorial_content) | Visitors | JCR |
-| 2\. [User interface labels](#_user_interface_labels) | Editors | Message bundle for user interface labels |
-| 3\. [Template labels](#_template_labels) | Visitors | Message bundle for template labels |
-
-**Best practice**
-
-Avoid hard-coded strings exposed to visitors, editors or administrators. Always allow localization of texts displayed on the website and in Magnolia Shell.
+| 1. [Editorial content](#_editorial_content) | Visitors | JCR |
+| 2. [User interface labels](#_user_interface_labels) | Editors | Message bundle for user interface labels |
+| 3. [Template labels](#_template_labels) | Visitors | Message bundle for template labels |
 
 ## [](#_editorial_content)Editorial content
 
 Editorial content is the biggest group of translatable text. It is the main content of your website, aimed at site visitors.
 
-Editors write editorial content in the [Pages app](../../../Apps/List-of-apps/Pages-app/) and other [content apps](../../../../../magnolia-5-ui-documentation/Content-apps-5-UI/Parts-of-a-content-app-5-UI/). All editorial content is stored in JCR, mainly in the `website` workspace, but apps can also store content in a custom workspace. All editorial content can be translated as part of the content creation process. If your website serves visitors from several countries and languages, this is the bulk of your translation effort.
+Editors write editorial content in the [Pages app](../../../Apps/List-of-apps/Pages-app/) and other [content apps](#6.2@Support/Magnolia-5-UI-documentation/Content-apps-5-UI/Parts-of-a-content-app-5-UI.adoc). All editorial content is stored in JCR, mainly in the `website` workspace, but apps can also store content in a custom workspace. All editorial content can be translated as part of the content creation process. If your website serves visitors from several countries and languages, this is the bulk of your translation effort.
 
 **Example**: Editorial content on an article page
 
-![Editorial content on an article page](../../../_images/6-2-translatable-editorial.png)
+![Editorial content on an article page](../../../../RNs-6-4-3/_images/6-2-translatable-editorial.png)
 
 ## [](#_user_interface_labels)User interface labels
 
@@ -55,7 +47,7 @@ We run the internationalization effort as a community project so please check ou
 
 **Example**: User interface labels
 
-![User interface labels](../../../_images/6-2-translatable-ui-labels.png)
+![User interface labels](../../../../RNs-6-4-3/_images/6-2-translatable-ui-labels.png)
 
 ## [](#_template_labels)Template labels
 
@@ -65,7 +57,7 @@ You should store your template labels in their own message bundle, not in the sa
 
 **Example**: Template labels on an article page
 
-![Template labels on an article page](../../../_images/6-2-translatable-template-labels.png)
+![Template labels on an article page](../../../../RNs-6-4-3/_images/6-2-translatable-template-labels.png)
 
 **Best practice**
 
@@ -75,6 +67,6 @@ Create separate message bundles for user interface labels and template labels. D
 
 **Example**: Message files in the Travel Demo
 
--   [`module-travel-demo-backend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (user interface labels)
+-   [`module-travel-demo-backend_en.properties`]({repo-travelDemo}) (user interface labels)
 
--   [`module-travel-demo-frontend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (template labels)
+-   [`module-travel-demo-frontend_en.properties`]({repo-travelDemo}) (template labels)

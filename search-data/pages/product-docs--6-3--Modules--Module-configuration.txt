@@ -160,126 +160,18 @@ fooBar:
   colors: [red, green, blue]
 ```
 
-## [](#_changing_module_configuration)Changing module configuration
-
-There are several ways to change an original configuration.
-
--   Original configuration
-
-    Through decoration definition.
-
--   In YAML file
-
-    By applying a hotfix to the `resources` workspace.
-
--   In the JCR `config` workspace
-
-    By editing directly in the `config` workspace.
-
-
-> **Warning:** If the original configuration is a YAML file, do not create a node in the JCR config workspace.
-
-### [](#_decorating)Decorating
-
-Decorating means adapting the current configuration. A decorator file can reside in any Magnolia Maven module or light module. In the example below, we create a decorator file in a light module called `test-module`. In this module, create the `decorations/another-module/config.fooBar.yaml` file:
-
-> **Caution:** The decorating configuration file must have config in the filename, for example, /rest-services/decorations/cache/config.contentCaching.yaml. This wasn’t required on the Magnolia 6.2 branch.
-
-<magnolia.resources.dir>/test-module/decorations/another-module/config.fooBar.yaml
-
-```yml
-colors: [cyan, yellow, magenta, black]
-```
-
-You can also change the appLauncherLayout property via [decoration](../../Developing/Definition-decoration/).
-
-magnolia-personalization-personas-app/src/main/resources/personalization-personas-app/decorations/admincentral/config.yaml
-
-```yml
-appLauncherLayout:
-    hiddenApps:
-        - notifications
-    groups:
-        - name: target
-          apps:
-            - name: personas-app
-```
-
-To specify the order of apps, provide a complete list of apps in a group using the [`!override`](../../Developing/Reusing-configuration/YAML-inherit-and-include/) directive:
-
-magnolia-personalization-segmentation-app/src/main/resources/personalization-segmentation-app/decorations/admincentral/config.yaml
-
-```yml
-appLauncherLayout:
-    groups:
-        - name: target
-          apps: !override
-            - name: preview-app
-            - name: personas-app
-            - name: segmentation-app
-```
-
-> **Tip:** To learn more about decoration, see Definition decoration concept.
-
-### [](#_hotfixing)Hotfixing
-
-Creating a *hotfix* means utilizing the Magnolia Resources framework’s capability which allows a resource to have different origins, see [Resources - Origins and loading order](../../Developing/Resources/#_origins_and_loading_order). A hotfix:
-
--   Is a representation of a resource in the JCR `resources` workspace.
-
--   Has precedence over the YAML file in the `jar` file of the deployed module.
-
-
-Utilizing the JCR `resources` workspace can be useful for an administrator to apply a hotfix that is urgent. From a long-term perspective, however, we recommend that you keep your configuration and configuration changes in YAML files. This way they may become part of source control and are easier for large developer teams to work with.
-
-To create a hotfix, follow these steps:
-
-1.  Open the [Resource Files app](../../Developing/Resources/#_resource_files_app).
-
-2.  Browse to `<your-module>` and select the `config.yaml` resource.
-
-3.  In the action bar, click **Edit file**. The Resource Files app creates a copy of the currently used configuration and stores it in the JCR `resources` workspace.
-
-4.  Edit the file as necessary.
-
-    ![Edit file in JCR](../../_images/6-2-moduleConfiguration_creatingHotfixWithResourcesApp.png)
-
-5.  Click **Save changes**.
-
-    You may have to publish the resource node created to your author instances.
-
-
-### [](#_in_the_config_workspace)In the `config` workspace
-
-Even though we recommend using YAML files for configuration data, there are still a lot of modules whose configuration is stored in the JCR `config` workspace. Below is an example using the `ui-admincentral` module, in which we change the `defaultGroup` of the `appLauncherLayout`.
-
-1.  Open the [Configuration app](../../Apps/List-of-apps/Configuration-app/).
-
-2.  Go to the `/modules/ui-admincentral/config/appLauncherLayout` node.
-
-3.  Change the value of the `defaultGroup` property. (Change other subnodes and properties as necessary.)
-
-    ![Configuration app](../../_images/6-2-moduleConfiguration_editWithConfigurationApp.png)
-
-    You also can add new nodes and properties, if they match with the defined bean properties of the module class.
-
-    > **Note:** Changes are applied automatically when you leave a field. You may have to publish the node you changed to your author instances.
-
-
-#### [](#_applauncherlayout_properties)appLauncherLayout Properties
-
 | Property | Description |
 | --- | --- |
-| `groups` | **required**<br><br>List of app groups. |
-| `<group‑name>` | **required**<br><br>App group name. This internal name is not displayed to users. Users see the group `label` instead. |
-| `apps` | **required**<br><br>List of apps in the group. |
-| `<app‑name>` | **required**<br><br>Name of an app that belongs to the group. The name must match the name given in the [app configuration](../../Apps/App-configuration/App-descriptor/), for example pages. |
-| `permissions` | **optional**<br><br>Defines which users can see the app in the App Launcher. This allows you to provision the app to a limited group of users in your organization. See [App permissions](../../Administration/IAM/App-permissions/). |
-| `clientGroup` | **optional**, *default is `false`*<br><br>Moves the group to the bottom of the App Launcher and sets the group color to white. Set the property to `true` when you create your own app groups. This way they will stand apart from Magnolia native apps, and editors can identify them as your company’s apps. |
-| `label` | **optional**<br><br>Text displayed on the group tile. Use a label that says something about all apps in the group such as `Edit` or `Manage`. Magnolia converts the text to all caps. |
-| `defaultGroup` | **optional**, *default is `edit`*<br><br>Defines the group where a new app is added automatically, provided the app has not been added to another group of the App Launcher.<br><br>During installation, Magnolia sets the value of the `defaultGroup` property to `edit`. During an update, it is set to `edit` only if the property has not been set already. |
-| `hiddenApps` | **optional**<br><br>List of apps to be hidden in the App Launcher. |
-| `<app-name>` | **optional**<br><br>Name of an app that should not be shown in the App Launcher. The name of the property is arbitrary.<br><br>Example<br><br>Change `pages` to `pages-app` to fall back to the compatibility version of the app. Remember to log out and back in to see any changes in the App Launcher. |
+| `groups` | **required** List of app groups. |
+| `<group‑name>` | **required** App group name. This internal name is not displayed to users. Users see the group `label` instead. |
+| `apps` | **required** List of apps in the group. |
+| `<app‑name>` | **required** Name of an app that belongs to the group. The name must match the name given in the [app configuration](../../Apps/App-configuration/App-descriptor/) , for example pages. |
+| `permissions` | **optional** Defines which users can see the app in the App Launcher. This allows you to provision the app to a limited group of users in your organization. See [App permissions](../../Administration/IAM/App-permissions/) . |
+| `clientGroup` | **optional** , *default is false* Moves the group to the bottom of the App Launcher and sets the group color to white. Set the property to `true` when you create your own app groups. This way they will stand apart from Magnolia native apps, and editors can identify them as your company’s apps. |
+| `label` | **optional** Text displayed on the group tile. Use a label that says something about all apps in the group such as `Edit` or `Manage` . Magnolia converts the text to all caps. |
+| `defaultGroup` | **optional** , *default is edit* Defines the group where a new app is added automatically, provided the app has not been added to another group of the App Launcher. During installation, Magnolia sets the value of the `defaultGroup` property to `edit` . During an update, it is set to `edit` only if the property has not been set already. |
+| `hiddenApps` | **optional** List of apps to be hidden in the App Launcher. |
+| `<app-name>` | **optional** Name of an app that should not be shown in the App Launcher. The name of the property is arbitrary. Example : Change `pages` to `pages-app` to fall back to the compatibility version of the app. Remember to log out and back in to see any changes in the App Launcher. |
 
 ## [](#_accessing_configuration_data_programmatically)Accessing configuration data programmatically
 

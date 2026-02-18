@@ -1,0 +1,45 @@
+---
+title: "Multisite definition configuration"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Multisite-definition-configuration/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Site definition > How to use Multisite > Multisite definition configuration
+---
+
+# Multisite definition configuration
+
+This page is about **site definition configuration** in the context of **multisite**. It explains how to configure multiple, distinct site definitions which require the definition of `domains` and `mappings` nodes.
+
+> **Note:** For site rules configuration details, see Site resolution rules.
+
+We assume that you already know some basics about Magnolia [site definition configuration](../../#_configuring_a_site_definition) (such as prototypes, themes, imaging variations and `sitefn` templating functions).
+
+## [](#_site_definition)Site definition
+
+Go to [Configuring a site definition](../../#_configuring_a_site_definition) to configure a site definition.
+
+## [](#_site_definition_name)Site definition name
+
+The node name of the site definition is called `site-definition-name`.
+
+If a site is properly configured, it can be accessed using the following URL:
+
+`<protocol>://<domain>:<port>/<context>/<site-definition-name>`
+
+> **Note:** This only works if the domain part of the URL is different from the domain that is mapped to the site of the given site-definition-name.
+
+| Property | Description |
+| --- | --- |
+| `<mapping-node>` | **required** Each site can contain multiple mappings. The name of a mapping node is arbitrary (in the example above, the node name is `website` ). The corresponding class for a mapping is info.magnolia.cms.beans.config.URI2RepositoryMapping . |
+| `repository` | **required** Name of the JCR workspace the mapping applies to. |
+| `handlePrefix` | **required** The path in the workspace the content is served from. |
+| `URIPrefix` | **required** Creates a node handle based on a URI. By default, a content request that does not contain a prefix is served from the node defined on `handlePrefix` of the given repository. The `URIPrefix` property can be used to shorten URLs. (See the `jolly-jumper` example above and the [Multisite example - Shorten URL with handlePrefix](../Multisite-example-Minisite-using-URL-prefix-and-domain/#_shortening_the_url_with_handleprefix_within_an_existing_site_definition) example.) Short URLs are easier to remember, quicker to type, take less space in print ads, and are ranked more favorably by search engines than content deep down in the site hierarchy. ** If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. Note that [URIPrefix configuration](../../../../../Administration/URI-mapping/) can also be applied in modules independent from site definitions. Configuration in the site definition overrides the configuration in `/server/URI2RepositoryMapping/mappings/<workspace>` , resulting in site-specific definitions. | ** | If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. |
+| ** | If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. |
+
+| Node or property | Value |
+| --- | --- |
+| `site-1` |  |
+| `site-2` |  |
+| `extends` | `../site-1` |
+| `site-3` |  |
+| `extends` | `../site-1` |

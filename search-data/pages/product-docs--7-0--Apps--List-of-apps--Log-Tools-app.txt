@@ -21,9 +21,9 @@ The Log Tools app includes three subapps to help system administrators monitor M
 
 ## [](#_log_list_and_log_viewer_subapps)Log List and Log Viewer subapps
 
-In the Log List subapp you can find all the available log files provided by Magnolia. The actual locations of these log files on the server is determined by the `magnolia.logs.dir` property, which is set in the [properties file](../../../Administration/Architecture/Configuration-management/#_defining_properties). You can view the location of this directory from the Config info subapp of the [About Magnolia app](../About-Magnolia-app/).
+In the Log List subapp you can find all the available log files provided by Magnolia. The actual locations of these log files on the server is determined by the `magnolia.logs.dir` property, which is set in the [properties file](../../../../RNs-6-4-3/Administration/Architecture/Configuration-management/#_defining_properties). You can view the location of this directory from the Config info subapp of the [About Magnolia app](../../../../RNs-6-4-3/Apps/List-of-apps/About-Magnolia-app/).
 
-![Log list subapp](../../../_images/6-2-logToolsApp-browser.png)
+![Log list subapp](../../../../RNs-6-4-3/_images/6-2-logToolsApp-browser.png)
 
 ### [](#_viewing_and_downloading_log_files)Viewing and downloading log files
 
@@ -35,9 +35,9 @@ Clicking the Download button triggers the download dialog of your browser. In th
 
 ## [](#_log_levels_subapp)Log Levels subapp
 
-Also available is the Log Levels subapp. This subapp can be used to adjust the log levels of any class which has logging statements embedded within its source code. Changes made here stay in effect until Magnolia is shutdown. If you want to make permanent changes to your logging configuration then you must modify the [log4j2.xml file](../../../Administration/Monitoring/).
+Also available is the Log Levels subapp. This subapp can be used to adjust the log levels of any class which has logging statements embedded within its source code. Changes made here stay in effect until Magnolia is shutdown. If you want to make permanent changes to your logging configuration then you must modify the [log4j2.xml file](../../../../RNs-6-4-3/Administration/Monitoring/).
 
-![Log levels subapp](../../../_images/6-2-logToolsApp-logLevels.png)
+![Log levels subapp](../../../../RNs-6-4-3/_images/6-2-logToolsApp-logLevels.png)
 
 ### [](#_viewing_and_setting_log_levels)Viewing and setting log levels
 
@@ -56,7 +56,7 @@ By default, there are only a few classes and packages listed. However, you can a
 2.  Click the Add Logger Config button to add the new entry.
 
 3.  Double click the Level column to adjust the setting to ERROR.
-    ![Add Logger configuration](../../../_images/6-2-logToolsApp-addLogger.png)
+    ![Add Logger configuration](../../../../RNs-6-4-3/_images/6-2-logToolsApp-addLogger.png)
 
 4.  Make some page requests.
 

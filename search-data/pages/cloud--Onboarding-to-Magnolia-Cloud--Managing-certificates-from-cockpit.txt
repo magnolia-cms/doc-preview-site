@@ -1,0 +1,205 @@
+---
+title: "Managing certificates"
+url: https://docs.magnolia-cms.com/cloud/Onboarding-to-Magnolia-Cloud/Managing-certificates-from-cockpit/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Onboarding to Magnolia Cloud > Cloud domains and certificates > Managing certificates
+---
+
+# Managing certificates
+
+You can request an AWS certificate or import your own certificates and associate them with your environment(s) (*Live, UAT, and Integration*) via the Magnolia Cloud Cockpit.
+
+Here, we explain how to manage certificates and associate domains to your Magnolia environments via the Cockpit.
+
+## [](#_prerequisites)Prerequisites
+
+-   You must have access to the Cockpit.
+
+-   You must be able to set up or coordinate the DNS and domain information needed for the Cockpit.
+
+
+### [](#_restricted_top_level_domains_for_public_certificates)Restricted top level domains for public certificates
+
+The third party upon which Magnolia Cloud relies for issuing and renewing certificates have disallowed the issuance and renewal of certificates for certain domains from the **10th March, 2022** until further notice.
+
+Restricted domains
+
+-   `.RU`
+
+-   `.BY`
+
+-   `Бел` (Belarus)
+
+-   `Рф` (Russia)
+
+-   `.moscow`
+
+-   `.москва`
+
+-   `.SU`
+
+-   `/http.ru.com` (`ru.com`)
+
+-   `РУС`
+
+-   `.RU.NET`
+
+
+Existing certificates
+
+All existing certificates for these domains remain functional until expiration. After expiration, however, they will not be renewable and no new certificates for these domains will be issued.
+
+> **Tip:** You can still create a certificate with these domains by another recognised certificate authority and import it into the Cockpit.
+
+## [](#_handle_certificates)Handle certificates
+
+The instructions provided here detail how to request or import a certificate for the first time.
+
+> **Important:** You cannot amend existing certificates with AWS Certificate Manager (ACM).To add additional SANs:Create a new certificate.Change the association as desired.Remove the previous (now invalid) certificate.See ACM Best Practices for more information.
+
+-   Request certificate
+
+-   Import certificate
+
+
+1.  Log in to the Cockpit.
+
+2.  Navigate to **Your-Subscription > Manage certificates**.
+
+3.  Select the **Certificates** tab.
+
+4.  Select **Request certificate**.
+
+5.  Enter your **Domain name**.
+
+    > **Caution:** There is a maximum of 25 certificates per subscription and each certificate can contain a maximum of 30 domain names (including SANs).
+
+6.  Enter any **Subject Alternative Names (SANs)** if applicable.
+
+7.  Choose your desired **Validation method**.
+
+8.  Select **Request** to complete the certificate request.
+
+
+
+
+Your browser does not support the video tag.
+
+1.  Log in to the Cockpit.
+
+2.  Navigate to **Your-Subscription > Manage certificates**.
+
+3.  Select the **Certificates** tab.
+
+4.  Select **Import certificate**.
+
+5.  In the pop up window:
+
+    1.  Enter your **Certificate body**.
+
+    2.  Enter your **Certificate private key**.
+
+    3.  Enter your **Certificate chain** if applicable.
+
+        > **Important:** You can only import one certificate at at time. If you have any issues, see Managing server certificates in IAM from AWS to troubleshoot.
+
+
+
+6.  Select **Next**.
+
+7.  Review the certificate information to ensure it is correct.
+
+8.  Select **Import**.
+
+
+
+
+Your browser does not support the video tag.
+
+## [](#_handle_the_cname_record)Handle the CNAME record
+
+After you have [requested your certificate](#_handle_certificates), be sure that you copy the `Name` and `Value` under **Configuration Information** for your *pending* certificate and add that to your DNS configuration.
+
+> **Important:** This is needed to validate ownership of the domain.
+
+> **Warning:** Do not remove these entries even after successful validation as they are required in order to automatically renew the certificates.
+
+> **Note:** The procedure for adding CNAMEs depends on your DNS service provider.
+
+
+
+Your browser does not support the video tag.
+
+## [](#_reimport_certificates)Reimport certificates
+
+If you need to reimport a certificate (for example, to renew a certificate), you can do this via the Cockpit.
+
+> **Note:** Certain conditions must be met as per AWS standards.
+
+1.  Log in to the Cockpit.
+
+2.  Navigate to **Your-Subscription > Manage certificates**.
+
+3.  Find the certificate you wish to reimport.
+
+4.  Select the **Reimport certificate** button.
+
+    ![reimport cert step1](../../_images/cloud/reimport-cert-step1.png)
+
+5.  In the pop up window:
+
+    1.  Enter your **Certificate body**.
+
+    2.  Enter your **Certificate private key**.
+
+    3.  Enter your **Certificate chain** if applicable.
+
+
+6.  Select **Next**.
+
+7.  Review the certificate information to ensure it is correct.
+
+8.  Select **Import**.
+
+
+Conditions
+
+> The following conditions apply when you reimport a certificate:
+>
+> -   You can add or remove domain names.
+>
+> -   You cannot remove all of the domain names from a certificate.
+>
+> -   You can add new Key Usage extensions but existing extension values cannot be removed.
+>
+> -   You can add new Extended Key Usage extensions but existing extension values cannot be removed.
+>
+> -   The key type and size cannot be changed.
+>
+>
+> See [AWS Reimport a Certificate](https://docs.aws.amazon.com/acm/latest/userguide/import-reimport.html) for more in-depth information.
+
+## [](#_associate_certificates_to_environments)Associate certificates to environments
+
+1.  Log in to the Cockpit.
+
+2.  Navigate to **Your-Subscription > Manage certificates**.
+
+3.  Select the **Associate certificate** tab.
+
+4.  Select the environment to which you wish to associate the certificate (e.g., Live, UAT, Integration).
+
+    > **Note:** You can associate certificates to multiple environments.
+
+5.  Choose your verified domain from the dropdown list.
+
+6.  Select **Associate**.
+
+
+| Action | Notes |
+| --- | --- |
+| Refresh certificates | Select the **Refresh** button. |
+| Filter data | Click the filter icon to display available filters. |
+| Delete certificate | Click the delete icon to delete certificates. |
+| Unassociate certificate | Select **Unassociate** from your list of associated certificates. |

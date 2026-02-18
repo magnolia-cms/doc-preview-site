@@ -1,0 +1,54 @@
+---
+title: "Backup Extended module"
+url: https://docs.magnolia-cms.com/backup-extended-module/
+category: Modules
+version: modules
+breadcrumb: Backup Extended module
+---
+
+# Backup Extended module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [BACKUPX](https://magnolia-cms.atlassian.net/browse/BACKUPX) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/backup-extended) |
+| Latest | 1.0.1 ** Compatible with Magnolia 6.2.12, 6.2.4. | ** | Compatible with Magnolia 6.2.12, 6.2.4. |
+| ** | Compatible with Magnolia 6.2.12, 6.2.4. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.backup</groupId>
+  <artifactId>magnolia-module-backup-extended</artifactId>
+  <version>1.0.1</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.backup</groupId>
+  <artifactId>magnolia-module-backup-extended-ui</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
+| Parameter | Description |
+| --- | --- |
+| `directory` | **optional** , `default ${magnolia.home}/backup/{epoch_second_count}` The file system directory where the backup can place files. If no directory is supplied the magnolia home directory is used. |
+| `targetConfig` | **optional** , default `/backup-extended/target-confs/jackrabbit-bundle-h2-search.xml` The repository configuration file for the backup. This can be a file in a light module or a file reachable through an http address. The default is an H2 backup since this typically produces the quickest backups. |
+| `comment` | **optional** , default `"Backup triggered through command."` A comment regarding the backup, such as, why and/or how it was created. |
+| `repository` | **optional** , default `magnolia` The repository to be backed up. Typically this is the magnolia repository but backups could be made more efficient by splitting the repository into content and configuration repositories. With separate repositories they can be backed up separately at different rates and/or times. |
+| `delay` | **optional** , default `10` seconds The delay is used when a backupDate is not supplied. Simply adds a slight delay before the backup executes. All backups end up as scheduled tasks. |
+| `groupIds` | **optional** , default backup group A list of group Ids which can see and/or administer the backup from the pulse. In some cases users in these groups could abort the scheduled backup. |
+| `backupDate` | **optional** , default current time ( `now` ) plus the delay A concrete date and time to initiate the backup. |
+
+| Version | Notes |
+| --- | --- |
+| `Version 1.0.1` | • [BACKUPX-3](https://magnolia-cms.atlassian.net/browse/BACKUPX-3) |
+| `Version 1.0` | Updated to use the resource linker provided OOTB |
+| `Version 0.5 (beta)` | • Dialog fields are optional with descriptions about default values • Initiate public instance backups from app |
+| `Version 0.4 (beta)` | Decouple the ui from the core functionality |
+| `Version 0.3 (beta)` | • Frequency control for scheduled backup • Multiple repository support • Dynamic group configuration |
+| `Version 0.2 (beta)` | • Added backupx command • Configuration for rest-services • Additional target configurations |
+| `Version 0.1 (beta)` *Initial release of the extensions version of the module.* |  |

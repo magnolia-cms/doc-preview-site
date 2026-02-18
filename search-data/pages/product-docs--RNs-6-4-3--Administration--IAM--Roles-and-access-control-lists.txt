@@ -1,0 +1,93 @@
+---
+title: "Roles and access control lists"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/IAM/Roles-and-access-control-lists/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Identity and access management (IAM) > Roles and access control lists
+---
+
+# Roles and access control lists
+
+A role is a function a user performs either in the management of Magnolia or as a visitor of a Magnolia website. It reflects the actions and activities assigned to, required, or expected of a user. Specific permissions are granted to enable the functions of a role.
+
+For example, the *editor* role is responsible for editing content displayed on the site. Permissions granted to this role allow the user to edit the content and submit it for review. The *publisher* role, on the other hand, is tasked with reviewing the content and publishing it from the author instance to the public instance(s).
+
+Roles have JCR Access Control Lists (ACLs) and Web access permissions. For both the JCR content and Web access, you can define multiple ACLs per role.
+
+Access to resources is controlled by the roles set up in the [Security app](../../../Apps/List-of-apps/Security-app/).
+
+![List of roles in the Security app](../../../_images/security-app-select-role.png)
+
+Roles are also used when configuring [App permissions](../App-permissions/).
+
+> **Tip:** Select any role and click Role assignments in the action bar to view the users who have that role assigned to them.
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| `website` | Read/Write | `/siteA/news` |
+
+## [](#_web_access)Web access
+
+In the **Web access** section at the bottom of the tab, you can define URL permissions for access to every Magnolia resource. One ACL grants access to a path for **Get**, **Get & Post**, or to **Deny** access. Typically, you need to at least deny the `anonymous` role access to AdminCentral.
+
+![Default web access configuration for anonymous role](../../../_images/anon-role-web-access.png)
+
+On a public instance, deny the `anonymous` role access to AdminCentral and any members-only sections of the site.
+
+![Denying the anonymous role access to AdminCentral on a public instance](../../../_images/anon-role-web-access-restricted.png)
+
+To configure web access for a new user with an `editor` or `publisher` role:
+
+1.  In the **Web access** section of the role, click **Add permission**.
+
+2.  Create web access with **Get & Post** set to `/*`.
+
+3.  Test the setup by logging out and logging in as the new user.
+
+
+### [](#_site_aware_acls)Site-aware ACLs
+
+DX Core allows you to manage multiple websites in a single Magnolia instance. You can control cross-site access in two ways:
+
+-   Use the `<site>` parameter in the path to make an ACL site specific. See the `<demo-project>` example above.
+
+-   The `CrossSiteSecurityFilter` grants or denies permission to a site when the site is requested through a particular domain name, preventing sibling site access.
+
+
+See [Cross-site security](../../Security/Cross-site-security/) for a detailed discussion and configuration examples.
+
+| Workspace | Permission | Path | Comments |
+| --- | --- | --- | --- |
+| `website` | Read-only | `/siteA` |  |
+|  | Read-only | `/siteA/news` |  |
+|  | Read/Write | `/siteA/news/sports` | Longest pattern. Used to grant permission. |
+|  | Deny | `/siteA/news/sports/NHL` | Even longer but not for the requested resource. |
+
+| Workspace | What’s stored |
+| --- | --- |
+| `users` | Users (includes system, admin and public users) |
+| `usergroups` | Groups |
+| `userroles` | Roles and ACLs. Since ACLs are always attached to roles, they’re stored in the same workspace. |
+
+| Scope | Path | Translated to a regular expression |
+| --- | --- | --- |
+| Selected | `/server/admin` | `/server/admin` |
+| Sub pages | `/siteA` | `/siteA/*` |
+| Selected and sub pages | `/siteA` | `/siteA` `/siteA/*` |
+
+| Workspace | Permission | Path |
+| --- | --- | --- |
+| `website` | Read/Write | `/news/sports` `/news/sports/*` |
+|  | Read-only | `/news/sports$` |
+
+## [](#_app_launcher_access)App launcher access
+
+In order for users to access Magnolia via the app launcher, they need at least the **Get & Post** permissions to the root node (`/`**) in the \*Web access** section. This gives the user permission to access the system and launch [non-restricted apps](../App-permissions/), but without access to content.
+
+> **Note:** In a multisite environment, the ACLs are site aware and the root node is then referenced with * (without the leading slash).
+
+## [](#_partial_administrator_roles)Partial administrator roles
+
+If you want to create a partial administrator role whose management permissions are limited to specific user, role, or group subfolders, you need to add read dialog permissions explicitly to such a partial role.
+
+This is because, when restricting root access to permit modification of subfolders only, you are at the same time you preventing the Security app from obtaining the root level-provided UI artefacts that are meant to be available to the partial administrator role.

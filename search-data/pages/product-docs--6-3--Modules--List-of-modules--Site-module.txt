@@ -8,26 +8,22 @@ breadcrumb: DX Core > Site module
 
 # Site module
 
-[Developer productivity](../../../use-cases/developer-productivity/) Bundled: Community edition
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLSITE](https://magnolia-cms.atlassian.net/browse/MGNLSITE) |
-| Maven site | [Site](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fsite%2Fmagnolia-site-app%2F2.0.2) |
-| Latest | 2.0.2 |
-
-The Site module provides a site API. It allows you to create a [site definition](../../../Developing/Templating/Site-definition/) that contains configuration for a whole site such as navigation and common page areas.
+| Maven site | [Site](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fsite%2Fmagnolia-site-app%2F{magnolia-site-63}) |
+| Latest | {magnolia-site-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.site</groupId>
   <artifactId>magnolia-site-app</artifactId>
-  <version>2.0.2</version> (1)
+  <version>{magnolia-site-63}</version> (1)
 </dependency>
 ```
 

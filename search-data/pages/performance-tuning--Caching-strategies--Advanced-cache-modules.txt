@@ -1,0 +1,46 @@
+---
+title: "Advanced cache modules"
+url: https://docs.magnolia-cms.com/performance-tuning/Caching-strategies/Advanced-cache-modules/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Caching strategies > Advanced cache modules
+---
+
+# Advanced cache modules
+
+## [](#_advanced_cache_app)Advanced Cache app
+
+The Advanced Cache app installs an **Advanced** tab into the Cache Tools app that allows you to configure site-aware caches.
+
+### [](#_usage)Usage
+
+Open the `cacheTools` app, go to the `Advanced` tab and select workspaces that are site-aware. Then means that it used different subtrees for different sites. For example, the site [www.site1.com](http://www.site1.com) uses subtree `/site1` in the `website` workspace and [www.site2.com](http://www.site1.com) uses the subtree `/site2`. Click Configure and restart your instance.
+
+![Site-aware cache configuration](../../../product-docs/RNs-6-4-3/_images/6-2-advancedCacheAppModule.png)
+
+### [](#_how_to_test)How to test
+
+1.  Fill the caches with some content.
+
+2.  Change something in one of the subtrees.
+
+3.  Check that the corresponding cache was flushed and other site caches aren’t empty.
+
+4.  Add/remove a site and check that a cache was added/removed.
+
+
+| 📁 modules |  |
+| --- | --- |
+| 📁 advanced-cache |  |
+| 📁 config |  |
+| ⬩ createSeparateCachesForEachSite | true |
+
+## [](#_personalized_content)Personalized content
+
+Magnolia does not cache [personalized](../../../product-docs/RNs-6-4-3/use-cases/Personalization/) content by default (CE), but you can cache it with the high performance caching modules in DX Core. These modules let you cache page variants and fragments of pages. You can configure which parts of a page are cached. Use high performance caching when your site has a lot of dynamic and personalized content.
+
+-   [Advanced Cache Dynamic Page Caching](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-Dynamic-Page-Caching/)
+
+-   [Advanced Cache for Personalization](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-for-Personalization/)
+
+-   [SiteMesh module](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/High-performance-caching-modules/SiteMesh-module/)

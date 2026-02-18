@@ -1,0 +1,23 @@
+---
+title: "Deleting"
+url: https://docs.magnolia-cms.com/live-copy/4.x/usage/delete-live-copy/
+category: Modules
+version: modules
+breadcrumb: Live Copy module > Delete a live copy
+---
+
+# Deleting
+
+## [](#_deleting_the_master)Deleting the master
+
+If you delete the master, a warning appears to confirm the deletion. The warning gives a list of linked pages that may be affected. Once the master is deleted, any of its previously created live copies can then be used as masters.
+
+## [](#_deleting_live_copy_pages)Deleting live copy pages
+
+If you try to delete a live copy page, you will see the standard warning that you would see when deleting any other page besides master, asking you if you’re sure about the task since it will delete the selected item and all its sub-items. This action does not affect the master site.
+
+## [](#_deleting_content_from_a_live_copy_page)Deleting content from a live copy page
+
+If you delete content, such as a specific component, from a live copy page without [protecting the whole page from master content changes](../manage-live-copy/#_protect_content_from_master_content_changes), the deleted content is added again when the master page is pushed.
+
+This behavior can be worked around by your development team adding a [no rendering option](../../configure/#_enable_content_deletion_without_protecting_pages_from_master_updates) to the master component template.

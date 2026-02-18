@@ -16,46 +16,11 @@ Endpoints can be used for many purposes, from triggering a third party service t
 
 In this page, we assume that you know Java and the basics of Maven or another similar dependency management tool.
 
-## [](#_what_is_a_magnolia_rest_endpoint)What is a Magnolia REST endpoint?
-
-A REST endpoint is a resource located on a server, in our case on a Magnolia instance, which can be accessed with a RESTful URL.
-
-A Java endpoint makes use of the [Java API for RESTful Web Services](https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services) (JAX-RS). The endpoint exposes public methods accessible via distinct URLs. A public method is accessed with a request and produces a response.
-
-Magnolia REST endpoints are JAX-RS endpoints.
-
-### [](#_rest_base_path_and_restdispatcherservlet)REST base path and RestDispatcherServlet
-
-The base path for every Magnolia REST resource is `/<context>/.rest`, where <context> is either the name of the webapp or `/` if the webapp is served from the root context. For details about specific paths of specific REST resources, see [Understanding `@Path`](#_understanding_path) below.
-
-All requests to `/<context>/.rest*` are handled by info.magnolia.rest.RestDispatcherServlet, which is installed and configured by the [`magnolia-rest-integration` module](#_magnolia_rest_integration).
-
-### [](#_what_do_endpoints_do)What do endpoints do?
-
-An endpoint can have several methods accomplishing completely different tasks. Basically endpoints can do anything that is possible with Java.
-
-Each publicly exposed method representing a REST resource must produce a response that contains at least some response headers (the minimum is a proper [HTTP response code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)). Both the request and response may or may not contain a `payload` (JSON or XML) wrapped in the request or response body.
-
-An endpoint should implement at least one method that can be accessed by its specific path with one of the standard HTTP methods: `GET`, `PUT`, `POST` or `DELETE`.
-
-![Endpoints function diagram](../../../_images/generic-endpoit-drawing.png)
-
-### [](#_data_api_endpoints)Data API endpoints
-
-A typical use case for an endpoint is a data API, which can read, create, update or delete content. A data API endpoint must implement at least one method, such as a `GET` method to read data.
-
-![API endpoints diagram](../../../_images/data-API-endpoint.png)
-
-Typically, methods for data interaction are called with these HTTP methods:
-
-|     |     |     |     |     |
-| --- | --- | --- | --- | --- |
 | Data interaction function | Read data | Create data | Update data | Delete data |
+| --- | --- | --- | --- | --- |
 | HTTP Method | `GET` | `PUT` | `POST` | `DELETE` |
-| Request has payload | no  | yes | yes | no  |
-| Response has payload | yes | maybe | maybe | no  |
-
-Magnolia provides default endpoints to read, create, update and delete nodes and properties of JCR workspaces. For details about the Magnolia default JCR content API, read the section about the [`magnolia-rest-services` module](#_magnolia_rest_services) below or have a look at the [Delivery API](#3.1@rest:api:delivery-endpoint.adoc) page.
+| Request has payload | no | yes | yes | no |
+| Response has payload | yes | maybe | maybe | no |
 
 ## [](#_java_maven_and_package_names)Java, Maven and package names
 
@@ -73,7 +38,7 @@ Here is the archetype command call:
 
 mvn archetype:generate -DarchetypeGroupId=info.magnolia.maven.archetypes -DarchetypeArtifactId=magnolia-module-archetype -DarchetypeVersion=RELEASE
 
-> **Note:** Always use the latest version of the archetype.Provide meaningful values for the groupId and artifactId.Provide the magnolia-bundle-version that fits your existing Magnolia bundle(s) best. If you are not sure, use the latest released Magnolia version: 6.3.20The archetype creates a POM file which imports the magnolia-bundle-parent. This parent manages the versions of Magnolia modules you rely on.
+> **Note:** Always use the latest version of the archetype.Provide meaningful values for the groupId and artifactId.Provide the magnolia-bundle-version that fits your existing Magnolia bundle(s) best. If you are not sure, use the latest released Magnolia version: 6.3.21The archetype creates a POM file which imports the magnolia-bundle-parent. This parent manages the versions of Magnolia modules you rely on.
 
 ### [](#_java_package_name)Java package name
 
@@ -164,271 +129,14 @@ The module is used for development and testing purposes only.
 
 Make sure you use the same version for all Magnolia REST modules on which you depend.
 
-The version of the Magnolia REST modules depends on the version of Magnolia you use to run your custom endpoint. We recommend you check the POM file (or the parent POM file) of your Magnolia webapp. The .pom file manages the version of the Magnolia REST modules using the property `restVersion`. If you are unsure, use the latest released version, which is currently: 3.1.4
-
-## [](#_how_to_create_a_java_class_that_acts_as_a_rest_resource)How to create a Java class that acts as a REST resource
-
-To create a Java class that acts as a REST resource, write a Java class — your service — and register this service in the Magnolia `configuration` workspace. Registering the service makes sure that the REST resource can be accessed by a default Magnolia servlet.
-
-In this section we create a simple endpoint implementation and explain some important details for every custom Java REST endpoint in the context of Magnolia.
-
-### [](#_creating_the_java_class)Creating the Java class
-
-Create the class `com.example.rest.service.v1.DemoEndpoint`. This is the code for a simple working example:
-
-```java
-package com.example.rest.service.v1;
-
-import info.magnolia.rest.AbstractEndpoint;
-import info.magnolia.rest.EndpointDefinition;
-
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-@Path("/demo/v1")
-public class DemoEndpoint<D extends EndpointDefinition> extends AbstractEndpoint<D> {
-
-    public DemoEndpoint(D endpointDefinition) {
-        super(endpointDefinition);
-    }
-
-    @Path("/hello")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response hello() {
-        return Response.ok().build();
-    }
-}
-```
-
-In the example above, note that the class:
-
--   Extends info.magnolia.rest.AbstractEndpoint (line 13).
-
--   Has at least one method, which (here) has the return type [`javax.ws.rs.core.Response`](http://docs.oracle.com/javaee/7/api/javax/ws/rs/core/Response.html).
-
--   Declares its path on both the class and the method level (lines 12, 19).
-
--   Declares its response type(s) (line 21).
-
--   Declares the HTTP methods through which it can be accessed (line 20).
-
-
-Let’s have a closer look at some of these details below.
-
-#### [](#_extending_info_magnolia_rest_abstractendpoint)Extending `info.magnolia.rest.AbstractEndpoint`
-
-See line 13 in the example above. By extending info.magnolia.rest.AbstractEndpoint, the endpoint can be configured. We will see later on what the configuration and registration looks like. When a request comes to Magnolia mapped to this endpoint, an instance is created via [Inversion of Control (IoC)](https://en.wikipedia.org/wiki/Inversion_of_control). During this process, the IoC framework also creates an instance of info.magnolia.rest.EndpointDefinition, which is injected into the constructor of our endpoint class.
-
-#### [](#_using_javax_ws_rs_annotations)Using `javax.ws.rs.*` annotations
-
-If you are not yet familiar with the [`javax.ws.rs.*`](http://docs.oracle.com/javaee/7/api/javax/ws/rs/package-summary.html) package, we recommend you take some time to learn the basics. This package contains many annotations that can be used to declare the details of Java-based REST resources. We will see how to use these annotations below.
-
-#### [](#_returning_javax_ws_rs_core_response)Returning `javax.ws.rs.core.Response`
-
-`javax.ws.rs.core.Response` is the standard response type for a Java REST endpoint.
-
-On line 22 we declare the return type.
-
-On line 23 we use the static method `#ok` (without an argument), which ensures that:
-
--   The HTTP response code is 200 (if everything else goes well).
-
--   Since we use the method `#ok` with no argument, no payload is created and the response does not have a body, just headers.
-
-
-#### [](#_understanding_producing)Understanding `@Producing`
-
-On line 21, by using the `@Produces` annotation, we can declare a list of possible HTTP response content types.
-
-Note that, in our example, there is no need to declare the HTTP response content type because the method only returns response headers but no response body. However, if the method creates a payload (for instance JSON or XML) to be returned as an HTTP response body, then you should declare the response content type with @Produces.
-
-#### [](#_understanding_path)Understanding `@Path`
-
-A method on a REST endpoint has a distinct path to access it with a RESTful URL. A path generally consists of several parts:
-
-1.  **Magnolia REST base path**: `/<context>/.rest`.
-    If you are running a local development bundle, the base REST path is typically `/magnoliaAuthor/.rest` or `/magnoliaPublic/.rest`.
-    On a productive environment, where you serve the webapp from the root context, the base REST path is `/.rest`.
-    This path is mapped to the Magnolia REST servlet.
-
-2.  **REST endpoint base path**. This path is declared on the class level with the `@Path` annotation; see line 12 on the example above.
-    This path in our example is `/demo/v1`.
-    The value of this path can be chosen arbitrarily. Note that it typically contains the version of the endpoint (which is `/v1` here).
-    If your [package name](#_java_package_name) reflects the version, you can use the same version identifier on both the package name and the endpoint base path.
-
-3.  **REST endpoint method path**. This path is declared on the method level with the `@Path` annotation; see line 19 on the example above.
-    The example shown is static with the value `/hello`. However, the method path can be dynamic in combination with `@PathParam`, we will see an example later on.
-
-
-To summarize, the path to a REST `resource` is a combination of:
-
-1.  Magnolia REST base path
-
-2.  REST endpoint base path
-
-3.  REST endpoint method path
-
-
-```none
-/<context>/.rest (1)
-
-/demo/v1 (2)
-
-/hello (3)
-```
-
-Result
-
-/<context>/.rest/demo/v1/hello
-
-> **Caution:** Make sure that the beginning of the base path is not the same as the name of the method path, hence not something like/hello/v1 (2)
->
-> /hello (3)creating/<context>/.rest/hello/v1/helloIf this were the case, the endpoint will not work and an error message (Could not find resource for full path …​) will be generated.
-
-#### [](#_declaring_the_http_method)Declaring the HTTP method
-
-On line 20 we use the annotation `@GET`. This declares that the REST resource defined by this method can be accessed with the HTTP method GET only.
-
-If you try to access the resources using another method (for example with POST), the resource returns an error HTTP response code. We will test this later on with [cURL](https://en.wikipedia.org/wiki/CURL).
-
-You can only declare one HTTP method per method. The Java compiler shows an error if you try to declare two methods (by using two annotations).
-
-### [](#_registering_the_rest_resource_in_magnolia)Registering the REST resource in Magnolia
-
-REST resources in Magnolia should be registered within your custom module. This ensures that the REST resource and its configuration are known in the Magnolia info.magnolia.rest.registry.EndpointDefinitionRegistry.
-
-**Example**: Registering the endpoint:
-
-<module name>/restEndpoints/demo.yaml
-
-```yml
-class: info.magnolia.rest.service.node.definition.ConfiguredNodeEndpointDefinition
-implementationClass: com.example.rest.service.v1.DemoEndpoint
-```
+The version of the Magnolia REST modules depends on the version of Magnolia you use to run your custom endpoint. We recommend you check the POM file (or the parent POM file) of your Magnolia webapp. The .pom file manages the version of the Magnolia REST modules using the property `restVersion`. If you are unsure, use the latest released version, which is currently: {magnolia-rest-63}
 
 | Property | Description |
 | --- | --- |
-| `restEndpoints` | **required**<br><br>The folder which contains a list of endpoint definitions. The name of the folder must be `restEndpoints`. |
-| `<endpoint-name>` | **required**<br><br>The name of the endpoint. The name is arbitrary but must be unique. |
-| `class` | **required**<br><br>The fully qualified class name of the definition class. Typically `info.magnolia.rest.EndpointDefinition` or a subclass. |
-| `implementationClass` | **required**<br><br>The fully qualified class name of the REST endpoint java class. |
-
-### [](#_granting_access_to_the_rest_resource_in_the_security_app)Granting access to the REST resource in the Security app
-
-The last step before you can access the resource with a client is to grant access to the REST resource in the Security app.
-
-Permissions to issue REST requests are controlled using the standard Magnolia [role-based security mechanism](../../../Administration/IAM/Roles-and-access-control-lists/).
-
-The `magnolia-rest-integration` module installs a `rest` role which has the [permission to issue requests](../../../Administration/IAM/Default-permissions/) to the `nodes` and `properties` endpoints by default.
-
-You can extend the existing `rest` role to provide web access to the path of your custom REST resource, or you can duplicate the existing role to create a new one just for your use case. In either case, make sure that you assign this role to the users who need to access this resource.
-
-For our example we create a new role named `demo-rest-role` and assign it to `superuser` on the magnoliaAuthor instance. You also can download this role (`userroles.demo-rest-role.xml`) from the [Git repository](https://bitbucket.org/magnolia-cms/demo-rest-services).
-
-#### [](#_details_of_the_role)Details of the role
-
-Role info:
-
-![Role info tab](../../../_images/6-1-HowtocreateacustomJavabasedRESTendpoint-addRole.png)
-
-Access Control Lists (ACL):
-
-![Access control lists tab](../../../_images/6-1-HowtocreateacustomJavabasedRESTendpoint-ACL.png)
-
-Web access:
-
-![Web access tab](../../../_images/6-1-HowtocreateacustomJavabasedRESTendpoint-webAccess.png)
-
-  Access TypePathValue
-
-**Deny**
-
-`/.rest*`
-
-Deny all to begin.
-
-**Get&Post**
-
-`/.rest/swagger*`
-
-Allow access to the Swagger tools. This is only required if you have the `magnolia-rest-tools` module installed, which is used for testing and development purposes only.
-
-**Get&Post**
-
-`/.rest/demo/v1*`
-
-Allow access to our custom endpoint whose access path is `.rest/demo/v1`, as explained in \[Understanding @Path\](#understanding-path).
-
-> **Note:** Get would be sufficient, but we use Get&Post since we will create more methods later on.
-
-| Access type | Meaning |
-| --- | --- |
-| **Deny** | Everything is denied. |
-| **Get** | Only the HTTP method `GET` is allowed. |
-| **Get&Post** | All HTTP methods available are allowed: `GET`, `POST`, `PUT` and `DELETE`. |
-
-This is the list of roles assigned to superuser:
-
-![Roles tab with superuser selected](../../../_images/6-1-HowtocreateacustomJavabasedRESTendpoint-superuserRole.png)
-
-Depending on your bundle, you may have more roles assigned to `superuser`.
-
-### [](#_accessing_the_resource)Accessing the resource
-
-Now everything is ready to access the custom endpoint.
-
-#### [](#_using_curl)Using cURL
-
-[cURL](https://curl.haxx.se/download.html) is a useful tool to test REST resources. To check if you have it installed, open a command shell and type:
-
-curl
-
-When it is installed, the shell displays something like this:
-
-curl: try 'curl --help' or 'curl --manual' for more information
-
-Once you have confirmed that cURL works, try the following request:
-
-curl -i --user superuser:superuser -X GET --header 'Accept: application/json' 'http://localhost:8080/magnoliaAuthor/.rest/demo/v1/hello'
-
-Since we provide the `-i` option, cURL displays the response header. Remember that the requested resource does not produce a payload, so there is no response body.
-
-HTTP/1.1 200 OK
-Server: Apache-Coyote/1.1
-Set-Cookie: JSESSIONID=624D8A0283867F9FA07D02F72B9B72EA; Path=/magnoliaAuthor/; HttpOnly
-Pragma: no-cache
-Cache-Control: no-cache, no-store, must-revalidate, max-age=0
-Expires: Thu, 01 Jan 1970 00:00:00 GMT
-Content-Type: text/html;charset=UTF-8
-Content-Length: 0
-Date: Tue, 04 Jul 2017 14:36:35 GMT
-
-Now try to access the resource via the `POST` method:
-
-curl -i --user superuser:superuser -X POST --header 'Accept: application/json' 'http://localhost:8080/magnoliaAuthor/.rest/demo/v1/hello'
-
-Here are the response headers:
-
-HTTP/1.1 500 Internal Server Error
-Server: Apache-Coyote/1.1
-Set-Cookie: JSESSIONID=C4A7CB1D1AA09967FD4E413E61D9AA4C; Path=/magnoliaAuthor/; HttpOnly
-Pragma: no-cache
-Cache-Control: no-cache, no-store, must-revalidate, max-age=0
-Expires: Thu, 01 Jan 1970 00:00:00 GMT
-Content-Type: text/plain;charset=UTF-8
-Content-Length: 79
-Date: Tue, 04 Jul 2017 14:40:17 GMT
-Connection: close
-
-RESTEASY003650: No resource method found for POST, return 405 with Allow header
-
-This is expected. The method `#hello` is annotated with [`@GET`](https://docs.oracle.com/javaee/7/api/javax/ws/rs/GET.html) declaring it can only be accessed with the HTTP method `GET`. See the section [declaring the HTTP method](#_declaring_http_method).
-
-> **Note:** Note that you pass the username and password in clear text in this cURL call. This is acceptable when testing on a local machine, however, we advise against doing this to access a production environment server.
+| `restEndpoints` | **required** The folder which contains a list of endpoint definitions. The name of the folder must be `restEndpoints` . |
+| `<endpoint-name>` | **required** The name of the endpoint. The name is arbitrary but must be unique. |
+| `class` | **required** The fully qualified class name of the definition class. Typically `info.magnolia.rest.EndpointDefinition` or a subclass. |
+| `implementationClass` | **required** The fully qualified class name of the REST endpoint java class. |
 
 ## [](#_about_marshalling_and_data_conversion)About marshalling and data conversion
 
@@ -443,7 +151,7 @@ If the endpoint handles both read (GET) and write (PUT to create and POST to upd
 
 In this section we focus on some aspects of this kind of data conversion.
 
-![Data transformation diagram](../../../_images/data-transformation.png)
+![Data transformation diagram](../../../../RNs-6-4-3/_images/data-transformation.png)
 
 ### [](#_converting_a_data_object_into_a_pojo_and_vice_versa)Converting a data object into a POJO and vice versa
 
@@ -481,7 +189,7 @@ Imagine you have a POJO with the name `Lunch` and two properties: `food` and `be
 
 com.example.rest.pojos.Lunch
 
-[java/com/example/rest/pojos/Lunch.java](https://bitbucket.org/magnolia-cms/demo-rest-services)
+[java/com/example/rest/pojos/Lunch.java]({repo-demoRestServices})
 
 Now you require a method which can deliver a `lunch` payload. Endpoint method(s) providing a `Lunch` object would look like this:
 
@@ -575,14 +283,14 @@ This code snippet shows the method to add a lunch:
 
 com.example.rest.service.v1.DemoEndpoint#storeLunch
 
-[DemoEndpoint.java?](https://bitbucket.org/magnolia-cms/demo-rest-services)
+[DemoEndpoint.java?]({repo-demoRestServices})
 
 -   Line 140: It is generally considered good practice to tell the service what type of data it consumes. However, it is not required.
 
 -   Line 143: The most important point in the current context is the method signature.
     **The method must contain a parameter of the type to which the payload should be mapped to.**
 
--   Line 146: If the mapping was successful, we add the lunch POJO to the store. The `store` actually is a mock store, it does not really store data in the example. (See [`BlackboxDatastore.java`](https://bitbucket.org/magnolia-cms/demo-rest-services) on Git). However, `store#add` may throw an exception if it fails.
+-   Line 146: If the mapping was successful, we add the lunch POJO to the store. The `store` actually is a mock store, it does not really store data in the example. (See [`BlackboxDatastore.java`]({repo-demoRestServices}) on Git). However, `store#add` may throw an exception if it fails.
 
 -   Line 147: Build the response with the response code 200 (ok), and also put the lunch object into the payload, it now carries the object id too. Giving back the just created object could be used on a client to render an update UI or to summarize the successful add action.
 
@@ -653,7 +361,7 @@ An elegant solution to solve the same-origin policy without changing Apache conf
 
 ## [](#_sample_code_on_git)Sample code on Git
 
-The sample code for the examples on this page is available on the [Magnolia Git repository](https://bitbucket.org/magnolia-cms/demo-rest-services).
+The sample code for the examples on this page is available on the [Magnolia Git repository]({repo-demoRestServices}).
 
 Related topics
 

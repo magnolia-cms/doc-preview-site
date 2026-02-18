@@ -1,0 +1,77 @@
+---
+title: "ExternalAuditor"
+url: https://docs.magnolia-cms.com/seo/auditors/ExternalAuditor/
+category: Modules
+version: modules
+breadcrumb: SEO module > Auditors > ExternalAuditor
+---
+
+# ExternalAuditor
+
+[Deprecated](../../../incubator-modules/deprecations/)
+
+The `ExternalAuditor` sends content to external web service for auditing and judges the results returned by the external service.
+
+Class
+
+`info.magnolia.services.seo.audit.impl.external.ExternalAuditor`
+
+`ExternalAuditor` is a convenient way to plug in a third party service (link a SEO ranking service or a spelling and grammar service) into Magnolia. An `ExternalAuditor` can be applied to different content types in Magnolia, for example a story defined in the Story app.
+
+An `ExternalAuditor` does the following:
+
+-   renders the selected content into a format suitable to the external service
+
+-   builds a request to the external service with the formatted content and any additional parameters
+
+-   sends a POST request to the external service and receives the results
+
+-   processes the results to determine if the audit is passed or judged as a error, warning or not
+
+
+| Property | Description |
+| --- | --- |
+| `description` | **required** A human-readable description of the configured auditor, suitable for use in auditor selection dialogs. |
+| `auditProperty` | **required** The name of the audit property where the audit results will be stored. |
+| `url` | **required** The location of the external web service. The url should be capable of receiving a `POST` request. |
+| `contentKey` | **optional** The request parameter for the content. If not defined, the contentKey will be "text". |
+| `requestParameters` | **required** Defines pre-set parameters to be include in the service request. You can define additional static request parameters like license keys or client identifiers that will be added to the request. |
+| `definition` | **required** A template definition for generating the content to be sent to the external service. ** For more on template definitions, see [Template definition](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-definition/) . | ** | For more on template definitions, see [Template definition](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-definition/) . |
+| ** | For more on template definitions, see [Template definition](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-definition/) . |
+| `delegates` | **required** A list of `AuditDelegates` ( `info.magnolia.services.seo.audit.impl.AuditDelegate` ) that interpret the results from the external service. |
+
+## [](#_example)Example
+
+Here is an example from the SEO module. You can find this configuration here: `/modules/seo/config/auditManager/auditors/checkGrammar`.
+
+```yaml
+checkGrammar:
+  active: true
+  auditProperty: checkGrammar
+  class: info.magnolia.services.seo.audit.impl.external.ExternalAuditor
+  description: Check grammar (stories only)
+  url: https://api.textgears.com/check.php
+  definition:
+    class: info.magnolia.rendering.template.configured.ConfiguredRenderableDefinition
+    renderType: freemarker
+    templateScript: /seo/templates/story.ftl
+  requestParameters:
+    key: xxx
+  renderingParameters:
+  delegates:
+    requestSuccess:
+      auditLevel: auditWarning
+      auditProperty: checkGrammar
+      auditResult: TextGears request failure!
+      class: info.magnolia.services.seo.audit.impl.ValueDelegate
+      expectedValue: true
+      valueKey: result
+    checkGrammarScore:
+      auditLevel: auditErrors
+      auditProperty: checkGrammar
+      auditResult: Grammar score too low!
+      class: info.magnolia.services.seo.audit.impl.ThresholdDelegate
+      lowerBound: 0
+      upperBound: 80
+      valueKey: score
+```

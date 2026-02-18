@@ -1,0 +1,57 @@
+---
+title: "Uninstalling SSO"
+url: https://docs.magnolia-cms.com/magnolia-sso/guides/uninstalling-sso/
+category: Modules
+version: modules
+breadcrumb: SSO module > Uninstalling SSO
+---
+
+# Uninstalling SSO
+
+You can manually uninstall the SSO module from your Magnolia instances by following the steps on this page. They’re intended for administrators who want to stop using an Open ID Connect (OIDC) IAM instance and return to the default Magnolia login authentication.
+
+| Node name | Value |
+| --- | --- |
+| 📁 securityCallback |  |
+| ⬩ class | info.magnolia.cms.security.SecurityCallbackFilter |
+| ⸬ clientCallbacks |  |
+| ⸬ **form** ** |  |
+| ⬩ class | info.magnolia.cms.security.auth.callback.FormClientCallback |
+| ⬩ loginForm | /defaultMagnoliaLoginForm/login.html |
+| ⸬ **ssoFallback** |  |
+| ⬩ class | info.magnolia.cms.security.auth.callback.FormClientCallback |
+| ⬩ loginForm | /defaultMagnoliaLoginForm/login.html |
+| ⸬ originalUrlPattern |  |
+| ⬩ patternString | /.magnolia/jcrlogin |
+| ⬩ class | info.magnolia.cms.util.SimpleUrlPattern |
+| ⬩ enabled | true |
+| ⸬ **ssoLocationFragmentRedirect** |  |
+| ⬩ class | info.magnolia.sso.LocationFragmentRedirectClientCallback |
+| ⸬ originalUrlPattern |  |
+| ⬩ patternString | /.magnolia/admincentral* |
+| ⬩ class | info.magnolia.cms.util.SimpleUrlPattern |
+| ⸬ **sso** |  |
+| ⬩ class | info.magnolia.sso.UserInitiatedRedirectClientCallback |
+
+| Node name | Value |
+| --- | --- |
+| 📁 securityCallback |  |
+| ⬩ class | info.magnolia.cms.security.SecurityCallbackFilter |
+| ⸬ clientCallbacks |  |
+| ⸬ form |  |
+| ⬩ class | info.magnolia.cms.security.auth.callback.FormClientCallback |
+| ⬩ loginForm | /defaultMagnoliaLoginForm/login.html |
+| ⸬ **ssoFallback** ** |  |
+| ⬩ class | info.magnolia.cms.security.auth.callback.FormClientCallback |
+| ⬩ loginForm | /defaultMagnoliaLoginForm/login.html |
+| ⸬ originalUrlPattern |  |
+| ⬩ patternString | /.magnolia/jcrlogin |
+| ⬩ class | info.magnolia.cms.util.SimpleUrlPattern |
+| ⬩ enabled | true |
+| ⸬ **ssoLocationFragmentRedirect** ** |  |
+| ⬩ class | info.magnolia.sso.LocationFragmentRedirectClientCallback |
+| ⸬ originalUrlPattern |  |
+| ⬩ patternString | /.magnolia/admincentral* |
+| ⬩ class | info.magnolia.cms.util.SimpleUrlPattern |
+| ⸬ **sso** ** |  |
+| ⬩ class | info.magnolia.sso.UserInitiatedRedirectClientCallback |

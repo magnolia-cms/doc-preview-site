@@ -1,0 +1,64 @@
+---
+title: "Container"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/container/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Container
+---
+
+# Container
+
+The Container component is a layout component used to organize content into columns or rows. Each item acts as a section where available components can be placed.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `container` (required, default: `columns`) - A switchable field to define layout direction:
+
+    -   `columns` - Lays out content in vertical columns.
+
+    -   `rows` - Lays out content in horizontal rows.
+
+
+-   `count` (required, default: 3) - Number of layout sections:
+
+    -   Radio buttons from 1 to 5.
+
+    -   Represents the number of columns or rows based on the value of the `container` field.
+
+
+
+## [](#_behavior)Behavior
+
+-   User must select either rows or columns.
+
+-   Based on the selected layout direction:
+
+    -   If `columns` is selected, child components will be displayed in equally divided vertical columns.
+
+    -   If `rows` is selected, child components will be stacked horizontally in equal rows.
+
+
+-   Components can be added to each column or row area individually.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Container -p container
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

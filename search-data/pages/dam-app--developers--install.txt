@@ -1,0 +1,145 @@
+---
+title: "DAM App module"
+url: https://docs.magnolia-cms.com/dam-app/developers/install/
+category: Modules
+version: modules
+breadcrumb: DAM App module > Install
+---
+
+# DAM App module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [DAM](https://magnolia-cms.atlassian.net/browse/MGNLDAM) |
+| Maven site | [DAM](https://nexus.magnolia-cms.com/#browse/browse:modules:info%2Fmagnolia%2Fdam-app%2Fmagnolia-dam-app-parent%2F6.0.1) |
+| Latest | 6.0.1 |
+
+| artifactId |  |
+| --- | --- |
+| `magnolia-dam-app-parent` | Parent reactor. |
+| `dam-bom` | Provides a Maven Bill of Materials (BOM) to simplify dependency management. |
+| `dam-app` | [Assets app](../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Assets-app/) , a Magnolia 6 UI container application for asset management subapps such as the [native Magnolia assets subapp](../dam-app-jcr/) . This container app can also be used with the [DAM integration framework](../../../product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/external-dam-integration-framework/) to add subapps connected to: • Amazon S3 Assets • Bynder The Assets app is bundled with the following Magnolia-built webapps: • `magnolia-community-webapp` • `magnolia-community-demo-webapp` • `magnolia-dx-core-webapp` • `magnolia-dx-core-demo-webapp` If you want to use the app in a custom webapp, make sure that you add an asset management subapp such as [dam-app-jcr](../dam-app-jcr/) . ** By default, the Assets app container doesn’t have a subapp defined and doesn’t start without a subapp. | ** | By default, the Assets app container doesn’t have a subapp defined and doesn’t start without a subapp. |
+| ** | By default, the Assets app container doesn’t have a subapp defined and doesn’t start without a subapp. |
+| `dam-app-jcr` | Magnolia assets subapp, a Magnolia-native asset management application for simple digital asset management scenarios. See [dam-app-jcr submodule](../dam-app-jcr/) page for configuration information. |
+| `dam-imaging` | Provides an implementation of the AssetRenderer based on JCR and Magnolia [Imaging](../../../imaging/) . |
+| `dam-templating` | Provides info.magnolia.dam.templating.functions.DamTemplatingFunctions . See the [damfn](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/damfn/) page for more information. |
+| `dam-preview` | Adds thumbnail and portrait views for PDFs and videos. ** The DAM Preview module is optional, not installed by default, and its functionality is only guaranteed to work with the JCR assets, not with the assets stored on external DAM systems such as Bynder or Amazon S3 Assets. See [dam-preview submodule](../dam-preview/) page for configuration information. | ** | The DAM Preview module is optional, not installed by default, and its functionality is only guaranteed to work with the JCR assets, not with the assets stored on external DAM systems such as Bynder or Amazon S3 Assets. |
+| ** | The DAM Preview module is optional, not installed by default, and its functionality is only guaranteed to work with the JCR assets, not with the assets stored on external DAM systems such as Bynder or Amazon S3 Assets. |
+| `dam-widget` | Provides a custom Vaadin widgetset that extends the [Magnolia default widgetset](../../../product-docs/RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Magnolia-widgetsets/) for the DAM App module. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-app-parent</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-bom</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-app</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-app-jcr</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Note:** The dependency to magnolia-dam-app-jcr is not mandatory.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-templating</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-imaging</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-preview</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Note:** The dependency to magnolia-dam-preview is not mandatory.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam-app</groupId>
+  <artifactId>magnolia-dam-widget</artifactId>
+  <version>6.0.1</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+Related topics
+
+-   [Configure the DAM core submodule](../../../dam/developers/dam-core/)
+
+-   [DAM API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/DAM-API/)
+
+-   [JCR API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/JCR-API/)
+
+-   [`damfn` templating functions](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/damfn/)
+
+-   [How to work with images using `damfn`](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)

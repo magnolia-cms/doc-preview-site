@@ -110,7 +110,7 @@ public class Observation {
 
 The `ValueContext` and `LocaleContext` are injected into the [Browser subapp](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/magnolia-ui-6.2.16/magnolia-ui-framework/src/main/java/info/magnolia/ui/contentapp/browser/Browser.java#L80). As these contexts have not yet been bound in the parent component, the injection mechanism creates new instances.
 
-These contexts are synchronized. The `ValueContext` [changes are reflected into the location](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/magnolia-ui-6.2.16/magnolia-ui-framework/src/main/java/info/magnolia/ui/contentapp/browser/Browser.java#L101) and [vice versa](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/magnolia-ui-6.3.20/magnolia-ui-framework/src/main/java/info/magnolia/ui/contentapp/browser/Browser.java#L109).
+These contexts are synchronized. The `ValueContext` [changes are reflected into the location](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/magnolia-ui-6.2.16/magnolia-ui-framework/src/main/java/info/magnolia/ui/contentapp/browser/Browser.java#L101) and [vice versa](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/magnolia-ui-6.3.21/magnolia-ui-framework/src/main/java/info/magnolia/ui/contentapp/browser/Browser.java#L109).
 
 #### [](#_grid_view)Grid view
 

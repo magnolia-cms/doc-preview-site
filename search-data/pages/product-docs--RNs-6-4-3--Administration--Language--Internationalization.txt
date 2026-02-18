@@ -1,0 +1,215 @@
+---
+title: "Internationalization"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Language/Internationalization/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Language > Internationalization
+---
+
+# Internationalization
+
+This page explains the internationalization concept as applied in Magnolia. The first part of the page provides the internationalization basics, the second part mentions some more advanced points.
+
+## [](#_internationalization_vs_localization)Internationalization vs localization
+
+Internationalization and localization, usually abbreviated as **i18n** and **l10n** respectively, are ways to adapt Magnolia to different languages and regional differences.
+
+-   Internationalization involves designing a system in which it is easy to accommodate new languages without programming.
+
+-   Localization adapts Magnolia to a particular region or language by adding locale-specific configuration.
+
+
+> **Note:** i18n vs l10nMagnolia primarily provides technical means for internationalization and it is mainly these aspects that the text below and other parts of the Language section deal with. For more information regarding l10n and the differences between i18n and l10n, see for example W3C’s page.
+
+The running system assigns a `java.util.Locale` depending on the user settings or browser information. While rendering a page, a dialog, an app or any other part or the user interface, the i18n system evaluates the proper translation for a text by the current `Locale`. It may happen that the i18n system cannot find a translation for the given locale - in this case the translation of the default language is applied.
+
+| Location | In Magnolia Maven module | In Magnolia light module |
+| --- | --- | --- |
+| Preferred | `src/main/resources/<module-name>/i18n` | `<magnolia.resources.dir>/<module-name>/i18n` |
+| Deprecated* | `src/main/resources/mgnl-i18n` | - |
+
+## [](#_more_advanced_points)More advanced points
+
+### [](#_finding_the_full_name_of_a_key)Finding the full name of a key
+
+Magnolia generates keys for all dialog text automatically. If a translation for a key is not found in the existing `.properties` file(s), Magnolia will use the key itself in place of the translation. The full name of a key can be obtained in several ways.
+
+#### [](#_use_the_browser_inspector)Use the browser inspector
+
+In the following scenario, a new dialog containing a text input form is added to the Contact Page of the Travel Demo module. After creating the dialogue, it may look like this in the browser:
+
+![New dialog where i18n labels are missing](../../../_images/6-2-i18n_noValue_UI6.png)
+
+Two labels in this dialog are provided with correct i18n texts: the **Cancel** and the **Save changes** buttons. These translations are reused from message bundles of modules that already exist in the Magnolia framework. The other two labels in the dialog have been replaced by the keys themselves.
+
+If an i18n key were too long to fit in its position in the UI, it would be displayed in an abbreviated form. In any case, the full key can be obtained via the *inspector function* of your web browser. Right-click on the key, and in the menu that opens, choose `Inspect`. In the source code part of the browser window, you can see that the i18n key for the text field in this dialog is indeed `travel-demo.components.txtField.TextField.label`:
+
+```xml
+<div class="v-caption v-caption-form-field-layout v-caption-hasdescription">
+    <span id="gwt-uid-874" for="gwt-uid-875">travel-demo.components.txtField.TextField.label</span>
+</div>
+```
+
+To replace the key with a label, add the following line to the English `.properties` files of the Travel Demo module:
+
+travel-demo.components.txtField.TextField.label=Enter Your Text
+
+Deploy the file and start the server. The translation `Enter Your Text` now appears as a label attached to the input text field.
+
+![New dialog where a custom i18n label has been configured](../../../_images/6-2-i18n_addedValue_UI6.png)
+
+#### [](#_use_the_log)Use the log
+
+The full names of translation keys can also be obtained by logging the `info.magnolia.i18nsystem.TranslationServiceImpl` class while using an app. This class prints keys into the `catalina.out` log file as Magnolia looks for them in bundles.
+
+In the Log Levels app of the [Log Tools module](../../../Modules/List-of-modules/Log-Tools-module/), set the logging level for `TranslationServiceImpl` to DEBUG.
+
+> **Note:** If the info.magnolia.i18nsystem.TranslationServiceImpl logger is not present on the list, add it there using the Add logger config button.
+
+![Debugging Log Ltools module](../../../_images/TranslationServiceImpl_class_crop.png)
+
+Use your app. Open all subapps and dialogs. In the log, look for messages starting with \`\`Looking up in global i18n message bundle with key…''.
+
+catalina.out raw output
+
+```bash
+2014-04-04 13:10:45,604 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::sample.app.label, sample.app[] and Locale [de]
+2014-04-04 13:10:45,605 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::sample.app.icon[] and Locale [de]
+2014-04-04 13:10:45,605 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::app-launcher.dev.label, app-launcher.dev, app-launcher.dev[] and Locale [de]
+2014-04-04 13:10:45,605 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::products.app.icon[] and Locale [de]
+2014-04-04 13:10:45,612 DEBUG info.magnolia.i18nsystem.TranslationServiceImpl : Looking up in global i18n message bundle with key // tag::pages.app.label, pages.app[] and Locale [de]
+...
+```
+
+The raw log output can be confusing since it also contains keys from other Magnolia apps. Parse the log to find keys that are relevant to your app only. Here’s an example command you can run in an OS X Terminal:
+
+cat catalina.out | egrep -o "products(\\.\\w+)+" | sort --unique
+
+Where:
+
+-   `cat catalina.out` prints the contents of the log file to the console
+
+-   `egrep -o "products(\.\w+)+"` matches message keys that start with your app name. Replace `products` with your app name.
+
+-   `sort –unique` ignores duplicate entries
+
+
+catalina.out parsed output
+
+```bash
+products.app
+products.app.icon
+products.app.label
+products.browser
+products.browser.actionbar.sections.folder
+products.browser.actionbar.sections.folder.label
+products.browser.actionbar.sections.product
+products.browser.actionbar.sections.product.label
+...
+```
+
+> **Note:** From Magnolia 6.2.1, if no translation key is found, handleUnknownKey is used as the default fallback method.
+
+info.magnolia.i18nsystem.TranslationServiceImpl
+
+```java
+  private String translate(Locale locale, String basename, String[] keys, String fallback) {
+
+      if (locale == null) {
+          throw new IllegalArgumentException("Locale can't be null");
+      }
+
+      if (keys == null || keys.length < 1) {
+          throw new IllegalArgumentException("Keys can't be null or empty");
+      }
+
+      if (basename != null) {
+          log.debug("Got an explicit basename ({}) for keys {}", basename, Arrays.asList(keys));
+      }
+
+      final String message = lookUpKeyUntilFound(keys, locale, basename);
+      if (message != null) {
+          return message;
+      } else {
+          return I18nText.NO_FALLBACK.equals(fallback) ? handleUnknownKey(locale, basename, keys) : fallback;
+      }
+  }
+```
+
+### [](#_using_the_translation_service)Using the translation service
+
+When you create UI elements in code, use the info.magnolia.i18nsystem.SimpleTranslator translation service. In a simple content app, you likely won’t need to create UI elements in code since most can be configured. But if you create a custom app or anything more complex, this is how to use the service.
+
+#### [](#_java_code)Java code
+
+> **Warning:** Do NOT instantiate SimpleTranslator but inject it in the constructor.
+
+```java
+import info.magnolia.i18nsystem.SimpleTranslator;
+import com.vaadin.ui.Button;
+import jakarta.inject.Inject;
+
+public class MyClass {
+
+    private final SimpleTranslator i18n;
+
+    @Inject
+    public MyClass(SimpleTranslator i18n){
+        this.i18n = i18n;
+    }
+
+    public void someMethod(){
+        // more code here ...
+        Button sendMessageButton = new Button(i18n.translate("messages-app.app.button.sendMessage"));
+        // more code here ...
+    }
+}
+```
+
+Then pass the key in the `#translate(String key).`
+
+The key `messages-app.app.button.sendMessage` must be in a message file with a value:
+
+myapp-messages\_en.properties
+
+```bash
+messages-app.app.button.sendMessage=Send message
+```
+
+Examples:
+
+-   Translatable fields in a component: [ContactPreview](https://gitlab.magnolia-platform.com/pd/extensions/contacts-app/-/blob/master/src/main/java/info/magnolia/contacts/app/ContactPreview.java)
+
+-   Translatable error message: [JcrAssetUploadAction](https://gitlab.magnolia-platform.com/pd/modules/dam-app/-/blob/master/magnolia-dam-app-jcr/src/main/java/info/magnolia/dam/app/action/JcrAssetUploadAction.java)
+
+
+#### [](#_template_script)Template script
+
+Similar to Java code, you can use the translation service in a template script. Below, in an excerpt from `/travel-demo-content-tags/templates/components/tourDetail-content-tags.ftl`, also with a parameter called `tour.duration` (line 3):
+
+```xml
+<div class="product-property">
+    <div class="property-label">${i18n.get('tour.property.duration')}</div>
+    <div class="property-value">${i18n.get('tour.duration', [tour.duration!])}</div>
+</div>
+```
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+Depending on actual values, this can be displayed for example as follows:
+
+![Rendering of an i18n translation in FreeMarker](../../../_images/6.2.11-internationalization-DOCU-2137-focus.png)
+
+### [](#_additional_freemarker_i18n_examples)Additional FreeMarker i18n examples
+
+You can also use the following Magnolia [cmsfn](../../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/) templating functions to handle internationalized content:
+
+-   `localizedLinks()` - To get a map of localized links to the current node. For more details and an example FreeMarker code, see [Get localized links](../../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_get_localized_links).
+
+-   `wrapForI18n(Node content)` - To deliver node properties in a visitor’s language. For further details and an example FreeMarker code, see [Wrap content in i18n node wrapper](../../../Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_wrap_content_in_i18n_node_wrapper).
+
+
+| Locale | Message files |
+| --- | --- |
+| English | `app-contacts-messages_en.properties` |
+| Spanish | `app-contacts-messages_es.properties` |

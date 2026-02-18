@@ -1,0 +1,46 @@
+---
+title: "Periscope Control module"
+url: https://docs.magnolia-cms.com/periscope-control/
+category: Modules
+version: modules
+breadcrumb: Periscope Control module
+---
+
+# Periscope Control module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/services/periscope-control) |
+| Latest | 1.0 ** Compatible with Magnolia 6.2, 6.1. ** You must also have the [Periscope module](../product-docs/RNs-6-4-3/Modules/List-of-modules/Periscope-module/) version `1.2.2` installed. | ** | Compatible with Magnolia 6.2, 6.1. | ** | You must also have the [Periscope module](../product-docs/RNs-6-4-3/Modules/List-of-modules/Periscope-module/) version `1.2.2` installed. |
+| ** | Compatible with Magnolia 6.2, 6.1. |
+| ** | You must also have the [Periscope module](../product-docs/RNs-6-4-3/Modules/List-of-modules/Periscope-module/) version `1.2.2` installed. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.services</groupId>
+  <artifactId>periscope-control</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+The Magnolia property `magnolia.periscope.resultRanking` is checked when the module starts.
+
+The Periscope result ranker will be enabled if the property is set to `true` or is undefined, and set to `false` if `magnolia.periscope.resultRanking=false`.
+
+You can set `magnolia.periscope.resultRanking` in:
+
+-   A loaded `magnolia.properties` file in your Magnolia web app (see Configuration Management).
+
+-   As a Java system property, e.g. on the command line `-Dmagnolia.periscope.resultRanking=false` when starting the JVM.
+
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. ** Compatible with `6.2, 6.1` and Periscope `v1.2.2` . | ** | Compatible with `6.2, 6.1` and Periscope `v1.2.2` . |
+| ** | Compatible with `6.2, 6.1` and Periscope `v1.2.2` . |

@@ -1,0 +1,38 @@
+---
+title: "Creating a backup manually"
+url: https://docs.magnolia-cms.com/cloud/Managing-environments-using-the-Magnolia-cockpit/Backing-up-and-restoring/Creating-a-backup-manually/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Managing environments using the Magnolia cockpit > Backing up and restoring > Creating a backup manually
+---
+
+# Creating a backup manually
+
+This page describes how to manually back up the Live environment of a Magnolia cloud-based site.
+
+> **Note:** Magnolia also creates backups automatically (see when data is backed up for further information).
+
+You can create manual backups as often as you want. However, [only the latest one is stored](../#_how_many_backups).
+
+## [](#_create_manual_backup)Create manual backup
+
+1.  In the Site overview page, click **Manage environments** in the Environments section.
+
+2.  Under **Back up and Restore**, click **Back up Content**.
+
+    ![user interface backup action](../../../_images/cloud/back-up-live-env.png)
+
+3.  Confirm the actions of the back up operation and click **Back up**.
+
+    ![user interface confirm backup action](../../../_images/cloud/confirm-backup-action.png)
+
+    The backup action is triggered.
+
+4.  Click **OK**.
+
+
+Cockpit actions
+
+All actions in the Magnolia cockpit are *asynchronous*, so you can click **OK** before the backup is complete.
+
+The action runs in the background and a notification appears once it is complete. The action also appears in the [activity log](../../../Cockpit/Understanding-activity-logs/).

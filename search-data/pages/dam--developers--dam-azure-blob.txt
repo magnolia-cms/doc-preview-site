@@ -25,11 +25,11 @@ Make sure you have at least the following modules installed:
 
 -   [`dam` `6.0.0`](../install/), including the `dam-azure-blob` submodule
 
--   [`dam-app` `6.0.0`](#dam-app:ROOT:developers/install.adoc)
+-   [`dam-app` `6.0.0`](../../../dam-app/developers/install/)
 
--   [`imaging` `5.0.0`](#imaging:ROOT:developers/install.adoc)
+-   [`imaging` `5.0.0`](../../../imaging/developers/install/)
 
--   Optional: [`image-recognition` `4.0.0`](#image-recognition:ROOT:developers/install.adoc)
+-   Optional: [`image-recognition` `4.0.0`](../../../image-recognition/developers/install/)
 
 
 ## [](#_azure_storage_account_permissions)Azure Storage account permissions
@@ -57,7 +57,7 @@ For more details, see [Authorize access to Azure Blob Storage](https://learn.mic
 
 1.  Stop Magnolia.
 
-2.  Provide the following required properties, either in your `WEB-INF/config/default/magnolia.properties` file or using [MicroProfile Config](../../../product-docs/7.0/Administration/Architecture/configuration-management/microprofile-config/).
+2.  Provide the following required properties, either in your `WEB-INF/config/default/magnolia.properties` file or using [MicroProfile Config](../../../product-docs/RNs-6-4-3/Administration/Architecture/configuration-management/microprofile-config/).
 
     magnolia.properties
 

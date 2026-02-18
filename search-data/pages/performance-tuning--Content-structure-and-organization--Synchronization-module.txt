@@ -1,0 +1,19 @@
+---
+title: "Synchronization module"
+url: https://docs.magnolia-cms.com/performance-tuning/Content-structure-and-organization/Synchronization-module/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Content structure and publishing > Synchronization module
+---
+
+# Synchronization module
+
+Unbundled: Extension
+
+The Synchronization module synchronizes a target Magnolia instance with a source instance. The module allows you to publish a large amount of content selectively. Only previously published content is transferred to the target instance. You can use the module to add content to new public instances without shutting down existing instances and impacting their ability to serve content.
+
+The module traverses the node tree and publishes only previously published content. Content that was never published isn’t published during synchronization either. If content was versioned when it was published (Magnolia default behavior), the module publishes the last known version, making it possible to recover modified content.
+
+The Synchronization module installs the [Sync Instance app](../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Sync-Instance-app/) that allows you to manually synchronize content between author and one public instance.
+
+For more information, see [Synchronization module](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Synchronization-module/).

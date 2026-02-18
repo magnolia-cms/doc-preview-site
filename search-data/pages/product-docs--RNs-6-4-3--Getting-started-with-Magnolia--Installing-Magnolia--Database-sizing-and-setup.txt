@@ -1,0 +1,90 @@
+---
+title: "Database sizing and setup"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Getting-started-with-Magnolia/Installing-Magnolia/Database-sizing-and-setup/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Installing Magnolia > Database sizing and setup
+---
+
+# Database sizing and setup
+
+This page describes more details about the requirements for your database.
+
+## [](#_which_database_modifications_should_i_consider_when_publishing_massive_numbers_of_publication_requests)Which database modifications should I consider when publishing massive numbers of publication requests?
+
+It is not recommended to publish enormous amounts of publication requests unless necessary. Nonetheless, if you must publish such amounts, particularly with PostgreSQL, please fine-tune your autovacuum operations as advised below.
+
+Adjust autovacuum operations in line with the example recommended settings below to prevent considerable growth in a PostgreSQL instance in the publication context described above.
+
+```none
+autovacuum_vacuum_cost_delay=10ms
+shared_buffers=4GB
+autovacuum_work_mem=2GB
+maintenance_work_mem=8GB
+autovacuum_max_workers=6
+autovacuum_naptime=15s
+autovacuum_vacuum_threshold=25
+autovacuum_vacuum_scale_factor=0.1
+autovacuum_analyze_threshold=10
+autovacuum_analyze_scale_factor=0.05
+autovacuum_vacuum_cost_delay=10ms
+autovacuum_vacuum_cost_limit=1000
+```
+
+> **Note:** You should adapt these settings to the resources available in your environment.
+
+## [](#_what_databases_are_supported)What databases are supported?
+
+You are free to choose any database officially supported by the [Apache Jackrabbit](https://jackrabbit.apache.org) and any operating system supported by those databases. All major databases are supported at the moment. We recommend the [PostgreSQL](https://www.postgresql.org) open source database.
+
+> **Tip:** See also the list of databases we certify.
+
+## [](#_what_data_volume_does_your_application_store)What data volume does your application store?
+
+The volume of data required to run Magnolia is negligible, typically below 10 MB. The main driver of the total data volume is the customer who decides what content to store in Magnolia and in how many versions to store the content.
+
+A reasonable operational size should be:
+
+-   Double the amount of the data the customer has if the content is versioned.
+
+-   Less than that if the content is not versioned.
+
+-   More than that if there is a lot of content which is versioned frequently.
+
+
+## [](#_how_many_database_tables_are_in_the_database)How many database tables are in the database?
+
+There are **four tables** and **three indexes** created for every JCR workspace. The total number of workspaces depends on the modules the customer decides to use and the number of [content types](../../../Features/Content-Types/) created. One content type means one workspace. The default Magnolia bundle comes with approximately 20 workspaces, hence there are around 80 database tables in total.
+
+## [](#_what_sort_of_data_does_the_database_store)What sort of data does the database store?
+
+This is configurable. By default, the database will only store text-based data up to the size of one kilobyte. However, this limit can be increased.
+
+The datastore (the binaries) can be configured to be stored in the database as well. While this increases the load on the database, it will greatly simplify backup and restore strategies and, therefore, this is the recommended setup. With all the data in the database, there will be an additional table per workspace, hence not four but five tables per content type.
+
+## [](#_does_magnolia_store_structured_andor_unstructured_data)Does Magnolia store structured and/or unstructured data?
+
+The data stored is structured. However, it is not directly open for manipulation at the database level. The data is optimized for storage through a hierarchical-to-relational data mapping to make it perform the best at:
+
+-   Runtime, as hierarchical data.
+
+-   Storage time, in a relational database storage.
+
+
+## [](#_how_many_database_instances_or_servers_do_i_need)How many database instances or servers do I need?
+
+You can run all of your instances against a single database instance and just use different table spaces or prefixes for tables used by different workspaces.
+
+However, to improve disaster tolerance, we recommend running fully redundant configurations, where each Magnolia instance is backed by an independent database instance.
+
+All of the above is configurable. Hybrid setups can also be created and used. In a hybrid setup, some Magnolia instances are sharing a single database while others are backed by their own database instances.
+
+## [](#_what_permissions_does_the_database_user_need)What permissions does the database user need?
+
+Magnolia itself is decoupled from the database via Jackrabbit. At a minimum, the database user needs to be able to run a script located in the Jackrabbit core module (`info.magnolia.jackrabbit`).
+
+Jackrabbit needs to be able to create tables, alter them, and perform the usual operations on the data they contain. So, permissions to execute the `datawriter` and `datareader` operations are needed, as well as `ddladmin` (for table creation), `accessadmin`, and `securityadmin` (for schemas creation).
+
+### [](#_oracle)Oracle
+
+For Oracle, you need [sequences and triggers](https://github.com/apache/jackrabbit/blob/trunk/jackrabbit-core/src/main/resources/org/apache/jackrabbit/core/persistence/bundle/oracle.ddl).

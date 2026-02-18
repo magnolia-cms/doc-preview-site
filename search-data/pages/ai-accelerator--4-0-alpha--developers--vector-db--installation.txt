@@ -1,0 +1,139 @@
+---
+title: "Installation and setup"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/vector-db/installation/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Installation and setup
+---
+
+# Installation and setup
+
+## [](#_prerequisites)Prerequisites
+
+Before installing the Vector Database integration, ensure you have:
+
+-   Magnolia CMS 6.4+ with AI Accelerator installed
+
+-   Java 17+
+
+-   PostgreSQL 12+ with the pgvector extension
+
+-   An embedding model configured (OpenAI, Azure OpenAI, AWS Bedrock, or Google Gemini)
+
+
+| Model | Dimensions |
+| --- | --- |
+| OpenAI `text-embedding-3-small` | 1536 |
+| OpenAI `text-embedding-3-large` | 3072 |
+| OpenAI `text-embedding-ada-002` | 1536 |
+| Azure OpenAI (same as OpenAI) | 1536 or 3072 |
+| AWS Bedrock Titan | 1536 |
+
+## [](#_troubleshooting)Troubleshooting
+
+### [](#_postgresql_connection_failed)PostgreSQL connection failed
+
+**Symptom**: `Vector database health check failed`
+
+**Solutions**:
+
+-   Verify PostgreSQL is running: `pg_isready`
+
+-   Check URL configuration matches your PostgreSQL host
+
+-   Verify `username` and `password` configuration
+
+-   Check PostgreSQL logs for connection errors
+
+
+### [](#_pgvector_extension_not_found)pgvector extension not found
+
+**Symptom**: `ERROR: type "vector" does not exist`
+
+**Solutions**:
+
+-   Install pgvector extension (see installation steps above)
+
+-   Enable the extension: `CREATE EXTENSION vector;`
+
+-   Verify extension is installed: `SELECT * FROM pg_extension WHERE extname = 'vector';`
+
+
+### [](#_dimension_mismatch_error)Dimension mismatch error
+
+**Symptom**: `ERROR: different vector dimensions`
+
+**Solutions**:
+
+-   Verify `vectorDimension` matches your embedding model
+
+-   OpenAI `text-embedding-3-small` requires 1536 dimensions
+
+-   OpenAI `text-embedding-3-large` requires 3072 dimensions
+
+-   If changing models, you may need to re-create the table and re-index
+
+
+### [](#_no_observation_listeners_registered)No observation listeners registered
+
+**Symptom**: No logs showing "Registered observation listener"
+
+**Solutions**:
+
+-   Verify `indexing.enabled: true` in configuration
+
+-   Check workspace configuration has `enableObservation: true`
+
+-   Ensure workspace names match actual JCR workspaces
+
+-   Check for configuration syntax errors
+
+
+### [](#_embedding_generation_fails)Embedding generation fails
+
+**Symptom**: `Failed to generate embeddings`
+
+**Solutions**:
+
+-   Verify embedding model is configured correctly in AI models
+
+-   Check API keys/credentials are set in environment variables
+
+-   Verify `generateEmbeddings` task is configured correctly
+
+-   Check Magnolia logs for task execution errors
+
+
+### [](#_module_not_loading)Module not loading
+
+**Symptom**: Module doesn’t appear in Magnolia
+
+**Solutions**:
+
+-   Verify Maven dependencies are correct
+
+-   Run `mvn clean install` to rebuild
+
+-   Check for dependency conflicts in logs
+
+-   Ensure AI Accelerator core is installed first
+
+
+## [](#_next_steps)Next steps
+
+-   [Configure indexing](../configuration/) for your content
+
+-   [Index existing content](../indexing/) via the dashboard
+
+-   [Test search functionality](../search/) via REST API
+
+
+## [](#_additional_resources)Additional resources
+
+-   [pgvector GitHub](https://github.com/pgvector/pgvector)
+
+-   [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+
+-   [AI Model Configuration](../../model-configuration/)
+
+-   [AI Task Configuration](../../task-configuration/)

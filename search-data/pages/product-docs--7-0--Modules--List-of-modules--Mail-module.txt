@@ -8,27 +8,22 @@ breadcrumb: DX Core > Modules > Mail module
 
 # Mail module
 
-[Multi-experience support](../../../use-cases/multi-experience-support/) Bundled: Extension
-
-|     |     |
+| Edition | CE |
 | --- | --- |
-| Edition | CE  |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLMAIL](https://magnolia-cms.atlassian.net/browse/MGNLMAIL) |
-| Maven site | [Mail](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fmagnolia-module-mail%2F7.0.0) |
-| Latest | 7.0.0 |
-
-The [Mail](Mail/) page explains how to configure the module and how to send mail from Magnolia.
+| Maven site | [Mail](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fmagnolia-module-mail%2F{magnolia-mail-64}) |
+| Latest | {magnolia-mail-64} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia</groupId>
   <artifactId>magnolia-module-mail</artifactId>
-  <version>7.0.0</version> (1)
+  <version>{magnolia-mail-64}</version> (1)
 </dependency>
 ```
 

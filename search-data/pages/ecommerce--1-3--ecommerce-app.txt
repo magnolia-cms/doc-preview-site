@@ -1,0 +1,114 @@
+---
+title: "E-commerce app"
+url: https://docs.magnolia-cms.com/ecommerce/1.3/ecommerce-app/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > E-commerce app
+---
+
+# E-commerce app
+
+The E-commerce app enables editors and marketers to view content retrieved from your external e-commerce solution. The content can then be used in e-commerce-dedicated components in the [Pages app](#6.2@product-docs:ROOT:/Apps/List-of-apps/Pages-app.adoc).
+
+## [](#_viewing_your_e_commerce_content)Viewing your e-commerce content
+
+To view products from your external e-commerce solution in Magnolia:
+
+1.  Open the **E-commerce** app.
+
+    Unresolved include directive in modules/ROOT/pages/ecommerce-app.adoc - include::6.2@product-docs:ROOT:partial$i/\_find-bar-search-tip.adoc\[\]
+
+2.  In the **E-commerce** tab, select the catalog containing the content you want to view. Your administrator is generally responsible for [configuring the connection to your external e-commerce solution](../ecommerce-module/#_connection_configuration_and_implementation).
+
+    The content displayed in the app is refreshed every 5 minutes by default so you always see an up-to-date list of what your external e-commerce solution contains. Your administrator can adjust the refresh frequency.
+
+3.  Drill down into the catalog tree structure to select the category of products you want to view.
+
+    ![View products in the E-commerce app](../../_images/6-2-ecom-catalog-categories.png)
+
+4.  Select the category you want and click **View products**.
+
+    The selected category tab opens listing the subset of products.
+
+    ![Preview of the product you want to view](../../_images/6-2-3-ecomm-products.png)
+
+5.  Select the product you want and click **View detail**.
+
+    A new tab opens in the app with information about the product you selected.
+
+    ![Information about the selected product](../../_images/6-2-3-ecom-product-detail.png)
+
+
+## [](#_using_your_e_commerce_content)Using your e-commerce content
+
+The E-commerce add-on provides a page template definition and some sample [component definitions](#6.2@product-docs:ROOT:Developing/Templating/Template-definition/Component-definition.adoc) to show how you can leverage your external e-commerce content in the [Pages app](#6.2@product-docs:ROOT:/Apps/List-of-apps/Pages-app.adoc). The samples are delivered as YAML files by the `ecommerce-templating` module. You can view or edit them under `/ecommerce-templating/templates/components` in the [Resource Files app](#6.2@product-docs:ROOT:/Apps/List-of-apps/Resource-Files-app.adoc).
+
+The following default components are provided and can be used as a basis to develop your own:
+
+-   **Category list** - Lists all the categories for a given connection.
+
+-   **Product detail** - Shows detailed information for a specific product.
+
+-   **Product list** - Lists all the products for the selected category (not those for any sub categories).
+
+-   **Product teaser** - Shows a given product image with text.
+
+
+For example, this page uses the **Product detail** component:
+
+![Product detail component](../../_images/6-2-ecom-pages-app-product-detail.png)
+
+> **Note:** New component definitions and freemarker template files have been introduced in E-commerce 1.3 with a more user-friendly approach to choosing products, but we provide backwards compatibility for 1.2+.
+
+## [](#_adding_e_commerce_content_to_a_page)Adding e-commerce content to a page
+
+Magnolia offers a user-friendly way of choosing categories and products from your third party e-commerce solution directly in the Magnolia interface from v1.3+.
+
+In this example, we create an e-commerce product detail page in the Pages app:
+
+1.  Open the Pages app.
+
+2.  Click **Add page** to create a new page.
+
+3.  Name your page `My E-commerce Page`.
+
+4.  Select the out-of-the-box **E-commerce template**.
+
+    ![Add page dialog](../../_images/ecom-add-page.png)
+
+5.  Add a page title and save.
+
+6.  Open your new page, select the **Main** component and click **Add component**.
+
+7.  Different components are available by default for this page template. For this example, select the **Product detail** component.
+
+    ![Add page component](../../_images/ecom-add-component.png)
+
+8.  In the **Product detail** chooser dialog, select a connector, a category and finally the product you want to display.
+
+    > **Tip:** The component chooser dialogs can be configured. For example, if you only have one third party e-commerce solution connected, you can ask your development team to preselect it in the chooser dialog and save yourself a click.Use the filters at the top of the columns to find what you’re looking for faster. In the example above, we have searched for the word green in the product name column.
+
+    ![Product chooser dialog](../../_images/ecom-product-chooser.png)
+
+    The product detail from your third-party solution is displayed in the Magnolia page. A link to the product is saved in the Magnolia content.
+
+    ![E-commerce product detail page](../../_images/6-2-ecom-detail-page.png)
+
+    > **Note:** As a user you can see which product you have selected while editing the selected product:
+
+9.  Another type of component is **Product list**; select a connector and a category for which you want to display its available products. The path to the chosen category is displayed after selection in the dialog chooser. After saving changes, all category products are added to the page. You can edit the component and select a different category at any time.
+
+    ![E-commerce product list dialog chooser](../../_images/6-2-3_ecommerce_product-list_edit-on-page.png)
+
+
+Related topics
+
+-   [Commerce Connector Pack](../)
+
+-   [E-commerce module](../ecommerce-module/)
+
+-   [E-commerce REST endpoints](../ecommerce-rest-endpoints/)
+
+-   [ecomfn](../ecomfn/)
+
+-   [6.2@product-docs:ROOT:Authoring/Editing-pages.adoc](#6.2@product-docs:ROOT:Authoring/Editing-pages.adoc)

@@ -1,0 +1,142 @@
+---
+title: "Migration Tool module"
+url: https://docs.magnolia-cms.com/migration-tools/
+category: Modules
+version: modules
+breadcrumb: Migration Tool module
+---
+
+# Migration Tool module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [MTOOL](https://magnolia-cms.atlassian.net/browse/MTOOL) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/migration-tools) |
+| Latest | 1.0.1 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.migration</groupId>
+  <artifactId>migration-tools</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+This module includes a content app called migration tool, which is registered in the Edit menu:
+
+![migration tools icon](_images/migration-tools-icon.jpg)
+
+The app lists all definitions with UI5 elements registered in Magnolia:
+
+![migration tools adminui](_images/migration-tools-adminui.jpg)
+
+Definitions can be filtered out by:
+
+-   Title
+
+-   Module
+
+-   Origin
+
+-   Problem Severity
+
+
+A single definition can be previewed before and after the migration:
+
+-   Before migration (5 UI)
+
+-   After migration (6 UI)
+
+
+![preview before migration](_images/preview-before-migration.jpg)
+
+![preview after migration](_images/preview-after-migration.jpg)
+
+### [](#_do_it_all_at_once)Do it all at once
+
+The migration of all definitions can be done at once with the action **Migrate Dialogs**.
+
+![migration dialogs action](_images/migration-dialogs-action.jpg)
+
+### [](#_yaml)YAML
+
+All definitions will be saved as YAML files inside the light modules registered folder, in a subfolder called "migration". Inside this folder there will be a subfolder for each module that contains a migrated definition and the YAML will be inside.
+
+#### [](#_structure)Structure
+
+```none
+~/magnolia/light-modules/migration $ tree .
+.
+├── angularEndpoints-light-module
+│   └── dialogs
+│       └── components
+│           ├── edwin.yaml
+│           ├── edwinDouble.yaml
+│           ├── edwinLink.yaml
+│           ├── edwinLinkContent.yaml
+│           ├── edwinLinkPath.yaml
+│           ├── edwinMultiText.yaml
+│           ├── edwinMultivalue.yaml
+│           ├── edwinOption.yaml
+│           ├── edwinSelect.yaml
+│           ├── edwinSwitchable.yaml
+│           └── edwinUpload.yaml
+├── commenting-app
+│   └── dialogs
+│       ├── edit.yaml
+│       └── view.yaml
+```
+
+#### [](#_dialog_yaml)Dialog yaml
+
+The converted YAML files will include as comments the original definition and the decorations processed. Example converted definition:
+
+/test-module/dialogs/components/dialog.yaml
+
+```yaml
+label: Test Dialog Decorated 2
+width: medium
+form:
+  name: Test Dialog Decorated 2
+  properties:
+  - name: doubleText
+    label: Test Title
+    type: java.lang.Double
+    converterClass: com.vaadin.data.converter.StringToDoubleConverter
+    $type: textField
+# form:
+#   label: Test Dialog
+#   tabs:
+#     - name: tabMain
+#       label: Test Content
+#       fields:
+#         - name: doubleText
+#           fieldType: text
+#           label: Test Title
+#           type: Double
+# actions:
+#   commit:
+#     label: save changes
+#     class: info.magnolia.ui.admincentral.dialog.action.SaveDialogActionDefinition
+#   cancel:
+#     label: cancel
+#     class: info.magnolia.ui.admincentral.dialog.action.CancelDialogActionDefinition
+#
+#
+#
+# Decorations found:
+# /test-module1/decorations/test-module/dialogs/components/dialog.yaml/
+# /test-module2/decorations/test-module/dialogs/components/dialog.yaml/
+```
+
+| Version | Notes |
+| --- | --- |
+| `1.0.1` | Decorations processed included as part as the converted `YAML` file. |
+| `1.0` | Initial release of the module. |

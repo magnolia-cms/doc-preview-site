@@ -8,7 +8,7 @@ breadcrumb: DX Core > Developing > Templating > Template scripts > Templating fu
 
 # resfn
 
-[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+[FreeMarker development only](../../../../../../RNs-6-4-3/Developing/Templating/Renderers/#_renderers_provided_by_magnolia)
 
 `resfn` templating functions allow you to create links to CSS and JS resources in templates by a defined pattern or a list of patterns. The following methods are available:
 
@@ -43,7 +43,7 @@ renders links to all CSS and JS files in the `foobar` module if the module is pa
 
 ### [](#_available_resources)Available resources
 
-The links are created only for resources which are a part of your bundle. This includes all resources visible to the `magnolia-resources` module: [resources](../../../../Resources/) from the file system, from the classpath, JCR-based, and in-memory.
+The links are created only for resources which are a part of your bundle. This includes all resources visible to the `magnolia-resources` module: [resources](../../../../../../RNs-6-4-3/Developing/Resources/) from the file system, from the classpath, JCR-based, and in-memory.
 
 ### [](#_pattern_argument)Pattern argument
 
@@ -63,127 +63,10 @@ ${resfn.js(["/foobar.*js", "/travel-demo/.*js"])}
 
 For CSS and JS you can use `resfn` to create links for `webresources` which will be served from cache (use `#cachedCss` and #`cachedJs`) or directly via the resources loading mechanism (via `#css` and `#js`). The former methods will generate links with `~$timestamp~cache` appended to the link name, for example `a.css` will become `a~2016-12-08-02-56-06-000~cache.css`.
 
-## [](#_methods)Methods
-
-### [](#_css)css
-
-Creates `<link>` tags for CSS files.
-
-#### [](#_method_signatures)Method signatures
-
-`String css(String pattern)`
-
-`String css(String pattern, String otherAttributes)`
-
-`String css(List<String> patterns)`
-
-`String css(List<String> patterns, String otherAttributes)`
-
-#### [](#_arguments)Arguments
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Argument</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>pattern</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>A single pattern or a list of patterns to match the desired resource(s).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>otherAttributes</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Other attributes to be added to the generated <code>&lt;link/&gt;</code> tag. If the value of this parameter requires quotes, use single quotes (<code>'</code>) or escaped double quotes (<code>\"</code>).</p></div><div class="paragraph"><p>Examples:</p></div><div class="ulist"><ul><li><p><code>"title='Basic' media='all'"</code></p></li><li><p><code>"title=\"Basic\" media=\"all\""</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-#### [](#_returns)Returns
-
-`String`
-
-Zero to many `<link/>` tags, divided by a line separator.
-
-#### [](#_usage)Usage
-
-${resfn.css("/foobar-module.\*css")}
-${resfn.css("/foobar-module.\*css", "media='all'")}
-${resfn.css(\["/foobar.\*css", ".\*magnolia.\*css"\])}
-${resfn.css(\["/foobar.\*css", ".\*magnolia.\*css"\], "media='all'")}
-
-### [](#_cachedcss)cachedCss
-
-Creates `<link>` tags for CSS files which will be served from cache.
-
-#### [](#_method_signatures_2)Method signatures
-
-`String cachedCss(String pattern)`
-
-`String cachedCss(String pattern, String otherAttributes)`
-
-`String cachedCss(List<String> patterns)`
-
-`String cachedCss(List<String> patterns, String otherAttributes)`
-
-#### [](#_arguments_2)Arguments
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Argument</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>pattern</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>A single pattern or a list of patterns to match the desired resource(s).</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>otherAttributes</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Other attributes to be added to the generated <code>&lt;link/&gt;</code> tag. If the value of this parameter requires quotes, use single quotes (<code>'</code>) or escaped double quotes (<code>\"</code>).</p></div><div class="paragraph"><p>Examples:</p></div><div class="ulist"><ul><li><p><code>"title='Basic' media='all'"</code></p></li><li><p><code>"title=\"Basic\" media=\"all\""</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-#### [](#_returns_2)Returns
-
-`String`
-
-Zero to many `<link/>` tags, divided by a line separator.
-
-#### [](#_usage_2)Usage
-
-${resfn.cachedCss("/foobar-module.\*css")}
-${resfn.cachedCss("/foobar-module.\*css", "media='all'")}
-${resfn.cachedCss(\["/foobar.\*css", ".\*magnolia.\*css"\])}
-${resfn.cachedCss(\["/foobar.\*css", ".\*magnolia.\*css"\], "media='all'")}
-
-### [](#_js)js
-
-Creates `<script>` tags for JS files.
-
-#### [](#_method_signatures_3)Method signatures
-
-`String js(String pattern)`
-
-`String js(List<String> patterns)`
-
-#### [](#_argument)Argument
-
-pattern
-
-**required**
-
-A single pattern or a list of patterns to match the desired resource(s).
-
-#### [](#_returns_3)Returns
-
-`String`
-
-Zero to many <script/> tags divided by line line separator.
-
-#### [](#_usage_3)Usage
-
-${resfn.js("/foobar-module.\*js")}
-${resfn.js(\["/foobar.\*css", ".\*magnolia.\*js"\])}
-
-### [](#)+
-
-cachedJs
-
-Creates `<script>` tags for JS files which will be served from cache.
-
-#### [](#_method_signatures_4)Method signatures
-
-`String cachedJs(String pattern)`
-
-`String cachedJs(List<String> patterns)`
-
-#### [](#_argument_2)Argument
-
 | Argument | Description |
 | --- | --- |
-| `pattern` | **required**<br><br>A single pattern or a list of patterns to match the desired resource(s). |
-
-#### [](#_returns_4)Returns
-
-`String`
-
-Zero to many `<script/>` tags divided by a line separator.
-
-#### [](#_usage_4)Usage
-
-${resfn.cachedJs("/foobar-module.\*js")}
-${resfn.cachedJs(\["/foobar.\*css", ".\*magnolia.\*js"\])}
+| `pattern` | **required** A single pattern or a list of patterns to match the desired resource(s). |
+| `otherAttributes` | **optional** Other attributes to be added to the generated `<link/>` tag. If the value of this parameter requires quotes, use single quotes ( `'` ) or escaped double quotes ( `\"` ). Examples: • `"title='Basic' media='all'"` • `"title=\"Basic\" media=\"all\""` |
 
 ## [](#_from_hcmcfn_to_resfn)From hcmcfn to resfn
 

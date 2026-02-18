@@ -1,0 +1,15 @@
+---
+title: "Public instances and CDN caching"
+url: https://docs.magnolia-cms.com/performance-tuning/Caching-strategies/Public-instances-and-CDN-caching/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Caching strategies > Public instances and CDN caching
+---
+
+# Public instances and CDN caching
+
+The cache on Magnolia public instances is separate from the cache on Content Delivery Networks (CDN) servers. In Magnolia, [cache policies](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Cache-modules/Cache-core/#_policy_configuration) define whether the requested content is cached on Magnolia public instances. The decision to cache relies on [voters](../../../product-docs/RNs-6-4-3/Administration/Voters/).
+
+It’s possible to have CDN servers that connect to Magnolia instances to get static resources, which are then stored on CDN servers for future requests. Typically, they are located closer to users, resulting in shorter round-trip latency. They can deliver content faster through network optimization instead of loading directly from Magnolia public instances. Furthermore, CDN caches eliminate the need for a request to travel to the public instances using different methods to populate the CDN cache.
+
+> **Tip:** DX Cloud is a digital Platform as a Service (PaaS) offering and includes an out-of-the-box content delivery network based on Fastly.

@@ -306,101 +306,18 @@ form:
       editorType: ClassicEditor
 ```
 
-## [](#_authoring_your_text)Authoring your text
-
-This page assumes you installed a Classic CKEditor. Your CKEditor toolbar should look similar to the one above the CKEditor demo page below.
-
-![Apps configuration](../../../../../../_images/cke5-demoClassicEditor.png)
-
-A customized CKEditor 5 build also contains two additional Magnolia plugins. They allow you to link to assets and pages in Magnolia.
-
-  PluginIconDescription
-
-**Link to Magnolia page**
-
-![Link to Magnolia page](../../../../../../_images/rich-text-field-toolbar/link-to-page.png)
-
-Opens a chooser dialog where you can link to a page in the `website` workspace.
-
-> **Note:** When linking to a page fragment, the fragment identifier (such as #element-id or #:~:text=…​) must be appended after the closing brace of the ${link:{…​}} object. You can do this in the properties subdialog of the page link dialog.Don’t place the fragment inside the path property in the object, as the templating function can’t process it correctly.Correct usage example with #:~:text=Services as fragment:${link:{uuid:'808e...ce02f', repository:'website', path:'/travel/about'}}#:~:text=ServicesIncorrect usage:${link:{uuid:'...', path:'/travel/about#:~:text=Services'}}
-
-**Link to asset**
-
-![Link to DAM document](../../../../../../_images/rich-text-field-toolbar/link-to-dam.png)
-
-Opens a chooser dialog where you can link to an asset in the `dam` workspace.
-
-### [](#_mgnllink_plugin_customization)`MgnlLink` plugin customization
-
-You can customize the `MgnlLink` plugin in Magnolia’s CKEditor 5 by adding decorations to the editor configuration.
-
-#### [](#_the_target_and_rel_attributes)The `target` and `rel` attributes
-
-To enable links to open in a new tab with security attributes, customize the `MgnlLink` plugin to include `rel` and `target` fields.
-
-> **Note:** This decoration is included by default in the Magnolia ckeditor5-build in Magnolia 6.3.9 and later.
-
-The following configuration adds the `openInNewTab` decorator:
-
-ckeditor5.ts
-
-```typescript
-EditorConfig = {
-  mgnllink: {
-    decorators: {
-      openInNewTab: { // Decorator ID
-        mode: 'manual', // Required, must be 'manual'
-        label: 'Open link in new tab', // Required, shown in the dialog
-        attributes: { // Attributes applied to the link when the decorator is active
-          rel: 'noopener noreferrer',
-          target: '_blank'
-        }
-      }
-    }
-  }
-}
-```
-
-This configuration adds the `rel` and `target` attributes to the `<a>` element, as shown below:
-
-```html
-<a href="{...}" rel="noopener noreferrer" target="_blank" class="ck-link_selected">Sportstation</a>
-```
-
-#### [](#_custom_decorations)Custom decorations
-
-You can apply custom decorations to modify other link properties, such as styling. For example, the following configuration adds a `customStyle` decorator to change the link’s text color:
-
-ckeditor5.ts
-
-```typescript
-EditorConfig = {
-  mgnllink: {
-    decorators: {
-      customStyle: {
-        mode: 'manual',
-        label: 'Custom Style',
-        attributes: { // Attributes applied to the link when the decorator is active
-          style: 'color: red;'
-        }
-      }
-    }
-  }
-}
-```
-
-This results in a link with a red text color:
-
-```html
-<a href="{...}" style="color: red;">Sportstation</a>
-```
+| Plugin | Icon | Description |
+| --- | --- | --- |
+| **Link to Magnolia page** |  | Opens a chooser dialog where you can link to a page in the `website` workspace. ** When linking to a page fragment, the fragment identifier (such as `#element-id` or `#:~:text=…​` ) must be appended after the closing brace of the `${link:{…​}}` object. You can do this in the properties subdialog of the page link dialog. Don’t place the fragment inside the `path` property in the object, as the templating function can’t process it correctly. Correct usage example with `#:~:text=Services` as fragment: `${link:{uuid:'808e...ce02f', repository:'website', path:'/travel/about'}}#:~:text=Services` Incorrect usage: `${link:{uuid:'...', path:'/travel/about#:~:text=Services'}}` | ** | When linking to a page fragment, the fragment identifier (such as `#element-id` or `#:~:text=…​` ) must be appended after the closing brace of the `${link:{…​}}` object. You can do this in the properties subdialog of the page link dialog. Don’t place the fragment inside the `path` property in the object, as the templating function can’t process it correctly. Correct usage example with `#:~:text=Services` as fragment: `${link:{uuid:'808e...ce02f', repository:'website', path:'/travel/about'}}#:~:text=Services` Incorrect usage: `${link:{uuid:'...', path:'/travel/about#:~:text=Services'}}` |
+| ** | When linking to a page fragment, the fragment identifier (such as `#element-id` or `#:~:text=…​` ) must be appended after the closing brace of the `${link:{…​}}` object. You can do this in the properties subdialog of the page link dialog. Don’t place the fragment inside the `path` property in the object, as the templating function can’t process it correctly. Correct usage example with `#:~:text=Services` as fragment: `${link:{uuid:'808e...ce02f', repository:'website', path:'/travel/about'}}#:~:text=Services` Incorrect usage: `${link:{uuid:'...', path:'/travel/about#:~:text=Services'}}` |
+| **Link to asset** |  | Opens a chooser dialog where you can link to an asset in the `dam` workspace. |
 
 ## [](#_previewing_the_html)Previewing the HTML
 
-[Preview](../../../../../../Authoring/Editing-pages/#_previewing_pages) your content to see how the plugins used by CKEditor 5 render it on the final webpage.
+[Preview](../../../../../../../RNs-6-4-3/Authoring/Editing-pages/#_previewing_pages) your content to see how the plugins used by CKEditor 5 render it on the final webpage.
 
 Related topics
 
--   [Rich text field](../Rich-text-field/)
+-   [Rich text field](../../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/)
 
--   [Light rich text field](../../../../../../Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/)
+-   [Light rich text field](../../../../../../../RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/)

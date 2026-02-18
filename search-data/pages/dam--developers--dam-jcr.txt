@@ -10,149 +10,22 @@ breadcrumb: DAM module > JCR submodule
 
 The `magnolia-dam-jcr` submodule leverages the Java Content Repository (JCR) to store and manage digital assets. DAM data is stored in the `dam` JCR workspace. The submodule provides and configures info.magnolia.dam.jcr.JcrAssetProvider.
 
-The `magnolia-dam-imaging` submodule is the link between `magnolia-dam-jcr` and the [`imaging` module](#imaging:ROOT:index.adoc). It provides and configures info.magnolia.dam.imaging.ImagingBasedAssetRenderer, which is info.magnolia.dam.api.AssetRenderer based on `magnolia-dam-jcr`.
+The `magnolia-dam-imaging` submodule is the link between `magnolia-dam-jcr` and the [`imaging` module](../../../imaging/). It provides and configures info.magnolia.dam.imaging.ImagingBasedAssetRenderer, which is info.magnolia.dam.api.AssetRenderer based on `magnolia-dam-jcr`.
 
 For installation information, see [DAM module](../install/).
 
-## [](#_configuration)Configuration
-
-As mentioned above, the configuration for info.magnolia.dam.jcr.JcrAssetProvider and info.magnolia.dam.imaging.ImagingBasedAssetRenderer is set by their modules. The configuration looks like this:
-
 | Node name | Value |
 | --- | --- |
-| 📁 dam |     |
-| 📁 config |     |
-| ⸬ contentDisposition |     |
-| ⸬ providers |     |
-| ⸬ jcrProvider |     |
+| 📁 dam |  |
+| 📁 config |  |
+| ⸬ contentDisposition |  |
+| ⸬ providers |  |
+| ⸬ jcrProvider |  |
 | ⬩ class | info.magnolia.dam.jcr.JcrAssetProvider |
 | ⬩ identifier | jcr |
-| 📁 renderers |     |
-| ⸬ imaging |     |
+| 📁 renderers |  |
+| ⸬ imaging |  |
 | ⬩ class | info.magnolia.dam.imaging.ImagingBasedAssetRenderer |
-| ⸬ renderers |     |
-| ⸬ noOp |     |
+| ⸬ renderers |  |
+| ⸬ noOp |  |
 | ⬩ class | info.magnolia.dam.core.NoOpAssetRenderer |
-
-> **Note:** NoOpAssetRenderer is configured by the Configure the DAM core submodule.
-
-### [](#_configuring_asset_download)Configuring asset download
-
-Decorate the `dam.subApps.yaml` file to customize certain properties of the asset download action like the ZIP file name and the maximum size limit when downloading multiple items. Authors may download assets, folders, or a selection of both folders and assets from the Assets app.
-
-/dam-app-jcr/decorations/dam-assets-app/apps/dam.subApps.yaml
-
-```yaml
-  actions:
-    download:
-      icon: icon-download
-      class: info.magnolia.dam.app.action.JcrAssetDownloadActionDefinition
-      availability: *notDeletedAvailability
-    downloadMultiple:
-      icon: icon-download
-      class: info.magnolia.dam.app.action.download.multiple.JcrMultipleAssetsDownloadActionDefinition
-      zipName: custom_file_name (1)
-      maxSizeInBytes: 1024 (2)
-      availability:
-        multiple: true
-        rules:
-          notDeleted: *notDeleted
-```
-
-|     |     |
-| --- | --- |
-| **1** | `zipName` is an optional property where you assign a default name to the ZIP file. If unset, the batch of assets is downloaded as *assets.zip*. |
-| **2** | `maxSizeInBytes` is an optional property. You can set the maximum size limit of the downloaded ZIP file if needed to improve performance. If this property isn’t added, there’s a `1GB` default limit. |
-
-### [](#_configuring_a_maximum_size_limit_for_uploads)Configuring a maximum size limit for uploads
-
-You can change the default maximum size limit for uploading assets by decorating the `dam.subApps.yaml` in the Resource Files app.
-
-/dam-app-jcr/decorations/dam-assets-app/apps/dam.subApps.yaml
-
-```yaml
- actions:
-    uploadMultiple:
-      icon: icon-import
-      class: info.magnolia.dam.app.action.upload.bulk.JcrMultipleAssetsUploadActionDefinition
-      maxSizeInBytes: 104857600 (1)
-      availability: *notDeletedWritableRootAvailability
-```
-
-|     |     |
-| --- | --- |
-| **1** | Value `maxSizeInBytes` to suit your requirements. |
-
-### [](#_restricting_upload_files_by_mime_type)Restricting upload files by MIME type
-
-You can restrict the MIME types of files allowed for upload using the `allowedMimeTypePattern` property.
-
-| Property | Description |
-| --- | --- |
-| `allowedMimeTypePattern` | **optional**, *default is all types*<br><br>Comma-separated list of allowed MIME types. Examples include `image/`**, `application/pdf`, `audio/`** and `video/*`. For a full list, see [IANA Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml). |
-
-Since there are several locations where files may be uploaded by users, the configuration is also set in different files. We recommend you use the same restrictions.
-
--   Bulk upload dialog:
-
-    /dam-app-jcr/decorations/dam-assets-app/apps/dam.subApps.yaml
-
-    ```yaml
-     actions:
-        uploadMultiple:
-          icon: icon-import
-          class: info.magnolia.dam.app.action.upload.bulk.JcrMultipleAssetsUploadActionDefinition
-          maxSizeInBytes: 104857600
-          allowedMimeTypePattern: image/jpg (1)
-          availability: *notDeletedWritableRootAvailability
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | In this example, only .jpg files are allowed when uploading. |
-
--   Single upload field in edit dialogs:
-
-    `/dam-app-jcr/dialogs/uploadAndEdit.yaml`
-
-    ```yaml
-    form:
-      properties:
-        upload:
-          $type: hybridAssetUploadField
-          field:
-            class: info.magnolia.dam.app.field.DamUploadFieldDefinition
-            maxUploadSize: 104857600
-            allowedMimeTypePattern: "image/*,application/pdf" (1)
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | In this example, all image files and .pdf files are allowed when uploading. |
-
-
-### [](#_enabling_mime_type_validation_on_uploads)Enabling MIME type validation on uploads
-
-In Magnolia 6.4.1 and later, you can enable an additional security check for file uploads in `DamUploadField`. This ensures that the file’s MIME type detected by the browser, Magnolia, and its extension are consistent. If they do not match, the upload is blocked and an error message is displayed.
-
-By default, this check is disabled (`false`). Enabling it applies the validation to all `DamUploadField` instances, including asset edits and uploads in apps such as Personas.
-
-To enable the check, add the following to your `magnolia.properties` file or [MicroProfile Config](../../../product-docs/7.0/Administration/Architecture/configuration-management/microprofile-config/).
-
-```properties
-magnolia.field.upload.validateMimeType=true
-```
-
-### [](#_controlling_zip_creation_thread_pool)Controlling ZIP creation thread pool
-
-You can control how many background threads Magnolia uses to generate ZIP files when downloading multiple assets. Adjusting this setting can help improve performance or limit resource usage on busy systems.
-
-Add the following property to your `magnolia.properties` file:
-
-```properties
-magnolia.dam.zip.pool-size=2
-```
-
-If this property isn’t set, Magnolia uses a default value based on available CPU cores. The default is half the number of cores, with a minimum of `1`.
-
-> **Note:** This setting applies globally to all asset ZIP operations, not per user or download.

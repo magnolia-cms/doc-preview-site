@@ -1,0 +1,265 @@
+---
+title: "Requesting personalized content with the delivery endpoint"
+url: https://docs.magnolia-cms.com/rest/api/Requesting-personalized-content-with-the-delivery-endpoint/
+category: Modules
+version: modules
+breadcrumb: REST module > Delivery API > Requesting personalized content with the delivery endpoint
+---
+
+# Requesting personalized content with the delivery endpoint
+
+This page describes configuration aspects essential for requesting personalized content with the Delivery API. Personalization in the Delivery API is a DX Core feature provided by the [Personalization module](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Personalization-module/) in version 2.1.0 and higher.
+
+> **Caution:** To be able to use personalization in the Delivery API, you should:
+
+1.  Add the Blossom dependency (`magnolia-personalization-blossom-compatibility`) only **if you are using the Blossom modules in your project**:
+
+    ```xml
+    <dependency>
+      <groupId>info.magnolia.rest</groupId>
+      <artifactId>magnolia-personalization-blossom-compatibility</artifactId>
+      <version>4.0.1</version> (1)
+    </dependency>
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Should you need to specify the module version, do it using `<version>`. |
+
+2.  Make sure that in the content of your `pom.xml` for your webapp you include the following two dependencies **if your project is generated from the [Magnolia webapp archetype](../../../product-docs/RNs-6-4-3/Developing/Development-how-tos/How-to-use-Magnolia-Maven-archetypes/)**:
+
+    ```xml
+    ...
+      <dependencies>
+       ...
+
+       <!-- include p13n for rest -->
+        <dependency>
+            <groupId>info.magnolia.personalization</groupId>
+            <artifactId>magnolia-personalization-rest</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+      </dependencies>
+    ...
+    ```
+
+    > **Caution:** If you use personalization version 2.1.0, you also need to add the following dependencyManagement into your webapp’s pom.xml file....
+    > <dependencyManagement>
+    >     <dependencies>
+    >     <!-- include dependency management for p13n 2.1.0 -->
+    >         <dependency>
+    >             <groupId>info.magnolia.personalization</groupId>
+    >             <artifactId>magnolia-personalization-parent</artifactId>
+    >             <version>2.1.0</version>
+    >             <type>pom</type>
+    >             <scope>import</scope>
+    >         </dependency>
+    >     </dependencies>
+    > </dependencyManagement>
+    > ...
+
+
+## [](#_configuration)Configuration
+
+Delivery of personalized content is based on sending one or more [traits](../../../product-docs/RNs-6-4-3/use-cases/Personalization/) to an endpoint configured to handle personalized REST requests.
+
+### [](#_endpoint_configuration)Endpoint configuration
+
+In the configuration of an endpoint that is expected to handle personalized content, you must set the `personalized` property to `true`. See line 7 in the following example:
+
+/my-module/restEndpoints/delivery/pages\_v1.yaml
+
+```yaml
+class: info.magnolia.rest.delivery.jcr.v2.JcrDeliveryEndpointDefinition
+workspace: website
+limit: 25
+depth: 5
+includeSystemProperties: false
+personalized: true
+nodeTypes:
+  - mgnl:page
+childNodeTypes:
+  - mgnl:area
+  - mgnl:component
+```
+
+### [](#_personalization_and_root_nodes)Personalization and root nodes
+
+No personalization variants are returned if you address a root node, fo example:
+
+`host:port/.rest/delivery/pagesnav/v1/`
+
+If you requested a subpath of the root (`host:port/.rest/delivery/pagesnav/v1/start`), personalized content variant would be returned.
+
+Sending a request to a URI that ends with just the `endpointPath` invokes the **Query nodes** method. It is irrelevant if you add the trailing slash (`/`) or omit the slash to the `endpointPath`.
+
+In this case, the REST endpoint behaves as a query. That’s why we introduced the `@nodes` handle that you can use to request a root node with personalized content.
+
+### [](#_headless_personalization_and_caching)Headless personalization and caching
+
+For headless personalization to work correctly with content caching in Magnolia, you have to set `/modules/cache/config/contentCaching/<your-configuration>/cachePolicy@includePersonalizedDescendants` to `true`.
+
+By configuring this property, the [dynamic page-caching](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-Dynamic-Page-Caching/#_dynamic_page_caching) function is disabled.
+
+> **Caution:** Magnolia does not currently support caching for different headers or cookies. Therefore, it is impossible to specify for which headers or cookies a response should be cached.See MGNLCACHE-245 for the upcoming improvement.
+
+### [](#_trait_types_and_their_configuration)Trait types and their configuration
+
+To request personalized page or component variants, you must configure at least one personalization [trait](../../../product-docs/RNs-6-4-3/use-cases/Personalization/). Additionally, a personalized page or component variant must be defined. The variant is matched with a configured trait.
+
+-   When configuring a trait for a module, the trait rule and value fields must be preconfigured as single-value fields, for example as a `textField` or a `comboBoxField`. See the two example trait configurations below.
+
+-   Traits are matched strictly by their names and values.
+
+
+Once a trait is configured, you can send it in a REST request in one of the following ways:
+
+-   A cookie.
+
+-   A request header.
+
+-   A request parameter (a query string of a GET request or body parameters of a POST request).
+
+
+> **Note:** Any module can register a trait. For more details and trait configuration properties, see Registering a trait.The traits that were present in the older (pre-2.1) versions of the Personalization module can also be used:datecookiescountryvisitorThese traits are now provided by the magnolia-personalization-compatibility submodule.Due to session security restrictions, the country trait can only be used if Magnolia and an SPA application are on the same domain.
+
+### [](#_retrieving_variant_nodes)Retrieving variant nodes
+
+By default, the REST delivery endpoint does not allow retrieving variant nodes directly. This means you cannot access a specific variant of a page or component (e.g., `/shoes/men/variants/variant-0`) without additional configuration.
+
+However, in case you need to retrieve variant nodes directly, you can enable this feature by modifying a property in your Magnolia setup.
+
+To enable retrieving variant nodes directly, set the following property in your `magnolia.properties` file:
+
+```properties
+magnolia.personalization.rest.allowVariants=true
+```
+
+Once enabled, you can retrieve a specific variant of a page or component by including the variant’s path in the URL.
+
+Example
+
+```sh
+http://localhost:8080/magnoliaAuthor/.rest/delivery/pages/v1/shoes/men/variants/variant-0 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | This request returns the `variant-0` node for the `/shoes/men` page, assuming it exists and the feature is enabled. |
+
+> **Note:** Retrieving variant nodes directly is generally discouraged due to potential security risks. Instead, we recommend you use the variants=all parameter on Author instances to retrieve all variants of a given node safely. This approach avoids exposing individual variant nodes directly and is the preferred method for working with variants.http://magnoliaAuthor/.rest/delivery/pages/v1/shoes/men?variants=all
+
+#### [](#_example_1_cookie_type_trait_called_color)Example 1: Cookie type trait called `color`
+
+<light-module>/traits/color.yaml
+
+```yaml
+$type: cookieTrait
+# name: is omitted as it is taken from the name of the yaml file
+```
+
+#### [](#_example_2_header_type_trait_called_gender)Example 2: Header type trait called `gender`
+
+<light-module>/traits/gender.yaml
+
+```yaml
+$type: headerTrait
+ruleField:
+  $type: comboBoxField
+  name: value
+  datasource: &datasource
+    $type: optionListDatasource
+    options:
+      - name: male
+        value: male
+      - name: female
+        value: female
+valueField:
+  $type: comboBoxField
+  datasource: *datasource
+```
+
+### [](#_example_p13n_rest_request_and_response)Example p13n REST request and response
+
+The following example is based on trait and content configurations available in the `[demo-rest-p13n](https://gitlab.magnolia-platform.com/pd/documentation/demo-rest-p13n)`, a light module showcasing personalization over REST in Magnolia. For more information how to install the demonstration module, see the `README.md` file in it.
+
+URL with a p13n parameter
+
+http://localhost:8080/magnoliaAuthor/.rest/delivery/pages/v1/shoes/men?favorite-color=white
+
+JSON response
+
+```json
+{
+    "@name": "men",
+    "@path": "/shoes/men",
+    "@id": "881d5dc8-90c9-4175-88fe-0a310c9bfd35",
+    "@nodeType": "mgnl:page",
+    "hideInNav": "false",
+    "navigationTitle": "Men",
+    "title": "Tommy Hilfiger | Men Shoes",
+    "noCache": "false",
+    "main": {
+        "0": {
+            "@name": "0",
+            "@path": "/shoes/men/main/0",
+            "@id": "1b64e04e-f65a-4f5a-a27e-d08bc0ba4218",
+            "@nodeType": "mgnl:component",
+            "@variantNodeName": "variant-0",
+            "@variantPath": "/shoes/men/main/0/variants/variant-0",
+            "link": {
+                "@name": "Basket-Leather-Cupsole-Trainers",
+                "@path": "/tommy-hilfiger/men/Basket-Leather-Cupsole-Trainers",
+                "@id": "55310089-2b40-406b-8292-3374f393c588",
+                "@nodeType": "mgnl:shoe",
+                "name": "Basket Leather Cupsole Trainers",
+                "brand": "c547f96e-d14d-42ef-b450-4e15460c56f7",
+                "description": "<p>With an understated upper, these trainers get their standout value from a substantial cupsole featuring eye-catching striped detail.<br />\n<br />\nHighlights<br />\n<br />\n&bull; Leather mix upper<br />\n&bull; Recycled polyester, polyester and polyurethane lining<br />\n&bull; Recycled polyester, polyester and polyurethane insock<br />\n&bull; Natural rubber outsole<br />\n&bull; Cupsole<br />\n&bull; Tommy Hilfiger branding<br />\n&bull; Tommy Hilfiger flag at heel<br />\n<br />\nShape &amp; fit<br />\n<br />\n&bull; Low-top<br />\n&bull; Lace-up<br />\n&bull; Almond toe<br />\n<br />\nComposition &amp; care<br />\n<br />\n&bull; 75% leather, 25% polyesterStyle #: FM0FM03432</p>\n",
+                "image": "jcr:2b2c33be-81cc-4262-a01d-60c2d8d90866",
+                "@nodes": []
+            },
+            "@nodes": []
+        },
+        "@name": "main",
+        "@path": "/shoes/men/main",
+        "@id": "84c301e0-ebe9-4902-af98-140bead1645d",
+        "@nodeType": "mgnl:area",
+        "@nodes": [
+            "0"
+        ]
+    },
+    "footer": {
+        "@name": "footer",
+        "@path": "/shoes/men/footer",
+        "@id": "95141d5d-ccc2-4e1c-bc98-4a537379b5b6",
+        "@nodeType": "mgnl:area",
+        "@nodes": []
+    },
+    "@nodes": [
+        "main",
+        "footer"
+    ]
+}
+```
+
+## [](#_personalization_of_an_spa_page)Personalization of an SPA page
+
+The Visual SPA Editor fully supports the personalization features of the Pages app. Authors can:
+
+-   create variants of pages or component,
+
+-   choose audiences for them, and
+
+-   test the results in the [Preview app](../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Preview-app/).
+
+
+The [Delivery API](../delivery-endpoint/) will return personalized content based on the traits of the current request and session.
+
+For more details, see [Personalization of headless SPA projects](../../../product-docs/RNs-6-4-3/Developing/headless/spa-development/personalization-of-headless-SPA-projects/).
+
+Related topics
+
+-   [Delivery API](../delivery-endpoint/)
+
+-   [Personalization](../../../product-docs/RNs-6-4-3/use-cases/Personalization/)

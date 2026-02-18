@@ -10,7 +10,7 @@ breadcrumb: DX Core > Getting Started > Magnolia project overview
 
 This page details what is typically involved in creating a website project in Magnolia.
 
-![Magnolia project overview](../../_images/6-0-project-overview-main.png)
+![Magnolia project overview](../../../RNs-6-4-3/_images/6-0-project-overview-main.png)
 
 ## [](#_1_website_specification)1\. Website specification
 
@@ -56,9 +56,9 @@ End products typically include:
 -   **Wireframes**: Sketches that demonstrate functionality of different pages. What sort of things can users can do on the site?
 
 
-The following diagram shows an incomplete sitemap of the Magnolia [demo](../Demo/) site:
+The following diagram shows an incomplete sitemap of the Magnolia [demo](../../../RNs-6-4-3/Getting-started-with-Magnolia/Demo/) site:
 
-![Diagram of an incomplete sitemap of the Magnolia demo site](../../_images/2infoarchitecture.png)
+![Diagram of an incomplete sitemap of the Magnolia demo site](../../../RNs-6-4-3/_images/2infoarchitecture.png)
 
 Resources
 
@@ -82,7 +82,7 @@ Decide where to store and edit your content.
 -   **Integration**: Consider whether your site could benefit from integration with third-party systems, tools and data sources. Magnolia is extremely flexible and built for easy integration.
 
 
-![Pages app structure](../../_images/6-2-mgnlProjectOverview-pagesApp.png)
+![Pages app structure](../../../RNs-6-4-3/_images/6-2-mgnlProjectOverview-pagesApp.png)
 
 Resources
 
@@ -95,9 +95,9 @@ Your front-end team creates an HTML prototype. The prototype should include exam
 
 There are many differing views on the best way to prototype a website. There are also many tools and frameworks to assist in the process. Many designers choose to create a functional prototype in HTML and CSS. Frameworks like [Bootstrap](http://getbootstrap.com/) or [Foundation](http://foundation.zurb.com/) allow you to create an interactive prototype that works in a web browser.
 
-The following screenshot shows the html prototype of the Magnolia [demo](../Demo/) site:
+The following screenshot shows the html prototype of the Magnolia [demo](../../../RNs-6-4-3/Getting-started-with-Magnolia/Demo/) site:
 
-![HTML prototype of the Magnolia demo site](../../_images/4htmlprototype.png)
+![HTML prototype of the Magnolia demo site](../../../RNs-6-4-3/_images/4htmlprototype.png)
 
 Resources
 
@@ -112,9 +112,9 @@ Plan your templates by `cutting up` the prototype areas and components and match
 
 A quick and rewarding way to start is to bring the pages of the prototype into Magnolia as templates. This way the site looks complete right away. You can then turn the HTML templates into Magnolia templates step by step by `cutting` pieces out of the page and putting them into components within defined areas.
 
-For example, for the Magnolia [demo](../Demo/) site Tours section, the following component templates were planned:
+For example, for the Magnolia [demo](../../../RNs-6-4-3/Getting-started-with-Magnolia/Demo/) site Tours section, the following component templates were planned:
 
-![Component templates for Tours section](../../_images/5plantemplates.png)
+![Component templates for Tours section](../../../RNs-6-4-3/_images/5plantemplates.png)
 
 During this step you typically need to decide on:
 
@@ -126,17 +126,17 @@ During this step you typically need to decide on:
 
 -   **Component templates**: Determine the number and function of components needed. Write specs for any custom components.
 
--   **Reuse existing templates** : Are there any existing templates that you can copy and change that may be suitable for your project. The [MTK module](../../Modules/List-of-modules/MTE-module/MTK-module/) includes a number of components that can be leveraged. Other Magnolia modules, such as [Categorization](../../Modules/List-of-modules/Categorization-module/), [Public User Registration](../../Modules/List-of-modules/Public-User-Registration-module/), and [Form](../../Modules/List-of-modules/Form-module/) provide ready-made components that you can use or adapt. Also consider building up a your own templating kit or library of reusable components to match your development approach.
+-   **Reuse existing templates** : Are there any existing templates that you can copy and change that may be suitable for your project. The [MTK module](../../../RNs-6-4-3/Modules/List-of-modules/MTE-module/MTK-module/) includes a number of components that can be leveraged. Other Magnolia modules, such as [Categorization](../../../RNs-6-4-3/Modules/List-of-modules/Categorization-module/), [Public User Registration](../../../RNs-6-4-3/Modules/List-of-modules/Public-User-Registration-module/), and [Form](../../../RNs-6-4-3/Modules/List-of-modules/Form-module/) provide ready-made components that you can use or adapt. Also consider building up a your own templating kit or library of reusable components to match your development approach.
 
     Resources
 
--   [Template definition](../../Developing/Templating/Template-definition/)
+-   [Template definition](../../../RNs-6-4-3/Developing/Templating/Template-definition/)
 
--   [Template scripts](../../Developing/Templating/Template-scripts/)
+-   [Template scripts](../../../RNs-6-4-3/Developing/Templating/Template-scripts/)
 
--   [Dialog definition](../../Developing/Templating/Dialog-definition/)
+-   [Dialog definition](../../../RNs-6-4-3/Developing/Templating/Dialog-definition/)
 
--   [Resources](../../Developing/Resources/)
+-   [Resources](../../../RNs-6-4-3/Developing/Resources/)
 
 
 ## [](#_6_build_templates)6\. Build templates
@@ -145,7 +145,7 @@ During the template building process your website begins to take shape and you r
 
 For example, here are the component templates planned in the previous step configured in Magnolia:
 
-![Component templates](../../_images/6-2-mgnlProjectOverview-componentTremplates.png)
+![Component templates](../../../RNs-6-4-3/_images/6-2-mgnlProjectOverview-componentTremplates.png)
 
 Things to consider before starting:
 
@@ -164,9 +164,9 @@ Build process:
 
     Resources
 
--   [Template prototype](../../Developing/Templating/Site-definition/Template-prototype/)
+-   [Template prototype](../../../RNs-6-4-3/Developing/Templating/Site-definition/Template-prototype/)
 
--   [Hello Magnolia](../Hello-Magnolia/)
+-   [Hello Magnolia](../../../RNs-6-4-3/Getting-started-with-Magnolia/Hello-Magnolia/)
 
 
 > **Tip:** You can use the Magnolia CLI to speed up template creation.
@@ -175,28 +175,28 @@ Build process:
 
 Build apps for your content. Test any custom components that retrieve content from apps and refine your templates if necessary.
 
-The following screenshot shows the Tours app from the Magnolia [demo](../Demo/) site:
+The following screenshot shows the Tours app from the Magnolia [demo](../../../RNs-6-4-3/Getting-started-with-Magnolia/Demo/) site:
 
-![Tours app tile](../../_images/6-2-mgnlProjectOverview-tours.png)
+![Tours app tile](../../../RNs-6-4-3/_images/6-2-mgnlProjectOverview-tours.png)
 
 Resources
 
--   [My first content app](../../Apps/Developing-an-app/My-first-content-app/)
+-   [My first content app](../../../RNs-6-4-3/Apps/Developing-an-app/My-first-content-app/)
 
--   [App configuration](../../Apps/App-configuration/)
+-   [App configuration](../../../RNs-6-4-3/Apps/App-configuration/)
 
--   [Content app with non-JCR content](../../../../magnolia-5-ui-documentation/Content-apps-5-UI/Content-app-with-non-JCR-content-5-UI/)
+-   [Content app with non-JCR content](#6.2@product-docs:ROOT:Support/Magnolia-5-UI-documentation/Content-apps-5-UI/Content-app-with-non-JCR-content-5-UI.adoc)
 
 
 ## [](#_8_enter_content)8\. Enter content
 
 Enter content into your new website. If you don’t have available content, use a text generator like [BlindTextGenerator](http://www.blindtextgenerator.com/lorem-ipsum).
 
-![Tour page in edit mode](../../_images/6-2-mgnlProjectOverview-tourVietnamDescription.png)
+![Tour page in edit mode](../../../RNs-6-4-3/_images/6-2-mgnlProjectOverview-tourVietnamDescription.png)
 
 Resources
 
--   [Author experience in Magnolia](../../Authoring/)
+-   [Author experience in Magnolia](../../../RNs-6-4-3/Authoring/)
 
 
 ## [](#_9_test_review_revise)9\. Test / Review / Revise

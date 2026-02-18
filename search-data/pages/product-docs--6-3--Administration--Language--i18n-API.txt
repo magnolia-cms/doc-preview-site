@@ -51,16 +51,10 @@ Working with the ordinary Java internationalization API you have to know the **b
 
 The Magnolia i18n API automatically loads message bundles if they are kept in the appropriate folders:
 
-## [](#_location_of_message_bundles)Location of message bundles
-
 | Location | In Magnolia Maven module | In Magnolia light module |
 | --- | --- | --- |
 | Preferred | `src/main/resources/<module-name>/i18n` | `<magnolia.resources.dir>/<module-name>/i18n` |
-| Deprecated\* | `src/main/resources/mgnl-i18n` | \-  |
-
-Message bundles stored in these directories will be loaded automatically during module startup.
-
-> **Warning:** If you have modules with message bundles located within the deprecated folder, make sure that the bundle file names are unique.
+| Deprecated* | `src/main/resources/mgnl-i18n` | - |
 
 ## [](#_bundle_load_order_and_bundle_merging)Bundle load order and bundle merging
 

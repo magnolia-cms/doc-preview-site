@@ -10,7 +10,7 @@ breadcrumb: DX Core > Apps > App configuration > Data source definition > Option
 
 The option list data source provides a static list of configured options. By default, it does not provide any component implementation itself other than the one required by select fields.
 
-> **Note:** The option list data source is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.datasource.optionlist.OptionListDefinition.If you work with the Magnolia 5 UI framework, see Magnolia DX Core support. connector] instead.
+> **Note:** The option list data source is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.datasource.optionlist.OptionListDefinition.If you work with the Magnolia 5 UI framework, see support:ROOT:index.adoc. connector] instead.
 
 The option list data source replaces the options configuration for select fields in *Magnolia 5 UI*. Previously, the option definition list was a core part of select field definition. This made it harder to convey the select fields that populate an item list in a more complex way than a predefined list of options (e.g. a database table or JCR workspace).
 
@@ -34,35 +34,17 @@ datasource:
       value: italy
 ```
 
-## [](#_list_of_properties)List of properties
-
 | Property | Description |
 | --- | --- |
-| `class` or `$type` | **required**<br><br>Use `info.magnolia.ui.datasource.optionlist.OptionListDefinition` for the `class` property or `optionListDatasource` for the `$type` shortcut. |
-| `options` | **required**<br><br>Parent node for selectable options. See info.magnolia.ui.datasource.optionlist.Option for more information. |
-| `value` | **required**<br><br>Value saved to the repository when selected. |
-| `name` | **optional**, *default is the parent node name*<br><br>Name of the node where the selected value is stored. If no name is defined, the parent node name will be used instead. |
-| `label` | **optional**<br><br>Option label displayed to the user. The value is [i18n](../../../../Administration/Language/Internationalization/#_i18n_message_keys)\-able. |
-| `iconSrc` | **optional**<br><br>Displays an image next to the option. The value is a path to the image. |
-| `name` | **optional**, *default is `optionlist`*<br><br>Name of the data source. |
-| `sort` | **optional**, *default is `false`*<br><br>When `true`, the list of options can be sorted. |
-
-## [](#_data_source_components)Data source components
-
-Module component mappings can be defined in the context of the current data source (a component section should have an id in the form of `<id>datasource-<ds-name></id>`, where `<ds-name>` is configured in the definition).
+| `class` or `$type` | **required** Use `info.magnolia.ui.datasource.optionlist.OptionListDefinition` for the `class` property or `optionListDatasource` for the `$type` shortcut. |
+| `options` | **required** Parent node for selectable options. See info.magnolia.ui.datasource.optionlist.Option for more information. |
+| `value` | **required** Value saved to the repository when selected. |
+| `name` | **optional** , *default is the parent node name* Name of the node where the selected value is stored. If no name is defined, the parent node name will be used instead. |
+| `label` | **optional** Option label displayed to the user. The value is [i18n](../../../../Administration/Language/Internationalization/#_i18n_message_keys) -able. |
+| `iconSrc` | **optional** Displays an image next to the option. The value is a path to the image. |
+| `name` | **optional** , *default is optionlist* Name of the data source. |
+| `sort` | **optional** , *default is false* When `true` , the list of options can be sorted. |
 
 | Type | Implementation | Description |
 | --- | --- | --- |
 | `info.magnolia.ui.field.SelectFieldSupport` | `info.magnolia.ui.datasource.optionlist.OptionSelectFieldSupport` | Provides delegates required by select fields. |
-
-Component mappings in module descriptor
-
-```xml
-<components>
-  <id>datasource-optionlist</id>
-  <component>
-    <type>info.magnolia.ui.field.SelectFieldSupport</type>
-    <implementation>info.magnolia.ui.datasource.optionlist.OptionSelectFieldSupport</implementation>
-  </component>
-</components>
-```

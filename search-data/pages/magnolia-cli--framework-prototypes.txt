@@ -1,0 +1,117 @@
+---
+title: "Magnolia Component Library"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library
+---
+
+# Magnolia Component Library
+
+The Magnolia Component Library offers reusable, customizable components and page templates for Magnolia front-end projects.
+
+Also known as *framework prototypes*, it’s fully compatible with Magnolia CLI plugins, like [Create Component plugin](../plugins/available-plugins/create-component-plugin/) and [Create Page plugin](../plugins/available-plugins/create-page-plugin/).
+
+It enables developers to efficiently generate components and pages, providing a foundation for consistent, maintainable front-end applications integrated with Magnolia DXP.
+
+The Magnolia Component Library integrates seamlessly with the [Magnolia Starter Projects](../../product-docs/RNs-6-4-3/Magnolia-front-end-development/starter-projects/). It’s designed to work with other projects too, though adjustments may be needed based on the project’s structure and styling.
+
+## [](#_key_features)Key features
+
+-   Developer-friendly: Features a clear, modular structure that’s easy to customize, extend, or replace, streamlining development workflows.
+
+-   CLI-integrated: Seamlessly integrates with Magnolia CLI plugins, such as `create-component` and `create-page`.
+
+-   Composable: Each component includes a dialog, template, and framework-specific implementation for flexible, reusable designs.
+
+-   Customizable: Generated components are added directly to your codebase, providing full ownership and flexibility for modifications.
+
+-   Design-System ready: Serves as an ideal foundation for creating your own component library or reusable design system.
+
+
+## [](#_whats_included)What’s included
+
+Each Magnolia Component Library includes:
+
+-   Ready-to-use dialogs and template definitions for seamless integration with Magnolia CMS.
+
+-   Front-end components tailored for your chosen framework (React, Vue, Angular, or Freemarker).
+
+-   Full compatibility with Magnolia CLI for automated file generation and mapping, streamlining development.
+
+-   Complete ownership of generated code, enabling easy customization and extension.
+
+-   Built-in support for accessible, responsive, and SEO-optimized components, adhering to web standards.
+
+-   Pre-configured styling with Tailwind CSS, assuming it is set up in your project environment.
+
+
+## [](#_usage)Usage
+
+Generate a component from a prototype:
+
+```console
+npm run mgnl -- create-component <YourComponentName> -p <PrototypeName>
+```
+
+Add the component to a specific area during creation:
+
+```console
+npm run mgnl -- create-component <YourComponentName> -p <PrototypeName> -a main
+```
+
+Explore available prototypes interactively:
+
+```console
+npm run mgnl -- create-component <YourComponentName> -p
+```
+
+> **Important:** Components are copied, not referenced. When you create a component using the Magnolia Component Library, it’s added as a local file.You own the code and can customize it freely. You’re also responsible for maintaining it.
+
+## [](#_styling)Styling
+
+The Magnolia Component Library uses Tailwind CSS utility classes to style components.
+
+Your project must have Tailwind CSS installed and configured to display styles correctly. Without Tailwind, components will render but appear unstyled. Their structure and functionality will remain intact.
+
+We don’t include global styles or CSS files with the components. All styling is managed directly through Tailwind utility classes in the component markup.
+
+## [](#_libraries_available_out_of_the_box)Libraries available out-of-the-box
+
+-   [Magnolia React Component Library](cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](cli-vue-prototypes/)
+
+-   [Magnolia Angular Component Library](cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](cli-freemarker-prototypes/)
+
+
+Each library offers reusable components and page prototypes.
+
+You can use them as-is or build your own design system from them. For details and usage examples, select the desired component library above.
+
+## [](#_customizing_or_creating_your_own_library)Customizing or creating your own library
+
+You’re not restricted to the default libraries. You can create your own custom library:
+
+-   Define custom templates and YAML definitions.
+
+-   Use CLI-compatible placeholders and template logic.
+
+-   Configure `mgnl.config.js` to point to your custom library.
+
+
+For more details, see the [Creating custom prototypes](developing-prototypes/creating-custom-prototypes/) guide.
+
+## [](#_why_use_the_library)Why use the library?
+
+-   Provides a consistent structure for all Magnolia-powered front-ends.
+
+-   Enables fast setup and integration with the Magnolia CLI.
+
+-   Offers customizable and extensible components with full control after generation.
+
+-   Incorporates built-in best practices for development.
+
+-   Supports design systems and shared components across teams.

@@ -1,0 +1,64 @@
+---
+title: "Content Tags module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Content-Tags-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Content Tags module
+---
+
+# Content Tags module
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [CONTTAGS](https://magnolia-cms.atlassian.net/browse/CONTTAGS) |
+| Maven site | [Content Tags](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fcontenttags%2Fmagnolia-content-tags-ui%2F{magnolia-content-tags-64}) |
+| Latest | {magnolia-content-tags-64} |
+
+| artifactID |  |
+| --- | --- |
+| `magnolia-content-tags-parent` Parent reactor. | `magnolia-content-tags-core` |
+| Provides the API and the [tagfn](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/) templating functions. | `magnolia-content-tags-ui` |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.contenttags</groupId>
+  <artifactId>magnolia-content-tags-ui</artifactId>
+  <version>{magnolia-content-tags-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+> **Tip:** It is sufficient to add magnolia-content-tags-ui only to the POM file of your webapp and let let Maven handle the dependency to magnolia-content-tags-core.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.contenttags</groupId>
+  <artifactId>magnolia-content-tags-core</artifactId>
+  <version>{magnolia-content-tags-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_further_reading)Further reading
+
+-   Get familiar with the [`tagfn`](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/) templating functions.
+
+
+Related topics
+
+-   [Content tagging](./)
+
+-   [`tagfn` templating functions](../../../Developing/Templating/Template-scripts/Templating-functions/tagfn/)
+
+-   [Enable content tags for a content app](How-to-enable-content-tags-for-a-content-app/)

@@ -10,13 +10,13 @@ breadcrumb: DX Core > Apps > List of apps > Definitions app
 
 The Definitions app is the single place to find all definitions loaded by Magnolia through the Registry API. The app displays active definitions from all sources (YAML, JCR `config` workspace, Code, and in-memory) and origins (classpath, file system, and JCR `resources` workspace).
 
-[Light development](../../../Developing/Light-development-in-Magnolia/) introduced an additional configuration source in Magnolia and the app provides an overview of both JCR and file-based definitions. At a glance, back and front-end developers can see the definition sources.
+[Light development](../../../../RNs-6-4-3/Developing/Light-development-in-Magnolia/) introduced an additional configuration source in Magnolia and the app provides an overview of both JCR and file-based definitions. At a glance, back and front-end developers can see the definition sources.
 
 In the Definitions app users can:
 
 -   [View](#_viewing_definitions), search and filter definitions by multiple criteria.
 
--   [Access definitions](#_accessing_definitions) in either the [Configuration](../Configuration-app/) or [Resource files](../Resource-Files-app/) app directly from the Definitions app.
+-   [Access definitions](#_accessing_definitions) in either the [Configuration](../../../../RNs-6-4-3/Apps/List-of-apps/Configuration-app/) or [Resource files](../../../../RNs-6-4-3/Apps/List-of-apps/Resource-Files-app/) app directly from the Definitions app.
 
 
 The app also shows [definition decorations](#_decorated_definitions) and [configuration errors](#_definition_errors).
@@ -27,7 +27,7 @@ The app includes all definitions that are bound to info.magnolia.config.registry
 
 ### [](#_list_of_definition_types)List of definition types
 
--   [`apps`](../../App-configuration/)
+-   [`apps`](../../../../RNs-6-4-3/Apps/App-configuration/)
 
 -   `blocks`
 
@@ -39,15 +39,15 @@ The app includes all definitions that are bound to info.magnolia.config.registry
 
 -   `dataSuppliers`
 
--   [`dialogs`](../../../Developing/Templating/Dialog-definition/)
+-   [`dialogs`](../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/)
 
--   [`fieldTypes`](../../../Developing/Templating/Dialog-definition/Field-definition/)
+-   [`fieldTypes`](../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/)
 
 -   `graphqlTypes`
 
--   [`mediaEditors`](../../../Modules/List-of-modules/UI-module/UI-Media-Editor-module/)
+-   [`mediaEditors`](../../../../RNs-6-4-3/Modules/List-of-modules/UI-module/UI-Media-Editor-module/)
 
--   [`messageViews`](../../Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
+-   [`messageViews`](../../../../RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
 
 -   `modules`
 
@@ -55,25 +55,25 @@ The app includes all definitions that are bound to info.magnolia.config.registry
 
 -   `querySniffers`
 
--   [`renderers`](../../../Developing/Templating/Renderers/)
+-   [`renderers`](../../../../RNs-6-4-3/Developing/Templating/Renderers/)
 
 -   `restEndpoints`
 
 -   `searchResultSuppliers`
 
--   [`sites`](../../../Developing/Templating/Site-definition/)
+-   [`sites`](../../../../RNs-6-4-3/Developing/Templating/Site-definition/)
 
--   [`templates`](../../../Developing/Templating/Template-definition/)
+-   [`templates`](../../../../RNs-6-4-3/Developing/Templating/Template-definition/)
 
--   [`themes`](../../../Developing/Templating/Theme/)
+-   [`themes`](../../../../RNs-6-4-3/Developing/Templating/Theme/)
 
 -   `traits`
 
 -   `virtualUriMappings`
 
--   [`workitemHandlers`](../../../Modules/List-of-modules/Workflow-module/User-tasks/)
+-   [`workitemHandlers`](../../../../RNs-6-4-3/Modules/List-of-modules/Workflow-module/User-tasks/)
 
--   [`workflows`](../../../Modules/List-of-modules/Workflow-module/Workflow-processes/)
+-   [`workflows`](../../../../RNs-6-4-3/Modules/List-of-modules/Workflow-module/Workflow-processes/)
 
 
 ## [](#_searching_and_filtering_definitions)Searching and filtering definitions
@@ -88,7 +88,7 @@ The search field searches through *parent node names* in the **Title** column. I
 
 -   **Module**: Select a module. The field displays all modules.
 
--   **Origin**: See [Resources: Origin and loading order](../../../Developing/Resources/#_origins_and_loading_order).
+-   **Origin**: See [Resources: Origin and loading order](../../../../RNs-6-4-3/Developing/Resources/#_origins_and_loading_order).
 
     -   jcr
 
@@ -101,7 +101,7 @@ The search field searches through *parent node names* in the **Title** column. I
     -   extra
 
 
--   **Decorated**: See [Definition decoration](../../../Developing/Definition-decoration/).
+-   **Decorated**: See [Definition decoration](../../../../RNs-6-4-3/Developing/Definition-decoration/).
 
 -   **Severity**
 
@@ -123,7 +123,7 @@ You can expand any definition node to view a representation of the full configur
 
 ## [](#_accessing_definitions)Accessing definitions
 
-Dedicated actions allow you to access a definition for editing in either the [Resource files](../Resource-Files-app/) or [Configuration](../Configuration-app/) app:
+Dedicated actions allow you to access a definition for editing in either the [Resource files](../../../../RNs-6-4-3/Apps/List-of-apps/Resource-Files-app/) or [Configuration](../../../../RNs-6-4-3/Apps/List-of-apps/Configuration-app/) app:
 
 -   **Show in Resources app** displays for file-based definitions. The action opens the file in read only mode in the Resource files app. You can choose to hotfix the definition in the app or edit it on the file system.
 
@@ -131,85 +131,6 @@ Dedicated actions allow you to access a definition for editing in either the [Re
 
 
 All YAML definitions display in the **Origin** column as *file*. The origin of these definitions could be the file system or the classpath. You can see each origin in the Resource Files app.
-
-## [](#_using_the_registry_api)Using the Registry API
-
-The Definitions app provides a visual interface to explore definitions. You can also access these definitions programmatically through the Registry API in your Java code.
-
-### [](#_basic_usage_pattern)Basic usage pattern
-
-All definition registries follow the same pattern: get the registry component and call `getAllDefinitions()` to retrieve an iterator.
-
-```java
-// Generic pattern for accessing any registry
-Iterator<DefinitionType> iterator = Components.getComponent(DefinitionTypeRegistry.class).getAllDefinitions().iterator();
-while (iterator.hasNext()) {
-    DefinitionType definition = iterator.next();
-    // Work with the definition
-}
-```
-
-### [](#_common_registry_examples)Common registry examples
-
-#### [](#_templates)Templates
-
-```java
-import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import info.magnolia.rendering.template.TemplateDefinition;
-
-Iterator<TemplateDefinition> templateDefinitionIterator =
-    Components.getComponent(TemplateDefinitionRegistry.class).getAllDefinitions().iterator();
-while (templateDefinitionIterator.hasNext()) {
-    TemplateDefinition template = templateDefinitionIterator.next();
-    System.out.println("Template: " + template.getName());
-}
-```
-
-#### [](#_dialogs)Dialogs
-
-```java
-import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.dialog.DialogDefinition;
-
-Iterator<DialogDefinition> dialogDefinitionIterator =
-    Components.getComponent(DialogDefinitionRegistry.class).getAllDefinitions().iterator();
-while (dialogDefinitionIterator.hasNext()) {
-    DialogDefinition dialog = dialogDefinitionIterator.next();
-    System.out.println("Dialog: " + dialog.getName());
-}
-```
-
-#### [](#_apps)Apps
-
-```java
-import info.magnolia.registry.AppRegistry;
-import info.magnolia.ui.api.app.AppDescriptor;
-
-Iterator<AppDescriptor> appIterator =
-    Components.getComponent(AppRegistry.class).getAllDefinitions().iterator();
-while (appIterator.hasNext()) {
-    AppDescriptor app = appIterator.next();
-    System.out.println("App: " + app.getName());
-}
-```
-
-#### [](#_sites)Sites
-
-```java
-import info.magnolia.module.site.registry.SiteDefinitionRegistry;
-import info.magnolia.module.site.SiteDefinition;
-
-Iterator<SiteDefinition> siteIterator =
-    Components.getComponent(SiteDefinitionRegistry.class).getAllDefinitions().iterator();
-while (siteIterator.hasNext()) {
-    SiteDefinition site = siteIterator.next();
-    System.out.println("Site: " + site.getName());
-}
-```
-
-### [](#_common_registry_classes)Common registry classes
-
-The following table lists the most commonly used registry classes and their corresponding definition types:
 
 | Registry class | Definition type | Use case |
 | --- | --- | --- |
@@ -222,29 +143,13 @@ The following table lists the most commonly used registry classes and their corr
 | `RendererDefinitionRegistry` | `RendererDefinition` | Template renderers |
 | `VirtualUriMappingRegistry` | `VirtualUriMappingDefinition` | URL mappings |
 
-### [](#_accessing_specific_definitions)Accessing specific definitions
-
-To get a specific definition instead of all definitions, most registries provide methods to get definitions by name:
-
-```java
-// Get a specific template by name
-TemplateDefinitionRegistry templateRegistry = Components.getComponent(TemplateDefinitionRegistry.class);
-TemplateDefinition specificTemplate = templateRegistry.getDefinition("my-template-name");
-
-// Get a specific dialog by name
-DialogDefinitionRegistry dialogRegistry = Components.getComponent(DialogDefinitionRegistry.class);
-DialogDefinition specificDialog = dialogRegistry.getDefinition("my-dialog-name");
-```
-
-> **Note:** The getDefinition() methods may return null if the definition doesn’t exist. Always check for null before using the result.
-
 ## [](#_configuration)Configuration
 
 > **Caution:** The app itself is configured in /definitions-app/apps/definitions-app.yaml. It is NOT advisable to make any changes to this configuration file.
 
 ## [](#_decorated_definitions)Decorated definitions
 
-[Decorated definitions](../../../Developing/Definition-decoration/) are marked in the **Decorated** column. The **Show definition decorators** action opens the **Applied definition decorators** popup which shows the source file and the decorated path of each decorator.
+[Decorated definitions](../../../../RNs-6-4-3/Developing/Definition-decoration/) are marked in the **Decorated** column. The **Show definition decorators** action opens the **Applied definition decorators** popup which shows the source file and the decorated path of each decorator.
 
 ## [](#_interpolated_variables)Interpolated variables
 
@@ -280,8 +185,8 @@ The following deprecated definitions are shown:
 
 Related topics
 
--   [Definitions App module](../../../Modules/List-of-modules/Definitions-App-module/)
+-   [Definitions App module](../../../../RNs-6-4-3/Modules/List-of-modules/Definitions-App-module/)
 
--   [Resource Files app](../Resource-Files-app/)
+-   [Resource Files app](../../../../RNs-6-4-3/Apps/List-of-apps/Resource-Files-app/)
 
--   [Configuration app](../Configuration-app/)
+-   [Configuration app](../../../../RNs-6-4-3/Apps/List-of-apps/Configuration-app/)

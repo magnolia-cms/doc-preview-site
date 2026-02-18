@@ -1,0 +1,91 @@
+---
+title: "Usage"
+url: https://docs.magnolia-cms.com/campaign-manager/3.1/usage/
+category: Modules
+version: modules
+breadcrumb: Campaign manager module > Usage
+---
+
+# Usage
+
+After the campaign manager is installed and configured, its usage consists of six main steps.
+
+1.  [Creating and scheduling a campaign](#_creating_campaigns)
+
+2.  [Creating a slot](#_creating_slots)
+
+3.  [Creating a creative](#_creating_creatives)
+
+4.  [Adding a campaign managed component](#_adding_slots_to_pages)
+
+5.  [Inspecting campaign scheduling](#_scheduled_campaigns)
+
+6.  [Previewing campaigns on the page](#_previewing_campaigns)
+
+
+## [](#_creating_campaigns)Creating campaigns
+
+From the Campaign Manager app you can create and manage campaigns. Click **Add campaign schedule** to add a new campaign. You are required to provide the following parameters for a new campaign:
+
+-   **Name**: Give your campaign a meaningful name so that content editors are able to tell one campaign from another.
+
+-   **Description**: Set a meaningful description to help the other editors to understand the purpose of the campaign.
+
+-   **Priority**: In case of overlapping campaigns, the system will use that property to prioritise the campaigns.
+
+-   **Color**: The color to use to identify the campaign in the consolidate calendar view.
+
+-   **Schedule**: Give the campaign schedule.
+
+
+![Creating a schedule](../../_images/creating-campaigns.png)
+
+## [](#_creating_slots)Creating slots
+
+You need to define the names of the different types of campaigns you want to use, such as seasonal promotions, special events, or new product launches. The **Slots** tab allows you to create the name of each campaign category and give it a short description.
+
+[Creatives](#_creating_creatives) contain campaign content. Each creative is linked to a slot defined on the **Slots** tab, which you also [add to the site page](#_adding_slots_to_pages) where the campaign should appear.
+
+![Editing a slot](../../_images/editing-slots.png)
+
+## [](#_creating_creatives)Creating creatives
+
+The campaign acts as a container for the campaign items (aka Creatives). A campaign item is an element of the campaign for defining content. You are required to provide the following parameters for a new campaign item:
+
+-   **Name**: Each campaign item should define a meaningful name. In most cases "Banner" can be used as a name.
+
+-   **Template**: Select the campaign template to be used. Campaign templates are defined in the [module configuration](../../configuration/#_creating_campaign_templates).
+
+-   [**Slot**](#_adding_slots_to_pages): Tagging helps identify campaigns of a certain type or category.
+
+
+## [](#_adding_slots_to_pages)Adding slots to pages
+
+When everything is configured, and you’ve created the campaign, slot, and associated creative as described above, you can add a `Campaign managed component` to the webpage where you want the campaign placed.
+
+After adding the component, a dialog opens that allows you to select the slot you want. Saving the changes feeds the campaign content associated with the slot into the component.
+
+> **Note:** In the dialog, there is a checkbox field called 'skip' that controls whether the content of the managed component is rendered. If 'skip' is checked (or set to true), the component will appear empty. If 'skip' is unchecked (or false), the component renders normally. The 'skip' field provides a convenient way to disable the rendering of the component without needing to remove it entirely.
+
+![Campaign managed component](../../_images/campaign-managed-component.png)
+
+## [](#_scheduled_campaigns)Scheduled campaigns
+
+The Campaign Manager includes a Calendar tab for planning and scheduling campaigns. This feature provides a visual representation of all ongoing and upcoming campaigns, allowing teams to:
+
+-   Avoid overlaps and ensure optimal timing.
+
+-   Allocate resources effectively.
+
+-   Coordinate with other marketing activities.
+
+
+The calendar color-codes campaigns for easy identification and prioritization.
+
+![Scheduling campaigns](../../_images/scheduling-campaigns.png)
+
+## [](#_previewing_campaigns)Previewing campaigns
+
+You can click the **Preview as visitor** action in the **Pages** app to preview the page. By selecting a date in the calendar picker, you can see which campaigns are shown at different times of the year.
+
+![Previewing campaigns](../../_images/preview-campaign.png)

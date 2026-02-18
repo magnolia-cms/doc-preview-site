@@ -1,0 +1,46 @@
+---
+title: "Bitbucket module"
+url: https://docs.magnolia-cms.com/bitbucket-integration/
+category: Modules
+version: modules
+breadcrumb: Bitbucket module
+---
+
+# Bitbucket module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [BITBUCKET](https://magnolia-cms.atlassian.net/browse/BITBUCKET) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/bitbucket-integration) |
+| Latest | 1.0 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.module.bitbucket</groupId>
+  <artifactId>bitbucket-resources</artifactId>
+  <version>1.0</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.module.bitbucket</groupId>
+  <artifactId>bitbucket-restclient</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+| Parameter | Description |
+| --- | --- |
+| `apiKey` | The client id from Bitbucket OAuth configuration. |
+| `apiSecret` | The secret from Bitbucket OAuth configuration. |
+| `workspace` | This can either be the workspace ID (slug) or the workspace UUID surrounded by curly-braces, for example: `{workspace UUID}` . |
+| `slug` | This can either be the repository slug or the UUID of the repository, surrounded by curly-braces, for example: `{repository UUID}` . |
+| `authorizationUrl` | Bitbucket url to obtain the access token. **Default** = `https://bitbucket.org/site/oauth2/access_token` |
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

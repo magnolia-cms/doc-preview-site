@@ -8,7 +8,7 @@ breadcrumb: DX Cloud > Helm values reference
 
 # Helm values
 
-**Latest version:** `1.17.2` [Helm repo](https://gitlab.com/mironet/magnolia-helm/-/tags)
+**Latest version:** `{helm-chart-version}` [Helm repo](https://gitlab.com/mironet/magnolia-helm/-/tags)
 
 When you [create a project](../../setup/#_create_a_project_using_the_maven_archetype) with DX Cloud, a `values.yml` file is generated for you from the PaaS Helm Chart. The `values.yml` file contains important project information for configuring items such as:
 
@@ -46,160 +46,24 @@ Specify the desired Helm chart version here. This shows the latest version.
 
 ```yaml
 variables:
-  HELM_CHART_VERSION: 1.17.2
+  HELM_CHART_VERSION: {helm-chart-version}
 ```
 
 ```yaml
 ...
-helm upgrade prod mironet magnolia-helm --version 1.17.2 -f values_new.yml -n prod
+helm upgrade prod mironet magnolia-helm --version {helm-chart-version} -f values_new.yml -n prod
 ...
 ```
 
-## [](#_ingresses)Ingresses
-
-An Ingress resource defines rules for how external HTTP/HTTPS traffic should be routed to services within a cluster. The `ingress:` section in the `values.yml` file contains configurable properties around enabling the ingress, annotations, hosts, and transport layer security.
-
-The properties shown in the example below are configurable.
-
-> **Caution:** You should not change any property other than those highlighted here.
-
-```yaml
-ingress:
-  enabled: true (1)
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/proxy-body-size: 512m
-    cert-manager.io/cluster-issuer: "letsencrypt-prod" (2)
-  hosts:
-  - host: {{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io
-    paths:
-    - path: /
-      instance: author
-      port: https
-  - host: {{ .Env.DEPLOYMENT }}.public.paastraining.magnolia-platform.io
-    paths:
-    - path: /
-      instance: public
-      port: https
-  tls:
-  - hosts:
-    - {{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io
-    - {{ .Env.DEPLOYMENT }}.public.paastraining.magnolia-platform.io
-#    - {{ .Env.DEPLOYMENT }}.frontend-author.paastraining.magnolia-platform.io
-#    - {{ .Env.DEPLOYMENT }}.frontend-public.paastraining.magnolia-platform.io
-    secretName: {{ .Env.DEPLOYMENT }}-paastraining-magnolia-platform-io
-…​
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | `enabled` must be `true` for the ingress configuration to work. `true` is the default value when creating a DX Cloud project. |
-| **2** | Exclude this annotation if using a [custom certificate](../../cockpit/sections/networking/#_custom). |
-
-
-
-### [](#_ingress_properties)Ingress properties
-
- PropertyDescription
-
-`enabled`
-
-Enable or disable the ingress file.
-
-`[annotations](#_annotations)`
-
-While a basic Ingress allows you to define hostnames, paths, and rules, annotations extend its functionality with more advanced configurations. Usually, annotations are used to enhance security, manage traffic, and handle custom behaviors.
-
-
-
-This is the section where you add any necessary annotations for your project. See [Annotations](#_annotations) for more details on different annotation options.
-
-> **Tip:** If in doubt, check with DX Cloud support before adding any additional annotations.
-
-`hosts`
-
-Specify hosts.
-
-This includes setting the service port if necessary.
-
-Example
-
-```yaml
-  - host: {{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io
-    paths:
-    - path: /
-      instance: author
-      port: https (1)
-```
-
-|     |     |
-| --- | --- |
-| **1** | If [SSO in DX Cloud](../../sso/) is failing due to incorrect protocol inference, setting the port to `https` in the Helm chart ensures Magnolia will generate redirect URLs using HTTPS. To do this, ideally, you should be using Helm `1.17.2` or `1.17.1`. |
-
-`tls`
-
-Specify hosts using transport layer security.
-
-Specify a secret name here if you already have a certificate stored and know its name. If this is not specified, `lets-encrypt` is used to issue a new certificate.
-
-Example
-
-```yaml
-  tls:
-  - hosts:
-    - {{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io
-    - {{ .Env.DEPLOYMENT }}.public.paastraining.magnolia-platform.io
-    secretName: {{ .Env.DEPLOYMENT }}-paastraining-magnolia-platform-io (1)
-```
-
-|     |     |
-| --- | --- |
-| **1** | Specify the `secretName`. |
-
-### [](#_annotations)Annotations
-
-This section provides you with some annotation examples that you can use in your DX Cloud project.
-
--   Whitelisting IPs
-
--   Request body buffer
-
-
-If you need to whitelist a range of IPs, this can be set using an ingress annotation. The annotation specifies a list of allowed IP ranges in CIDR format, separated by commas.
-
-If you have a CDN, the CDN IPs must be entered in the whitelist range. If you have an internal service, the service’s IPs must be entered in the whitelist range.
-
-```yaml
-    nginx.ingress.kubernetes.io/whitelist-source-range: "192.168.1.1/32, 10.0.0.0/16"
-```
-
-You might want to control the buffer size that NGINX uses to store the request body before passing it on to the backend service. This is useful when dealing with larger payloads, such as file uploads.
-
-```yaml
-    nginx.ingress.kubernetes.io/client-body-buffer-size: "16k"  (1)
-```
-
-|     |     |
-| --- | --- |
-| **1** | NGINX uses a buffer size of `16k` or `8k` depending on the platform (16k for 64-bit systems, 8k for 32-bit systems). You can also define the size using `k` for kilobytes, `m` for megabytes, or bytes with no suffix required. |
-
-#### [](#_package_manager)Package Manager
-
-If you’re using our [Package manager](../../../package-manager/), you need to configure your ingress to handle large package uploads and extended processing times. Package Manager allows you to upload, install, and manage packages that can be several hundred megabytes in size, and these operations may take several minutes to complete.
-
-```yaml
-ingress:
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 512m (1)
-    nginx.ingress.kubernetes.io/proxy-read-timeout: 300 (2)
-    nginx.ingress.kubernetes.io/proxy-send-timeout: 300 (3)
-```
-
-|     |     |
-| --- | --- |
-| **1** | Maximum size of the HTTP request body. Package Manager handles large binary package uploads that can exceed the default nginx limit. Consider setting this to at least 512m, or higher depending on your expected package sizes. |
-| **2** | Maximum time (in seconds) nginx waits to read data from the Magnolia backend. Package installation and processing operations can take several minutes. Consider setting this to at least 300 seconds (5 minutes) for long-running package operations. |
-| **3** | Maximum time (in seconds) nginx waits to send data to the Magnolia backend. Large package uploads require extended transmission time. Consider setting this to at least 300 seconds (5 minutes) for complete package uploads. |
+| `enabled` | Enable or disable the ingress file. |
+| `annotations` | While a basic Ingress allows you to define hostnames, paths, and rules, annotations extend its functionality with more advanced configurations. Usually, annotations are used to enhance security, manage traffic, and handle custom behaviors. This is the section where you add any necessary annotations for your project. See [Annotations](#_annotations) for more details on different annotation options. ** If in doubt, check with [DX Cloud support](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) before adding any additional annotations. | ** | If in doubt, check with [DX Cloud support](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) before adding any additional annotations. |
+| ** | If in doubt, check with [DX Cloud support](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) before adding any additional annotations. |
+| `hosts` | Specify hosts. This includes setting the service port if necessary. Example ` - host: {{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io paths: - path: / instance: author port: https (1)` ** **1** If [SSO in DX Cloud](../../sso/) is failing due to incorrect protocol inference, setting the port to `https` in the Helm chart ensures Magnolia will generate redirect URLs using HTTPS. To do this, ideally, you should be using Helm `{helm-chart-version}` or `{helm-chart-version-1}` . | ** **1** | If [SSO in DX Cloud](../../sso/) is failing due to incorrect protocol inference, setting the port to `https` in the Helm chart ensures Magnolia will generate redirect URLs using HTTPS. To do this, ideally, you should be using Helm `{helm-chart-version}` or `{helm-chart-version-1}` . |
+| ** **1** | If [SSO in DX Cloud](../../sso/) is failing due to incorrect protocol inference, setting the port to `https` in the Helm chart ensures Magnolia will generate redirect URLs using HTTPS. To do this, ideally, you should be using Helm `{helm-chart-version}` or `{helm-chart-version-1}` . |
+| `tls` | Specify hosts using transport layer security. Specify a secret name here if you already have a certificate stored and know its name. If this is not specified, `lets-encrypt` is used to issue a new certificate. Example ` tls: - hosts: - {{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io - {{ .Env.DEPLOYMENT }}.public.paastraining.magnolia-platform.io secretName: {{ .Env.DEPLOYMENT }}-paastraining-magnolia-platform-io (1)` ** **1** Specify the `secretName` . | ** **1** | Specify the `secretName` . |
+| ** **1** | Specify the `secretName` . |
 
 ## [](#_images)Images
 
@@ -221,396 +85,73 @@ The properties shown in the example below are configurable.
 | **1** | Provides credentials for pulling images from private registries. In this case, `gitlab` is used to pull from the private GitLab container registry. |
 | **2** | Defines when to pull the image. Options are `Always`, `IfNotPresent`, `Never`. |
 
-## [](#_magnolia_author)Magnolia Author
-
-The `magnoliaAuthor` section of your `values.yml` file handles important configuration for the Magnolia Author instance. The author instance is where authors, also sometimes referred to as editors, are able to create and edit pages, and publish content.
-
-The properties shown in the example below are configurable.
-
-> **Caution:** You should not change any property other than those highlighted here.
-
-```yaml
-  magnoliaAuthor:
-    enabled: true
-    restartPolicy: Always
-    redeploy: true
-    bootstrap:
-      password: superuser!
-    activation:
-      useExistingSecret: False
-    contextPath: /
-    base_url: https://{{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io/
-    sameSiteCookies: strict
-    env:
-      - name: instance
-        value: "author"
-      - name: deployment
-        value: {{ .Env.DEPLOYMENT }}
-      - name: magnolia.superuser.enabled
-        value: "true"
-      - name: magnolia.superuser.password
-        value: "superuser!"
-      - name: magnolia.bootstrap.license.owner (1)
-        value: "[replace with email]"
-      - name: magnolia.bootstrap.license.key (1)
-        value: "[replace with key]"
-    setenv:
-      memory:
-        minPercentage: 25
-        maxPercentage: 60
-    rescueModeDX: False
-    catalinaExtraEnv:
-      magnolia.yaml.envsubst: "true"
-    resources:
-      requests:
-        memory: 4Gi
-      limits:
-        memory: 4Gi
-    logging:
-      level: DEBUG
-      pattern: '{"level":"%p","timestamp":"%d{ISO8601}","file":"%c:%L","message":"%m"}%n'
-      loggers:
-        - name: my-logger
-          level: ERROR
-      appenders:
-        - name: my-appender
-          tagName: CustomTag
-          properties:
-            key1: value1
-            key2: value2
-            key3: value3
-    livenessProbe:
-      enabled: true
-      path: "/.rest/status"
-    startupProbe:
-      enabled: True
-      failureThreshold: 90
-      periodSeconds: 10
-    persistence:
-      size: 10Gi
-    db:
-      tag: 15-alpine (2)
-      persistence:
-        size: "10Gi"
-      contentsync:
-        enabled: true
-      restore:
-        enabled: False
-      backup:
-        enabled: True
-        env:
-          - name: MGNLBACKUP_USE_PG_WAL
-            value: "true"
-          - name: MGNLBACKUP_SYNC_DIR
-            value: "/archive"
-          - name: MGNLBACKUP_NO_STDOUT
-            value: "true"
-          - name: MGNLBACKUP_LOGLEVEL
-            value: "debug"
-          - name: MGNLBACKUP_BUCKET
-            value: "paastraining-backup-bucket"
-          - name: MGNLBACKUP_PREFIX
-            value: "{{ .Env.DEPLOYMENT }}/author"
-          - name: MGNLBACKUP_CRON
-            value: "0 3 * * *"
-          - name: MGNLBACKUP_KEEPDAYS
-            value: "30"
-          - name: MGNLBACKUP_TAGS_RELEASE
-            value: {{ .Env.DEPLOYMENT }}
-          #
-          # Choose backup location based on cloud provider of the cluster
-          #
-          # Backup to S3
-          - name: MGNLBACKUP_S3_ENDPOINT
-            value: "s3.eu-central-1.amazonaws.com"
-          - name: MGNLBACKUP_S3_REGION
-            value: "eu-central-1"
-          - name: MGNLBACKUP_S3_ACCESSKEY
-            valueFrom:
-              secretKeyRef:
-                name: s3-backup-key
-                key: accesskey
-          - name: MGNLBACKUP_S3_SECRETKEY
-            valueFrom:
-              secretKeyRef:
-                name: s3-backup-key
-                key: secretkey
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key), it should be handled directly in Magnolia. |
-| **2** | The PostgreSQL version. This is for informational purposes only. You should not change this property. |
+| `enabled` | Boolean that enables the author instance. If set to `false` , no author instance is deployed. |
+| `restartPolicy` | Should always be set to `Always` . |
+| `redeploy` | Boolean for redeploying the author instance if there is a change to the parent Helm chart. • `true` = redploys on helm upgrades even if no changes were made. • `false` = does not redeploy on helm upgrades. |
+| `contextPath` | The context path for the instance. ** You must always have a leading slash `/` . **Example:** `/author` | ** | You must always have a leading slash `/` . |
+| ** | You must always have a leading slash `/` . |
+| `base_url` | The Magnolia base URL. **Example:** `https://{{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io/` |
+| `env` | Magnolia environment configuration. Includes critical components like `magnolia.bootstrap.license.owner` and `magnolia.bootstrap.license.key` : `... - name: magnolia.bootstrap.license.owner (1) value: "[replace with email]" - name: magnolia.bootstrap.license.key (1) value: "[replace with key]" ...` ** **1** The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key) , it should be handled directly in Magnolia. | ** **1** | The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key) , it should be handled directly in Magnolia. |
+| ** **1** | The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key) , it should be handled directly in Magnolia. |
+| `rescueModeDX` | Boolean to determine if rescue mode is enabled or not. Default: `false` For more details on this topic, see [Rescue App](../../troubleshooting/general/rescue-app/) . |
+| `catalinaExtraEnv` | The environment variables that are added to `CATALINA_OPTS` [ [1](#_footnotedef_1) ] . You can add your own environment variables here. See [DX Core: Environment variables](../../../product-docs/RNs-6-4-3/Administration/Architecture/Configuration-management/#_environment_variables) for more details. [1](#_footnoteref_1) . `CATALINA_OPTS` is an environment variable that allows you to specify options and arguments passed to the JVM (Java Virtual Machine) when starting Tomcat. |
+| `setenv` | Under `setenv` , you should only configure the values for `minPercentage` and `maxPercentage` . These are the minimum (or maximum) percentage of pod memory allocated to the heap. ** The heap is where Java objects and data structures are stored during runtime. | ** | The heap is where Java objects and data structures are stored during runtime. |
+| ** | The heap is where Java objects and data structures are stored during runtime. |
+| `resources` | In the `resources:` section, you control how much memory is allocated to pod requests as well as set limits to the pod memory. This is measured in `Gi` (gibibytes) which is approximately 1.1 Gigabyte (GB). ` resources: requests: memory: 4Gi (1) limits: memory: 4Gi (2)` ** **1** Set the memory limit for pod requests. ** **2** Set the memory limit for the pod. | ** **1** | Set the memory limit for pod requests. | ** **2** | Set the memory limit for the pod. |
+| ** **1** | Set the memory limit for pod requests. |
+| ** **2** | Set the memory limit for the pod. |
+| `startupProbe` | Readiness mechanism for applications that take a significant amount of time to start. ` startupProbe: enabled: True failureThreshold: 720 (1) periodSeconds: 10 (2)` ** **1** Increase `failureThreshold` (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures. ** **2** `periodSeconds` defines the interval (in seconds) between each probe check. In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails. | ** **1** | Increase `failureThreshold` (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures. | ** **2** | `periodSeconds` defines the interval (in seconds) between each probe check. In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails. |
+| ** **1** | Increase `failureThreshold` (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures. |
+| ** **2** | `periodSeconds` defines the interval (in seconds) between each probe check. In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails. |
+| `logging` | Use this section to overwrite Tomcat logging lines. You can define the `level` such as `DEBUG` as well as set the pattern. Here, you can also define loggers and appenders. Do not log to files inside the container. Always log to `stdout` or `stderr` if possible or use a different log shipping mechanism. ` logging: level: DEBUG (1) pattern: "%d %-5p %-50.50c: %m%n" (2) loggers: (3) - name: my-logger level: ERROR appenders: (4) - name: my-appender tagName: CustomTag properties: key1: value1 key2: value2 key3: value3` ** **1** Sets the logging level. This is either `INFO` , `WARN` , `ERROR` , `FATAL` , OR `DEBUG` . `DEBUG` is the most verbose, capturing the most granular details for logging purposes. ** **2** Defines the log message format. ** Format example explained • `%d` - The date of the log entry. • `%-5p` - The log level (e.g., `DEBUG` , `INFO` ) padded to 5 characters. • `%-50.50c` - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates. • `%m` - The actual log message. • `%n` - A newline character, used to ensure each log entry starts on a new line. ** **3** Define additional `loggers` . ** More on loggers A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., `DEBUG` , `ERROR` , `INFO` ), which filters the messages that are passed along to the appenders. Loggers specify which parts of the system generate logs and at what granularity. ** **4** Define additional `appenders` with `tagName` and `properties` . ** More on appenders An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output. | ** **1** | Sets the logging level. This is either `INFO` , `WARN` , `ERROR` , `FATAL` , OR `DEBUG` . `DEBUG` is the most verbose, capturing the most granular details for logging purposes. | ** **2** | Defines the log message format. ** Format example explained • `%d` - The date of the log entry. • `%-5p` - The log level (e.g., `DEBUG` , `INFO` ) padded to 5 characters. • `%-50.50c` - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates. • `%m` - The actual log message. • `%n` - A newline character, used to ensure each log entry starts on a new line. | ** **3** | Define additional `loggers` . ** More on loggers A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., `DEBUG` , `ERROR` , `INFO` ), which filters the messages that are passed along to the appenders. Loggers specify which parts of the system generate logs and at what granularity. | ** **4** | Define additional `appenders` with `tagName` and `properties` . ** More on appenders An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output. |
+| ** **1** | Sets the logging level. This is either `INFO` , `WARN` , `ERROR` , `FATAL` , OR `DEBUG` . `DEBUG` is the most verbose, capturing the most granular details for logging purposes. |
+| ** **2** | Defines the log message format. ** Format example explained • `%d` - The date of the log entry. • `%-5p` - The log level (e.g., `DEBUG` , `INFO` ) padded to 5 characters. • `%-50.50c` - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates. • `%m` - The actual log message. • `%n` - A newline character, used to ensure each log entry starts on a new line. |
+| ** **3** | Define additional `loggers` . ** More on loggers A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., `DEBUG` , `ERROR` , `INFO` ), which filters the messages that are passed along to the appenders. Loggers specify which parts of the system generate logs and at what granularity. |
+| ** **4** | Define additional `appenders` with `tagName` and `properties` . ** More on appenders An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output. |
+| `persistence` | Sets the size of the Persistent Volume Claim (PVC) for the Magnolia Author instance. Ensure the allocated storage size aligns with your content and indexing requirements. ** This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in [Troubleshooting: Magnolia persistent volume is almost full](../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions) . | ** | This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in [Troubleshooting: Magnolia persistent volume is almost full](../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions) . |
+| ** | This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in [Troubleshooting: Magnolia persistent volume is almost full](../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions) . |
+| `db` | The `db` section in your `values.yml` file defines critical database properties, including persistence size, backups, and content synchronization. These settings are applied during the initial deployment of your DX Cloud project. Persistence size : The database persistence size ( `persistence.size` ) is set during the initial deployment of your DX Cloud project. Once deployed, attempting to modify this value in subsequent deployments will result in an error. If you need to increase or decrease the persistence size after the initial deployment, please contact [Support](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) . Our team will assist you in making the necessary adjustments. ` db: tag: 15-alpine (1) persistence: size: "10Gi" (2) contentsync: enabled: true restore: enabled: False backup: (3) enabled: True env: - name: MGNLBACKUP_USE_PG_WAL value: "true" - name: MGNLBACKUP_SYNC_DIR value: "/archive" - name: MGNLBACKUP_NO_STDOUT value: "true" - name: MGNLBACKUP_LOGLEVEL value: "debug" - name: MGNLBACKUP_BUCKET (4) value: "paastraining-backup-bucket" - name: MGNLBACKUP_PREFIX value: "{{ .Env.DEPLOYMENT }}/author" - name: MGNLBACKUP_CRON value: "0 3 * * *" - name: MGNLBACKUP_KEEPDAYS value: "30" - name: MGNLBACKUP_TAGS_RELEASE value: {{ .Env.DEPLOYMENT }} # # Choose backup location based on cloud provider of the cluster # # Backup to S3 - name: MGNLBACKUP_S3_ENDPOINT value: "s3.eu-central-1.amazonaws.com" - name: MGNLBACKUP_S3_REGION value: "eu-central-1" - name: MGNLBACKUP_S3_ACCESSKEY valueFrom: secretKeyRef: name: s3-backup-key key: accesskey - name: MGNLBACKUP_S3_SECRETKEY valueFrom: secretKeyRef: name: s3-backup-key key: secretkey` ** **1** The PostgreSQL version. This is for informational purposes only. You should not change this property. ** **2** Sets the volume size of the database. []() `10Gi` is typically sufficient for a dev environment, `100Gi` for production. ** **3** Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia. ** **4** The value of `MGNLBACKUP_BUCKET` is provided to you by Magnolia. | ** **1** | The PostgreSQL version. This is for informational purposes only. You should not change this property. | ** **2** | Sets the volume size of the database. []() `10Gi` is typically sufficient for a dev environment, `100Gi` for production. | ** **3** | Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia. | ** **4** | The value of `MGNLBACKUP_BUCKET` is provided to you by Magnolia. |
+| ** **1** | The PostgreSQL version. This is for informational purposes only. You should not change this property. |
+| ** **2** | Sets the volume size of the database. []() `10Gi` is typically sufficient for a dev environment, `100Gi` for production. |
+| ** **3** | Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia. |
+| ** **4** | The value of `MGNLBACKUP_BUCKET` is provided to you by Magnolia. |
 
-### [](#_magnolia_author_properties)Magnolia Author properties
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 20%;"> <col style="width: 80%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="enabled"></a>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean that enables the author instance. If set to <code>false</code>, no author instance is deployed.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="restartPolicy"></a>restartPolicy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Should always be set to <code>Always</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="redeploy"></a>redeploy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean for redeploying the author instance if there is a change to the parent Helm chart.</p></div><div class="ulist"><ul><li><p><code>true</code> = redploys on helm upgrades even if no changes were made.</p></li><li><p><code>false</code> = does not redeploy on helm upgrades.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="contextPath"></a>contextPath</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The context path for the instance.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">You must always have a leading slash <code>/</code>.</td></tr></tbody></table></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p><strong>Example:</strong> <code>/author</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="base_url"></a>base_url</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The Magnolia base URL.</p></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p><strong>Example:</strong> <code>https://{{ .Env.DEPLOYMENT }}.author.paastraining.magnolia-platform.io/</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="env"></a>env</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Magnolia environment configuration.</p></div><div class="paragraph"><p>Includes critical components like <code>magnolia.bootstrap.license.owner</code> and <code>magnolia.bootstrap.license.key</code>:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">...
-      - name: magnolia.bootstrap.license.owner <i class="conum" data-value="1"></i><b>(1)</b>
-        value: "[replace with email]"
-      - name: magnolia.bootstrap.license.key <i class="conum" data-value="1"></i><b>(1)</b>
-        value: "[replace with key]"
-...</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to <a href="../../faqs/#_how_do_i_update_my_magnolia_license_key" class="xref page">update your license</a>, it should be handled directly in Magnolia.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="rescueModeDX"></a>rescueModeDX</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean to determine if rescue mode is enabled or not.</p></div><div class="paragraph"><p>Default: <code>false</code></p></div><div class="paragraph"><p>For more details on this topic, see <a href="../../troubleshooting/general/rescue-app/" class="xref page">Rescue App</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="catalinaExtraEnv"></a>catalinaExtraEnv</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The environment variables that are added to <code>CATALINA_OPTS</code><sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>.</p></div><div class="paragraph"><p>You can add your own environment variables here.</p></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p>See <a href="../../../product-docs/7.0/Administration/Architecture/Configuration-management/#_environment_variables" class="xref page"><strong>DX Core:</strong> Environment variables</a> for more details.</p></div><div id="footnotes"><hr><div class="footnote" id="_footnotedef_1"><a href="#_footnoteref_1">1</a>. <code>CATALINA_OPTS</code> is an environment variable that allows you to specify options and arguments passed to the JVM (Java Virtual Machine) when starting Tomcat.</div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="setenv"></a>setenv</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Under <code>setenv</code>, you should only configure the values for <code>minPercentage</code> and <code>maxPercentage</code>. These are the minimum (or maximum) percentage of pod memory allocated to the heap.</p></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">The heap is where Java objects and data structures are stored during runtime.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="resources"></a>resources</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>In the <code>resources:</code> section, you control how much memory is allocated to pod requests as well as set limits to the pod memory. This is measured in <code>Gi</code> (gibibytes) which is approximately 1.1 Gigabyte (GB).</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  resources:
-    requests:
-      memory: 4Gi <i class="conum" data-value="1"></i><b>(1)</b>
-    limits:
-      memory: 4Gi <i class="conum" data-value="2"></i><b>(2)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Set the memory limit for pod requests.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Set the memory limit for the pod.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="startupProbe"></a>startupProbe</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Readiness mechanism for applications that take a significant amount of time to start.</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  startupProbe:
-    enabled: True
-    failureThreshold: 720 <i class="conum" data-value="1"></i><b>(1)</b>
-    periodSeconds: 10 <i class="conum" data-value="2"></i><b>(2)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Increase <code>failureThreshold</code> (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><code>periodSeconds</code> defines the interval (in seconds) between each probe check.<div class="paragraph"><p>In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="logging"></a>logging</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Use this section to overwrite Tomcat logging lines. You can define the <code>level</code> such as <code>DEBUG</code> as well as set the pattern.</p></div><div class="paragraph"><p>Here, you can also define loggers and appenders. Do not log to files inside the container. Always log to <code>stdout</code> or <code>stderr</code> if possible or use a different log shipping mechanism.</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  logging:
-    level: DEBUG <i class="conum" data-value="1"></i><b>(1)</b>
-    pattern: "%d %-5p %-50.50c: %m%n" <i class="conum" data-value="2"></i><b>(2)</b>
-    loggers: <i class="conum" data-value="3"></i><b>(3)</b>
-      - name: my-logger
-        level: ERROR
-    appenders: <i class="conum" data-value="4"></i><b>(4)</b>
-      - name: my-appender
-        tagName: CustomTag
-        properties:
-          key1: value1
-          key2: value2
-          key3: value3</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Sets the logging level. This is either <code>INFO</code>, <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>, OR <code>DEBUG</code>. <code>DEBUG</code> is the most verbose, capturing the most granular details for logging purposes.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Defines the log message format.<div class="paragraph collapse"><p><span class="icon"><i class="fa fa-expand"></i></span>Format example explained</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="ulist"><ul><li><p><code>%d</code> - The date of the log entry.</p></li><li><p><code>%-5p</code> - The log level (e.g., <code>DEBUG</code>, <code>INFO</code>) padded to 5 characters.</p></li><li><p><code>%-50.50c</code> - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates.</p></li><li><p><code>%m</code> - The actual log message.</p></li><li><p><code>%n</code> - A newline character, used to ensure each log entry starts on a new line.</p></li></ul></div></div></div></td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Define additional <code>loggers</code>.<div class="paragraph collapse"><p><span class="icon"><i class="fa fa-expand"></i></span>More on loggers</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="paragraph"><p>A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., <code>DEBUG</code>, <code>ERROR</code>, <code>INFO</code>), which filters the messages that are passed along to the appenders.</p></div><div class="paragraph"><p>Loggers specify which parts of the system generate logs and at what granularity.</p></div></div></div></td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td>Define additional <code>appenders</code> with <code>tagName</code> and <code>properties</code>.<div class="paragraph collapse"><p><span class="icon"><i class="fa fa-expand"></i></span>More on appenders</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="paragraph"><p>An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output.</p></div></div></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="persistence"></a>persistence</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Sets the size of the Persistent Volume Claim (PVC) for the Magnolia Author instance. Ensure the allocated storage size aligns with your content and indexing requirements.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in <a href="../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions" class="xref page">Troubleshooting: Magnolia persistent volume is almost full</a>.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="db"></a>db</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The <code>db</code> section in your <code>values.yml</code> file defines critical database properties, including persistence size, backups, and content synchronization. These settings are applied during the initial deployment of your DX Cloud project.</p></div><div class="dlist"><dl><dt class="hdlist1">Persistence size</dt><dd><p>The database persistence size (<code><a href="#db-persistence-author">persistence.size</a></code>) is set during the initial deployment of your DX Cloud project. Once deployed, attempting to modify this value in subsequent deployments will result in an error. If you need to increase or decrease the persistence size after the initial deployment, please contact <a href="https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13" target="_blank" rel="noopener">Support</a>. Our team will assist you in making the necessary adjustments.</p></dd></dl></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  db:
-    tag: 15-alpine <i class="conum" data-value="1"></i><b>(1)</b>
-    persistence:
-      size: "10Gi" <i class="conum" data-value="2"></i><b>(2)</b>
-    contentsync:
-      enabled: true
-    restore:
-      enabled: False
-    backup: <i class="conum" data-value="3"></i><b>(3)</b>
-      enabled: True
-      env:
-        - name: MGNLBACKUP_USE_PG_WAL
-          value: "true"
-        - name: MGNLBACKUP_SYNC_DIR
-          value: "/archive"
-        - name: MGNLBACKUP_NO_STDOUT
-          value: "true"
-        - name: MGNLBACKUP_LOGLEVEL
-          value: "debug"
-        - name: MGNLBACKUP_BUCKET <i class="conum" data-value="4"></i><b>(4)</b>
-          value: "paastraining-backup-bucket"
-        - name: MGNLBACKUP_PREFIX
-          value: "{{ .Env.DEPLOYMENT }}/author"
-        - name: MGNLBACKUP_CRON
-          value: "0 3 * * *"
-        - name: MGNLBACKUP_KEEPDAYS
-          value: "30"
-        - name: MGNLBACKUP_TAGS_RELEASE
-          value: {{ .Env.DEPLOYMENT }}
-        #
-        # Choose backup location based on cloud provider of the cluster
-        #
-        # Backup to S3
-        - name: MGNLBACKUP_S3_ENDPOINT
-          value: "s3.eu-central-1.amazonaws.com"
-        - name: MGNLBACKUP_S3_REGION
-          value: "eu-central-1"
-        - name: MGNLBACKUP_S3_ACCESSKEY
-          valueFrom:
-            secretKeyRef:
-              name: s3-backup-key
-              key: accesskey
-        - name: MGNLBACKUP_S3_SECRETKEY
-          valueFrom:
-            secretKeyRef:
-              name: s3-backup-key
-              key: secretkey</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>The PostgreSQL version. This is for informational purposes only. You should not change this property.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Sets the volume size of the database. <a id="db-persistence-author"></a><code>10Gi</code> is typically sufficient for a dev environment, <code>100Gi</code> for production.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia.</td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td>The value of <code>MGNLBACKUP_BUCKET</code> is provided to you by Magnolia.</td></tr></tbody></table></div></div></td></tr></tbody></table></div>
-
-## [](#_magnolia_public)Magnolia Public
-
-The `magnoliaPublic` section of your `values.yml` file handles important configuration for the Magnolia Public instance. The public instance is the publicly viewable instance for your site.
-
-The properties shown in the example below are configurable.
-
-> **Caution:** You should not change any property other than those highlighted here.
-
-```yaml
-  magnoliaPublic:
-    enabled: true
-    restartPolicy: Always
-    redeploy: true
-    bootstrap:
-      password: superuser!
-    activation:
-      useExistingSecret: False
-    contextPath: /
-    base_url: https://{{ .Env.DEPLOYMENT }}.public.paastraining.magnolia-platform.io/
-    sameSiteCookies: strict
-    env:
-      - name: instance
-        value: "public"
-      - name: deployment
-        value: {{ .Env.DEPLOYMENT }}
-      - name: magnolia.superuser.enabled
-        value: "true"
-      - name: magnolia.superuser.password
-        value: "superuser!"
-      - name: magnolia.bootstrap.license.owner (1)
-        value: "[replace with email]"
-      - name: magnolia.bootstrap.license.key (1)
-        value: "[replace with key]"
-    setenv:
-      memory:
-        minPercentage: 25
-        maxPercentage: 60
-    rescueModeDX: False
-    replicas: 2
-    catalinaExtraEnv:
-      magnolia.yaml.envsubst: "true"
-    resources:
-      requests:
-        memory: 4Gi
-      limits:
-        memory: 4Gi
-    logging:
-      level: DEBUG
-      pattern: '{"level":"%p","timestamp":"%d{ISO8601}","file":"%c:%L","message":"%m"}%n'
-      loggers:
-        - name: my-logger
-          level: ERROR
-      appenders:
-        - name: my-appender
-          tagName: CustomTag
-          properties:
-            key1: value1
-            key2: value2
-            key3: value3
-    livenessProbe:
-      enabled: true
-      path: "/.rest/status"
-    startupProbe:
-      enabled: True
-      failureThreshold: 90
-      periodSeconds: 10
-    persistence:
-      size: 10Gi
-    db:
-      tag: 15-alpine (2)
-      persistence:
-        size: "10Gi"
-      contentsync:
-        enabled: true
-      restore:
-        enabled: False
-      backup:
-        enabled: True
-        env:
-          - name: MGNLBACKUP_USE_PG_WAL
-            value: "true"
-          - name: MGNLBACKUP_SYNC_DIR
-            value: "/archive"
-          - name: MGNLBACKUP_NO_STDOUT
-            value: "true"
-          - name: MGNLBACKUP_LOGLEVEL
-            value: "debug"
-          - name: MGNLBACKUP_BUCKET
-            value: "paastraining-backup-bucket"
-          - name: MGNLBACKUP_PREFIX
-            value: "{{ .Env.DEPLOYMENT }}/public"
-          - name: MGNLBACKUP_CRON
-            value: "0 3 * * *"
-          - name: MGNLBACKUP_KEEPDAYS
-            value: "30"
-          - name: MGNLBACKUP_TAGS_RELEASE
-            value: {{ .Env.DEPLOYMENT }}
-          #
-          # Choose backup location based on cloud provider of the cluster
-          #
-          # Backup to S3
-          - name: MGNLBACKUP_S3_ENDPOINT
-            value: "s3.eu-central-1.amazonaws.com"
-          - name: MGNLBACKUP_S3_REGION
-            value: "eu-central-1"
-          - name: MGNLBACKUP_S3_ACCESSKEY
-            valueFrom:
-              secretKeyRef:
-                name: s3-backup-key
-                key: accesskey
-          - name: MGNLBACKUP_S3_SECRETKEY
-            valueFrom:
-              secretKeyRef:
-                name: s3-backup-key
-                key: secretkey
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key), it should be handled directly in Magnolia. |
-| **2** | The PostgreSQL version. This is for informational purposes only. You should not change this property. |
-
-### [](#_magnolia_public_properties)Magnolia public properties
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 20%;"> <col style="width: 80%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="enabled-public"></a>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean that enables the public instance. If set to <code>false</code>, no public instance is deployed.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="restartPolicy-public"></a>restartPolicy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Should always be set to <code>Always</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="redeploy-public"></a>redeploy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean for redeploying the public instance if there is a change to the parent Helm chart.</p></div><div class="ulist"><ul><li><p><code>true</code> = redploys on helm upgrades even if no changes were made.</p></li><li><p><code>false</code> = does not redeploy on helm upgrades.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="contextPath-public"></a>contextPath</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The context path for the instance.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">You must always have a leading slash <code>/</code>.</td></tr></tbody></table></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p><strong>Example:</strong> <code>/public</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="base_url-public"></a>base_url</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The Magnolia base URL.</p></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p><strong>Example:</strong> <code>https://{{ .Env.DEPLOYMENT }}.public.paastraining.magnolia-platform.io/</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="env-public"></a>env</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Magnolia environment configuration.</p></div><div class="paragraph"><p>Includes critical components like <code>magnolia.bootstrap.license.owner</code> and <code>magnolia.bootstrap.license.key</code>:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">...
-      - name: magnolia.bootstrap.license.owner <i class="conum" data-value="1"></i><b>(1)</b>
-        value: "[replace with email]"
-      - name: magnolia.bootstrap.license.key <i class="conum" data-value="1"></i><b>(1)</b>
-        value: "[replace with key]"
-...</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to <a href="../../faqs/#_how_do_i_update_my_magnolia_license_key" class="xref page">update your license</a>, it should be handled directly in Magnolia.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="rescueModeDX-public"></a>rescueModeDX</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean to determine if rescue mode is enabled or not.</p></div><div class="paragraph"><p>Default: <code>false</code></p></div><div class="paragraph"><p>For more details on this topic, see <a href="../../troubleshooting/general/rescue-app/" class="xref page">Rescue App</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="replicas"></a>replicas</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Defines how many public instances to deploy.</p></div><div class="paragraph"><p>You must scale up or down by changing the <code>replicas</code> value.</p></div><div class="paragraph"><p>You can do this in the <code>values.yml</code> file or in the <a href="../../cockpit/sections/environments/#_manage_your_environments" class="xref page">Cockpit</a>.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">One replica is sufficient for a <code>dev</code> environment, but a minimum of 2 is needed for production.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="catalinaExtraEnv-public"></a>catalinaExtraEnv</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The environment variables that are added to <code>CATALINA_OPTS</code><sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup>.</p></div><div class="paragraph"><p>You can add your own environment variables here.</p></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p>See <a href="../../../product-docs/7.0/Administration/Architecture/Configuration-management/#_environment_variables" class="xref page"><strong>DX Core:</strong> Environment variables</a> for more details.</p></div><div id="footnotes"><hr><div class="footnote" id="_footnotedef_2"><a href="#_footnoteref_2">2</a>. <code>CATALINA_OPTS</code> is an environment variable that allows you to specify options and arguments passed to the JVM (Java Virtual Machine) when starting Tomcat.</div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="setenv-public"></a>setenv</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Under <code>setenv</code>, you should only configure the values for <code>minPercentage</code> and <code>maxPercentage</code>. These are the minimum (or maximum) percentage of pod memory allocated to the heap.</p></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">The heap is where Java objects and data structures are stored during runtime.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="resources-public"></a>resources</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>In the <code>resources:</code> section, you control how much memory is allocated to pod requests as well as set limits to the pod memory. This is measured in <code>Gi</code> (gibibytes) which is approximately 1.1 Gigabyte (GB).</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  resources:
-    requests:
-      memory: 4Gi <i class="conum" data-value="1"></i><b>(1)</b>
-    limits:
-      memory: 4Gi <i class="conum" data-value="2"></i><b>(2)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Set the memory limit for pod requests.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Set the memory limit for the pod.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="startupProbe-public"></a>startupProbe</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Readiness mechanism for applications that take a significant amount of time to start.</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  startupProbe:
-    enabled: True
-    failureThreshold: 720 <i class="conum" data-value="1"></i><b>(1)</b>
-    periodSeconds: 10 <i class="conum" data-value="2"></i><b>(2)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Increase <code>failureThreshold</code> (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td><code>periodSeconds</code> defines the interval (in seconds) between each probe check.<div class="paragraph"><p>In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="logging-public"></a>logging</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Use this section to overwrite Tomcat logging lines. You can define the <code>level</code> such as <code>DEBUG</code> as well as set the pattern.</p></div><div class="paragraph"><p>Here, you can also define loggers and appenders. Do not log to files inside the container. Always log to <code>stdout</code> or <code>stderr</code> if possible or use a different log shipping mechanism.</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  logging:
-    level: DEBUG <i class="conum" data-value="1"></i><b>(1)</b>
-    pattern: "%d %-5p %-50.50c: %m%n" <i class="conum" data-value="2"></i><b>(2)</b>
-    loggers: <i class="conum" data-value="3"></i><b>(3)</b>
-      - name: my-logger
-        level: ERROR
-    appenders: <i class="conum" data-value="4"></i><b>(4)</b>
-      - name: my-appender
-        tagName: CustomTag
-        properties:
-          key1: value1
-          key2: value2
-          key3: value3</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Sets the logging level. This is either <code>INFO</code>, <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>, OR <code>DEBUG</code>. <code>DEBUG</code> is the most verbose, capturing the most granular details for logging purposes.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Defines the log message format.<div class="paragraph collapse"><p><span class="icon"><i class="fa fa-expand"></i></span>Format example explained</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="ulist"><ul><li><p><code>%d</code> - The date of the log entry.</p></li><li><p><code>%-5p</code> - The log level (e.g., <code>DEBUG</code>, <code>INFO</code>) padded to 5 characters.</p></li><li><p><code>%-50.50c</code> - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates.</p></li><li><p><code>%m</code> - The actual log message.</p></li><li><p><code>%n</code> - A newline character, used to ensure each log entry starts on a new line.</p></li></ul></div></div></div></td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Define additional <code>loggers</code>.<div class="paragraph collapse"><p><span class="icon"><i class="fa fa-expand"></i></span>More on loggers</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="paragraph"><p>A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., <code>DEBUG</code>, <code>ERROR</code>, <code>INFO</code>), which filters the messages that are passed along to the appenders.</p></div><div class="paragraph"><p>Loggers specify which parts of the system generate logs and at what granularity.</p></div></div></div></td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td>Define additional <code>appenders</code> with <code>tagName</code> and <code>properties</code>.<div class="paragraph collapse"><p><span class="icon"><i class="fa fa-expand"></i></span>More on appenders</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="paragraph"><p>An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output.</p></div></div></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="persistence-public"></a>persistence</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Sets the size of the Persistent Volume Claim (PVC) for the Magnolia Public instance. Ensure the allocated storage size aligns with your content and indexing requirements.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in <a href="../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions" class="xref page">Troubleshooting: Magnolia persistent volume is almost full</a>.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code><a id="db-public"></a>db</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The <code>db</code> section in your <code>values.yml</code> file defines critical database properties, including persistence size, backups, and content synchronization. These settings are applied during the initial deployment of your DX Cloud project.</p></div><div class="dlist"><dl><dt class="hdlist1">Persistence size</dt><dd><p>The database persistence size (<code><a href="#db-persistence-public">persistence.size</a></code>) is set during the initial deployment of your DX Cloud project. Once deployed, attempting to modify this value in subsequent deployments will result in an error. If you need to increase or decrease the persistence size after the initial deployment, please contact <a href="https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13" target="_blank" rel="noopener">Support</a>. Our team will assist you in making the necessary adjustments.</p></dd></dl></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  db:
-    tag: 15-alpine <i class="conum" data-value="1"></i><b>(1)</b>
-    persistence:
-      size: "10Gi" <i class="conum" data-value="2"></i><b>(2)</b>
-    contentsync:
-      enabled: true
-    restore:
-      enabled: False
-    backup: <i class="conum" data-value="3"></i><b>(3)</b>
-      enabled: True
-      env:
-        - name: MGNLBACKUP_USE_PG_WAL
-          value: "true"
-        - name: MGNLBACKUP_SYNC_DIR
-          value: "/archive"
-        - name: MGNLBACKUP_NO_STDOUT
-          value: "true"
-        - name: MGNLBACKUP_LOGLEVEL
-          value: "debug"
-        - name: MGNLBACKUP_BUCKET <i class="conum" data-value="4"></i><b>(4)</b>
-          value: "paastraining-backup-bucket"
-        - name: MGNLBACKUP_PREFIX
-          value: "{{ .Env.DEPLOYMENT }}/public"
-        - name: MGNLBACKUP_CRON
-          value: "0 3 * * *"
-        - name: MGNLBACKUP_KEEPDAYS
-          value: "30"
-        - name: MGNLBACKUP_TAGS_RELEASE
-          value: {{ .Env.DEPLOYMENT }}
-        #
-        # Choose backup location based on cloud provider of the cluster
-        #
-        # Backup to S3
-        - name: MGNLBACKUP_S3_ENDPOINT
-          value: "s3.eu-central-1.amazonaws.com"
-        - name: MGNLBACKUP_S3_REGION
-          value: "eu-central-1"
-        - name: MGNLBACKUP_S3_ACCESSKEY
-          valueFrom:
-            secretKeyRef:
-              name: s3-backup-key
-              key: accesskey
-        - name: MGNLBACKUP_S3_SECRETKEY
-          valueFrom:
-            secretKeyRef:
-              name: s3-backup-key
-              key: secretkey</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>The PostgreSQL version. This is for informational purposes only. You should not change this property.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Sets the volume size of the database. <a id="db-persistence-public"></a><code>10Gi</code> is typically sufficient for a dev environment, <code>100Gi</code> for production.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia.</td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td>The value of <code>MGNLBACKUP_BUCKET</code> is provided to you by Magnolia.</td></tr></tbody></table></div></div></td></tr></tbody></table></div>
+| `enabled` | Boolean that enables the public instance. If set to `false` , no public instance is deployed. |
+| `restartPolicy` | Should always be set to `Always` . |
+| `redeploy` | Boolean for redeploying the public instance if there is a change to the parent Helm chart. • `true` = redploys on helm upgrades even if no changes were made. • `false` = does not redeploy on helm upgrades. |
+| `contextPath` | The context path for the instance. ** You must always have a leading slash `/` . **Example:** `/public` | ** | You must always have a leading slash `/` . |
+| ** | You must always have a leading slash `/` . |
+| `base_url` | The Magnolia base URL. **Example:** `https://{{ .Env.DEPLOYMENT }}.public.paastraining.magnolia-platform.io/` |
+| `env` | Magnolia environment configuration. Includes critical components like `magnolia.bootstrap.license.owner` and `magnolia.bootstrap.license.key` : `... - name: magnolia.bootstrap.license.owner (1) value: "[replace with email]" - name: magnolia.bootstrap.license.key (1) value: "[replace with key]" ...` ** **1** The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key) , it should be handled directly in Magnolia. | ** **1** | The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key) , it should be handled directly in Magnolia. |
+| ** **1** | The license gets injected only when an environment gets created via the Helm chart, meaning this only happens once, when the environment is created. If you need to [update your license](../../faqs/#_how_do_i_update_my_magnolia_license_key) , it should be handled directly in Magnolia. |
+| `rescueModeDX` | Boolean to determine if rescue mode is enabled or not. Default: `false` For more details on this topic, see [Rescue App](../../troubleshooting/general/rescue-app/) . |
+| `replicas` | Defines how many public instances to deploy. You must scale up or down by changing the `replicas` value. You can do this in the `values.yml` file or in the [Cockpit](../../cockpit/sections/environments/#_manage_your_environments) . ** One replica is sufficient for a `dev` environment, but a minimum of 2 is needed for production. | ** | One replica is sufficient for a `dev` environment, but a minimum of 2 is needed for production. |
+| ** | One replica is sufficient for a `dev` environment, but a minimum of 2 is needed for production. |
+| `catalinaExtraEnv` | The environment variables that are added to `CATALINA_OPTS` [ [2](#_footnotedef_2) ] . You can add your own environment variables here. See [DX Core: Environment variables](../../../product-docs/RNs-6-4-3/Administration/Architecture/Configuration-management/#_environment_variables) for more details. [2](#_footnoteref_2) . `CATALINA_OPTS` is an environment variable that allows you to specify options and arguments passed to the JVM (Java Virtual Machine) when starting Tomcat. |
+| `setenv` | Under `setenv` , you should only configure the values for `minPercentage` and `maxPercentage` . These are the minimum (or maximum) percentage of pod memory allocated to the heap. ** The heap is where Java objects and data structures are stored during runtime. | ** | The heap is where Java objects and data structures are stored during runtime. |
+| ** | The heap is where Java objects and data structures are stored during runtime. |
+| `resources` | In the `resources:` section, you control how much memory is allocated to pod requests as well as set limits to the pod memory. This is measured in `Gi` (gibibytes) which is approximately 1.1 Gigabyte (GB). ` resources: requests: memory: 4Gi (1) limits: memory: 4Gi (2)` ** **1** Set the memory limit for pod requests. ** **2** Set the memory limit for the pod. | ** **1** | Set the memory limit for pod requests. | ** **2** | Set the memory limit for the pod. |
+| ** **1** | Set the memory limit for pod requests. |
+| ** **2** | Set the memory limit for the pod. |
+| `startupProbe` | Readiness mechanism for applications that take a significant amount of time to start. ` startupProbe: enabled: True failureThreshold: 720 (1) periodSeconds: 10 (2)` ** **1** Increase `failureThreshold` (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures. ** **2** `periodSeconds` defines the interval (in seconds) between each probe check. In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails. | ** **1** | Increase `failureThreshold` (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures. | ** **2** | `periodSeconds` defines the interval (in seconds) between each probe check. In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails. |
+| ** **1** | Increase `failureThreshold` (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures. |
+| ** **2** | `periodSeconds` defines the interval (in seconds) between each probe check. In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails. |
+| `logging` | Use this section to overwrite Tomcat logging lines. You can define the `level` such as `DEBUG` as well as set the pattern. Here, you can also define loggers and appenders. Do not log to files inside the container. Always log to `stdout` or `stderr` if possible or use a different log shipping mechanism. ` logging: level: DEBUG (1) pattern: "%d %-5p %-50.50c: %m%n" (2) loggers: (3) - name: my-logger level: ERROR appenders: (4) - name: my-appender tagName: CustomTag properties: key1: value1 key2: value2 key3: value3` ** **1** Sets the logging level. This is either `INFO` , `WARN` , `ERROR` , `FATAL` , OR `DEBUG` . `DEBUG` is the most verbose, capturing the most granular details for logging purposes. ** **2** Defines the log message format. ** Format example explained • `%d` - The date of the log entry. • `%-5p` - The log level (e.g., `DEBUG` , `INFO` ) padded to 5 characters. • `%-50.50c` - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates. • `%m` - The actual log message. • `%n` - A newline character, used to ensure each log entry starts on a new line. ** **3** Define additional `loggers` . ** More on loggers A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., `DEBUG` , `ERROR` , `INFO` ), which filters the messages that are passed along to the appenders. Loggers specify which parts of the system generate logs and at what granularity. ** **4** Define additional `appenders` with `tagName` and `properties` . ** More on appenders An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output. | ** **1** | Sets the logging level. This is either `INFO` , `WARN` , `ERROR` , `FATAL` , OR `DEBUG` . `DEBUG` is the most verbose, capturing the most granular details for logging purposes. | ** **2** | Defines the log message format. ** Format example explained • `%d` - The date of the log entry. • `%-5p` - The log level (e.g., `DEBUG` , `INFO` ) padded to 5 characters. • `%-50.50c` - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates. • `%m` - The actual log message. • `%n` - A newline character, used to ensure each log entry starts on a new line. | ** **3** | Define additional `loggers` . ** More on loggers A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., `DEBUG` , `ERROR` , `INFO` ), which filters the messages that are passed along to the appenders. Loggers specify which parts of the system generate logs and at what granularity. | ** **4** | Define additional `appenders` with `tagName` and `properties` . ** More on appenders An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output. |
+| ** **1** | Sets the logging level. This is either `INFO` , `WARN` , `ERROR` , `FATAL` , OR `DEBUG` . `DEBUG` is the most verbose, capturing the most granular details for logging purposes. |
+| ** **2** | Defines the log message format. ** Format example explained • `%d` - The date of the log entry. • `%-5p` - The log level (e.g., `DEBUG` , `INFO` ) padded to 5 characters. • `%-50.50c` - The logger name, limited to 50 characters. The logger is often associated with the class or package name from which the log entry originates. • `%m` - The actual log message. • `%n` - A newline character, used to ensure each log entry starts on a new line. |
+| ** **3** | Define additional `loggers` . ** More on loggers A logger is an entity that defines the source of log messages and controls their severity level. Loggers determine what gets logged by setting a logging level (e.g., `DEBUG` , `ERROR` , `INFO` ), which filters the messages that are passed along to the appenders. Loggers specify which parts of the system generate logs and at what granularity. |
+| ** **4** | Define additional `appenders` with `tagName` and `properties` . ** More on appenders An appender defines where and how log messages are output after being filtered by loggers. Appenders specify the destination (e.g., a file, console, or external system) and the format of the log output. |
+| `persistence` | Sets the size of the Persistent Volume Claim (PVC) for the Magnolia Public instance. Ensure the allocated storage size aligns with your content and indexing requirements. ** This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in [Troubleshooting: Magnolia persistent volume is almost full](../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions) . | ** | This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in [Troubleshooting: Magnolia persistent volume is almost full](../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions) . |
+| ** | This is only applied during the initial deployment. After deployment, resizing must be done via the Rancher UI or by DevOps teams as shown in [Troubleshooting: Magnolia persistent volume is almost full](../../troubleshooting/alerts/CustomerMagnoliaHomePersistentVolumeAlmostFull/#_solutions) . |
+| `db` | The `db` section in your `values.yml` file defines critical database properties, including persistence size, backups, and content synchronization. These settings are applied during the initial deployment of your DX Cloud project. Persistence size : The database persistence size ( `persistence.size` ) is set during the initial deployment of your DX Cloud project. Once deployed, attempting to modify this value in subsequent deployments will result in an error. If you need to increase or decrease the persistence size after the initial deployment, please contact [Support](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) . Our team will assist you in making the necessary adjustments. ` db: tag: 15-alpine (1) persistence: size: "10Gi" (2) contentsync: enabled: true restore: enabled: False backup: (3) enabled: True env: - name: MGNLBACKUP_USE_PG_WAL value: "true" - name: MGNLBACKUP_SYNC_DIR value: "/archive" - name: MGNLBACKUP_NO_STDOUT value: "true" - name: MGNLBACKUP_LOGLEVEL value: "debug" - name: MGNLBACKUP_BUCKET (4) value: "paastraining-backup-bucket" - name: MGNLBACKUP_PREFIX value: "{{ .Env.DEPLOYMENT }}/public" - name: MGNLBACKUP_CRON value: "0 3 * * *" - name: MGNLBACKUP_KEEPDAYS value: "30" - name: MGNLBACKUP_TAGS_RELEASE value: {{ .Env.DEPLOYMENT }} # # Choose backup location based on cloud provider of the cluster # # Backup to S3 - name: MGNLBACKUP_S3_ENDPOINT value: "s3.eu-central-1.amazonaws.com" - name: MGNLBACKUP_S3_REGION value: "eu-central-1" - name: MGNLBACKUP_S3_ACCESSKEY valueFrom: secretKeyRef: name: s3-backup-key key: accesskey - name: MGNLBACKUP_S3_SECRETKEY valueFrom: secretKeyRef: name: s3-backup-key key: secretkey` ** **1** The PostgreSQL version. This is for informational purposes only. You should not change this property. ** **2** Sets the volume size of the database. []() `10Gi` is typically sufficient for a dev environment, `100Gi` for production. ** **3** Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia. ** **4** The value of `MGNLBACKUP_BUCKET` is provided to you by Magnolia. | ** **1** | The PostgreSQL version. This is for informational purposes only. You should not change this property. | ** **2** | Sets the volume size of the database. []() `10Gi` is typically sufficient for a dev environment, `100Gi` for production. | ** **3** | Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia. | ** **4** | The value of `MGNLBACKUP_BUCKET` is provided to you by Magnolia. |
+| ** **1** | The PostgreSQL version. This is for informational purposes only. You should not change this property. |
+| ** **2** | Sets the volume size of the database. []() `10Gi` is typically sufficient for a dev environment, `100Gi` for production. |
+| ** **3** | Defines that backups of the database are taken and stored to an S3 bucket or Azure storage (depending on your cloud provider) provisioned by Magnolia. |
+| ** **4** | The value of `MGNLBACKUP_BUCKET` is provided to you by Magnolia. |
 
 ## [](#_jars)Jars
 

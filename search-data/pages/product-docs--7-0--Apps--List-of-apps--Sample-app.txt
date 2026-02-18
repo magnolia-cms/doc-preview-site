@@ -10,24 +10,18 @@ breadcrumb: DX Core > Apps > List of apps > Sample app
 
 The Sample app is a learning example for developers. It is not a tool for editors but rather a showcase for common app functionality at development level. It shows you how to expose actions to the user as user interface elements (buttons) and how to trigger actions. As a developer you should examine the [Sample app source code](https://gitlab.magnolia-platform.com/pd/platform/ui/-/tree/master/sample-app) and read the comments in the code.
 
-![Samples app](../../../_images/6-2samples-app.png)
-
-## [](#_configuration)Configuration
-
-The Sample app is installed by the `sample-app` module. This app is only available to the `superuser` role by default. Permissions are configured in `/modules/ui-admincentral/config/appLauncherLayout/groups/dev/permissions/roles`.
-
-The app is configured in `/modules/samples-app/apps/sample`.
+![Samples app](../../../../RNs-6-4-3/_images/6-2samples-app.png)
 
 | Node name | Value |
 | --- | --- |
-| 📁 sample-app |     |
-| 📁 apps |     |
-| 📁 sample |     |
-| 📁 subapps |     |
-| 📁 main |     |
+| 📁 sample-app |  |
+| 📁 apps |  |
+| 📁 sample |  |
+| 📁 subapps |  |
+| 📁 main |  |
 | ⬩ class | info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor |
 | ⬩ subAppClass | info.magnolia.sample.app.main.SampleMainSubApp |
-| 📁 editor |     |
+| 📁 editor |  |
 | ⬩ class | info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor |
 | ⬩ subAppClass | info.magnolia.sample.app.editor.SampleEditorSubApp |
 | ⬩ appClass | info.magnolia.ui.framework.app.BaseApp |

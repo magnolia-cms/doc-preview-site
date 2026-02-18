@@ -1,0 +1,52 @@
+---
+title: "Multisite module"
+url: https://docs.magnolia-cms.com/multisite/3.0.0/
+category: Modules
+version: modules
+breadcrumb: Multisite module
+---
+
+# Multisite module
+
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| --- | --- |
+| Issues | [MULTISITE](https://magnolia-cms.atlassian.net/browse/MULTISITE) |
+| Git | [Git](https://gitlab.magnolia-platform.com/pd/enterprise/multisite) |
+| Maven site | [Multisite](https://nexus.magnolia-cms.com/content/sites/magnolia.enterprise.sites/magnolia-module-multisite/) |
+| Latest | 3.0.0 |
+| Available on SPA/Headless | Yes |
+
+## [](#_modules)Modules
+
+Magnolia’s Multisite module reactor consists of the following submodules:
+
+-   Multisite
+
+-   Multisite JCR
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your bundle:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.multisite</groupId>
+  <artifactId>magnolia-module-multisite</artifactId>
+  <version>3.0.0</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.multisite</groupId>
+  <artifactId>magnolia-module-multisite-jcr</artifactId>
+  <version>3.0.0</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+For usage, see [How to use Multisite](../../product-docs/6.3/Developing/Templating/Site-definition/How-to-use-Multisite/).
+
+> **Caution:** Since version 3.0.0 of the Multisite module, site definitions are no longer configured in the config folder of this module, but in the sites subfolder of any module.You can configure a site in a YAML definition (preferred) or directly in the JCR Configuration app.

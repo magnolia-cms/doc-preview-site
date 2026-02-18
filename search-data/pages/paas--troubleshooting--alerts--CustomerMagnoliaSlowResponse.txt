@@ -19,27 +19,11 @@ A `CustomerMagnoliaAuthorSlowResponse` alert is firing or a `CustomerMagnoliaPub
 
 > **Note:** CustomerMagnoliaAuthorSlowResponse and CustomerMagnoliaPublicSlowResponse alerts are sent to subscribers via email.
 
-## [](#_observations)Observations
-
-Here are the details on the alerts:
-
-### [](#_alert_customermagnoliaauthorslowresponse)Alert: `CustomerMagnoliaAuthorSlowResponse`
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>mgnl_filterChain_duration_seconds{component="author-instance",quantile="0.9"} &gt; 2</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>15</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>pod</code></p></li><li><p><code>instance</code></p></li><li><p><code>namespace</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_alert_customermagnoliapublicslowresponse)Alert: `CustomerMagnoliaPublicSlowResponse`
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>mgnl_filterChain_duration_seconds{component="public-instance",quantile="0.9"} &gt; 0.8</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>15</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>pod</code></p></li><li><p><code>instance</code></p></li><li><p><code>namespace</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-## [](#_solutions)Solutions
-
-This section provides solutions that should help resolve the issue in most cases.
-
-### [](#_investigate_slow_response_cause)Investigate slow response cause
-
-Slow responses from Magnolia can be caused by many things, including the implementation of the your project.
-
-Here’s an *incomplete* list of possible causes of slow response times and what actions to take:
+| **Expression** | `mgnl_filterChain_duration_seconds{component="author-instance",quantile="0.9"} > 2` |
+| --- | --- |
+| **Delay** | `15` minutes |
+| **Labels** | `team: customer` |
+| **Annotations** | • `summary` • `description` • `tenant` • `cluster_id` • `cluster_name` • `pod` • `instance` • `namespace` |
 
 | Cause | Action |
 | --- | --- |
@@ -48,6 +32,4 @@ Here’s an *incomplete* list of possible causes of slow response times and what
 | **Excessive garbage collection** | Check for frequent garbage collection and how close and how frequently the JVM heap used is to the JVM max heap. |
 | **Magnolia cache is underutilized** | Check the Magnolia cache hit percentage. |
 | **Custom filter bottleneck** | Check for custom filters in the filter chain. |
-| **Slow requests per type** | Turn on detailed response time metrics and check for slow requests by type (e.g., `resources`, `images`, `pages`). |
-
-> **Tip:** Check the miss request rate, origin latency, and miss latency dashboards in Fastly. These dashboards often indicate if Magnolia is always slow or sometimes slow.
+| **Slow requests per type** | Turn on detailed response time metrics and check for slow requests by type (e.g., `resources` , `images` , `pages` ). |

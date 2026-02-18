@@ -1,0 +1,342 @@
+---
+title: "Indexing content"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/vector-db/indexing/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Indexing content
+---
+
+# Indexing content
+
+| Method | Description | Use Case |
+| --- | --- | --- |
+| **Automatic** *(JCR Observation)* | Content is automatically indexed when created or modified | Real-time indexing for active workspaces |
+| **Manual Re-index** *(Dashboard)* | Trigger full workspace re-indexing via Context Dashboard UI | Initial setup, testing, recovery |
+| **API-triggered** *(REST API)* | Trigger re-indexing programmatically via REST API | Scheduled jobs, automated workflows |
+
+## [](#_automatic_indexing)Automatic indexing
+
+Content is automatically indexed when `enableObservation: true` is configured for a workspace.
+
+### [](#_how_it_works)How it works
+
+![diagram](https://kroki.io/mermaid/svg/eNpVkUFPwzAMhe_8iqeeQNqKGHBDk7a2B7ggIW4VhyzxsmhtUiVuB_8et2UDcnAs-eXzs7NvwkkfVGS8l1eQs6mzuxxF8EyeISVvCc7jpXh72sXb9bWOpJgW6Dsz3SHCUENMN9nHRNjW2Sof9XjdJYqDYhe8aJg0px_ijFJ7pggd_N7ZPpIZQeprAcptvsAKiaRm0hlc1Nn9r7Xqk6PSLO1pzhJYMihv0BIrcafmNt3_Jo0Y6JW9-C3r7CFH1e7IGOctLHmKMprB4BQ2z2CVjjOpT5T-oujyqIthcIbiGVrV2WOOMui-Hc0m8Sl62WNnBxpdz8CT44NsUtYkGmqVZ6cTlvABpu8ap8XHNP_8N1gu19hOsZhiOcXqG1YfkfY=)
+
+### [](#_configuration)Configuration
+
+Enable automatic indexing per workspace:
+
+```yaml
+indexing:
+  workspaces:
+    website:
+      enabled: true
+      enableObservation: true (1)
+      observationDelay: 2000 (2)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Enable automatic indexing |
+| **2** | Wait 2 seconds before indexing (debouncing) |
+
+### [](#_what_gets_indexed)What gets indexed
+
+For each configured language, a separate document is created with:
+
+-   **Content**: Extracted text from properties
+
+-   **Metadata**:
+
+    -   `path`: JCR node path
+
+    -   `workspace`: Workspace name
+
+    -   `nodeType`: JCR node type
+
+    -   `language`: Content language (e.g., "en", "de")
+
+    -   `indexedAt`: Timestamp when indexed
+
+    -   `mimeType`: Content MIME type
+
+    -   `permissions`: ACL patterns for security filtering
+
+    -   Custom metadata from content properties
+
+
+
+### [](#_delete_handling)Delete handling
+
+When content is deleted:
+
+1.  JCR observation detects deletion
+
+2.  Document is removed from vector database
+
+3.  Sync state is updated
+
+
+| Extractor Type | Description | Best For |
+| --- | --- | --- |
+| `page` | Extracts content from JCR page properties | Pages with structured content stored in JCR |
+| `asset` | Extracts content from binary assets using text extraction | PDFs, Word documents, text files |
+| `content` | Extracts content from generic JCR nodes using property discovery | Structured content types (tours, products, etc.) |
+
+| Status | Description |
+| --- | --- |
+| `PENDING` | Job created, waiting to start |
+| `RUNNING` | Currently processing content |
+| `COMPLETED` | Successfully finished |
+| `FAILED` | Job failed with errors |
+| `CANCELLED` | Job was cancelled by user |
+
+## [](#_api_triggered_re_indexing)API-triggered re-indexing
+
+### [](#_trigger_re_index_via_rest_api)Trigger re-index via REST API
+
+```bash
+curl -X POST \
+  http://localhost:8080/.rest/ai-vector-db/v1/dashboard/reindex \
+  -H "Content-Type: application/json" \
+  -d '{
+    "workspace": "website",
+    "triggerType": "REINDEX_WORKSPACE"
+  }'
+```
+
+Response:
+
+```json
+{
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "PENDING",
+  "workspace": "website",
+  "triggerType": "REINDEX_WORKSPACE"
+}
+```
+
+### [](#_check_job_status)Check job status
+
+```bash
+curl http://localhost:8080/.rest/ai-vector-db/v1/dashboard/indexing-jobs
+```
+
+Response:
+
+```json
+{
+  "jobs": [
+    {
+      "jobId": "550e8400-e29b-41d4-a716-446655440000",
+      "status": "RUNNING",
+      "workspace": "website",
+      "triggerType": "REINDEX_WORKSPACE",
+      "totalDocuments": 1500,
+      "processedDocuments": 750,
+      "failedDocuments": 2,
+      "startTime": "2026-01-08T10:30:00Z"
+    }
+  ]
+}
+```
+
+### [](#_delete_a_job)Delete a job
+
+```bash
+curl -X DELETE \
+  http://localhost:8080/.rest/ai-vector-db/v1/dashboard/jobs/550e8400-e29b-41d4-a716-446655440000
+```
+
+## [](#_multi_language_indexing)Multi-language indexing
+
+When multiple languages are configured in Magnolia’s `I18nContentSupport`, the system creates separate documents for each language. Languages are determined automatically from your site’s locale configuration.
+
+### [](#_how_it_works_4)How it works
+
+For a single JCR node at `/travel/paris`:
+
+![diagram](https://kroki.io/mermaid/svg/eNqVkrFuwjAQhvc8xSlLJhJ1q1DLUJgqVFW0YolQ5diXxJWxkX0B9Y36Hn2x2qZECdCBGxLrbP-f7_6rlTnwllmC5SoBH66rGst2LXxyW6bP8xW8GIFTKMiyPapix6x06SaeDVExh2VKkpQ_lK2lkwSv4Uz2UNliJtBxK3ckjfbb7y0Cl_QFpgYlm5ZcNpDq0fLuXpdp-A52QwiPElhE5RMywqBC1_EW9TXqQiK8ERPk71tYSt4S2uxMuvbV1nYsHavxV_6tZ8lgL5VCUN1W_nxbHKqiFsnpP27tHjkZK6oyXccVLJ5gYXi3RU0O5hYZoRgoCcM_0HdkyxptlGTT4oBVeNrIlPi-UjHddKzBR9SbmOFGk9cdm5PDpRV5doYM3b4JKfAcOTYnh6tWXICDFzeBa3u11pN1OVwY1TN7d8Igw2Qy--t2cpy3PiMwOY5Jn6ntLwlXCXE=)
+
+### [](#_language_specific_search)Language-specific search
+
+Search results can be filtered by language:
+
+```bash
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "romantic cities",
+    "workspaces": ["website"],
+    "filters": {
+      "language": "fr"
+    }
+  }'
+```
+
+| Field | Description |
+| --- | --- |
+| `lastSyncTime` | Timestamp of last successful indexing operation |
+| `lastFullSyncTime` | Timestamp of last full workspace re-index |
+| `documentCount` | Number of documents indexed for this workspace |
+| `status` | Current sync status (SYNCED, SYNCING, ERROR) |
+
+## [](#_startup_validation)Startup validation
+
+On every Magnolia startup, the system validates index integrity:
+
+### [](#_whats_validated)What’s validated
+
+1.  **Vector DB Health**: Checks if pgvector database is accessible
+
+2.  **Sync State Consistency**: Compares JCR sync state vs actual vector DB counts
+
+3.  **Stale Job Cleanup**: Removes jobs stuck in RUNNING or old PENDING state
+
+
+### [](#_data_loss_detection)Data loss detection
+
+If sync state reports 1500 documents but vector DB only has 800:
+
+```text
+[WARN] MISMATCH DETECTED! Workspace website expects 1500 docs but vector DB only has 800 total
+[INFO] Auto-triggered reindex for workspace 'website' (job: abc-123)
+```
+
+The system automatically triggers re-indexing if:
+
+-   Data loss detected (mismatch in counts)
+
+-   Last sync was more than 5 minutes ago (not a quick restart)
+
+
+> **Caution:** Auto-reindex doesn’t run if last sync was less than 5 minutes ago to avoid re-indexing on normal restarts.
+
+## [](#_performance_optimization)Performance optimization
+
+### [](#_batch_size)Batch size
+
+Larger batch sizes = faster indexing, higher memory usage:
+
+```yaml
+batchSize: 100 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Process 100 documents at a time |
+
+Recommended batch sizes:
+
+-   Small sites (<1000 pages): 100-200
+
+-   Medium sites (1000-10000 pages): 50-100
+
+-   Large sites (>10000 pages): 20-50
+
+
+### [](#_observation_delay)Observation delay
+
+Longer delay = less frequent indexing, fewer API calls:
+
+```yaml
+observationDelay: 5000 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Wait 5 seconds after last change before indexing |
+
+Recommended delays:
+
+-   Frequently edited content: 2000-5000ms
+
+-   Rarely edited content: 1000-2000ms
+
+
+### [](#_error_handling)Error handling
+
+Configure error tolerance for large indexing jobs:
+
+```yaml
+continueOnError: true (1)
+maxErrorsPerBatch: 10 (2)
+retryAttempts: 3 (3)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Don’t stop entire job if one document fails |
+| **2** | Stop batch if more than 10 errors |
+| **3** | Retry failed batches 3 times |
+
+## [](#_troubleshooting)Troubleshooting
+
+### [](#_indexing_job_stuck_in_pending)Indexing job stuck in PENDING
+
+**Symptom**: Job status remains PENDING for extended time
+
+**Solutions**:
+
+-   Check Magnolia logs for errors
+
+-   Verify PostgreSQL pgvector is accessible
+
+-   Check embedding provider configuration
+
+-   Restart Magnolia (startup validation will clean up stale jobs)
+
+
+### [](#_high_memory_usage_during_re_index)High memory usage during re-index
+
+**Symptom**: OutOfMemoryError during large re-index
+
+**Solutions**:
+
+-   Reduce `batchSize` (e.g., from 100 to 50)
+
+-   Increase JVM heap size: `-Xmx4g`
+
+-   Re-index workspaces one at a time instead of simultaneously
+
+
+### [](#_content_not_appearing_in_search_results)Content not appearing in search results
+
+**Symptom**: Recently created/modified content not searchable
+
+**Solutions**:
+
+-   Check if observation is enabled: `enableObservation: true`
+
+-   Verify workspace configuration includes the content path
+
+-   Check logs for indexing errors
+
+-   Manually re-index the workspace
+
+-   Verify node type is in `nodeTypes` list
+
+
+### [](#_embedding_generation_fails)Embedding generation fails
+
+**Symptom**: `Failed to generate embeddings` in logs
+
+**Solutions**:
+
+-   Verify API key is valid and has credits
+
+-   Check AI model configuration for `generateEmbeddings` task
+
+-   Verify content doesn’t exceed `maxTextLength`
+
+-   Check for rate limiting from embedding provider
+
+
+## [](#_next_steps)Next steps
+
+-   [Search indexed content](../search/)
+
+-   [Understand security & permissions](../security/)
+
+-   [Customize extractors](../customization/)

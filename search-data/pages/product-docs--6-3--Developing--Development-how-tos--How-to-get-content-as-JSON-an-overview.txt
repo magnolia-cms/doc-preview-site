@@ -122,7 +122,7 @@ For more information and examples, see their API pages:
 
 Create a custom REST endpoint depending on your needs.
 
-The following example snippet is taken from the [`CameraCollectionEndpoint`](https://bitbucket.org/magnolia-cms/camera-collection).
+The following example snippet is taken from the [`CameraCollectionEndpoint`]({repo-cameraCollection}).
 
 ```java
     @Path("/allCameras")
@@ -228,7 +228,7 @@ Here is a simple example of how you can assemble JSON structure in FreeMarker:
 
 When assembling JSON manually, you have maximal freedom to define the JSON structure, but this approach also requires a high coding effort.
 
-The sample project [`camera-collection`](https://bitbucket.org/magnolia-cms/camera-collection) provides a more sophisticated FreeMarker-based JSON provider.
+The sample project [`camera-collection`]({repo-cameraCollection}) provides a more sophisticated FreeMarker-based JSON provider.
 
 ### [](#_assembling_json_with_jsonfn)Assembling JSON with `jsonfn`
 
@@ -289,7 +289,7 @@ http://localhost:8080/magnoliaAuthor/getjson/\`\[\`tours\`\]{style="color: rgb(1
 
 Add the following virtual URI mapping:
 
-![Virtual URI mapping](../../../_images/ADVT-HTjson-redconfig.png)
+![Virtual URI mapping](../../../../RNs-6-4-3/_images/ADVT-HTjson-redconfig.png)
 
 ### [](#_pros_4)Pros
 
@@ -331,7 +331,7 @@ To request a specific single language variant, do one of the following:
 -   Set the ``lang`query parameter. For example: `lang=de-DE``
 
 
-If both are set, the lang parameter takes priority. If neither is set, the decision is delegated to [the I18nContentSupport interface](../../../Administration/Language/AdminCentral-and-public-locales/#_the_i18ncontentsupport_interface).
+If both are set, the lang parameter takes priority. If neither is set, the decision is delegated to [the I18nContentSupport interface](../../../../RNs-6-4-3/Administration/Language/AdminCentral-and-public-locales/#_the_i18ncontentsupport_interface).
 
 To return all language variants:
 
@@ -376,9 +376,9 @@ When using `jsonfn`, add the `wrapForI18n` method before calling the `print` met
 \[#assign pageNode = cmsfn.contentByPath('/magnolia-travels/Kyoto', 'tours') /\]\\
 ${jsonfn.from(pageNode).add("title").\`\*\*\`wrapForI18n()\`\*\*\`.print()}
 
-![Content node default language](../../../_images/content-default-lang.png)
+![Content node default language](../../../../RNs-6-4-3/_images/content-default-lang.png)
 
-![The same content node in German](../../../_images/content_DE.png)
+![The same content node in German](../../../../RNs-6-4-3/_images/content_DE.png)
 
 ## [](#_the_same_origin_policy_problem)The same-origin policy problem
 

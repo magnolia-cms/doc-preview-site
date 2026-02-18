@@ -8,7 +8,7 @@ breadcrumb: DX Core > Modules > Personalization module > Creating custom traits 
 
 # Creating custom traits without Java
 
-You can use [personalization](../../../../use-cases/Personalization/) in Magnolia without writing any Java code by using traits for just about any kind of personalization feature. Below, we focus on configuring cookie traits.
+You can use [personalization](../../../../../RNs-6-4-3/use-cases/Personalization/) in Magnolia without writing any Java code by using traits for just about any kind of personalization feature. Below, we focus on configuring cookie traits.
 
 ## [](#_cookie_traits)Cookie traits
 
@@ -16,7 +16,7 @@ The cookie trait supports multiple cookies. You can configure as many cookies as
 
 ## [](#_two_magnolia_cookie_trait_implementations)Two Magnolia cookie trait implementations
 
-Version 2.1.0 of the [Personalization module](../) provides two implementations of cookie traits.
+Version 2.1.0 of the [Personalization module](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/) provides two implementations of cookie traits.
 
 ### [](#_new_cookie_trait_implementation)New cookie trait implementation
 
@@ -43,30 +43,30 @@ The `Cookies` trait (`info.magnolia.personalization.cookie.Cookies`) uses a spec
 
 ## [](#_creating_a_custom_cookie_trait)Creating a custom cookie trait
 
-The [Creating a custom cookie trait without Java](Creating-a-custom-cookie-trait-without-Java/) tutorial takes you through the process of creating, setting and using custom cookies.
+The [Creating a custom cookie trait without Java](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Creating-a-custom-cookie-trait-without-Java/) tutorial takes you through the process of creating, setting and using custom cookies.
 
 There is no need to write further Java classes. All you need to do to create a custom cookie is to is adapt the cookie trait configuration and write some FreeMarker and JavaScript code. You can include your code in a light module.
 
 ## [](#_cookie_traits_in_magnolia_demo)Cookie traits in Magnolia demo
 
-The DX Core Demo [bundle](../../../../Developing/Bundles-and-webapps/) has two example cookie traits:
+The DX Core Demo [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/) has two example cookie traits:
 
--   `tourType`, used in the [Travel Demo](../../../../Getting-started-with-Magnolia/Demo/) to set user’s tour type preference.
+-   `tourType`, used in the [Travel Demo](../../../../../RNs-6-4-3/Getting-started-with-Magnolia/Demo/) to set user’s tour type preference.
 
 -   `weatherLocality`
 
 
 Related topics
 
--   [Cookies trait configuration](Cookies-trait-configuration/)
+-   [Cookies trait configuration](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Cookies-trait-configuration/)
 
--   [Creating a custom cookie trait without Java](Creating-a-custom-cookie-trait-without-Java/)
+-   [Creating a custom cookie trait without Java](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Creating-a-custom-cookie-trait-without-Java/)
 
-    -   [Configuring a custom cookie trait](Creating-a-custom-cookie-trait-without-Java/Configuring-a-custom-cookie-trait/)
+    -   [Configuring a custom cookie trait](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Creating-a-custom-cookie-trait-without-Java/Configuring-a-custom-cookie-trait/)
 
-    -   [Setting and reading a custom cookie](Creating-a-custom-cookie-trait-without-Java/Setting-and-reading-a-custom-cookie/)
+    -   [Setting and reading a custom cookie](../../../../../RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Creating-a-custom-cookie-trait-without-Java/Setting-and-reading-a-custom-cookie/)
 
 
--   [Personalization](../../../../use-cases/Personalization/)
+-   [Personalization](../../../../../RNs-6-4-3/use-cases/Personalization/)
 
--   [Component personalization](../../../../Features/Personalization/Component-personalization/)
+-   [Component personalization](../../../../../RNs-6-4-3/Features/Personalization/Component-personalization/)

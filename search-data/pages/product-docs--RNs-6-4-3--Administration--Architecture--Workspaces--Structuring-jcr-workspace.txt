@@ -1,0 +1,82 @@
+---
+title: "Structuring your JCR workspace for performance"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Architecture/Workspaces/Structuring-jcr-workspace/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Workspaces > Structuring your JCR workspace for performance
+---
+
+# Structuring your JCR workspace for performance
+
+This page provides recommendations for customers dealing with large scale projects.
+
+JCR is designed to store hierarchical structured data and doesn’t handle large flat hierarchies well. Flat hierarchies are, for example, when many hundreds or thousands of child subnodes are placed under a single parent node.
+
+> **Caution:** If you have more than a few hundred child nodes under a single parent node, you may encounter problems and should consider restructuring the workspace.
+
+## [](#_potential_issues)Potential issues
+
+If you have a poorly structured JCR [workspace](../), you may encounter things like:
+
+-   Poor app performance (such as slow load time, slow to fetch data)
+
+-   [Lucene](../../../../Authoring/Search/Searching-for-content/) indexing issues
+
+-   [Publishing](../../../../Authoring/Publishing/) problems
+
+
+## [](#_best_practices)Best practices
+
+To avoid the aforementioned issues, you should consider the following best practices when structuring your JCR workspace.
+
+Limit child nodes
+
+Any workspace with more than `500` child nodes should be restructured to keep it under `500` child nodes for any parent node.
+
+Consider the taxonomy of your data
+
+Organize your data to create a structured hierarchy according to its taxonomy. For example, if your data is education-related, you could classify your data by subject (Art, Mathematics, Science), then grade level (Elementary, Middle School, High School), and finally by specific topic or subtopic within each subject.
+
+Time-related content
+
+If your JCR content is time-related, consider using a folder structure like `/<year>/<month>/<day of month>/<hour>/<minute>/<second>/<child>` to distribute child nodes across a deeper structure and limit the number of child nodes in a single folder.
+
+Naming conventions
+
+If your JCR content has a name, consider using a folder structure like `/<letter range>/<initial letter>/<children>`, for example, `/a-d/a/<child with name beginning in a>`. Make sure you keep it under the `500` limit for child nodes in a folder and bear in mind that purely syntactical structure (`a-d / a / …​`) should only be used when your data has no better inherent structure.
+
+## [](#_workaround)Workaround
+
+If you’re still having issues navigating through a tree view in the AdminCentral app, try increasing the size of the Jackrabbit caches to avoid retrieving many nodes from the JCR repository database.
+
+Set with java properties
+
+```java
+org.apache.jackrabbit.maxCacheMemory: default 16777216 (1)
+org.apache.jackrabbit.minMemoryPerCache: default 131072 (1)
+org.apache.jackrabbit.maxMemoryPerCache: default 4194304 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Value listed in bytes. |
+
+Set with JVM command line
+
+```sh
+-Dorg.apache.jackrabbit.maxCacheMemory=268435456 (1)
+-Dorg.apache.jackrabbit.minMemoryPerCache=1048576 (1)
+-Dorg.apache.jackrabbit.maxMemoryPerCache=67108864 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Value listed in bytes. |
+
+## [](#_further_reading)Further reading
+
+-   [Workspaces](../)
+
+-   [Too many same-level JCR entries](../../../Troubleshooting/Too-many-same-level-JCR-entries/).
+
+-   [Workspace performance-related configuration](../workspace-configuration/#_performance)

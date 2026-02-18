@@ -8,7 +8,7 @@ breadcrumb: Six Eye Workflow module
 
 # Six Eye Workflow module
 
-[Collaboration and workflow](../product-docs/7.0/use-cases/collaboration-and-workflow/) [Tier 2](../incubator-modules/incubator-module-list/#_tier_2_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/services/six-eye-workflow) [SERVICESWF](https://magnolia-cms.atlassian.net/browse/SERVICESWF) [Magnolia 6.4](../product-docs/7.0/) compatible\[[1](#_footnotedef_1 "View footnote.")\]
+[Collaboration and workflow](../product-docs/RNs-6-4-3/use-cases/collaboration-and-workflow/) [Tier 2](../incubator-modules/incubator-module-list/#_tier_2_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/services/six-eye-workflow) [SERVICESWF](https://magnolia-cms.atlassian.net/browse/SERVICESWF) [Magnolia 6.4](../product-docs/RNs-6-4-3/) compatible\[[1](#_footnotedef_1 "View footnote.")\]
 
 The **Six-Eye Workflow** module adds a second approval layer to the out-of-the-box Magnolia [four eye workflow](#product-docs:ROOT:Modules/List-of-modules/Workflow-module/Magnolia-four-eye-workflow). This second layer is another independent group of reviewers specialized in some aspect of the page.
 
@@ -18,7 +18,7 @@ Upon legal approval, the page is then pushed to the second review step which may
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
@@ -42,7 +42,7 @@ The module installs two configurations. You will need to make some changes to ge
 
 The preview task is the new human task added to the overall workflow. You will need to set the group(s) which should be notified for this step in the workflow.
 
-The preview task extends from the publish task in the workflow-jbpm module. The groups configuration is overridden so that you can configure the groups for the task. For example, all content needs to go through a legal review before the final review and publish step. Create a new group called legal in the [Security app](../product-docs/7.0/Apps/List-of-apps/Security-app/). Next add the legal group to the list of groups for the preview task.
+The preview task extends from the publish task in the workflow-jbpm module. The groups configuration is overridden so that you can configure the groups for the task. For example, all content needs to go through a legal review before the final review and publish step. Create a new group called legal in the [Security app](../product-docs/RNs-6-4-3/Apps/List-of-apps/Security-app/). Next add the legal group to the list of groups for the preview task.
 
 > **Tip:** When creating new groups it might be a good idea to make sure the superuser is a part of it.
 
@@ -55,8 +55,6 @@ The configuration for the six eye workflow will be bootstrapped on installation.
 Update the workflow module to call `sixEyeReviewForPublication`.
 
 ![workflow activate](_images/workflow-activate.jpg)
-
-## [](#_changelog)Changelog
 
 | Version | Notes |
 | --- | --- |

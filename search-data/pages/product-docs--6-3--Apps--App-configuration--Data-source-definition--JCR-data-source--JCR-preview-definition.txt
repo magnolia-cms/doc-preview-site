@@ -24,12 +24,10 @@ datasource:
     extension: .png
 ```
 
-## [](#_list_of_properties)List of properties
-
 | Property | Description |
 | --- | --- |
-| `nodeName` | **required**, *default is `JcrConstants.JCR_CONTENT`*<br><br>Name of the JCR node where the original source image is stored. For example, if a file upload field on a form stores the image in a node named `photo`, set the value to `photo`. |
-| `class` | **optional**, *default is `info.magnolia.ui.contentapp.preview.JcrPreviewDefinition`*<br><br>Preview definition class that reads the configuration properties and can supply additional parameters to the class. Set the value to a fully qualified class name. |
-| `extension` | **optional**, *default is `jpg`*<br><br>Extension used to deliver the image. |
-| `generator` | **optional**, *default is `portrait`*<br><br>Name of the image generator that generates thumbnail images. |
-| `servletPath` | **optional**, *default is `.imaging`*<br><br>Path where the imaging servlet resides. |
+| `nodeName` | **required** , *default is JcrConstants.JCR_CONTENT* Name of the JCR node where the original source image is stored. For example, if a file upload field on a form stores the image in a node named `photo` , set the value to `photo` . |
+| `class` | **optional** , *default is info.magnolia.ui.contentapp.preview.JcrPreviewDefinition* Preview definition class that reads the configuration properties and can supply additional parameters to the class. Set the value to a fully qualified class name. |
+| `extension` | **optional** , *default is jpg* Extension used to deliver the image. |
+| `generator` | **optional** , *default is portrait* Name of the image generator that generates thumbnail images. |
+| `servletPath` | **optional** , *default is .imaging* Path where the imaging servlet resides. |

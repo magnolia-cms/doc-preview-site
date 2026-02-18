@@ -1,0 +1,595 @@
+---
+title: "Model configuration"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/model-configuration/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Set up AI models
+---
+
+# Model configuration
+
+Model configuration enables seamless integration and switching between any LLM, optimizing performance and flexibility for the diverse range of AI applications available in **AI Accelerator**.
+
+> **Note:** The model configuration schema has changed with version 2.1.2. Make sure to update your configuration files accordingly. The most important change is renaming inputParameters to input and outputParameters to output.
+
+## [](#_concepts)Concepts
+
+### [](#_ai_model)AI Model
+
+An Ai Model is a collection of parameters that define the behavior and capabilities of a specific AI model. It includes information such as the model name, parameters, and input and output types.
+
+AI Models are defined in the `aiModel` registry.
+
+### [](#_ai_task)AI Task
+
+An AI Task is used to execute simple or complex logic involving AI models. Task may contain business logic or call models directly to generate or modify content.
+
+AI Models are defined in the `aiTask` registry.
+
+### [](#_ai_task_type)AI Task Type
+
+A task type is a grouping of tasks that share a common purpose or functionality. At the same time it defines input and output parameters and therefore acts as programming interface definition of tasks. AiTaskType are used to automatically fill task input parameters and automatically read task output parameters. Ai Task may optionally have a property `taskType` that defines the type of the task.
+
+AI Task Types are defined in the `aiTaskType` registry.
+
+### [](#_model_adapter)Model Adapter
+
+A model adapter defined the mapping between task input to model input and from model output to task output.
+
+Model Adapters are defined within an AI Task and have no dedicated registry.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Basic integration comes with Magnolia AI Accelerator core installation. For access to various AI models, you will need to add the corresponding dependencies to your Maven project.
+
+### [](#_openai_models)OpenAI models
+
+This enables integration with OpenAI models such as GPT4 and Dall-E.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai</groupId>
+  <artifactId>magnolia-ai-accelerator-openai</artifactId>
+  <version>4.0-alpha</version>
+</dependency>
+```
+
+### [](#_aws_bedrock_hosted_models)AWS Bedrock hosted models
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai</groupId>
+  <artifactId>magnolia-ai-accelerator-aws</artifactId>
+  <version>4.0-alpha</version>
+</dependency>
+```
+
+### [](#_google_gemini_models)Google Gemini models
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai</groupId>
+  <artifactId>magnolia-ai-accelerator-gemini</artifactId>
+  <version>4.0-alpha</version>
+</dependency>
+```
+
+### [](#_flux_image_models)Flux image models
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai.image</groupId>
+  <artifactId>magnolia-ai-accelerator-fal-ai</artifactId>
+  <version>4.0-alpha</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+The AI Accelerator requires several configuration steps to work properly, starting with setting up a default model and then configuring specific model behaviors.
+
+> **Note:** Magnolia’s AI modules send any processed content to the external AI provider that you configure. Magnolia does not store or analyze this content. You are responsible for reviewing the provider’s terms of service, data-handling practices, and legal compliance, and for configuring the integration to meet your requirements.
+
+### [](#_default_model_configuration)Default model configuration
+
+The AI Accelerator requires a default model to be configured. This model acts as the fallback for any task that does not specify its own model. Set it using the `defaultModelId` property in the `ai-accelerator-core` module configuration.
+
+`/my-light-module/decorations/ai-accelerator-core/config.yaml`
+
+```yaml
+defaultModelId: <your-model-name> (1)
+# defaultModelId: gpt-4
+# defaultModelId: claude3-5
+# defaultModelId: gemini-2-0-flash
+# defaultModelId: azure-gpt-4
+```
+
+|     |     |
+| --- | --- |
+| **1** | The name of the model definition created in [Model configuration](#_model_configuration) below. If the file is called `gpt-4.yaml` then the id is `gpt-4`. |
+
+> **Important:** The default model configuration is required. AI Accelerator features don’t work if no default model is specified.
+
+### [](#_model_configuration)Model configuration
+
+AI models can be added to your light module by creating a `aiModels` folder and adding a `<your-model>.yaml` file with the following configuration:
+
+```yaml
+modelName:  <your-model-name> (1)
+modelVersion:  <your-ai-model> (2)
+$type: <ai-model-type> (3)
+scriptLocation: <image-to-image-model-script> (4)
+modelParameters: (5)
+  deprecated: true
+input: (6)
+  <model-input-parameter-name>:
+    $type: <PARAMETER-TYPE>(7)
+    name: <DISPLAY-NAME>
+    required: <true/false>
+    description: <DESCRIPTION>
+    defaultValue: <DEFAULT-VALUE>
+    advanced: <true/false> (10)
+
+output: (8)
+  <model-output-parameter-name>:
+    $type: <PARAMETER-TYPE>(9)
+retries: <your-number-of-retries> (11)
+retryDelay: <your-retry-delay-in-seconds> (12)
+```
+
+|     |     |
+| --- | --- |
+| **1** | This is the displayed name of the model in the UI (i.e. OpenAI Gpt-4o, Claude 3.5 Sonnet, Dall-E·3, etc). |
+| **2** | This is the specific version of the model that will be used. (i.e. gpt-4o, anthropic.claude-3-5-sonnet-20240620-v1:0, gemini-2.0-flash, dall-e-3, etc). |
+| **3** | This is the type of model that will be used, depending on your configuration. (i.e. `openAiModel`, `googleGemini`, `amazonBedrockModel`). |
+| **4** | Optional script location for browser based execution. |
+| **5** | `modelParameters` were deprecated starting 2.2 in favor of `input` |
+| **6** | `input` Parameters present in this configuration will have a UI representation and should represent the configurable parameters of the model. |
+| **7** | See [Parameter Configuration](../parameters/) for detailed information about available parameter types and their configurations. |
+| **8** | The output of the model. Same rules as for `input` apply. |
+| **9** | See [Parameter Configuration](../parameters/) for detailed information about available parameter types and their configurations. |
+| **10** | Optional boolean flag. When set to `true`, this parameter is displayed in an **Advanced** section in the UI, typically collapsed by default. |
+| **11** | The number of times to retry the model if it fails. This depends if the model has configured how to handle retry events. |
+| **12** | The number of seconds to wait between retries. |
+
+## [](#_sample_configuration)Sample configuration
+
+### [](#_ai_models)AI Models
+
+To add general purpose AI models to your light module, create a `aiModels` folder and add a `<your-ai-model>.yaml` file.
+
+#### [](#_gpt4o)GPT4o
+
+```yaml
+modelName: OpenAI GPT-4o
+modelVersion: gpt-4o
+$type: openAiModel
+inputParameters:
+  temperature:
+    $type: number
+```
+
+#### [](#_aws_bedrock_claude_3_5_sonnet)AWS Bedrock - Claude 3.5 Sonnet
+
+```yaml
+modelName: Claude 3.5 Sonnet
+modelVersion: anthropic.claude-3-5-sonnet-20240620-v1:0
+$type: amazonBedrockModel
+input:
+  max_tokens_to_sample:
+    $type: number
+    description: "Number of tokens to generate"
+    defaultValue: 1024
+    required: true
+```
+
+#### [](#_google_gemini)Google Gemini
+
+```yaml
+modelName: Gemini 2.0 Flash
+modelVersion: gemini-2.0-flash-001
+$type: googleGemini
+```
+
+#### [](#_falai_flux_dev)FalAi Flux Dev
+
+```yaml
+modelName: FLUX.1 [dev]
+modelVersion: dev
+appId: fal-ai/flux
+$type: falAiModel
+input:
+  prompt:
+    $type: prompt
+    required: true
+    description: The prompt to generate an image from.
+  image_size:
+    $type: switchable
+    description: "Either use a preset or a custom value"
+    options:
+      preset_image_size:
+        $type: enum
+        description: |
+          The size of the generated image. Default value: landscape_4_3
+          Possible enum values: square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9
+        enumValues: [square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9]
+        defaultValue: landscape_4_3
+      custom_image_size:
+        $type: jsonObject
+        jsonSchema: |
+          {
+            "$schema": "https://json-schema.org/draft/2020-12/schema",
+            "type": "object",
+            "properties": {
+              "width": { "type": "integer" },
+              "height": { "type": "integer" }
+            },
+            "required": ["width", "height"]
+          }
+        description: |
+          The size of the generated image.
+        defaultValue: |
+          {
+            "width": 1280,
+            "height": 720
+          }
+  num_images:
+    $type: number
+    description: "The number of images to generate. Default value: 1"
+    defaultValue: 1
+  guidance_scale:
+    $type: number
+    description: "The CFG (Classifier Free Guidance) scale is a measure of how close you want the model to stick to your prompt when looking for a related image to show you. Default value: 3.5"
+    defaultValue: 3.5
+  num_inference_steps:
+    $type: number
+    description: "The number of inference steps to perform. Default value: 28"
+    defaultValue: 28
+output:
+  images:
+    $type: list
+    itemType: imageUrl
+```
+
+## [](#_image_io)Image IO
+
+Image IO is available from `2.1.0`
+
+Magnolia AI Accelerator Image IO enables a flexible way for developers to add image models such as DallE·2/3 and Flux for AI powered image generation.
+
+> **Warning:** Image IO is using a different registry. Please be sure to not confuse with the general model configuration mentioned above. The configuration of Image IO will be migrated to the general model configuration in a future release.
+
+### [](#_installing_with_maven_2)Installing with Maven
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ai.image</groupId>
+  <artifactId>magnolia-ai-accelerator-image-io</artifactId>
+  <version>4.0-alpha</version>
+</dependency>
+```
+
+### [](#_configuration_2)Configuration
+
+Image models can be added to your light module by creating a `aiTextToImageModels` folder and adding a `<your-image-to-image-model>.yaml` using the configuration provided [here](#_configuration).
+
+> **Warning:** Since version 2.2.0 modelParameter is deprecated in order to align the new general purpose model registry. Please use input instead.
+
+### [](#_sample_text_to_image_model_script)Sample Text to Image model script
+
+**Example:**
+
+```javascript
+export default class {
+  /**
+    *
+    * @param appState contains Application State (provided by AI Accelerator)
+    * @param parameters contains all configured model parameters i.e (2)
+    * @returns {{b64_json: String, width: Number, height: Number, prompt: String}[]}>
+    */
+  async generateImage(appState, parameters) {
+    const images = callImageModelApi(parameters);
+    return images;
+  }
+}
+```
+
+### [](#_image_to_image)Image-to-Image
+
+This model configuration applies for Image-to-Image models for the AI Accelerator Image IO only.
+
+To add text-to-image models to your light module, create a `aiImageToImageModels` folder and add a `<your-image-to-image-model>.yaml` file.
+
+#### [](#_openai_dall_e2)OpenAI Dall-E·2
+
+Sample model configuration for generating images with Dall-E·2 ([https://platform.openai.com/docs/api-reference/images](https://platform.openai.com/docs/api-reference/images)).
+
+```yaml
+modelName: Dall-E·2
+modelId: dall-e-2
+appId: dall-e-2
+input:
+  prompt:
+    type: PROMPT
+    required: true
+    description: The prompt to generate an image from.
+  n:
+    type: NUMBER
+    description: |
+      The number of images to generate. Must be between 1 and 10.
+    defaultValue: 1
+  size:
+    type: ENUM
+    description: |
+      The size of the generated images. Defaults to 1024x1024
+      Must be one of 1024x1024, 1792x1024, or 1024x1792
+    enumValues: [1024x1024, 1792x1024, 1024x1792]
+    defaultValue: 1024x1024
+
+scriptLocation: /ai-accelerator-openai/webresources/DallEImageModelHandler.js
+```
+
+#### [](#_openai_dall_e3)OpenAI Dall-E·3
+
+Sample model configuration for generating images with Dall-E·3 ([https://platform.openai.com/docs/api-reference/images](https://platform.openai.com/docs/api-reference/images)).
+
+```yaml
+modelName: OpenAI Dall-E·3
+modelId: dall-e-3
+appId: dall-e-3
+input:
+  prompt:
+    type: PROMPT
+    required: true
+    description: The prompt to generate an image from.
+  size:
+    type: ENUM
+    description: |
+      The size of the generated images. Defaults to 1024x1024
+      Must be one of 1024x1024, 1792x1024, or 1024x1792
+    enumValues: [1024x1024, 1792x1024, 1024x1792]
+    defaultValue: 1024x1024
+  style:
+    type: ENUM
+    description: |
+      The style of the generated images. Must be one of vivid or natural. Vivid causes the model to lean towards generating hyper-real and dramatic images. Natural causes the model to produce more natural, less hyper-real looking images.
+    enumValues: [vivid, natural]
+    defaultValue: vivid
+  quality:
+    type: ENUM
+    description: |
+      The quality of the image that will be generated. hd creates images with finer details and greater consistency across the image
+    enumValues: [standard, hd]
+    defaultValue: standard
+
+scriptLocation: /ai-accelerator-openai/webresources/DallEImageModelHandler.js
+```
+
+#### [](#_flux_1_0_dev)FLUX.1.0 \[dev\]
+
+Sample configuration for FLUX.1.0 \[dev\] model ([https://fal.ai/models/fal-ai/flux/dev](https://fal.ai/models/fal-ai/flux/dev)).
+
+```yaml
+modelName: FLUX.1 [dev]
+modelId: dev
+appId: fal-ai/flux
+input:
+  prompt:
+    type: PROMPT
+    required: true
+    description: The prompt to generate an image from.
+  image_size:
+    type: ENUM
+    description: |
+      The size of the generated image. Default value: landscape_4_3
+      Possible enum values: square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9
+    enumValues: [square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9]
+    defaultValue: landscape_4_3
+  num_outputs:
+    type: NUMBER
+    description: "The number of images to generate. Default value: 1"
+    defaultValue: 1
+  guidance_scale:
+    type: NUMBER
+    description: "The CFG (Classifier Free Guidance) scale is a measure of how close you want the model to stick to your prompt when looking for a related image to show you. Default value: 3.5"
+    defaultValue: 3.5
+    advanced: true
+  num_inference_steps:
+    type: NUMBER
+    description: "The number of inference steps to perform. Default value: 28"
+    defaultValue: 28
+    advanced: true
+
+scriptLocation: /ai-accelerator-fal-ai/webresources/FluxImageModelHandler.js
+```
+
+> **Note:** The guidance_scale and num_inference_steps parameters are marked with advanced: true to indicate they should be displayed in an advanced settings section, keeping the basic UI clean for typical users.
+
+#### [](#_flux_1_1_pro)FLUX.1.1 \[pro\]
+
+Sample model configuration for the FLUX.1.1 \[pro\] model ([https://fal.ai/models/fal-ai/flux-pro/v1.1/api](https://fal.ai/models/fal-ai/flux-pro/v1.1/api)).
+
+```yaml
+modelName: FLUX.1.1 [pro]
+modelId: v1.1
+appId: fal-ai/flux-pro
+input:
+  prompt:
+    type: PROMPT
+    required: true
+    description: The prompt to generate an image from.
+  image_size:
+    type: ENUM
+    description: |
+      The size of the generated image. Default value: landscape_4_3
+      Possible enum values: square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9
+    enumValues: [square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9]
+    defaultValue: landscape_4_3
+  num_outputs:
+    type: NUMBER
+    description: "The number of images to generate. Default value: 1"
+    defaultValue: 1
+  guidance_scale:
+    type: NUMBER
+    description: "The CFG (Classifier Free Guidance) scale is a measure of how close you want the model to stick to your prompt when looking for a related image to show you. Default value: 3.5"
+    defaultValue: 3.5
+  num_inference_steps:
+    type: NUMBER
+    description: "The number of inference steps to perform. Default value: 28"
+    defaultValue: 28
+
+scriptLocation: /ai-accelerator-fal-ai/webresources/FluxImageModelHandler.js
+```
+
+#### [](#_gemini_2_5_flash_image_edit_fal_ai)Gemini 2.5 Flash Image Edit (fal.ai)
+
+Gemini image models are available via [fal.ai](https://fal.ai/). To use the [Gemini 2.5 Flash Image model](https://fal.ai/models/fal-ai/gemini-25-flash-image/edit) Gemini 2.5 Flash Image Edit model:
+
+1.  Configure fal.ai as described in the [fal.ai configuration section](../configure/#_fal_ai).
+
+2.  Add the following model definition to your `aiModels` folder.
+
+3.  Create an image manipulation task that uses this model and maps between task input/output and the model using `modelAdapters`.
+
+
+Sample model configuration for the Gemini 2.5 Flash Image Edit model
+
+```yaml
+modelName: Gemini 2.5 Flash Image Edit
+appId: fal-ai/gemini-25-flash-image
+modelVersion: edit # this model allows to edit images
+$type: falAiModel
+input:
+  prompt:
+    $type: prompt
+    required: true
+    description: The prompt to generate an image from.
+  num_images:
+    $type: number
+    description: "The number of images to generate. Default value: 1"
+    defaultValue: 1
+output:
+  images:
+    $type: list
+    itemType: imageUrl
+```
+
+Here an example task using this model to edit images. The task accepts different image inputs (`base64EncodedImage`, single `imageUrl`, or a list of ``imageUrl`s) and the `modelAdapters`` section:
+
+-   Converts the incoming `base64EncodedImage` into an `imageUrl` and into the `image_urls` list expected by the fal.ai Gemini model.
+
+-   Selects the first edited image from the model output and converts it back into a `base64EncodedImage` for the task output.
+
+
+Sample task
+
+```yaml
+$type: manipulateImageTask
+name: Edit Image
+
+input:
+  image:
+    $type: base64EncodedImage
+  image_url:
+    $type: imageUrl
+  image_urls:
+    $type: list
+    itemType: imageUrl
+  prompt:
+    $type: prompt
+output:
+  image:
+    $type: base64EncodedImage
+
+modelId: gemini-25-flash-image-edit
+
+modelAdapters:
+  gemini-25-flash-image-edit:
+    input:
+      # intermediate property for further processing, we create an image_url
+      # and from there we then create the image_urls list
+      image_url:
+        value: $.input.image
+        mapper:
+          $type: base64EncodedImageToImageUrl
+      image_urls:
+        value: $.input.image_url
+        mapper:
+          $type: singleToListMapper # turn single item into list
+      prompt:
+        value: $.input.prompt
+    output:
+      image:
+        mapper:
+          $type: itemSelectionMapper
+          index: 0
+          mapper:
+            $type: imageUrlToBase64EncodedImage
+        value: $.output.images # the var behind $. is the model output
+```
+
+#### [](#_gemini_2_5_flash_image_direct)Gemini 2.5 Flash Image (direct)
+
+In addition to using Gemini image models via fal.ai, you can also use Gemini’s native image generation API directly.
+
+1.  Configure Google Gemini as described in the [Google Gemini configuration section](../configure/#_google_gemini_config).
+
+2.  Add the model definition below to your `aiModels` folder.
+
+3.  Use it from your image generation tasks (for example, the `generateImage` task in Image IO) by referencing `gemini-2.5-flash-image` and mapping prompt and output images via `modelAdapters`.
+
+
+Sample model configuration for the Gemini 2.5 Flash Image model using the Gemini API directly
+
+```yaml
+modelName: Gemini 2.5 Flash Image
+modelVersion: gemini-2.5-flash-image
+$type: googleGeminiImageModel
+
+input:
+  prompt:
+    $type: prompt
+    name: Prompt
+    required: true
+    description: |
+      A text description of the desired image. Gemini supports detailed prompts including text rendering, style specifications, and compositional instructions.
+      Start with 'create an image off...'.
+  aspectRatio:
+    $type: enum
+    name: Aspect Ratio
+    description: |
+      Aspect ratio for the generated image. Each option renders at a predefined resolution.
+    enumValues: [ '1:1', '2:3', '3:2', '3:4', '4:3', '4:5', '5:4', '9:16', '16:9', '21:9' ]
+    defaultValue: '1:1'
+
+output:
+  candidates:
+    $type: list
+    itemType: jsonObject
+```
+
+Here is an example `modelAdapters` decoration that wires the `generateImage` task to this model. It takes the task `prompt` and maps the generated image list from the model output to base64-encoded images for Image IO:
+
+Example `modelAdapters` decoration
+
+```yaml
+availableModels:
+  gemini-2.5-flash-image: gemini-2.5-flash-image
+
+modelAdapters:
+  gemini-2.5-flash-image:
+    input:
+      prompt:
+        value: $.input.prompt
+    output:
+      images:
+        mapper:
+          $type: listItemMapper
+          mapper:
+            $type: imageUrlToBase64EncodedImage
+        value: $.output.images # the var behind $. is the model output
+```
+
+## [](#_migration)Migration
+
+To migrate from previous versions of AI Accelerator, convert all old properties `type` to the new corresponding `$type` and replace `modelParameters` with `input`.

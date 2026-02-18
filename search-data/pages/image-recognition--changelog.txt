@@ -1,0 +1,22 @@
+---
+title: "Image Recognition module releases"
+url: https://docs.magnolia-cms.com/image-recognition/changelog/
+category: Modules
+version: modules
+breadcrumb: Image Recognition module > Changelog
+---
+
+# Image Recognition module releases
+
+This page provides the release changelog and a [compatibility matrix](#_compatibility_matrix) for the module to Magnolia version.
+
+| **Ticket** | Type | Description |
+| --- | --- | --- |
+| **IMGREC-139** | ** | Add Magnolia AI Accelerator module as an additional provider. |
+| **IMGREC-136** | ** | **Breaking change** : The `ImageRecogniser.recognise` method signature changes from `byte[]` to `ImageBinary` . [Custom implementations](../developers/configure/#_using_other_image_recognition_solutions) of the `ImageRecogniser` interface won’t compile or run unless updated to use the new `ImageBinary` parameter. |
+
+| Module version | Magnolia CMS version |
+| --- | --- |
+| 4.0.0 | 6.4+ **with DAM 6.0+** |
+| 3.0.0 | 6.3+ **with DAM 5.0+** |
+| 2.0.0 | 6.3.0+ |

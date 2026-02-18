@@ -1,0 +1,172 @@
+---
+title: "Visual SPA Editor"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/headless/visual-spa-editor/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Headless docs > SPA development > Visual SPA Editor
+---
+
+# Visual SPA Editor
+
+## [](#_what_it_does)What it does
+
+The [Visual SPA Editor](https://www.magnolia-cms.com/product/single-page-apps-editing.html) connects the modern *component-architecture* of SPA, with the *component* concept of CMS page editors. You can build an SPA, and give it placeholder areas, that can be managed from a CMS.
+
+-   Frontend Developer: Builds SPA. Adapts SPA to make it content manageable.
+
+-   Frontend or Magnolia Developer: Creates Magnolia bindings and dialogs. (Putting *handles and knobs* on the components for authors.)
+
+-   Content authors and marketers: Choose which components to put in the areas, in what order, and edit their contents.
+
+
+![SPA block 1024x512](../../../_images/headless/illustrations/SPA-block-1024x512.png)
+
+## [](#_overview)Overview
+
+**Authors use Page Editor:**
+
+-   Can build experiences based on predefined `page` and `component` templates.
+
+-   Result is a hierarchy of pages and components stored in Magnolia.
+
+
+**Implementation:**
+
+-   Small javascript library for each JS framework (React, Angular, soon Vue)
+
+-   JS library provides the **Area** component. This is a placeholder for authors.
+
+-   A Magnolia REST endpoint serves both **layout** and **content** for each page.
+
+-   JS library uses this information to dynamically build app. It instantiates frontend components and passes the content in as props.
+
+-   In the authoring experience, another Magnolia REST endpoint serves information about all the templates on the page. For example it provides which components are available in an area.
+
+
+**Capabilities:**
+
+-   Use any frontend component (React, Angular, Vue) without modification. They get all CMS content passed in as props.
+
+-   Supports nested components.
+
+-   Supports multiple and nested pages (that is a page tree).
+
+-   Authoring feature even works if the DOM changes dynamically while authoring.
+
+
+**Two key usage scenarios:**
+
+-   Existing SPA: Add content management to an Existing SPA
+
+-   New DX/CMS project: team wants to use React templating.
+
+
+## [](#_differences_to_basic_headless)Differences to Basic Headless
+
+![basic headless vs next level 1280](../../../_images/headless/illustrations/basic-headless-vs-next-level-1280.jpg)
+
+In **Basic Headless**, an author fills out a form, in a separate tool. Content is stored in a list in a database, and it is retrieved as a *list* via a REST API request. The typical frontend loops through the list and renders each item in a *region* of the view. So, authors can manage *content items*. YAY. But they cannot manage *experiences*.
+
+With the **SPA editor**, an author chooses and places components on a visual page. For each component they fill out a form, *in context*. Content is stored in a *tree* in a database, we could call it a `leaf`, and it’s retrieved as a tree via a REST API
+
+The tree is important \* the location of the leaf in the tree represents where the component was placed in the page. Each leaf also stores which type of component it is. In the frontend the code follows every branch of the content tree, and for each leaf it displays the type of component specified in the leaf.
+
+The result: It’s a tool an author can use to manage content & to build out the *full* experience.
+
+## [](#_how_it_works_in_production)How it works in Production
+
+The web experience is a SPA, served from any server.
+
+It hits a Magnolia REST Delivery endpoint to get a JSON page payload which includes:
+
+-   **Content**: The contents of all of the components on one page. (Typically [a delivery endpoint](https://demopublic.magnolia-cms.com/.rest/delivery/pagesWithComponents/v1/about/))
+
+-   **Layout**: The layout of components in the page (Actually, just the heirarchy of the content nodes.)
+
+
+Mapping Information: which SPA component to instantiate for each Magnolia component, is in a file in the SPA.
+
+The SPA instantiates 1) *the specified components*, with 2) *that content*, in 3) *that heirarchy*.
+
+> **Note:** When the user navigates to a new Route (aka Page), the SPA hits the endpoint again and refreshes its content.
+
+|  | Tip | Notes |
+| --- | --- | --- |
+| **1** | `iframe` preview URL | Make sure your `iframe` preview URL in the [Pages app](../concepts/content-modelling/#_pages_app) is correct. ** This should be the Author SPA with the correct path name and query parameters. | ** | This should be the Author SPA with the correct path name and query parameters. |
+| ** | This should be the Author SPA with the correct path name and query parameters. |
+| **2** | Correct environment | Make sure the Author SPA is fetching data from the correct environment, the Magnolia Author instance. ** It should fetch both the pages data and template annotations for the correct page. | ** | It should fetch both the pages data and template annotations for the correct page. |
+| ** | It should fetch both the pages data and template annotations for the correct page. |
+| **3** | Correct libraries | Ensure you’re using the latest [frontend libraries](../spa-development/magnolia-front-end-sdk/#_supported_framework_versions) . |
+| **4** | HTML DOM comments | Check to see if there are any HTML comments in the DOM. • []() See comments? ** • []() Don’t see comments? ** Try running the `window.mgnlFrameReady()` function from inside the preview `iframe` to attempt to render the green bars. There could be a race condition [ [1](#_footnotedef_1) ] which essentially tries to render the bars before your site is ready. If this is the case, manually call `window.mgnlFrameReady()` : `function myFunction() { const element = document.querySelector('.mgnlEditorBar'); if (element) { clearInterval(intervalId); } else { window.mgnlFrameReady(); } } const intervalId = setInterval(myFunction, 200); (1)` ** **1** Where the time delay ( `200` ) is in milliseconds. The green bars are placed in the Page Editor based on the comments that the frontend places in the HTML using one of the [frontend libraries](../spa-development/magnolia-front-end-sdk/#_supported_framework_versions) . It is **imperative** to have the HTML comments rendered. • Make sure the SPA fetches template annotations properly. It could be that it’s unaware it’s in the authoring context. • Make sure the call that the SPA makes can be run in incognito mode in your browser. Potentially, some security settings are preventing SPA from fetching template annotations. Check the console log • In your code, go to where you fetch the `template-annotations` . • Check the console log to ensure it’s working properly. `if (I_AM_INSIDE_MAGNOLIA) { (1) console.log('Hooray, I am here.') (2) console.log('I am trying to fetch:', 'MAGNOLIA/.rest/template-annotations/v1' + PATH_TO_NODE) (2) const templateAnnotationsRes = await fetch( 'MAGNOLIA/.rest/template-annotations/v1' + PATH_TO_NODE ); ... console.log('RESPONSE', templateAnnotations) }` ** **1** If the code runs successfully inside the `if` statement, then it is running in the correct context for the Pages app. ** **2** Print something along these lines to ensure the console log outputs the statement. This checks the correct URL is being used and you’re fetching from the correct Magnolia instance and page. ** If the response is okay, you should get the mappings for your HTML comments. [1](#_footnoteref_1) . A race condition is a situation when several processes or threads are attempting to access the same resource. | ** **1** | Where the time delay ( `200` ) is in milliseconds. | ** **1** | If the code runs successfully inside the `if` statement, then it is running in the correct context for the Pages app. | ** **2** | Print something along these lines to ensure the console log outputs the statement. This checks the correct URL is being used and you’re fetching from the correct Magnolia instance and page. |
+| ** **1** | Where the time delay ( `200` ) is in milliseconds. |
+| ** **1** | If the code runs successfully inside the `if` statement, then it is running in the correct context for the Pages app. |
+| ** **2** | Print something along these lines to ensure the console log outputs the statement. This checks the correct URL is being used and you’re fetching from the correct Magnolia instance and page. |
+
+## [](#_how_to_make_your_spa_editable)How to Make your SPA Editable
+
+> **Tip:** Check out the Hello Magnolia - SPA tutorial to really get hands-on.
+
+Start by browsing the [`minimal-headless-spa-demos`]({spa-headless-demo-url}) repository. There you can see a well organized, complete working example.
+
+### [](#_step_by_step)Step by step
+
+-   [Page](#_page)
+
+-   [Area](#_area)
+
+-   [Components](#_components)
+
+
+#### [](#_page)Page
+
+1.  Create a SPA component to represent your page. Use a `prop`, like `title`.
+
+    [`/spa/react-minimal/src/pages/Basic.js`](link:{spa-headless-demo-url})
+
+2.  Load the content from the delivery endpoint for the the current route.
+
+    [`/spa/react-minimal/src/helpers/PageLoader.js`](link:{spa-headless-demo-url})
+
+3.  Load the template information from the `templateDefinition` endpoint, based on the templateID of the route page.
+
+    [`/spa/react-minimal/src/helpers/PageLoader.js`](link:{spa-headless-demo-url})
+
+4.  Create a component mapping configuration.
+
+    [`/spa/react-minimal/src/magnolia.config.js`](link:{spa-headless-demo-url})
+
+5.  Use the `Page` component from the Magnolia JS library to instantiate a frontend component. based on the templateId of the magnolia page, and the mapping.
+
+    [`/spa/react-minimal/src/helpers/PageLoader.js`](link:{spa-headless-demo-url})
+
+6.  Deploy your SPA. Typically on its own server.
+
+    *You could optionally host your SPA in a Magnolia light module like so: `/magnolia/light-modules/react-minimal-lm/webresources build`.*
+
+7.  Create a Page Template definition and point it to the SPA URL. Add a dialog with a `title` property.
+
+    [`/magnolia/light-modules/react-minimal-lm/templates/pages/basic.yaml`](link:{spa-headless-demo-url})
+
+8.  Run the page app. Edit the title.
+
+
+#### [](#_area)Area
+
+1.  Add areas to page template definition to enable author managed components
+
+2.  Add Area components for the same areas to the frontend page component.
+
+
+#### [](#_components)Components
+
+1.  Create frontend components as usual.
+
+    [`/magnolia/light-modules/spa-lm/dialogs/components/headline.yaml`](link:{spa-headless-demo-url})
+
+2.  Create Magnolia components for each frontend component. (Just a definition and dialog, no template script needed!) Dialog properties will be available in your frontend component as `props`.
+
+    [`/magnolia/light-modules/spa-lm/templates/components/headline.yaml`](link:{spa-headless-demo-url}) [`/magnolia/light-modules/spa-lm/dialogs/components/headline.yaml`](link:{spa-headless-demo-url})
+
+3.  Add the component to your mapping configuration file.
+
+4.  Repeat and prosper!

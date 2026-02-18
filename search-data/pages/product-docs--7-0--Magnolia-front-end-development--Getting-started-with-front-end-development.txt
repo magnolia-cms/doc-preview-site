@@ -29,33 +29,11 @@ To check the version of your node installation, run the following command in a s
 
 node -v
 
-## [](#_get_java)Get Java
-
-Magnolia needs at least a **Java Runtime Environment (JRE)** to run. Check if there’s a version of Java already installed on your computer by opening the terminal or command prompt and typing `java -version`. If the system reports a version number, Java is installed on your computer.
-
-> **Important:** See Certified stack to confirm that the version installed is supported.For local development, use 17.0.12-zulu. Example installation using SDKMAN:sdk install java 17.0.12-zulu
-
--   Windows
-
--   Mac
-
--   Linux
-
-
-On Windows, you need a Java SE *Development* Kit (JDK). The Java *Runtime* Environment (JRE) is not enough because the Tomcat application server does not recognize it.
-
--   JRE is for users who run Java programs on their computers.
-
--   JDK is for developers who write Java-based applications.
-
-
-[Download](http://www.oracle.com/technetwork/java/javase/downloads/index.html) and install JDK. By default, JDK is installed at `C:\Program Files\Java\jdk-<version>\`.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 27.2727%;"> <col style="width: 72.7273%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top"></th><th class="tableblock halign-left valign-top">Instructions</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Check for <code>JAVA_HOME</code></strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="olist arabic"><ol class="arabic"><li><p>Open the command prompt.</p></li><li><p>Type <code>set</code> and press <code>ENTER</code>.</p></li><li><p>Find <code>JAVA_HOME</code> in the command output and verify that the path points to your JDK installation directory, for example, <code>C:\Program Files\Java\jdk-&lt;version&gt;&gt;.xx</code>.</p></li><li><p>If <code>JAVA_HOME</code> is missing or it points to the wrong directory, see <strong>Set JAVA_HOME</strong>.</p></li></ol></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Set <code>JAVA_HOME</code></strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="olist arabic"><ol class="arabic"><li><p>Open the Command Prompt as an administrator.</p></li><li><p>Set the path for <code>JAVA_HOME</code>.</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-sh hljs" data-lang="sh">setx /m JAVA_HOME "path\to\Java\jdk" <i class="conum" data-value="1"></i><b>(1)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Where <code>path\to\Java\jdk</code> is where your Java Development Kit is saved.</td></tr></tbody></table></div></li></ol></div><div class="paragraph"><p>The <code>set</code> command creates the <code>JAVA_HOME</code> environment variable and sets its value to the JDK directory. The command is executed when Magnolia starts.</p></div></div></td></tr></tbody></table></div>
-
-For Mac, you need to download or update to Java `21` or higher. After reviewing and agreeing to the terms of the license agreement, download the file, then double-click it to launch the installation wizard and follow the installation instructions.
-
-The installation directory varies from one Linux system to another. On Debian-based distributions, JREs or JDKs are usually installed in `/usr/lib/jvm/`.
+|  | Instructions |
+| --- | --- |
+| **Check for JAVA_HOME** | • Open the command prompt. • Type `set` and press `ENTER` . • Find `JAVA_HOME` in the command output and verify that the path points to your JDK installation directory, for example, `C:\Program Files\Java\jdk-<version>>.xx` . • If `JAVA_HOME` is missing or it points to the wrong directory, see **Set JAVA_HOME** . |
+| **Set JAVA_HOME** | • Open the Command Prompt as an administrator. • Set the path for `JAVA_HOME` . `setx /m JAVA_HOME "path\to\Java\jdk" (1)` ** **1** Where `path\to\Java\jdk` is where your Java Development Kit is saved. The `set` command creates the `JAVA_HOME` environment variable and sets its value to the JDK directory. The command is executed when Magnolia starts. | ** **1** | Where `path\to\Java\jdk` is where your Java Development Kit is saved. |
+| ** **1** | Where `path\to\Java\jdk` is where your Java Development Kit is saved. |
 
 ## [](#_using_magnolia_cli)Using Magnolia CLI
 

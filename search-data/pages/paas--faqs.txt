@@ -207,7 +207,7 @@ For instructions on how to do this, see [Setup: Password manager key](../setup/#
 
 Expand for answer
 
-By default, thumbnails are disabled to ensure optimal performance in DX Cloud. Projects with a large volume of assets per folder can cause serious performance issues when thumbsnails are enabled. If you wish to turn thumbnails back on, you can do so by setting `thumbnails: true` in the [`dam.subApps.yaml` file](#dam-app:ROOT:developers/dam-app-jcr.adoc#_turning_image_thumbnails_off_in_the_asset_browser).
+By default, thumbnails are disabled to ensure optimal performance in DX Cloud. Projects with a large volume of assets per folder can cause serious performance issues when thumbsnails are enabled. If you wish to turn thumbnails back on, you can do so by setting `thumbnails: true` in the [`dam.subApps.yaml` file](../../dam-app/developers/dam-app-jcr/#_turning_image_thumbnails_off_in_the_asset_browser).
 
 For more details, see [Storing assets](../best-practices/storing-assets/).
 
@@ -225,7 +225,7 @@ Expand for answer
 
 Yes, you can have a dedicated custom error page per site by using Virtual URI mapping. However, you should always proceed with extra caution when using Virtual URI mapping.
 
-For more details, see [Virtual URI mapping](../../product-docs/7.0/Administration/URI-mapping/Virtual-URI-mapping/).
+For more details, see [Virtual URI mapping](../../product-docs/RNs-6-4-3/Administration/URI-mapping/Virtual-URI-mapping/).
 
 1.  In your configuration at `server/filters/cms/bypasses/`, remove the **docroot** bypass.
 
@@ -267,7 +267,7 @@ Example
 
 |     |     |
 | --- | --- |
-| **1** | To do this, ideally, you should be using Helm `1.17.2` or `1.17.1`. |
+| **1** | To do this, ideally, you should be using Helm `{helm-chart-version}` or `{helm-chart-version-1}`. |
 
 ## [](#_domains_and_certificates)Domains and Certificates
 
@@ -353,7 +353,7 @@ However, we recommend that no more than **50** authors work in Admincentral conc
 
 Expand for answer
 
-The latest helm chart version is `1.17.2`.
+The latest helm chart version is `{helm-chart-version}`.
 
 > **Tip:** Check out the Magnolia helm repo for more details.
 
@@ -375,15 +375,15 @@ You upgrade your version in the `.gitlab-ci.yaml` file.
 
 ```yaml
 ...
-helm upgrade prod mironet magnolia-helm --version 1.17.2 -f values_new.yml -n prod
+helm upgrade prod mironet magnolia-helm --version {helm-chart-version} -f values_new.yml -n prod
 ...
 ```
 
-The latest helm chart version is `1.17.2`.
+The latest helm chart version is `{helm-chart-version}`.
 
 > **Tip:** Check out the Magnolia helm repo for more details.
 
-For more on Magnolia 6.3, see [Magnolia 6.3](#6.3@product-docs:ROOT:index.adoc).
+For more on Magnolia 6.3, see [Magnolia 6.3](../../product-docs/6.3/).
 
 ### [](#_how_do_i_update_the_helm_chart_version)How do I update the Helm chart version?
 
@@ -402,12 +402,12 @@ Specify the desired Helm chart version here. This shows the latest version.
 
 ```yaml
 variables:
-  HELM_CHART_VERSION: 1.17.2
+  HELM_CHART_VERSION: {helm-chart-version}
 ```
 
 ```yaml
 ...
-helm upgrade prod mironet magnolia-helm --version 1.17.2 -f values_new.yml -n prod
+helm upgrade prod mironet magnolia-helm --version {helm-chart-version} -f values_new.yml -n prod
 ...
 ```
 
@@ -509,15 +509,7 @@ Your license key is entered in the `values.yml` file during onboarding for DX Cl
 
 However, you may need to update your license at some point. For example, when your license expires, you need to update to a license that isn’t expired. In this case, you should update your license key directly within Magnolia instead of the `values.yml` file.
 
-For steps on how to do this, see [Updating a license key](../../product-docs/7.0/Administration/License/#_updating_a_license_key).
-
-### [](#_do_i_need_to_set_the_password_manager_key_location)Do I need to set the password manager key location?
-
-Expand for answer
-
-No, you should not set the password manager key location. Unlike with Magnolia DX Core, this value is set automatically for you. Entering a value for this property may override the default value and cause issues.
-
-For more details on this property and general configuration management, see [Configuration management](../../product-docs/7.0/Administration/Architecture/Configuration-management/#_properties).
+For steps on how to do this, see [Updating a license key](../../product-docs/RNs-6-4-3/Administration/License/#_updating_a_license_key).
 
 ## [](#_managing_paas)Managing PaaS
 
@@ -654,241 +646,24 @@ The re-creation of the key pair must be done on the author instance.
 
 2.  Open the **Publishing Tools** app.
 
-    ![click publishing tools app](../../product-docs/7.0/_images/admincentral/administration/click-publishing-tools-app.jpg)
+    ![click publishing tools app](../../product-docs/RNs-6-4-3/_images/admincentral/administration/click-publishing-tools-app.jpg)
 
 3.  Click on **Generate new key**.
 
-    ![publishing tools app click generate new key](../../product-docs/7.0/_images/admincentral/administration/publishing-tools-app_click-generate-new-key.jpg)
+    ![publishing tools app click generate new key](../../product-docs/RNs-6-4-3/_images/admincentral/administration/publishing-tools-app_click-generate-new-key.jpg)
 
     The system creates both keys and stores them in the `magnolia-activation-keypair.properties` file. In addition, the system stores the public key in the author system’s JCR.
 
 
 When using DX Cloud, the keys are automatically distributed to the public instance with the help of a dedicated [sidecar](../architecture/#_kubernetes_and_sidecars).
 
-## [](#_setup_and_deployment)Setup and deployment
-
-### [](#_what_is_the_minimum_java_version_needed_for_paas)What is the minimum Java version needed for PaaS?
-
-Expand for answer
-
-Currently, the minimum supported Java version for DX Cloud is **Java 11 (LTS)**.
-
-> **Tip:** For more details, see Set up DX Cloud.
-
-### [](#_how_do_i_add_a_public_instance)How do I add a public instance?
-
-Expand for answer
-
-You must scale up or down by changing the `replicas` value.
-
-You can add a public instance in the [`values.yml` file](../deployment/helm-values/#replicas) or in the [Cockpit](../cockpit/sections/environments/#_manage_your_environments).
-
-### [](#_what_is_the_base_image_used_for_magnolia_as_part_of_paas)What is the base image used for Magnolia as part of PaaS?
-
-Expand for answer
-
-The recommended base image is:
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 40%;"> <col style="width: 10%;"> <col style="width: 20%;"> <col style="width: 30%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Key</th><th class="tableblock halign-left valign-top">Type</th><th class="tableblock halign-left valign-top">Default</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>image.tomcat.tag</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>string</code></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>"10.1-jre17-temurin"</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Tomcat repo tag.</p></div><div class="ulist"><ul><li><p>For Magnolia 6.4 and later, you should use at least <code>10.1-jre17-temurin</code>.</p></li><li><p>For Magnolia 6.3 and earlier, you should use <code>9.0-jre11-temurin"</code>.</p></li></ul></div></div></td></tr></tbody></table></div>
-
-This is defined in the `image.tomcat.tag` helm value and is typically handled during onboarding and project setup. For more details on the topic, see [Helm values](../deployment/helm-values/).
-
-### [](#_can_i_deploy_anything_i_want_with_dx_cloud)Can I deploy anything I want with DX Cloud?
-
-Expand for answer
-
-No.
-
-DX Cloud is a solution designed to deploy Magnolia only. In some instances, headless frontends are also deployed as part of DX Cloud.
-
-### [](#_can_i_have_a_custom_deployment_script_or_setup)Can I have a custom deployment script or setup?
-
-Expand for answer
-
-We don’t allow custom helm charts or operators for DX Cloud.
-
-Only the official DX Cloud helm chart is used for deployments. Certain properties in the `values.yml` file which is created during setup can be configured. However, only those properties available in the official DX Cloud Helm chart are available at all.
-
-The latest helm chart version is `1.17.2`.
-
-> **Tip:** Check out the Magnolia helm repo for more details.
-
-### [](#_can_i_have_standby_clusters)Can I have standby clusters?
-
-Expand for answer
-
-Yes, you can.
-
-For more on this topic, see [Multicluster environments](../multicluster/).
-
-### [](#_can_i_have_clusters_in_different_regions)Can I have clusters in different regions?
-
-Expand for answer
-
-Yes, you can.
-
-For more on this topic, see [Multicluster environments](../multicluster/).
-
-### [](#_what_is_the_latest_maven_archetype_version)What is the latest Maven archetype version?
-
-Expand for answer
-
-The latest maven archetype version for the cloud bundle is `1.10`.
-
-> **Tip:** For more, see Create a project using the Maven archetype.
-
-### [](#_how_do_i_ensure_database_scaling)How do I ensure database scaling?
-
-Expand for answer
-
-By default, your database and application will scale if you are performing the action in the [Cockpit](../cockpit/sections/environments/#_manage_your_environments).
-
-However, if you notice the database isn’t scaling, check your helm `values.yaml` file to ensure the following are set to `true`:
-
--   `magnoliaPublic.db.backup.enabled`
-
--   `magnoliaPublic.db.contentsync.enabled`
-
-
-For more, see [Helm Values reference](../deployment/helm-values/#magnoliaPublic.db.contentsync.enabled).
-
-### [](#_why_is_my_application_slow_to_start)Why is my application slow to start?
-
-Expand for answer
-
-Of course, there could be a number of a reasons why your DX Cloud application is slow to start.
-
-It could be that you need to enable `startupProbe` in your `values.yml` file to accommodate a large amount of storage or if you’re migrating to DX Cloud.
-
-This applies to both `magnoliaAuthor` and `magnoliaPublic`.
-
-After indexing is complete, you should revert the `startupProbe` to the default settings.
-
-```yaml
-  startupProbe:
-    enabled: True
-    failureThreshold: 720 (1)
-    periodSeconds: 10 (2)
-```
-
-|     |     |
-| --- | --- |
-| **1** | Increase `failureThreshold` (number of attempts before failing) to accommodate indexing time for large storage or migrating customers in order to avoid indexing failures. |
-| **2** | `periodSeconds` defines the interval (in seconds) between each probe check.<br><br>In this example, the probe is checked every 10 seconds 720 times, meaning 2 hours (7200 seconds) before the application officially fails. |
-
-For more on this topic, see [Helm values](../deployment/helm-values/).
-
-## [](#_security)Security
-
-### [](#_can_i_restrict_access_to_my_site_through_the_cockpit)Can I restrict access to my site through the Cockpit?
-
-Expand for answer
-
-You can restrict access to your site in a couple of different ways:
-
--   **Access control**: restricts certain paths on your site.
-
--   **Geofencing**: blocks visitors from defined countries from entering your site.
-
-
-For more details, see [CDN settings](../cockpit/sections/content-delivery/#_cdn_settings).
-
-### [](#_is_two_factor_authentication_2fa_used_to_access_the_cockpit)Is Two-Factor Authentication (2FA) used to access the Cockpit?
-
-Expand for answer
-
-Yes, 2FA is used for all customer and partner accounts.
-
-### [](#_how_do_you_prevent_ddos_attacks)How do you prevent DDoS attacks?
-
-Expand for answer
-
-To prevent and mitigate [DDoS attacks](https://www.fastly.com/products/ddos-mitigation), DX Cloud grants all customers (using Fastly as their CDN):
-
--   Access to origin shielding
-
-    Origin shielding is designed to reduce the load on an origin server by centralizing cache fill operations to a limited set of CDN locations. For more details, see [Shielding](https://www.fastly.com/documentation/guides/concepts/shielding/).
-
--   Automatic resistance to availability attacks
-
--   Access to Fastly cache IP space
-
--   Custom DDoS filter creation abilities
-
-
-> **Tip:** Learn more at Fastly’s Always-on DDos Mitigation page.
-
-**What if I’m not using Fastly?**
-
-1.  Go to https://ipinfo.io/www.xxx.yyy.zzz (where `www.xxx.yyy.zzz` is the suspicious IP).
-
-    ![ipinfo report abuse](../_images/security/ddos/ipinfo-report-abuse.jpg)
-
-2.  Update your [values.yml](../deployment/webapp_deployment/#_the_values_yml_file) file with the following snippet:
-
-    ```yaml
-    kind: Ingress (1)
-    metadata:
-      annotations:
-        nginx.ingress.kubernetes.io/server-snippet: deny www.xxx.yyy.zzz; (2)
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | Specifies the kind `Ingress`. |
-    | **2** | Denies the specific IP address. |
-
-    > **Caution:** Only use the `server-snippet` exactly as instructed. Otherwise, you may cause issues with your PaaS deployment.
-
-
-> **Tip:** For more details, see Preventing DDoS attacks.
-
-### [](#_what_happens_if_the_waf_detects_attacks)What happens if the WAF detects attacks?
-
-Expand for answer
-
-**WAF Intro**
-
-Web Application Firewalls, or WAFs, protect web applications from common malicious attacks such as cross-site-scripting (XSS) and SQL injections. Essentially, they act as a type of wall or shield between your web application and the internet. If you have your own CDN for your project, you’ll likely have your own WAF.
-
-If you choose to go with the default CDN for DX Cloud, you’ll be protected with the [Fastly](https://www.fastly.com/) WAF.
-
-The Fastly WAF inspects the web traffic at the HTTP application layer by looking at all HTTP and HTTPS requests (both header and body included). This can be configured specifically for your deployment.
-
-**What happens if attacks are detected?**
-
-If the WAF detects any of the `owasp` or `application-multi` attacks, it automatically blocks the request. If they detect there is an increased volume of requests, Fastly notifies us at Magnolia, and we perform a security review.
-
-If needed, we send the logs to you to check if the requests have come form the same `IP` and if the requests are legitimate or not. If you need to block the IP, you can do it through the [cockpit](../cockpit/sections/security/).
-
-We encourage you to use the cockpit. However, if you feel you need to, you can request our [help](mailto:https://magnolia-cms.atlassian.net/servicedesk/customer/portal/13) directly with the issue.
-
-See [Web Application Firewall (WAF)](../security/waf/) for more details.
-
-### [](#_what_type_of_security_do_we_have_for_rest_requests)What type of security do we have for REST requests?
-
-Expand for answer
-
-There are three levels of control when REST requests are issued:
-
--   Web access
-
--   JCR access
-
--   Command-level access
-
-
-Permissions to issue REST requests are controlled using Magnolia’s standard [role-based security mechanism](../../product-docs/7.0/Administration/IAM/Roles-and-access-control-lists/).
-
-The `rest-anonymous` role is handled differently in DX Cloud than in on-prem Magnolia.
-
-> **Warning:** Any change to the anonymous user may cause Cockpit functionality to break.
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `image.tomcat.tag` | `string` | `"10.1-jre17-temurin"` | Tomcat repo tag. • For Magnolia 6.4 and later, you should use at least `10.1-jre17-temurin` . • For Magnolia 6.3 and earlier, you should use `9.0-jre11-temurin"` . |
 
 | Permission | Path |
 | --- | --- |
-| Requests within PaaS all require a valid JSON Web Token (JWT) which is only available to the Magnolia Bootstrap sidecar. |     |
+| Requests within PaaS all require a valid JSON Web Token (JWT) which is only available to the Magnolia Bootstrap sidecar. |
 | Get & Post | `/.rest/configuration/*` |
 | Get & Post | `/.rest/cloud/*` |
 | Get | `/.rest/status` |
-
-For more details on rest security generally for Magnolia, see [REST security](../../product-docs/7.0/Modules/List-of-modules/REST-module/REST-security/).

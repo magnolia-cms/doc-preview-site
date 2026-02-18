@@ -1,0 +1,97 @@
+---
+title: "Content view definition"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/App-configuration/Content-view-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > App configuration > Content view definition
+---
+
+# Content view definition
+
+Magnolia provides view implementations for JCR data that allow tree, list and thumbnail views. A content view must implement the `info.magnolia.ui.contentapp.browser.ContentView` interface.
+
+> **Note:** This content view definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.contentapp.configuration.ContentViewDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+contentViews:
+  - name: tree
+    dropConstraint:
+      $type: jcrDropConstraint
+      primaryNodeType: mgnl:contact
+    $type: treeView
+    columns: &columns (1)
+      - name: jcrName
+        label: name
+        $type: componentColumn
+        editable: true
+        nodeTypeToComponent:
+          mgnl:contact:
+            icon: icon-people
+            showPath: true
+          mgnl:content:
+            icon: icon-folder
+            showPath: true
+        editor:
+          availability:
+            nodes: true
+            properties: true
+      - name: value
+        label: value
+        editable: true
+        editor:
+          availability:
+            nodes: false
+            properties: true
+      - name: jcrPath
+        label: path
+        $type: pathColumn
+      - name: status
+        label: status
+        $type: statusColumn
+      - name: mgnl:created
+        $type: dateColumn
+        label: date
+        editable: false
+        editor:
+          availability:
+            nodeTypes:
+              - mgnl:contact
+            nodes: true
+            properties: false
+          field:
+            $type: textField
+            converterClass: com.vaadin.data.converter.StringToDateConverter
+  - name: list
+    columns: *columns (2)
+    $type: listView
+  - $type: thumbnailView
+```
+
+|     |     |
+| --- | --- |
+| **1** | `&columns` - a YAML anchor that allows you to [reuse](../../../Developing/YAML/#_reusing_an_existing_definition_within_the_same_file) the configuration elsewhere through a similarly formed YAML alias. |
+| **2** | `*columns` - the YAML alias marking the position where the configuration should be reused. |
+
+| Property | Description |
+| --- | --- |
+| `class` | **required** (unless `$type` is used) Class extending info.magnolia.ui.contentapp.configuration.ContentViewDefinition to define the type of view. Set the value to the fully qualified class name. See [View types](#_view_types) for possible values. |
+| `$type` | You can use this as a shortcut for `class` if the definition class is annotated with `info.magnolia.ui.ViewType` . The proper value is defined by the annotation. Example class annotation `@ViewType("treeView") public class TreeViewDefinition<T> implements GridViewDefinition<T> { ... }` To use the `$type` property in YAML, see [Example definition](#_example_definition) . |
+| `columns` | **required** (used only in tree and list views) See [Column definition](../Column-definition/) . |
+| `dropConstraint` | **optional** (used only in tree and list views) By default, there’s no drag-and-drop capability. [](#jcrDropConstraint-note) Default caveat : When an app is created with the `!content-type` directive, a `jcrDropConstraint` is provided by default. Defines acceptance criteria for move operations. By restricting the nodes that a user can move, you can enforce a certain node hierarchy. For example, you might want to allow moving content under folders but not folders under content. If no value is defined, the view will have no drag-and-drop capability. Possible values are: • `alwaysTrueDropConstraint` : basic implementation of `DropConstraint` that always returns `true` . • `jcrDropConstraint` : `DropConstraint` for JCR content apps that returns `true` based on the defined `primaryNodeType` . The property `mode` indicates potential locations for drag-and-drop targets relative to nodes and the grid. If no specific value is defined, the `mode: ON_TOP_OR_BETWEEN` will be used as default. Possible values are: `ON_TOP_OR_BETWEEN` , `BETWEEN` , `ON_TOP` , and `ON_GRID` . Example definition `dropConstraint: $type: alwaysTrueDropConstraint primaryNodeType: mgnl:contact mode: ON_TOP_OR_BETWEEN` When you write your own class, implement the `info.magnolia.ui.contentapp.browser.drop.DropConstraint` interface. ** You can disable drag-and-drop by using a decoration: `subApps: browser: workbench: contentViews: tree: dropConstraint: !override` | ** | You can disable drag-and-drop by using a decoration: `subApps: browser: workbench: contentViews: tree: dropConstraint: !override` |
+| ** | You can disable drag-and-drop by using a decoration: `subApps: browser: workbench: contentViews: tree: dropConstraint: !override` |
+| `name` | **optional** , *default is tree, list or thumbnail depending on view type* Name of the content view. |
+| `icon` | **optional** , *default is icon-view-tree, icon-view-list or icon-view-thumbnails depending on view type* CSS class that identifies an icon used for the view tab. For available names, see [Icons](../../Developing-an-app/General-aspects/Designing-an-app/Icons/) . |
+| `readOnly` | **optional** , *default is false* Defines whether the workbench is editable inline. You can double-click a cell to edit its value. ** You cannot define [defaultAction](../Action-bar-definition/) and use inline editing at the same time. | ** | You cannot define [defaultAction](../Action-bar-definition/) and use inline editing at the same time. |
+| ** | You cannot define [defaultAction](../Action-bar-definition/) and use inline editing at the same time. |
+| `multiSelect` | **optional** , *default is true for list and thumbnail views* When `true` , items are rendered as checkboxes. When `false` , items are rendered as radio buttons. |
+| `multiSelectByRowClick` | **optional** , *default is false* When `true` , multiple items can be selected by clicking rows rather than checkboxes. For this to work, `multiSelect` must be set to `true` . |
+| `scrollToSelectedItem` | **optional** (used only in tree and list views), *default is true for tree view or false for list view* Defines whether the selected item is scrolled into view when opening the content app. ** Setting `scrollToSelectedItem` to `true` for the list view may lead to performance issues with large data sets. | ** | Setting `scrollToSelectedItem` to `true` for the list view may lead to performance issues with large data sets. |
+| ** | Setting `scrollToSelectedItem` to `true` for the list view may lead to performance issues with large data sets. |
+
+| $type | class |
+| --- | --- |
+| `listView` | `info.magnolia.ui.contentapp.configuration.ListViewDefinition` |
+| `thumbnailView` | `info.magnolia.ui.contentapp.configuration.ThumbnailViewDefinition` |
+| `treeView` | `info.magnolia.ui.contentapp.configuration.TreeViewDefinition` |

@@ -14,28 +14,11 @@ A `CustomerClusterFilesystemFillingUp` alert is firing. It indicates a filesyste
 
 > **Note:** CustomerClusterFilesystemFillingUp alerts are sent to subscribers via email.
 
-## [](#_observations)Observations
-
-Here are the details on the alerts:
-
-### [](#_alert_customerclusterfilesystemfillingup)Alert: CustomerClusterFilesystemFillingUp
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>predict_linear(node_filesystem_avail_bytes[24h], 8 * 3600) &lt; 0 and instance:node_filesystem_avail:ratio &lt; 0.3</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>30</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>instance</code></p></li><li><p><code>device</code></p></li><li><p><code>mountpoint</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_determine_the_cluster_node_and_filesystem_filling_up)Determine the cluster node and filesystem filling up
-
-The alert contains:
-
--   the cluster name/id (the `k8s_cluster_name` and `k8s_cluster_id` labels)
-
--   the cluster node (the instance label)
-
--   the device (the device label)
-
--   the filesystem (the mountpoint label)
-
-
-> **Important:** It’s important to note the values of these labels.
+| **Expression** | `predict_linear(node_filesystem_avail_bytes[24h], 8 * 3600) < 0 and instance:node_filesystem_avail:ratio < 0.3` |
+| --- | --- |
+| **Delay** | `30` minutes |
+| **Labels** | `team: customer` |
+| **Annotations** | • `summary` • `description` • `tenant` • `cluster_id` • `cluster_name` • `instance` • `device` • `mountpoint` |
 
 ## [](#_solutions)Solutions
 

@@ -55,7 +55,7 @@ To set up a new test:
 
 
 
-![ABN test sliders](../../../../_images/abntest/ab-testing-setup-sliders.png)
+![ABN test sliders](../../../../../RNs-6-4-3/_images/abntest/ab-testing-setup-sliders.png)
 
 > **Note:** When an original page is being used in a test, the status of the test in displayed in the Pages app. If necessary, you can continue working on the original page while the test is running. When the test completes and you must decide which variant to use, Magnolia informs you if the original has changed since the test began.
 
@@ -107,7 +107,7 @@ To select and define the different variants and click targets involved in your t
 
 6.  Select your variant again and click **Add Click target**.
 
-    ![Add click target](../../../../_images/abntest/ab-testing-add-click-target.png)
+    ![Add click target](../../../../../RNs-6-4-3/_images/abntest/ab-testing-add-click-target.png)
 
 7.  Use the **Open page** button to select a click target on a page.
 
@@ -116,7 +116,7 @@ To select and define the different variants and click targets involved in your t
 
 In this example, an additional sentence has been added to variant B compared to the original variant A:
 
-![Variant A](../../../../_images/abntest/ab-testing-variant-a.png) ![Variant B](../../../../_images/abntest/ab-testing-variant-b.png)
+![Variant A](../../../../../RNs-6-4-3/_images/abntest/ab-testing-variant-a.png) ![Variant B](../../../../../RNs-6-4-3/_images/abntest/ab-testing-variant-b.png)
 
 Once you have created your variants and selected the click targets, move on to the **Audience & Allocation** tab.
 
@@ -126,7 +126,7 @@ In the **Audience & Allocation** tab, you select your targeted [segments](../../
 
 You also allocate how much site traffic is dedicated to the variants by moving the slider to your desired traffic percentage.
 
-![Audience and allocation tab](../../../../_images/abntest/ab-testing-audience.png)
+![Audience and allocation tab](../../../../../RNs-6-4-3/_images/abntest/ab-testing-audience.png)
 
 > **Warning:** Segments are not locked nor copied when used in a test. The effect of deleting or modifying a segment that is actively being used in a test is not defined. We recommend you create dedicated segments for each test.
 
@@ -145,53 +145,18 @@ You can calculate the estimated run time (based on estimated site visits) in the
     The estimated run time is displayed.
 
 
-![Calculated estimated run time](../../../../_images/abntest/ab-testing-runtime-calculate.png)
+![Calculated estimated run time](../../../../../RNs-6-4-3/_images/abntest/ab-testing-runtime-calculate.png)
 
 If the estimated run time is `unknown`, it is because the estimate is outside the configured threshold. This can be configured in the `config.yaml` file under resources. See the **Configuring** section on the [A/B/n Testing module](../ABn-testing-module/) page for more details.
 
-## [](#_starting_a_test)Starting a test
-
-After you have selected your audience and allocation, start the test with the **Start test** button.
-
-You can start a test immediately or schedule it to start later.
-
-Once you start a test, you can no longer edit it.
-
-> **Note:** The scheduled times depend on the time zone set in your user preferences.
-
-After starting a test, the test runs until you complete it yourself, or until it has reached significant results.
-
-![Start test button](../../../../_images/abntest/ab-testing-start-test.png)
-
-### [](#_test_status)Test status
-
-Once you have finished setting up your test and started running it, you can see its status in the A/B/n Testing app **Status** column.
-
-> **Tip:** The test status is also displayed in the Pages app A/B/n test status column next to the original page selected.
-
- StatusDescription
-
-Not started
-
-Your test has been created but not started. It may still require some setup.
-
-Running
-
-Your test is currently running. An estimate of the remaining time is displayed. Once a test is started, you can no longer edit it.
-
-Paused
-
-You have paused your test.
-
-Aborted
-
-You have cancelled your test.
-
-> **Warning:** Test data is deleted when the test is aborted.
-
-Completed
-
-You completed your test, either manually or because you reached a significant result.
+| Status | Description |
+| --- | --- |
+| Not started | Your test has been created but not started. It may still require some setup. |
+| Running | Your test is currently running. An estimate of the remaining time is displayed. Once a test is started, you can no longer edit it. |
+| Paused | You have paused your test. |
+| Aborted | You have cancelled your test. ** Test data is deleted when the test is aborted. | ** | Test data is deleted when the test is aborted. |
+| ** | Test data is deleted when the test is aborted. |
+| Completed | You completed your test, either manually or because you reached a significant result. |
 
 ## [](#_viewing_results_and_completing_tests)Viewing results and completing tests
 
@@ -209,7 +174,7 @@ When significant results are reached, a green icon appears next to the Status of
 
 To see the results, click the results icon for your test.
 
-![Result icon highlighted](../../../../_images/abntest/ab-testing-significant-results-available.png)
+![Result icon highlighted](../../../../../RNs-6-4-3/_images/abntest/ab-testing-significant-results-available.png)
 
 ### [](#_completing_the_test)Completing the test
 
@@ -228,7 +193,7 @@ To see the results, click the results icon for your test.
 
 If significant results have not been reached based on the configured base conversion, MDE, and confidence level [settings](#_basic_setup), no results will be available.
 
-![Complete test dialog](../../../../_images/abntest/ab-testing-complete-test.png)
+![Complete test dialog](../../../../../RNs-6-4-3/_images/abntest/ab-testing-complete-test.png)
 
 If the original page selected in the test has been edited while the test was running, a message is displayed in the Complete test dialog.
 
@@ -248,16 +213,16 @@ You access your results either in:
 -   The **Results** tab in your test.
 
 
-![Results tab](../../../../_images/abntest/ab-testing-results-tab.png)
+![Results tab](../../../../../RNs-6-4-3/_images/abntest/ab-testing-results-tab.png)
 
 -   The results icon in the **All tests** page.
 
 
-![Results icon](../../../../_images/abntest/ab-testing-significant-results-available.png)
+![Results icon](../../../../../RNs-6-4-3/_images/abntest/ab-testing-significant-results-available.png)
 
 The charts provide an overview of the metrics related to your test.
 
-![Test results](../../../../_images/abntest/ab-testing-example-results.png)
+![Test results](../../../../../RNs-6-4-3/_images/abntest/ab-testing-example-results.png)
 
 Related topics
 

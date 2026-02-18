@@ -1,0 +1,90 @@
+---
+title: "Machine probes"
+url: https://docs.magnolia-cms.com/instrumentation/probes/machine-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > Machine probes
+---
+
+# Machine probes
+
+[Administration](../../../product-docs/RNs-6-4-3/use-cases/administration/) [Tier 1](../../../incubator-modules/incubator-module-list/#_tier_1_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/instrumentation) [INSTRUMENT](https://magnolia-cms.atlassian.net/browse/INSTRUMENT) [Magnolia 6.4](../../../product-docs/RNs-6-4-3/) compatible
+
+Machine probes can measure system usage metrics, including:
+
+-   available processors
+
+-   system load average
+
+-   committed virtual memory size
+
+-   total swap space size
+
+-   free swap space size
+
+-   JVM process CPU time used
+
+-   free physical memory size
+
+-   total physical memory size
+
+-   system CPU load
+
+-   process CPU load
+
+-   number of open file descriptors
+
+-   maximum number of file descriptors
+
+
+With these metrics, you can get some idea how the machine that is running Magnolia is doing. These metrics depend on what JVM is running: if you are using a Hotspt-based JVM or not:
+
+Hotspot JVM
+
+all metrics are available.
+
+non-Hotspot JVM
+
+only available processors and system load average can be measured.
+
+> **Note:** You can still configure and collect all metrics in Magnolia running on a non-Hotspot JVM, however, the measured values for non-supported metrics will be -1.
+
+## [](#_collecting_machine_metrics)Collecting machine metrics
+
+You have two options for collecting machine usage metrics:
+
+Use OSProbe (`info.magnolia.services.instrumentation.probes.environment.OSProbe`) to collect machine metrics. OSProbe will create separate metrics for each system usage characteristic. OSProbe is configured as an instrumentation module probe and the metrics will be measured when Prometheus collects all metrics from Magnolia.
+
+Use OSProbeCommand (`info.magnolia.services.instrumentation.probes.commands.OSProbeCommand`) to collect metrics. OSProbeCommand is a Magnolia command that collects the configured metrics when executed. Executions of OSProbeCommand can be scheduled with the Scheduler Module. You can also execute the OSProbeCommand through the command REST endpoint, see the [REST module](../../../rest/). OSProbeCommand will store its measurements as a single metric with the metric labels identifying what was measured.
+
+Use OSProbeCommand when
+
+-   you want to measure machine more frequently or less frequently than the collection of metrics from Magnolia
+
+-   you want a single metric for all measurements
+
+-   you want to invoke the collection of machine metrics remotely
+
+
+Use OSProbe when
+
+-   you want separate metrics for each machine attribute
+
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.commands.OSProbeCommand` . | **** |
+| `name` | The probe name. ** The probe name is not used as the metric name. | ** | The probe name is not used as the metric name. | **** |
+| ** | The probe name is not used as the metric name. |
+| `metrics` | A list of metric names (info.magnolia.services.instrumentation.probes.environment.OSMetricName) to collect. ** Only the named metrics will be collected. The valid metric names are: • `AvailableProcessors` • `SystemLoadAverage` • `CommittedVirtualMemorySize` • `TotalSwapSpaceSize` • `FreeSwapSpaceSize` • `ProcessCpuTime` • `FreePhysicalMemorySize` • `TotalPhysicalMemorySize` • `SystemCpuLoad` • `ProcessCpuLoad` • `OpenFileDescriptorCount` • `MaxFileDescriptorCount` ** The named metric will be added as the value of the "metric" label in a measurement. | ** | Only the named metrics will be collected. | ** | The named metric will be added as the value of the "metric" label in a measurement. | **** |
+| ** | Only the named metrics will be collected. |
+| ** | The named metric will be added as the value of the "metric" label in a measurement. |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.commands.OSProbeCommand` . | **** |
+| `name` | The probe name. ** The probe name is not used as the metric name. | ** | The probe name is not used as the metric name. | **** |
+| ** | The probe name is not used as the metric name. |
+| `metrics` | A list of metric names (info.magnolia.services.instrumentation.probes.environment.OSMetricName) to collect. ** Only the named metrics will be collected. The valid metric names are: • `AvailableProcessors` • `SystemLoadAverage` • `CommittedVirtualMemorySize` • `TotalSwapSpaceSize` • `FreeSwapSpaceSize` • `ProcessCpuTime` • `FreePhysicalMemorySize` • `TotalPhysicalMemorySize` • `SystemCpuLoad` • `ProcessCpuLoad` • `OpenFileDescriptorCount` • `MaxFileDescriptorCount` ** The named metric will be added as the value of the "metric" label in a measurement. | ** | Only the named metrics will be collected. | ** | The named metric will be added as the value of the "metric" label in a measurement. | **** |
+| ** | Only the named metrics will be collected. |
+| ** | The named metric will be added as the value of the "metric" label in a measurement. |

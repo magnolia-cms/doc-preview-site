@@ -1,0 +1,116 @@
+---
+title: "Algolia Search Index feeder"
+url: https://docs.magnolia-cms.com/magnolia-search-index-feeder/algolia/
+category: Modules
+version: modules
+breadcrumb: Magnolia Search Index Feeder module > Algolia Search Index feeder
+---
+
+# Algolia Search Index feeder
+
+This is the Magnolia Algolia search indexing module. It allows you to feed magnolia managed content into an [Algolia](https://www.algolia.com/) index. The module is fully event driven. Therefore incremental updates are sent to the index on events like `publication` or `depublication`.
+
+## [](#_configuration)Configuration
+
+The Algolia indexer is based on magnolias [Commands API](../../product-docs/RNs-6-4-3/Developing/API/Commands-API/) utilizing the [Hooks API module](../../hooks-api/).
+
+Like the hooks module it allows us to register one workspace per [**config**](https://git.magnolia-cms.com/projects/INCUBATOR/repos/hooks-api/browse/hooks-api-core/src/main/java/info/magnolia/workflow/hooks/core/definition/ConfiguredTriggerDefinition.java).
+
+If multiple workspaces have be indexed then one dedicated yaml file per workspace is required.
+
+1.  To do so, provide a [light module](../../product-docs/RNs-6-4-3/Modules/Light-modules/) like this in your `magnolia.resources.dir`:
+
+    ```none
+    .
+    ├── addAlgoliaFeeders (1)
+    │ └── hooks (2)
+    │     ├── feedDamWorkspaceData.yaml
+    │     └── feedWebsiteWorkspaceData.yaml
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Root light module level. |
+    | **2** | Notice the second level the `hooks` directory is at within the light module. |
+
+2.  Configure each `hook` as follows:
+
+    ```yaml
+    class: info.magnolia.indexfeeder.command.AlgoliaSearchIndexFeederCommandDefinition (1)
+    description: Feeds the specified data below into the algolia search index.
+    catalog: algolia (2)
+    commandName: feedIndex (3)
+    asynchronous: false (4)
+    applicationID: "XXXXXXXXXX" (5)
+    apiKey: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" (6)
+    ...
+    trigger:
+      workspace: website (7)
+      actions: (8)
+        - PUBLISH
+        - UNPUBLISH
+    ...
+    indexName: example.com-company (9)
+    useOneIndexPerWorkspace: true (10)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | The heart of this module: The [SearchIndexFeederCommand](https://git.magnolia-cms.com/projects/SERVICES/repos/algolia-search-index-feeder/browse/src/main/java/info/magnolia/algolia/SearchIndexFeederCommand.java). |
+    | **2** | The same name as specified in the [bootstrap-file](https://git.magnolia-cms.com/projects/SERVICES/repos/algolia-search-index-feeder/browse/src/main/resources/mgnl-bootstrap/algolia-search-index-feeder/config.modules.algolia-search-index-feeder.yaml#6). |
+    | **3** | The same name as specified in the [bootstrap-file](https://git.magnolia-cms.com/projects/SERVICES/repos/algolia-search-index-feeder/browse/src/main/resources/mgnl-bootstrap/algolia-search-index-feeder/config.modules.algolia-search-index-feeder.yaml#8). |
+    | **4** | If this command needs to run asynchronously, the command above must be adapted to run its `Jcr-Stuff` via `MgnlContext.doInSystemContext()`. |
+    | **5** | Customize Your `applicationID` as shown in the url after your login to [Algolia](https://www.algolia.com/apps/YOUR_APPLICATION_ID/dashboard). |
+    | **6** | Customize Your Algolia `apiKey`. Get this value from [Algolia](https://www.algolia.com/account/api-keys/all?applicationId=YOUR_APPLICATION_ID). *We recommend that you use a custom API key rather than the default Admin API Key to perform the indexing process.* |
+    | **7** | Customize The name of the Magnolia workspace, which contains the data to be fed. |
+    | **8** | Here we specify the events when our command gets called. |
+    | **9** | Customize The `index-name` in Algolia. *This will be automatically created if absent.* |
+    | **10** | Customize If `true`, the `indexName` settings is suffixed with the `workspace`\-name using this naming scheme: `indexName + "_" + workspace`. |
+
+    Example
+
+    To apply that for the example above, `example.com-company_website` would be created in Algolia.
+
+    > **Note:** If you choose false, the indexName settings remains untouched, but the workspace name is used to prefix entries in Algolia to prevent name clashes.Algolia is using a special property objectID to identify index items.This is populated with the JCR node path (and prefixed with the workspace when useOneIndexPerWorkspace was set to `false`) to provide a better readability when it comes down to debugging the data.
+
+
+### [](#_specify_the_content_to_be_fed)Specify the content to be fed
+
+-   Wildcard approach
+
+-   Selective approach
+
+
+Example config:
+
+```yaml
+contentSelectionAttribute: "*"
+contentAttributesToPush:
+  "*":
+    - title
+    - description
+```
+
+> **Important:** Using this configuration approach, all content published in the specified workspace is pushed to algolia.
+
+Try to make sure you define properties which every content has in common. If the content lacks a specified property, it is [omitted](https://git.magnolia-cms.com/projects/SERVICES/repos/algolia-search-index-feeder/browse/src/main/java/info/magnolia/algolia/SearchIndexFeederCommand.java#107) in the payload of the push.
+
+Here you can filter out the specific data you wish to push into algolia. With the example configuration below, only pages of the website workspace based on the template `"mtk2:pages/basic"-template` will be considered for algolia feeding:
+
+Example config:
+
+```yaml
+contentSelectionAttribute: "mgnl:template"
+contentAttributesToPush:
+  "mtk2:pages/basic":
+    - title
+    - description
+```
+
+### [](#_limitations)Limitations
+
+Please keep in mind that records can’t go beyond a certain [size limit](https://support.algolia.com/hc/en-us/articles/4406981897617-Is-there-a-size-limit-for-my-index-records-/) in Algolia. This limit might depend on your plan. See the Algolia pricing page for more details. If you try to index a record that exceeds the limit, Algolia returns the Record is too big error.
+
+> **Note:** See also here for more details on limitations. The Algolia Search Index feeder module utilizes the algoliasearch-core 3.16.5 library.
+
+> **Tip:** According to the limits of your actual plan, you can limit the size of rich text-properties in Magnolia with a maxlength setting.

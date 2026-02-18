@@ -8,16 +8,12 @@ breadcrumb: DX Core > Modules > Content Translation Support module
 
 # Content Translation Support module
 
-[Content management](../../../use-cases/content-management/) Unbundled: Extension
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLCTS](https://magnolia-cms.atlassian.net/browse/MGNLCTS) |
-| Maven site | [Content Translation Support](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Ftranslation%2Fmagnolia-content-translation%2F4.0.0) |
-| Latest | 4.0.0 |
-
-The Content Translation Support module allows you to export and import content in translation-friendly [XLIFF](https://en.wikipedia.org/wiki/XLIFF), CSV and Excel formats. You can send a file to a translator and then import the translated content. The file includes context information and a link to the relevant content to make translation easier. The module comes with a [Content Translation app](#_content_translation_app) for managing page translation. Export formats are pluggable and can be extended to support a custom format.
+| Maven site | [Content Translation Support](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Ftranslation%2Fmagnolia-content-translation%2F{magnolia-content-translation-support-64}) |
+| Latest | {magnolia-content-translation-support-64} |
 
 ## [](#_module_artifacts_have_changed)Module artifacts have changed
 
@@ -33,13 +29,13 @@ See also the [Content Translation Extended module](../../../../../content-transl
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.translation</groupId>
   <artifactId>magnolia-content-translation</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-content-translation-support-64}</version> (1)
 </dependency>
 ```
 
@@ -51,7 +47,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.translation</groupId>
   <artifactId>magnolia-content-translation-pages-integration-app</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-content-translation-support-64}</version> (1)
 </dependency>
 ```
 
@@ -162,176 +158,35 @@ travel:
       fallbackLocale: en
 ```
 
-## [](#_importers_and_exporters)Importers and exporters
-
-Importers and exporters are Java classes that contain business logic to convert translatable content into a convenient format. Out of the box the module provides importers and exporters for XLIFF, Excel and CSV files and an exporter for uploading to Google Docs.
-
-Importers and exporters are configured in `/modules/translation/config`.
-
-```yml
-translation:
-  config:
-    importers:
-      xlsImporter:
-        readerImplementationClass: info.magnolia.translation.io.reader.XlsTranslationItemReader
-        extension: xls
-        label: contenttranslation.fileformat.xls
-      csvImporter:
-      xliffImporter:
-    exporters:
-      xlsExporter:
-        writerImplementationClass: info.magnolia.translation.io.writer.XlsTranslationItemWriter
-        extension: xls
-        label: contenttranslation.fileformat.xls
-      csvExporter:
-      xliffExporter:
-      googleSpreadsheetExporter:
-```
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>class</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Class that performs the import or export (<code>readerImplementationClass</code> and <code>writerImplementationClass</code> properties respectively).</p></div><div class="ulist"><ul><li><p><code>info.magnolia.translation.io.reader.*</code></p><div class="ulist"><ul><li><p><code>XlsTranslationItemReader</code></p></li><li><p><code>CsvTranslationItemReader</code></p></li><li><p><code>UnzippedXliffTranslationItemReader</code></p></li></ul></div></li><li><p><code>info.magnolia.translation.io.writer.*</code></p><div class="ulist"><ul><li><p><code>XlsTranslationItemWriter</code></p></li><li><p><code>CsvTranslationItemWriter</code></p></li><li><p><code>XliffTranslationItemWriter</code></p></li><li><p><code>GoogleSpreadsheetTranslationItemWriter</code></p></li></ul></div></li></ul></div><div class="paragraph"><p>You can write your own importers and exporters for other file formats, databases, or Web services that translators use.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>extension</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>File extension without the dot.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>label</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Extension label.</p></div></div></td></tr></tbody></table></div>
-
-## [](#_commands)Commands
-
-The module includes two `TranslationFile` commands that are used to export and import content in various formats for translation.
-
-Commands are configured in `/modules/translation/commands/translation`.
-
-```yml
-translation:
-  commands:
-    translation:
-      downloadTranslationFile:
-        class: info.magnolia.translation.commands.TranslationFileDownloadCommand
-      uploadTranslationFile:
-        class: info.magnolia.translation.commands.TranslationFileUploadCommand
-```
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>commands</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><a href="../../../Developing/Commands/" class="xref page">Commands</a> folder.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>translation</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Content translation support <a href="../../../Developing/Commands/" class="xref page">catalog</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;command name&gt;</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="ulist"><ul><li><p><code>downloadTranslationFile</code>: Name of the command node to download files for translation.</p></li><li><p><code>uploadTranslationFile</code>: Name of the command node to reupload translation files.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>formPath</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The path to the form.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>workspace</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Workspace name.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="ulist"><ul><li><p><span class="inlineBean">info.magnolia.translation.commands.TranslationFileDownloadCommand</span>:</p><div class="ulist"><ul><li><p>Downloads files from a specified path in a specified format, for translation. Operates on the <code>website</code> workspace by default.</p></li><li><p>Calls the relevant <a href="#_importers_and_exporters">importers and exporters</a> class.</p></li><li><p>The exported file contains all page content nodes marked as <code>i18n</code> in the <a href="../../../Developing/Templating/Template-definition/" class="xref page">template definition</a>.</p></li><li><p>The file path in the repository is converted into the file name by replacing forward slashes with dots.</p></li></ul></div></li><li><p><span class="inlineBean">info.magnolia.translation.commands.TranslationFileUploadCommand</span>:</p><div class="ulist"><ul><li><p>Uploads translated files in a specified format to a specified path. Operates on the <code>website</code> workspace by default.</p></li><li><p>Calls the relevant <a href="#_importers_and_exporters">importers and exporters</a> class.</p></li><li><p>Content is uploaded to relevant i18n fields in the dialogs.</p></li></ul></div></li></ul></div></div></td></tr></tbody></table></div>
-
-## [](#_action_definitions)Action definitions
-
-The module includes some dialog actions that are used in the [Content Translation app](#_content_translation_app).
-
-**Example**: Commit actions to download and upload files in `/translation-pages-integration/dialogs/downloadTranslationFile/actions/downloadTranslationFile` and `uploadTranslationFile`.
-
-These actions are configured by file, for example in **Resource Files >** `/translation/dialogs/downloadTranslationFile.yaml`, not in JCR nodes.
-
-downloadTranslationFile.yaml
-
-```yml
-form:
-  properties:
-    ...
-actions:
-  commit:
-    command: downloadTranslationFile
-    catalog: translation
-    class: info.magnolia.translation.ui.action.TranslationFileDownloadDialogActionDefinition
-  cancel:
-    class: info.magnolia.ui.dialog.action.CancelDialogActionDefinition
-```
-
-uploadTranslationFile.yaml
-
-```yml
-form:
-  properties:
-    ...
-actions:
-  commit:
-    command: uploadTranslationFile
-    catalog: translation
-    class: info.magnolia.translation.ui.action.TranslationFileUploadDialogActionDefinition
-    successMessage: translation.uploadTranslationFile.executionSuccess
-  cancel:
-    class: info.magnolia.ui.dialog.action.CancelDialogActionDefinition
-```
+| `class` | **required** Class that performs the import or export ( `readerImplementationClass` and `writerImplementationClass` properties respectively). • `info.magnolia.translation.io.reader.*` • `XlsTranslationItemReader` • `CsvTranslationItemReader` • `UnzippedXliffTranslationItemReader` • `info.magnolia.translation.io.writer.*` • `XlsTranslationItemWriter` • `CsvTranslationItemWriter` • `XliffTranslationItemWriter` • `GoogleSpreadsheetTranslationItemWriter` You can write your own importers and exporters for other file formats, databases, or Web services that translators use. |
+| --- | --- |
+| `extension` | **optional** File extension without the dot. |
+| `label` | **optional** Extension label. |
 
 | Property | Description |
 | --- | --- |
-| `commit` | **required**<br><br>Commit action configuration. |
-| `catalog` | **required**<br><br>`translation` command [catalog](../../../Developing/Commands/). |
-| `class` | **required**<br><br>Action definition class. See below. |
-| `command` | **required**<br><br>Name of command configuration node. |
-| `label` | **optional**<br><br>Action labels: Export file and Import file. |
-
-`info.magnolia.translation.ui.action.*` definition classes:
-
-
-
-`TranslationFileUploadDialogActionDefinition`
-
-Uploads the translation file.
-
-`TranslationFileDownloadDialogActionDefinition`
-
-Downloads the translation file.
-
-`OpenCreateTranslationFileUploadDialogActionDefinition`
-
-Used in the app to open the `uploadTranslationFile` dialog.
-
-> **Note:** The downloadTranslationFile dialog is opened with info.magnolia.ui.dialog.actions.OpenDialogActionDefinition. See Action definition classes for more information.
-
-## [](#_what_is_exported_and_imported)What is exported and imported
-
-[Text](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) and [rich text](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/) fields are included in export files by default. [Additional fields types can be registered](#_registering_additional_field_types), but they must be configured using Magnolia 6 UI.
-
-The type of exported content is configured in `/modules/translation/config/supportedFieldDefinitions` and `/propertiesToTranslateFinder`.
-
-```yml
-modules:
-  translate:
-    config:
-      importers:
-      exporters:
-      supportedFieldDefinitions:
-        richText: info.magnolia.ui.field.RichTextFieldDefinition
-        text: info.magnolia.ui.field.TextFieldDefinition
-      propertiesToTranslateFinder:
-        class: info.magnolia.translation.finder.AdaptivePropertiesToTranslateFinder
-```
+| `commands` | **required** [Commands](../../../Developing/Commands/) folder. |
+| `translation` | **required** Content translation support [catalog](../../../Developing/Commands/) . |
+| `<command name>` | **required** • `downloadTranslationFile` : Name of the command node to download files for translation. • `uploadTranslationFile` : Name of the command node to reupload translation files. |
+| `formPath` | **required** The path to the form. |
+| `workspace` | **required** Workspace name. |
+| `class` | **required** • info.magnolia.translation.commands.TranslationFileDownloadCommand : • Downloads files from a specified path in a specified format, for translation. Operates on the `website` workspace by default. • Calls the relevant [importers and exporters](#_importers_and_exporters) class. • The exported file contains all page content nodes marked as `i18n` in the [template definition](../../../Developing/Templating/Template-definition/) . • The file path in the repository is converted into the file name by replacing forward slashes with dots. • info.magnolia.translation.commands.TranslationFileUploadCommand : • Uploads translated files in a specified format to a specified path. Operates on the `website` workspace by default. • Calls the relevant [importers and exporters](#_importers_and_exporters) class. • Content is uploaded to relevant i18n fields in the dialogs. |
 
 | Property | Description |
 | --- | --- |
-| `config` | **optional**<br><br>Module configuration folder. |
-| `supportedFieldDefinitions` | **required**<br><br>Defines the field types to export. |
-| `<field name>` | **required**<br><br>Registers [rich text field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/) and [text field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) definition classes. These field types typically contain the textual i18n content. |
-| `propertiesToTranslateFinder` | **required**<br><br>Node data to translate finder node. |
-| `class` | **required**<br><br>info.magnolia.translation.finder.AdaptivePropertiesToTranslateFinder delegates calls to an implementation of `PropertiesToTranslateFinder` based on the modules that are currently installed. |
+| `commit` | **required** Commit action configuration. |
+| `catalog` | **required** `translation` command [catalog](../../../Developing/Commands/) . |
+| `class` | **required** Action definition class. See below. |
+| `command` | **required** Name of command configuration node. |
+| `label` | **optional** Action labels: Export file and Import file. |
 
-### [](#_registering_additional_field_types)Registering additional field types
-
-You can register additional field types to be included in the exported file. These must be configured using *Magnolia 6 UI* (for example, `info.magnolia.ui.form.field.definition.CompositeFieldDefinition` must be updated to `info.magnolia.ui.field.CompositeFieldDefinition`).
-
-**Example**: Registering [composite field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Composite-field/) as a field type to export.
-
-```yml
-supportedFieldDefinitions:
-  richText: info.magnolia.ui.field.RichTextFieldDefinition
-  text: info.magnolia.ui.field.TextFieldDefinition
-  composite: info.magnolia.ui.field.CompositeFieldDefinition
-```
-
-In addition to registration, the subfields of the composite field should have an `i18n` property set to `true`. It is not necessary for the composite field itself to have an `i18n` property.
-
-**Example**: Composite field configuration where `text1` field will be included in the download file, but `text2` will not.
-
-/my-module/dialogs/my-dialog.yaml
-
-```yml
-form:
-  properties:
-    test:
-      $type: compositeField
-      itemProvider: currentItemProvider
-      properties:
-        - name: text1
-          $type: textField
-          i18n: true
-        - name: text2
-          $type: textField
-```
+| Property | Description |
+| --- | --- |
+| `config` | **optional** Module configuration folder. |
+| `supportedFieldDefinitions` | **required** Defines the field types to export. |
+| `<field name>` | **required** Registers [rich text field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/) and [text field](../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/) definition classes. These field types typically contain the textual i18n content. |
+| `propertiesToTranslateFinder` | **required** Node data to translate finder node. |
+| `class` | **required** info.magnolia.translation.finder.AdaptivePropertiesToTranslateFinder delegates calls to an implementation of `PropertiesToTranslateFinder` based on the modules that are currently installed. |
 
 ## [](#_i18n_content_storage)i18n content storage
 

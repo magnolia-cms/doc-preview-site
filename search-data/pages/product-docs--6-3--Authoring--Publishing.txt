@@ -12,25 +12,6 @@ Publishing means transferring content from a Magnolia author instance to public 
 
 > **Note:** Large flat content repositories can negatively impact overall performance, particularly search. For this reason, you must organize pages into a folder hierarchy to ensure optimal performance. Also, features that constantly create content (such as messages, tasks, and versions) should be checked regularly to clean up old content.
 
-## [](#_from_author_to_public)From author to public
-
-Magnolia is distributed as two web applications: an author instance where editors work and a public instance where visitors access the website. Typically you have at least two public instances for load balancing and high availability reasons. Content is published from the author instance to the public instances.
-
-![Author and Public instances diagram](../../_images/Author-and-public-instances.png)
-
-There are three publishing actions:
-
--   **Publish**: Publishes the selected node to the public instance.
-
--   **Publish incl. subnodes**: Publishes the selected node and its children to the public instance. This action typically runs asynchronously because it can take a while to publish lots of content.
-
--   **Unpublish**: Unpublishes (deactivates) the node from the public instance.
-
-
-> **Note:** If a parent node isn’t published yet, you can’t publish the child node (the action is grayed out).
-
-Apps typically display the publishing status in the workbench.
-
 | Status | Description |
 | --- | --- |
 | Published | Content is published from the author instance to the public instance. Identical content exists on both instances. |
@@ -42,11 +23,11 @@ Apps typically display the publishing status in the workbench.
 
 You can schedule publishing to a future date and include approval steps. The editor who launches the publication workflow can add a comment for the reviewer and set a publication date.
 
-![Submit for publication scheduling confirmation](../../_images/authoring/publishing-scheduled.png)
+![Submit for publication scheduling confirmation](../../../RNs-6-4-3/_images/authoring/publishing-scheduled.png)
 
 Publishers receive a task in the Tasks app. They can assign the task to themselves and approve or reject it. The system can also show what changed on the page.
 
-![List of scheduled tasks](../../_images/authoring/publishing-claimTask.png)
+![List of scheduled tasks](../../../RNs-6-4-3/_images/authoring/publishing-claimTask.png)
 
 ## [](#_publishing_changes_only)Publishing changes only
 
@@ -56,26 +37,26 @@ To improve author instance performance, exclude already-published nodes from the
 
 Publish modified nodes only
 
-You can tweak your `pages-app.yaml` file to only publish modified nodes. See [Publishing changes only](../../Administration/Architecture/Publishing/Publishing-configuration/) for instructions.
+You can tweak your `pages-app.yaml` file to only publish modified nodes. See [Publishing changes only](../../../RNs-6-4-3/Administration/Architecture/Publishing/Publishing-configuration/) for instructions.
 
 ## [](#_publishing_campaigns)Publishing campaigns
 
 You can publish and control every aspect of a campaign using the Campaign Publisher module. Make a campaign, then add pages, assets, and other dependant content to the campaign, such as configuration, and click **Publish**.
 
-Head over to the [Campaign Publisher](../../Modules/List-of-modules/Campaign-Publisher/) to read more about it.
+Head over to the [Campaign Publisher](../../../RNs-6-4-3/Modules/List-of-modules/Campaign-Publisher/) to read more about it.
 
 Further reading
 
--   [Instances](../../Administration/Instances/)
+-   [Instances](../../../RNs-6-4-3/Administration/Instances/)
 
--   [Publishing overview](../../Administration/Architecture/Publishing/)
+-   [Publishing overview](../../../RNs-6-4-3/Administration/Architecture/Publishing/)
 
--   [Publishing changes only](../../Administration/Architecture/Publishing/Publishing-configuration/)
+-   [Publishing changes only](../../../RNs-6-4-3/Administration/Architecture/Publishing/Publishing-configuration/)
 
--   [Publishing assets](../Managing-assets/publishing-assets/)
+-   [Publishing assets](../../../RNs-6-4-3/Authoring/Managing-assets/publishing-assets/)
 
--   [Publishing module](../../Modules/List-of-modules/Publishing-module/)
+-   [Publishing module](../../../RNs-6-4-3/Modules/List-of-modules/Publishing-module/)
 
--   [Publishing Transactional module](../../Modules/List-of-modules/Publishing-Transactional-module/)
+-   [Publishing Transactional module](../../../RNs-6-4-3/Modules/List-of-modules/Publishing-Transactional-module/)
 
--   [Publishing security](../../Administration/Security/Publishing-security/)
+-   [Publishing security](../../../RNs-6-4-3/Administration/Security/Publishing-security/)

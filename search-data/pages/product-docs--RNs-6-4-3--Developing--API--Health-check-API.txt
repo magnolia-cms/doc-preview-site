@@ -1,0 +1,132 @@
+---
+title: "Health check API"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/API/Health-check-API/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > API > Health check API
+---
+
+# Health check API
+
+With this API, you can check that a Magnolia instance is up and running.
+
+## [](#_health_path)`health` path
+
+To check that a Magnolia instance is up and running, send a `GET` call to one of the following `health` paths.
+
+-   `<magnolia-base-path>/.rest/health`
+
+    Returns `200` if all registered `HealthChecks` in the `HealthCheckRegistry` respond with the `UP` status.
+
+    Click to see a response.
+
+    ```bash
+    Request URL: http://localhost:8080/magnoliaAuthor/.rest/health
+    Request Method: GET
+    Response Time: 0.179 seconds
+    Response Status: 200 - OK
+
+    {
+      "checks": [
+        {
+          "data": {},
+          "name": "magnolia-instance",
+          "status": "UP"
+        },
+        {
+          "data": {},
+          "name": "magnolia-instance",
+          "status": "UP"
+        }
+      ],
+      "status": "UP"
+    }
+    ```
+
+-   `<magnolia-base-path>/.rest/health/live`
+
+    Returns `200` if all registered `Liveness` health checks in the `HealthCheckRegistry` respond with the `UP` status.
+
+    Click to see a response.
+
+    ```bash
+    Request URL: http://localhost:8080/magnoliaAuthor/.rest/health/live
+    Request Method: GET
+    Response Time: 0.067 seconds
+    Response Status: 200 - OK
+
+    {
+      "checks": [
+        {
+          "data": {},
+          "name": "magnolia-instance",
+          "status": "UP"
+        }
+      ],
+      "status": "UP"
+    }
+    ```
+
+-   `<magnolia-base-path>/.rest/health/ready`
+
+    Returns `200` if all registered `Readiness` health checks in the `HealthCheckRegistry` respond with the `UP` status.
+
+    Click to see a response.
+
+    ```bash
+    Request URL: http://localhost:8080/magnoliaAuthor/.rest/health/ready
+    Request Method: GET
+    Response Time: 0.084 seconds
+    Response Status: 200 - OK
+
+    {
+      "checks": [
+        {
+          "data": {},
+          "name": "magnolia-instance",
+          "status": "UP"
+        }
+      ],
+      "status": "UP"
+    }
+    ```
+
+-   `<magnolia-base-path>/.rest/health/started`
+
+    Returns `200` if all registered `Startup` health checks in the `HealthCheckRegistry` respond with the `UP` status.
+
+    Click to see a response.
+
+    ```bash
+    Request URL: http://localhost:8080/magnoliaAuthor/.rest/health/started
+    Request Method: GET
+    Response Time: 0.07 seconds
+    Response Status: 200 - OK
+
+    {
+      "checks": [],
+      "status": "UP"
+    }
+    ```
+
+
+## [](#_status_path)`status` path
+
+> **Note:** The implementation using the status path has been deprecated since the release of Magnolia 6.3.0.
+
+To check that a Magnolia instance is up and running, send a `GET` call to the `status` path.
+
+-   `<magnolia-base-path>/.rest/status`
+
+    Returns `200` if the instance is up and running.
+
+    Click to see a response.
+
+    ```bash
+    Request URL: http://localhost:8080/magnoliaAuthor/.rest/status
+    Request Method: GET
+    Response Time: 0.124 seconds
+    Response Status: 200 - OK
+
+    {}
+    ```

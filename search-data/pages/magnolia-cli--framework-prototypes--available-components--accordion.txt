@@ -1,0 +1,74 @@
+---
+title: "Accordion"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/accordion/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Accordion
+---
+
+# Accordion
+
+The Accordion component displays collapsible sections for grouping related content.
+
+Each accordion item represents one collapsible section. It must include a title and may include additional content such as an image and description. You can choose whether each item should be expanded by default.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+Each accordion item includes the following fields:
+
+-   `title` (required) - The title shown in the accordion header.
+
+-   `description` (optional) - A description shown when the item is expanded. Supports basic formatting.
+
+-   `imageChooser` (optional) - A switchable field allowing internal or external image selection:
+
+    -   If `image` is selected:
+
+        -   `image` (required) - Chooser for selecting an image from Magnolia DAM.
+
+        -   `altText` (optional) - Alt text for accessibility.
+
+
+    -   If `externalImage` is selected:
+
+        -   `externalImage` (required) - A full URL to the external image.
+
+        -   `externalImageAlt` (optional) - Alt text for accessibility.
+
+
+
+-   `expanded` (optional) - Checkbox to define if the item should be expanded by default.
+
+
+## [](#_behavior)Behavior
+
+-   At least one accordion item is required.
+
+-   Items expand and collapse on click.
+
+-   You can optionally mark one or more items to be expanded by default.
+
+-   If no item is marked as expanded, all remain collapsed on initial render.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Accordion -p accordion
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

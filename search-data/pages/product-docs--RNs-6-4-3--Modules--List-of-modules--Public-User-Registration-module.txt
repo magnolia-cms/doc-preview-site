@@ -1,0 +1,250 @@
+---
+title: "Public User Registration module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Public-User-Registration-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Public User Registration module
+---
+
+# Public User Registration module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLPUR](https://magnolia-cms.atlassian.net/browse/MGNLPUR) |
+| Maven site | [Public User Registration](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fpur%2Fmagnolia-module-public-user-registration%2F{magnolia-module-public-user-registration-64}) |
+| Latest | {magnolia-module-public-user-registration-64} |
+| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | No |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>magnolia-module-public-user-registration</artifactId>
+  <version>{magnolia-module-public-user-registration-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+### [](#_compatibility_and_legacy_modules)Compatibility and legacy modules
+
+We have been gradually removing the old Content API from our modules since Magnolia 5.6. In Magnolia 5.5 we removed usage of the old admininterface. If you have custom code which relies on code from the old admininterface or from the old Content API, then you must do one of two things:
+
+-   Update your code for the new version of the public user registration module.
+
+-   Or use the `magnolia-module-public-user-registration-legacy` and the `magnolia-module-legacy-admininterface` module.
+
+
+Add the following snippet to your POM file:
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>magnolia-module-public-user-registration-legacy</artifactId>
+  <version>{magnolia-module-public-user-registration-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_user_management)User management
+
+Public users are stored and managed in the [Security app](../../../Apps/List-of-apps/Security-app/) on the public instance. The system registers the account automatically when a user registers. Whether the user can use the account immediately or not depends on the configured [registration strategy](#_registration_strategies).
+
+![Public users in Security app](../../../_images/6-2-publicUserRegistrationModule-publicUsers.png)
+
+The user account is only created on the public instance. Make sure you back up this data when using several public instances. The instances, or at least the users [workspace](../../../Administration/Architecture/Workspaces/), need to be [clustered](../../../Administration/Instances/Clustering/) to share accounts between different instances. Another option is to implement [observation](../Observation-module/) based [synchronization](../Synchronization-module/) to replicate user accounts across instances.
+
+## [](#_prerequisites)Prerequisites
+
+The PUR module relies on other modules and system settings. Understanding the module requires a working knowledge of:
+
+-   [Form module](../Form-module/): Many of the [PUR components](#_pur_components) are configurable forms.
+
+-   [Mail module](../Mail-module/Mail/): The PUR module uses the Mail module to send emails. You need to [configure SMTP](../Mail-module/Mail/) to send mail to registering users. If you don’t, a public user profile is created when a user registers, but an email to verify the account can’t be sent.
+
+
+| Property | Description |
+| --- | --- |
+| `config` | **required** Module configuration folder. |
+| `configurations` | **required** Configurations node. |
+| `<configuration name>` | **required** Configuration name. Must match the site name configured in the [site definition](../../../Developing/Templating/Site-definition/) or the `default` configuration is used. DX Core users can create different configurations for each site. Use [extends](../../../Administration/Architecture/Configuration-management/) to make site-specific changes to an existing configuration. |
+| `defaultRoles` | **required** [Roles](#_default_roles_and_groups) managed by the module. |
+| `defaultGroups` | **required** [Groups](#_default_roles_and_groups) managed by the module. |
+| `registrationStrategy` | **required** Strategy for [user registration](#_registration_strategies) . |
+| `passwordRetrievalStrategy` | **required** Strategy for [password retrieval](#_password_retrieval_strategies) . |
+| `userProfileConfiguration` | **required** [User profile](#_user_profile) configuration. |
+| `realmName` | **required** Realm name. |
+| `configurationResolver` | **required** Configuration resolver node. |
+| `class` | **required** Resolves the configuration to use. info.magnolia.module.publicuserregistration.configuration.DefaultConfigurationResolver finds the correct configuration based on the request URI. For example, `/travel/members-area/register.html` resolves to `travel` . |
+
+| Property | Description |
+| --- | --- |
+| `<configuration name>` | **required** Name of PUR configuration. |
+| `defaultRoles/defaultGroups` | **required** Default roles/groups node. |
+| `<role/group name>` | **required** Role/Group name. Property name is arbitrary. Value must match role or group set up in the [Security app](../../../Apps/List-of-apps/Security-app/) . |
+
+| Property | Description |
+| --- | --- |
+| `<configuration name>` | **required** Name of PUR configuration. |
+| `registrationStrategy` | **required** Registration strategy node. |
+| `class` | **required** Registration class: • info.magnolia.module.publicuserregistration.strategy.Mail : Sends the user an [email](#_mail_registration_strategy) containing a verification link after signup. The link directs to a page containing the [Enable User Form](#_pur_components) component. • info.magnolia.module.publicuserregistration.strategy.Always : Enables the registered user immediately. No verification is required. • info.magnolia.module.publicuserregistration.strategy.Never : Registers, but doesn’t enable, the user. An admin must enable the user manually in the [Security app](../../../Apps/List-of-apps/Security-app/) . |
+| `<strategy-specific properties>` | **optional** Any properties supported by the used registration class. Only [Mail](#_mail_registration_strategy) supports additional properties. |
+
+| Property | Description |
+| --- | --- |
+| `passwordRetrievalStrategy` | **required** Password retrieval strategy node. |
+| `class` | **required** Password retrieval strategy class: • info.magnolia.module.publicuserregistration.password.MailChangePasswordLinkStrategy : This strategy sends the user a link to the page containing the [Password Change](#_pur_components) component. • info.magnolia.module.publicuserregistration.password.NOPStrategy : This strategy does nothing. You have the option to code your own strategy in the Confirmation Email tab of the [Forgotten Password](#_pur_components) dialog instead. |
+| `emailTemplate` | **required** Relative path to the template used for the email message. |
+| `fromEmail` | **required** Sender’s email. |
+| `fromName` | **optional** Sender’s name. |
+| `subject` | **optional** Message subject. |
+| `targetPagePath` | **required** Relative path to the page containing the [Password Change](#_pur_components) component. |
+| `tokenExpirationTime` | **optional** , *default in `30`* Duration (in minutes) that the password change link remains valid. |
+
+| Property | Description |
+| --- | --- |
+| `userProfileConfiguration` | **required** User profile configuration node. |
+| `class` | **required** User profile class. info.magnolia.module.publicuserregistration.UserProfile is a basic profile bean that supports the default `username` , `password` , `email` , and `fullName` properties. |
+
+## [](#_pur_components)PUR components
+
+The module includes all necessary [components](../../../Developing/Templating/Template-definition/Component-definition/) to implement user registration and related tasks on your site.
+
+You can view the PUR components in the Members area of the [Travel Demo](https://demo.magnolia-cms.com/).
+
+Components are configured in `/modules/public-user-registration/templates/components`.
+
+With the exception of `login`, the components are standard Magnolia [forms](../Form-module/). They [extend](../../../Administration/Architecture/Configuration-management/) the `form` component and [override](../../../Administration/Architecture/Configuration-management/) the standard [form processors](../Form-module/#_form_processors) with custom form processors provided by the module.
+
+### [](#_login_component)`login` component
+
+-   Displays Login Form component that has:
+
+    -   Preconfigured `username` and `password` fields.
+
+    -   Registration and Forgotten password links.
+
+    -   Login button.
+
+
+-   In the dialog set:
+
+    -   Target page: Form can redirect to any page. Typically used to direct to protected content parent page, making content in this tree is only visible to logged-in users.
+
+    -   Registration page: Page containing the `registration` component.
+
+    -   Password retrieval page: Page containing the `forgottenPassword` component.
+
+
+-   Rendered by [`login.ftl`](https://gitlab.magnolia-platform.com/pd/modules/public-user-registration/-/blob/master/magnolia-module-pur/src/main/resources/public-user-registration/templates/components/login.ftl).
+
+
+![Edit login form](../../../_images/6-1-publicUserRegistrationModule-loginDialog.png)
+
+![Log in form](../../../_images/6-1-publicUserRegistrationModule-loginForm.png)
+
+### [](#_registration_component)`registration` component
+
+-   Displays User Registration form.
+
+-   Add input fields named `username`, `password`, `passwordConfirmation`, `fullName`, and `email`, and a submit button field.
+
+-   Uses info.magnolia.module.publicuserregistration.processors.RegistrationProcessor to register the user.
+
+
+![Registration form](../../../_images/6-1-publicUserRegistrationModule-registrationForm.png)
+
+### [](#_userupdate_component)`userUpdate` component
+
+-   Displays User Profile Update form.
+
+-   Add input fields named `username`, `fullName`, and `email`, and a submit button field.
+
+-   Uses info.magnolia.module.publicuserregistration.form.UserFormModel to prefill the user’s data.
+
+-   Uses info.magnolia.module.publicuserregistration.processors.UpdateProcessor to update the user’s profile.
+
+
+![User update form](../../../_images/6-1-publicUserRegistrationModule-updateProfileForm.png)
+
+### [](#_forgottenpassword_component)`forgottenPassword` component
+
+-   Displays Forgotten Password form.
+
+-   Add input fields named `username` and `email`, and a submit button field.
+
+-   Uses info.magnolia.module.publicuserregistration.processors.PasswordProcessor to verify the user’s credentials and retrieve the [password retrieval strategy](#_password_retrieval_strategies).
+
+-   Processor sends the user an email with a link to the `passwordChange` component page when `MailChangePasswordLinkStrategy` is configured as the password retrieval strategy.
+
+
+![Forgotten password form](../../../_images/6-1-publicUserRegistrationModule-forgottenPasswordForm.png)
+
+### [](#_passwordchange_component)`passwordChange` component
+
+-   Displays Password Change form.
+
+-   Add input fields named `password` and `passwordConfirmation`, and a submit button field.
+
+-   Uses info.magnolia.module.publicuserregistration.processors.TokenPasswordProcessor that takes a token from the URL and checks if the token is valid. If it is, the user’s password is changed.
+
+
+![Password change form](../../../_images/6-1-publicUserRegistrationModule-passwordChangeForm.png)
+
+### [](#_enableuser_component)`enableUser` component
+
+-   Displays Enable User form.
+
+-   Add a submit button field.
+
+-   Uses info.magnolia.module.publicuserregistration.processors.EnableUserByUuidProcessor to enable a user’s account after retrieving it using the UUID parameter.
+
+-   Use with [mail registration strategy](#_mail_registration_strategy) to confirm and enable a user’s account.
+
+
+![Enable user form](../../../_images/6-1-publicUserRegistrationModule-confirmRegistration.png)
+
+> **Warning:** For PUR functionality to work, the input fields must be named exactly as specified in the table above.
+
+### [](#_adding_components_to_templates)Adding components to templates
+
+You can add the PUR components to any template.
+
+Example: Template definition with all PUR components in `main` area
+
+.`/my-module/templates/pages/myTemplate.yaml`
+
+```yml
+templateScript: /my-module/templates/pages/my-script.ftl
+renderType: freemarker
+visible: true
+title: My template
+areas:
+  main:
+    availableComponents:
+      login:
+        id: public-user-registration:components/login
+      registration:
+         id: public-user-registration:components/registration
+      userUpdate:
+         id: public-user-registration:components/userUpdate
+      forgottenPassword:
+         id: public-user-registration:components/forgottenPassword
+      passwordChange:
+         id: public-user-registration:components/passwordChange
+      enableUser:
+         id: public-user-registration:components/enableUser
+```
+
+| `emailTemplate` | `/public-user-registration/templates/mail/user-confirmation-email.ftl` |
+| --- | --- |
+| `pagePath` | Relative path to the page containing the [Enable User Form](#_pur_components) component. |

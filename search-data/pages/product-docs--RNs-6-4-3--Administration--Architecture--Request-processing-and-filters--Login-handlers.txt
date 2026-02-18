@@ -1,0 +1,109 @@
+---
+title: "Login handlers"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/Login-handlers/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Request processing and filters > Login handlers
+---
+
+# Login handlers
+
+| 📁 server |  |
+| --- | --- |
+| 📁 filters |  |
+| 📁 login |  |
+| ⸬ loginHandlers |  |
+| ⸬ Basic |  |
+| ⬩ class | info.magnolia.cms.security.auth.login.BasicLogin |
+| ⸬ Form |  |
+| ⬩ class | info.magnolia.cms.security.auth.login.FormLogin |
+| ⬩ class | info.magnolia.cms.security.auth.login.LoginFilter |
+
+## [](#_basiclogin_login_handler)BasicLogin login handler
+
+You should only use basic authentication when the transport layer security is good, such as HTTPS. The basic authentication protocol is defined in the Hypertext Transfer Protocol standard [RFC 2617 (HTTP Authentication: Basic and Digest Access Authentication)](https://www.ietf.org/rfc/rfc2617.txt). A client connects to a web server by sending a `WWW-Authenticate: Basic` message in the HTTP header. Shortly after, it sends the login credentials to the server using a `base64` encoding. When HTTPS is used, the credentials are encrypted and considered secure.
+
+The biggest limitation with basic authentication relates to logging off the server. Most web browsers store sessions and don’t always close and clear them, which can prevent others from logging in by refreshing the browser. `Digest` authentication transmits the username and hash of the password, whereas basic authentication uses a non-encrypted `base64` encoding.
+
+## [](#_formlogin_login_handler)FormLogin login handler
+
+Form-based authentication doesn’t rely on any RFC; developers use standard HTML form fields to pass credentials to the server. Furthermore, the server creates a session with a unique ID. When a user logs off, the open session is closed. Similarly to basic authentication, login credentials are not encrypted and must be used with a security layer like HTTPS.
+
+### [](#_login_via_get_disabled_by_default)Login via `GET` disabled by default
+
+Logging in with query parameters using the `GET` method is now disabled by default. Trying to do so results in a 401 Unauthorized error.
+
+To allow `GET` or other HTTP methods, add them as a list to `info.magnolia.cms.security.auth.login.FormLogin#allowedMethods`. See [this configuration](https://demo.magnolia-cms.com/.magnolia/admincentral#app:configuration:browser;/server/filters/login/loginHandlers/Form/allowedMethods@allowPost:treeview) as an example.
+
+> **Important:** Enable other methods in the form login via allowedMethods only on non-production systems.
+
+## [](#_other_login_handlers)Other login handlers
+
+This section outlines some Magnolia modules that use login handlers. The ones listed below are under the `loginHandlers` configuration but separate from `BasicLogin` and `FormLogin`. All login handlers use JAAS for authentication.
+
+-   CAS module
+
+    -   Filter class name: info.magnolia.cms.security.auth.login.CASLogin
+
+    -   [Configuration details](../../../../Modules/List-of-modules/CAS-module/#_configuring_jaas)
+
+
+-   WeChat Login module
+
+    -   Filter class name: info.magnolia.cms.security.auth.login.SSOAuthenticationLoginFilter
+
+    -   [Configuration details](../../../../../../wechat-connector/#_jaas_configuration_for_oauth_authentication)
+
+
+-   The SSO and LDAP modules
+
+    -   Magnolia [LDAP Connector](../../../../Modules/List-of-modules/LDAP-Connector-module/) is a [JAAS login module](https://www.oracle.com/java/technologies/javase/javase-tech-security.html) that connects to any LDAP v3 directory service. Go to [JAAS login configuration](../../../../Modules/List-of-modules/LDAP-Connector-module/#_jaas_login_configuration) for more details.
+
+    -   The [SSO module](../../../../../../magnolia-sso/) delegates authentication away from Magnolia to an OpenID Connect identity and access management application. The delegation and setting of a successful login process is handled by info.magnolia.sso.auth.login.SsoLoginHandler.
+
+
+
+## [](#_custom_login_handlers)Custom login handlers
+
+You can also create a custom login handler from [info.magnolia.cms.security.auth.login.LoginHandlerBase](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/master/magnolia-core/src/main/java/info/magnolia/cms/security/auth/login/LoginHandlerBase.java).
+
+It can listen for your request parameter in the `handle()` method. If the parameter is present:
+
+```java
+LoginResult result = authenticate(mycallbackhandler, "magnolia");
+return result;
+```
+
+If the parameter is not present, return:
+
+```java
+return LoginResult.NOT_HANDLED; (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Returning the `NOT_HANDLED` results lets another login handler deal with the request. |
+
+The `authenticate()` method defers to the Magnolia JAAS authentication to perform the login. It also takes care of all ACLs and sets up the context.
+
+The JAAS layer needs the callback handler to access the information about the user credentials supplied for the login. For this, you should instantiate info.magnolia.cms.security.auth.callback.CredentialsCallbackHandler. An example of this instantiation is shown below.
+
+```java
+CredentialsCallbackHandler mycallbackhandler = new CredentialsCallbackHandler("myusername", "mypasswd", "admin"); (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | This causes JAAS to try to authenticate the user `myusername` from the admin users. |
+
+Deploy your login handler to Magnolia’s WEB-INF/lib in a JAR file, and then configure it in Magnolia under Configuration → `/server/filters/login/loginHandlers/myHandler`.
+
+> **Caution:** Make sure you test it out on a non-production system first, as a misconfigured login handler or a programming error in the handler could render your Magnolia instance inaccessible.
+
+Related topics
+
+-   [Filters](../Filters/)
+
+-   [Login filter](../Filters/#_login)
+
+-   [Authentication](../../../Security/#_authentication)

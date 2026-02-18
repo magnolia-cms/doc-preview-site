@@ -50,7 +50,7 @@ This is an example of how to configure a cache using Ehcache 2.
 
 Extend the `default` factory and override the persistence strategy with `none`. This persistence strategy allows to cache non-serializable objects.
 
-![Configuring a cache](../../../../_images/ADVT-cache-arbit-ehc.png)
+![Configuring a cache](../../../../../RNs-6-4-3/_images/ADVT-cache-arbit-ehc.png)
 
 > **Warning:** The /modules/cache/config/cacheFactory/caches/fooBarCache node defines the cache name. fooBarCache is the name of the cache which was also used above when acquiring the Cache object within Java code.
 
@@ -60,66 +60,15 @@ This is an example of how to configure a cache using Ehcache 3. On the [Ehcache 
 
 Extend the `default` factory and override the persistence strategy for `disk` set to the value `false`. This persistence strategy allows to cache non-serializable objects.
 
-![Configuring a cache](../../../../_images/ADVT-cache-arbit-ehc3.png)
+![Configuring a cache](../../../../../RNs-6-4-3/_images/ADVT-cache-arbit-ehc3.png)
 
 > **Warning:** The /modules/cache/config/cacheFactory/delegateFactories/fooBarCache node defines the cache name. fooBarCache is the name of the cache which was also used above when acquiring the Cache object within Java code.
 
-## [](#_get_the_cache)Get the cache
-
-Achieve an instance of info.magnolia.module.cache.Cache. This is your cache to operate on. Give it a name which must be unique within the system.
-
-Example:
-
-```java
-import javax.inject.Inject;
-import javax.inject.Provider;
-
-import info.magnolia.module.cache.Cache;
-import info.magnolia.module.cache.inject.CacheFactoryProvider;
-
-public class MyClass {
-    private final Provider<CacheFactoryProvider> cacheFactoryProvider;
-
-    @Inject
-    public MyClass(Provider<CacheFactoryProvider> cacheFactoryProvider){
-        this.cacheFactoryProvider = cacheFactoryProvider;
-    }
-    public void fooBar(){
-        Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache");
-    }
-}
-```
-
--   Lines 2, 4-6: Inject info.magnolia.module.cache.inject.CacheFactoryProvider and keep it as a final member of your class.
-
--   Line 9: Fetch info.magnolia.module.cache.Cache with its name. The cache provider will always return the same instance once it has been created.
-
-
-All subsequent actions - adding, reading and removing objects - are applied on this `Cache` object.
-
-### [](#_cache_interface)Cache Interface
-
-info.magnolia.module.cache.Cache
-
-[Cache.java: Cache interface](https://gitlab.magnolia-platform.com//pd/modules/cache/-/raw/master/magnolia-cache-core/src/main/java/info/magnolia/module/cache/Cache.java?ref_type=heads): An interface around 3rd party or custom cache libraries.
-
-> **Important:** It is up to client components to decide what they use as keys and values.
-
-### [](#_put_to_cache)Put to cache
-
-info.magnolia.module.cache.Cache knows two methods to append objects.
-
-```java
-void put(Object key, Object value);
-
-void put(Object key, Object value, int timeToLiveInSeconds);
-```
-
 | Argument | Notes |
 | --- | --- |
-| `key` | **required**<br><br>The identifier of the object to cache |
-| `value` | **required**<br><br>The object to cache |
-| `timeToLiveInSeconds` | **optional**<br><br>The lifetime of the cached object in seconds.<br><br>Tip: The lifetime also can be configured globally, and you can configure a flush policy to clear the cache when some condition is met, or you may want to delete cached objects programmatically (see [#remove](#_remove_a_single_item) and [#clear](#_clear_complete_cache) below).<br><br>Example:<br><br>```java<br>public class MyClass {<br>    public Object put(Object key, Object value){<br>        Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache");<br>        cache.put(key, value);<br>        return value;<br>    }<br>    public Object put(Object key, Object value, int timeToLiveInSeconds){<br>        Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache");<br>        cache.put(key, value, timeToLiveInSeconds);<br>        return value;<br>    }<br>}<br>``` |
+| `key` | **required** The identifier of the object to cache |
+| `value` | **required** The object to cache |
+| `timeToLiveInSeconds` | **optional** The lifetime of the cached object in seconds. Tip: The lifetime also can be configured globally, and you can configure a flush policy to clear the cache when some condition is met, or you may want to delete cached objects programmatically (see [#remove](#_remove_a_single_item) and [#clear](#_clear_complete_cache) below). Example: `public class MyClass { public Object put(Object key, Object value){ Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache"); cache.put(key, value); return value; } public Object put(Object key, Object value, int timeToLiveInSeconds){ Cache cache = cacheFactoryProvider.get().get().getCache("fooBarCache"); cache.put(key, value, timeToLiveInSeconds); return value; } }` |
 
 ## [](#_retrieve_from_cache)Retrieve from cache
 

@@ -8,22 +8,12 @@ breadcrumb: DX Core > Modules > A/B/n Testing > A/B/n Testing module
 
 # A/B/n Testing module
 
-[Analytics and optimization](../../../../use-cases/analytics-and-optimization/) Unbundled: Extension
-
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | --- | --- |
 | Issues | [ABTEST](https://jira.magnolia-cms.com/projects/ABTEST/summary) |
 | Maven site | [A/B/n Testing](https://nexus.magnolia-cms.com/repository/magnolia.addons.releases/info/magnolia/abtesting/) |
-| Latest | 2.0.1 |
-| [Available on SPA/Headless](../../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | No  |
-
-> **Note:** Note that A/B/n Testing comes with a special license and runs as a connected service. Contact your Magnolia Customer Success Manager or Support to find out more.
-
-The A/B/n Testing module installs the A/B/n Testing app and allows you to perform A/B/n testing via the Magnolia UI.
-
-> **Tip:** Test results from the A/B/n Testing module rely on the Analytics dashboard from the Analytics module.
-
-## [](#_module_structure)Module structure
+| Latest | {magnolia-abtesting-63} |
+| [Available on SPA/Headless](../../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | No |
 
 | artifactID | Description |
 | --- | --- |
@@ -32,13 +22,13 @@ The A/B/n Testing module installs the A/B/n Testing app and allows you to perfor
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.abtesting</groupId>
   <artifactId>magnolia-abtesting</artifactId>
-  <version>2.0.1</version> (1)
+  <version>{magnolia-abtesting-63}</version> (1)
 </dependency>
 ```
 
@@ -50,7 +40,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.abtesting</groupId>
   <artifactId>magnolia-abtesting-ui</artifactId>
-  <version>2.0.1</version> (1)
+  <version>{magnolia-abtesting-63}</version> (1)
 </dependency>
 ```
 
@@ -58,82 +48,13 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 | --- | --- |
 | **1** | Should you need to specify the module version, do it using `<version>`. |
 
-## [](#_configuring)Configuring
-
-> **Tip:** See an overview of differences between FreeMarker and headless templating.
-
-To configure the following properties, go to `ab-testing/config.yaml`.
-
-If you don’t see a `config.yaml` file, create one.
-
-In the module configuration, you can:
-
--   Define the minimum unique visitors required to produce test results.
-
--   Adjust the minimum sample size required.
-
--   Set a limit to the maximum number of remaining days.
-
-
-> **Warning:** You must also make sure your site allows CORS for the POST method.
-
-ab-testing/config.yaml
-
-```yml
-abTestingConfig:
-  apiGatewayURL: your-api-gateway-url
-  authorEventsExcluded: true
-  resultsConfig:
-    minUniqueVisitors: 10
-    minSampleSize: 1
-  statsEngineConfig:
-    maxRemainingDays: 10
-```
-
 | Property | Description |
 | --- | --- |
-| `apiGatewayURL` | **required**<br><br>The API gateway URL provided to you by Magnolia. |
-| `authorEventsExcluded` | Default is `true`.<br><br>Excludes author instance events from the test. |
-| `minUniqueVisitors` | **required**<br><br>The number of minimum unique visitors that must visit the site before results are produced. |
-| `minSampleSize` | **required**<br><br>The minimum overall sample size that must visit the site before results are produced. |
-| `maxRemainingDays` | **required**<br><br>The maximum number of days that can remain in an A/B/n testing campaign. |
-
-### [](#_enabling_cors_for_the_post_method)Enabling CORS for the POST method
-
-You must add the POST method to the list of allowed HTTP methods in your [CORS configuration](../../../../Administration/Architecture/Request-processing-and-filters/CORS/) (Cross-origin Resource Sharing).
-
-User events for the test variants are submitted to the Magnolia [REST endpoint](#3.1@rest:api:delivery-endpoint.adoc) using the POST method.
-
-Typically, only the GET method is enabled by default in Magnolia.
-
-To enable the POST method:
-
-1.  Locate the `allowedMethods` node in your site definition.
-
-    Typically, a property named `get` with the value `GET` is configured by default. This means the site allows CORS only for the GET method.
-
-2.  Update the `get` property name to `all` and the value to `*`.
-
-    This effectively adds the POST method required by A/B/n Testing.
-
-3.  **Publish** the change so that your public instance configuration is updated.
-
-
-Travel site example
-
-![CORS configuration](../../../../_images/abntest/ab-testing-cors-config.png)
-
-### [](#_configuring_permissions)Configuring permissions
-
-Magnolia provides user [role](../../../../Administration/IAM/Roles-and-access-control-lists/) configuration to facilitate permissions for A/B/n testing.
-
-Existing users with `editor` or `publisher` roles are be granted *read only* permissions to A/B/n Testing so that they can see the status of tests in the Pages app.
-
-An `ab-tester` role is configured by default and grants minimal permissions to users to access the A/B/n Testing app tile in AdminCentral and create and start A/B/n tests.
-
-You must assign the `ab-tester` role to your new and existing users who will use A/B/n Testing.
-
-You can view, assign and edit roles in the [Security app](../../../../Apps/List-of-apps/Security-app/).
+| `apiGatewayURL` | **required** The API gateway URL provided to you by Magnolia. |
+| `authorEventsExcluded` | Default is `true` . Excludes author instance events from the test. |
+| `minUniqueVisitors` | **required** The number of minimum unique visitors that must visit the site before results are produced. |
+| `minSampleSize` | **required** The minimum overall sample size that must visit the site before results are produced. |
+| `maxRemainingDays` | **required** The maximum number of days that can remain in an A/B/n testing campaign. |
 
 ## [](#_usage)Usage
 
@@ -197,29 +118,9 @@ Related topics
 -   [A/B/n Testing app](../ABn-testing-app/)
 
 
-## [](#_changelog)Changelog
-
-The changelog gives you an overview of the changes made to the A/B/n Testing module at each release.
-
-> **Note:** This changelog covers the 2.x branch of the A/B/n Testing module. For the 1.x changelog, see here.
-
-### [](#_2_0_1)2.0.1
-
-Released on **January 14, 2025**.
-
-This release fixes an issue with Magnolia 6.3 style licensing.
-
 | Ticket | Type | Description |
 | --- | --- | --- |
-| **[ABTEST-703](https://magnolia-cms.atlassian.net/browse/ABTEST-703)** |     | Module won’t start with Magnolia 6.3 style license |
-
-### [](#_2_0_0)2.0.0
-
-Released on **September 4, 2024**.
-
-This release is compatible with Magnolia 6.3.
-
-## [](#_compatibility)Compatibility
+| **ABTEST-703** | ** | Module won’t start with Magnolia 6.3 style license |
 
 | A/B/n Testing module version | Magnolia version |
 | --- | --- |

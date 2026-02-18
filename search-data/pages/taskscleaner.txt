@@ -8,7 +8,7 @@ breadcrumb: Tasks cleaner module
 
 # Tasks cleaner module
 
-[Incubator](https://gitlab.magnolia-platform.com/ps/services/taskscleaner) Version 3.0.0 [Magnolia 6.4](../product-docs/7.0/) compatible
+[Incubator](https://gitlab.magnolia-platform.com/ps/services/taskscleaner) Version 3.0.0 [Magnolia 6.4](../product-docs/RNs-6-4-3/) compatible
 
 The **Tasks cleaner module** provides commands for managing tasks like scheduled publications that have been executed.
 
@@ -30,7 +30,7 @@ Having many resolved tasks can affect:
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
@@ -40,150 +40,11 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 </dependency>
 ```
 
-## [](#_usage)Usage
-
-The following commands are defined by the Tasks Cleaner module: cleanup-archiveTasks and cleanup-removeTasks.
-
-The commands cleanup-archiveTasks and cleanup-removeTasks can be run:
-
--   as scheduled jobs with the Scheduler module
-
--   through the REST command endpoint
-
--   invoked by app actions
-
--   through the console of the Groovy app
-
-
-> **Note:** By default the Tasks Cleaner module doesn’t archive or remove tasks that are not resolved. If you change or override this behaviour, it can leave orphaned workflows behind. Magnolia recommends resolving tasks by approving or aborting them before you archive or remove unresolved tasks.
-
-### [](#_commands)Commands
-
-All commands can be found in the [cleanup catalog](../product-docs/7.0/Developing/Commands/#_catalogs) at `/module/tasks-cleaner/commands/cleanup`.
-
 | Command | Description |
 | --- | --- |
 | `archiveTasks` | Check resolved tasks and mark selected tasks as archived according to configurable criteria. |
 | `removeTasks` | Check archived tasks and mark selected task as removed according to configurable criteria. |
 
-| Property | Description |
-| --- | --- |
-| `noop` | *optional*<br><br>Do a dry-run, do not modify any tasks and report the results to Magnolia logs.<br><br>Default is `false`. |
-| `maxTasks` | *optional*<br><br>Sets the maximum number of tasks that will be modified in a run (defaults to 256). If the maximum number of tasks is reached, the command will stop. If set to -1, no limit is imposed and all selected tasks will be modified.<br><br>Default is `256`. |
-| `voters` | *required*<br><br>A [voter set](../product-docs/7.0/Administration/Voters/) that will select tasks for modification (either archiving or removal). See the following section on the task voters available. |
-
-### [](#_task_voters)Task Voters
-
-There are a number of task voters you can use to select tasks for archiving or removing by the `archiveTasks` and `removeTasks` commands.
-
-#### [](#_taskcreatedbeforevoter)TaskCreatedBeforeVoter
-
-`TaskCreatedBeforeVoter` returns true if the task was created before a configured date, false otherwise.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskCreatedBeforeVoter`
-
-| Property | Description |
-| --- | --- |
-| `date` | *required*<br><br>A date. The voter will return true if the task was created before the date. |
-
-#### [](#_taskcreatedsincevoter)TaskCreatedSinceVoter
-
-`TaskCreatedSinceVoter` returns true if the task was created before a configured interval (in milliseconds) from the current time, false otherwise.
-
-For example, if the interval is set to 30 days (2592000000 converted to milliseconds), the voter will return true if the creation date is 30 days before the current time at execution.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskCreatedSinceVoter`
-
-| Property | Description |
-| --- | --- |
-| `interval` | *required*<br><br>An interval in milliseconds. The voter will return true if the task was created before interval from the current time. |
-
-#### [](#_taskfailedvoter)TaskFailedVoter
-
-`TaskFailedVoter` returns true if the task is marked as "Failed", false otherwise.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskFailedVoter`
-
-#### [](#_taskhascontentvaluevoter)TaskHasContentValueVoter
-
-`TaskHasContentValueVoter` returns true if the task content has the configured contentKey key and contentValue, false otherwise.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskHasContentValueVoter`
-
-| Property | Description |
-| --- | --- |
-| `contentKey` | *required*<br><br>A content key name. |
-| `contentValue` | *required*<br><br>The content value. |
-
-#### [](#_taskhascontentvoter)TaskHasContentVoter
-
-`TaskHasContentVoter` returns true if the task content has the configured contentKey defined, false otherwise.
-
-> **Note:** The value of the contentKey is not checked.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskHasContentVoter`
-
-| Property | Description |
-| --- | --- |
-| `contentKey` | *required*<br><br>A content key name. |
-
-#### [](#_taskhasresultvaluevoter)TaskHasResultValueVoter
-
-`TaskHasResultValueVoter` returns true if the task results has the configured resultKey key and resultValue, false otherwise.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskHasResultValueVoter`
-
-| Property | Description |
-| --- | --- |
-| `resultKey` | *required*<br><br>A result key name. |
-| `resultValue` | *required*<br><br>The result value. |
-
-#### [](#_taskhasresultvoter)TaskHasResultVoter
-
-`TaskHasContentVoter` returns true if the task results has the configured resultsKey defined, false otherwise.
-
-Note: the value of the resultKey is not checked.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskHasResultVoter`
-
-| Property | Description |
-| --- | --- |
-| `resultKey` | *required*<br><br>A result key name. |
-
-#### [](#_taskmodifiedbeforevoter)TaskModifiedBeforeVoter
-
-`TaskModifiedBeforeVoter` returns true if the task was modified before a configured date, false otherwise.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskModifiedBeforeVoter`
-
-| Property | Description |
-| --- | --- |
-| `date` | *required*<br><br>A date. The voter will return true if the task was modified before the date. |
-
-#### [](#_taskmodifiedsincevoter)TaskModifiedSinceVoter
-
-`TaskModifiedSinceVoter` returns true if the task was modified before a configured interval (in milliseconds) from the current time, false otherwise.
-
-For example, if the interval is set to 30 days (2592000000 converted to milliseconds), the voter will return true if the last modified date is 30 days before the current time at execution.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskModifiedSinceVoter`
-
-| Property | Description |
-| --- | --- |
-| `interval` | *required*<br><br>An interval in milliseconds. The voter will return true if the task was last modified before interval from the current time. |
-
-#### [](#_taskstatusvoter)TaskStatusVoter
-
-`TaskStatusVoter` returns true if the task currently has the configured status, otherwise false.
-
-Class: `info.magnolia.services.taskscleaner.voters.TaskStatusVoter`
-
-| Property | Description |
-| --- | --- |
-| `status` | *required*<br><br>A task status, one of: `Created`, `InProgress`, `Resolved`, `Failed`, `Archived`, `Removed`, `Scheduled`. |
-
-## [](#_changelog)Changelog
-
 | Version | Notes |
 | --- | --- |
-| `3.0.0` | Initial release of the module for Magnolia 6.4 compatibility.<br><br>[Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20TASKSCLEAN%20AND%20fixVersion%20%3D%203.0.0) |
+| `3.0.0` | Initial release of the module for Magnolia 6.4 compatibility. [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20TASKSCLEAN%20AND%20fixVersion%20%3D%203.0.0) |

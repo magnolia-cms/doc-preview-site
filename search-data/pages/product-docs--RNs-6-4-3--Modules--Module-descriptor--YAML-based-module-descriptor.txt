@@ -1,0 +1,72 @@
+---
+title: "YAML-based module descriptor"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/Module-descriptor/YAML-based-module-descriptor/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Module descriptor > YAML-based module descriptor
+---
+
+# YAML-based module descriptor
+
+This page is about the YAML-based module descriptor for a Magnolia light module and details light module dependencies. If you are using a Magnolia Maven module, you should use an [XML-based module descriptor](../XML-based-module-descriptor/).
+
+The file must be in the root folder of the module and its name has to be `module.yaml`.
+
+The YAML-based module descriptor allows you to define the version of the module and dependencies to other Magnolia modules.
+
+## [](#_example)Example
+
+$magnolia.resources.dir/example-light-module/module.yaml
+
+```js
+version: 1.0
+dependencies:
+  core:
+    version: 5.4.7
+  cache:
+    version: 5.4.5
+    optional: true
+```
+
+| Property | Description |
+| --- | --- |
+| `version` | **required** The module [versions](#_module_versions) . |
+| `dependencies` | **optional** [Dependencies](#_module_dependencies) on other modules - the module will install only after the specified modules. |
+
+| Example | Description |
+| --- | --- |
+| `3` | Major version 3. |
+| `3.6` | Major version 3.6. |
+| `3.6.3` | Major version 3.6 and maintenance version 3. |
+| `3/*` | Major version 3 or higher. |
+| `3.6/*` | Major version 3.6 or higher. |
+| `3.6.3/*` | Major version 3.6 and maintenance version 3 or higher. |
+| `*/3` | Major version 3 or earlier. |
+| `*/3.6` | Major version 3.6 or earlier. |
+| `*/3.6.3` | Major version 3.6 and maintenance version 3 or earlier. |
+| `3.5/3.6.2` or `[3.5/3.6.2]` | All versions between 3.5 and 3.6.2 (including 3.5 and 3.6.2). |
+| `[3.5/3.6.2[` or `[3.5/3.6.2)` | All versions between 3.5 and 3.6.2 (including 3.5 but excluding 3.6.2). |
+
+## [](#_module_dependencies)Module dependencies
+
+You can define runtime or install time dependencies (not build dependencies). If you define a dependency on a module, then this module will be installed and started before your module. A dependency can be optional. Optional in this context means that if an optional module is not present, installation will proceed, but if the optional module is present, this module will be installed first. The dependencies could look like this:
+
+$magnolia.resources.dir/example-light-module/module.yaml
+
+```yaml
+version: 1.0
+dependencies:
+  core:
+    version: 5.4.7
+  # If the Cache module is present, install the current module
+  # after Cache so we can add a cache bypass.
+  cache:
+    version: 5.4.5
+    optional: true
+```
+
+## [](#_module_dependencies_define_module_loading_order)Module dependencies define module loading order
+
+The module dependencies define the order in which modules are loaded during startup. For example, if `module-a` depends on `module-b`, `module-b` will be loaded before `module-a.` The order becomes important, for example, if both `module-a` and `module-b` decorate the same definition or if `module-a` inherits a definition from `module-b`.
+
+> **Tip:** Decorations are applied in the module load order.

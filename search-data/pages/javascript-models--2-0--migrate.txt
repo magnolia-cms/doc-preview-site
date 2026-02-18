@@ -1,0 +1,25 @@
+---
+title: "Migrate"
+url: https://docs.magnolia-cms.com/javascript-models/2.0/migrate/
+category: Modules
+version: modules
+breadcrumb: Javascript Models > Migrate
+---
+
+# Migrate
+
+## [](#_migrating_to_version_2_0)Migrating to version `2.0`
+
+If you are migrating from version `1.x` to `2.x`, follow the steps below. You should also read the [Migration Guide from Nashorn to GraalVM JavaScript](https://docs.oracle.com/en/graalvm/enterprise/20/docs/reference-manual/js/NashornMigrationGuide/) provided by Oracle.
+
+### [](#_update_the_maven_dependency)Update the Maven dependency
+
+Open your POM and update the `dependencyManagement` for JS Models.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.javascript-models</groupId>
+  <artifactId>magnolia-module-javascript-models</artifactId>
+  <version>2.0</version>
+</dependency>
+```

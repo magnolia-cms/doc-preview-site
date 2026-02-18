@@ -1,0 +1,155 @@
+---
+title: "E-commerce module"
+url: https://docs.magnolia-cms.com/ecommerce/ecommerce-module/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > E-commerce module
+---
+
+# E-commerce module
+
+| Integration framework | Commerce integration framework |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [ECOMMERCE](http://jira.magnolia-cms.com/browse/ECOMMERCE) |
+| Maven site | [magnolia-ecommerce](https://nexus.magnolia-cms.com/#browse/browse:magnolia.addons.releases:info%2Fmagnolia%2Fecommerce%2Fmagnolia-ecommerce) |
+| Latest | 3.0.0 |
+| Available on SPA/Headless | Yes |
+
+| artifactID | Description |
+| --- | --- |
+| `magnolia-ecommerce-parent` | Parent reactor. |
+| `magnolia-ecommerce` | Provides the [API for the e-commerce add-on](../ecommerce-rest-endpoints/) . |
+| `magnolia-ecommerce-commercetools-connector` | Provides a default implementation to connect to the [commercetools](https://commercetools.com/) e-commerce solution. |
+| `magnolia-ecommerce-magento-connector` | Provides a default implementation to connect to the [Adobe Commerce](https://magento.com/) (formerly Magento) e-commerce solution. |
+| `magnolia-ecommerce-salesforce-connector` | Provides a default implementation to connect to the [Salesforce Commerce Cloud](https://www.salesforce.com/eu/products/commerce-cloud/overview/) e-commerce solution. |
+| `magnolia-ecommerce-sap-connector` | Provides a default implementation to connect to the [SAP Commerce Cloud](https://www.sap.com/products/crm/e-commerce-platforms.html) e-commerce solution (formerly [Hybris](https://www.sap.com/acquired-brands/what-is-hybris.html) ) |
+| `magnolia-ecommerce-templating` | Provides the [ecomfn templating functions](../ecomfn/) . |
+| `magnolia-ecommerce-ui` | Provides the [E-commerce app](../ecommerce-app/) . |
+| `magnolia-ecommerce-decoration` | Provides app actions and enables [text classification](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Text-Classification-module/) and [image recognition](../../image-recognition/developers/install/) through decoration. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-ui</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-commercetools-connector</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-magento-connector</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-sap-connector</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-salesforce-connector</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-templating</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-decoration</artifactId>
+  <version>3.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_configuration)Configuration
+
+This section explains how to configure the connection between the E-commerce module and your external e-commerce solution.
+
+You can create or edit the configuration in the JCR or the File System (YAML) under `<module-name>/ecommerces/<definition-name>`.
+
+Before you configure the connection, make sure you know:
+
+-   Which solution you want to connect to. Default implementations are provided for:
+
+    -   [commercetools](../config/config-commercetools/)
+
+    -   [Adobe Commerce](../config/config-adobe/) (formerly Magento)
+
+    -   [Salesforce Commerce Cloud](../config/config-salesforce/)
+
+    -   [SAP Commerce Cloud](../config/config-sap/) (formerly Hybris)
+
+
+-   The relevant URLs to connect to your e-commerce solution.
+
+-   Connection credentials for your e-commerce solution.
+
+
+> **Tip:** The Commerce integration framework provides out-of-the-box connectors to commercetools, Adobe Commerce, Salesforce Commerce Cloud and SAP Commerce Cloud. If you use another third-party e-commerce solution, you can configure your own connector.

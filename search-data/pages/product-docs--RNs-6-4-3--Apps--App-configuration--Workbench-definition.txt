@@ -1,0 +1,43 @@
+---
+title: "Workbench definition"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/App-configuration/Workbench-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > App configuration > Workbench definition
+---
+
+# Workbench definition
+
+Workbench is a view that displays content items in a workspace. It’s part of the content app framework, typically defined in the browser subapp.
+
+The workbench contains a list of content views. Common view types are tree, list, and thumbnail. By default, JCR content apps use the tree view type.
+
+The workbench also provides a default [search box](../../../Administration/Configuring-search/##_configuring_in_app_search_filters).
+
+> **Note:** This workbench definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.contentapp.configuration.WorkbenchDefinition.If you work with the Magnolia 5 UI framework, see instead.
+
+## [](#_example_definition)Example definition
+
+```yml
+workbench:
+  contentViews:
+    # add view definitions
+  extensionViews:
+    - view:
+        $type: thumbnailView
+      icon: icon-view-thumbnails
+      expandRatio: 1f
+  name: wbName
+```
+
+| Property | Description |
+| --- | --- |
+| `contentViews` | **required** Parent node for the content view definitions. Defines how users can view content in the workbench. Must contain at least one content view. For more information, see [Content view definition](../Content-view-definition/) . |
+| []() `extensionViews` | **optional** List of extension views configured in the workbench. Available classes: • info.magnolia.ui.contentapp.configuration.ExtensionViewDefinition • info.magnolia.ui.chooser.definition.FullTextSearchExtensionViewDefinition ** You can see an example extension view configured to display analytics data in the Pages app in the [analytics](../../../Modules/extensions-and-frameworks/analytics-integration-framework/#_analytics_where_you_need_them) documentation. | ** | You can see an example extension view configured to display analytics data in the Pages app in the [analytics](../../../Modules/extensions-and-frameworks/analytics-integration-framework/#_analytics_where_you_need_them) documentation. |
+| ** | You can see an example extension view configured to display analytics data in the Pages app in the [analytics](../../../Modules/extensions-and-frameworks/analytics-integration-framework/#_analytics_where_you_need_them) documentation. |
+| `filters` | **optional** Contains a list of info.magnolia.ui.filteringapp.filter.FilterViewDefinition . For more information, see [configuring search](../../../Administration/Configuring-search/#inapp-filters-anchor) |
+| `view` | **required** Actual view definition to be displayed in the extension panel. Must implement the info.magnolia.ui.ViewDefinition interface. |
+| `expandRatio` | **optional** , *default is 0* Defines how space is divided in the workbench. A value of `1f` means that the extension panel occupies the same amount of space as the content panel. |
+| `expandHorizontally` | **optional** , *default is false for ExtensionViewDefinition and true for FullTextSearchExtensionViewDefinition* When `true` , the extension panel is displayed horizontally. For this to work, the view must extend [com.vaadin.ui.HorizontalLayout](https://vaadin.com/api/framework/8/com/vaadin/ui/HorizontalLayout.html) . |
+| `icon` | **optional** , *default is icon-analytics-app* CSS class that identifies an icon used for the extension panel. For available names, see [Icons](../../Developing-an-app/General-aspects/Designing-an-app/Icons/) . |
+| `name` | **optional** , *default is workbench* Name of the workbench. |

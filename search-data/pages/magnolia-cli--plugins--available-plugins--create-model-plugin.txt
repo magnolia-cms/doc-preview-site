@@ -1,0 +1,70 @@
+---
+title: "Create Model plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/create-model-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Create Model plugin
+---
+
+# Create Model plugin
+
+| Package name | `@magnolia/cli-create-model-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-create-model-plugin](https://www.npmjs.com/package/@magnolia/cli-create-model-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md]({cli-create-model-plugin-npmRepoUrlUnpkg}CHANGELOG.md) |
+
+## [](#_installing)Installing
+
+The plugin doesn’t come pre-installed with Magnolia CLI. You must add it to the `mgnl.config.js` project file.
+
+> **Note:** The plugin is installed automatically by the Jumpstart plugin if it is defined in a project template.
+
+### [](#_with_add_plugin)With add-plugin
+
+Run the following command in the project folder.
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-create-model-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+The command automatically downloads, installs, and registers the plugin in the `mgnl.config.js` file.
+
+### [](#_manually)Manually
+
+1.  Run the following command in the project folder.
+
+    ```console
+    npm install @magnolia/cli-create-model-plugin
+    ```
+
+2.  Modify the `mgnl.config.js` file accordingly.
+
+    ```js
+    import CreateModelPlugin from "@magnolia/cli-create-model-plugin";
+
+    export default {
+      plugins: [
+        new CreateModelPlugin()
+      ]
+    };
+    ```
+
+
+| Form (short and long) | Description |
+| --- | --- |
+| `-lm [name]` `--light-module [name]` | Sets a light module for the models. By default, uses the directory specified in the `mgnl.config.js` file. |
+| `-s [path…​]` `--source [path…​]` | Provide one or more paths to YAML files for specific components or pages to generate the models from. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+| Property name | Description |
+| --- | --- |
+| `lightModulesPath` | The path to a directory containing all light modules. |
+| `lightModule` | The name of the light module containing the dialogs ( `dialogs/components` or `dialogs/pages` ) to generate the models from. Alternative forms: `-lm [name]` , `--light-module [name]` |
+| `type` | The file type or extension used in the project’s framework (for example `tsx` , `jsx` , or `vue` ). It determines which version of the prototype files is used and the file extensions for the generated code. |
+| `componentsSpaPath` | The path to the folder containing the front-end components. |
+| `pagesSpaPath` | The path to the folder containing the front-end pages. |
+| `customTypes` | Allows you to override the default Magnolia types with your own type mappings. Example: `customTypes: { textField: "number" }` |

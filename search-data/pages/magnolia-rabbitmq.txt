@@ -1,0 +1,141 @@
+---
+title: "RMQ Publication module"
+url: https://docs.magnolia-cms.com/magnolia-rabbitmq/
+category: Modules
+version: modules
+breadcrumb: RMQ Publication module
+---
+
+# RMQ Publication module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [QAARQ](https://magnolia-cms.atlassian.net/browse/QAARQ) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/services/magnolia-rabbitmq-parent) |
+| Latest | 1.9 ** Compatible with Magnolia 6.1. | ** | Compatible with Magnolia 6.1. |
+| ** | Compatible with Magnolia 6.1. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+-   Magnolia 6.1
+
+-   Magnolia 5.7
+
+-   Magnolia 5.6
+
+
+```xml
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-connector</artifactId>
+  <version>1.9</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-activation</artifactId>
+  <version>1.9</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-monitoring</artifactId>
+  <version>1.9</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-connector</artifactId>
+  <version>1.8</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-activation</artifactId>
+  <version>1.8</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-monitoring</artifactId>
+  <version>1.8</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-connector</artifactId>
+  <version>1.7.1</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-activation</artifactId>
+  <version>1.7.1</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.rabbitmq</groupId>
+  <artifactId>magnolia-rabbitmq-monitoring</artifactId>
+  <version>1.7.1</version>
+</dependency>
+```
+
+### [](#_installing_rabbitmq)Installing RabbitMQ
+
+Follow the instructions at [RabbitMQ](https://www.rabbitmq.com/download.html) to download and install the service. Instructions and packages are provided for all operating systems. It’s also a good idea to enable the [management plugin](https://www.rabbitmq.com/management.html).
+
+> **Tip:** To get started even quicker consider using CloudAMQP to get RabbitMQ as a service. For more detailed instructions see RMQ Setup Example.
+
+## [](#_usage)Usage
+
+RabbitMQ can be used for publication and/or synchronization. There exists a single exchange sever with a fanout queue. Exchanges are configured in the connector module.
+
+The publication setup would look like this:
+
+![RabbitMQ exchange with 3 publics](_images/RabbitMQ-exchange-with-3-publics.jpg)
+
+| Property | Description |
+| --- | --- |
+| `clientName` | **required** The value specified here must match the clientName property in the activate and deactivate commands for RabbitMQ. **Example** : `/modules/activation/commands/withContentSyncingVersioned/activate/rabbitmq-activate@clientName` |
+| `enabled` | **required** Enables and disables the client. Toggling this property restarts the client. |
+| `hostName` | **required** Address of the broker. |
+| `password` | **required** Password of the user account to connect with. |
+| `portNumber` | **required** Port number to connect the AMQP service. |
+| `username` | **required** Username of the user account to connect with. |
+| `virtualHost` | **required** Virtual host to connect to. |
+
+| Catalog | Command chain | Description |
+| --- | --- | --- |
+| `withContentSyncing` | `activate, deactivate` | Allows you to hook into transmission over RabbitMQ once you have done a standard activation. Calls the standard activation command first and then calls `rabbitmq-activate` or `rabbitmq-deactivate` command. |
+| `withContentSyncingVersioned` | `activate, deactivate` | Same as `withContentSyncing` but adds the versioning command to the chain. Versioning will be performed first in the chain. |
+| `rbmqVersioned` | `activate, deactivate` | Replaces standard activation with RabbitMQ versioned activation. Calls the versioning command first and then calls `rabbitmq-activate` or `rabbitmq-deactivate` command. |
+
+## [](#_activation_mechanism)Activation mechanism
+
+Each activation is prefixed with a BOA (Beginning Of Activation) message and post-fixed with a EOA (End Of Activation) message. When the consumer receives a message on a public instance, the message is stamped with the identity of the receiver and send back to the ACK queue. When the author receives the message, the author knows exactly if the message started consuming the activation. In addition, identifying the activation in queue with BOA and EOA allow identification of TX inside the the queue.
+
+![activation mechanism](_images/activation-mechanism.jpg)
+
+| Property | Description |
+| --- | --- |
+| `workspace` | Workspace of last activated node. |
+| `address` | IP of consuming instance. |
+| `name` | `hostName` of consuming instance. |
+| `syncStamp` | Timestamp of last activated node. |
+| `diff` | Difference on seqNbr with other instances who activated a similar node. |
+| `uuid` | UUID of last activated node. |
+| `seqNbr` | Sequence number of last activated node. |
+| `exceptions` | Exceptions that may have occurred. |
+
+| Version | Notes |
+| --- | --- |
+| `1.9` | • [QAARQ-41](https://magnolia-cms.atlassian.net/browse/QAARQ-41) • [QAARQ-35](https://magnolia-cms.atlassian.net/browse/QAARQ-35) • [QAARQ-34](https://magnolia-cms.atlassian.net/browse/QAARQ-34) |
+| `1.8` | • [QAARQ-31](https://magnolia-cms.atlassian.net/browse/QAARQ-31) • [QAARQ-29](https://magnolia-cms.atlassian.net/browse/QAARQ-29) • [QAARQ-28](https://magnolia-cms.atlassian.net/browse/QAARQ-28) • [QAARQ-27](https://magnolia-cms.atlassian.net/browse/QAARQ-27) • [QAARQ-26](https://magnolia-cms.atlassian.net/browse/QAARQ-26) • [QAARQ-25](https://magnolia-cms.atlassian.net/browse/QAARQ-25) • [QAARQ-24](https://magnolia-cms.atlassian.net/browse/QAARQ-24) |
+| `1.7.1` | • [QAARQ-28](https://magnolia-cms.atlassian.net/browse/QAARQ-28) • [QAARQ-26](https://magnolia-cms.atlassian.net/browse/QAARQ-26) • [QAARQ-24](https://magnolia-cms.atlassian.net/browse/QAARQ-24) |
+| `1.7` | Initial realease of the extensions version of this module. • [QAARQ-22](https://magnolia-cms.atlassian.net/browse/QAARQ-22) • [QAARQ-21](https://magnolia-cms.atlassian.net/browse/QAARQ-21) |

@@ -10,9 +10,9 @@ breadcrumb: DX Core > Magnolia DXP > Personalize site components
 
 This page describes component personalization, adapting the content of a component to the visitor according to his or her personal preferences, needs and capabilities.
 
-[Personalization](../../../use-cases/Personalization/) at the level of components works the same way as page personalization except that you are personalizing a smaller item.
+[Personalization](../../../../RNs-6-4-3/use-cases/Personalization/) at the level of components works the same way as page personalization except that you are personalizing a smaller item.
 
-![Youtube icon](../../../_images/YouTube-social-icon_dark_24px.gif) Magnolia Hands on Demo: [Personalization](https://video.magnolia-cms.com/magnolia-hands-on-demo-4) (April 19, 2022)
+![Youtube icon](../../../../RNs-6-4-3/_images/YouTube-social-icon_dark_24px.gif) Magnolia Hands on Demo: [Personalization](https://video.magnolia-cms.com/magnolia-hands-on-demo-4) (April 19, 2022)
 
 You can personalize a page and its components at the same time. The feature is disabled by default. To enable it, set `/modules/personalization-components/config/allowNestedVariants` to `true`.
 
@@ -35,39 +35,39 @@ Component personalization is possible through the following actions in the Compo
 
 If the selected component hasn’t been personalized yet, only the **Add component** **variant** option will be available:
 
-![Adding component variant in action bar](../../../_images/6-0-pages-app-add-comp-variant-action.png)
+![Adding component variant in action bar](../../../../RNs-6-4-3/_images/6-0-pages-app-add-comp-variant-action.png)
 
-To add a new variant to a component, click **Add component variant**. The variant icon ![The variant icon](../../../_images/6-0-variants-icon.gif) and the default label **variant-0** appear in the component bar:
+To add a new variant to a component, click **Add component variant**. The variant icon ![The variant icon](../../../../RNs-6-4-3/_images/6-0-variants-icon.gif) and the default label **variant-0** appear in the component bar:
 
-![Variant in the component bar](../../../_images/6-0-pages-app-component-variant-bar.png)
+![Variant in the component bar](../../../../RNs-6-4-3/_images/6-0-pages-app-component-variant-bar.png)
 
 The original component content is renamed to `Original`. Click on the **variant-0** label to view and access the list of variants and the original from the pop-up menu that appears.
 
-![Changing between variants](../../../_images/6-2-change-variant.gif)
+![Changing between variants](../../../../RNs-6-4-3/_images/6-2-change-variant.gif)
 
 If not associated with any target [audience](../../../use-cases/Personalization/), the newly added variant of the component is named automatically by Magnolia (`variant-0`). Once the target audience is defined and associated with the variant, the name of the audience is displayed in place of the automatically generated name. This version of the component will be displayed to page visitors if no audience trait can be matched with the personalization properties assigned to the other variant(s) of the component.
 
 Adding a variant to a component will affect its publishing status as well as the publishing status of its parent area and parent page: all of these are changed to `modified` (yellow) because creating a variant is considered an edit action on the component.
 
-When a page has content variants for some of its components, the variants icon ![Variant icon](../../../_images/6-0-variants-icon.gif) appears in the top bar of the page in the Edit and Preview views and next to the name of the page in the page tree view.
+When a page has content variants for some of its components, the variants icon ![Variant icon](../../../../RNs-6-4-3/_images/6-0-variants-icon.gif) appears in the top bar of the page in the Edit and Preview views and next to the name of the page in the page tree view.
 
 ### [](#_editing_a_variant)Editing a variant
 
 After a variant has been published, you will see the green circle in the status column in the Pages app.
 
-![Pages app publication status](../../../_images/6-2-pub-status.png)
+![Pages app publication status](../../../../RNs-6-4-3/_images/6-2-pub-status.png)
 
-Let’s say we want to add another phone number to the contacts in our EMEA variant. We open the *contact: Europe, Middle East & Africa* variant, go to the component we want to modify, click on the edit icon ![Edit icon](../../../_images/edit-component-icon.png), add the new number, and **Save** changes.
+Let’s say we want to add another phone number to the contacts in our EMEA variant. We open the *contact: Europe, Middle East & Africa* variant, go to the component we want to modify, click on the edit icon ![Edit icon](../../../../RNs-6-4-3/_images/edit-component-icon.png), add the new number, and **Save** changes.
 
-![Modifying the variant](../../../_images/6-2-editing-variant.gif)
+![Modifying the variant](../../../../RNs-6-4-3/_images/6-2-editing-variant.gif)
 
 In the component itself, we can see a yellow circle that tells us that this component has been modified.
 
-![Modified status in the component](../../../_images/6-2-component-status.png)
+![Modified status in the component](../../../../RNs-6-4-3/_images/6-2-component-status.png)
 
 Back in the Pages app, the publishing status for the variant we have just edited also turned from a green circle to a yellow one. This means that the modification needs to be published.
 
-![Modified status in the Pages app](../../../_images/6-2-pages-app-modified.png)
+![Modified status in the Pages app](../../../../RNs-6-4-3/_images/6-2-pages-app-modified.png)
 
 To do so, select the modified variant and click on **Publish** in the action bar. This will open a dialog where you should insert a comment briefly describing the changes made to the variant, and then click the green **Publish** button
 
@@ -145,7 +145,7 @@ areas:
 
 You can personalize a page and its components at the same time. This feature is disabled by default. To enable it, set `/modules/personalization-components/config/allowNestedVariants` to `true`.
 
-![Enabling personalized components in personalized pages](../../../_images/ADVT-CompPers.png)
+![Enabling personalized components in personalized pages](../../../../RNs-6-4-3/_images/ADVT-CompPers.png)
 
 Related topics
 

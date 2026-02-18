@@ -1,0 +1,53 @@
+---
+title: "REST API"
+url: https://docs.magnolia-cms.com/healthcheck/api/
+category: Modules
+version: modules
+breadcrumb: Extended Health Check module > REST API
+---
+
+# REST API
+
+[Deprecated](../../incubator-modules/deprecations/)
+
+The Extended Health Check module comes with a REST endpoint:
+
+```none
+/.rest/health/v1/check
+```
+
+Returns the health check results with:
+
+-   `healthy` - true if the instance considers itself healthy (HTTP 200) or false if the conditions of some health outcome were met (HTTP status of the health outcome)
+
+-   `description` - the description of the health outcome or "Magnolia is healthy" if healthy
+
+
+Returns an HTTP status of:
+
+-   `200` - the instance is healthy
+
+-   the HTTP status of the health outcome
+
+
+## [](#_reset_magnolia_health_events)Reset Magnolia health events
+
+Get `/.rest/health/v1/reset`
+
+Removes all Magnolia health events.
+
+> **Note:** Resets may not change Magnolia health status if a health outcome uses health voters like ContextAvailableVoter, MagnoliaUpdateNeededVoter or QueryVoter that do not use health events.
+
+### [](#_returns)Returns
+
+`200` - all health events removed
+
+## [](#_retrieve_magnolia_health_events)Retrieve Magnolia health events
+
+Get `/.rest/health/v1/dump`
+
+Retrieves all health events currently in the health log.
+
+### [](#_returns_2)Returns
+
+`200` - all health events returned in the response body

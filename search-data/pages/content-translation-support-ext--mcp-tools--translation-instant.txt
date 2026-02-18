@@ -1,0 +1,82 @@
+---
+title: "Instant Translation Tool"
+url: https://docs.magnolia-cms.com/content-translation-support-ext/mcp-tools/translation-instant/
+category: Modules
+version: modules
+breadcrumb: Content Translation Extended module > MCP tools > Instant translation tool
+---
+
+# Instant Translation Tool
+
+The `translation.instant` tool translates a content node from one language to another using a configured translation provider. It is exposed through the [Magnolia embedded MCP server](../../../magnolia-mcp/developers/mcp-server/) and is available to the AI Accelerator agent.
+
+## [](#_what_it_does)What it does
+
+When invoked, this tool:
+
+1.  Reads the content node at the specified JCR path.
+
+2.  Exports the translatable properties as an XLIFF document.
+
+3.  Sends the XLIFF to the configured translation provider (e.g., ChatGPT, DeepL, Google Translate).
+
+4.  Imports the translated XLIFF back into the target language variant of the node.
+
+5.  Returns the result to the AI agent.
+
+
+The translation is **synchronous**: the tool waits for the provider to return the translated content before completing.
+
+| Property | Value |
+| --- | --- |
+| **Tool name** | `translation.instant` |
+| **Command catalog** | `translation` |
+| **Command name** | `instantTranslation` |
+| **Provider ID** | `translation` |
+| **Priority** | `50` |
+
+| Parameter | Type | Required | Description |
+| --- | --- | --- | --- |
+| `path` | string | Yes | Path of the content node to translate. Example: `/travel/destinations/spain` |
+| `sourceLang` | string | Yes | Source language ISO code (e.g., `en` , `de` , `fr` ) |
+| `targetLang` | string | Yes | Target language ISO code (e.g., `en` , `de` , `fr` ) |
+| `repository` | string | No | JCR repository containing the content. Default: `website` |
+| `providerName` | string | No | Registered translation provider/config ID. Default: `ChatGPT` |
+
+## [](#_technical_details)Technical details
+
+This section describes the internal architecture and implementation of the instant translation tool.
+
+### [](#_execution_flow)Execution flow
+
+The following diagram shows how a translation request flows from the AI agent through the MCP server and command infrastructure to the translation service and back:
+
+![diagram](https://kroki.io/mermaid/svg/eNptkk2LgzAQhu_9FaGnLmy7dw-F4rYgbKFsPex1mgwSyIdNovTn7yTWD1QPYvI-72TeiR6fDRqO3xIqB3rD6KnBBcllDSawU4X0Bs9ORfe9IK75Lepn_UAhUKT1HV2LboGWiSwdGK8gSGtKa9XN2VaKFfr8Qh75wvhA64ktKk2wS0uuxbojt1qDEQvDveWzlmLrkuMmoSnx_nikTBkL1Kz_4qAUCyN_kN1hiSeO6JJgTC3ibruCbj8ZuMp_JEsZHTHQ6BnFuE8yxcrYO4K_goEK3aGnO5KQHjy_ausCM1Yg9cz-forLZcJQ5GwIgDvfPLT0ntrrCpG87yv1Y6FbnVdJeqHTSUmLRwXqHANTloaEAzzk-0XfqDAGe48q_gQTiQbST3ymxOmSlC6lr_YP6bTlHw==)
+
+### [](#_guice_registration)Guice registration
+
+The `TranslationToolsGuiceModule` registers both the provider and executor with the MCP infrastructure:
+
+```java
+public class TranslationToolsGuiceModule extends AbstractGuiceComponentConfigurer {
+
+    @Override
+    protected void configure() {
+        super.configure();
+        Multibinder.newSetBinder(binder(), McpToolProvider.class)
+            .addBinding().to(TranslationToolProvider.class);
+        Multibinder.newSetBinder(binder(), McpToolExecutor.class)
+            .addBinding().to(InstantTranslationExecutor.class);
+    }
+}
+```
+
+### [](#_command_configuration)Command configuration
+
+The command is registered via YAML bootstrap:
+
+`config.modules.content-translation-support-ext-instant-command.commands.translation.instantTranslation.yaml`
+
+```yaml
+class: info.magnolia.translation.ext.instant.command.InstantTranslationCommand
+```

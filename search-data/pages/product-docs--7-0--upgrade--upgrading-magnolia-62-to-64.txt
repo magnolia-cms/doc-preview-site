@@ -106,7 +106,7 @@ This section guides you through updating Magnolia, Jakarta, servlet container, a
 
     -   Use the latest supported Tomcat release.
 
-        For other servlet containers, see the [Certified stack](../../Administration/Certified-stack/).
+        For other servlet containers, see the [Certified stack](../../../RNs-6-4-3/Administration/Certified-stack/).
 
     -   Update Maven dependencies from `javax` group IDs to their Jakarta equivalents.
 
@@ -123,7 +123,7 @@ This section guides you through updating Magnolia, Jakarta, servlet container, a
 
         > **Tip:** To avoid duplicate classes on the classpath, replace all javax dependencies with their Jakarta EE 10 equivalents.
 
-        Versions of these dependencies are provided in Magnolia’s third-party library BOM via the `jakarta.jakartaee-bom` import. For more details, see [Certified stack: Maven coordinates](../../Administration/Certified-stack/#_maven_coordinates).
+        Versions of these dependencies are provided in Magnolia’s third-party library BOM via the `jakarta.jakartaee-bom` import. For more details, see [Certified stack: Maven coordinates](../../../RNs-6-4-3/Administration/Certified-stack/#_maven_coordinates).
 
         1.  If your project depends on `vaadin-server` or `vaadin-compatibility-server`, update the `artifactId` by appending `-mpr-jakarta` to ensure compatibility with Jakarta EE.
 
@@ -312,11 +312,11 @@ This section explains module-specific migrations and removals needed to align wi
 
     Preview all migrated content from CKEditor 4 to ensure it displays and publishes correctly. See the CKEditor 5 migration guides (ckeditor.com/docs/) and the compatibility tables for configuration and plugin differences.
 
-4.  If you use **SSO 3.1 or earlier**, you must migrate configurations per the model introduced in 4.0.0. This includes compatibility adjustments, mandatory configuration changes, removal of certain classes, optional enhancements like JCR-based fallback login, and considerations for users of the SSO Login Extension module. For specific actions and modifications needed to ensure a smooth upgrade, see [Upgrading to SSO 4.0.0](#master@magnolia-sso:ROOT:changelog.adoc#upgrade-sso-anchor). Once these steps are followed, you can upgrade to Magnolia 7.0-compatible version SSO 5.0.
+4.  If you use **SSO 3.1 or earlier**, you must migrate configurations per the model introduced in 4.0.0. This includes compatibility adjustments, mandatory configuration changes, removal of certain classes, optional enhancements like JCR-based fallback login, and considerations for users of the SSO Login Extension module. For specific actions and modifications needed to ensure a smooth upgrade, see [Upgrading to SSO 4.0.0](../../../../magnolia-sso/changelog/#upgrade-sso-anchor). Once these steps are followed, you can upgrade to Magnolia 7.0-compatible version SSO 5.0.
 
 5.  If you use [**Hybrid Assets incubator**](#hybrid-assets:ROOT:index.adoc), the functionality offered by the incubator module is replaced by DAM 5.0 and later. If you used the incubator module, you can optionally use the [migration scripts](../../../../dam/migrate/migrate-HA-to-dam/) to move your assets to the new implementation.
 
-6.  If you use [**DAM Focal incubator**](#dam-focal:ROOT:index.adoc) (`dam-focal`): In 6.2 and 6.3, DAM Focal was provided as an incubator module. In 7.0, it is promoted to a DX Core extension with a *new module name* `image-focal`. The Magnolia 7.0-compatible version of this extension is 2.0. To upgrade:
+6.  If you use [**DAM Focal incubator**](../../../../dam-focal/) (`dam-focal`): In 6.2 and 6.3, DAM Focal was provided as an incubator module. In 7.0, it is promoted to a DX Core extension with a *new module name* `image-focal`. The Magnolia 7.0-compatible version of this extension is 2.0. To upgrade:
 
     1.  Uninstall all the `dam-focal` incubator submodules.
 

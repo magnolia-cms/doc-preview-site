@@ -8,70 +8,20 @@ breadcrumb: Content Translation Extended module > Pre 6.1 Usage
 
 # Pre 6.1 Usage
 
-Content Translation Support Extended (CTSX) enables you to translate content automatically over a translation provider ensuring a more accurate translation. Translation is done from a base language, typically English, to a target language. The base language should exist as content within your website or content app as properties. The target languages should be configured in your site definition. See [Enabling multilanguage content](../../product-docs/7.0/Administration/Language/Language-configuration/#_enabling_multilanguage_content) for more information.
+Content Translation Support Extended (CTSX) enables you to translate content automatically over a translation provider ensuring a more accurate translation. Translation is done from a base language, typically English, to a target language. The base language should exist as content within your website or content app as properties. The target languages should be configured in your site definition. See [Enabling multilanguage content](../../product-docs/RNs-6-4-3/Administration/Language/Language-configuration/#_enabling_multilanguage_content) for more information.
 
 > **Note:** The Configuration showed here reflects usage with Magnolia 6.1 and earlier. If you use a newer version of Magnolia, see Content Translation Extended module.
 
-## [](#_configuration)Configuration
-
 | Parameter | Description |
 | --- | --- |
-| `supportedFieldDefinitions` | **required**<br><br>Defines the field types that are going to be translated. Default is text and richText; possible values are composite and multiValue. |
-| `propertiesToTranslateFinder` | **required**<br><br>The class that finds the properties to be translated. Default is info.magnolia.translation.ext.core.finder.AdaptivePropertiesToTranslateFinder; finds the properties by processing the fields in the dialogs. |
-| `sourceLanguages` | **optional**<br><br>From version 2.9.7, 3.0.3 Defines the source languages. The default is the value in the site definition fallbackLanguage; you can define as many languages as your 3rd party translator supports. The dialog will display only the ones supported in the current site definition. |
+| `supportedFieldDefinitions` | **required** Defines the field types that are going to be translated. Default is text and richText; possible values are composite and multiValue. |
+| `propertiesToTranslateFinder` | **required** The class that finds the properties to be translated. Default is info.magnolia.translation.ext.core.finder.AdaptivePropertiesToTranslateFinder; finds the properties by processing the fields in the dialogs. |
+| `sourceLanguages` | **optional** From version 2.9.7, 3.0.3 Defines the source languages. The default is the value in the site definition fallbackLanguage; you can define as many languages as your 3rd party translator supports. The dialog will display only the ones supported in the current site definition. |
 
-![configuration structure older](../_images/configuration-structure-older.jpg)
-
-## [](#_translation_providers)Translation providers
-
-There are three translation providers to choose from: Google, Microsoft Translator and Translations.com. To make use of the translation functionality, a user account is required for the chosen provider.
-
-A translator module connects Magnolia to translation services. The behavior of the service depends on the translation service selected.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Service</th><th class="tableblock halign-left valign-top">Notes</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Synchronous</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Directly returns the translated result for each translation request.</p></div><div class="ulist"><ul><li><p>Google</p></li><li><p>Microsoft</p></li></ul></div><div class="paragraph"><p>No support yet for translating languages which contain country information.</p></div><div class="ulist"><ul><li><p>Translating from "English" to "German" is supported but</p></li><li><p>Translating from "English, United Kingdom" or "Germany" is not supported yet</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Asynchronous</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Does not return the translated result for each translation request. A second request is required to get the translated result.</p></div><div class="ulist"><ul><li><p>Translations.com</p></li></ul></div><div class="paragraph"><p>Supports translating languages which contain country information.</p></div><div class="ulist"><ul><li><p>Add the country information for locales in the site definition (e.g: country=GB for English, United Kingdom)</p></li><li><p>Mix the country information with fallbackLocale (or defaultLocale) property for setting the source language in the site definition (e.g: fallbackLocale=en_GB for English, United Kingdom)</p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_common_properties)Common properties
-
-| Property | Description |
+| Service | Notes |
 | --- | --- |
-| `autoTranslationAllowed` | **optional**<br><br>When true the content review process (workflow) is bypassed. |
-| `class` | **required**<br><br>Definition class for the translator to be used. |
-| `configName` | **required**<br><br>The display name of the configuration in Magnolia. |
-| `defaultFlag` | **required**<br><br>Set the translator to be the default. |
-| `enabledFlag` | **required**<br><br>Enables or disables the configuration with `true` or `false`. |
-| `implementationClass` | **required**<br><br>Implementation class for the translation service. |
-
-## [](#_translation_extend_app)Translation Extend app
-
-The module comes with the Translation Extend app which can be found under the tools menu of the applauncher. This app extends the functionality of Content Translation in the sense that translations can now be automatized. It is still possible to export the automatized translations from the Content Translation app after receiving them.
-
-### [](#_translation_subapps)Translation subapps
-
-The app is made up of several subapps for managing translation files and submissions.
-
--   **Batches**: In the Batches subapp users can
-
-    -   Add a new or edit an existing batch.
-
-    -   Submit a batch for translation.
-
-    -   Get the history of the batch.
-
-    -   Cancel a batch submission.
-
-    -   Reload an existing batch.
-
-
--   **Histories**: Allows for viewing and managing the batch histories.
-
--   **Queues**: Allows for managing the translation submission.
-
--   **Comparison**: Allows you to compare original and translated values before importing or rejecting.
-
-
-### [](#_translation_status)Translation status
-
-Once a batch is created it has a status. The status is visible from Batches subapp.
+| **Synchronous** | Directly returns the translated result for each translation request. • Google • Microsoft No support yet for translating languages which contain country information. • Translating from "English" to "German" is supported but • Translating from "English, United Kingdom" or "Germany" is not supported yet |
+| **Asynchronous** | Does not return the translated result for each translation request. A second request is required to get the translated result. • Translations.com Supports translating languages which contain country information. • Add the country information for locales in the site definition (e.g: country=GB for English, United Kingdom) • Mix the country information with fallbackLocale (or defaultLocale) property for setting the source language in the site definition (e.g: fallbackLocale=en_GB for English, United Kingdom) |
 
 | Status | Description |
 | --- | --- |
@@ -94,7 +44,7 @@ The workflow is identical in nature to the 4-eye content approval workflow used 
 
 ### [](#_message_views)Message views
 
-Workflow message views define how messages display in Pulse during translation workflow. See [Message view definition](../../product-docs/7.0/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/) for more details.
+Workflow message views define how messages display in Pulse during translation workflow. See [Message view definition](../../product-docs/RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/) for more details.
 
 > **Note:** Message views are configured here: /modules/content-translation-support-ext-core/messageViews.
 

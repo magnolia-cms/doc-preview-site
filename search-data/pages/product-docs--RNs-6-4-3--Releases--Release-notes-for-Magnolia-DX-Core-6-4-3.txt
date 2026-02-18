@@ -1,0 +1,138 @@
+---
+title: "Release notes for Magnolia DX Core 6.4.3"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Releases/Release-notes-for-Magnolia-DX-Core-6.4.3/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Releases > Release notes for Magnolia DX Core 6.4.3
+---
+
+# Release notes for Magnolia DX Core 6.4.3
+
+Delivered on February 24, 2026 • Changelog: [23370](https://magnolia-cms.atlassian.net/issues/?filter=23370)
+
+**Magnolia 6.4.3** is a maintenance release focused on UI stability, bug fixes, and infrastructure updates. This version improves navigation and dialog reliability in the content browser, resolves form field behavior issues in the authoring interface, fixes page link generation with special characters, and updates embedded dependencies to current versions.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.4.3.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.4.3/magnolia-dx-core-webapp-6.4.3.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.4.3.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.4.3/travel-demo-webapp-6.4.3.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.4.3.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.4.3/travel-demo-community-webapp-6.4.3.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_4.0.1.zip](../../_attachments/mtk2_4.0.1.zip) (*as a light module*)
+
+
+## [](#_breaking_changes)Breaking changes
+
+### [](#_restricted_access_over_non_https_by_default)Restricted access over non-HTTPS by default
+
+This release changes a security-related default setting for the `secureCookie` property. For all non-HTTPS environments (except localhost), `secureCookie` must be set to `false` for users to log in successfully.
+
+The CSRF `cookieSecure` property now follows the request protocol by default. Previously, the cookie was always marked as secure regardless of the request scheme, which caused browsers such as Safari to reject the cookie over HTTP. That led to breaking the CSRF mechanism when running locally or in non-HTTPS environments.
+
+The `secureCookie` property now defaults to `not set`, meaning the cookie is marked secure only when the request is received over HTTPS. You can override this explicitly via the `secureCookie` property or the `magnolia.cookie.csrf.secure` configuration property. Additionally, the `sameSite` attribute now accepts `None` and `Omitted` as valid values, in addition to `Strict` (default) and `Lax`.
+
+See [Security cookie attributes](../../Administration/Architecture/Request-processing-and-filters/Filters/#_csrfcookietokenfilter_and_csrfsessiontokenfilter).
+
+-   [MAGNOLIA-9829](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9829)
+
+
+## [](#_improvements)Improvements
+
+-   [MGNLRES-432](https://magnolia-cms.atlassian.net/browse/MGNLRES-432) `ResourceDataProvider` must sort children after `listChildren()` to ensure a consistent ordering in the Resources app
+
+-   [MGNLDAM-2025](https://magnolia-cms.atlassian.net/browse/MGNLDAM-2025) Migration from External DAM to DAM 6 (S3 to S3)
+
+-   [MGNLDAM-2048](https://magnolia-cms.atlassian.net/browse/MGNLDAM-2048) Migrate S3 assets (external-dam) from damLinkField in Pages app and Content apps
+
+    For more details, see [Migrate from External DAM framework to DAM 6](../../../../dam/migrate/migrate-extdam-framework-to-dam/)
+
+
+### [](#_security_improvements)Security improvements
+
+[MAGNOLIA-9829](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9829), [MGNLEESOLR-275](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-275), [SECURITY-169](https://magnolia-cms.atlassian.net/browse/SECURITY-169)
+
+We keep the details of security fixes private in line with our [security policy](#6.4@product-docs:ROOT:Administration/Security/Security-policy.adoc). Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
+
+## [](#_bug_fixes)Bug fixes
+
+-   [MAGNOLIA-9713](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9713) Page links contain full JCR path if path contains special characters handled by siteHandler
+
+-   [MAGNOLIA-9851](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9851) `LayeredResourceOrigin`: `listChildren()` inconsistent handling of mixed types and duplicates
+
+-   [MAGNOLIA-9893](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9893) YAML definition reload detection uses mismatched clock sources causing intermittent failures
+
+-   [MGNLDAM-2060](https://magnolia-cms.atlassian.net/browse/MGNLDAM-2060) DAM Azure Blob: Published images are deleted from Azure storage when edited
+
+    > **Important:** This issue affects customers using DAM 5 or DAM 6 with binaries stored in Azure Blob or S3. When versioning is disabled in the DAM workspace and you change the binary of an asset (by editing it or uploading a new one), the system deletes the replaced binaries. This can remove binaries that public instances still reference.DAM 6.0.3 and fix this by stopping binary deletion entirely. A follow-up ticket (MGNLDAM-2048) addresses cleanup of unused binaries.
+
+-   [MGNLEESOLR-276](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-276) MgnlContext is not set when reading assets from dam
+
+-   [MGNLEESOLR-277](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-277) Magnolia instance does not shut down properly when Solr module is active
+
+-   [MGNLREST-921](https://magnolia-cms.atlassian.net/browse/MGNLREST-921) `DefaultI18nContentSupport` does not support lang code with dash
+
+    > **Note:** If your REST Delivery API endpoints serve localized content using dash-separated locale codes, this fix ensures correct locale resolution without requiring workarounds.For more details, see Changes in REST Delivery API and for migration information, see also lang parameter behavior in REST calls.
+
+-   [MGNLUI-9303](https://magnolia-cms.atlassian.net/browse/MGNLUI-9303) Double-clicking a row in the Vaadin browser view often doesn’t work
+
+-   [MGNLUI-9319](https://magnolia-cms.atlassian.net/browse/MGNLUI-9319) Switchable field: `jcrMultiLinkField` doesn’t clear within a form
+
+-   [MGNLUI-9339](https://magnolia-cms.atlassian.net/browse/MGNLUI-9339) `jcrMultiLinkField` doesn’t work with `textInputAllowed: true` and `showOptions: false`
+
+-   [MGNLUI-9348](https://magnolia-cms.atlassian.net/browse/MGNLUI-9348) Delete confirmation dialog not working for non content-type defined subapps
+
+-   [MGNLUI-9355](https://magnolia-cms.atlassian.net/browse/MGNLUI-9355) Deprecation messages of `implementationClass`
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MGNLEESOLR-275](https://magnolia-cms.atlassian.net/browse/MGNLEESOLR-275) Update `org.apache.solr` to version `9.10.1`
+
+-   [MGNLTOMCAT-69](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-69) Update `org.apache.tomcat:tomcat` to version `10.1.52`
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Barebones Tomcat Bundle `2.0.2`
+
+-   Community Edition `6.4.3`
+
+-   DX Core `6.4.3`
+
+-   Demo Projects `6.4.3`
+
+-   Magnolia `6.4.3`
+
+-   Resources `5.0.1`
+
+-   Solr Search Provider `10.0.1`
+
+-   Third-party library BOM for Extensions `6.4.3`
+
+-   Third-party library BOM `6.4.3`
+
+-   UI `6.4.3`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.4.2.
+
+-   Cloudinary DAM connector `3.0.2`
+
+-   Content Translation Support Extended `5.1.1`
+
+-   SSO `6.0.0`
+
+-   Package Manager `2.0.3`
+
+-   UI Framework JavaScript `4.0.3`
+
+-   URL Translation `6.4.1`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues.

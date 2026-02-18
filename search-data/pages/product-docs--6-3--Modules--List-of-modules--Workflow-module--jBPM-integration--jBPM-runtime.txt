@@ -77,16 +77,16 @@ public class MgnlRuntimeEnvironment extends SimpleRuntimeEnvironment {
 
 The most important classes involved in setting up the jBPM Runtime and communicating with the engine.
 
-![UML runtime](../../../../../_images/UML_runtime.png)
+![UML runtime](../../../../../../RNs-6-4-3/_images/UML_runtime.png)
 
 ## [](#_starting_the_jbpm_engine)Starting the jBPM engine
 
 This sequence diagram illustrates how the Runtime is initialized during module startup. After startup the WorkflowManager has a fully initialized RuntimeManager which allows communicating with the engine.
 
-![Module start](../../../../../_images/module_start.png)
+![Module start](../../../../../../RNs-6-4-3/_images/module_start.png)
 
 ## [](#_launching_a_process)Launching a process
 
 This sequence diagram shows how a process gets launched using the LaunchWorkflowCommand.
 
-![Launch process](../../../../../_images/launch_process.png)
+![Launch process](../../../../../../RNs-6-4-3/_images/launch_process.png)

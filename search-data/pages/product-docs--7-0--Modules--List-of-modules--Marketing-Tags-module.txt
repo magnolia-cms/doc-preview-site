@@ -8,15 +8,13 @@ breadcrumb: DX Core > Modules > Marketing Tags module
 
 # Marketing Tags module
 
-[Personalization](../../../use-cases/Personalization/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLTAGS](https://magnolia-cms.atlassian.net/browse/MGNLTAGS) |
-| Maven site | [Marketing Tags](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmarketingtags%2Fmagnolia-marketing-tags%2F4.0.0) |
-| Latest | `4.0.0` |
-| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | Yes |
+| Maven site | [Marketing Tags](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fmarketingtags%2Fmagnolia-marketing-tags%2F{magnolia-marketing-tags-64}) |
+| Latest | `{magnolia-marketing-tags-64}` |
+| [Available on SPA/Headless](../../../../RNs-6-4-3/Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | Yes |
 
 ## [](#_marketing_tags)Marketing tags
 
@@ -26,26 +24,26 @@ A tag is typically a piece of JavaScript code. When a page loads, the JavaScript
 
 > **Tip:** If the service provides an analytics dashboard, you can display it in the Marketing Tags app.
 
-![Tags function diagram](../../../_images/diagram-tags-manager.png)
+![Tags function diagram](../../../../RNs-6-4-3/_images/diagram-tags-manager.png)
 
 Since many of these tags require cookies to work, you can also [link tags to cookies](../Privacy-module/GDPR-and-cookies/) defined in the [Cookies app](../../../Apps/List-of-apps/Cookies-app/). By linking tags to cookies, you can make sure the tags used on your website comply with data privacy rules.
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 -   Latest version
 
 -   Latest bundled version
 
 
-4.0.0
+{magnolia-marketing-tags-64}
 
 ```xml
 <dependency>
   <groupId>info.magnolia.marketingtags</groupId>
   <artifactId>magnolia-marketing-tags</artifactId>
-  <version>4.0.0</version>
+  <version>{magnolia-marketing-tags-64}</version>
 </dependency>
 ```
 
@@ -67,13 +65,13 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 
 ### [](#_apps)Apps
 
-The [Marketing Tags app](../../../Apps/List-of-apps/Marketing-Tags-app/) allows editors to insert tags such as JavaScript code snippets for analytics engines into Web pages.
+The [Marketing Tags app](../../../../RNs-6-4-3/Apps/List-of-apps/Marketing-Tags-app/) allows editors to insert tags such as JavaScript code snippets for analytics engines into Web pages.
 
 ## [](#_inserting_tags_in_the_community_edition)Inserting tags in the Community Edition
 
 The Marketing Tags module is a DX Core module. If you work with the Community Edition you can include code snippets on your pages as resource files.
 
-1.  Include the code snippet as a [resource file](../../../Developing/Resources/) in your project.
+1.  Include the code snippet as a [resource file](../../../../RNs-6-4-3/Developing/Resources/) in your project.
 
     /<magnolia.resources.dir>/<my-module>/webresources/js/gtag.js
 
@@ -89,7 +87,7 @@ The Marketing Tags module is a DX Core module. If you work with the Community Ed
     ```
 
 
-2.  Use the Freemarker `include` directive in your template script, as if you were [referencing another script](../../../Developing/Resources/).
+2.  Use the Freemarker `include` directive in your template script, as if you were [referencing another script](../../../../RNs-6-4-3/Developing/Resources/).
 
     home.ftl
 

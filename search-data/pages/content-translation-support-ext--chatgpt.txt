@@ -8,13 +8,13 @@ breadcrumb: Content Translation Extended module > CTSX ChatGPT Translator
 
 # CTSX ChatGPT Translator
 
-[Content management](../../product-docs/7.0/use-cases/content-management/) [Tier 1](../../incubator-modules/incubator-module-list/#_tier_1_modules) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) [EXCONTRANS](https://magnolia-cms.atlassian.net/browse/EXCONTRANS) [Magnolia 6.4](../../product-docs/7.0/) compatible
+[Content management](../../product-docs/RNs-6-4-3/use-cases/content-management/) [Tier 1](../../incubator-modules/incubator-module-list/#_tier_1_modules) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) [EXCONTRANS](https://magnolia-cms.atlassian.net/browse/EXCONTRANS) [Magnolia 6.4](../../product-docs/RNs-6-4-3/) compatible
 
 The **ChatGPT translation** module performs translations using the OpenAI APIs. Translations are handled synchronously.
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 > **Important:** In order to start the ChatGPT translation process, ensure the core and apps modules for Content Translation Extended are already installed.
 
@@ -22,110 +22,25 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.translation</groupId>
   <artifactId>magnolia-content-translation-support-ext-chatgpt</artifactId>
-  <version>5.0.0</version>
+  <version>5.1.0</version>
 </dependency>
 ```
 
-## [](#_configuration)Configuration
-
-The configuration can be done using JCR or YAML.
-
--   Refer to the [JCR Configuration](#_jcr_configuration) for the JCR configuration.
-
--   Refer to the [YAML configuration](#_yaml_configuration) for instructions on how to define settings using YAML.
-
-
-### [](#_jcr_configuration)JCR Configuration
-
-Configuration of the ChatGPT translation provider is handled in the module config. This provider should be configured with the following path:
-
-modules
-└── content-translation-support-ext-chatgpt
-    └── config
-        └── translationProviders
-            └── chatGptTranslationProviderConfigFile.yaml
-
-### [](#_yaml_configuration)YAML configuration
-
-ChatGPT service provider configuration is defined within its provider module (`magnolia-content-translation-support-ext-chatgpt`) under the following directory structure:
-
-```plaintext
-/src/main/resources/content-translation-support-ext-chatgpt/translationProviders
-```
-
-#### [](#_required_decorations)Required decorations
-
-This configuration can also be **decorated** to override or extend the default configuration. Decoration file should be placed under the following path:
-
-```plaintext
-<light-module-name>/decorations/content-translation-support-ext-chatgpt/translationProviders
-```
-
-Below is an example of how to decorate ChatGPT service provider configuration within a light module:
-
-```plaintext
-light-modules/
-└── my-module/
-    └── decorations/
-        └── content-translation-support-ext-chatgpt/
-            └── translationProviders/
-                └── ChatGPT.yaml
-```
-
-### [](#_configuration_properties)Configuration properties
-
-> **Note:** Set the clientToken field to your OpenAI API key. This is usually found under API keys in your OpenAI account.
-
-Considerations
-
-The ChatGPT model (GPT-3.5-Turbo) is constrained by limitations on the volume of content it can process and return. To address this constraint, we employ the `characterLimit` and `whiteSpaceCharacterIndex` properties to partition the input content effectively, allowing us to control the size of each request.
-
-When content is submitted in segments, the resulting parts are subsequently concatenated to produce the translated outcome. Notably, when processing HTML elements, there may arise instances where certain opening or closing tags are inadvertently omitted. To mitigate this, we utilize the `htmlParser` property, which governs the activation or deactivation of a tool designed to sanitize the content as HTML before its transmission.
-
 | Property | Description |
 | --- | --- |
-| `class` | **required**<br><br>Definition class for the translator to be used.<br><br>See `info.magnolia.translation.ext.provider.chatgpt.definition.ChatGPTProviderDefinition`. |
-| `clientId` | **required**<br><br>Unused but needs a value. |
-| `clientToken` | **required**<br><br>token from OpenAI account |
-| `configName` | **required**<br><br>Identifies the configuration within Magnolia. |
-| `defaultFlag` | **optional**<br><br>The default configuration used by the system in the case of multiple translation services being used. |
-| `enabledFlag` | **required**<br><br>Enable or disable the configuration using this flag. |
-| `implementationClass` | **required**<br><br>Implementation class for interfacing with DeepL.<br><br>See `info.magnolia.translation.ext.provider.chatgpt.translator.ChatGPTTranslator`. |
-| `characterLimit` | **optional**<br><br>You can adjust the character limit in one request.<br><br>Default is `2000` characters. |
-| `whiteSpaceCharacterIndex` | **optional**<br><br>You can adjust on which index the partition is made.<br><br>Default is from the **1500th** character. |
-| `durationTimeout` | **optional**<br><br>You can adjust the duration timeout of the OpenAI service.<br><br>Default is `300` seconds. |
-| `prompt` | **optional**<br><br>You can adjust what prompt is sent as a message before the content is translated. |
-| `model` | **optional**<br><br>You can adjust which ChatGPT model is used.<br><br>Default is `gpt-3.5-turbo`. |
-| `htmlParser` | **optional**<br><br>Boolean to enable or disable the `htmlParser` option, used on the response from chatGPT.<br><br>Default value is `true` (enabled). |
-
-### [](#_sample_jcr_configuration)Sample JCR configuration
-
-```yaml
-'config':
-  'translationProviders':
-    'ChatGPT':
-      'class': 'info.magnolia.translation.ext.provider.chatgpt.definition.ChatGPTProviderDefinition'
-      'clientToken': 'xxxxxx-xxxxx-xxxx-xxxx-xxxx' (1)
-      'configName': 'ChatGPT.com'
-      'enabledFlag': 'true'
-      'implementationClass': 'info.magnolia.translation.ext.provider.chatgpt.translator.ChatGPTTranslator'
-```
-
-|     |     |
-| --- | --- |
-| **1** | Your OpenAI client token. |
-
-### [](#_sample_yaml_decorated_configuration)Sample YAML decorated configuration
-
-```yaml
-clientId: xxxxxx
-clientToken: xxxxxx-xxxxx-xxxx-xxxx-xxxx (1)
-enabledFlag: true
-```
-
-|     |     |
-| --- | --- |
-| **1** | Your OpenAI client token. |
+| `class` | **required** Definition class for the translator to be used. See `info.magnolia.translation.ext.provider.chatgpt.definition.ChatGPTProviderDefinition` . |
+| `clientId` | **required** Unused but needs a value. |
+| `clientToken` | **required** token from OpenAI account |
+| `configName` | **required** Identifies the configuration within Magnolia. |
+| `defaultFlag` | **optional** The default configuration used by the system in the case of multiple translation services being used. |
+| `enabledFlag` | **required** Enable or disable the configuration using this flag. |
+| `implementationClass` | **required** Implementation class for interfacing with DeepL. See `info.magnolia.translation.ext.provider.chatgpt.translator.ChatGPTTranslator` . |
+| `characterLimit` | **optional** You can adjust the character limit in one request. Default is `2000` characters. |
+| `whiteSpaceCharacterIndex` | **optional** You can adjust on which index the partition is made. Default is from the **1500th** character. |
+| `durationTimeout` | **optional** You can adjust the duration timeout of the OpenAI service. Default is `300` seconds. |
+| `prompt` | **optional** You can adjust what prompt is sent as a message before the content is translated. |
+| `model` | **optional** You can adjust which ChatGPT model is used. Default is `gpt-3.5-turbo` . |
+| `htmlParser` | **optional** Boolean to enable or disable the `htmlParser` option, used on the response from chatGPT. Default value is `true` (enabled). |
 
 ## [](#_usage)Usage
 

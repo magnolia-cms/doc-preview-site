@@ -1,0 +1,398 @@
+---
+title: "Setting up Jackrabbit clustering"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Instances/Clustering/setup-jackrabbit-clustering/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Instances > Deploying instances > Setting up Jackrabbit clustering
+---
+
+# Setting up Jackrabbit clustering
+
+Clustering in Jackrabbit works as follows: content is shared between all cluster nodes. That means all Jackrabbit cluster nodes need access to the **same** persistent storage (PersistenceManager, DataStore, and *repository* FileSystem).
+
+The persistence manager must be **clusterable** (for example, a central database that allows for concurrent access). Any DataStore (file or DB) is clusterable in its very nature, as it stores content using unique hash IDs.
+
+> **Note:** However, each cluster node needs its own (private) repository directory, including the repository.xml file, workspace FileSystem and Search index. Every change made by one cluster node is reported in a journal, which can be either file-based or written to a database.
+
+## [](#_clustering_requirements)Clustering requirements
+
+In order to use clustering, the following prerequisites must be met:
+
+-   Each cluster node:
+
+    -   must have its own repository configuration
+
+    -   needs its own (private) workspace level and version FileSystem (only those within the workspace and versioning configuration; the ones in the `repository.xml` and `workspace.xml` file)
+
+    -   needs its own (private) Search indexes
+
+    -   must be assigned a unique ID
+
+    -   must use the same (shared) journal
+
+
+-   A DataStore must always be shared between nodes, if used.
+
+-   The global repository FileSystem on the repository level must be shared (only the one that is on the same level as the DataStore; only in the `repository.xml` file).
+
+-   A journal type must be chosen, either based on files or stored in a database.
+
+-   The persistence managers must store their data in the same, globally accessible location.
+
+
+## [](#_scenario)Scenario
+
+-   A new `comments` workspace is shared by the `author` and `public` instances. For simplicity, let’s use a pre-assembled Tomcat bundle: [magnolia-dx-core-demo-webapp-6.4.3-tomcat-bundle.zip](https://nexus.magnolia-cms.com/repository/enterprise/info/magnolia/dx/magnolia-dx-core-demo-webapp/6.4.3/magnolia-dx-core-demo-webapp-6.4.3-tomcat-bundle.zip).
+
+-   Repositories:
+
+    -   The **unclustered** repositories use the embedded database (H2 database).
+
+    -   The **clustered** repository uses the MySQL database.
+
+        > **Note:** MySQL has been chosen as the persistence manager for the clustered repository since it supports concurrent access. Any DataStore (filesystem or DB) is clusterable in its very nature, as they store content by unique hash IDs.
+
+
+
+## [](#_prerequisites)Prerequisites
+
+The author and public instances must be installed and setup. Get a Magnolia bundle for this, see [Installing Magnolia](../../../../Getting-started-with-Magnolia/Installing-Magnolia/) for more details.
+
+### [](#_the_goal)The goal
+
+For both instances, the repositories are created in the same parent folder.
+
+> **Tip:** The parent folder should be an external location (outside the webapp), making it easier to share the shared repository.
+
+The `repositories` folder is the central place for the `author`, `public`, and `shared` repositories.
+
+Key folders:
+
+-   The `author` and `public` `magnolia` repositories.
+
+    -   A private search index for each instance - in the `cluster` folder.
+
+
+-   The `shared` repository with its shared file system, data store, and a revision log.
+
+
+> **Note:** The author and public are intended to be running in separate Tomcat instances on ports 8080 and 7070, respectively.
+
+```xml
+cluster-example
+└── magnolia-dx-core
+    └── author-tomcat8080
+    └── public-tomcat7070
+    └── repositories
+        └── author
+            └── cluster
+                └── workspaces
+            └── magnolia
+        └── public
+            └── cluster
+                └── workspaces
+            └── magnolia
+        └── shared
+            └── repository
+                └── datastore
+                └── meta
+                └── namespaces
+                └── nodetypes
+                └── privileges
+            └── revision.log
+```
+
+## [](#_instructions)Instructions
+
+1.  Create a shared MySQL database.
+
+    ```shell
+    % mysql -u root -p
+    Enter password:
+    Welcome to the MySQL monitor.  Commands end with ; or \g.
+    Your MySQL connection id is 5
+    Server version: 5.7.31 MySQL Community Server (GPL)
+
+    Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+    Oracle is a registered trademark of Oracle Corporation and/or its
+    affiliates. Other names may be trademarks of their respective
+    owners.
+
+    Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+    mysql> create database magnolia_shared;
+    Query OK, 1 row affected (0.00 sec)
+    ```
+
+2.  Add the MySQL driver to the `lib` folder (for example `/TOMCAT_HOME/WEBAPP_HOME/WEB-INF/lib`) of both the instances, `author` and `public`. See [MySQL Connectors](https://www.mysql.com/products/connector/).
+
+3.  Create a folder for the `shared` repository.
+
+    ```xml
+    cluster-example
+    └── magnolia-dx-core
+        └── author-tomcat8080
+        └── public-tomcat7070
+        └── repositories
+            └── shared
+    ```
+
+    > **Note:** In this example, the entire setup is located on the same machine with everything in the same parent folder. In a typical setup, each instance will most likely be located on different machines therefore you need to be sure the shared space can be accessed by all instances.
+
+4.  Create a repository configuration file for the clustering setup.
+
+    [System properties](https://issues.apache.org/jira/browse/JCR-1304) will be used to set the path of the shared folder and the [cluster id](https://jackrabbit.apache.org/archive/wiki/JCR/Clustering_115513377.html#Clustering-UniqueClusterNodeID). The system property approach will allow the cluster repo config file to be the same for both instances.
+
+    -   org.apache.jackrabbit.core.cluster.shared\_folder
+
+    -   org.apache.jackrabbit.core.cluster.node\_id
+
+        1.  Add the system properties to the `setenv.sh/bat` file of each Tomcat instance.
+
+            -   Author instance
+
+            -   Public instance
+
+
+            /cluster-example/magnolia-dx-core/author-tomcat8080/bin/setenv.sh
+
+            ```shell
+            export CATALINA_OPTS="$CATALINA_OPTS -Xms64M -Xmx2048M -Djava.awt.headless=true -Dorg.apache.jackrabbit.core.cluster.node_id=author_cluster -Dorg.apache.jackrabbit.core.cluster.shared_folder=/cluster-example/magnolia-dx-core/repositories/shared"
+            ```
+
+            /cluster-example/magnolia-dx-core/public-tomcat7070/bin/setenv.sh
+
+            ```shell
+            export CATALINA_OPTS="$CATALINA_OPTS -Xms64M -Xmx2048M -Djava.awt.headless=true -Dorg.apache.jackrabbit.core.cluster.node_id=public_cluster -Dorg.apache.jackrabbit.core.cluster.shared_folder=/cluster-example/magnolia-dx-core/repositories/shared"
+            ```
+
+        2.  Create the configuration file for the shared repository.
+
+            Click to see the example
+
+            WEB-INF/config/repo-conf/jackrabbit-bundle-mysql-search.xml
+
+            ```xml
+            <?xml version="1.0" encoding="UTF-8"?>
+            <!DOCTYPE Repository PUBLIC "-//The Apache Software Foundation//DTD Jackrabbit 2.0//EN" "http://jackrabbit.apache.org/dtd/repository-2.0.dtd">
+            <Repository>
+              <!-- Make sure you correctly configure this clustering configuration section, check especially the user and password values. -->
+              <DataSources>
+                <DataSource name="magnolia">
+                  <param name="driver" value="com.mysql.jdbc.Driver" />
+                  <param name="url" value="jdbc:mysql://localhost:3306/magnolia_shared" />
+                  <param name="user" value="root" />
+                  <param name="password" value="magnolia" />
+                  <param name="databaseType" value="mysql"/>
+                  <param name="validationQuery" value="select 1"/>
+                </DataSource>
+              </DataSources>
+              <!-- Make sure you correctly configure this clustering configuration section, check especially the user and password values. -->
+              <Cluster syncDelay="2000">
+                <Journal class="org.apache.jackrabbit.core.journal.DatabaseJournal">
+                  <!-- The revision log will be shared by both instances. Use the system property to set the path. -->
+                  <param name="revision" value="${org.apache.jackrabbit.core.cluster.shared_folder}/revision.log" />
+                  <!-- ********************************************************************************************-->
+                  <param name="driver" value="com.mysql.jdbc.Driver" />
+                  <param name="url" value="jdbc:mysql://localhost:3306/magnolia_shared" />
+                  <param name="user" value="root" /> (1)
+                  <param name="password" value="magnolia" /> (1)
+                  <param name="schema" value="mysql" />
+                  <param name="schemaObjectPrefix" value="journal_" />
+                </Journal>
+              </Cluster>
+
+              <!-- The repository level file system will be shared by both instances. Use the system property to set the path.-->
+              <FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
+                 <param name="path" value="${org.apache.jackrabbit.core.cluster.shared_folder}/repository" />
+              </FileSystem>
+              <!-- ******************************************************************* -->
+
+              <Security appName="magnolia">
+                <SecurityManager class="org.apache.jackrabbit.core.DefaultSecurityManager"/>
+                <AccessManager class="org.apache.jackrabbit.core.security.DefaultAccessManager">
+                </AccessManager>
+                <!-- login module defined here is used by the repo to authenticate every request. not by the webapp to authenticate user against the webapp context (this one has to be passed before thing here gets invoked -->
+                <LoginModule class="info.magnolia.jaas.sp.jcr.JackrabbitAuthenticationModule">
+                </LoginModule>
+              </Security>
+
+              <!-- The repository level data store will be shared by both instances. Use the system property to set the path.-->
+              <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
+                <param name="path" value="${org.apache.jackrabbit.core.cluster.shared_folder}/repository/datastore"/>
+                <param name="minRecordLength" value="1024"/>
+              </DataStore>
+              <!-- ***************************************************************** -->
+
+              <Workspaces rootPath="${rep.home}/workspaces" defaultWorkspace="default" />
+              <Workspace name="default">
+                <FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
+                  <param name="path" value="${wsp.home}/default" />
+                </FileSystem>
+                <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
+                  <param name="dataSourceName" value="magnolia"/>
+                  <param name="schemaObjectPrefix" value="pm_${wsp.name}_" />
+                </PersistenceManager>
+                <SearchIndex class="info.magnolia.jackrabbit.lucene.SearchIndex">
+                  <param name="path" value="${wsp.home}/index" />
+                  <!-- SearchIndex will get the indexing configuration from the classpath, if not found in the workspace home -->
+                  <param name="indexingConfiguration" value="/info/magnolia/jackrabbit/indexing_configuration_${wsp.name}.xml"/>
+                  <param name="useCompoundFile" value="true" />
+                  <param name="minMergeDocs" value="100" />
+                  <param name="volatileIdleTime" value="3" />
+                  <param name="mergeFactor" value="10" />
+                  <param name="maxFieldLength" value="10000" />
+                  <param name="bufferSize" value="10" />
+                  <param name="cacheSize" value="1000" />
+                  <param name="forceConsistencyCheck" value="false" />
+                  <param name="autoRepair" value="true" />
+                  <param name="queryClass" value="org.apache.jackrabbit.core.query.QueryImpl" />
+                  <param name="respectDocumentOrder" value="true" />
+                  <param name="resultFetchSize" value="100" />
+                  <param name="extractorPoolSize" value="3" />
+                  <param name="extractorTimeout" value="100" />
+                  <param name="extractorBackLogSize" value="100" />
+                  <!-- needed to highlight the searched term -->
+                  <param name="supportHighlighting" value="true"/>
+                  <!-- custom provider for getting an HTML excerpt in a query result with rep:excerpt() -->
+                  <param name="excerptProviderClass" value="info.magnolia.jackrabbit.lucene.SearchHTMLExcerpt"/>
+                </SearchIndex>
+                <WorkspaceSecurity>
+                  <AccessControlProvider class="info.magnolia.cms.core.MagnoliaAccessProvider" />
+                </WorkspaceSecurity>
+              </Workspace>
+              <Versioning rootPath="${rep.home}/version">
+                <FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
+                  <param name="path" value="${rep.home}/workspaces/version" />
+                </FileSystem>
+                <PersistenceManager class="org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager">
+                  <param name="dataSourceName" value="magnolia"/>
+                  <param name="schemaObjectPrefix" value="version_" />
+                </PersistenceManager>
+              </Versioning>
+            </Repository>
+            ```
+
+            |     |     |
+            | --- | --- |
+            | **1** | These manage the shared cluster repository user and password for both instances, author and public. Make sure you have correct authentication values also in the `DataSources` section. They should be in sync with those in the `Cluster` section. |
+
+            > **Note:** The path WEB-INF/config/repo-conf/jackrabbit-bundle-mysql-search.xml is the same path used in the properties config (see further below) with the key magnolia.repositories.jackrabbit.cluster.config. The cluster connection configuration to the MySQL database uses this configuration.
+
+
+
+5.  Add the clustered workspaces to `WEB-INF/config/default/repository.xml`.
+
+    The `repository.xml` file will need to be adjusted for the new clustered repository. For this example, it will be the same for both author and public, where they share the `comments` workspace.
+
+    > **Important:** Both the name of the datasource and the reference to the repository in the repsoitory.xml for the shared Magnolia store need to be in sync.
+
+    Click to see the example
+
+    ```xml
+    <JCR>
+        <!-- Already existing mapping configs. -->
+        <RepositoryMapping>
+            <Map name="website" repositoryName="magnolia" workspaceName="website" />
+            <Map name="config" repositoryName="magnolia" workspaceName="config" />
+            <Map name="users" repositoryName="magnolia" workspaceName="users" />
+            <Map name="userroles" repositoryName="magnolia" workspaceName="userroles" />
+            <Map name="usergroups" repositoryName="magnolia" workspaceName="usergroups" />
+        </RepositoryMapping>
+
+        <!-- This is the key update: you must configure a new repository mapping for the shared comments workspace. -->
+        <RepositoryMapping>
+           <Map name="comments" repositoryName="cluster" workspaceName="comments" />
+        </RepositoryMapping>
+
+        <!-- magnolia default repository -->
+        <Repository name="magnolia" provider="info.magnolia.jackrabbit.ProviderImpl" loadOnStartup="true">
+            <param name="configFile" value="${magnolia.repositories.jackrabbit.config}" />
+            <param name="repositoryHome" value="${magnolia.repositories.home}/magnolia" />
+            <!-- the default node types are loaded automatically
+                <param name="customNodeTypes" value="WEB-INF/config/repo-conf/nodetypes/magnolia_nodetypes.xml" />
+            -->
+            <param name="contextFactoryClass" value="org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory" />
+            <param name="providerURL" value="localhost" />
+            <param name="bindName" value="${magnolia.webapp}" />
+            <workspace name="website" />
+            <workspace name="config" />
+            <workspace name="users" />
+            <workspace name="userroles" />
+            <workspace name="usergroups" />
+        </Repository>
+
+        <!-- magnolia cluster repository -->
+        <Repository name="cluster" provider="info.magnolia.jackrabbit.ProviderImpl" loadOnStartup="true">
+            <param name="configFile" value="${magnolia.repositories.jackrabbit.cluster.config}" />
+            <param name="repositoryHome" value="${magnolia.repositories.cluster}" />
+            <!-- the default node types are loaded automatically
+                <param name="customNodeTypes" value="WEB-INF/config/repo-conf/nodetypes/magnolia_nodetypes.xml" />
+            -->
+            <param name="contextFactoryClass" value="org.apache.jackrabbit.core.jndi.provider.DummyInitialContextFactory" />
+            <param name="providerURL" value="localhost" />
+            <param name="bindName" value="cluster-${magnolia.webapp}" />
+            <!-- since forum module has been deprecated, we switch to contacts module for demonstration. -->
+            <!-- <workspace name="forum" />  -->
+            <workspace name="comments" />
+        </Repository>
+
+    </JCR>
+    ```
+
+6.  Configure the `properties` files.
+
+    Some of the [properties configuration](../../../Architecture/Configuration-management/) will differ between the instances. The author instance uses the `magnoliaAuthor` context while the public instance uses the `magnoliaPublic` context. For the sake of this clustering example, let’s reconfigure the repository creation to be located **centrally**. This will allow for a better overview of what is shared vs what is private.
+
+    ```xml
+    cluster-example
+    └── magnolia-dx-core
+        └── author-tomcat8080
+        └── public-tomcat7070
+        └── repositories
+            └── author
+            └── public
+            └── shared
+    ```
+
+    -   Shared (default) properties
+
+    -   Author properties
+
+    -   Public properties
+
+
+    **WEB-INF/config/default/magnolia.properties**
+
+    The shared properties will go into the `default` properties file. By making use of the system properties, the clustering config is a shared configuration.
+
+    ```properties
+    magnolia.repositories.config=WEB-INF/config/default/repositories.xml
+    magnolia.repositories.jackrabbit.config=WEB-INF/config/repo-conf/jackrabbit-bundle-h2-search.xml
+    magnolia.repositories.jackrabbit.cluster.config=WEB-INF/config/repo-conf/jackrabbit-bundle-mysql-search.xml
+    ```
+
+    **WEB-INF/config/magnoliaAuthor/magnolia.properties**
+
+    Properties specific to the author setup are in the `magnoliaAuthor` properties file.
+
+    ```properties
+    magnolia.repositories.home=${magnolia.home}/../../../repositories/author
+    magnolia.repositories.cluster=${magnolia.repositories.home}/cluster
+    magnolia.clusterid=author_cluster
+    magnolia.repositories.jackrabbit.cluster.master=true
+    ```
+
+    **WEB-INF/config/magnoliaPublic/magnolia.properties**
+
+    Properties specific to the public setup are in the `magnoliaPublic` properties file.
+
+    ```properties
+    magnolia.repositories.home=${magnolia.home}/../../../repositories/public
+    magnolia.repositories.cluster=${magnolia.repositories.home}/cluster
+    magnolia.clusterid=public_cluster
+    magnolia.repositories.jackrabbit.cluster.master=false
+    ```
+
+    > **Important:** The paths to the magnolia.repositories.home in those magnoliaAuthor and magnoliaPublic properties files should be in sync with the file structures (<path-to-cluster-example>/cluster-example/magnolia-dx-core/repositories/author and <path-to-cluster-example>/cluster-example/magnolia-dx-core/repositories/public) because the repositories are managed outside the Tomcat bundles.

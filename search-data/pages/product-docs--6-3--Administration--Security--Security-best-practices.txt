@@ -24,7 +24,7 @@ breadcrumb: DX Core > Administration > Security > Security best practices
 
 -   Ensure that anonymous access to AdminCentral URLs is blocked on author and public instances. This is the default. Edit the `anonymous` role and create an [ACL](../../IAM/Roles-and-access-control-lists/) that denies access to `./magnolia` and `.magnolia/*`.
 
--   Alternatively, if or when you’re not using IP based filtering for access to AdminCentral on `public`, be sure to [restrict access to `./resources` and `.resources/*`](../../../Developing/Resources/#_restricting_access_to_resources).
+-   Alternatively, if or when you’re not using IP based filtering for access to AdminCentral on `public`, be sure to [restrict access to `./resources` and `.resources/*`](../../../../RNs-6-4-3/Developing/Resources/#_restricting_access_to_resources).
 
 -   If feasible, block access to the AdminCentral URIs for all users other than those inside the local network.
 
@@ -72,122 +72,11 @@ If you accidentally lock out `superuser` and are unable to access AdminCentral:
 -   If you suspect the lockout is due to errors in recent configuration changes, see [Rescue Security Support](https://wiki.magnolia-cms.com/display/WIKI/Rescue+Security+Support).
 
 
-## [](#_http_headers_and_security_best_practices)HTTP headers and security best practices
-
-In this subsection, we provide some ideas how you can improve security through select HTTP headers.
-
-### [](#_content_security_policy_csp_header)Content Security Policy (CSP) header
-
-Content Security Policy governs what a web browser (or a user agent, in general) is allowed to load as part of a page. Setting a CSP header allows the creator of a page to control what other resources might be loaded by the underlying HTML or JavaScript code. This is a powerful way to mitigate many Cross-site scripting (XSS) and clickjacking attacks.
-
-> **Important:** CSP configuration is mandatory for production deployments. You should configure a restrictive CSP on all HTML resources before deploying to production.CSP Level 2 is supported by all major browsers and should be used for production deployments.
-
-You should list, as part of the header value, the origin and all the endpoints required for the page to function. However, if you allow any endpoint that is not within your control, you are opening a hole through which an attack might be staged.
-
-If necessary, we recommend you customize the header to define your own whitelist.
-
-There are two ways to configure the Content Security Policy header:
-
--   **Per-site configuration (recommended)**: This approach provides more granular control over your security policies. You can configure CSP for each site directly within its site definition. See [Content-Security-Policy (CSP) Filter](../../Architecture/Request-processing-and-filters/csp/) for detailed instructions and examples.
-
--   **Global configuration**: You can configure a global CSP header by creating a new filter in the [Configuration app](../../../Apps/List-of-apps/Configuration-app/). This approach is less flexible than the per-site configuration but can help apply a single policy to all sites.
-
-    An example configuration could look similar to the one below. The path `server/filters/HeaderFilterOne` is only a suggestion. When adding CSP headers, you only need to place the header values into the `Content-Security-Policy` property.
-
-    |     |     |
-    | --- | --- |
-    | 📁 server |     |
-    | 📁 filters |     |
-    | 📁 HeaderFilterOne |     |
-    | ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
-    | ⬩ enabled | true |
-    | 📁 headers |     |
-    | ⬩ Content-Security-Policy | default-src \`self' \`unsafe-inline' \`unsafe-eval' [https://ga-dev-tools.appspot.com](https://ga-dev-tools.appspot.com) [https://apis.google.com](https://apis.google.com) [https://www.google.com](https://www.google.com) [https://content.googleapis.com](https://content.googleapis.com) [https://ajax.googleapis.com](https://ajax.googleapis.com) ; img-src \`self' data:; |
-
-
-> **Note:** The Vaadin framework performs the CSP check explicitly instead of relying on browser to do so as part of policy execution. You can see official Vaadin statement here.
-
-#### [](#_strong_csp_level_2_policy_example)Strong CSP level 2 policy example
-
-For production deployments, use a restrictive CSP Level 2 policy such as the example one below.
-
-```text
-Content-Security-Policy: default-src 'none'; script-src 'nonce-r4nd0mN0nce'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; report-uri https://cspreport.example.com/log
-```
-
-This policy:
-
--   `default-src 'none'` - Blocks all resources by default
-
--   `script-src 'nonce-r4nd0mN0nce'` - Only allows scripts with the specified nonce
-
--   `frame-ancestors 'none'` - Prevents the page from being embedded in frames (clickjacking protection)
-
--   `base-uri 'self'` - Restricts base element URLs to same origin
-
--   `form-action 'self'` - Restricts form submissions to same origin
-
--   `report-uri` - Sends violation reports to the specified endpoint
-
-
-#### [](#_development_configuration)Development configuration
-
-During development, you can enable reporting of violations without blocking content by using the `Content-Security-Policy-Report-Only` header instead of `Content-Security-Policy`. This allows you to test and refine your policy before enforcing it in production.
-
-#### [](#_json_requests_are_processed_when_content_type_is_textplain)JSON requests are processed when Content-Type is text/plain?
-
-This does not present a security vulnerability in Vaadin. Vaadin doesn’t enforce `Content-Type: application/json` because it doesn’t rely on it for security.
-
-Requests with an incorrect `Content-Type` fail if the content is malformed. This ensures compatibility with technologies like Portlets. For more details, see [Advanced Vaadin Topics: Content Type Incorrectly Stated](https://vaadin.com/docs/latest/flow/security/advanced-topics/frequent-issues#content-type-incorrectly-stated).
-
-Vaadin secures requests using CSRF tokens, not `Content-Type` validation.
-
-#### [](#_csp_evaluation_and_testing)CSP evaluation and testing
-
-Use the [CSP Evaluator tool](https://csp-evaluator.withgoogle.com/) to test and validate your Content Security Policy configuration. This tool helps identify potential security issues and provides recommendations for improving your policy.
-
-See also
-
--   [github.com: Insufficient Content-Type: application/json Validation](https://github.com/vaadin/framework/issues/9492#issuecomment-306716024)
-
--   [Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
-
--   [MDN: Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
-
-
-### [](#_strict_transport_security_sts_header)`Strict-Transport-Security` (STS) header
-
-The STS header informs the browser that a page should only be accessed over the HTTPS protocol. The browser will use this knowledge and set all future requests for the same domain to go through HTTPS automatically, thus preventing the extra round trip that might be required otherwise.
-
-Using HTTPS instead of HTTP enables traffic encryption between the page and the client, preventing anyone from intercepting the communication. Using this header is considered more secure than using the 301 redirect on the server when an attempt for the over-the-HTTP access is made.
-
-See also:
-
--   [HSTS - Web Security Best Practices](https://www.checkbot.io/guide/security/hsts/)
-
--   [MDN: Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
-
-
-### [](#_x_content_type_options_xcto_header)`X-Content-Type-Options` (XCTO) header
-
-XCTO is a marker header that tells the client that the media types (MIME types) advertized as part of the Content-Type headers should be strictly followed and not changed. This helps avoid *MIME Type Sniffing*.
-
-See also:
-
--   [MDN: X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options)
-
-
-### [](#_x_frame_options_xfo_header)`X-Frame-Options` (XFO) header
-
-Setting the XFO header tells the browser that the given page is not allowed to be embedded in another page. This header setting helps mitigate stealing content, *clickjacking* (UI redress attack) or allowing malicious sites to pose as the regular ones and fool the users to not check the URLs closely but think instead that they are on a safe page when they are actually not.
-
-See also:
-
--   [Current best practices to restrict framing in the browser](https://pragmaticwebsecurity.com/articles/securitypolicies/preventing-framing-with-policies.html)
-
--   [MDN: X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
-
-
-Related topics
-
--   [Security policy](../Security-policy/)
+| 📁 server |  |
+| --- | --- |
+| 📁 filters |  |
+| 📁 HeaderFilterOne |  |
+| ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
+| ⬩ enabled | true |
+| 📁 headers |  |
+| ⬩ Content-Security-Policy | default-src `self' `unsafe-inline' `unsafe-eval' [https://ga-dev-tools.appspot.com](https://ga-dev-tools.appspot.com) [https://apis.google.com](https://apis.google.com) [https://www.google.com](https://www.google.com) [https://content.googleapis.com](https://content.googleapis.com) [https://ajax.googleapis.com](https://ajax.googleapis.com) ; img-src `self' data:; |

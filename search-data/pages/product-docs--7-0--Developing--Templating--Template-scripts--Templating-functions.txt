@@ -8,30 +8,24 @@ breadcrumb: DX Core > Developing > Templating > Template scripts > Templating fu
 
 # Templating functions
 
-[FreeMarker development only](../../Renderers/#_renderers_provided_by_magnolia)
+[FreeMarker development only](../../../../../RNs-6-4-3/Developing/Templating/Renderers/#_renderers_provided_by_magnolia)
 
 Templating functions perform typical templating tasks such as creating links and navigating content. This page explains where you can use templating functions and how to create your own.
 
-## [](#_function_sets)Function sets
-
-Templating functions are grouped into sets according to their purpose:
-
 | Function set | Purpose | Installed by module | Version note |
 | --- | --- | --- | --- |
-| [`cmsfn`](cmsfn/) | Navigate content and create links. | Templating (Available in every bundle.) |     |
-| [`damfn`](damfn/) | Get assets and renditions and create links to assets. | [DAM](../../../../../../dam/developers/install/) (Digital Asset Management) | 2.0+ |
-| [`sitefn`](sitefn/) | Get sites and themes. | [Site](#site:ROOT:index.adoc) | 1.0+ |
-| [`navfn`](navfn/) | Create site navigation. | [MTE](../../../../Modules/List-of-modules/MTE-module/) (Magnolia Templating Essentials) | 0.14+ |
-| [`catfn`](catfn/) | Get categories (tags) and access content by category. | [Categorization](../../../../Modules/List-of-modules/Categorization-module/) | 2.4+ |
-| [`searchfn`](searchfn/) | Search pages and content. | [MTE](../../../../Modules/List-of-modules/MTE-module/) (Magnolia Templating Essentials) | 0.6+ |
-| [`restfn`](restfn/) | Access REST clients. | [REST Client](../../../../Modules/List-of-modules/REST-Client-module/) | 1.0.4+ |
-| [`imgfn`](imgfn/) | Get links to images from any workspace. | [Imaging](#imaging:ROOT:index.adoc) | 3.2+ |
-| [`resfn`](resfn/) | Create links to css and js files by given patterns. | [Resources](../../../../Modules/List-of-modules/Resources-module/) | 2.5.1+ |
-| [`jsonfn`](jsonfn/) | Generate JSON from JCR nodes of any workspace. | [`magnolia-jsonfn`](https://github.com/magnolia-community/jsonfn) |     |
-| [`tagfn`](tagfn/) | Search tagged content and tags. | [Content Tags](../../../../Modules/List-of-modules/Content-Tags-module/) | 1.0+ |
-| [`solrfn`](solrfn/) | Construct search queries and trigger searching in a Solr server. | [Solr](../../../../Modules/List-of-modules/Solr-module/) | 5.6+ |
-
-> **Tip:** Templating function is not available?Check that the module that includes the function set is installed.Check that the functions are configured in the renderer, especially if you have a custom renderer.
+| [cmsfn](cmsfn/) | Navigate content and create links. | Templating (Available in every bundle.) |  |
+| [damfn](damfn/) | Get assets and renditions and create links to assets. | [DAM](../../../../../../dam/developers/install/) (Digital Asset Management) | 2.0+ |
+| [sitefn](sitefn/) | Get sites and themes. | [Site](../../../../../../site/) | 1.0+ |
+| [navfn](navfn/) | Create site navigation. | [MTE](../../../../Modules/List-of-modules/MTE-module/) (Magnolia Templating Essentials) | 0.14+ |
+| [catfn](catfn/) | Get categories (tags) and access content by category. | [Categorization](../../../../Modules/List-of-modules/Categorization-module/) | 2.4+ |
+| [searchfn](searchfn/) | Search pages and content. | [MTE](../../../../Modules/List-of-modules/MTE-module/) (Magnolia Templating Essentials) | 0.6+ |
+| [restfn](restfn/) | Access REST clients. | [REST Client](../../../../Modules/List-of-modules/REST-Client-module/) | 1.0.4+ |
+| [imgfn](imgfn/) | Get links to images from any workspace. | [Imaging](../../../../../../imaging/) | 3.2+ |
+| [resfn](resfn/) | Create links to css and js files by given patterns. | [Resources](../../../../Modules/List-of-modules/Resources-module/) | 2.5.1+ |
+| [jsonfn](jsonfn/) | Generate JSON from JCR nodes of any workspace. | [MTE](../../../../Modules/List-of-modules/MTE-module/) (Magnolia Templating Essentials) | 4.0.2+ |
+|  | [tagfn](tagfn/) | Search tagged content and tags. | [Content Tags](../../../../Modules/List-of-modules/Content-Tags-module/) |
+| 1.0+ | [solrfn](solrfn/) | Construct search queries and trigger searching in a Solr server. | [Solr](../../../../Modules/List-of-modules/Solr-module/) |
 
 ## [](#_using_functions_in_template_scripts)Using functions in template scripts
 

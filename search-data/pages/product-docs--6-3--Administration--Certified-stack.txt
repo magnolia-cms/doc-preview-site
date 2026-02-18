@@ -38,18 +38,12 @@ If you want to use any container-based implementation, use a base image based on
 
 > **Note:** Are you running Magnolia on an OS that is not listed here? Let us know by posting to the Magnolia mailing lists.
 
-## [](#_java)Java
-
-Magnolia releases run on the current LTS Java version at the time of the first release.
-
 | Java version | Magnolia |
 | --- | --- |
-| **Java 21 (LTS)** | Magnolia runs on Java 21 JVMs, but requires classes to be compiled at most with JDK 17, due to the version of the ASM library shipped with the product. |
-| **Java 17 (LTS)** | The build base for Magnolia 6.3. |
-
-### [](#_maven_coordinates)Maven coordinates
-
-> **Note:** Magnolia 6.3 remains on the Jakarta EE 8 baseline. However, in preparation for a future Jakarta EE 9+ update, which will be breaking, the Maven coordinates of the EE 8 API specifications have been updated to the Jakarta EE Maven Coordinates.For more details, see BUILD-975: Replace Java EE8 modules with Jakarta EE8 modules.Example
+| **Java 25 (LTS)** | ** Java 25 (LTS) Support in Magnolia Supported Versions: For Java 25, Magnolia 6.3.x requires `javascript-models` version 3.0.1 or higher. **Important performance configuration:** While Magnolia will run on Java 25 "out of the box," the GraalJS engine will operate in interpreted mode by default, which may impact performance. To enable the Graal JIT compiler and native code compilation, you must add the following JVM flags to your startup script: `-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI` ** Without these flags, you see a JVMCI is not enabled warning in your logs. While the system remains functional (correctness is not affected), these flags are essential for production environments to ensure guest application performance. | ** | Without these flags, you see a JVMCI is not enabled warning in your logs. While the system remains functional (correctness is not affected), these flags are essential for production environments to ensure guest application performance. |
+| ** | Without these flags, you see a JVMCI is not enabled warning in your logs. While the system remains functional (correctness is not affected), these flags are essential for production environments to ensure guest application performance. |
+| **Java 21 (LTS)** | ** Magnolia runs on Java 21 JVMs, but requires classes to be compiled at most with JDK 17, due to the version of the ASM library shipped with the product. |
+| **Java 17 (LTS)** | ** The build base for Magnolia 6.3. |
 
 ## [](#_application_servers)Application servers
 

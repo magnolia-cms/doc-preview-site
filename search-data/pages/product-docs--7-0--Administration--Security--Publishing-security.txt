@@ -8,31 +8,20 @@ breadcrumb: DX Core > Administration > Security > Publishing security
 
 # Publishing security
 
-[Publishing](../../Architecture/Publishing/) of content from author to public instances is authenticated using [public-key cryptography](http://en.wikipedia.org/wiki/Public-key_cryptography). Public-key cryptography is a system that requires two separate keys: a public key to lock or encrypt the plain text request and a private key to unlock or decrypt the cyphertext request. Neither key can do both and neither is derivable from knowledge of the other. One is published and the other is kept private.
+[Publishing](../../../../RNs-6-4-3/Administration/Architecture/Publishing/) of content from author to public instances is authenticated using [public-key cryptography](http://en.wikipedia.org/wiki/Public-key_cryptography). Public-key cryptography is a system that requires two separate keys: a public key to lock or encrypt the plain text request and a private key to unlock or decrypt the cyphertext request. Neither key can do both and neither is derivable from knowledge of the other. One is published and the other is kept private.
 
 On receiving a publishing request, a Magnolia public instance authenticates the author instance using a public key. The author instance generates the key automatically on first publishing of content and transfers it to the public instance. You can [generate new public keys](#_generating_a_new_public_key) any time on the author instance. A single public key is used for multiple public instances.
 
-## [](#_configuration)Configuration
-
-The authentication mechanism requires no configuration. The public key is generated automatically on the first publishing of content and transferred to the public instance. The configuration of publishing is stored in the `server`:
-
 | Node name | Value |
 | --- | --- |
-| 📁 server |     |
-| 📁 activation |     |
+| 📁 server |  |
+| 📁 activation |  |
 | ⬩ class | info.magnolia.publishing.manager.ActivationManagerAdapter |
 | ⬩ publicKey | 30819F300D06092A864886F70D010101050003818D0030818902818100A0D5E…​ |
 
-The key pair is also stored on the local file system. If you use the default Magnolia bundle, the location is configured in a `magnolia.properties` file.
-
-```xml
-# Location of the file containing both the private and the public keys used to verify authenticity of activation requests
-# This file is generated if not present magnolia.author.key.location=${magnolia.home}/WEB-INF/config/default/magnolia-activation-keypair.properties
-```
-
 ## [](#_generating_a_new_public_key)Generating a new public key
 
-You can create a new public key in the [Publishing Tools app](../../../Apps/List-of-apps/Publishing-Tools-app/). A longer key means better security, but publications can take longer. The shortest key length already meets the standard security requirements.
+You can create a new public key in the [Publishing Tools app](../../../../RNs-6-4-3/Apps/List-of-apps/Publishing-Tools-app/). A longer key means better security, but publications can take longer. The shortest key length already meets the standard security requirements.
 
 To generate a new public key:
 
@@ -51,7 +40,7 @@ Copy the newly generated public key to all public instances. It’s not transfer
 
 ## [](#_troubleshooting)Troubleshooting
 
-Any type of misconfiguration related either to the keys themselves or the handshaking process between the author and the public instance(s) may lead to [publishing errors](../../Troubleshooting/Publishing-issues/).
+Any type of misconfiguration related either to the keys themselves or the handshaking process between the author and the public instance(s) may lead to [publishing errors](../../../../RNs-6-4-3/Administration/Troubleshooting/Publishing-issues/).
 
 Example:
 
@@ -68,12 +57,12 @@ org.bouncycastle.crypto.DataLengthException: input too large for RSA cipher.
 
 Related topics
 
--   [Publishing overview](../../Architecture/Publishing/)
+-   [Publishing overview](../../../../RNs-6-4-3/Administration/Architecture/Publishing/)
 
--   [Publishing errors](../../Troubleshooting/Publishing-issues/)
+-   [Publishing errors](../../../../RNs-6-4-3/Administration/Troubleshooting/Publishing-issues/)
 
--   [Publishing Tools app](../../../Apps/List-of-apps/Publishing-Tools-app/)
+-   [Publishing Tools app](../../../../RNs-6-4-3/Apps/List-of-apps/Publishing-Tools-app/)
 
--   [Publishing module](../../../Modules/List-of-modules/Publishing-module/)
+-   [Publishing module](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-module/)
 
--   [Publishing Transactional module](../../../Modules/List-of-modules/Publishing-Transactional-module/)
+-   [Publishing Transactional module](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-Transactional-module/)

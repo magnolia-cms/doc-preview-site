@@ -12,28 +12,17 @@ Search result suppliers are responsible for providing search results to the [Glo
 
 > **Note:** This feature is only available in the DX Core edition of Magnolia.For information about the Magnolia supplier that searches over defined JCR workspaces or about creating a custom search result supplier, see Periscope module: Search result suppliers.
 
-## [](#_configuration_properties)Configuration properties
-
-The REST-based supplier functionality for the Periscope module is provided by the `magnolia-rest-client-ui` module as a combination of the following specific Magnolia classes:
-
--   info.magnolia.rest.ui.periscope.RestClientResultSupplierDefinition
-
--   info.magnolia.rest.ui.periscope.SearchResultExpressionDefinition
-
-
-A REST-based search result supplier can be created as a YAML file and configured using the following properties:
-
 | Property | Description |
 | --- | --- |
-| `class` | **required**<br><br>`info.magnolia.rest.ui.periscope.RestClientResultSupplierDefinition` |
-| `restClient` | **required**<br><br>Name of a configured REST client to fetch search data with. |
-| `restCall` | **required**<br><br>Name of a configured REST call definition in the client. |
-| `searchResultExpression` | **required**<br><br>List of [JSON path expressions](https://goessner.net/articles/JsonPath/) to get data for each item to be shown in the Global Search results list.<br><br>Provided by the `info.magnolia.rest.ui.periscope.SearchResultExpressionDefinition` class. |
-| `title` | **required**<br><br>Expression to get the title of the item, for example:<br><br>`$.values[*].title` |
-| `url` | **required**<br><br>Expression to get the URL address of the item, for example:<br><br>`$.values[*].links.html.href` |
-| `content` | **optional**<br><br>Expression to show the detail of the item. |
-| `editor` | **optional**<br><br>Expression to get the editor name of the item. |
-| `date` | **optional**<br><br>Expression to get the last-modified date of the item.<br><br>YAML files with configuration of search result suppliers should be stored in the `searchResultSuppliers` folder of your module:<br><br>```bash<br><module-name><br>├── apps<br>├── contentTypes<br>├── decorations<br>├── i18n<br>├── module.yaml<br>├── restClients<br>│ └── <rest-client-name>.yaml<br>├── restEndpoints<br>├── searchResultSuppliers<br>│ └── <search-result-supplier-name>.yaml<br>└── templates<br>``` |
+| `class` | **required** `info.magnolia.rest.ui.periscope.RestClientResultSupplierDefinition` |
+| `restClient` | **required** Name of a configured REST client to fetch search data with. |
+| `restCall` | **required** Name of a configured REST call definition in the client. |
+| `searchResultExpression` | **required** List of [JSON path expressions](https://goessner.net/articles/JsonPath/) to get data for each item to be shown in the Global Search results list. Provided by the `info.magnolia.rest.ui.periscope.SearchResultExpressionDefinition` class. |
+| `title` | **required** Expression to get the title of the item, for example: `$.values[*].title` |
+| `url` | **required** Expression to get the URL address of the item, for example: `$.values[*].links.html.href` |
+| `content` | **optional** Expression to show the detail of the item. |
+| `editor` | **optional** Expression to get the editor name of the item. |
+| `date` | **optional** Expression to get the last-modified date of the item. YAML files with configuration of search result suppliers should be stored in the `searchResultSuppliers` folder of your module: `<module-name> ├── apps ├── contentTypes ├── decorations ├── i18n ├── module.yaml ├── restClients │ └── <rest-client-name>.yaml ├── restEndpoints ├── searchResultSuppliers │ └── <search-result-supplier-name>.yaml └── templates` |
 
 ## [](#_sample_rest_integration)Sample REST integration
 

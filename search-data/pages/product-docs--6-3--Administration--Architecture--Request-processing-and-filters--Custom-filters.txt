@@ -31,125 +31,18 @@ public class KlackerFilter extends AbstractMgnlFilter{
 
 > **Note:** The example above is a dummy example inspired by the GNU Terry Pratchett HTTP-Header.
 
-## [](#_configuration_and_registration_of_filters)Configuration and Registration of filters
-
-Filters in a Java webapp using servlets 2.5 must be registered in the `web.xml`. However:
-
-When adding a filter to Magnolia - you should not register it in web.xml but on Magnolia configuration. If the configuration is done properly - filters are registered dynamically by Magnolia.
-
-You can configure filters implementing info.magnolia.cms.filters.MgnlFilter as well as other filters with Magnolia configuration by using the [Configuration app](../../../../Apps/List-of-apps/Configuration-app/). Unlike `web.xml` configuration, you can change the configuration on the running instance. This also includes enabling and disabling a filter.
-
-As with any other configuration data - bootstrap the configuration within your module with a bootstrap file or create an installation task to ensure configuration is set correctly when your project must be reinstalled or deployed.
-
-### [](#_add_a_filter_to_serverfilters)Add a filter to `/server/filters`
-
-To configure a filter, add it under the `/server/filters/`:
-
 | Name | Value |
 | --- | --- |
-| 📁 klacker |     |
+| 📁 klacker |  |
 | ⬩ class | info.magnolia.documentation.examples.templates.KlackerFilter |
 
-| Property | Description |
-| --- | --- |
-| `class` | **required**<br><br>The fully qualified class name of your custom filter. Must implement info.magnolia.cms.filters.MgnlFilter. |
-| `enabled` | **optional**, *default is `true`*<br><br>Setting to false disables the filter. |
-| `mappings` | **optional**<br><br>Add mappings. |
-
-### [](#_configuring_and_registering_filters_not_implementing_mgnlfilter)Configuring and registering filters not implementing `MgnlFilter`
-
-If you have a filter that cannot implement info.magnolia.cms.filters.MgnlFilter for some reason but that should be registered in the Magnolia filter chain, your configuration should look like this:
-
 | Name | Value |
 | --- | --- |
-| 📁 anotherFilter |     |
-| ⬩ class | info.magnolia.cms.filters.FilterDecorator |
-| ⸬ decoratedFilter |     |
-| ⬩ class | info.magnolia.documentation.examples.templates.AnotherFilter |
-| ⸬ config |     |
-| ⬩ myInitParam | some value |
-
-| Property | Description |
-| --- | --- |
-| `class` | **required**<br><br>In this case class must be info.magnolia.cms.filters.FilterDecorator. |
-| `decoratedFilter` | **required** |
-| `class` | **required**<br><br>The fully qualified class name of your custom filter (which does *not* implement info.magnolia.cms.filters.AbstractMgnlFilter). |
-| `config` | **optional**<br><br>A map to add filter init parameters. You may add as many parameters as required. The init parameters can be read in the init method of the filter ([see below](#_InitparametersforFilterDecorator)). |
-
-## [](#_adding_filter_init_parameters)Adding filter init parameters
-
-javax.servlet.Filter has an #init method which is called once when the filter is initialized.
-
-### [](#_init_parameters_for_filters_implementing_mgnlfilter)Init parameters for filters implementing `MgnlFilter`
-
-When using filters implementing info.magnolia.cms.filters.MgnlFilter, you can use a normal `Node2Bean` mechanism and add bean properties to the filter class.
-
-```java
-public class KlackerFilter extends AbstractMgnlFilter {
-    // bean properties
-    private String klackerMessage;
-    private int maximumKlackerNumber;
-
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        super.init(filterConfig);
-        // use bean properties - here klackerMessage, maximumKlackerNumber -
-        // to do something usefull
-    }
-
-    @Override
-    public void doFilter(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
-                         FilterChain filterChain) throws IOException, ServletException {
-        // do something usefull here
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
-    }
-
-    // getter and setter methods for the bean properties
-    public String getKlackerMessage() {
-        return klackerMessage;
-    }
-    public void setKlackerMessage(String klackerMessage) {
-        this.klackerMessage = klackerMessage;
-    }
-    public int getMaximumKlackerNumber() {
-        return maximumKlackerNumber;
-    }
-    public void setMaximumKlackerNumber(int maximumKlackerNumber) {
-        this.maximumKlackerNumber = maximumKlackerNumber;
-    }
-}
-```
-
-| Name | Value |
-| --- | --- |
-| 📁 klacker |     |
+| 📁 klacker |  |
 | ⬩ class | info.magnolia.documentation.examples.templates.KlackerFilter |
 | ⬩ enabled | true |
 | ⬩ KlackerMessage | Klacker messages are safe and reliable. |
-| ⬩ maximumKlackerNumber | 30  |
-
-### [](#_init_parameters_for_filters_not_implementing_mgnlfilter)Init parameters for filters not implementing `MgnlFilter`
-
-If you are using `FilterDecorator` for custom filters not implementing info.magnolia.cms.filters.MgnlFilter, use the config node to add init parameters ([see above](#_configuring_and_registering_filters_not_implementing_mgnlfilter)). The parameters are set to `javax.servlet.FilterConfig` and can be used in the init method:
-
-```java
-public class AnotherFilter implements Filter {
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        String initParam = filterConfig.get("myInitParam");
-        // do something usefull here with the initParam
-    }
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-      throws IOException, ServletException {
-        // do something usefull here
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
-    @Override
-    public void destroy() {
-    }
-}
-```
+| ⬩ maximumKlackerNumber | 30 |
 
 ## [](#_ensure_position_in_filter_chain)Ensure position in filter chain
 

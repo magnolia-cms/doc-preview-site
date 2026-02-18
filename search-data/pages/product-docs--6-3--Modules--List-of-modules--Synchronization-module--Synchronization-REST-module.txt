@@ -64,13 +64,13 @@ Controlled execution
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.synchronization</groupId>
   <artifactId>magnolia-synchronization-rest</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-synchronization-63}</version> (1)
 </dependency>
 ```
 
@@ -82,126 +82,19 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 
 This page describes the synchronization endpoint, which can be used to launch synchronization and check on their status.
 
-## [](#_get)GET
-
-### [](#_get_status)Get status
-
-Returns the status of a specified synchronization request.
-
-#### [](#_request_url)Request URL
-
-`/.rest/synchronization/v1/status/{synchId}`
-
-#### [](#_parameters)Parameters
-
-   ParameterDescriptionParameter typeData type
-
-`synchId`
-
-**required**
-
-Specify the synchronization request ID.
-
-> **Note:** the synchronization request ID is returned by synchronize or synchronizeWith.
-
-`path`
-
-`String`
-
-Returns the status of a synchronization request with:
-
--   `jobId` - the ID of the synchronization request (same as `synchId`)
-
--   `status` - the synchronization request status, one of:
-
-    -   `WAITING` - waiting for execution
-
-    -   `RUNNING` - currently executing
-
-    -   `DONE` - completed successfully without errors
-
-    -   `FAILED` - completed unsuccessfully due to an error
-
-    -   `CANCELLED` - synchronization was cancelled before execution
-
-    -   `ERROR` - synchronization was completed but was unable to determine results
-
-
-
-### [](#_clear_jobs)Clear jobs
-
-Clears the status of all synchronization jobs.
-
-> **Important:** This call will not stop running synchronization jobs or synchronization jobs awaiting execution.
-
-#### [](#_request_url_2)Request URL
-
-`/.rest/synchronization/v1/reset`
-
-Returns an HTTP status of:
-
--   `204` - the reset was successful
-
-
-## [](#_post)POST
-
-### [](#_trigger_synchronization)Trigger synchronization
-
-Launch a synchronization of designated workspace on a Magnolia instance.
-
-#### [](#_request_url_3)Request URL
-
-`/.rest/synchronization/v1/trigger`
-
-#### [](#_parameters_2)Parameters
+| Parameter | Description | Parameter type | Data type |
+| --- | --- | --- | --- |
+| `synchId` | **required** Specify the synchronization request ID. ** the synchronization request ID is returned by `synchronize` or `synchronizeWith` . | ** | the synchronization request ID is returned by `synchronize` or `synchronizeWith` . | `path` | `String` |
+| ** | the synchronization request ID is returned by `synchronize` or `synchronizeWith` . |
 
 | Parameter | Description | Parameter type | Data type |
 | --- | --- | --- | --- |
-| `url` | **required**<br><br>The URL of the Magnolia instance. | `query` | `String` |
-| `workspace` | **required**<br><br>The workspace to be synchronized. | `query` | `String` |
-| `recursive` | **optional**, *default is `true`*<br><br>Indicates if subnodes of path should also be synchronized. | `query` | `boolean` |
-| `fromDate` | **optional**<br><br>Specifies a Unix epoch timestamp in milliseconds.<br><br>Nodes modified since `fromDate` will be synchronized, nodes older than `fromDate` will be skipped.<br><br>If `null`, all node specified by `path` and `recursive` will be synchronized. | `query` | `long` |
-| `fromPath` | **required**<br><br>Workspace path on the author instance from which content is published. | `query` | `String` |
-| `toPath` | **optional**<br><br>Workspace path on the public instance to which the content is published.<br><br>Nodes at or below `fromPath` will be synchronized on the target Magnolia instance at `toPath`. | `query` | `String` |
-
-Returns an HTTP status of:
-
--   `200` - the synchronization request was launched and awaiting execution
-
--   `409` - another synchronization request is running and the request cannot be launched at this time
-
--   `500` - an error occurred and the synchronization request was not launched
-
-
-If the request was launched, the status of a synchronization request is returned with:
-
--   `jobId` - the ID of the synchronization request (same as `synchId`)
-
--   `status` - the synchronization request status, one of:
-
-    -   `WAITING` - waiting for execution
-
-    -   `RUNNING` - currently executing
-
-    -   `DONE` - completed successfully without errors
-
-    -   `FAILED` - completed unsuccessfully due to an error
-
-    -   `CANCELLED` - synchronization was cancelled before execution
-
-    -   `ERROR` - synchronization was completed but was unable to determine results
-
-
-
-#### [](#_example)Example
-
-Here is an example call for triggering a synchronization
-
-```js
-curl -u superuser:superuser http://localhost:8080/magnoliaAuthor/.rest/synchronization/v1/trigger --data '
-{"url" : "http://localhost:8080/magnoliaPublic", "workspace": "website", "fromPath" : "/", "fromDate" : "2012-03-29T10:05:45-06:00"}
-' --header "Content-Type: application/json"
-```
+| `url` | **required** The URL of the Magnolia instance. | `query` | `String` |
+| `workspace` | **required** The workspace to be synchronized. | `query` | `String` |
+| `recursive` | **optional** , *default is true* Indicates if subnodes of path should also be synchronized. | `query` | `boolean` |
+| `fromDate` | **optional** Specifies a Unix epoch timestamp in milliseconds. Nodes modified since `fromDate` will be synchronized, nodes older than `fromDate` will be skipped. If `null` , all node specified by `path` and `recursive` will be synchronized. | `query` | `long` |
+| `fromPath` | **required** Workspace path on the author instance from which content is published. | `query` | `String` |
+| `toPath` | **optional** Workspace path on the public instance to which the content is published. Nodes at or below `fromPath` will be synchronized on the target Magnolia instance at `toPath` . | `query` | `String` |
 
 ## [](#_known_issues)Known Issues
 

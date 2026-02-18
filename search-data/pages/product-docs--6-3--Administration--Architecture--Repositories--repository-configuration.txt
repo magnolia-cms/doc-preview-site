@@ -8,7 +8,7 @@ breadcrumb: DX Core > Administration > Architecture > Content storage and struct
 
 # Repositories configuration
 
-Magnolia uses the Apache Jackrabbit content repository which conforms to the specifications outlined in [JSR 283](https://jcp.org/en/jsr/detail?id=283). The configuration options provided by Jackrabbit are defined in the API [`RepositoryConfig`](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/config/RepositoryConfig.html). For information on Apache Jackrabbit configuration, see [the Jackrabbit configuration documentation](https://jackrabbit.apache.org/jcr/jackrabbit-configuration.html).
+Magnolia uses the Apache Jackrabbit content repository which conforms to the specifications outlined in [JSR 283](https://jcp.org/en/jsr/detail?id=283). The configuration options provided by Jackrabbit are defined in the API [`RepositoryConfig`](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/config/RepositoryConfig.html). For information on Apache Jackrabbit configuration, see [the Jackrabbit configuration documentation](https://jackrabbit.apache.org/jcr/jackrabbit-configuration.html).
 
 The repository configuration file specifies global options like security, datasources, and versioning. A default workspace configuration template is also included as part of the repository configuration file. For each workspace, there is a `workspace.xml` file inside the workspace home directory. This allows for specific configuration to be applied per workspace.
 
@@ -59,71 +59,31 @@ OOTB Examples
 -   `jackrabbit-memory-search.xml`
 
 
-There are several other examples of configuration files available in our [git repository](https://bitbucket.org/magnolia-cms/repository-configuration-examples).
+There are several other examples of configuration files available in our [git repository]({repo-repositoryConfigurationExamples}).
 
-Two properties are required for the content repository (see [Configuration management](../../Configuration-management/)).
+Two properties are required for the content repository (see [Configuration management](../../../../../RNs-6-4-3/Administration/Architecture/Configuration-management/)).
 
 -   **Repository home directory**: specified in the `magnolia.properties` file as `magnolia.repositories.home`
 
 -   **Repository configuration file**: specified in the `magnolia.properties` file as `magnolia.repositories.jackrabbit.config`
 
 
-## [](#_datasources)Datasources
-
-One or more datasource configurations can be created within the `DataSources` element. It’s common to configure one datasource per repository. Each workspace uses the exact same datasource connection. Technically, any workspace could use a different configuration. Some workspaces could connected to an embedded datasource, while others could connect to a database datasource. There is a lot of flexibility.
-
-### [](#_database)Database
-
-The configuration options are outlined in the [`DataSourceConfig`](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/config/DataSourceConfig.html) API.
-
-```xml
-<DataSources>
-    <DataSource name="magnolia">
-        <param name="driver" value="com.mysql.cj.jdbc.Driver" /> (1)
-        <param name="url" value="jdbc:mysql://localhost:3306/magnolia" /> (2)
-        <param name="user" value="root" />
-        <param name="password" value="password" /> (3)
-        <param name="databaseType" value="mysql"/> (4)
-        <param name="validationQuery" value="select 1"/> (5)
-    </DataSource>
-</DataSources>
-```
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 10%;"> <col style="width: 30%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Item</th><th class="tableblock halign-left valign-top">Parameter</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>1</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>driver</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Depending on which database you choose to work with, make sure you include the <code>JAR</code> file with the appropriate driver in the classpath.</p></div><div class="ulist"><ul><li><p><a href="https://dev.mysql.com/downloads/connector/j/" target="_blank" rel="noopener">MySQL Connector/J is the official JDBC driver for MySQL</a></p></li><li><p><a href="https://docs.actian.com/ingres/11.0/index.html#page/Connectivity/JDBC_Driver_and_Data_Source_Classes.htm" target="_blank" rel="noopener">Ingres JDBC Driver Downloads - Ingres Community Wiki</a></p></li><li><p><a href="https://jdbc.postgresql.org" target="_blank" rel="noopener">PostgreSQL JDBC Driver</a></p></li><li><p><a href="https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html" target="_blank" rel="noopener">Oracle JDBC Drivers</a></p></li><li><p><a href="https://www.microsoft.com/en-us/download/details.aspx?id=11774" target="_blank" rel="noopener">Microsoft JDBC Drivers</a></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>2</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>url</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The connection URL of the database.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>3</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The password associated with the schema.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>4</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>databaseType</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Use the appropriate setting for the database.</p></div><div class="ulist"><ul><li><p>postgresql</p></li><li><p>mysql</p></li><li><p>mssql</p></li><li><p>azure</p></li><li><p>oracle</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>5</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>validationQuery</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>The SQL query that’s used to validate connections from this pool before returning them to the caller. The query depends on the database type.</p></div><div class="ulist"><ul><li><p>MySQL: select 1</p></li><li><p>MSSQL: select 1</p></li><li><p>Oracle: select 1 from dual</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><em>not shown in sample</em></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxPoolSize</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Restrict the number of connections in the pool to a max value.</p></div></div></td></tr></tbody></table></div>
-
-### [](#_jndi)JNDI
-
-Jackrabbit supports JNDI datasources. The container you use determines how you set up your JNDI datasource.
-
-> **Caution:** Note that you can use datasources from JNDI in both the configuration of the datasources and in configuration of the components. Jackrabbit uses these JNDI datasources as-is and does not wrap pools around them. See ConnectionPooling.
-
--   Tomcat: [JNDI Resources HOW-TO Tomcat 9.0](https://tomcat.apache.org/tomcat-9.0-doc/jndi-resources-howto.html).
-
--   JBoss: [JBoss AS JNDI Datasource Setup](https://wiki.magnolia-cms.com/display/WIKI/JBoss+AS+JNDI+Datasource+Setup).
-
--   WebLogic: [JNDI for Oracle WebLogic Server](https://docs.oracle.com/cd/E24329_01/web.1211/e24489/toc.htm#WJNDI153).
-
--   WebSphere: [JNDI namespace bindings for WebSphere](https://www.ibm.com/docs/en/was/9.0.5?topic=directory-configuring-namespace-bindings).
-
-
-> **Tip:** See How to use a JNDI DataSource.
-
-### [](#_embedded)Embedded
-
-Jackrabbit provides persistence manager implementations for both H2 and Derby databases. Using these databases doesn’t require a concrete datasource configuration. You provide the connection URL at the persistence manager configuration.
-
--   [H2 Database Engine](https://www.h2database.com/l)
-
--   [Apache Derby](https://db.apache.org/derby/)
-
+| Item | Parameter | Description |
+| --- | --- | --- |
+| **1** | `driver` | **required** Depending on which database you choose to work with, make sure you include the `JAR` file with the appropriate driver in the classpath. • [MySQL Connector/J is the official JDBC driver for MySQL](https://dev.mysql.com/downloads/connector/j/) • [Ingres JDBC Driver Downloads - Ingres Community Wiki](https://docs.actian.com/ingres/11.0/index.html#page/Connectivity/JDBC_Driver_and_Data_Source_Classes.htm) • [PostgreSQL JDBC Driver](https://jdbc.postgresql.org) • [Oracle JDBC Drivers](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html) • [Microsoft JDBC Drivers](https://www.microsoft.com/en-us/download/details.aspx?id=11774) |
+| **2** | `url` | **required** The connection URL of the database. |
+| **3** | `password` | **required** The password associated with the schema. |
+| **4** | `databaseType` | **optional** Use the appropriate setting for the database. • postgresql • mysql • mssql • azure • oracle |
+| **5** | `validationQuery` | **optional** The SQL query that’s used to validate connections from this pool before returning them to the caller. The query depends on the database type. • MySQL: select 1 • MSSQL: select 1 • Oracle: select 1 from dual |
+| *not shown in sample* | `maxPoolSize` | **optional** Restrict the number of connections in the pool to a max value. |
 
 ## [](#_file_system)File system
 
-The virtual file system is used by the repository to store things like registered namespaces and [node types](../../Node-types/).
+The virtual file system is used by the repository to store things like registered namespaces and [node types](../../../../../RNs-6-4-3/Administration/Architecture/Node-types/).
 
 For more, see [Custom node types file issues](../../../Troubleshooting/Custom_nodetypes-xml-file/).
 
-The configuration options are outlined in the [FileSystem](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/FileSystem.html) API.
+The configuration options are outlined in the [FileSystem](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/FileSystem.html) API.
 
 ```xml
 <FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
@@ -133,17 +93,17 @@ The configuration options are outlined in the [FileSystem](http://jackrabbit.apa
 
 Jackrabbit provides many options for configuring the file system. Choose the class that best fits your use case and click the link to see your implementation-specific configuration options.
 
--   [org.apache.jackrabbit.core.fs.local.LocalFileSystem](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/local/LocalFileSystem.html): The file system is created in the location specified by `magnolia.repositories.home`.
+-   [org.apache.jackrabbit.core.fs.local.LocalFileSystem](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/local/LocalFileSystem.html): The file system is created in the location specified by `magnolia.repositories.home`.
 
--   [org.apache.jackrabbit.core.fs.db.DbFileSystem](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/db/DbFileSystem.html): Persists file system entries in a database table.
+-   [org.apache.jackrabbit.core.fs.db.DbFileSystem](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/db/DbFileSystem.html): Persists file system entries in a database table.
 
--   [org.apache.jackrabbit.core.fs.db.DerbyFileSystem](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/db/DerbyFileSystem.html): Persists file system entries in an embedded Derby database.
+-   [org.apache.jackrabbit.core.fs.db.DerbyFileSystem](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/db/DerbyFileSystem.html): Persists file system entries in an embedded Derby database.
 
--   [org.apache.jackrabbit.core.fs.db.MSSqlFileSystem](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/db/MSSqlFileSystem.html): Persists file system entries in an MS SQL database.
+-   [org.apache.jackrabbit.core.fs.db.MSSqlFileSystem](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/db/MSSqlFileSystem.html): Persists file system entries in an MS SQL database.
 
--   [org.apache.jackrabbit.core.fs.db.OracleFileSystem](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/db/OracleFileSystem.html): Persists file system entries in an Oracle database.
+-   [org.apache.jackrabbit.core.fs.db.OracleFileSystem](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/db/OracleFileSystem.html): Persists file system entries in an Oracle database.
 
--   [org.apache.jackrabbit.core.fs.mem.MemoryFileSystem](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/fs/mem/MemoryFileSystem.html): An in-memory file system implementation (can be useful for development).
+-   [org.apache.jackrabbit.core.fs.mem.MemoryFileSystem](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/fs/mem/MemoryFileSystem.html): An in-memory file system implementation (can be useful for development).
 
 
 > **Tip:** See Jackrabbit File System Configuration.
@@ -166,7 +126,7 @@ The security configuration element is used to specify authentication and authori
 
 Jackrabbit uses the [Java Authentication and Authorization Service (JAAS)](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jaas/JAASRefGuide.html) to authenticate users who try to access the repository. The `appName` parameter in the `<Security/>` element is used as the JAAS application name of the repository.
 
-Once a user has been authenticated, Jackrabbit uses the configured [AccessManager](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/security/AccessManager.html) to control what parts of the repository content the user is allowed to access and modify.
+Once a user has been authenticated, Jackrabbit uses the configured [AccessManager](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/security/AccessManager.html) to control what parts of the repository content the user is allowed to access and modify.
 
 > **Note:** The more advanced SimpleJBossAccessManager class is designed for use with the JBoss Application Server. It maps JBoss roles to Jackrabbit permissions.
 
@@ -197,7 +157,7 @@ The main features of the data store are:
 
 The file data store stores each binary in a file. The file name is the hash code of the content. When reading, the data is streamed directly from the file (no local or temporary copy of the file is created). The file data store doesn’t use any local cache, which means content is directly read from the files as needed. New content is first stored in a temporary file, and later renamed or moved to the right place.
 
-The configuration options are outlined in the [`FileDataStore`](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/data/FileDataStore.html) API.
+The configuration options are outlined in the [`FileDataStore`](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/data/FileDataStore.html) API.
 
 ```xml
 <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
@@ -214,7 +174,7 @@ The database data store keeps data in a relational database. All content is stor
 
 > **Caution:** MySQL doesn’t support sending very large binaries from the JDBC driver to the database. Therefore, you should avoid a database data store when using MySQL. See data store limitations.
 
-The configuration options available are outlined in the [`DbDataStore`](http://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/data/db/DbDataStore.html) API.
+The configuration options available are outlined in the [`DbDataStore`](http://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/data/db/DbDataStore.html) API.
 
 ```xml
 <DataStore class="org.apache.jackrabbit.core.data.db.DbDataStore">
@@ -241,7 +201,7 @@ The S3 data store requires the [Amazon WebServices Extension from Jackrabbit](ht
 
 Jackrabbit also requires an AWS properties file to specify information about your AWS S3 account. See [`aws.properties`](https://github.com/apache/jackrabbit/blob/trunk/jackrabbit-aws-ext/src/test/resources/aws.properties) for a sample.
 
-The [S3DataStore](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/aws/ext/ds/S3DataStore.html) class extends [`CachingDataStore`](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/data/CachingDataStore.html). This means that, by default, the disk space is still used to store the cached items. You can specify the location using the `path` parameter. Otherwise, the repository folder is used.
+The [S3DataStore](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/aws/ext/ds/S3DataStore.html) class extends [`CachingDataStore`](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/data/CachingDataStore.html). This means that, by default, the disk space is still used to store the cached items. You can specify the location using the `path` parameter. Otherwise, the repository folder is used.
 
 ```xml
 <DataStore class="org.apache.jackrabbit.aws.ext.ds.S3DataStore">
@@ -253,24 +213,12 @@ The [S3DataStore](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit
 </DataStore>
 ```
 
-## [](#_workspaces)Workspaces
-
-The `<Workspaces/>` element of the repository configuration specifies where and how workspaces are managed. The configuration of this element gets stored in the [`RepositoryConfig`](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/config/RepositoryConfig.html) class.
-
-```xml
-<Workspaces rootPath="${rep.home}/workspaces" defaultWorkspace="default" />
-```
-
-The following global workspace configuration options are available.
-
 | Parameter | Description |
 | --- | --- |
-| `rootPath` | **required**<br><br>The native file system directory for workspaces. A subdirectory is automatically created for each workspace, and the path of that subdirectory can be used in the workspace configuration as the `${wsp.path}` variable. |
-| `defaultWorkspace` | **required**<br><br>Name of the default workspace. This workspace is automatically created when the repository is first started. |
-| `configRootPath` | **optional**<br><br>By default, the configuration of each workspace is stored in a `workspace.xml` file within the workspace directory, which is in turn within the `rootPath` directory. If this option is specified, then the workspace configuration files are stored within the specified path in the virtual file system (see above) configured for the repository. |
-| `maxIdleTime` | **optional**<br><br>By default, Jackrabbit only releases resources associated with an opened workspace when the entire repository is closed. This option, if specified, sets the maximum number of seconds that a workspace can remain unused before the workspace is automatically closed. |
-
-> **Tip:** See Jackrabbit Workspace Configuration.
+| `rootPath` | **required** The native file system directory for workspaces. A subdirectory is automatically created for each workspace, and the path of that subdirectory can be used in the workspace configuration as the `${wsp.path}` variable. |
+| `defaultWorkspace` | **required** Name of the default workspace. This workspace is automatically created when the repository is first started. |
+| `configRootPath` | **optional** By default, the configuration of each workspace is stored in a `workspace.xml` file within the workspace directory, which is in turn within the `rootPath` directory. If this option is specified, then the workspace configuration files are stored within the specified path in the virtual file system (see above) configured for the repository. |
+| `maxIdleTime` | **optional** By default, Jackrabbit only releases resources associated with an opened workspace when the entire repository is closed. This option, if specified, sets the maximum number of seconds that a workspace can remain unused before the workspace is automatically closed. |
 
 ## [](#_workspace)Workspace
 
@@ -325,7 +273,7 @@ The search index in Jackrabbit is pluggable and has a default implementation bas
 
 ### [](#_workspace_security)Workspace security
 
-Workspace security is handled by the class `MagnoliaAccessProvider`, a Magnolia-specific ACL provider. This class compiles the set of permissions a user has for a given workspace. If the user doesn’t have any permissions for the workspace, then root-only access (info.magnolia.cms.core.RootOnlyPermissions) is returned. If the user is detected as admin or superuser, which is checked first, then an implementation of [`CompiledPermissions`](https://jackrabbit.apache.org/api/2.22.0/org/apache/jackrabbit/core/security/authorization/CompiledPermissions.html) that grants everything is returned.
+Workspace security is handled by the class `MagnoliaAccessProvider`, a Magnolia-specific ACL provider. This class compiles the set of permissions a user has for a given workspace. If the user doesn’t have any permissions for the workspace, then root-only access (info.magnolia.cms.core.RootOnlyPermissions) is returned. If the user is detected as admin or superuser, which is checked first, then an implementation of [`CompiledPermissions`](https://jackrabbit.apache.org/api/2.20/org/apache/jackrabbit/core/security/authorization/CompiledPermissions.html) that grants everything is returned.
 
 > **Note:** The class MagnoliaAccessProvider has DEBUG output available that you can switch on using the Log Tools app.
 

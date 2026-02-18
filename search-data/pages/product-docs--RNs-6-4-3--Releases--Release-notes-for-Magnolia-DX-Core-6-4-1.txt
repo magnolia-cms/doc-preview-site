@@ -1,0 +1,133 @@
+---
+title: "Release notes for Magnolia DX Core 6.4.1"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Releases/Release-notes-for-Magnolia-DX-Core-6.4.1/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Releases > Release notes for Magnolia DX Core 6.4.1
+---
+
+# Release notes for Magnolia DX Core 6.4.1
+
+Delivered on December 11, 2025 • Page updated on December 12, 2025 • Changelog: [21763](https://magnolia-cms.atlassian.net/issues/?filter=21763)
+
+**Magnolia 6.4.1** is a maintenance release focused on stability and security. This update introduces configurable trailing slashes for links, removes the `maxMergeDocs` workspace limit, offers lighter full-text search index configurations, and enables stricter security by validating that uploaded file extensions match their detected MIME types.
+
+Other notable fixes include correcting translation failures for specific field decorators, ensuring country-specific locales are stored correctly, and resolving XML import errors for SVG assets.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.4.1.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.4.1/magnolia-dx-core-webapp-6.4.1.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.4.1.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.4.1/travel-demo-webapp-6.4.1.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.4.1.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.4.1/travel-demo-community-webapp-6.4.1.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_4.0.0.zip](../../_attachments/mtk2_4.0.0.zip) (*as a light module*)
+
+
+## [](#_improvements)Improvements
+
+-   [MAGNOLIA-8378](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-8378) A configurable way to end links with a slash in the Community Edition
+
+    For more, see [Link management](../../Administration/Architecture/configuration-management/link-management/).
+
+-   [MAGNOLIA-9746](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9746) Lighter full-text search index configurations
+
+-   [MAGNOLIA-9825](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9825) Remove `maxMergeDocs` limit from workspace configuration
+
+-   [MGNLUI-9312](https://magnolia-cms.atlassian.net/browse/MGNLUI-9312) Check file headers when uploading an image using `DamUploadField`
+
+-   [WARPFORM-107](https://magnolia-cms.atlassian.net/browse/WARPFORM-107) Code field available in New UI Forms
+
+    For more details, see [New UI Forms: Standard form fields supported](../../Developing/Templating/Dialog-definition/New-ui-forms/#_standard_form_fields_supported).
+
+
+### [](#_security_improvements)Security improvements
+
+[BUILD-1467](https://magnolia-cms.atlassian.net/browse/BUILD-1467), [MAGNOLIA-9787](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9787), [MAGNOLIA-9788](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9788), [MGNLREST-885](https://magnolia-cms.atlassian.net/browse/MGNLREST-885), [MGNLTOMCAT-64](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-64)
+
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
+
+#### [](#_configure_magnolia_on_tomcat_behind_a_reverse_proxy)Configure Magnolia (on Tomcat) behind a reverse proxy
+
+The default `RemoteIpValve` configuration is included in Magnolia bundles out of the box. [This page](../../Administration/Deploying/Configuring-Magnolia-behind-a-proxy/) explains how to set up Magnolia with Tomcat behind a proxy such as Nginx or Apache, detailing the use of `X-Forwarded` headers and Tomcat’s `RemoteIpValve` to address common issues.
+
+## [](#_bug_fixes)Bug fixes
+
+-   [MAGNOLIA-9778](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9778) `ReadOnly` ACL restrictions are bypassed by parent folder actions leading to an inconsistent state and data loss
+
+-   [MGNLCE-428](https://magnolia-cms.atlassian.net/browse/MGNLCE-428) On macOS, H2 repository hangs during startup after sleep mode
+
+-   [MGNLCTS-187](https://magnolia-cms.atlassian.net/browse/MGNLCTS-187) Fields with `AlwaysEmptyPrefixNameDecorator` aren’t translated
+
+-   [MGNLCTS-204](https://magnolia-cms.atlassian.net/browse/MGNLCTS-204) Export to Excel fails with a communication problem on the latest Firefox `144.0`
+
+-   [MGNLDAM-2006](https://magnolia-cms.atlassian.net/browse/MGNLDAM-2006) Importing the generated XML export file from SVG assets doesn’t work correctly
+
+-   [WARPFORM-1108](https://magnolia-cms.atlassian.net/browse/WARPFORM-1108) CKEditor 5 rich text palette colors aren’t visible
+
+-   [WARPFORM-1140](https://magnolia-cms.atlassian.net/browse/WARPFORM-1140) Country-specific locales aren’t stored and read correctly
+
+
+## [](#_miscellaneous)Miscellaneous
+
+-   [MGNLTOMCAT-66](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-66) Update `org.apache.tomcat:tomcat` to `10.1.49`
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Barebones Tomcat Bundle `2.0.1`
+
+-   Community Edition `6.4.1`
+
+-   Content Editor `4.0.1`
+
+-   Content Translation Support `4.0.1`
+
+-   DAM App `6.0.1`
+
+-   DAM `6.0.1`
+
+-   DX Core `6.4.1`
+
+-   Definitions App `4.0.1`
+
+-   Demo Projects `6.4.1`
+
+-   Magnolia `6.4.1`
+
+-   Publishing `4.0.1`
+
+-   REST Framework `4.0.1`
+
+-   Third-party library BOM for Extensions `6.4.1`
+
+-   Third-party library BOM `6.4.1`
+
+-   UI `6.4.1`
+
+-   Warp Forms `1.0.1`
+
+-   Workflow `8.0.1`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.4.0.
+
+-   [Blossom](../../Modules/List-of-modules/Blossom-module/) `5.0.1`
+
+-   [Campaign manager](../../../../campaign-manager/) `5.0.2`
+
+-   [Siteimprove](../../../../siteimprove/) `3.1.0`
+
+-   [Synchronization](../../Modules/List-of-modules/Synchronization-module/) `4.0.1`
+
+-   [Task Email Notifications](../../../../task-email-notifications/) `6.4.0`
+
+-   [Tasks cleaner](../../../../taskscleaner/) `3.0.0`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.

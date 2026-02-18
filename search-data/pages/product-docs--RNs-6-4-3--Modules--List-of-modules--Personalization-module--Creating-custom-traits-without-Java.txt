@@ -1,0 +1,72 @@
+---
+title: "Creating custom traits without Java"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Personalization module > Creating custom traits > Creating custom traits without Java
+---
+
+# Creating custom traits without Java
+
+You can use [personalization](../../../../use-cases/Personalization/) in Magnolia without writing any Java code by using traits for just about any kind of personalization feature. Below, we focus on configuring cookie traits.
+
+## [](#_cookie_traits)Cookie traits
+
+The cookie trait supports multiple cookies. You can configure as many cookies as you like for multiple use cases and use them simultaneously. Cookies are supported also in headless scenarios.
+
+## [](#_two_magnolia_cookie_trait_implementations)Two Magnolia cookie trait implementations
+
+Version 2.1.0 of the [Personalization module](../) provides two implementations of cookie traits.
+
+### [](#_new_cookie_trait_implementation)New cookie trait implementation
+
+In the new implementation, the `Cookie` trait leverages a generalized `NameAndValueTraitDetectorFilter` that is also used to retrieve traits from the request header (`collectHeaders`) and request parameters (`collectRequestParameters`). The `NameAndValueVoter` is then used to render the appropriate content variation according to configuration.
+
+In addition, this implementation comes with the `@TraitType` annotation for easier configuration:
+
+<light-module>/traits/color.yaml
+
+```yaml
+$type: cookieTrait
+# name: is omitted as it is taken from the name of the yaml file
+```
+
+> **Note:** Use this implementation for personalization of headless SPA projects.
+
+The new implementation is part of the `magnolia-personalization-traits` submodule.
+
+### [](#_deprecated_cookie_trait_implementation)Deprecated cookie trait implementation
+
+The deprecated approach is part of the `magnolia-personalization-compatibility` submodule and was originally introduced in version 1.1.2 of the Personalization module.
+
+The `Cookies` trait (`info.magnolia.personalization.cookie.Cookies`) uses a specialized `CookiesDetectorFilter` that can read cookies from the HTTP request with `httpServletRequest.getCookies()`, but cannot collect the traits from the request header or request parameters. The `CookieVoter` is then used to render the appropriate content variation according to configuration.
+
+## [](#_creating_a_custom_cookie_trait)Creating a custom cookie trait
+
+The [Creating a custom cookie trait without Java](Creating-a-custom-cookie-trait-without-Java/) tutorial takes you through the process of creating, setting and using custom cookies.
+
+There is no need to write further Java classes. All you need to do to create a custom cookie is to is adapt the cookie trait configuration and write some FreeMarker and JavaScript code. You can include your code in a light module.
+
+## [](#_cookie_traits_in_magnolia_demo)Cookie traits in Magnolia demo
+
+The DX Core Demo [bundle](../../../../Developing/Bundles-and-webapps/) has two example cookie traits:
+
+-   `tourType`, used in the [Travel Demo](../../../../Getting-started-with-Magnolia/Demo/) to set user’s tour type preference.
+
+-   `weatherLocality`
+
+
+Related topics
+
+-   [Cookies trait configuration](Cookies-trait-configuration/)
+
+-   [Creating a custom cookie trait without Java](Creating-a-custom-cookie-trait-without-Java/)
+
+    -   [Configuring a custom cookie trait](Creating-a-custom-cookie-trait-without-Java/Configuring-a-custom-cookie-trait/)
+
+    -   [Setting and reading a custom cookie](Creating-a-custom-cookie-trait-without-Java/Setting-and-reading-a-custom-cookie/)
+
+
+-   [Personalization](../../../../use-cases/Personalization/)
+
+-   [Component personalization](../../../../Features/Personalization/Component-personalization/)

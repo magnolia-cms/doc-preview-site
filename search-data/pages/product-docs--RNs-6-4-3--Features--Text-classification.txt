@@ -1,0 +1,78 @@
+---
+title: "Text classification"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Features/Text-classification/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Magnolia DXP > Text classification
+---
+
+# Text classification
+
+The Text Classification feature provides integration with the [Amazon Comprehend](https://aws.amazon.com/comprehend/) service to analyze and tag your text content in the Pages app.
+
+Comprehend uses machine learning to find insights and relationships in text. Integrated with Magnolia, those insights are reflected in content tags. This enables editors to quickly grasp the main subject of large quantities of content and search through it more efficiently.
+
+Amazon Comprehend
+
+Amazon Comprehend is fully managed, so there are no servers to provision, and no machine learning models to build, train, or deploy. You pay only for what you use, and there are no minimum fees and no upfront commitments.
+
+## [](#_choose_what_content_to_analyze)Choose what content to analyze
+
+You can choose what text is aggregated and sent to the Amazon Comprehend service for analysis on a Magnolia field level. This enables you to fine-tune the content that is tagged, picking just the [field types](../../Developing/Templating/Dialog-definition/Field-definition/) that make sense for your project. The following Magnolia field types are supported:
+
+-   [Text field](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Text-field/)
+
+-   [Rich text field](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Rich-text-field/)
+
+-   [Composite field](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Composite-field/)
+
+-   [Switchable field](../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Switchable-field/)
+
+
+If there are terms that you do not want to appear in the tags returned, you can blacklist the terms you *don’t* want to have in tags. For example, having your company name appear as a tag repeatedly in all your content may not be useful. You can add your company name to the blacklist and it will no longer appear in tags.
+
+You can also set a confidence level to avoid having too many tags that aren’t pertinent to your needs.
+
+## [](#_tag_content_automatically)Tag content automatically
+
+Save time and effort by moving from tagging items by hand to tagging by machine. Since Magnolia uses a batch service from Amazon Comprehend, you can apply tags automatically to large amounts of content.
+
+Magnolia has chosen to implement the [Keyphrase Extraction API feature](https://docs.aws.amazon.com/comprehend/latest/dg/how-key-phrases.html) in Amazon Comprehend. This analysis focuses on finding and extracting returns the key phrases or talking points and a confidence score to support that this is a key phrase.
+
+## [](#_more_accurate_search)More accurate search
+
+Using the text classification feature extends the search capabilities of the Global Search. After the content is analyzed and tagged automatically, those tags are then searchable using the Global Search.
+
+This provides a more accurate and thorough search experience for your editors.
+
+## [](#_multiple_language_support)Multiple language support
+
+Amazon Comprehend can perform text analysis on English, French, German, Italian, Portuguese and Spanish texts.
+
+> **Note:** Note that content tagging currently has an issue when creating tags of words with accented characters. For example, Genève is tagged as Gen-ve. This means that searching for the tag Geneve or Genève will not return any results. The issue is being tracked here: CONTTAGS-69
+
+## [](#_triggering_classification)Triggering classification
+
+The text classification and tagging action are executed during the startup of the author instance. You can also trigger the action manually in the Pages app by selecting one or more pages and clicking the **Run classification** action.
+
+Pages that have already been tagged are marked as such using a JCR property called `lastTaggingAttemptDateByTextClassifier`. Executing the manual classification action forces a new tag to be set even if the content was previously tagged.
+
+The text classification feature is available only on author instances.
+
+## [](#_managing_your_tags)Managing your tags
+
+Thanks to the text classification integration with the [content tags app](../../Modules/List-of-modules/Content-Tags-module/), the tags are displayed in an additional column in the Pages app.
+
+You can manage the tags directly in the Pages app using a dedicated action: both manually adding or removing tags as required.
+
+Once a page has been tagged, select the page and click the **Modify tags** action in the Pages app.
+
+In the dialog box that opens, you can type in new tags, remove individual tags or click **Remove all tags**.
+
+Related topics
+
+-   [Text Classification module](../../Modules/List-of-modules/Text-Classification-module/)
+
+-   [Content tagging](../../Modules/List-of-modules/Content-Tags-module/)
+
+-   [Pages app](../../Apps/List-of-apps/Pages-app/)

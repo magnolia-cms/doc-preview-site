@@ -8,48 +8,22 @@ breadcrumb: DX Core > Modules > Categorization module
 
 # Categorization module
 
-[Content management](../../../use-cases/content-management/) Bundled: Community edition
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLCAT](https://magnolia-cms.atlassian.net/browse/MGNLCAT) |
-| Maven site | [Categorization](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcategorization%2Fmagnolia-categorization%2F3.0.1) |
-| Latest | 3.0.1 |
+| Maven site | [Categorization](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcategorization%2Fmagnolia-categorization%2F{magnolia-module-categorization-63}) |
+| Latest | {magnolia-module-categorization-63} |
 
-The **Categorization module** allows you to add categories to content. Categorization, also known as tagging or labeling, is a tool to manage large amounts of content. When applied to content, categories create a *taxonomy* - a set of metadata that describes and classifies the content. Categories help you describe content and allow visitors to find it by browsing or searching.
-
-> **Note:** Taxonomies are managed with this module as categories.
-
-## [](#_module_structure)Module structure
-
- artifactID
-
-`magnolia-module-categorization-parent`
-
-Parent reactor.
-
-     `magnolia-categorization`
-
-Main module containing the API, commands and the [`catfn`](../../../Developing/Templating/Template-scripts/Templating-functions/catfn/) templating functions.
-
-     `magnolia-categorization-support`
-
-Submodule containing the info.magnolia.module.categorization.support.CategorizationSupport interface.
-
-     `magnolia-categorization-app`
-
-Submodule containing the [Categories app](../../../Apps/List-of-apps/Categories-app/).
-
-     `magnolia-categorization-app-compatibility`
-
-Submodule containing the Categories compatibility app. Bundled in `magnolia-community-webapp` and used for backward compatibility.
-
-> **Note:** For custom bundles, you have to add it yourself.
-
-     `magnolia-categorization-rss-integration`
-
-Submodule for the [RSS Aggregator module](../RSS-Aggregator-module/).
+| artifactID |  |
+| --- | --- |
+| `magnolia-module-categorization-parent` | Parent reactor. |
+| `magnolia-categorization` | Main module containing the API, commands and the [catfn](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/catfn/) templating functions. |
+| `magnolia-categorization-support` | Submodule containing the info.magnolia.module.categorization.support.CategorizationSupport interface. |
+| `magnolia-categorization-app` | Submodule containing the [Categories app](../../../../RNs-6-4-3/Apps/List-of-apps/Categories-app/) . |
+| `magnolia-categorization-app-compatibility` | Submodule containing the Categories compatibility app. Bundled in `magnolia-community-webapp` and used for backward compatibility. ** For custom bundles, you have to add it yourself. | ** | For custom bundles, you have to add it yourself. |
+| ** | For custom bundles, you have to add it yourself. |
+| `magnolia-categorization-rss-integration` | Submodule for the [RSS Aggregator module](../../../../RNs-6-4-3/Modules/List-of-modules/RSS-Aggregator-module/) . |
 
 ## [](#_installing)Installing
 
@@ -57,13 +31,13 @@ If you are using a [preconfigured Magnolia webapp or bundle](../../../Developing
 
 ### [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.categorization</groupId>
   <artifactId>magnolia-categorization</artifactId>
-  <version>3.0.1</version> (1)
+  <version>{magnolia-module-categorization-63}</version> (1)
 </dependency>
 ```
 
@@ -81,41 +55,20 @@ Categorization is typically a prerequisite to faceted search. You first need a f
 
 **Example**: Tour types in the Magnolia
 
-[Travel Demo](../../../Getting-started-with-Magnolia/Demo/) include categories such as `active`, `beach` and `cultural`.
+[Travel Demo](../../../../RNs-6-4-3/Getting-started-with-Magnolia/Demo/) include categories such as `active`, `beach` and `cultural`.
 
-![Tour types](../../../_images/6-2-categorizationModule-tourTypes.png)
+![Tour types](../../../../RNs-6-4-3/_images/6-2-categorizationModule-tourTypes.png)
 
 Categories assigned to a content item are typically displayed as links on the website.
 
-![Categories on site](../../../_images/6-1-categorizationModule-kyotoOnSite.png)
-
-## [](#_creating_categories)Creating categories
-
-Use the [Categories app](../../../Apps/List-of-apps/Categories-app/) to create categories.
-
-![create category admincentral](../../../_images/apps/categorization/create-category-admincentral.gif)
+![Categories on site](../../../../RNs-6-4-3/_images/6-1-categorizationModule-kyotoOnSite.png)
 
 | Field | Description |
 | --- | --- |
-| **Category name\* (required)** | Internal name used to access the category programmatically (for example, with [`catfn`](../../../Developing/Templating/Template-scripts/Templating-functions/catfn/) functions). |
+| **Category name* (required)** | Internal name used to access the category programmatically (for example, with [catfn](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/catfn/) functions). |
 | **Display name** | Friendly name displayed to users when the category is rendered, for example, as a link on the website. |
 | **Importance** | Gives the category more weight. This is used to promote certain categories. |
 | **Related categories** | Links to other categories. This helps visitors discover related content. |
-
-Manage categories in dedicated app
-
-[Create your own app](../../../Apps/Developing-an-app/My-first-content-app/) to manage a subset of categories. Authors appreciate when they can focus on one thing at a time such as categories for a particular purpose. Managing a smaller subset helps authors work more efficiently. The Tour Categories app in the Magnolia Travel Demo is an example of this strategy. The app only shows categories that apply to tours.
-
-Additional fields in the Tour Categories app:
-
--   **Image** (required): Image representing the category.
-
--   **Icon** (required): Icon representing the category.
-
--   **Description**: Short description for the category.
-
--   **Body Text**: Full description for the category.
-
 
 ## [](#_categorizing_content)Categorizing content
 
@@ -123,7 +76,7 @@ To categorize content, edit the content item’s properties and choose applicabl
 
 **Example**: A tour of Kyoto is categorized as `ecotourism` and `offPath` (off the beaten path).
 
-![Edit mode](../../../_images/6-2-categorizationModule-kyotoEditMode.png)
+![Edit mode](../../../../RNs-6-4-3/_images/6-2-categorizationModule-kyotoEditMode.png)
 
 The easiest way to make categorization available to editors is to use the existing `categories` field from the Categorization module. If you configure your dialog using a YAML file, paste the `categories` field into your form definition.
 
@@ -163,7 +116,7 @@ form:
 
 ## [](#_getting_content_by_category)Getting content by category
 
-Use the [`catfn` functions](../../../Developing/Templating/Template-scripts/Templating-functions/catfn/) to access categorized content in your templates. This set of templating functions helps you find content in a particular category. A typical use case is to offer the visitor similarly tagged pages, helping them discover additional interesting content.
+Use the [`catfn` functions](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/catfn/) to access categorized content in your templates. This set of templating functions helps you find content in a particular category. A typical use case is to offer the visitor similarly tagged pages, helping them discover additional interesting content.
 
 **Example 1**: List all pages tagged with `travel`.
 
@@ -193,6 +146,6 @@ Use the [`catfn` functions](../../../Developing/Templating/Template-scripts/Temp
 
 Related topics
 
--   [Categories app](../../../Apps/List-of-apps/Categories-app/)
+-   [Categories app](../../../../RNs-6-4-3/Apps/List-of-apps/Categories-app/)
 
--   [`catfn`](../../../Developing/Templating/Template-scripts/Templating-functions/catfn/) templating functions
+-   [`catfn`](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/catfn/) templating functions

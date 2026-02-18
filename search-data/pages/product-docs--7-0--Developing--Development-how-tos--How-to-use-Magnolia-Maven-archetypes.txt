@@ -53,7 +53,7 @@ For **DX Core** projects, add the following repository to your project POM (or M
 </repositories>
 ```
 
-This also applies to Community Edition releases in [maintenance mode](../../../../../support/).
+This also applies to Community Edition releases in [maintenance mode](#support:ROOT:index.adoc).
 
 For **Community Edition** projects, use these repositories:
 
@@ -200,91 +200,26 @@ mvn archetype:generate -Dfilter=info.magnolia.maven.archetypes:magnolia
 
 > **Tip:** If you need to interrupt the command, press CTRL + C.
 
-## [](#_magnolia_maven_archetypes)Magnolia Maven archetypes
-
-Magnolia provides the following archetypes:
-
--   The `magnolia-project-archetype` generates a Magnolia project with a parent POM and a [Magnolia webapp](../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/).
-
--   The `magnolia-module-archetype` generates a Magnolia Maven module. For details, please refer to the [Modules](../../../Modules/) page.
-
--   The `magnolia-blossom-module-archetype` generates a Magnolia Maven module with support for the [Blossom module](../../../Modules/List-of-modules/Blossom-module/).
-
--   The `magnolia-cloud-project-archetype` generates a Magnolia project with both a parent POM and both the `dev` and `shared` directories. See [cloud:ROOT:Developing-for-Magnolia-in-the-cloud/Creating-and-deploying-custom-cloud-bundles.adoc](#cloud:ROOT:Developing-for-Magnolia-in-the-cloud/Creating-and-deploying-custom-cloud-bundles.adoc) for more details.
-
-
-Before generating a project, the archetypes ask you to supply values for the following parameters:
-
-  Required parametersExample valueNotes
-
-Maven `groupId`
-
-`com.example`
-
-Typically reflects the name or domain of your company or projects.
-
-Maven `artifactId`
-
-`custom-project`
-
-Project-specific identifier.
-
-Maven `version`
-
-`1.0-SNAPSHOT`
-
-Project version. Typically, when creating a new project, use the value suggested by Maven, for example `1.0-SNAPSHOT`.
-
-`package`
-
-`com.example`
-
-Package name for Java classes reflecting both your company (or domain) and the specific project.
-
-`magnolia-bundle-version`
-
-`6.2`
-
-Magnolia version to be used in your custom project.
-
-`project-name`
-
-`Custom Project`
-
-Project name.
-
-`module-class-name`
-
-`FoobarModule`
-
-Module name.
-
-> **Note:** This is for module archetypes only.
-
-`blossom-version`
-
-`3.2.1`
-
-The version of the Magnolia Blossom module.
-
-> **Note:** This is for the blossom module archetype only.
-
-### [](#_discontinued_archetypes)Discontinued archetypes
-
-As of version `1.2.5`, the following archetypes have been discontinued. Older versions may still appear if you use the filter option.
-
--   The `magnolia-forge-module-archetype`, used to create a Magnolia module for the former Magnolia Forge (moved to [GitHub: Magnolia Forge](https://github.com/magnolia-community)).
-
--   The `magnolia-theme-archetype`, used to create an STK (deprecated) theme module.
-
+| Required parameters | Example value | Notes |
+| --- | --- | --- |
+| Maven `groupId` | `com.example` | Typically reflects the name or domain of your company or projects. |
+| Maven `artifactId` | `custom-project` | Project-specific identifier. |
+| Maven `version` | `1.0-SNAPSHOT` | Project version. Typically, when creating a new project, use the value suggested by Maven, for example `1.0-SNAPSHOT` . |
+| `package` | `com.example` | Package name for Java classes reflecting both your company (or domain) and the specific project. |
+| `magnolia-bundle-version` | `6.2` | Magnolia version to be used in your custom project. |
+| `project-name` | `Custom Project` | Project name. |
+| `module-class-name` | `FoobarModule` | Module name. ** This is for module archetypes only. | ** | This is for module archetypes only. |
+| ** | This is for module archetypes only. |
+| `blossom-version` | `3.2.1` | The version of the Magnolia Blossom module. ** This is for the blossom module archetype only. | ** | This is for the blossom module archetype only. |
+| ** | This is for the blossom module archetype only. |
 
 ## [](#_which_archetype_version_should_i_use)Which archetype version should I use?
 
-Use the latest archetype release: **1.2.5**.
+Use the latest archetype release: **{magnolia-maven-archetypes}**.
 
 ## [](#_generated_skeletons)Generated skeletons
 
-A creation of a *project* typically results in the following skeleton, with a few more files created in `src/main/webapp`. For details, see [Creating a custom webapp with Maven](../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/).
+A creation of a *project* typically results in the following skeleton, with a few more files created in `src/main/webapp`. For details, see [Creating a custom webapp with Maven](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/).
 
 ```none
 custom-project/
@@ -296,7 +231,7 @@ custom-project/
 └── pom.xml
 ```
 
-On the other hand, if you create a *module*, the skeleton will have a simpler structure (no multi-module Maven reactor), with a pre-generated Magnolia module descriptor and Java module class. See also [Module structure](../../../Modules/Module-structure/).
+On the other hand, if you create a *module*, the skeleton will have a simpler structure (no multi-module Maven reactor), with a pre-generated Magnolia module descriptor and Java module class. See also [Module structure](../../../../RNs-6-4-3/Modules/Module-structure/).
 
 ```none
 custom-module/
@@ -315,9 +250,9 @@ Further reading
 
 Magnolia
 
--   [Maven setup](../../Development-environment/Maven/)
+-   [Maven setup](../../../../RNs-6-4-3/Developing/Development-environment/Maven/)
 
--   [Creating a custom webapp with Maven](../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/)
+-   [Creating a custom webapp with Maven](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/)
 
 
 External

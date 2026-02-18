@@ -1,0 +1,37 @@
+---
+title: "Install Imaging module"
+url: https://docs.magnolia-cms.com/imaging/developers/install/
+category: Modules
+version: modules
+breadcrumb: Imaging module > Install
+---
+
+# Install Imaging module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLIMG](https://magnolia-cms.atlassian.net/browse/MGNLIMG) |
+| Maven site | [Imaging](https://nexus.magnolia-cms.com/#browse/browse:extensions:info%2Fmagnolia%2Fimage-recognition%2Fmagnolia-imaging%2F5.0.0) |
+| Latest | 5.0.0 |
+
+| artifactID | Description |
+| --- | --- |
+| `magnolia-imaging` | Provides functionality to generate, filter, and manipulate images. |
+| `magnolia-imaging-support` | Provides utility classes and helper functions for image processing. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.imaging</groupId>
+  <artifactId>magnolia-imaging</artifactId>
+  <version>5.0.0</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |

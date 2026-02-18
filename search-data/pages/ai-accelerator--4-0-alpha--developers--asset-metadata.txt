@@ -1,0 +1,228 @@
+---
+title: "Configure asset metadata generation"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/asset-metadata/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Asset metadata
+---
+
+# Configure asset metadata generation
+
+**Available from version `2.2.6`**
+
+Generate asset metadata with a configured AI model and task parameters. Configure a model as described in [Model configuration](../model-configuration/). As with all tasks, the default model applies unless you override it for the `generateAssetMetadata` task by decoration.
+
+## [](#_features)Features
+
+The `generateAssetMetadata` task provides: \* A configurable action using `jcrCommandAction` \* An observation listener that can auto-generate metadata when an asset changes \* A Groovy script to bulk-generate metadata for assets in DAM
+
+## [](#_model_configuration)Model configuration
+
+To use the `gemini-2-5-flash` model:
+
+1.  Configure the model `gemini-2-5-flash`.
+
+2.  Decorate `<light-module-folder>/<light-module-name>/decorations/ai-accelerator-image-io/aiTasks/generateAssetMetadata.yaml`:
+
+    generateAssetMetadata.yaml
+
+    ```yaml
+    modelId: gemini-2-5-flash
+    ```
+
+
+You can control which languages the task generates. By default, the task uses the Magnolia default language. To add or change languages, decorate the input as shown.
+
+The example adds English (`en`), German (`de`), Simplified Chinese (`zh-CN`), and Swiss Standard German (`de-CH`).
+
+generateAssetMetadata.yaml
+
+```yaml
+input:
+  locales:
+    defaultValue:
+      english: en
+      german: de
+      chinese: zh-CN
+      swiss: de-CH
+```
+
+| Parameter | Description |
+| --- | --- |
+| `path` | **Required** Path to the DAM asset used to generate metadata. Use a Magnolia JCR DAM asset path. |
+| `fieldName` | **Required** ; default: `description` Target field to store the generated text. Allowed values: `description` , `caption` , `title` , `subject` . |
+| `prompt` | **Required** ; default: `Generate a caption for the image that will be great for SEO and placed in the alt attribute of the image tag.` Prompt sent to the model. |
+| `locales` | **Optional** ; default: Magnolia default language Languages to generate. Provide a map of label-to-locale code, for example `english: en` . |
+| `overwrite` | **Optional** ; default: `false` Overwrite the target field if it already has a value. |
+| `maxWords` | **Optional** ; default: `0` (no limit) Maximum number of words. `0` means unlimited. |
+| `maxLength` | **Optional** ; default: `0` (no limit) Maximum number of characters. `0` means unlimited. |
+| `maxWidth` | **Optional** ; default: `256` Maximum pixel width of the image sent to the model to reduce token usage. |
+
+## [](#_generate_metadata_by_action)Generate metadata by action
+
+See [Model configuration](../model-configuration/) for model setup.
+
+Ensure your `module.yaml` declares the dependency:
+
+```yaml
+dependencies:
+  dam-app-jcr:
+    version: 4.0.0/*
+```
+
+The decoration below: \* Adds two actions to the DAM browser subApp to write caption or description for a single asset and overwrite existing content \* Enables i18n for the caption and description fields so you can view generated values in multiple languages
+
+`<light-module-folder>/<light-module-name>/decorations/dam-assets-app/apps/dam.yaml`
+
+```yaml
+subApps:
+  jcrBrowser:
+    actions:
+      generateImageCaption:
+        label: Generate Image Caption
+        icon: icon-import
+        $type: jcrCommandAction
+        command: execute-task
+        catalog: ai-accelerator
+        params:
+          taskId: ai-accelerator-image-io:generateAssetMetadata
+          taskParameters:
+            fieldName: caption
+            overwrite: true
+            maxLength: 100
+            locales:
+              english: en
+              german: de
+        availability:
+          writePermissionRequired: true
+          nodeTypes:
+            asset: mgnl:asset
+          rules:
+            notDeleted:
+              $type: jcrIsDeletedRule
+              negate: true
+      generateImageDescription:
+        label: Generate Image Description
+        icon: icon-import
+        $type: jcrCommandAction
+        command: execute-task
+        catalog: ai-accelerator
+        params:
+          taskId: ai-accelerator-image-io:generateAssetMetadata
+          taskParameters:
+            fieldName: description
+            overwrite: true
+            maxWords: 150
+            locales:
+              english: en
+              german: de
+        availability:
+          writePermissionRequired: true
+          nodeTypes:
+            asset: mgnl:asset
+          rules:
+            notDeleted:
+              $type: jcrIsDeletedRule
+              negate: true
+    # Add the defined actions to the action bar.
+    actionbar:
+      sections:
+        asset:
+          groups:
+            generate:
+              items:
+                - name: generateImageDescription
+                - name: generateImageCaption
+  # Enable i18n for caption and description.
+  jcrDetail:
+    form:
+      properties:
+        caption:
+          i18n: true
+        description:
+          i18n: true
+```
+
+| Property | Description |
+| --- | --- |
+| `enabled` | Enable or disable the observation listener. Default: `false` . |
+| `observationDelay` | Debounce delay in milliseconds before running the task after an event. Default: `1000` . |
+| `fields` | Map of field configurations keyed by field name ( `caption` , `description` , and optionally `title` , `subject` ). See [.Field properties (per entry under observationMetadataGeneration.fields)](#field-properties) . |
+
+## [](#_generate_metadata_by_groovy_script)Generate metadata by Groovy script
+
+The `ai-accelerator-image-io` module includes a Groovy script to generate description properties for all images in the DAM workspace.
+
+Open the Groovy app at `${webapp-context-path}/.magnolia/admincentral#app:groovy:browser;/ai-accelerator/CreateDescriptionForAllAssets`.
+
+```groovy
+import info.magnolia.ai.task.AiTaskExecutor
+import info.magnolia.objectfactory.Components
+import com.google.common.collect.ImmutableMap
+
+workspace = 'dam'
+nodeType = "mgnl:asset"
+folderType = "mgnl:folder"
+folderPath = "/"              // Narrow the scope if needed.
+excludedFolders = [ ]         // Add full folder paths to skip AI lookups.
+// e.g. excludedFolders = ["/travel-demo/social-icons", "/svg-icons", "/destinations"]
+
+def generateDescription(assetPath) {
+    AiTaskExecutor taskExecutor = Components.getComponent(AiTaskExecutor.class)
+
+    String prompt = "Create a great alt text for SEO purposes"
+
+    Map<String, Object> taskParameters = ImmutableMap.<String, Object> builder()
+            .put("prompt", prompt)
+            .put("path", assetPath)
+            .put("overwrite", false) // Set true to overwrite existing data.
+            // .put("fieldName", "caption") // Default is "description"; allowed: "caption", "title", "subject"
+            .build()
+
+    Map<String, Object> taskContext = ImmutableMap.<String, Object> builder()
+            .put("taskParameters", taskParameters)
+            .build()
+
+    try {
+        Map<String, Object> execute = taskExecutor.execute("ai-accelerator-image-io:generateAssetMetadata", taskContext)
+        Map<String, Object> response = ImmutableMap.<String, Object> builder().putAll(execute).put("prompt", prompt).build()
+
+        if (response.get("error") == true) {
+            println response.toString()
+        } else {
+            LinkedHashMap responseData = ((LinkedHashMap) response.get("data"))
+            println "Retrieved Description properties for: " + assetPath
+            println "\tEnglish: " + responseData.get("text_en").toString()
+            println "\tGerman: " + responseData.get("text_de").toString()
+        }
+    } catch (Exception e) {
+        println "Error generating description for: " + assetPath + " " + e.toString()
+    }
+}
+
+def assessFolder(targetFolder) {
+    targetNode = session.getNode(targetFolder)
+    def currentPath = targetNode.getPath()
+    println "Analyzing folder: " + currentPath
+
+    // Skip excluded folders.
+    if (excludedFolders.any { currentPath.startsWith(it) }) {
+        println "Skipping excluded folder: " + currentPath
+        return
+    }
+
+    targetNodeAssets = NodeUtil.asList(NodeUtil.getNodes(targetNode, nodeType))
+    targetNodeFolders = NodeUtil.asList(NodeUtil.getNodes(targetNode, folderType))
+
+    for (assetNode in targetNodeAssets) {
+        generateDescription(assetNode.getPath())
+    }
+    for (folderNode in targetNodeFolders) {
+        assessFolder(folderNode.getPath())
+    }
+}
+
+ctx = MgnlContext.getInstance()
+session = ctx.getJCRSession(workspace)
+assessFolder(folderPath)
+```

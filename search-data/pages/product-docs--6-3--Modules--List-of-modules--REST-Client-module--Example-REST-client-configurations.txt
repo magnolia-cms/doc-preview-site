@@ -10,7 +10,7 @@ breadcrumb: DX Core > Modules > REST Client module > Example REST client configu
 
 This page presents examples of REST client definitions that leverage the possibilities of the Magnolia [REST Client module](../).
 
-As this page focuses mainly on REST client configurations, below we deal with [template definitions](../../../../Developing/Templating/Template-definition/) and [template scripts](../../../../Developing/Templating/Template-scripts/) only marginally.
+As this page focuses mainly on REST client configurations, below we deal with [template definitions](../../../../../RNs-6-4-3/Developing/Templating/Template-definition/) and [template scripts](../../../../Developing/Templating/Template-scripts/) only marginally.
 
 > **Tip:** See also the Hello Magnolia - with content via REST tutorial page containing an additional and easy to configure scenario.
 
@@ -55,13 +55,13 @@ $magnolia.resources.dir/declarative-rest-demo/templates/components/wonders/allWo
 
 If the REST API service needs an authentication of a REST call, you can configure a security (authentication) scheme for it under the `securitySchemes` node. You can use scheme types `basic` and `bearer`, which are available out of the box in the REST client module.
 
-For an example with the `basic` scheme, see [basic security scheme](../#_basic_security_scheme).
+For an example with the `basic` scheme, see [basic security scheme](../../../../../RNs-6-4-3/Modules/List-of-modules/REST-Client-module/#_basic_security_scheme).
 
 Below are more example configurations.
 
 ### [](#_bearer_token_with_expiry_duration)Bearer token with expiry duration
 
-Example configuration of a client called `bearer-security` utilizing the [bearer security scheme](../#_bearer_security_scheme) and an expiration limit. The scheme’s configuration is defined under the `bearerTokenWithExpiryDuration` node, the authentication call is configured under `authenticateWithDurationAsLong`.
+Example configuration of a client called `bearer-security` utilizing the [bearer security scheme](../../../../../RNs-6-4-3/Modules/List-of-modules/REST-Client-module/#_bearer_security_scheme) and an expiration limit. The scheme’s configuration is defined under the `bearerTokenWithExpiryDuration` node, the authentication call is configured under `authenticateWithDurationAsLong`.
 
 $magnolia.resources.dir/declarative-rest-demo/restClients/bearer-security.yaml
 
@@ -94,7 +94,7 @@ restCalls:
 
 ### [](#_oauth2_bearer_security_scheme_with_expiry_duration)OAuth2 bearer security scheme with expiry duration
 
-Example configuration of a client called `knowledgeSource` also utilizing the [bearer security scheme](../#_bearer_security_scheme) and an expiration limit. The scheme’s configuration is defined under the `oauth2` node. The authentication call is configured under `authenticate` in a separate `knowledgeSourceAuth.yaml` configuration file.
+Example configuration of a client called `knowledgeSource` also utilizing the [bearer security scheme](../../../../../RNs-6-4-3/Modules/List-of-modules/REST-Client-module/#_bearer_security_scheme) and an expiration limit. The scheme’s configuration is defined under the `oauth2` node. The authentication call is configured under `authenticate` in a separate `knowledgeSourceAuth.yaml` configuration file.
 
 > **Note:** This example showcases a situation in which you are using a third-party authentication service for your REST calls. In other words, the authentication URL is different from the service URL.In this particular example configuration, the domain where the token is served from is example.net while the REST service is hosted on example.com.
 
@@ -145,7 +145,7 @@ This case makes use of a REST client called `books` and a JavaScript model calle
 
 The component template script then renders the book’s title, number of pages and its cover image (if available).
 
-![Book search results](../../../../_images/6-2-exampleRESTClientConfigurations-books.png)
+![Book search results](../../../../../RNs-6-4-3/_images/6-2-exampleRESTClientConfigurations-books.png)
 
 ### [](#_client_configuration_2)Client configuration
 
@@ -266,7 +266,7 @@ $magnolia.resources.dir/declarative-rest-demo/templates/components/wiki/onthisda
 
 After passing the template values for type, month and date, the component displays a list of notable events that happened on the given day at some point in the past, for example:
 
-![On this day in the past](../../../../_images/6-2-exampleRESTClientConfigurations-OpenAPINov12.png)
+![On this day in the past](../../../../../RNs-6-4-3/_images/6-2-exampleRESTClientConfigurations-OpenAPINov12.png)
 
 ## [](#_see_also)See also
 
@@ -277,8 +277,8 @@ After passing the template values for type, month and date, the component displa
 
 Related topics
 
--   [REST Client module](../)
+-   [REST Client module](../../../../../RNs-6-4-3/Modules/List-of-modules/REST-Client-module/)
 
--   [restfn](../../../../Developing/Templating/Template-scripts/Templating-functions/restfn/)
+-   [restfn](../../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/restfn/)
 
--   [Hello Magnolia - with content via REST](../../../../Developing/Hello-Magnolia---with-content-via-REST/)
+-   [Hello Magnolia - with content via REST](../../../../../RNs-6-4-3/Developing/Hello-Magnolia---with-content-via-REST/)

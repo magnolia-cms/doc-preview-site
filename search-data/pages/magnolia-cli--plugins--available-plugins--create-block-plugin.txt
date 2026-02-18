@@ -1,0 +1,68 @@
+---
+title: "Create Block plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/create-block-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Create Block plugin
+---
+
+# Create Block plugin
+
+| Package name | `@magnolia/cli-create-block-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-create-block-plugin](https://www.npmjs.com/package/@magnolia/cli-create-block-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md](https://unpkg.com/@magnolia/cli-create-block-plugin/CHANGELOG.md) |
+| Prototypes available | • `_default` : contains a dialog and template with examples of properties used most often. • `empty` : contains an empty dialog and template. |
+
+## [](#_installing)Installing
+
+The plugin doesn’t come pre-installed with the Magnolia CLI. You must add it to the `mgnl.config.js` project file.
+
+> **Note:** The plugin is installed automatically by the Jumpstart plugin if it is defined in a project template.
+
+### [](#_with_add_plugin)With add-plugin
+
+Run the following command in the project folder.
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-create-block-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+The command automatically downloads, installs, and registers the plugin in `mgnl.config.js`.
+
+### [](#_manually)Manually
+
+1.  Run the following command in the project folder.
+
+    ```console
+    npm install @magnolia/cli-create-block-plugin
+    ```
+
+2.  Modify the `mgnl.config.js` file accordingly.
+
+    ```js
+    import CreateBlockPlugin from "@magnolia/cli-create-block-plugin";
+
+    export default {
+      plugins: [
+        new CreateBlockPlugin()
+      ]
+    };
+    ```
+
+
+| Form (short and long) | Description |
+| --- | --- |
+| `-lm [name]` `--light-module [name]` | Sets the light module for the block. By default, uses the directory specified in the `mgnl.config.js` file. |
+| `-pd <path>` `--prototype-dir <path>` | Use a path to the custom prototype templates directory as the prototype source for block creation. |
+| `-p [name]` `--prototype [name]` | Selects a prototype for block creation. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+| Property name | Description |
+| --- | --- |
+| `lightModulesPath` | The path to a directory containing all light modules. |
+| `lightModule` | The name of a light module where the block will be created. Alternative forms: `-lm [name]` , `--light-module [name]` |

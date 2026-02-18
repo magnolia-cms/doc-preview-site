@@ -1,0 +1,40 @@
+---
+title: "Version Cleaner module"
+url: https://docs.magnolia-cms.com/versioncleaner/
+category: Modules
+version: modules
+breadcrumb: Version Cleaner module
+---
+
+# Version Cleaner module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/services/versioncleaner) |
+| Latest | 1.6.2 ** Compatible with Magnolia 6.2, 6.1, 5.7. | ** | Compatible with Magnolia 6.2, 6.1, 5.7. |
+| ** | Compatible with Magnolia 6.2, 6.1, 5.7. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.services</groupId>
+  <artifactId>versioncleaner</artifactId>
+  <version>1.6.2</version>
+</dependency>
+```
+
+| Command | Description |
+| --- | --- |
+| `cleanVersions` | Remove unneeded versions according to its configuration. |
+| `cleanAllVersions` | Remove all versions found except root and leaf versions. ** Unlike `cleanVersions` , `cleanAllVersions` does not require possibly complicated configuration. | ** | Unlike `cleanVersions` , `cleanAllVersions` does not require possibly complicated configuration. |
+| ** | Unlike `cleanVersions` , `cleanAllVersions` does not require possibly complicated configuration. |
+| `cleanNodeVersions` | Clean versions from a workspace and path. |
+
+| Version | Notes |
+| --- | --- |
+| `1.6.2` | Corrected ordering of version workspace traversal |
+| `1.6.1` | Corrected naming for pruning configuration for `info.magnolia.services.cleanup.commands.NodeVersionCleanupCommand` ( `pruneVersions` → `pruneVersion` ). |
+| `1.6` | • Removed obsolete `pruneHistory` configuration. • Corrected resumption of pruning from history. • Added `cleanNodeVersions` command ( `info.magnolia.services.cleanup.commands.NodeVersionCleanupCommand` ). |

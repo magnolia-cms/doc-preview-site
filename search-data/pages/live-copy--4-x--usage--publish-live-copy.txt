@@ -1,0 +1,54 @@
+---
+title: "Push changes and publish a live copy"
+url: https://docs.magnolia-cms.com/live-copy/4.x/usage/publish-live-copy/
+category: Modules
+version: modules
+breadcrumb: Live Copy module > Publish a live copy
+---
+
+# Push changes and publish a live copy
+
+Live copy sites can be modified and published through the *push* and *publish* features. Keep in mind that the content can be pushed from the master to the live copy site, but it can neither be pushed from live copy site to master nor from one live copy site to another live copy site.
+
+> **Note:** Once the system starts the push or push and publish operation, a spinner icon appears in the Live copy column and you can’t click on live copy actions until the operation is complete.
+
+## [](#_push_changes_from_master_to_live_copy_pages)Push changes from master to live copy pages
+
+When you change content on your master page and want to push your changes to a matching live copy page, use the **Push master changes** or **Push master changes incl. subnodes** actions.
+
+In the **Push master content changes** dialog that appears, select the live copy or copies you want to push changes to. You can push your changes to the live copy pages with the **Push** button or push your changes and publish your live copy pages in one operation with the **Push and publish** button.
+
+Use the **Automatically relink** option to automatically relink all links in the live copy so that they point to within your live copy site, instead of pointing to the master site, if required.
+
+![image](../../_images/live-copy-push-multi-dialog.png)
+
+### [](#_push)Push
+
+When you click **Push**, the content in the live copy is updated as follows:
+
+1.  Content, including personalized content - This includes page properties, component ordering, added and/or removed components.
+
+2.  Page position - If a child page in the master site is moved to a different location, then the equivalent live copy child page is moved too.
+
+3.  Page variants.
+
+4.  Page links - Depending on the **Automatically relink** option.
+
+
+> **Note:** If you have added a new page to the master site, you must create a live copy of the new page to create it in the copied site before you can push master changes to it. Newly created pages are not added automatically upon pushing master changes.If you have deleted a page from the master site, you must delete the equivalent live copy page too if required. Pushing master changes with or without including subnodes does not delete pages from the live copy.
+
+### [](#_push_and_publish)Push and publish
+
+When you click **Push and publish**, a second step in the dialog opens where you can add a comment and schedule a date and time for the publication task for your live copy pages.
+
+![image](../../_images/live-copy-publish-multi-dialog.png)
+
+When you click **Push & publish now**, the content in the live copies is updated as described above and the publication workflow is triggered for your live copy pages.
+
+When you create a live copy from a master, the master is set to modified. You can see the [publication status](../../../../product-docs/6.3/Authoring/Publishing/#_publication_status) goes from **Published** to **Modified** in the Pages app browser. Live copies aren’t published upon creation; you must publish them individually using the standard Publish action or when pushing changes from master.
+
+## [](#_publishing_including_live_copy_variants)Publishing including live copy variants
+
+If a page has [personalization variants](../../../../product-docs/6.3/Modules/List-of-modules/Personalization-module/My-first-personalized-campaign/#_variant), you can publish the master and the live copy variants using the action **Publish incl. live copy variants**.
+
+Ensure the parent pages of any variants are published in the live copies before using this action. Variants *are not* published if their parent page isn’t published.

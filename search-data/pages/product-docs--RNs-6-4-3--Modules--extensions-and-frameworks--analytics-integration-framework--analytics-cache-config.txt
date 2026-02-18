@@ -1,0 +1,32 @@
+---
+title: "Configuring the cache"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/analytics-integration-framework/analytics-cache-config/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Analytics integration framework > Cache configuration
+---
+
+# Configuring the cache
+
+You can configure the cache in the JCR or the File System (YAML) under: `/analytics/decorations/addon-commons-cache/config.yaml`
+
+By default, the cache is enabled and content pulled from your external solution is updated every 30 minutes.
+
+```yml
+cacheConfigurations:
+  analytics:
+    caches:
+      analytics-datasupplier: expireAfterAccess=30m
+      analytics-datasupplier-metrics: expireAfterAccess=30m
+    enabled: true
+```
+
+Set the `enabled` property to `false` to disable caching.
+
+When you click the refresh button on the dashboard, the cache is invalidated.
+
+| Data supplier | Unique metadata file | Job and command |
+| --- | --- | --- |
+| Adobe Analytics | `/adobe-analytics/metadata/<companyId>_<rsid>_metrics.json` `/adobe-analytics/metadata/<companyId>_<rsid>_dimensions.json` The metadata file is named using the companyId and rsid from the Adobe Analytics data supplier configuration separated with underscores. Example: `exchan213_emagmgnl_dimensions.json` , where exchan213 is companyId and emagmgnl is the rsid. | • `/modules/scheduler/config/jobs/updateAdobeMetadata` • `/modules/adobe-analytics/commands/adobe/updateAdobeMetadata` |
+| Google Analytics 4 | `/google-analytics/metadata/all-metric-dimensions.json` | • `/modules/scheduler/config/jobs/updateGoogleMetadata` • `/modules/google-analytics/commands/google/updateGoogleMetadata` |
+| Matomo | `/matomo/metadata/demo-matomo-org-1.json` The metadata file is named using the serverURL and idSite parameters from the Matomo data supplier configuration separated with hyphens. Example: `demo-matomo-org-1.json` , where https://demo.matomo.org is the `serverURL` and 1 is the `idSite` . | • `/modules/scheduler/config/jobs/updateMatomoMetadata` • `/modules/matomo/commands/matomo/updateMatomoMetadata` |

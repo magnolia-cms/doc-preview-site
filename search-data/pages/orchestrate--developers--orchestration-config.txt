@@ -1,0 +1,149 @@
+---
+title: "Configure Orchestration"
+url: https://docs.magnolia-cms.com/orchestrate/developers/orchestration-config/
+category: Modules
+version: modules
+breadcrumb: Orchestrate module > Orchestration
+---
+
+# Configure Orchestration
+
+You can configure the module through [decorating](#6.2@product-docs:ROOT:Developing/Definition-decoration.adoc) the [orchestrate-core `config.yaml` file](https://gitlab.magnolia-platform.com/ps/services/orchestrate/-/blob/master/orchestrate-core/src/main/resources/orchestrate-core/config.yaml?ref_type=heads).
+
+Decoration path
+
+`/YOUR_LIGHT_MODULE/decorations/orchestrate-core/config.yaml`
+
+## [](#_task_states)Task States
+
+Tasks can be assigned states. These states are used in a dropdown in the task dialog and are used to generate the lanes on the Kanban board.
+
+```yaml
+taskStates:
+  - name: todo (1)
+    value: todo (2)
+    label: orchestrate-app.todo.label (3)
+    color: "#fb5034" (4)
+    doneState: false (5)
+  - name: in-progress
+    value: in-progress
+    label: orchestrate-app.in-progress.label
+    color: "#fbbc00"
+    doneState: false
+  - name: done
+    value: done
+    label: orchestrate-app.done.label
+    color: "#00a259"
+    doneState: true
+```
+
+|     |     |
+| --- | --- |
+| **1** | The name of the element. Needs to be unique in this list. |
+| **2** | The internal name for this state. |
+| **3** | The display value for this state. This can be an `i18n` key. |
+| **4** | The color used for visual representation in charts and badges. |
+| **5** | Boolean used internally for filters to determine if a task is finished or still needs to be completed. |
+
+## [](#_user_realms)User Realms
+
+The user realm is used for the assignee dropdown and filter. It uses the users from these realms to populate the datasource with special handling for the SSO realm. The username is the one the User Object holds, which the `Usermanager` returns.
+
+Current default
+
+```yaml
+userRealms:
+  - admin (1)
+  - sso (2)
+```
+
+**1**The default realm for CMS users.**2**The SSO user realm.
+
+> **Note:** For SSO, an External User Manager is used, which cannot possibly know all users, so the profiles workspace is used to decode the base64 encoded username.
+
+## [](#_notifications)Notifications
+
+The module supports email and Slack notifications for task and campaign events. Notifications are disabled by default.
+
+### [](#_email_notifications)Email Notifications
+
+Email notifications are sent using the Magnolia mail module. SMTP configuration (server, port, authentication) is managed centrally in the [mail module configuration](#6.2@product-docs:ROOT:Modules/List-of-modules/Mail-module/Mail.adoc). The sender address (`fromAddress`) is configured in the orchestrate module.
+
+When email notifications are enabled, the following recipients receive emails:
+
+-   **Task assignee** - Automatically receives notifications when:
+
+    -   A task is created and assigned to them
+
+    -   A task is assigned to them
+
+    -   The status of their assigned task changes
+
+
+-   **Default recipients** - Any additional email addresses configured in `defaultRecipients`
+
+
+> **Note:** For assignees to receive email notifications, the user must have an email property set in their Magnolia user profile.
+
+### [](#_configuration)Configuration
+
+```yaml
+notifications:
+  enabled: false (1)
+  email:
+    enabled: false (2)
+    fromAddress: orchestrator@magnolia-cms.com (3)
+    defaultRecipients: [] (4)
+  slack:
+    enabled: false (5)
+    webhookUrl: "" (6)
+    channel: "orchestrator-notifications"
+    username: Magnolia Orchestrator
+    iconEmoji: ":clipboard:"
+```
+
+|     |     |
+| --- | --- |
+| **1** | Master switch to enable/disable all notifications. |
+| **2** | Enable email notifications (requires mail module to be configured). |
+| **3** | The sender email address for notification emails. |
+| **4** | List of additional email addresses that always receive notifications (besides the task assignee). |
+| **5** | Enable Slack notifications. |
+| **6** | Slack incoming webhook URL. |
+
+### [](#_notification_events)Notification Events
+
+Notifications are sent for the following events:
+
+-   **Task created** - When a new task is created
+
+-   **Task assigned** - When a task is assigned to a user
+
+-   **Task status changed** - When a task’s status is updated
+
+-   **Campaign created** - When a new campaign is created
+
+
+| Rule | Description | Priority | Tag |
+| --- | --- | --- | --- |
+| Unassigned Tasks | Suggests assigning tasks that have no assignee | High | Urgent |
+| Overloaded Members | Suggests rebalancing workload when a team member has more than 15 tasks | Medium | Balance |
+| Stalled Campaigns | Suggests starting work on campaigns with more than 3 todo tasks but no in-progress tasks | Medium | Optimize |
+| Empty Campaigns | Suggests adding tasks to campaigns with fewer than 3 tasks | Low | Improve |
+
+## [](#_security)Security
+
+### [](#_authentication)Authentication
+
+All REST API endpoints require authentication. Anonymous users receive a `401 Unauthorized` response when attempting to access any endpoint.
+
+### [](#_authorization)Authorization
+
+The current implementation provides basic authorization:
+
+-   **Read operations** - All authenticated users can read all campaigns, tasks, and user lists
+
+-   **Write operations** - All authenticated users can create, update, and delete campaigns and tasks
+
+
+> **Note:** Role-based access control (RBAC) is not yet implemented. All authenticated users have equal access to all resources. Future versions may include per-campaign access control, role-based permissions (viewer, editor, admin), and team-based resource isolation.

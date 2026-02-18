@@ -1,0 +1,26 @@
+---
+title: "Security app"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/List-of-apps/Security-app/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > List of apps > Security app
+---
+
+# Security app
+
+The Security app is where you manage access in the system by administering users, groups, and roles. Magnolia’s built-in access management system authenticates users to determine who is using the system and provides them with the means to sign into applications. It also authorizes users, ensuring that they have the required permissions for actions such as editing pages. You can use the app for permission reporting, auditing, and troubleshooting why users can’t access the resources they should be able to.
+
+Access the Security app from the App Launcher: **Admin** > **Security**.
+
+![Security app](../../../_images/6-2-securityApp.png)
+
+| System users | `/system` |
+| --- | --- |
+| Users | `/admin` |
+| Public users | `/public` |
+
+| Subapp | Workspace |
+| --- | --- |
+| `users` | `users` |
+| `groups` | `usergroups` |
+| `roles` | `userroles` |

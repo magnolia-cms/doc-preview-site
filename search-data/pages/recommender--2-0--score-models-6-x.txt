@@ -1,0 +1,144 @@
+---
+title: "Magnolia 6.x"
+url: https://docs.magnolia-cms.com/recommender/2.0/score-models-6.x/
+category: Modules
+version: modules
+breadcrumb: Content Recommender module > Magnolia 6.x
+---
+
+# Magnolia 6.x
+
+The Score Models app is where you create and manage models. It’s a good idea to arrange your models into folders. Perhaps Products, Campaigns, and/or Special offers.
+
+When creating models pick a non technical name that is understandable for your editors and marketeers. Additionally, you can give the model a description to explain what you intend to classify. The user journey score tab allows you to pre-configure your user score assignment. Therefore you don’t have to configure the score on each and every content element where the model is applied.
+
+The *dependencies* tab gives you an overview where your model is currently in use. This includes score models assigned for page views as well as component interactions.
+
+![score model 6](../_images/score-model-6.jpg)
+
+![score model details 6](../_images/score-model-details-6.jpg)
+
+## [](#_integrating_score_models_in_your_content_apps)Integrating score models in your content apps
+
+You can integrate scoring models in any content app. This allows you to tag your centrally managed content like products or teases with scoring models. Each time a tagged content record is used the matching scoring tag is delivered as well. Therefore personalizing user journeys becomes very efficient.
+
+To integrate the scoring model into your content app you can use a decoration to extend your apps:
+
+/my-module/decorations/target-module/apps/app-name.yaml
+
+```yaml
+subApps:
+  detail:
+    form:
+      properties:
+        scoreModels: !include:/magnolia-recommender/includes/scoreModel.yaml
+```
+
+![integrate score model 6](../_images/integrate-score-model-6.jpg)
+
+## [](#_integrating_score_models_in_your_templates)Integrating score models in your templates
+
+The module requires some integration into your templating projects.
+
+### [](#_javascript)JavaScript
+
+The `recommender.js` script handles the persistence of the scoring on the browser side. Be sure to include this file provided by the content recommender module.
+
+Freemarker
+
+```html
+<script type="text/javascript" charset="utf-8" async="" src="/.resources/magnolia-recommender/webresources/js/recommender.js"></script>
+```
+
+SPA
+
+```html
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@magnolia-services/recommender-spa@1.0.0/recommender.js"></script>
+```
+
+Add reference resolver for score models so they are returned inside your pages delivery endpoint for REST (SPA only).
+
+/my-light-module/restEndpoints/delivery/pages.yaml
+
+```yaml
+class: info.magnolia.rest.delivery.jcr.v2.JcrDeliveryEndpointDefinition
+workspace: website
+# ...
+references:
+  - name: scoreModelReference
+    propertyName: scoreModels
+    referenceResolver:
+      class: info.magnolia.rest.reference.jcr.JcrReferenceResolverDefinition
+      targetWorkspace: scoremodels
+```
+
+## [](#_templating_functions)Templating functions
+
+The `recommender.js` script relies on HTML tags to understand which interactions should be tracked. The required tags can be generated with the help of the RecommenderTemplatingFunctions. They are available in the scorefn templating functions.
+
+### [](#_freemarker)FreeMarker
+
+Page visit events
+
+Add the following to the HTML `<head>` section.
+
+```none
+${scorefn.getPageVisitMetaTags(content)}
+```
+
+Scoring components
+
+For specific components extend the component dialog. You can do so by including the `scoreModel.yaml` file.
+
+```yaml
+scoreModels: !include:/magnolia-recommender/includes/scoreModel.yaml
+```
+
+Next you need to generate the tags in your element by using the `scorefn` function.
+
+```html
+<a class="yourButton" ${scorefn.getComponentScoreModelMetaTag(content)}>...
+```
+
+> **Tip:** If you use content app data on your page then use the following code to generate the meta tags.
+
+```html
+<a class="yourButton" ${scorefn.getComponentScoreModelMetaTag("your node id", 'your node workspace')}}>...
+```
+
+### [](#_spa)SPA
+
+Page visit events
+
+```js
+// scoreModels is resolved (via reference resolver) value of scoreModels property returned by pages delivery endpoint
+window.scoreModel.getPageVisitMetaTags(scoreModels);
+```
+
+Scoring components
+
+For specific components extend the component dialog. You can do so by including the `scoreModel.yaml` file.
+
+```yaml
+scoreModels: !include:/magnolia-recommender/includes/scoreModel.yaml
+```
+
+Add the `data-score-model` attribute and on on click action using `window.scoreModel` helper function.
+
+```js
+<button
+  ref={ctaEle}
+  data-score-model={window.scoreModel.prepareDataScoreModels(scoreModels)} // pass components score models
+  onClick={() => {
+    window.scoreModel.performPageEventScoring(ctaEle.current); // pass current element
+  }}
+>Button</button>
+```
+
+## [](#_personalizing_based_on_interest)Personalizing based on interest
+
+To deliver personalized content create a component variant and assign a score model or a predefined segment containing score models.
+
+> **Note:** If you assign a score model specify which interest threshold must be reached.
+
+![interest personalization 6](../_images/interest-personalization-6.jpg)

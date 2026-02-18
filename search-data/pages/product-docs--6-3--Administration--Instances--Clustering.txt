@@ -8,7 +8,7 @@ breadcrumb: DX Core > Administration > Instances > Deploying instances
 
 # Deploying instances
 
-Deployment in productive environments often groups a set of physical or virtual machines. In Magnolia, different deployment possibilities are introduced in the next section. You can read more about the [clustering options](#_clustering_setup) further down this page and on [Setting up Jackrabbit Clustering](setup-jackrabbit-clustering/).
+Deployment in productive environments often groups a set of physical or virtual machines. In Magnolia, different deployment possibilities are introduced in the next section. You can read more about the [clustering options](#_clustering_setup) further down this page and on [Setting up Jackrabbit Clustering](../../../../RNs-6-4-3/Administration/Instances/Clustering/setup-jackrabbit-clustering/).
 
 ## [](#_data_deployment_models)Data deployment models
 
@@ -23,7 +23,7 @@ Each instance has a dedicated database and runs on different physical hardware.
 Tolerant, highly available, completely redundant
 Duplication of data and cost of resources to keep them
 
-![Separate instances diagram](../../../_images/data-strore-deployment-separate-instances.png)
+![Separate instances diagram](../../../../RNs-6-4-3/_images/data-strore-deployment-separate-instances.png)
 
 ### [](#_option_2_centralized_database_server)Option 2: Centralized database server
 
@@ -36,7 +36,7 @@ Includes separated data redundancy
 The database is a single endpoint, and a clustered installation is recommended to avoid failure
 Increments in infrastructure and total vCPU units
 
-![Centralized database server diagram](../../../_images/data-strore-deployment-central-database-server.png)
+![Centralized database server diagram](../../../../RNs-6-4-3/_images/data-strore-deployment-central-database-server.png)
 
 ### [](#_option_3_clustered_data_model)Option 3: Clustered data model
 
@@ -48,7 +48,7 @@ Decreases processing on the author instance, as it only needs to send one copy o
 Your data relies on only one copy, and so you need backup policies
 If the cluster goes down, you lose all visibility
 
-![Clustered data model diagram](../../../_images/data-strore-deployment-clustered.png)
+![Clustered data model diagram](../../../../RNs-6-4-3/_images/data-strore-deployment-clustered.png)
 
 ## [](#_clustering_setup)Clustering setup
 
@@ -86,11 +86,11 @@ Any database is clusterable by its very nature as it stores content by unique ha
 
 > **Tip:** For more details, see the Apache Jackrabbit clustering documentation and these instructions for setting up Jackrabbit clustering.
 
-Individual [workspaces](../../Architecture/Workspaces/) can be mapped to different repositories. The repository that holds shared content can reside in clustered storage. This is useful for content that needs to be in sync across all instances.
+Individual [workspaces](../../../../RNs-6-4-3/Administration/Architecture/Workspaces/) can be mapped to different repositories. The repository that holds shared content can reside in clustered storage. This is useful for content that needs to be in sync across all instances.
 
 In the diagram, each Magnolia instance uses its own persistent storage for storing the content of `website`, `dam` and `config` workspaces. However, the `comments` workspace has shared content that is stored in a clustered storage, the database in the middle.
 
-![Clustering diagram](../../../_images/Clustering.png)
+![Clustering diagram](../../../../RNs-6-4-3/_images/Clustering.png)
 
 User generated content such as comments written by site visitors is a typical clustering case. Imagine that users John and Jane request the same web page. A load balancer redirects John to public instance A. When John leaves a comment on the page, his comment is stored in a workspace that resides in clustered storage. Now Jane requests the same page. The load balancer redirects her to public instance B. John’s comment is immediately visible to Jane since both instances tap into the same clustered storage.
 
@@ -106,8 +106,8 @@ To enable Janitor, see [Removing Old Revisions](https://jackrabbit.apache.org/ar
 
 Related topics
 
--   [Content storage and structure](../../Architecture/Content-storage-and-structure/)
+-   [Content storage and structure](../../../../RNs-6-4-3/Administration/Architecture/Content-storage-and-structure/)
 
--   [Setting up Jackrabbit clustering](setup-jackrabbit-clustering/)
+-   [Setting up Jackrabbit clustering](../../../../RNs-6-4-3/Administration/Instances/Clustering/setup-jackrabbit-clustering/)
 
 -   [Jackrabbit clustering documentation](https://jackrabbit.apache.org/archive/wiki/JCR/Clustering_115513377.html)

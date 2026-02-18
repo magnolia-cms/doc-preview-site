@@ -28,21 +28,11 @@ You can get a visualization of the passed, logged, and blocked requests for your
 
 > **Tip:** For more details, check out Fastly’s WAF page.
 
-## [](#_default_settings)Default settings
-
-By default, your DX Cloud deployment has WAF activated with a certain set of rules on your `prod` [cluster](../../cockpit/sections/security/).
-
- RuleNotes
-
-`owasp`
-
-Contains approximately **200** rules to protect against the top 10 vectors such as cross-site-scripting attacks and injections like SQL injections.
-
-> **Tip:** See here for more information on the top attack vectors.
-
-`application-multi`
-
-Contains dozens of rules that detect application-specific threats such as CVEs as well as request anomalies such as missing UAs, [XFF mismatch](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For#security_and_privacy_concerns) and so on.
+| Rule | Notes |
+| --- | --- |
+| `owasp` | Contains approximately **200** rules to protect against the top 10 vectors such as cross-site-scripting attacks and injections like SQL injections. ** See [here](https://owasp.org/www-project-top-ten/) for more information on the top attack vectors. | ** | See [here](https://owasp.org/www-project-top-ten/) for more information on the top attack vectors. |
+| ** | See [here](https://owasp.org/www-project-top-ten/) for more information on the top attack vectors. |
+| `application-multi` | Contains dozens of rules that detect application-specific threats such as CVEs as well as request anomalies such as missing UAs, [XFF mismatch](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Forwarded-For#security_and_privacy_concerns) and so on. |
 
 ## [](#_waf_configuration_for_your_project)WAF configuration for your project
 

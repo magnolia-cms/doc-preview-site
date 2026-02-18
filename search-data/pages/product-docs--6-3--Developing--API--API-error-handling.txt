@@ -10,29 +10,6 @@ breadcrumb: DX Core > Developing > API > API error handling
 
 This page describes the most common types of errors (exceptions) that may occur when issuing API requests.
 
-## [](#_rest)REST
-
-A server may respond to a REST API request with an HTTP response message informing about the failure of the API call. For example, if you send a simple request such as:
-
-https://demopublic.magnolia-cms.com/.rest/delivery/tours/v1/magnolia-travels/A-Taste-of-Asia
-
-the sever responds with the following message in the body of the response:
-
-{
-    "error": {
-        "code": "pathNotFound",
-        "message": "/magnolia-travels/A-Taste-of-Asia"
-    }
-}
-
-The message informs the receiver about an exception that occurred while processing the request: the requested resource path was not found on the server.
-
-### [](#_exception_types)Exception types
-
-The tables below describe several common types of exceptions, their HTTP status codes and error codes. For exceptions not mentioned below, the status code is 500 and the error code is `unknown`.
-
-#### [](#_jax_rs_exceptions)JAX-RS exceptions
-
 | Exception | HTTP Status Code | Error code | Description |
 | --- | --- | --- | --- |
 | `NotAuthorizedException` | 401 | `notAuthorized` | Unauthorized. |
@@ -42,24 +19,3 @@ The tables below describe several common types of exceptions, their HTTP status 
 | `NotFoundException` | 404 | `notFound` | The resource was not found. |
 | `ReaderException` | 400 | `readerError` | A JAX-RS exception. |
 | `WriterException` | 500 | `writerError` | A JAX-RS exception. |
-
-#### [](#_repository_exceptions)Repository exceptions
-
-| Exception | HTTP Status Code | Error code | Description |
-| --- | --- | --- | --- |
-| `AccessDeniedException` | 403 | `accessDenied` | Access is denied. |
-| `NoSuchNodeTypeException` | 500 | `noSuchNodeType` | The requested node type was not found. |
-| `NoSuchWorkspaceException` | 500 | `noSuchWorkspace` | The requested workspace is not configured. |
-| `ValueFormatException` | 400 | `invalidValueFormat` | The value format is invalid. |
-| `InvalidQueryException` | 400 | `invalidQuery` | The query is invalid. |
-| `PathNotFoundException` | 404 | `pathNotFound` | The requested resource path was not found. |
-
-### [](#_exception_response_format)Exception response format
-
-The format of an exception response to be returned is determined as follows:
-
--   The response is displayed in the media type requested (see IANA’s [Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml)).
-
--   If the requested media type is not supported, JSON is returned as fallback.
-
--   If no resource method is matched, JSON is returned as fallback.

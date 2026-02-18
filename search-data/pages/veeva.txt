@@ -1,0 +1,148 @@
+---
+title: "Veeva DAM Connector module"
+url: https://docs.magnolia-cms.com/veeva/
+category: Modules
+version: modules
+breadcrumb: Veeva DAM Connector module
+---
+
+# Veeva DAM Connector module
+
+[Digital asset management (DAM)](../product-docs/RNs-6-4-3/use-cases/Digital-asset-management/) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/veeva-parent) Version [2.0.0](https://magnolia-cms.atlassian.net/browse/VEEVA) [Magnolia 6.3+](../product-docs/6.3/) compatible\[[1](#_footnotedef_1 "View footnote.")\]
+
+The **Veeva DAM Connector module** serves as a Digital Asset Management (DAM) connector for Magnolia, enabling seamless integration with [Veeva](https://www.veeva.com/). The connector facilitates browsing images and provides a dialog for incorporating these images and videos directly into your website.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.external.dam</groupId>
+  <artifactId>magnolia-external-dam-veeva</artifactId>
+  <version>2.0.0</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+Add the following configuration to the `config.yaml`, JCR, or alternatively, decorate it from another module. The following values are found in your Veeva account.
+
+-   `dns`: Veeva DNS
+
+-   `apiUsername`: Veeva Username
+
+-   `apiPassword`: Veeva Password
+
+-   `clientId`: Veeva Client ID
+
+
+Alternatively, username and password can be stored in Magnolia’s Password Manager app. Create entries for these first and then modify `config.yaml` to reference these entries via absolute paths. eg.
+
+```yaml
+apiUsername: "/veevaVault/apiUsername"
+apiPassword: "/veevaVault/apiPassword"
+```
+
+## [](#_per_user_authentication)Per-user authentication
+
+In a large organisation, it may not be ideal for every user to access the Veeva API via the same account. A user can access the API with their own credentials by opening the user preferences dialog and, under the 'Veeva access' tab, entering their Veeva username and password. If they check the box marked 'Use own Veeva credentials?' the will only see Veeva content in the Magnolia UI that their account is allowed access to.
+
+Notes:
+
+-   A central account is still needed for rendering content for anonymous website viewers.
+
+-   Clients are cached for users. A user changing their credentials or opting to use their own credentials for the first time should log out for at least five minutes.
+
+
+## [](#_usage)Usage
+
+Once the module has been installed, you can add assets to the website and/or apps by using the default link field. There are three types of objects that you can use from Veeva:
+
+-   asset
+
+-   text
+
+-   module
+
+
+Asset example
+
+![veeva chooser](_images/veeva-chooser.png)
+
+-   Asset
+
+-   Text
+
+-   Module
+
+
+```yaml
+  veevaImage:
+    $type: linkField
+    label: Choose Veeva Asset Element
+    chooserId: dam-veeva:chooser-asset
+    datasource:
+      $type: veeva-asset
+      preview:
+        variationName: preview
+```
+
+```yaml
+  veevaText:
+    $type: linkField
+    label: Choose Veeva Text Element
+    chooserId: dam-veeva:chooser-text
+    datasource:
+      $type: veeva-text
+```
+
+```yaml
+  veevaModule:
+    label: Choose Veeva Module Element
+    $type: linkField
+    chooserId: dam-veeva:chooser-module
+    datasource:
+        $type: veeva-module
+```
+
+### [](#_call_veeva_objects)Call Veeva objects
+
+In the templates, access the Veeva objects by calling Veeva templating functions:
+
+```java
+veevafn.getVeevaText(veevaTextId!)! (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Where `veevafn` is the function, `getVeevaText` is the method. See `info.magnolia.external.dam.veeva.templating.VeevaTemplatingFunctions` for more details. |
+
+### [](#_link_to_veeva_asset)Link to Veeva asset
+
+Link to a Veeva asset using Magnolia’s DAM servlet:
+
+```none
+link = ctx.contextPath + "/dam/" + node.veevaImage!
+```
+
+![veeva usage](_images/veeva-usage.png)
+
+### [](#_veeva_endpoints)Veeva endpoints
+
+You can also use the following endpoints to retrieve data from Veeva:
+
+-   Asset: Retrieve asset by id, GET "/veeva/asset/{id}"
+
+-   Text: Retrieve text by id, GET "/veeva/text/{id}"
+
+-   Module: Retrieve module by id, GET "/veeva/module/{id}"
+
+
+| Version | Notes |
+| --- | --- |
+| `2.0` | Release for Magnolia 6.3 compatibility. [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20VEEVA%20AND%20fixVersion%20%3D%202.0.0) |
+
+* * *
+
+[1](#_footnoteref_1). This module was last tested on Magnolia 6.3.5. If you are using a previous Magnolia release or version, please take this into consideration.

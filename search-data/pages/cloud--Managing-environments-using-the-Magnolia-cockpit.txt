@@ -1,0 +1,61 @@
+---
+title: "Managing environments using the Magnolia cockpit"
+url: https://docs.magnolia-cms.com/cloud/Managing-environments-using-the-Magnolia-cockpit/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Managing environments using the Magnolia cockpit
+---
+
+# Managing environments using the Magnolia cockpit
+
+In this section and its subpages, you learn how to manage environments.
+
+An environment consists of one or several *[spaces](../Cockpit/Magnolia-cockpit-concepts/#_space)*, which group together related functionality needed to build or deliver a site. The systems that a space actually contains and how they are connected is defined by the *[space’s setup](../Cockpit/Magnolia-cockpit-concepts/#_space_setup)*. A space is a container for one or more instances of Magnolia.
+
+![image](../_images/gloss-env.png)
+
+A cloud-based Magnolia package typically consists of three [environments](../Cockpit/Magnolia-cockpit-concepts/#_environment):
+
+-   **Live**: Where the tested and approved version of the content product is delivered to customers.
+
+-   **UAT** (User Acceptance Testing): Where the next version of the product is made available to editors and managers for testing and review.
+
+-   **Integration**: Where developers try out ideas and test solutions before giving internal users access
+
+
+## [](#_cloud_environments_vary)Cloud environments vary
+
+Depending on your subscription package, the environments available to you may differ.
+
+**For example:**
+
+You may have only a single Live environment available, or only a UAT and a Live environment. In these cases, you can [deploy a development snapshot](../managing-updates-using-the-Magnolia-cockpit/deploying-snapshot/) directly in the Live or in the UAT environment respectively.
+
+Environments are managed in the **Manage environments** page.
+
+To access this page, in the **Package overview** page, click **Manage environments**.
+
+![image](../_images/Envs-Change-envs-BAR_.png)
+
+From the **Manage environments** page you can:
+
+-   [Manage your log levels](Monitoring-and-logging/Managing-cloud-log-levels/)
+
+-   [Restart an instance](Restarting-instances/)
+
+-   [View RDS information](Viewing-cloud-database-information/)
+
+-   [Set up a new environment](Setting-up-a-new-environment/)
+
+-   [Tear down an environment](Tearing-down-an-environment/)
+
+-   [Configure domain redirect rules](Configuring-domain-redirect-rules/)
+
+-   [Protect environments from being torn down](Protecting-environments/)
+
+-   [Back up and restore](Backing-up-and-restoring/)
+
+
+![image](../_images/cloud-manage-environments-all-available.png)
+
+> **Note:** The options available in Manage environments depend on the current state of your setup:If the Live environment is not set up, some actions are disabled.Backup related actions are only available for the Live environment.Unavailable actions are greyed out.

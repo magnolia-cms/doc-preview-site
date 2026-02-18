@@ -55,7 +55,7 @@ If you need to configure Tomcat to use virtual hosts, data sources and so on, se
 
 ## [](#_disclosing_potentially_sensitive_information)Disclosing potentially sensitive information
 
-By default, the `magnolia-tomcat-barebone` provided by [Magnolia](../../../../Developing/Bundles-and-webapps/) ([Nexus](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/tomcat/barebone/magnolia-tomcat-barebone/)) will not disclose potentially sensitive information, such as details about errors or server type and version.
+By default, the `magnolia-tomcat-barebone` provided by [Magnolia](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/) ([Nexus](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/tomcat/barebone/magnolia-tomcat-barebone/)) will not disclose potentially sensitive information, such as details about errors or server type and version.
 
 Any custom error page for errors which can’t be mapped to pages declared in `web.xml` can be changed accordingly by modifying the configuration in `server.xml`.
 
@@ -85,7 +85,7 @@ For instance in `localhost_access_log_xxx.txt`, one could see:
 
 ### [](#_known_issues)Known issues
 
--   [SSO and OpenID login issues](../../../Troubleshooting/SSO-and-OpenID-login-issues/)
+-   [SSO and OpenID login issues](../../../../../RNs-6-4-3/Administration/Troubleshooting/SSO-and-OpenID-login-issues/)
 
 
 ## [](#_using_tomcat_with_apache)Using Tomcat with Apache

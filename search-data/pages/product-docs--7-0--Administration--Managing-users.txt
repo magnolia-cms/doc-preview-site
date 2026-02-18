@@ -25,24 +25,24 @@ The system always checks whether a certain user has the required (set of) permis
 
 For more details, refer to:
 
--   [Users](../IAM/Users/)
+-   [Users](../../../RNs-6-4-3/Administration/IAM/Users/)
 
--   [Groups](../IAM/Groups/)
+-   [Groups](../../../RNs-6-4-3/Administration/IAM/Groups/)
 
--   [Roles and access control lists](../IAM/Roles-and-access-control-lists/)
+-   [Roles and access control lists](../../../RNs-6-4-3/Administration/IAM/Roles-and-access-control-lists/)
 
--   [Group and role strategies](../IAM/Group-and-role-strategies/)
+-   [Group and role strategies](../../../RNs-6-4-3/Administration/IAM/Group-and-role-strategies/)
 
--   [Default roles, groups and users](../IAM/Roles-groups-and-users/)
+-   [Default roles, groups and users](../../../RNs-6-4-3/Administration/IAM/Roles-groups-and-users/)
 
--   [Default permissions](../IAM/Default-permissions/)
+-   [Default permissions](../../../RNs-6-4-3/Administration/IAM/Default-permissions/)
 
--   [JAAS security setup](../Security/JAAS-security-setup/)
+-   [JAAS security setup](../../../RNs-6-4-3/Administration/Security/JAAS-security-setup/)
 
 
 ## [](#_magnolia_security_app)Magnolia Security app
 
-Use the Magnolia [Security app](../../Apps/List-of-apps/Security-app/) to administer users groups, and roles with ACLs that Magnolia provides. By default, the app stores the user, group and role data in the `users`, `usergroups`, and `userroles` JCR workspaces.
+Use the Magnolia [Security app](../../../RNs-6-4-3/Apps/List-of-apps/Security-app/) to administer users groups, and roles with ACLs that Magnolia provides. By default, the app stores the user, group and role data in the `users`, `usergroups`, and `userroles` JCR workspaces.
 
 ## [](#_authentication)Authentication
 
@@ -50,12 +50,14 @@ Magnolia also provides connectors to integrate with third-party systems.
 
 CAS module
 
-[CAS module](../../Modules/List-of-modules/CAS-module/) enables [Central Authentication Service](https://en.wikipedia.org/wiki/Central_Authentication_Service) (CAS) in Magnolia. CAS is a single sign-on (SSO) Web protocol that permits a user to log in once to a system and then automatically gain access to all related systems to which they have been granted permission as per their credentials. This avoids the need to log into each system individually. The Magnolia CAS module handles authentication only. When a user logs into CAS, the system authenticates their identity to participating services because the user has been authenticated to CAS.
+[CAS module](../../../RNs-6-4-3/Modules/List-of-modules/CAS-module/) enables [Central Authentication Service](https://en.wikipedia.org/wiki/Central_Authentication_Service) (CAS) in Magnolia. CAS is a single sign-on (SSO) Web protocol that permits a user to log in once to a system and then automatically gain access to all related systems to which they have been granted permission as per their credentials. This avoids the need to log into each system individually. The Magnolia CAS module handles authentication only. When a user logs into CAS, the system authenticates their identity to participating services because the user has been authenticated to CAS.
 
 LDAP module
 
-[LDAP Connector module](../../Modules/List-of-modules/LDAP-Connector-module/) is a [JAAS](http://java.sun.com/products/jaas/) login module that connects to any LDAP v3 directory service. The LDAP Connector is used in intranet environments where an enterprise user management infrastructure already exists. With JAAS you can meet single sign-on requirements or connect to legacy LDAP servers.
+[LDAP Connector module](../../../RNs-6-4-3/Modules/List-of-modules/LDAP-Connector-module/) is a [JAAS](http://java.sun.com/products/jaas/) login module that connects to any LDAP v3 directory service. The LDAP Connector is used in intranet environments where an enterprise user management infrastructure already exists. With JAAS you can meet single sign-on requirements or connect to legacy LDAP servers.
 
 SSO module
 
-Unresolved include directive in modules/ROOT/pages/Administration/Managing-users.adoc - include::magnolia-sso:ROOT:partial$c\_module-overview.adoc\[\]
+The Magnolia SSO (single sign-on) module delegates authentication from a Magnolia instance to an OpenID Connect identity and access management application. The current iteration of the module has been successfully tested with open source [Keycloak](https://www.keycloak.org) and cloud identity management software [Okta](https://www.okta.com), but all providers that follow the protocol should also be supported.
+
+As Magnolia is already capable of full-fledged security, the intent is to only replace the authentication mechanism. A user on a third-party system with roles and groups is mapped to the equivalent Magnolia user roles and groups.

@@ -1,0 +1,34 @@
+---
+title: "Upload field"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Upload-field/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Upload field
+---
+
+# Upload field
+
+> **Caution:** This upload field definition has been deprecated since Magnolia 6.2.4. Do not use it to upload assets directly to an app workspace. Instead, store your assets in the DAM workspace and link to them using a link field. UploadFieldDefinition can still be used to configure a DAM upload field.
+
+info.magnolia.ui.field.UploadFieldDefinition renders a field for uploading a file to a Magnolia JCR workspace. The file is stored in the current node of the form, which can be a content app item, a page or a component.
+
+> **Tip:** Use info.magnolia.ui.field.factory.UploadFieldFactory for any custom implementation of the field. If no factory class is configured, the default field will be rendered.
+
+## [](#_example_definition)Example definition
+
+```yml
+upload:
+  $type: uploadField
+  label: Upload
+  allowedMimeTypePattern: text/xml
+```
+
+> **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
+
+| Property | Description |
+| --- | --- |
+| `allowedMimeTypePattern` | **optional** , *default is all types* |
+| `allowedMimeTypePattern` | **optional** , *default is all types* Comma-separated list of allowed MIME types. Examples include `image/` **, application/pdf, audio/** , and `video/*` . For a full list, see [IANA Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml) . When `allowedMimeTypePattern` is defined, a validation message can be configured using the `typeAbortMessage` property (see [Generic i18n keys](../../../../../../Administration/Language/Generic-i18n-keys/) ). You can enable an additional security check for file uploads by [enabling MIME type validation on uploads](../../../../../../../../dam/developers/dam-jcr-s3/) . This check ensures that the MIME type detected by the browser, Magnolia, and the file extension are consistent. ** For certain MIME types where the type alone is ambiguous, specify the file extension in the list to allow the security check to validate properly. This is needed in particular for the `application/x-yaml` MIME type, where you must also add the file extension: `application/x-yaml,.yaml` . Extensions are not required for most other MIME types. | ** | For certain MIME types where the type alone is ambiguous, specify the file extension in the list to allow the security check to validate properly. This is needed in particular for the `application/x-yaml` MIME type, where you must also add the file extension: `application/x-yaml,.yaml` . Extensions are not required for most other MIME types. |
+| ** | For certain MIME types where the type alone is ambiguous, specify the file extension in the list to allow the security check to validate properly. This is needed in particular for the `application/x-yaml` MIME type, where you must also add the file extension: `application/x-yaml,.yaml` . Extensions are not required for most other MIME types. |
+| `maxUploadSize` | **optional** , *default is 2^63* (9.2 EB) Maximum file size in bytes. ** When `maxUploadSize` is defined, a validation message *must* be configured using the `sizeAbortMessage` property (see [Generic i18n keys](../../../../../../Administration/Language/Generic-i18n-keys/) ). The `sizeAbortMessage` property applies to dragging and dropping an item directly into the upload field. You can also use the `sizeInterruption` property to customize the default file limitation message, as shown in the example below. The message is always shown for both the upload button and when you drag and drop directly into the upload area. `photo: $type: compositeField layout: class: info.magnolia.ui.framework.layout.SingleFieldLayoutProducer$Definition itemProvider: $type: jcrChildNodeProvider properties: image: class: info.magnolia.dam.app.field.DamUploadFieldDefinition allowedMimeTypePattern: image/* maxUploadSize: 10 sizeInterruption: "A file size limitation" sizeAbortMessage: "Your file is too large"` | ** | When `maxUploadSize` is defined, a validation message *must* be configured using the `sizeAbortMessage` property (see [Generic i18n keys](../../../../../../Administration/Language/Generic-i18n-keys/) ). The `sizeAbortMessage` property applies to dragging and dropping an item directly into the upload field. You can also use the `sizeInterruption` property to customize the default file limitation message, as shown in the example below. The message is always shown for both the upload button and when you drag and drop directly into the upload area. `photo: $type: compositeField layout: class: info.magnolia.ui.framework.layout.SingleFieldLayoutProducer$Definition itemProvider: $type: jcrChildNodeProvider properties: image: class: info.magnolia.dam.app.field.DamUploadFieldDefinition allowedMimeTypePattern: image/* maxUploadSize: 10 sizeInterruption: "A file size limitation" sizeAbortMessage: "Your file is too large"` |
+| ** | When `maxUploadSize` is defined, a validation message *must* be configured using the `sizeAbortMessage` property (see [Generic i18n keys](../../../../../../Administration/Language/Generic-i18n-keys/) ). The `sizeAbortMessage` property applies to dragging and dropping an item directly into the upload field. You can also use the `sizeInterruption` property to customize the default file limitation message, as shown in the example below. The message is always shown for both the upload button and when you drag and drop directly into the upload area. `photo: $type: compositeField layout: class: info.magnolia.ui.framework.layout.SingleFieldLayoutProducer$Definition itemProvider: $type: jcrChildNodeProvider properties: image: class: info.magnolia.dam.app.field.DamUploadFieldDefinition allowedMimeTypePattern: image/* maxUploadSize: 10 sizeInterruption: "A file size limitation" sizeAbortMessage: "Your file is too large"` |

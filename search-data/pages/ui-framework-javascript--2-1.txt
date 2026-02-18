@@ -1,0 +1,118 @@
+---
+title: "JavaScript UI module"
+url: https://docs.magnolia-cms.com/ui-framework-javascript/2.1/
+category: Modules
+version: modules
+breadcrumb: JavaScript UI module
+---
+
+# JavaScript UI module
+
+| **Issues** | [JSFIELD](https://magnolia-cms.atlassian.net/browse/JSFIELD) |
+| --- | --- |
+| **Git** | [Git](https://gitlab.magnolia-platform.com/pd/extensions/ui-framework-javascript) |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ui</groupId>
+  <artifactId>magnolia-ui-framework-javascript</artifactId>
+  <version>2.1.1</version>
+</dependency>
+```
+
+### [](#_ecommerce)Ecommerce
+
+To activate product picker feature:
+
+1.  Make sure [E-commerce module](../../ecommerce/ecommerce-module/) is set up properly.
+
+2.  Go to your `/<your-maven-module>/src/main/resources/META-INF/magnolia/<your-maven-module>.xml`
+
+3.  Ensure you have the following in the file.
+
+    `<your-maven-module>/src/main/resources/META-INF/magnolia/<your-maven-module>.xml`
+
+    ```xml
+      <components>
+        <id>main</id>
+        <component>
+          <type>info.magnolia.ui.javascript.dialogs.impl.EcommerceDialogResultMapper</type>
+          <implementation>info.magnolia.ui.javascript.dialogs.impl.EcommerceDialogResultMapper</implementation> (1)
+          <scope>singleton</scope>
+        </component>
+      </components>
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Ensure you enable the `EcommerceDialogResultMapper` component in scope main. |
+
+
+| Property | Description |
+| --- | --- |
+| `action` | • `init` : to initialize the field properties and values. • `error` : to notify the field failed the validation (either via the required flag or a validator). • `change` : to notify the field about any changes in dialog • `restResponse` : to notify the field about the response of a called rest client • `dialogResponse` : to notify the field the selection of a chooser dialig |
+| `correlationId` | The id used by Magnolia to establish communication between the backend and the frontend. ** It must be passed in all messages sent to the backend. | ** | It must be passed in all messages sent to the backend. |
+| ** | It must be passed in all messages sent to the backend. |
+| `state` | The component state ** See the [Vaadin](#_vaadin) section. | ** | See the [Vaadin](#_vaadin) section. |
+| ** | See the [Vaadin](#_vaadin) section. |
+
+| Property | Description |
+| --- | --- |
+| `action` | • `init` : to initialize the field properties and values. |
+| `correlationId` | The id used by Magnolia to establish communication between the backend and the frontend. ** It must be passed in all messages sent to the backend. | ** | It must be passed in all messages sent to the backend. |
+| ** | It must be passed in all messages sent to the backend. |
+| `state` | The component state ** See the [Vaadin](#_vaadin) section. | ** | See the [Vaadin](#_vaadin) section. |
+| ** | See the [Vaadin](#_vaadin) section. |
+
+| Property | Description |
+| --- | --- |
+| `contextPath` | The current Magnolia instance context path. **Example:** `/author` |
+| `fieldScriptUrl` | The field script URL defined in the `yaml` definition. **Example:** `/my-light-module/webresources/colorField/index.html` |
+| `parameters` | The parameters defined in the `yaml` definition. |
+| `currentUser` | The current user. |
+| `locale` | The current locale. |
+| `Only in Custom form fields` |
+| `currentNode` | The current node. ** This is `null` in case of a node creation. Example ** `{ "id":"8346c262-689b-4622-98ac-a56e15c59163", "name":"tests", "path":"/tests", "properties":{ "mgnl:created":"2022-01-21T11:42:04.143+01:00", "mgnl:template":"my-light-module:pages/home", "jcr:created":"2022-01-21T11:42:04.143+01:00", "mgnl:lastModifiedBy":"superuser", "jcr:createdBy":"admin", "mgnl:createdBy":"superuser", "jcr:uuid":"8346c262-689b-4622-98ac-a56e15c59163", "jcr:primaryType":"mgnl:page", "colorField":"#ff0040", "mgnl:lastModified":"2022-01-21T11:42:04.143+01:00" }, "type":"mgnl:page" }` | ** | This is `null` in case of a node creation. |
+| ** | This is `null` in case of a node creation. |
+| `defaultValue` | The default value defined in the `yaml` definition. |
+| `formFields` | The values of the other fields of the current form. |
+| `height` | The height defined in the `yaml` definition, or the updated value sent in case the field gets enlarged from the UI. **Example:** `50` |
+| `value` | The current value of the form property. |
+| `readOnly` | Whether the field is readOnly or not. |
+| `Only in Custom app` |
+| `urlParameter` | Used to communicate parameters between two javascript subapps. |
+
+## [](#_samples)Samples
+
+Check out some samples [here](https://git.magnolia-cms.com/users/bstaryga/repos/ui-framework-javascript-examples/browse).
+
+| Version | Notes |
+| --- | --- |
+| `2.1.1` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.1.1) |
+| `2.1.0` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.1.0) |
+| `2.0.8` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.8) |
+| `2.0.7` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.7) |
+| `2.0.6` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.6) |
+| `2.0.5` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.5) |
+| `2.0.4` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.4) |
+| `2.0.3` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.3) |
+| `2.0.2` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.2) |
+| `2.0.1` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0.1) |
+| `2.0` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%202.0) |
+| `1.2.3` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%201.2.3) |
+| `1.2.2` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%201.2.2) |
+| `1.2.1` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%201.2.1) |
+| `1.2` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20JSFIELD%20AND%20fixVersion%20%3D%201.2) |
+| `1.1.8` | [JSFIELD-14](https://magnolia-cms.atlassian.net/browse/JSFIELD-14) |
+| `1.1.7` | [JSFIELD-6](https://magnolia-cms.atlassian.net/browse/JSFIELD-6) [JSFIELD-5](https://magnolia-cms.atlassian.net/browse/JSFIELD-5) |
+| `1.1.6` | [JSFIELD-2](https://magnolia-cms.atlassian.net/browse/JSFIELD-2) |
+| `1.1.5` | [JSFIELD-1](https://magnolia-cms.atlassian.net/browse/JSFIELD-1) |
+| `1.1.4` | Support for Magnolia 6.2.12 |
+| `1.1.3` | Add support in content apps |
+| `1.1.1` | Bug fixes |
+| `1.1` | Add the message action • Add the error notification |
+| `1.0` | Initial release. |

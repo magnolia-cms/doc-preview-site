@@ -10,7 +10,7 @@ breadcrumb: DX Core > Developing > Templating > Site definition > How to use Mul
 
 The core of multisite functionality lies in the use of site definitions. A site definition allows you to control each website separately, for example, configuring different languages or domains per website. Using the [Multisite module](../../../../Modules/List-of-modules/Multisite-module/), you can set up and run multiple websites with different domains and languages from one Magnolia installation.
 
-We present a few typical use cases for a multisite setup and the corresponding configuration required. Full working examples of certain use cases are in the subpages. We assume that you already know some basics about a Magnolia [site definition](../).
+We present a few typical use cases for a multisite setup and the corresponding configuration required. Full working examples of certain use cases are in the subpages. We assume that you already know some basics about a Magnolia [site definition](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/).
 
 > **Note:** Site limitationIn DX Core, the number of sites that can be used is defined by the number of sites purchased.In the Community Edition, you can only create and use one site.
 
@@ -24,9 +24,9 @@ The page presents a few typical use cases for a multisite setup and the correspo
 
 Using multisite makes sense in the following scenarios:
 
--   You have [multiple websites with completely different purposes](Multisite-example-Two-sites-with-different-domains/).
+-   You have [multiple websites with completely different purposes](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Multisite-example-Two-sites-with-different-domains/).
 
--   You have [minisites and run campaigns](Multisite-example-Minisite-using-URL-prefix-and-domain/).
+-   You have [minisites and run campaigns](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Multisite-example-Minisite-using-URL-prefix-and-domain/).
 
 -   You have different websites for subsidiaries and country branches.
 
@@ -45,7 +45,7 @@ You can have one site definition per website. In Magnolia 6.3, site definitions 
 
     For public instances, we strongly recommend that you [map the domains served to their websites](#_mappings_and_domains) unless they are microsites, which mostly won’t have domain mappings. This allows the [mapped content](../#_mapping_a_site_definition_to_your_website) to be served to its respective domain. Optionally, you can add languages. For more on defining locales, see [Define locales for the site](../../../../Administration/Language/Language-configuration/#_define_locales_for_the_site).
 
-    For configuration details, see [Multisite definition configuration](Multisite-definition-configuration/).
+    For configuration details, see [Multisite definition configuration](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Multisite-definition-configuration/).
 
     > **Note:** The Multisite module is delivered with one default site definition called fallback, for details see the Fallback site page.
 
@@ -58,7 +58,7 @@ In the Multisite module, you can optionally configure site resolution rules.
 
     When a request is sent to Magnolia, info.magnolia.multisite.filters.MultiSiteFilter analyzes the request to determine which site definition it fits. Once the site has been determined, it is set to info.magnolia.cms.core.AggregationState from where it can be read during further request processing.
 
-    For configuration details, see [Site resolution rules](Site-resolution-rules/).
+    For configuration details, see [Site resolution rules](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Site-resolution-rules/).
 
 
 ### [](#_setting_up_multisite_main_steps)Setting up multisite - main steps
@@ -79,54 +79,10 @@ The following bullet points summarize what you need to do to set up a multisite 
 
 > **Note:** When the Multisite module is enabled, you must configure at least one site definition including a proper domain mapping. If you do not do so, pages are not served correctly on the public instance.
 
-## [](#_magnolia_setup_and_domains_in_a_production_environment)Magnolia setup and domains in a production environment
-
-Magnolia is distributed as two web-applications: author and public. Among other things, editors create pages on the author instance and publish content from the author instance to public instances. Public instances serve the content to visitors. In a typical production setup you have one author and several public [Instances](../../../../Administration/Instances/).
-
-In a production setup, the author instance and public instance are typically accessed via distinct domains.
-
-In a multisite setup with one Magnolia installation, you assign multiple domains to the public instance. However, it is sufficient and recommended to have only one domain pointing to your author instance. The domain of the author instance is different from the domains of the public instance.
-
-### [](#_example_of_domains_in_a_production_environment)Example of domains in a production environment
-
-This sample below shows the difference between domains when pointing to author or public instances in a production environment.
-
 | Site | Author Instance | Public Instance |
 | --- | --- | --- |
-| site a/b | `author.yourdomain.net` | `www.yourdomain.net` (**a**)<br><br>`www.another-domain.net` (**b**) |
-| Main/German/French | `author.xyzdomain.net` | www.xyzdomain.com (**Main**)<br><br>www.xyzdomain.de (**DE**)  <br>www.xyzdomain.fr (**FR**) |
-
-### [](#_serving_the_webapps_from_root_context)Serving the webapps from root context
-
-In a production environment, you access the public instance by requesting the root path of the domain. For example, when you request http://www.yourdomain.net, you expect it to serve the webapp typically called magnoliaPublic. The same is true for the author instance: you expect http://author.yourdomain.net to serve the webapp called magnoliaAuthor.
-
-If you run a bundle on localhost, you request the public instance using http://localhost:8080/magnoliaPublic. In this case, the webapp magnoliaPublic is served from `/magnoliaPublic`.
-
-> **Tip:** In a production environment, serve the webapps from the root context instead.
-
-Application servers such as Tomcat generally only serve one webapp from root context within the same connector. However, in a production environment, you typically run the author instance and the public instance in different networks. Alternatively, you may run two Tomcat instances on the same host, or run one Tomcat instance with two connectors.
-
-### [](#_mapping_multiple_domains_to_the_application_server)Mapping multiple domains to the application server
-
-In a production environment, you typically use a web server such as [Apache](https://httpd.apache.org) in front of Tomcat. Read [Apache httpd in front of Tomcat](https://wiki.magnolia-cms.com/display/WIKI/Apache+httpd+in+front+of+Tomcat+on+a+local+dev+machine) to get some ideas about such a setup. When using the Apache HTTP Server (Apache httpd) and Apache Tomcat together, `mod_jk` or `mod_proxy_ajp` can be used to redirect from Apache httpd to Tomcat.
-
-In a multisite setup, where your public context serves content for multiple domains, you must map multiple domains to your application server (such as Tomcat). If you use a web server in front of the application, you must define multiple virtual hosts on the web server to redirect the request from Apache http to Apache Tomcat.
-
-```bash
-<VirtualHost *:80>
- ServerName www.best-comics.net
- ProxyPass / ajp://localhost:8010/
- ProxyPassReverse / ajp://localhost:8010/
-</VirtualHost>
-
-<VirtualHost *:80>
- ServerName www.best-vinyl.net
- ProxyPass / ajp://localhost:8010/
- ProxyPassReverse / ajp://localhost:8010/
-</VirtualHost>
-```
-
-In this example, the Apache modules `proxy_ajp_module` and `proxy_module` are used to redirect the request to Apache Tomcat using the [Apache JServ Protocol](https://en.wikipedia.org/wiki/Apache_JServ_Protocol) (AJP). The example shows two virtual hosts both redirecting to the same Magnolia public instance.
+| site a/b | `author.yourdomain.net` | `www.yourdomain.net` ( **a** ) `www.another-domain.net` ( **b** ) |
+| Main/German/French | `author.xyzdomain.net` | www.xyzdomain.com ( **Main** ) www.xyzdomain.de ( **DE** ) www.xyzdomain.fr ( **FR** ) |
 
 ## [](#_fallback_site)Fallback site
 
@@ -210,152 +166,13 @@ i18n: !override (2)
 | **4** | A new `locales` property is defined. |
 | **5** | [IETF BCP 47 language tags](../../../../Administration/Language/Language-configuration/#_define_locales_for_the_site). |
 
-## [](#_configuration)Configuration
-
-This section is about site definition configuration in the context of multisite. It explains how to configure multiple, distinct site definitions which require the definition of `domains` and `mappings` nodes.
-
-We assume that you already know some basics about Magnolia [site definition](../) configuration (such as prototypes, themes, imaging variations and `sitefn` templating functions).
-
-### [](#_the_sites_folder)The `sites` folder
-
-You can configure sites in the `sites` folder of any module using YAML. See, for example, the following site definitions:
-
--   [`travel.yaml`](https://bitbucket.org/magnolia-cms/travel-demo)
-
--   [`sportstation.yaml`](https://bitbucket.org/magnolia-cms/travel-demo)
-
--   [`fallback.yaml`](https://bitbucket.org/magnolia-cms/travel-demo)
-
-
-### [](#_site_definition_name)Site definition name
-
-The node name of the site definition is called `site-definition-name`.
-
-If a site is properly configured, it can be accessed using the following URL:
-
-`<protocol>://<domain>:<port>/<context>/<site-definition-name>`
-
-Note that this only works if the *domain* part of the URL is different from the domain that is mapped to the site of the given `site-definition-name`.
-
-### [](#_mappings_and_domains)Mappings and domains
-
-The `mappings` and `domains` nodes are required in a multisite context. You must create a least one entry on both mappings and domains to ensure a proper site definition for a distinct site.
-
-Example:
-
-<my-light-module>/sites/comics.yaml
-
-```yaml
-mappings:
-  website:
-    URIPrefix:
-    handlePrefix: /comics
-    repository: website
-
-domains:
-  best-comics: (1)
-    name: www.best-comics.net (2)
-```
-
-|     |     |
-| --- | --- |
-| **1** | The configuration name for the domain is arbitrary. |
-| **2** | Mapped content is served to this domain name. |
-
-The site defined above allows you to access:
-
--   The content node `/comics` via the URL http://www.best-comics.net.
-
--   The content node `/comics/belgian-comics/morris/lucky-luke/jolly-jumper` via the URL http://www.best-comics.net/jollyjumper.
-
-
-Use different values for the `site-definition-name` and the name of the mapped node (`handlePrefix`).
-
-#### [](#_mappings_configuration)`mappings` configuration
-
-The mapping nodes define the JCR content nodes (usually page nodes) assigned to the site definition.
-
-A mapping has the following properties:
-
- PropertyDescription
-
-`<mapping-node>`
-
-**required**
-
-Each site can contain multiple mappings. The name of a mapping node is arbitrary (in the example above, the node name is `website`).
-
-The corresponding class for a mapping is info.magnolia.cms.beans.config.URI2RepositoryMapping.
-
-     `repository`
-
-**required**
-
-Name of the JCR workspace the mapping applies to.
-
-     `handlePrefix`
-
-**required**
-
-The path in the workspace the content is served from.
-
-     `URIPrefix`
-
-**required**
-
-Creates a node handle based on a URI. By default, a content request that does not contain a prefix is served from the node defined on `handlePrefix` of the given repository.
-
-The `URIPrefix` property can be used to shorten URLs. (See the `jolly-jumper` example above and the [Multisite example - Shorten URL with handlePrefix](Multisite-example-Minisite-using-URL-prefix-and-domain/#_shortening_the_url_with_handleprefix_within_an_existing_site_definition) example.) Short URLs are easier to remember, quicker to type, take less space in print ads, and are ranked more favorably by search engines than content deep down in the site hierarchy.
-
-> **Warning:** If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or /) if you do not need it.
-
-Note that [URIPrefix configuration](../../../../Administration/URI-mapping/) can also be applied in modules independent from site definitions.
-
-Configuration in the site definition overrides the configuration in `/server/URI2RepositoryMapping/mappings/<workspace>`, resulting in site-specific definitions.
-
-#### [](#_domains_configuration)`domains` configuration
-
-A domain node assigns a domain to the given site definition. It defines how the above mapped content node(s) can be accessed by URL. You can map multiples domain to the same site.
-
-A domain mapping has the following properties:
-
 | Property | Description |
 | --- | --- |
-| `<domain-node>` | **required**<br><br>The name of a domain mapping node is arbitrary. You can apply multiple domain nodes per site. |
-| `name` | **required**<br><br>Domain name such as http://www.best-comics.net. |
-| `port` | **optional**<br><br>Port represents the port the web application was deployed on.<br><br>*Default* is 80. |
-| `protocol` | **optional**<br><br>HTTP or HTTPS.<br><br>*Default* is HTTP. |
-| `context` | **optional**<br><br>The context path of the Magnolia instance webapp such as `magnoliaAuthor` or `magnoliaPublic`.  <br>You do not need to set the context property if the webapp is served from root context. |
-
-> **Note:** The optional properties port, protocol and context are only used to build links between the pages of different sites. In a typical production setup, where you serve the webapps from the root context on different domains, you do not have to set port and context.
-
-### [](#_extending_site_definitions)Extending site definitions
-
-Another configuration strategy is to have one site definition for your `main` site with a [template prototype](../Template-prototype/) that you can then reuse on other site definitions. This is a common alternative to having multiple independent site definitions.
-
-In the example below, `site-2` and `site-3` inherit from `site-1`.
-
-| Node or property | Value |
-| --- | --- |
-| `site-1` |     |
-| `site-2` |     |
-| `extends` | `../site-1` |
-| `site-3` |     |
-| `extends` | `../site-1` |
-
-> **Warning:** Inheriting mappings and domain can lead to unexpected results and may destroy your site setup.
-
-When extending site definitions, turn off inheritance for `mapping` and `domains` by using @extends=override.
-
-| Node or property | Value |
-| --- | --- |
-| `site-1` |     |
-| `site-2` |     |
-| `extends` | `../site-1` |
-| `mappings` |     |
-| `extends` | `override` |
-| `domains` |     |
-| `extends` | `override` |
+| `<mapping-node>` | **required** Each site can contain multiple mappings. The name of a mapping node is arbitrary (in the example above, the node name is `website` ). The corresponding class for a mapping is info.magnolia.cms.beans.config.URI2RepositoryMapping . |
+| `repository` | **required** Name of the JCR workspace the mapping applies to. |
+| `handlePrefix` | **required** The path in the workspace the content is served from. |
+| `URIPrefix` | **required** Creates a node handle based on a URI. By default, a content request that does not contain a prefix is served from the node defined on `handlePrefix` of the given repository. The `URIPrefix` property can be used to shorten URLs. (See the `jolly-jumper` example above and the [Multisite example - Shorten URL with handlePrefix](Multisite-example-Minisite-using-URL-prefix-and-domain/#_shortening_the_url_with_handleprefix_within_an_existing_site_definition) example.) Short URLs are easier to remember, quicker to type, take less space in print ads, and are ranked more favorably by search engines than content deep down in the site hierarchy. ** If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. Note that [URIPrefix configuration](../../../../Administration/URI-mapping/) can also be applied in modules independent from site definitions. Configuration in the site definition overrides the configuration in `/server/URI2RepositoryMapping/mappings/<workspace>` , resulting in site-specific definitions. | ** | If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. |
+| ** | If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. |
 
 ## [](#_removing_unwanted_virtualurimapping_on_public_context)Removing unwanted virtualURIMapping on public context
 
@@ -373,20 +190,20 @@ The site resolution rules ensure that Magnolia can properly assign a site for a 
 
 To understand multisite setup in different use cases, look at the following examples:
 
--   [Minisite using URL prefix and domain](Multisite-example-Minisite-using-URL-prefix-and-domain/)
+-   [Minisite using URL prefix and domain](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Multisite-example-Minisite-using-URL-prefix-and-domain/)
 
--   [Two sites with different domains](Multisite-example-Two-sites-with-different-domains/)
+-   [Two sites with different domains](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Multisite-example-Two-sites-with-different-domains/)
 
 
 Related topics
 
--   [Multisite module](../../../../Modules/List-of-modules/Multisite-module/)
+-   [Multisite module](../../../../../RNs-6-4-3/Modules/List-of-modules/Multisite-module/)
 
-    -   [Site resolution rules](Site-resolution-rules/)
+    -   [Site resolution rules](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Site-resolution-rules/)
 
 
--   [Magnolia setup and domains in a production environment](Magnolia-setup-and-domains-in-a-production-environment/)
+-   [Magnolia setup and domains in a production environment](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/Magnolia-setup-and-domains-in-a-production-environment/)
 
--   [Site definition](../)
+-   [Site definition](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/)
 
 -   [Apache httpd in front of Tomcat](https://wiki.magnolia-cms.com/display/WIKI/Apache+httpd+in+front+of+Tomcat+on+a+local+dev+machine)

@@ -33,107 +33,10 @@ Remove all Swift publication libs from `magnoliaAuthor` and `magnoliaPublic` web
 
 > **Note:** Some libs don’t have to be removed depending on the chosen implementation.
 
-## [](#_remove_configuration_from_jcr)Remove configuration from JCR
-
-Configuration needs to be removed from author and public instance. You can do it manually or by using the [Groovy script](#_groovy_script_for_removing_all_the_jcr_configuration) provided.
-
-### [](#_remove_all_the_swift_publication_configuration_nodes)Remove all the Swift publication configuration nodes
-
-It isn’t straightforward because the delete command is connected to the unpublish one, and unpublishing first and second-level nodes in the `config` repository is forbidden.
-
-The following module configuration nodes could be present (depending on the chosen implementation):
-
-```none
-/modules/swift-publication-api
-/modules/swift-publication-personalization
-/modules/swift-publication-rest
-/modules/swift-publication-ui
-/modules/swift-versioning-api
-/modules/swift-versioning-s3
-/modules/swift-versioning-ui
-```
-
-To remove module nodes manually, the unpublishing command needs to be disabled. This doesn’t need to be done if the [Groovy script](#_groovy_script_for_removing_all_the_jcr_configuration) is used.
-
 | Node name | Value |
 | --- | --- |
-| ⸬ unpublish |     |
+| ⸬ unpublish |  |
 | ⬩ unpublish@enabled | false |
-
-### [](#_remove_workflow_commands)Remove workflow commands
-
-| Node name | Value |
-| --- | --- |
-| 📁 default |     |
-| ⸬ **approvedExternalPublish** |     |
-| ⬩ enabled | true |
-| ⬩ class | info.magnolia.swift.publication.api.command.PublicationCommand |
-| ⸬ **approvedExternalUnpublish** |     |
-| ⬩ enabled | true |
-| ⬩ class | info.magnolia.swift.publication.api.command.UnpublicationCommand |
-| ⸬ **personalizationApprovedExternalPublish** |     |
-| ⬩ enabled | true |
-| ⬩ class | info.magnolia.swift.publication.api.command.PersonalizationPublicationCommand |
-
-| Node name | Value |
-| --- | --- |
-| 📁 external |     |
-| ⸬ **workflowPublish** |     |
-| ⸬ version |     |
-| ⬩ enabled | true |
-| ⬩ class | info.magnolia.swift.versioning.api.command.VersionCommand |
-| ⸬ publish |     |
-| ⬩ workflow | reviewForPublication |
-| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
-| ⬩ parameterMapName | mgnlData |
-| ⬩ commandName | approvedExternalPublish |
-| ⸬ **workflowUnpublish** |     |
-| ⸬ version |     |
-| ⬩ enabled | true |
-| ⬩ class | info.magnolia.swift.versioning.api.command.VersionCommand |
-| ⸬ unpublish |     |
-| ⬩ workflow | reviewForUnpublication |
-| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
-| ⬩ parameterMapName | mgnlData |
-| ⬩ commandName | approvedExternalUnpublish |
-| ⸬ **workflowPublishDeletion** |     |
-| ⬩ workflow | reviewForPublication |
-| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
-| ⬩ parameterMapName | mgnlData |
-| ⬩ commandName | approvedExternalPublish |
-| ⸬ **personalizationWorkflowPublishDeletion** |     |
-| ⸬ publish |     |
-| ⬩ workflow | reviewForPublication |
-| ⬩ class | info.magnolia.module.workflow.commands.PublicationWorkflowCommand |
-| ⬩ parameterMapName | mgnlData |
-| ⬩ commandName | personalizationApprovedExternalPublish |
-
-### [](#_rest_integration_configuration)REST integration configuration
-
-If `swift-publication-rest` is used, remove:
-
-| Node name | Value |
-| --- | --- |
-| ⸬ additionalProviders |     |
-| ⸬ **objectMapper** |     |
-
-And modify:
-
-| Node name | Value |
-| --- | --- |
-| ⸬ additionalProviders |     |
-| ⸬ restExceptionMapper |     |
-| ⬩ providerClass | info.magnolia.rest.RestExceptionMapper |
-
-### [](#_remove_swift_endpoint_permissions_from_the_rest_anonymous_role)Remove Swift endpoint permissions from the `rest-anonymous` role
-
-This is only relevant when `swift-publication-rest` is used.
-
-```none
-/rest-anonymous
-- /.rest/swift-publication/v1*
-- GET & POST
-```
 
 ## [](#_remove_configuration_property_files)Remove configuration property files
 

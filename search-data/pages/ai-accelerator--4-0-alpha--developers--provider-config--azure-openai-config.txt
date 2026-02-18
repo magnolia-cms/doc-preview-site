@@ -1,0 +1,122 @@
+---
+title: "Azure OpenAI config"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/provider-config/azure-openai-config/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Set up a provider > Azure OpenAI
+---
+
+# Azure OpenAI config
+
+-   `config.yaml` file
+
+-   Configuration app
+
+-   Passwords app
+
+
+`/my-light-module/decorations/ai-accelerator-azureai/config.yaml`
+
+```yaml
+apiKey: <your-azure-key>
+azureDeployment: <your-azure-deployment>
+azureResourceName: <your-azure-resource-name>
+```
+
+![jcr config](../../_images/jcr-config.png)
+
+```yaml
+apiKey: /path/to/apikey
+```
+
+For more, see [Passwords app](../../../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Passwords-app/).
+
+## [](#_using_multiple_azure_deployments)Using multiple Azure deployments
+
+Azure AI allows you to use multiple model deployments in parallel, even with different endpoints, by creating custom REST client configurations. This is useful when you want to:
+
+-   Use different Azure OpenAI deployments for different models (e.g., GPT-4 in one deployment, DALL-E in another)
+
+-   Connect to different Azure regions or resource names
+
+-   Use separate API keys for different deployments
+
+
+### [](#_custom_rest_client_configurations_for_model_deployment)Custom REST client configurations for model deployment
+
+Create a custom REST client in your light module to connect to a specific Azure OpenAI deployment.
+
+Here is an example for DALL-E-3:
+
+`/my-light-module/restClients/azureAI-dalle3.yaml`
+
+```yaml
+baseUrl: https://my-resource.cognitiveservices.azure.com/openai/deployments/dall-e-3 (1)
+timeoutConfiguration:
+  readTimeout: 180
+  connectTimeout: 180
+components:
+  audit:
+    class: info.magnolia.ai.rest.RestClientAudit
+  header-filter:
+    class: info.magnolia.ai.rest.ResponseHeaderFilter
+restCalls:
+  imageGeneration:
+    method: POST
+    entityClass: com.fasterxml.jackson.databind.JsonNode
+    path: /images/generations
+    body: "{body}"
+    queryParameters:
+      api-version: 2024-08-01-preview
+    headers:
+      Content-Type: application/json
+      api-key: !env ${AZURE_AI_API_KEY} (2)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Full Azure OpenAI endpoint URL including the deployment name |
+| **2** | API key using environment variable (can also use `!secret` for Passwords app) |
+
+### [](#_use_custom_rest_client_in_model_definition)Use custom REST client in model definition
+
+Reference your custom REST client in your model definition by setting the `restClientId` property.
+
+Here, the custom DALL-E-3 REST client is referenced:
+
+`/my-light-module/aiModels/azure-dalle-3.yaml`
+
+```yaml
+$type: azureImageModel
+modelName: Azure OpenAI DALL-E 3
+modelVersion: dall-e-3
+restClientId: azureAI-dalle3 (1)
+
+input:
+  prompt:
+    $type: prompt
+    required: true
+    description: A text description of the desired image(s).
+  size:
+    $type: enum
+    description: The size of the generated images.
+    enumValues: [1024x1024, 1792x1024, 1024x1792]
+    defaultValue: 1024x1024
+  quality:
+    $type: enum
+    enumValues: [standard, hd]
+    defaultValue: standard
+  style:
+    $type: enum
+    enumValues: [vivid, natural]
+    defaultValue: vivid
+
+output:
+  data:
+    $type: list
+    itemType: imageUrl
+```
+
+|     |     |
+| --- | --- |
+| **1** | Reference your custom REST client by id. |

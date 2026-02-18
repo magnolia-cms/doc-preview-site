@@ -8,28 +8,22 @@ breadcrumb: DX Core > Modules > Content Importer module
 
 # Content Importer module
 
-[Content management](../../../use-cases/content-management/) Bundled: Community edition
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLCI](https://magnolia-cms.atlassian.net/browse/MGNLCI) |
-| Maven site | [Content Importer](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcontent%2Fmagnolia-content-importer%2F2.0.0) |
-| Latest | 2.0.0 |
-
-The Content Importer module allows you to bootstrap content from the file system into the JCR. The module adds bootstrapping capabilities for light modules. You can import content during light module development, distribution, and deployment. For example, you can import sample content for a new template so authors can immediately see how the template works.
-
-Magnolia monitors the bootstrap directory on the file system. When Magnolia detects a change, it sends a message to the Tasks app to the superuser account. The superuser can then import the content. This allows you to import content in a controlled way, ensuring that no existing content is overridden by accident.
+| Maven site | [Content Importer](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcontent%2Fmagnolia-content-importer%2F{magnolia-content-importer-63}) |
+| Latest | {magnolia-content-importer-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.content</groupId>
   <artifactId>magnolia-content-importer</artifactId>
-  <version>2.0.0</version> (1)
+  <version>{magnolia-content-importer-63}</version> (1)
 </dependency>
 ```
 
@@ -65,11 +59,11 @@ Here’s how bootstrapping files from the file system works in the UI:
 
     **Example**: Import request task and Import action for `cruise-manager` page in the Tasks app.
 
-    ![Import request task and Import action for cruise-manager page in the Tasks app](../../../_images/6-2-contentImporterModule.png)
+    ![Import request task and Import action for cruise-manager page in the Tasks app](../../../../RNs-6-4-3/_images/6-2-contentImporterModule.png)
 
 4.  `superuser` assigns himself the task and clicks **Import** to import the content into the corresponding workspace in the repository. He can also **Reject** or **Abort** the import.
 
-    ![Content Import Request tab](../../../_images/6-2-contentImporterModule-import.png)
+    ![Content Import Request tab](../../../../RNs-6-4-3/_images/6-2-contentImporterModule-import.png)
 
 5.  The bootstrapped content is available in the relevant app. The bootstrap directory is monitored, and a new task is sent to the Tasks app when a change in the XML is detected.
 
@@ -80,9 +74,9 @@ Here’s how bootstrapping files from the file system works in the UI:
     -   Edit view
 
 
-    ![Cruise Manager page in the Pages app](../../../_images/6-2-contentImporterModule-imported.png)
+    ![Cruise Manager page in the Pages app](../../../../RNs-6-4-3/_images/6-2-contentImporterModule-imported.png)
 
-    ![Cruise Manager in edit mode](../../../_images/6-2-30-contentImporterModule-CMpage.png).
+    ![Cruise Manager in edit mode](../../../../RNs-6-4-3/_images/6-2-30-contentImporterModule-CMpage.png).
 
 
 > **Note:** Observation only occurs if the bootstrap directory is set in the magnolia.properties file.Deletions aren’t removed automatically. To remove content, delete it in the JCR and the bootstrap directory.
@@ -128,78 +122,13 @@ The default configuration is `onlyImportAtInstall=false` and `createTasks=always
 
 Possible values for `createTasks` are `always`, `onchange` and `never`.
 
-## [](#_configuration)Configuration
-
-The module is configured in `/modules/content-importer`.
-
-No configuration changes are required unless you customize the implementation.
-
-### [](#_content_import_request_task)Content Import Request task
-
-The Content Import Request [task](../../../Features/Tasks/) is displayed in the Tasks app.
-
-This task is configured in `/modules/content-importer/tasks`.
-
-![The Content Import Request task configuration](../../../_images/ADVT-import-mod-request.png)
-
- PropertyDescription
-
-`tasks`
-
-**optional**
-
-Tasks folder.
-
-     `content`
-
-**required**
-
-Task name.
-
-         `users`
-
-**optional**
-
-Users who can view and assign tasks.
-
-> **Note:** Please note that you should define at least one user or group (see the following property) to display bootstrap messages. The default configuration comes with superuser.
-
-         `groups`
-
-**optional**
-
-User groups who can view and assign tasks.
-
-         `viewMapping`
-
-**optional**
-
-Message view displayed in detail view.
-
-         `taskView`
-
-**required**
-
-`content` [message view](#_content_import_request_message_view) definition.
-
-         `title`
-
-**optional**
-
-Task title.
-
-### [](#_content_import_request_message_view)Content Import Request message view
-
-The Content Import Request message view is displayed to the user who opens a task. The view is mapped to the [Content Import Request task](#_content_import_request_task) in the `taskView` property (above).
-
-The **Import** (`approve`) action uses a custom action implementation class for importing the bootstrap file into the JCR. With this exception, it is a standard [message view definition](../../../Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/).
-
-The `content` message view is configured in `/modules/content-importer/messageViews/content`.
-
-![Content Import Request message view](../../../_images/ADVT-import-mod-mssg.png)
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>messageViews</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Message views folder.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>content</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Message view name.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>form</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Form definition node.</p></div><div class="paragraph"><p>Text fields (read only):</p></div><div class="ulist"><ul><li><p><code>content.repository</code>: Target workspace.</p></li><li><p><code>content.path</code>: File source path.</p></li><li><p><code>content.modificationDate</code>: Modification date.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>actions</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Actions definition node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;action definitions&gt;</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Configured actions:</p></div><div class="ulist"><ul><li><p><code>approve</code>:</p></li></ul></div><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>availability</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Availability rules node.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Action definition class.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><span class="inlineBean">info.magnolia.ui.admincentral.shellapp.pulse.task.action.ResolveTaskActionDefinition</span>: Action for resolving a task.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>decision</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Decision.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>icon</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Action icon.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>implementationClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Implementation class.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><span class="inlineBean">info.magnolia.content.action.BootstrapAction</span> executes bootstrap import action and resolves task by delegating to <code>ResolveTaskAction</code>.</td></tr></tbody></table></div></div></td></tr></tbody></table><div class="ulist"><ul><li><p><code>confirmRejection</code>: <strong>Reject</strong> action definition. Opens the <code>reject</code> dialog (configured in the module <code>dialogs</code> folder) that allows the user to leave a comment.</p></li><li><p><code>retry</code>: <strong>Retry import task</strong> action definition.</p></li><li><p><code>claim</code>: <strong>Assign to me</strong> action definition.</p></li><li><p><code>archive</code>: <strong>Remove from list</strong> action definition.</p></li><li><p><code>abort</code>: <strong>Abort</strong> action definition.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>actionbar</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Action bar definition.</p></div></div></td></tr></tbody></table></div>
-
-Related topics
-
--   [Bootstrapping in light modules](../../../Administration/Importing-and-exporting-data/Importing-and-exporting-JCR-data-for-bootstrapping/Bootstrapping-in-light-modules/)
+| Property | Description |
+| --- | --- |
+| `tasks` | **optional** Tasks folder. |
+| `content` | **required** Task name. |
+| `users` | **optional** Users who can view and assign tasks. ** Please note that you should define at least one user or group (see the following property) to display bootstrap messages. The default configuration comes with `superuser` . | ** | Please note that you should define at least one user or group (see the following property) to display bootstrap messages. The default configuration comes with `superuser` . |
+| ** | Please note that you should define at least one user or group (see the following property) to display bootstrap messages. The default configuration comes with `superuser` . |
+| `groups` | **optional** User groups who can view and assign tasks. |
+| `viewMapping` | **optional** Message view displayed in detail view. |
+| `taskView` | **required** `content` [message view](#_content_import_request_message_view) definition. |
+| `title` | **optional** Task title. |

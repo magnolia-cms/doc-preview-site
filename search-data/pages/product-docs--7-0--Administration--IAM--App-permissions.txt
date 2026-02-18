@@ -12,15 +12,15 @@ You can control app access by specifying a role. Members of the role can see the
 
 Here is a comparison what `superuser` and `editor` roles see in the app launcher. The editor role only sees apps that are necessary for their work.
 
-![Superuser view of the app launcher](../../../_images/6-2-appPermissions-appLauncherAsSuperuser.png) ![Editor view of the app launcher](../../../_images/6-2-appPermissions-appLauncherAsEditor.png)
+![Superuser view of the app launcher](../../../../RNs-6-4-3/_images/6-2-appPermissions-appLauncherAsSuperuser.png) ![Editor view of the app launcher](../../../../RNs-6-4-3/_images/6-2-appPermissions-appLauncherAsEditor.png)
 
 ## [](#_app_group)App group
 
 An [app group](../../App-Launcher/App-launcher-layout/) contains apps that have something in common, grouped together in the App launcher. For example, the Edit group contains the Pages, Assets and Contacts apps. Each app in the group covers specific duties in content management.
 
-![App group](../../../_images/6-2-29-appPermissions-editGroupAsSuperuser.png)
+![App group](../../../../RNs-6-4-3/_images/6-2-29-appPermissions-editGroupAsSuperuser.png)
 
-To grant [permissions](../../../Apps/App-configuration/App-descriptor/#_permissions) to an app group:
+To grant [permissions](../../../../RNs-6-4-3/Apps/App-configuration/App-descriptor/#_permissions) to an app group:
 
 1.  Create a `permissions` node under the group in the app launcher layout.
 
@@ -29,30 +29,30 @@ To grant [permissions](../../../Apps/App-configuration/App-descriptor/#_permissi
 
 **Example**: The Tools group is provisioned to the `superuser` role only.
 
-![List of permitted roles](../../../_images/ADVT-appperm-eg.png)
+![List of permitted roles](../../../../RNs-6-4-3/_images/ADVT-appperm-eg.png)
 
 If the role doesn’t exist, create it first in the Security app. If you need a role just for the purpose of provisioning apps, an `empty` role is enough. The role does not need any ACLs or permissions to site URLs. To grant additional users access, assign them to the role. You can add as many role properties as you need.
 
 > **Note:** Create a new app group for your own apps, especially if you have multiple apps. This approach is better than placing your apps in the native Magnolia groups. A dedicated group gives your organization’s apps an identity and makes them instantly recognizable.
 
-**Advanced example**: Use [voters](../../Voters/) to include and exclude groups in a flexible way. The `info.magnolia.voting.voters.RoleBaseVoter` class checks if the current user has access permissions by comparing user roles and configured roles. The configured roles can be allowed or denied.
+**Advanced example**: Use [voters](../../../../RNs-6-4-3/Administration/Voters/) to include and exclude groups in a flexible way. The `info.magnolia.voting.voters.RoleBaseVoter` class checks if the current user has access permissions by comparing user roles and configured roles. The configured roles can be allowed or denied.
 
 This example denies (`not=true`) permission to the `travel-demo-admincentral` role. This saves the effort of listing all roles that are permitted.
 
-![Denying group access](../../../_images/ADVT-appperm-adv.png)
+![Denying group access](../../../../RNs-6-4-3/_images/ADVT-appperm-adv.png)
 
 ## [](#_granting_permissions_to_an_app)Granting permissions to an app
 
 To grant permission to an app:
 
-1.  Create a `permissions` node under the [app descriptor](../../../Apps/App-configuration/App-descriptor/).
+1.  Create a `permissions` node under the [app descriptor](../../../../RNs-6-4-3/Apps/App-configuration/App-descriptor/).
 
 2.  List the permitted roles as properties.
 
 
 **Example**: The Groovy app is provisioned to the `scripter` role only.
 
-![Granting permission to an app](../../../_images/ADVT-appperm-app.png)
+![Granting permission to an app](../../../../RNs-6-4-3/_images/ADVT-appperm-app.png)
 
 > **Note:** Provision apps only to users who actually need them. This ensures that the app launcher stays uncluttered and users find apps quickly.
 
@@ -62,13 +62,13 @@ Action availability is the lowest level of app access you can configure by role.
 
 You can configure action availability at two levels:
 
--   [Action bar availability](../../../Apps/App-configuration/Action-bar-definition/#_availability) defines whether a particular section of the action bar is available.
+-   [Action bar availability](../../../../RNs-6-4-3/Apps/App-configuration/Action-bar-definition/#_availability) defines whether a particular section of the action bar is available.
 
--   [Action availability](../../../Apps/App-configuration/Action-bar-definition/#_action_bar_availability) defines whether an action is permitted on the selected item.
+-   [Action availability](../../../../RNs-6-4-3/Apps/App-configuration/Action-bar-definition/#_action_bar_availability) defines whether an action is permitted on the selected item.
 
 
 Action availability is provided by info.magnolia.ui.api.availability.ConfiguredAvailabilityDefinition. The node names are different from those used in granting permissions to apps and app groups.
 
 In this example, the **Delete permanently** action is granted only to `superuser` and `demo-project-publisher` roles.
 
-![Granting permission to specific roles only](../../../_images/ADVT-appperm-avail.png)
+![Granting permission to specific roles only](../../../../RNs-6-4-3/_images/ADVT-appperm-avail.png)

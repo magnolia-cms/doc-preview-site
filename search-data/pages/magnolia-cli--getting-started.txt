@@ -1,0 +1,247 @@
+---
+title: "Magnolia CLI v5"
+url: https://docs.magnolia-cms.com/magnolia-cli/getting-started/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia CLI v5
+---
+
+# Magnolia CLI v5
+
+This page describes the Magnolia CLI v5, its core components, and how to install it.
+
+## [](#_plugin_based_cli)Plugin-based CLI
+
+Magnolia CLI in version v5 is a **plugin-based** system. The purpose of this architecture is to offer developers enhanced flexibility, control, customization of commands by [creating a plugin](../plugins/developing-plugins/creating-plugins/), and definition of their own [project templates](jumpstarting/projectTemplates/).
+
+-   **The CLI itself** provides the core functionality and oversees the operation of the plugins. It uses a configuration file called `mgnl.config.js`, where you can configure the logger and the plugins.
+
+-   **The plugins** specified in this file are loaded by the CLI. To meet the requirements of your project, you can modify the file to use it with your own plugin collection.
+
+
+## [](#_available_plugins)Available plugins
+
+For a list of all plugins, see the [Plugins](../plugins/).
+
+### [](#_pre_installed_plugins)Pre-installed plugins
+
+Several of the plugins are pre-installed:
+
+-   [Jumpstart plugin](../plugins/available-plugins/jumpstart-plugin/) - allows you to download a project.
+
+-   [Generate plugin](../plugins/available-plugins/generate-plugin/) - allows you to generate a new plugin template.
+
+
+### [](#_the_add_plugin)The `add-plugin`
+
+The CLI also comes with the `add-plugin` command, which installs and registers a new plugin within your project.
+
+> **Note:** Rather than a plugin, it’s more appropriate to view the add-plugin as a command, because it’s always available, even if a local mgnl.config.js exists.
+
+## [](#_installing_cli)Installing CLI
+
+### [](#_prerequisites)Prerequisites
+
+#### [](#_node_js)Node.js
+
+The Magnolia CLI tool requires [Node.js](https://nodejs.org/). To check the version of your `node.js` installation, run the following command in a shell:
+
+```console
+node -v
+```
+
+Node.js provides two branches, `LTS` (recommended for long-term support) and `Current` (providing the latest features).
+
+Make sure you are running the latest version of the `LTS` branch. You can get it from [Node.js downloads](https://nodejs.org/en/download). It may also be [installed via package managers](https://nodejs.org/en/download/package-manager/).
+
+#### [](#_java)Java
+
+Java is only required if you want to use the [Start plugin](../plugins/available-plugins/start-plugin/), which starts Magnolia.
+
+For Java installation details, see [Get Java](../../product-docs/6.3/Developing/Magnolia-front-end-development/Install-Magnolia/#_get_java).
+
+### [](#_installing)Installing
+
+We recommend you use the [Jumpstart plugin](../plugins/available-plugins/jumpstart-plugin/) or install the Magnolia CLI locally at project level. This approach allows each project to:
+
+-   maintain its unique configuration within the `mgnl.config.js` file,
+
+-   have separate plugins per project, and
+
+-   to manage different versions of the CLI and the plugins more effectively.
+
+
+#### [](#_through_the_jumpstart_plugin)Through the jumpstart plugin
+
+This following command prompts you to choose a project template, automatically installs the CLI locally at the project level, and sets up the required files (`package.json` and `mgnl.config.js`) for you.
+
+```console
+npx @magnolia/cli@latest jumpstart [name]
+```
+
+#### [](#_locally)Locally
+
+To install the latest production version locally at the project level, do the following:
+
+1.  Initialize the project if it’s not already set up:
+
+    ```console
+    npm init -y
+    ```
+
+2.  Install the Magnolia CLI package:
+
+    ```console
+    npm install @magnolia/cli
+    ```
+
+3.  Add the following script to `package.json`:
+
+    ```json
+    {
+      ...
+      "scripts": {
+        ...
+        "mgnl": "node node_modules/@magnolia/cli"
+      }
+    }
+    ```
+
+4.  In `package.json`, set the `type` property to `module`:
+
+    ```json
+    {
+      ...
+      "type": "module"
+    }
+    ```
+
+5.  Create the `mgnl.config.js` file, where you can configure your plugins:
+
+    ```js
+    export default {
+      plugins: [],
+      logger: {
+        filename: "./mgnl.error.log",
+        fileLevel: "warn",
+        consoleLevel: "debug"
+      }
+    };
+    ```
+
+
+#### [](#_globally)Globally
+
+To install the latest production version globally, run the following command:
+
+```console
+sudo npm install @magnolia/cli -g (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `sudo` part of the command may be required on Linux or macOS, depending on your permissions and the Node.js installation location. |
+
+### [](#_which_versions_are_available)Which versions are available?
+
+To display a list of released versions of Magnolia CLI, enter the following command in a shell:
+
+```console
+npm view @magnolia/cli versions
+```
+
+Besides a version list, the following command shows additional information about the Magnolia CLI package:
+
+```console
+npm view @magnolia/cli
+```
+
+### [](#_testing_the_installation)Testing the installation
+
+To verify that the CLI has been successfully installed and to learn what it offers, use the following flags based on the type of installation.
+
+#### [](#_locally_2)Locally
+
+> **Note:** Prerequisite configurationThe CLI is installed in the project folder and the following is in the package.json file:{
+>   "scripts": {
+>     "mgnl": "node node_modules/@magnolia/cli"
+>   }
+> }
+
+##### [](#_help)Help
+
+```console
+npm run mgnl -- -h
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+##### [](#_version)Version
+
+```console
+npm run mgnl -- -V
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+#### [](#_globally_2)Globally
+
+##### [](#_help_2)Help
+
+```console
+mgnl -h
+```
+
+##### [](#_version_2)Version
+
+```console
+mgnl -V
+```
+
+### [](#_updating)Updating
+
+#### [](#_locally_3)Locally
+
+To update the CLI installed locally, run the following `npm` command in your project directory.
+
+```console
+npm update @magnolia/cli
+```
+
+#### [](#_globally_3)Globally
+
+To update the CLI installed globally, run the following `npm` command:
+
+```console
+sudo npm update @magnolia/cli -g (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `sudo` part of the command may be required on Linux or macOS, depending on your permissions and the `Node.js` installation location. |
+
+## [](#_initializing_an_existing_project)Initializing an existing project
+
+### [](#_the_init_command)The `init` command
+
+The CLI comes with the `init` command, which initializes a Magnolia CLI project in your current directory. It automatically detects your project type and configures the necessary files and dependencies.
+
+> **Note:** The init command helps you quickly set up the package.json, install the CLI, and create the mgnl.config.js file. For more details, see Init command for project initialization.
+
+## [](#_adding_plugins)Adding plugins
+
+To expand CLI’s capabilities, see [the available plugins](../plugins/) and [add them](../plugins/managing-plugins/) as needed.
+
+**Example:**
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-start-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+This command adds the [Start plugin](../plugins/available-plugins/start-plugin/) to your CLI setup, making the `npm run mgnl -- start` command available for starting up the local Magnolia instance.
+
+> **Tip:** To list all registered commands, execute:npm run mgnl
+
+You’re now ready to use Magnolia CLI v5 locally in your project!

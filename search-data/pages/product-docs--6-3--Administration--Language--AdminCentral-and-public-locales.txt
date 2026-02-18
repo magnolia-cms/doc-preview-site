@@ -22,7 +22,7 @@ The question of `two locales` is connected with the types of [users](../../IAM/U
 
 An ordinary internet user, new or returning, or even an application consuming content as JSON or XML via REST API – all of whom we shall call *visitor* for simplicity – will usually only be able to see and interact with content of a published web project or website. The visitor will be interacting with a running public instance of Magnolia and will expect that the content of each page on the site will be available in a language he can understand or defines in his request, ideally in his native language. A visitor whose native language is English will prefer content in English (the screenshots are from the [Travel Demo](../../../Getting-started-with-Magnolia/Demo/)):
 
-![Tour page, active visitor section](../../../_images/tourTypesPageActive_visitor_crop.png)
+![Tour page, active visitor section](../../../../RNs-6-4-3/_images/tourTypesPageActive_visitor_crop.png)
 
 On the other hand, an editor, publisher or even a sysadmin – let’s refer to them with the term *AdminCentral user* – working with the author instance of Magnolia may have different locale preferences than the visitor. An AdminCentral user’s native and hence preferred language may be, for example, Spanish but the content being edited may still be in English. The AdminCentral user would probably welcome if the following items in the author instance (see also [Types of translatable text](../Types-of-translatable-text/)) are displayed in Spanish rather than in English:
 
@@ -35,7 +35,7 @@ On the other hand, an editor, publisher or even a sysadmin – let’s refer to 
 -   Buttons in the page editor in edit mode (used to open dialogs)
 
 
-![Page editor in edit mode](../../../_images/6-2-tourTypesPageEdit_es_scope.png)
+![Page editor in edit mode](../../../../RNs-6-4-3/_images/6-2-tourTypesPageEdit_es_scope.png)
 
 Magnolia has been built to deal with these two separate *locale* preferences:
 
@@ -52,7 +52,7 @@ To determine public locale is more difficult. Visitors usually access web conten
 
 The AdminCentral locale primarily defines the language of [User interface labels](../Types-of-translatable-text/#_user_interface_labels) which the AdminCentral user wants to interact in with the AdminCentral. This concerns, for example, the language of labels in the **Action bar** (English on the left, Korean on the right):
 
-![Language comparison in the Action bar](../../../_images/6-2-actionBar_en_ko.png)
+![Language comparison in the Action bar](../../../../RNs-6-4-3/_images/6-2-actionBar_en_ko.png)
 
 An incomplete localization of a UI element may result in displaying a label in the fallback language, as shown above in the case the **Add page, Preview page, Copy page** and some other actions.
 
@@ -76,7 +76,7 @@ Any language can be added (see [configuration of available system languages](../
 To set the locale of the AdminCentral, open the pull down menu in the top right corner of the browser window and click the first row of the menu, titled **Edit user profile** if the current locale setting is English. On the Preferences tab:
 
 -   Choose a language in the **Language** field:
-    ![Choosing a language](../../../_images/6-2-edit-user-language.png)
+    ![Choosing a language](../../../../RNs-6-4-3/_images/6-2-edit-user-language.png)
     With the superuser role you can [set language locales for other users](../Language-configuration/#_setting_an_editors_language_preference).
 
 
@@ -156,7 +156,7 @@ When determining the preferred public locale, a key role in deciding which appro
 -   info.magnolia.cms.i18n.RequestLocaleAwareI18nContentSupport – relevant to the [From the Accept-Language header](#_from_the_accept_language_header) case described above, this implementation reads the locale from the Accept-Language header. This implementation does not render language specific URIs (see the classes below).
 
 -   info.magnolia.cms.i18n.DefaultI18nContentSupport – relevant to the [From Request-URI](#_From_Request_URI) case described above and used in the Magnolia [Travel Demo](../../../Getting-started-with-Magnolia/Demo/), this implementation supports a language prefix in the URI, such as `de` for example. It checks if a node data with the `<name>_<locale>` pattern exists on a content node:
-    ![Language prefix in a content node](../../../_images/6-2-TravelDemo_Main_defLocale.png)
+    ![Language prefix in a content node](../../../../RNs-6-4-3/_images/6-2-TravelDemo_Main_defLocale.png)
 
 
 -   info.magnolia.cms.i18n.HierarchyBasedI18nContentSupport – same as above but for a hierarchy, for example:

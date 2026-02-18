@@ -8,26 +8,22 @@ breadcrumb: DX Core > Modules > Advanced cache modules > Advanced Cache app modu
 
 # Advanced Cache app module
 
-[Operations](../../../../use-cases/operations/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLADVCACHE](https://magnolia-cms.atlassian.net/browse/MGNLADVCACHE) |
-| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache-app%2F3.0.1) |
-| Latest | 3.0.1 |
-
-The Advanced Cache app installs an **Advanced** tab into the Cache Tools app that allows you to configure site-aware caches.
+| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache-app%2F{magnolia-advanced-cache-63}) |
+| Latest | {magnolia-advanced-cache-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.advancedcache</groupId>
   <artifactId>magnolia-advanced-cache-app</artifactId>
-  <version>3.0.1</version> (1)
+  <version>{magnolia-advanced-cache-63}</version> (1)
 </dependency>
 ```
 
@@ -48,7 +44,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 
 Open the `cacheTools` app, go to the `Advanced` tab and select workspaces that are site-aware. Then means that it used different subtrees for different sites. For example, the site [www.site1.com](http://www.site1.com) uses subtree `/site1` in the `website` workspace and [www.site2.com](http://www.site1.com) uses the subtree `/site2`. Click Configure and restart your instance.
 
-![Site-aware cache configuration](../../../../_images/6-2-advancedCacheAppModule.png)
+![Site-aware cache configuration](../../../../../RNs-6-4-3/_images/6-2-advancedCacheAppModule.png)
 
 ## [](#_how_to_test)How to test
 

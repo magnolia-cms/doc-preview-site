@@ -1,0 +1,83 @@
+---
+title: "Configuring multiple SSO clients"
+url: https://docs.magnolia-cms.com/magnolia-sso/guides/configuring-multiple-sso-clients/
+category: Modules
+version: modules
+breadcrumb: SSO module > Configuring multiple SSO clients
+---
+
+# Configuring multiple SSO clients
+
+As mentioned in the [field descriptions](../../#_field_descriptions), you can define a unique name for each client. The client name determines which specific client handles a login request. This guide explains how to configure a particular client for login.
+
+## [](#_specifying_custom_client_names)Specifying custom client names
+
+The `config.yaml` file below has multiple clients configured. By default, the login request into [Magnolia Admincentral](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Admincentral-module/) (accessing the URL `[http://localhost:8080/.magnolia/admincentral](http://localhost:8080/.magnolia/admincentral)`) is handled by the first OIDC client named `defaultOidcClient`.
+
+> **Note:** Remember that if you use http.bearer to specify the client login, it has a different flow, namely a REST request.
+
+```yaml
+authorizationGenerators:
+  - name: groupsAuthorization
+    groups:
+      targetProperty: groups
+      mappings:
+        - name: superusers
+          targetRoles:
+            - superuser
+  - name: fixGenerator
+    fixed:
+      targetRoles:
+        - superuser
+      targetGroups:
+        - …
+clients:
+  oidc.name: defaultOidcClient (1)
+  oidc.id: this_is_client_id
+  oidc.secret: this_is_client_secret
+  oidc.discoveryUri: http://localhost:8180/realms/mgnl/.well-known/openid-configuration
+  oidc.authorizationGenerators: groupsAuthorization
+  oidc.callbackUrl: http://localhost:8080/.auth
+  oidc.postLogoutRedirectUri: http://localhost:8080/
+
+  oidc.name.2: secondOidcClient (1)
+  oidc.id.2: this_is_client_id
+  oidc.secret.2: this_is_client_secret
+  oidc.discoveryUri.2: https://mgnl-sso.eu.auth0.com/.well-known/openid-configuration
+  oidc.authorizationGenerators.2: groupsAuthorization
+  oidc.callbackUrl.2: http://localhost:8080/.auth
+  oidc.postLogoutRedirectUri.2: http://localhost:8080/travel/contact.html
+
+  http.bearer.name: restApiBearerAuthClient (1)
+  http.bearer.id: magnoliaAuthor
+  http.bearer.secret: 10ef547b-a13c-4e59-8228-05f2b528d371
+  http.bearer.discoveryUri: http://localhost:8180/realms/mgnl/.well-known/openid-configuration
+  http.bearer.authorizationGenerators: groupsAuthorization
+  http.bearer.authenticator: oidc-userinfo
+  # Comment about callbackUrl and postLogoutRedirectUri (2)
+
+userFieldMappings:
+  name: email
+  fullName: name
+  email: email
+  language: locale
+```
+
+|     |     |
+| --- | --- |
+| **1** | Optional name: it is needed if you want to use a particular client. |
+| **2** | There is no `callbackUrl` or `postLogoutRedirectUri` for `http.bearer` clients. |
+
+## [](#_using_a_particular_client)Using a particular client
+
+You can log in with a particular client by passing the query parameter `auth_client` in the URL, as shown below. In this example, the `secondOidcClient` is specified.
+
+```none
+http://localhost:8080/magnoliaAuthor/.magnolia/admincentral?auth_client=secondOidcClient (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | `secondOidcClient` is taken from `oidc.name.2` in the YAML [configuration file](#_specifying_custom_client_names). |
+
+> **Tip:** You can define multiple clientCallbacks for different areas and select the SSO clients you want to use to handle the authorization for each location.

@@ -1,0 +1,182 @@
+---
+title: "Magnolia Cloud updates 2020"
+url: https://docs.magnolia-cms.com/cloud/Cloud-changelog/Magnolia-Cloud-updates-2020/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Changelog > Magnolia Cloud updates 2020
+---
+
+# Magnolia Cloud updates 2020
+
+This page lists the updates for Magnolia Cloud in 2020.
+
+## [](#_november)November
+
+### [](#_magnolia_6_2_5)Magnolia 6.2.5
+
+With this update, you can use Magnolia CMS 6.2.5 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+Release notes for [Magnolia CMS 6.2.5](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.5.adoc) are available.
+
+### [](#_magnolia_6_2_4)Magnolia 6.2.4
+
+With this update, you can use Magnolia CMS 6.2.4 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+Release notes for [Magnolia CMS 6.2.4](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.4.adoc) are available.
+
+## [](#_september)September
+
+### [](#_magnolia_6_2_3)Magnolia 6.2.3
+
+With this update, you can use Magnolia CMS 6.2.3 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+Release notes for [Magnolia CMS 6.2.3](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.3.adoc) are available.
+
+## [](#_august)August
+
+### [](#_using_datadogs_metric_explorer_to_create_custom_reports)Using Datadog’s Metric Explorer to create custom reports
+
+You can now use Datadog’s Metric Explorer to filter reports. For more information, see [Monitoring and logging](../../Managing-environments-using-the-Magnolia-cockpit/Monitoring-and-logging/).
+
+### [](#_tearing_down_environments)Tearing down Environments
+
+When tearing down a Live environment, your public IPs are lost. You receive a notification in the Cockpit confirming that you know the IPs will be lost. For more information, see [Tearing down an environment](../../Managing-environments-using-the-Magnolia-cockpit/Tearing-down-an-environment/).
+
+### [](#_subscriber_management_improvements)Subscriber Management Improvements
+
+You now receive confirmation of adding and deleting subscribers in the Cockpit for an even better user experience. For more information, see [Managing subscribers](../../Cockpit/Managing-subscribers/).
+
+### [](#_improved_redirect_process_in_the_cockpit)Improved redirect process in the Cockpit
+
+The redirect process in the Cockpit has been simplified. For more, see [Configuring domain redirect rules](../../Managing-environments-using-the-Magnolia-cockpit/Configuring-domain-redirect-rules/).
+
+### [](#_third_party_updates)Third party updates
+
+The following third-party libraries have been updated to fix security and compatibility issues:
+
+-   Tomcat updated to 9.0.37
+
+
+We keep the details of the security-related fixes private in line with our [security policy](../../../product-docs/RNs-6-4-3/Administration/Security/Security-policy/). [Contact our Support team](https://mgnl.io/cloud-helpdesk) if you need more information.
+
+## [](#_july)July
+
+### [](#_magnolia_6_2_2)Magnolia 6.2.2
+
+With this update, you can use Magnolia CMS 6.2.2 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+Release notes for [Magnolia CMS 6.2.2](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.2.adoc) are available.
+
+### [](#_hiding_custom_bundle_snapshots_in_the_cockpit)Hiding custom bundle snapshots in the Cockpit
+
+You can now hide custom bundle snapshots in the [Cockpit](../../Cockpit/) when [setting up a new environment](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) or upgrading. For more on this, see [Hiding custom bundle snapshots](../../Managing-environments-using-the-Magnolia-cockpit/Hiding-custom-bundle-snapshots/).
+
+### [](#_managing_subscribers_from_the_cockpit)Managing subscribers from the Cockpit
+
+A new user group has been added to the Cockpit called **Subscribers**. This is in addition to Owners, Developers, and Magnolia Support. Subscribers do not have access to the Cockpit, but receive email notifications as set by your Subscription. For more on this, see [Managing subscribers](../../Cockpit/Managing-subscribers/).
+
+## [](#_june)June
+
+### [](#_global_accelerator_service)Global accelerator service
+
+Magnolia has rolled out the [AWS Global Accelerator](https://aws.amazon.com/global-accelerator/) service for all our cloud subscription packages. What this means for you:
+
+-   Better response times for your live instances.
+
+-   Simplified [domains and certificate management](../../Onboarding-to-Magnolia-Cloud/Cloud-domains-and-certificates/).
+
+
+## [](#_may)May
+
+### [](#_magnolia_6_2_1)Magnolia 6.2.1
+
+With this update, you can use Magnolia CMS 6.2.1 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+> **Note:** We urge all cloud customers to upgrade their projects to use the latest Magnolia LTS release within 60 days of the version release date. All new deployments must be based on the latest LTS version of Magnolia.
+
+Release notes for [Magnolia CMS 6.2.1](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.1.adoc) are available.
+
+### [](#_magnolia_cloud_magnolia_properties_file_conventions)Magnolia Cloud `magnolia.properties` file conventions
+
+Applies to [\_custom cloud bundle](../../Supported-modules-in-the-cloud/#<em>cloud_bundle) implementations only.
+
+From Magnolia 6.2.1, Magnolia provides a [cloud-specific option](https://gitlab.magnolia-platform.com/pd/build/maven-archetypes/-/blob/master/magnolia-cloud-project-archetype/src/main/resources/archetype-resources/README.md) in the [Magnolia Maven Archetype](../../../product-docs/RNs-6-4-3/Developing/Development-how-tos/How-to-use-Magnolia-Maven-archetypes/) to facilitate the creation of your cloud bundles.
+
+The Magnolia Maven Archetype generates a best-practice project skeleton. The Magnolia Cloud Maven Plugin validates and uploads your custom cloud bundle.
+
+my-mgnl-cloud-webapp/
+├── pom.xml
+└── src
+    └── main
+        └── webapp
+            └── WEB-INF
+                └── config
+                    └── dev
+                    │ └── README.md
+                    │ └── magnolia.properties
+                    └── shared
+                        └── README.md
+                        └── magnolia.properties
+
+NOTE:
+
+-   Two default profiles are generated: `dev` and `shared`. These profiles have their own `magnolia.properties` files.
+
+-   During packaging, the `dev` profile is excluded. The `shared` profile is included and deployed to Magnolia Cloud.
+
+-   You can add local developer credentials to the `dev` profile to be used instead of the typical Magnolia superuser/superuser, which is [disabled in the cloud](../../Onboarding-to-Magnolia-Cloud/Cloud-user-management/).
+
+-   In the `shared` profile, you can create specific `.properties` files for each cloud environment. This can be used, for example, to test the integration of a third-party tool in the UAT environment without affecting your Live environment.
+
+
+Make sure you use the latest version of the Magnolia Cloud Maven Plugin when deploying a new bundle to Magnolia Cloud: v1.0-RC6.
+
+> **Warning:** If you previously created a custom bundle with .properties or web.xml file changes, please check your customizations carefully and adhere to the structure shown above.
+
+More information can be found in the readme here: [README](https://git.magnolia-cms.com/projects/OD/repos/magnolia-cloud-maven-plugin/browse/README.md)
+
+Also see [Creating and deploying custom cloud bundles](../../Developing-for-Magnolia-in-the-cloud/Creating-and-deploying-custom-cloud-bundles/).
+
+## [](#_march)March
+
+### [](#_magnolia_6_2_lts_release)Magnolia 6.2 (LTS release)
+
+With this update, you can use Magnolia CMS 6.2 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+Release notes for [Magnolia CMS 6.2](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.adoc) are available.
+
+> **Note:** Magnolia 6.2 is an LTS release.
+
+### [](#_self_service_deployment_of_java_customizations)Self-service deployment of Java customizations
+
+Magnolia Cloud now supports self-service deployment of Java customizations. As a cloud customer, you or your chosen partner can deploy your custom Java code via our cloud self-service platform.
+
+-   Streamlined and reduced deployment cycle
+
+-   Upgrade anytime
+
+
+This service is available for customers with a [custom cloud bundle](../../Supported-modules-in-the-cloud/#_custom_bundle_ndash_light_development_and_java_development).
+
+### [](#_global_presence)Global presence
+
+Previously all Magnolia deployments were based in Frankfurt where our main hosting center is. Now we have the possibility to deploy to other locations based on your project requirements. This offers:
+
+-   Lowest latency possible for best customer experience
+
+-   Enhanced compliance
+
+-   Costs optimization
+
+
+The region for your deployment should be discussed with Magnolia before your project starts. The region cannot be modified after Magnolia is already deployed.
+
+### [](#_magnolia_6_1_5)Magnolia 6.1.5
+
+With this update, you can use Magnolia CMS 6.1.5 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.
+
+## [](#_february)February
+
+### [](#_magnolia_5_7_6_and_6_1_4)Magnolia 5.7.6 and 6.1.4
+
+With this update, you can use Magnolia CORE 5.7.6 and Magnolia CMS 6.1.4 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.

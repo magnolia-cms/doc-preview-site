@@ -1,0 +1,48 @@
+---
+title: "Checkbox group field"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Checkbox-group-field/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Option group field > Checkbox group field
+---
+
+# Checkbox group field
+
+`CheckBoxGroupFieldDefinition` renders multiple checkboxes where more than one can be selected. It extends the [`AbstractOptionGroupFieldDefinition`](../Option-group-field/) class.
+
+## [](#_example_definition)Example definition
+
+This will create a number of checkboxes corresponding to a preset list of options.
+
+```yml
+checkboxGroup:
+  $type: checkBoxGroupField
+  label: Composers
+  defaultValue: # an alternative way of setting multiple default values
+    - Mahler
+    - Bach
+  datasource:
+    $type: optionListDatasource
+    options:
+      - name: Vivaldi
+        label: Vivaldi
+        value: Vivaldi
+      - name: Bach
+        label: Bach
+        value: Bach
+      - name: Bartok
+        label: Bartok
+        value: Bartok
+      - name: Stravinsky
+        label: Stravinsky
+        value: Stravinsky
+      - name: Mahler
+        label: Mahler
+        value: Mahler
+```
+
+> **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
+
+| Property | Description |
+| --- | --- |
+| `layout` | **optional,** *default is vertical* Specifies the layout orientation of the field. Another possible value is `horizontal` . |

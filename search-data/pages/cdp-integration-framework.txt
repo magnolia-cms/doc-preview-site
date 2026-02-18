@@ -1,0 +1,49 @@
+---
+title: "CDP integration framework"
+url: https://docs.magnolia-cms.com/cdp-integration-framework/
+category: Modules
+version: modules
+breadcrumb: CDP integration framework
+---
+
+# CDP integration framework
+
+[Customer data](../product-docs/RNs-6-4-3/use-cases/customer-data/) Unbundled: Framework Version [3.0.1](https://magnolia-cms.atlassian.net/browse/CUSTDP)
+
+Customer Data Platform (CDP) connectors are integral components in the data ecosystem of modern businesses. They serve as bridges between various data sources and the CDP itself, facilitating the seamless flow of data into and out of the platform. Their primary function is to gather, organize, and synchronize customer data from disparate sources such as CRM systems, marketing automation tools, e-commerce platforms, and more.
+
+![cdp overview](_images/cdp-overview.jpg)
+
+By aggregating data from multiple touchpoints, CDP connectors enable companies to create a unified view of their customers, allowing for more personalized marketing campaigns, targeted messaging, and improved customer experiences. The benefits of utilizing CDP connectors include enhanced data accuracy, better insights into customer behavior, increased operational efficiency, and ultimately, improved customer engagement and loyalty.
+
+## [](#_benefits)Benefits
+
+### [](#_omnichannel_personalization)Omnichannel personalization
+
+Our CDP extensions allow you to track and understand your customers' needs at every stage in their journey, on any channel or application (whether Magnolia rendered or headless frontend application). This way, you get a 360 degree view of your customers and can use the insights to connect the journey with personalized content from Magnolia.
+
+### [](#_one_unified_editorial_workflow)One unified editorial workflow
+
+Marketers and other content editors get to comfortably deliver personalized content for different audiences straight from the Magnolia UI, without switching between tools. They can create content variants, including entire pages, and choose the right audience for each variant, including based on the CDP user data. All in one unified workflow in Magnolia.
+
+### [](#_low_code_implementation)Low code implementation
+
+Developers get to implement the integration using a low code approach. Adding scripts to any frontend application, defining and sending tracking events to the CDP, fetching the data for personalization - all can be done using simple YAML configuration.
+
+## [](#_extensions)Extensions
+
+Magnolia provides our CDP integration framework which lets you connect your favorite CDP. Currently, we offer the following extensions:
+
+-   [BSI CDP extension](bsi/)
+
+-   [mParticle CDP extension](mparticle/)
+
+-   [Segment CDP extension](segment/)
+
+
+> **Note:** If you want to leverage our CDP integration framework to connect to a different customer data platform other than the ones listed here, check out REST Proxy module.
+
+| Version | Notes |
+| --- | --- |
+| `3.0.1` | [Changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20CUSTDP%20AND%20fixVersion%20%3D%203.0.1) |
+| `3.0.0` | Release for Magnolia 6.4 compatibility. [Changelog](https://jira.magnolia-cms.com/issues/?jql=project%20%3D%20CUSTDP%20AND%20fixVersion%20%3D%203.0.0) |

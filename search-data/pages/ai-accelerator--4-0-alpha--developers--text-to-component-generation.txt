@@ -1,0 +1,55 @@
+---
+title: "Configure text to component generation"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/text-to-component-generation/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Text-to-component
+---
+
+# Configure text to component generation
+
+Available as a preview in version `3.1.0`
+
+This feature is currently provided as a preview and will be further improved based on feedback from real-world usage. Please share your experience and improvement points on [feedback@magnolia-cms.com](mailto:feedback@magnolia-cms.com).
+
+Transform plain text into fully populated page components with the AI Accelerator module. This feature eliminates the need to manually fill out dialog fields by allowing you to provide a free-form text description. The AI interprets the text and automatically populates all component fields, accelerating content creation.
+
+## [](#_activation)Activation
+
+To activate text to component generation:
+
+1.  Create a JavaScript dialog definition in your light module at `<light-module-folder>/<light-module-name>/javascriptDialogs/textToComponent.yaml`:
+
+    `<light-module-folder>/<light-module-name>/javascriptDialogs/textToComponent.yaml`
+
+    ```yaml
+    $type: documentToComponentDialog
+    ```
+
+2.  Add the action to your Pages app by creating or updating `<light-module-folder>/<light-module-name>/decorations/pages-app/apps/pages-app.yaml`:
+
+    `<light-module-folder>/<light-module-name>/decorations/pages-app/apps/pages-app.yaml`
+
+    ```yaml
+    subApps:
+      detail:
+        actions:
+          openTextToComponent: (1)
+            label: Text to component
+            icon: icon-file-image
+            $type: openJavascriptDialogAction
+            javascriptDialogId: <light-module-name>:textToComponent (2)
+        actionbar:
+          sections:
+            areaActions:
+              groups:
+                addingActions:
+                  items:
+                    - name: openTextToComponent (3)
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | Define the text to component action. |
+    | **2** | Reference your dialog using the format `<light-module-name>:<dialog-file-name>` (without the `.yaml` extension). |
+    | **3** | Make the action available in the area actions adding group. |

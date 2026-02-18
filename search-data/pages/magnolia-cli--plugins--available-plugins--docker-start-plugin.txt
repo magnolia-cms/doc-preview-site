@@ -1,0 +1,66 @@
+---
+title: "Docker Start plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/docker-start-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Docker Start plugin
+---
+
+# Docker Start plugin
+
+| Package name | `@magnolia/cli-docker-start-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-docker-start-plugin](https://www.npmjs.com/package/@magnolia/cli-docker-start-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md](https://unpkg.com/@magnolia/cli-docker-start-plugin/CHANGELOG.md) |
+
+## [](#_installing)Installing
+
+The plugin doesn’t come pre-installed with Magnolia CLI. You must add it to the `mgnl.config.js` project file.
+
+> **Note:** The plugin is installed automatically by the Jumpstart plugin if it is defined in a project template.
+
+### [](#_with_add_plugin)With add-plugin
+
+Run the following command in the project folder.
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-docker-start-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+The command automatically downloads, installs, and registers the plugin in the `mgnl.config.js` file.
+
+### [](#_manually)Manually
+
+1.  Run the following command in the project folder.
+
+    ```console
+    npm install @magnolia/cli-docker-start-plugin
+    ```
+
+2.  Modify the `mgnl.config.js` file accordingly.
+
+    ```js
+    import DockerStartPlugin from "@magnolia/cli-docker-start-plugin";
+
+    export default {
+      plugins: [
+        new DockerStartPlugin()
+      ]
+    };
+    ```
+
+
+| Form (short and long) | Description |
+| --- | --- |
+| `-r` `--regenerate` | Regenerates the `docker-compose.yml` file if it already exists. |
+| `-t [path]` `--tomcat [path]` | Sets the path to the `apache-tomcat` directory or a directory containing it. By default, it uses the current working directory. |
+| `-lmp [path]` `--light-modules-path [path]` | Sets the path to the `light-modules` folder. By default, it uses the value in `mgnl.config.js` or prompts if not set. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+| Property name | Description |
+| --- | --- |
+| `lightModulesPath` | The path to a directory containing all light modules. Alternative forms: `-lmp [path], --light-modules-path [path]` |

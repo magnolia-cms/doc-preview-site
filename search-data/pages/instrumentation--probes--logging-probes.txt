@@ -1,0 +1,112 @@
+---
+title: "Logging probes"
+url: https://docs.magnolia-cms.com/instrumentation/probes/logging-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > Logging probes
+---
+
+# Logging probes
+
+[Administration](../../../product-docs/RNs-6-4-3/use-cases/administration/) [Tier 1](../../../incubator-modules/incubator-module-list/#_tier_1_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/instrumentation) [INSTRUMENT](https://magnolia-cms.atlassian.net/browse/INSTRUMENT) [Magnolia 6.4](../../../product-docs/RNs-6-4-3/) compatible
+
+Logging probes can monitor logging messages from Magnolia. While the logging probes can’t understand the log messages themselves, they can count the number of log messages being reported, their log levels and the source.
+
+It may not be very useful to build a dashboard visualizing the measurements captured by the logging probes but they can come in handy if you want to watch for specific messages from a specific source - watching for publication error messages, for example - in order to trigger an alert or notification.
+
+Both Prometheus and Grafana have alerting and notification services:
+
+-   Prometheus: see [Prometheus’s Alert Manager](https://prometheus.io/docs/alerting/latest/alertmanager/)
+
+-   Grafana: see [Grafana’s Notifications](https://grafana.com/docs/grafana/next/alerting/old-alerting/notifications/)
+
+
+Metrics collected from the logging probes may not be very interesting to visualize in a dashboard, however, they can be useful in triggering an alert or notification when a specific error is logged.
+
+## [](#_log4j_configuration)Log4j configuration
+
+The logging probes are implemented as log4j logging appenders and must be configured through your logging configuration and can’t be configured directly through Magnolia.
+
+When configuring the logging probes in your log4j configuration, you must configure two things:
+
+-   the logging probes as log4j appenders
+
+-   log4j categories to send log messages to the logging probe to be counted
+
+
+The logging probes can’t get the log messages themselves, they need categories to pass along log messages.
+
+Here’s an example of a SimpleLogCounterProbe configured in log4j for Instrument module v1.3 and Magnolia v5.5:
+
+```html
+<appender name="simple-log-probe" class="info.magnolia.services.instrumentation.probes.logging.SimpleLogCounterProbe">
+  <param name="ProbeName" value="magnoliaMessagesSimple"/>
+  <param name="ProbeDescription" value="this is a test"/>
+  <param name="MessagePattern" value=".+"/>
+</appender>
+```
+
+Here’s a SimpleLogCounterProbe configuration for instrumentation module v1.4, log4j 2 and Magnolia v5.6:
+
+```html
+<SimpleLogCounterProbe name="magnolia-messages-simple" probeName="magnoliaMessagesSimple" probeDescription="this is a test" messagePattern=".+"/>
+```
+
+Both define a metric ("magnoliaMessagesSimple") and a messagePattern to filter the log messages being counted (in this case the message pattern matches any log message).
+
+Here is the root category in log4j:
+
+-   log4j
+
+-   log4j2
+
+
+```html
+<root>
+  <priority value="ALL" />
+  <appender-ref ref="log-error" />
+  <appender-ref ref="log-debug" />
+  <appender-ref ref="console" />
+ <appender-ref ref="simple-log-probe" />
+</root>
+```
+
+```html
+<Root level="ALL">
+  <AppenderRef ref="log-error"/>
+  <AppenderRef ref="log-debug"/>
+ <AppenderRef ref="console"/>
+ <AppenderRef ref="magnolia-messages-simple" />
+</Root>
+```
+
+With this configuration, all logging messages reaching the root category will be sent to simple-log-probe to be counted and monitored.
+
+You can also specify an appender in a category and send log messages to a log probe directly:
+
+```html
+<category name="info.magnolia.services.intrumentation">
+  <priority value="DEBUG" />
+  <appender-ref ref="simple-log-probe" />
+</category>
+```
+
+This configuration will send any log messages for the Instrumentation module itself to the log probe to be counted.
+
+> **Tip:** For more on Log4j configuration, see https://logging.apache.org/log4j/2.x/manual/configuration.html.
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.logging.SimpleLogCounterProbe` . | **** |
+| `ProbeName` | The name. | **** |
+| `ProbeDescription` | Description of the metric. | **** |
+| `MessagePattern` | A Java regular expression. Log messages that match the pattern will be counted in the metric. ** If no pattern is defined, all log messages will be counted. | ** | If no pattern is defined, all log messages will be counted. |  |
+| ** | If no pattern is defined, all log messages will be counted. |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.logging.LogCounterProbe` . | **** |
+| `ProbeName` | The name. | **** |
+| `ProbeDescription` | Description of the metric. | **** |
+| `MessagePattern` | A Java regular expression. Log messages that match the pattern will be counted in the metric. ** If no pattern is defined, all log messages will be counted. | ** | If no pattern is defined, all log messages will be counted. |  |
+| ** | If no pattern is defined, all log messages will be counted. |

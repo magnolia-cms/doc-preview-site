@@ -8,128 +8,26 @@ breadcrumb: DX Core > Modules > Privacy module
 
 # Privacy module
 
-[Customer data](../../../use-cases/customer-data/) Unbundled: Extension
-
-|     |     |
-| --- | --- |
 | Edition | DX Core |
+| --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLPRIV](https://magnolia-cms.atlassian.net/browse/MGNLPRIV) |
-| Maven site | [Privacy](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fprivacy%2Fmagnolia-privacy-cookie-manager%2F2.0.0) |
-| Latest | 2.0.0 |
+| Maven site | [Privacy](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fprivacy%2Fmagnolia-privacy-cookie-manager%2F{magnolia-privacy-63}) |
+| Latest | {magnolia-privacy-63} |
 
-The Privacy module enables you to produce websites compliant with the [General Data Protection Regulation](http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32016R0679) (GDPR).
-
-## [](#_module_structure)Module structure
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 40%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">artifactID</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-privacy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Parent reactor.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia‐privacy‐visitor‐manager</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides the <a href="../../../Developing/API/Java-Server-APIs/Data-privacy-API/" class="xref page">API for GDPR-related operations</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia‐privacy‐form</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides a privacy-aware form component.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia‐privacy‐ui</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides:</p></div><div class="ulist"><ul><li><p>A privacy-aware sub app.</p></li><li><p>The <a href="../../../Apps/List-of-apps/Visitors-app/" class="xref page">Visitors app</a> and related actions such as the <strong>Update consent</strong> action.</p></li><li><p>The <a href="../../../Apps/List-of-apps/Cookies-app/" class="xref page">Cookies app</a>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia‐privacy‐sample</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides usage examples of the above modules.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>magnolia‐privacy‐cookie‐manager</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides the cookie API.</p></div></div></td></tr></tbody></table></div>
-
-```xml
-<dependency>
-  <groupId>info.magnolia.privacy</groupId>
-  <artifactId>magnolia-privacy-cookie-manager</artifactId>
-  <version>2.0.0</version> (1)
-</dependency>
-```
-
-|     |     |
+| artifactID | Description |
 | --- | --- |
-| **1** | Should you need to specify the module version, do it using `<version>`. |
+| `magnolia-privacy` | Parent reactor. |
+| `magnolia‐privacy‐visitor‐manager` | Provides the [API for GDPR-related operations](../../../Developing/API/Java-Server-APIs/Data-privacy-API/) . |
+| `magnolia‐privacy‐form` | Provides a privacy-aware form component. |
+| `magnolia‐privacy‐ui` | Provides: • A privacy-aware sub app. • The [Visitors app](../../../Apps/List-of-apps/Visitors-app/) and related actions such as the **Update consent** action. • The [Cookies app](../../../Apps/List-of-apps/Cookies-app/) . |
+| `magnolia‐privacy‐sample` | Provides usage examples of the above modules. |
+| `magnolia‐privacy‐cookie‐manager` | Provides the cookie API. |
 
-```xml
-<dependency>
-  <groupId>info.magnolia.privacy</groupId>
-  <artifactId>magnolia-privacy-visitor-manager</artifactId>
-  <version>2.0.0</version> (1)
-</dependency>
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | Should you need to specify the module version, do it using `<version>`. |
-
-```xml
-<dependency>
-  <groupId>info.magnolia.privacy</groupId>
-  <artifactId>magnolia-privacy-ui</artifactId>
-  <version>2.0.0</version> (1)
-</dependency>
-```
-
-|     |     |
-| --- | --- |
-| **1** | Should you need to specify the module version, do it using `<version>`. |
-
-```xml
-<dependency>
-  <groupId>info.magnolia.privacy</groupId>
-  <artifactId>magnolia-privacy-sample</artifactId>
-  <version>2.0.0</version> (1)
-</dependency>
-```
-
-|     |     |
-| --- | --- |
-| **1** | Should you need to specify the module version, do it using `<version>`. |
-
-## [](#_configuration)Configuration
-
-The configuration of the Privacy module is done in the `privacy-visitor-manager` submodule, which allows you to define the following:
-
--   Groups of personal fields that are used as database field names (JCR properties in case of the JCR workspace) to organize the personal data collected and processed for the purposes of GDPR.
-
--   Visitor References Searchers, a list of systems (typically workspaces) registered to process GDPR-sensitive data.
-
--   Names of system properties to be excluded from a GDPR report: an export in machine-readable format of all data and data categories stored and processed by Magnolia for the purposes of GDPR.
-
-
-### [](#_personal_fields)Personal fields
-
-Personal field groups are configured under `/visitor-manager/config/personalFields`, see an example hierarchy below.
-
-A content app processing GDPR-sensitive data, or an editor working with such an app, is able to process the data only if the visitor has given consent.
-
-A visitor must give consent for the whole group, such as `name` or `addressOne` in the example below.
-
-**Example field hierarchy**
-
-![Example field hierarchy](../../../_images/ADVT-priv-mod-personal.png)
-
-### [](#_visitor_references_searchers)Visitor references searchers
-
-The searchers are defined under `/visitor-manager/config/visitorReferencesSearchers`. Magnolia provides searcher configurations out-of-the-box for:
-
--   JCR Searcher
-
--   IBM Watson Reference Searcher
-
-
-In the following example, the `contact` and `visitors` workspaces are registered to be able to process GDPR-sensitive data in the `JcrVisitorReferencesSearcher`:
-
-![Workspaces structure](../../../_images/ADVT-priv-mod-visitor.png)
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;searcher-name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The class implementing the searcher.</p></div><div class="paragraph"><p>The following searcher implementations are provided by Magnolia:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.consent.visitor.jcr.JcrVisitorReferencesSearcher</code></p></li><li><p><code>info.magnolia.extforms.consent.WatsonReferencesSearcher</code></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>workspaces</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;workspace-name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the workspace registered to process GDPR-sensitive data.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">The workspaces are specific only to the <code>JcrVisitorReferencesSearcher</code>.</td></tr></tbody></table></div></div></td></tr></tbody></table></div>
-
-### [](#_filtering_jcr_references_for_export)Filtering JCR references for export
-
-> **Warning:** This feature is relevant only to JCR. We don’t provide any filtering for Watson.
-
-Under the `excludedNames` node of the `/visitor-manager/commands` configuration subtree, you can list the properties that should *not* be included in a GDPR report. GDPR reports typically show all visitor-related data and data categories stored and processed for the purposes of GDPR.
-
-The following example shows an exclusion configuration implementing the `info.magnolia.consent.visitor.jcr.JcrPrivateRecordReference` class:
-
-![Exclusion configuration](../../../_images/ADVT-priv-mod-filter.png)
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Node</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>export</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The class implementing the export function.</p></div><div class="paragraph"><p>Magnolia provides the following implementation classes out-of-the-box:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.consent.visitor.jcr.JcrPrivateRecordReference</code></p></li><li><p><code>info.magnolia.extforms.consent.WatsonRecordReference</code></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>contentDecorator</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>propertyPredicate</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Must implement the <code>info.magnolia.jcr.predicate.PropertyFilteringPredicate</code> class.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>excludedNames</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;property-name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>The name of the property to be excluded from appearing in a GDPR report file.</p></div></div></td></tr></tbody></table></div>
-
-Related topics
-
--   [Data privacy](../../../Features/Data-privacy/)
-
--   [Data privacy API](../../../Developing/API/Java-Server-APIs/Data-privacy-API/)
-
--   [GDPR and forms](GDPR-and-forms/)
-
--   [GDPR and cookies](GDPR-and-cookies/)
-
--   [GDPR and apps](GDPR-and-apps/)
+| `<searcher-name>` |  |
+| `class` | **required** The class implementing the searcher. The following searcher implementations are provided by Magnolia: • `info.magnolia.consent.visitor.jcr.JcrVisitorReferencesSearcher` • `info.magnolia.extforms.consent.WatsonReferencesSearcher` |
+| `workspaces` |  |
+| `<workspace-name>` | **required** Name of the workspace registered to process GDPR-sensitive data. ** The workspaces are specific only to the `JcrVisitorReferencesSearcher` . | ** | The workspaces are specific only to the `JcrVisitorReferencesSearcher` . |
+| ** | The workspaces are specific only to the `JcrVisitorReferencesSearcher` . |

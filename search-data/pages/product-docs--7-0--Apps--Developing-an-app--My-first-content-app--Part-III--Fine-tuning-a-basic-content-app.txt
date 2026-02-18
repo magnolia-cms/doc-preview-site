@@ -10,7 +10,7 @@ breadcrumb: DX Core > Apps > Developing an app > My first content app > My first
 
 ## [](#_fine_tuning_a_basic_content_app)Fine-tuning a basic content app
 
-This is the third and final part of the [My first content app](../) tutorial.
+This is the third and final part of the [My first content app](../../../../../RNs-6-4-3/Apps/Developing-an-app/My-first-content-app/) tutorial.
 
 As you have seen in the previous part, a content type allows you to define the actual content model. Even though Magnolia then creates an editing interface automatically, you can still customize every aspect of that interface even further to meet the requirements of the project. This third page describes exactly that.
 
@@ -52,7 +52,7 @@ subApps:
               pattern: '97(8|9)[0-9]{9}(\d|X)'
 ```
 
-**1**You assign the Bookshelf app a new [icon](../../General-aspects/Designing-an-app/Icons/) called `icon-content-app`, which symbolizes a bookshelf.**2**Change the `ed` property.
+**1**You assign the Bookshelf app a new [icon](../../../../../RNs-6-4-3/Apps/Developing-an-app/General-aspects/Designing-an-app/Icons/) called `icon-content-app`, which symbolizes a bookshelf.**2**Change the `ed` property.
 
 > **Note:** You change the field type of this property from the default text to the checkbox field type.
 
@@ -60,13 +60,13 @@ subApps:
 
 > **Note:** Some book titles are longer and in most cases a two-row text field allows the user to read the whole title compared to just a one-row field.
 
-**4**Define the height and maximum length of the field for the `description` property.**5**Set the number of rows for the `description` property to `5`.**6**Change the `publish_date` property. Set the field type to [date](../../../../Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Date-field/) to help the user find a book publication date with a pull-down calendar.**7**Length setting and a validator related to the `isbn13` property.
+**4**Define the height and maximum length of the field for the `description` property.**5**Set the number of rows for the `description` property to `5`.**6**Change the `publish_date` property. Set the field type to [date](../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Date-field/) to help the user find a book publication date with a pull-down calendar.**7**Length setting and a validator related to the `isbn13` property.
 
 > **Note:** You set the maxLength property to 13 characters to provide the user with a digit counter for entering the ISBN-13 number. You then add a regex-based field validator for the name: isbn13 field. This validation makes sure that the number entered complies with the basic syntax of ISBN-13 numbers.
 
 ### [](#_adding_an_i18n_message_bundle)Adding an i18n message bundle
 
-Now add and polish the [i18n](../../../../Administration/Language/Internationalization/) labels and descriptions for the elements of the app’s UI.
+Now add and polish the [i18n](../../../../../RNs-6-4-3/Administration/Language/Internationalization/) labels and descriptions for the elements of the app’s UI.
 
 Since you’ve assigned a new name (`bookDetailsTab`) to the `default` tab in the detail subapp, you have to create new labels even for the message keys that supply label values from the `magnolia-ui-framework` module.
 

@@ -1,0 +1,369 @@
+---
+title: "RMQ setup example"
+url: https://docs.magnolia-cms.com/magnolia-rabbitmq/rmq-setup-example/
+category: Modules
+version: modules
+breadcrumb: RMQ Publication module > RMQ setup example
+---
+
+# RMQ setup example
+
+In this step-by-step example we will look at how to configure RabbitMQ Publication using [CloudAMQP](https://www.cloudamqp.com/docs/index.html) as our message brokering service. Here we will set up for activation entirely over RabbitMQ. Typically RabbitMQ is used from complex installations with many public instances but this example will cover a simple case of one author and one public. However, using these instructions it should be clear how to expand this use case for many public instances.
+
+There are two examples on this page:
+
+-   [Publication example](#_publication_example)
+
+-   [Monitoring example](#_monitoring_example)
+
+
+* * *
+
+## [](#_prerequisites)Prerequisites
+
+In order to setup the Magnolia with CloudAMQP server:
+
+1.  Install Magnolia `5.6+.`
+
+    1.  Make sure to have both author and public instances.
+
+    2.  Install all 3 Magnolia RabbitMQ modules into both author and public.
+
+        > **Tip:** It’s recommended to remove the workflow modules as RabbitMQ is not designed to use workflow. See QAARQ-30 - Allow RMQ commands to be used within a command chain OPEN . However, it is optional to remove them completely.Workflow exclusion sample<dependencies>
+        >
+        >   <dependency>
+        >     <groupId>info.magnolia.eebundle</groupId>
+        >     <artifactId>magnolia-enterprise-pro-webapp</artifactId>
+        >     <version>${magnoliaBundleVersion}</version>
+        >     <type>pom</type>
+        >     <exclusions>
+        >       <exclusion>
+        >         <groupId>info.magnolia.workflow</groupId>
+        >         <artifactId>magnolia-module-workflow</artifactId>
+        >       </exclusion>
+        >       <exclusion>
+        >         <groupId>info.magnolia.workflow</groupId>
+        >         <artifactId>magnolia-module-workflow-jbpm</artifactId>
+        >       </exclusion>
+        >       <exclusion>
+        >         <groupId>info.magnolia.workflow</groupId>
+        >         <artifactId>drools-jcr-persistence</artifactId>
+        >       </exclusion>
+        >       <exclusion>
+        >         <groupId>info.magnolia.workflow</groupId>
+        >         <artifactId>jbpm-jcr-persistence</artifactId>
+        >       </exclusion>
+        >     </exclusions>
+        >   </dependency>
+        >
+        >   <dependency>
+        >       <groupId>info.magnolia.rabbitmq</groupId>
+        >       <artifactId>magnolia-rabbitmq-connector</artifactId>
+        >       <version>${rabbitMQVersion}</version>
+        >   </dependency>
+        >   <dependency>
+        >       <groupId>info.magnolia.rabbitmq</groupId>
+        >       <artifactId>magnolia-rabbitmq-activation</artifactId>
+        >       <version>${rabbitMQVersion}</version>
+        >   </dependency>
+        >   <dependency>
+        >       <groupId>info.magnolia.rabbitmq</groupId>
+        >       <artifactId>magnolia-rabbitmq-monitoring</artifactId>
+        >       <version>${rabbitMQVersion}</version>
+        >   </dependency>
+        >
+        > </dependencies>
+
+
+2.  Create an account with the CloundAMPQ service.
+
+    > **Note:** If you prefer you can also install RabbitMQ locally and adapt the instructions here.
+
+3.  Create a new instance of RabbitMQ.
+
+    ![rabbitMQ instances](../_images/setup/rabbitMQ-instances.jpg)
+
+4.  Make note of the details for your RabbitMQ instance from the console view.
+
+    ![cloudAMPQ details](../_images/setup/cloudAMPQ-details.jpg)
+
+
+## [](#_publication_example)Publication example
+
+To setup publication for RabbitMQ we must create a producer configuration on author and a consumer configuration on public. The RabbitMQ connector module will install a sample client configuration which we will configure to point to our CloundAMPQ instance.
+
+![RabbitMQ exchange with 3 publics](../_images/setup/RabbitMQ-exchange-with-3-publics.jpg)
+
+### [](#_configuration)Configuration
+
+The configuration for publication over RabbitMQ requires multiple steps. After completing all these steps you should be able to activate (entirely) over RabbitMQ. In the publication example the author instance will act as the producer and the public instance will act as the consumer.
+
+Sections
+
+-   [Client](#_client)
+
+-   [Exchange](#_exchange)
+
+-   [Queues](#_queues)
+
+-   [Commands](#_commands)
+
+-   [Apps](#_apps)
+
+-   [Consumers](#_consumers)
+
+
+* * *
+
+#### [](#_client)Client
+
+The client configuration tells a Magnolia instance the location of the server and where to activate content or consume content. This client configuration will be created in the module `rabbitmq-connector` and will be the same for both author and public.
+
+1.  Duplicate the node `sampleClient`.
+
+2.  Since the name of host is *wolverine* the client configuration will use the same name.
+
+    > **Note:** The name of the host was assigned by CloudAMQP. It makes no difference what you name this node but it might be helpful to have some kind of scheme if you have multiple activation clients.
+
+3.  On the author instance, transfer the information for your CloudAMPQ account to the properties of your client configuration.
+
+    > **Note:** For now we are just concerned with the properties for the client. The exhangeConfig will be shown next. The consumerDefinitions on author is not used for publication.
+
+    ![wolverine client configuration](../_images/setup/wolverine-client-configuration.jpg)
+
+4.  Publish the new configuration to your public instance.
+
+5.  Verify the connections in the RabbitMQ manager console.
+
+    > **Tip:** You can get to the manager console using the green button located on the console view (shown above).
+
+    ![console connections](../_images/setup/console-connections.jpg)
+
+
+#### [](#_exchange)Exchange
+
+The exchange configuration is a sub-configuration of the client configuration. It defines the exchange name and type to be used. When using CloudAMPQ there will be several exchanges already defined. Feel free to use an existing exchange one or create your own.
+
+![rabbitMQ exchanges](../_images/setup/rabbitMQ-exchanges.jpg)
+
+For this example we will use the already existing amq.fanout exchange which is of type fanout.
+
+> **Note:** A fanout exchange is used because typically there will be multiple public instances consuming from it. This example uses only a single public instance.
+
+1.  The exchange configuration will be used by the commands to publish or synchronize the content. This configuration is specific to the author instance and does not need to be published. Configure the `exchangeConfig` of your client to use the `amq.fanout` exchange.
+
+    ![rabbitMQ exchange config](../_images/setup/rabbitMQ-exchange-config.jpg)
+
+2.  Set the `type` to fanout.
+
+
+#### [](#_queues)Queues
+
+The queue configuration is a sub-configuration of the exchange configuration. It defines a list of queues to be used. Here we only create one queue since there is only one public instance but you would need to create as many queues are as needed (i.e. activation1, activation2, activation3, …​.).
+
+Setup a queue for activation.
+
+1.  In the RabbitMQ manager console, create a new queue called activation.
+
+    1.  This can be done from the Queues tab in the section at the bottom called Add a new queue.
+
+    2.  In the name field type: activation
+
+    3.  Click Add queue.
+
+    4.  Verify the queue has been added to the list of queues.
+
+        ![console queue list](../_images/setup/console-queue-list.jpg)
+
+
+2.  In the RabbitMQ manager console, bind the new activation queue to the amq.fanout exchange.
+
+    1.  Click the Exchanges tab.
+
+    2.  Click the link for amq.fanout exchange.
+
+    3.  Add a binding from the `amq.fanout` exchange to the activation queue.
+
+        ![exchange binding](../_images/setup/exchange-binding.jpg)
+
+
+3.  Configure the `queueConfigList` of your `exchangeConfig` to have a new node called `activation`.
+
+    ![queue config pub client](../_images/setup/queue-config-pub-client.jpg)
+
+
+#### [](#_commands)Commands
+
+Since this example is for activation over RabbitMQ the configuration needs to be changed in the rbmqVersioned catalog.
+
+1.  Update the activate `clientName` and `exchangeName` to match the configuration of the new wolverine client.
+
+    ![command configuration example](../_images/setup/command-configuration-example.jpg)
+
+2.  Update the deactivate configuration.
+
+
+#### [](#_apps)Apps
+
+Using the RabbitMQ commands in your apps is simple. Reference the command to use by the catalog name.
+
+-   Pages app
+
+-   Assets app
+
+
+1.  In the `pages module`, update the website catalog to use the appropriate commandName for activate.
+
+    ![rabbitMQ pages commands](../_images/setup/rabbitMQ-pages-commands.jpg)
+
+2.  Update the deactivate configuration.
+
+3.  Update the deletion configuration. Reconfigure `activateDeletion` in the Pages app to call default-activate (i.e. no workflow).
+
+    > **Caution:** Deletion is not supported. The deletion action needs to be reconfigured (or decorated) to call either the command workflow-activate or default-activate. An alternative would be to use the deactivate before allowing deletions. A rule could be applied to check if the node is activated.
+
+    ![activate delete](../_images/setup/activate-delete.jpg)
+
+
+1.  In the `dam-app module`, update the assets app activate action to use the appropriate command and catalog for activate.
+
+    ![assest app activate action](../_images/setup/assest-app-activate-action.jpg)
+
+2.  Update the deactivate configuration.
+
+
+#### [](#_consumers)Consumers
+
+For the publication setup the public instance will be the consumer of the content from the activation queue. Log into the public instance and configure the `consumerDefinitions` node of the previously activated client configuration.
+
+For each public instance configure the `activationConsumer` to use the activation queue.
+
+> **Note:** Each public instance needs to have it’s own activation queue (i.e. activation1, activation2, activation3, …​..).
+
+![activationConsumer](../_images/setup/activationConsumer.jpg)
+
+### [](#_testing_publication)Testing publication
+
+Test the setup.
+
+1.  Publish some content from the Pages app.
+
+2.  Open the RabbitMQ manager console.
+
+3.  Confirm there are messages in the activation queue.
+
+
+![queued messages](../_images/setup/queued-messages.jpg)
+
+#### [](#_verifying_message_consumption)Verifying message consumption
+
+Verify public instance consumption.
+
+1.  Open the RabbitMQ manager console to verify that the activation queue is being emptied.
+
+    ![message consumption](../_images/setup/message-consumption.jpg)
+
+2.  Browse to the activated page node on public and verify the new content is shown.
+
+
+#### [](#_troubleshooting)Troubleshooting
+
+Signature not matching error.
+
+-   Best practice is make sure you have the [activation key](../../product-docs/RNs-6-4-3/Administration/Security/Activation-security/Activation-keys/#_public_keypublic) in place. Normally its transferred on the first activation/publication but Rabbit MQ is decoupled from the public instances.
+
+-   Otherwise, update the consumer configuration on public to have `verifyAuthorSignature` set `false`.
+
+
+```sh
+2020-04-07 16:31:44,503 ERROR info.magnolia.rabbitmq.connector.crypto.SignUtil  : java.security.InvalidKeyException: IOException: Short read of DER length
+2020-04-07 16:31:44,504 ERROR gnolia.rabbitmq.activation.jobs.ActivationConsumer: Signature not matching
+```
+
+## [](#_monitoring_example)Monitoring example
+
+To setup monitoring for RabbitMQ we must create an acknowledgment configuration for both author and public.
+
+However, in this case the roles are reversed in the sense that the public instance will act as producer of the acknowledgement messages. Then the author instance will consume the acknowledgement messages from the acknowledgement queue.
+
+![rabbitMQ with monitoring](../_images/setup/rabbitMQ-with-monitoring.jpg)
+
+### [](#_configuration_2)Configuration
+
+The configuration for acknowledgement over RabbitMQ requires the same configuration steps as publication. The only difference is the reversing of the producing/consuming roles. The public instances will each produce an acknowledgement message that will be consumed by the author instance through a separate acknowledgement exchange. This acknowledgement data can then be monitored from author in the Public Monitoring app.
+
+-   [Client](#mon-client)
+
+-   [Exchange](#mon-exchange)
+
+-   [Queue](#mon-queue)
+
+-   [Consumers](#mon-consumers)
+
+-   [Commands](#mon-commands)
+
+-   [Public monitoring app](#mon-public-monitoring-app)
+
+
+#### [](#_client_2)Client
+
+For simplicity we will use the existing client configurations from the publication example. Meaning, we will not configure another client for this example but you could have a separate acknowledgement client configuration if you would prefer. Otherwise for monitoring there is no additional configuration to be done on the clients. This is true for both author and public.
+
+#### [](#_exchange_2)Exchange
+
+The acknowledgement exchange will be configured on the public instance. For this example we will use the already existing `amq.direct` exchange which is of type direct.
+
+> **Note:** A direct exchange is used because there is only a single author instance to consume acknowledgement messages. This is true for most setups as Magnolia does not support multiple author instances.
+
+1.  The exchange configuration will be used by the activation consumer definition on the public instances. For each public instance configure the exchangeConfig of your client to use the amq.direct exchange.
+
+    ![exchange config public](../_images/setup/exchange-config-public.jpg)
+
+
+#### [](#_queue)Queue
+
+For this example we need to setup a queue for acknowledgement. Just like in the previous example we can make use of one of the existing exchanges or you can create a new exchange.
+
+1.  In the RabbitMQ manager console, create a new queue called acknowledgement.
+
+2.  In the RabbitMQ manager console, bind the new acknowledgement queue to the amq.direct exchange.
+
+3.  For each public instance configure the `queueConfigList` of your `exchangeConfig` to have a new node called acknowledgement.
+
+    ![queue config ack client](../_images/setup/queue-config-ack-client.jpg)
+
+
+#### [](#_consumers_2)Consumers
+
+In the publication example we configured the public instances to consume activation messages from the activation queue. Each of these `consumerDefinitions` can be configured for acknowledgement. So the public instances become producers of acknowledgement messages. We just need to tell the public instances which exchange configuration to use for that.
+
+1.  For each public instance configure the property `ackExchangeName` to use the amq.direct exchange.
+
+    ![ackExchangeName](../_images/setup/ackExchangeName.jpg)
+
+2.  For the acknowledgement setup the author instance will be the consumer of the acknowledgement queue.
+
+    1.  On the author instance, configure the consumerDefinitions node to consume the acknowledgement messages.
+
+        ![acknowledgementConsumer](../_images/setup/acknowledgementConsumer.jpg)
+
+
+
+#### [](#_commands_2)Commands
+
+The commands used by the author instance need to be reconfigured to not delegate the acknowledgement to RabbitMQ. Instead it will be handled by the public instance after the content has been received.
+
+1.  Set `delegateAck` to `false`.
+
+2.  Set `minNbOfPublics` to be the number of public instances to wait for acknowledgement from.
+
+3.  Tune the `stackSize`.
+
+    > **Note:** This is optional. Stack size allows you to send more nodes per activation message, making messages bigger but reducing the number of messages in the queue.
+
+    ![command ack config](../_images/setup/command-ack-config.jpg)
+
+
+Public monitoring app
+
+See the [public monitoring app](../#_public_monitoring_app) to check the status of activation.

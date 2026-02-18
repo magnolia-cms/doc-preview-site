@@ -8,13 +8,13 @@ breadcrumb: DX Core > Developing > Templating > Rich text field
 
 # Rich text field
 
-The rich text field (`RichTextFieldDefinition`) is powered by [CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/index.html). It is a [custom Magnolia field](../../Custom-fields/). The field properties allow you to configure some CKEditor features in the rich text field.
+The rich text field (`RichTextFieldDefinition`) is powered by [CKEditor 5](https://ckeditor.com/docs/ckeditor5/latest/index.html). It is a [custom Magnolia field](../../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/Custom-fields/). The field properties allow you to configure some CKEditor features in the rich text field.
 
 > **Note:** This rich text field definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.field.RichTextFieldDefinition.
 
 ## [](#_ckeditor_4_migration_to_ckeditor_5)CKEditor 4 migration to CKEditor 5
 
-> **Warning:** CKEditor 4 is End-of-Life (EOL) since 2023. It’s no longer maintained and doesn’t receive security updates. The preferred option in Magnolia is to use CKEditor 5.
+> **Warning:** CKEditor 4 is End-of-Life (EOL) since 2023 (at ckeditor.com). It’s no longer maintained and doesn’t receive security updates.In Magnolia, it is deprecated (and in the maintenance mode) since the Magnolia 6.4.2 release, which brought the upgrade of the CKEditor 5 to version 47.3.The preferred option in Magnolia is to use CKEditor 5.
 
 Magnolia 6.2 uses CKEditor 4 in its rich text field. Magnolia 6.4 is released with CKEditor 5. While most field properties from Magnolia 6.2 are supported, CKEditor 4 and CKEditor 5 are very different in their [core architecture](https://ckeditor.com/docs/ckeditor5/latest/updating/ckeditor4/migration-from-ckeditor-4.html#differences-between-ckeditor-4-and-ckeditor-5). For this reason, Magnolia recommends previewing any content transferred from CKEditor 4 in Magnolia 6.2 and checking that the content is published as you want it.
 
@@ -26,174 +26,23 @@ For a list of plugins included in the Magnolia `ckeditor5-build`, see [`ckeditor
 
 ## [](#_rich_text_vs_light_rich_text_field)Rich text vs light rich text field
 
-Alternatively, if you’re considering using a Rich text field as part of a blog post template, consider using a Light rich text field. The [Light rich text field](../../../../../../Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/) is a special type of rich text field provided by the [Content Editor module](../../../../../../Modules/List-of-modules/Content-Editor-module/). Compared to the rich text field, the light rich text field has limited formatting functions. In addition, the field can only be used as a [content block](../../../../../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/Developing-and-rendering-custom-content-blocks/) in a [custom content editor](../../../../../../Apps/Developing-an-app/Developing-a-custom-content-editor-app/).
+Alternatively, if you’re considering using a Rich text field as part of a blog post template, consider using a Light rich text field. The [Light rich text field](../../../../../../../RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/) is a special type of rich text field provided by the [Content Editor module](../../../../../../../RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/). Compared to the rich text field, the light rich text field has limited formatting functions. In addition, the field can only be used as a [content block](../../../../../../../RNs-6-4-3/Apps/Developing-an-app/Developing-a-custom-content-editor-app/Developing-and-rendering-custom-content-blocks/) in a [custom content editor](../../../../../../../RNs-6-4-3/Apps/Developing-an-app/Developing-a-custom-content-editor-app/).
 
-## [](#_configuration)Configuration
-
-### [](#_example_definition)Example definition
-
-```yml
-richText:
-  $type: richTextField
-  label: Text editor
-  height: 300
-  tables: true
-  source: true
-```
-
-> **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
-
-### [](#_field_properties)Field properties
-
-#### [](#_field_specific_properties)Field-specific properties
-
- PropertyDescription
-
-`ckEditorVersion`
-
-**optional**, *default is `CKEDITOR_5`*
-
-This property sets the version of CKEditor. You don’t need to add it to your field definitions in Magnolia 6.4.
-
-> **Warning:** You must check the migration recommendations when migrating rich text field definitions from Magnolia 6.2. In particular, the configJsFile property is deprecated in Magnolia 6.4.
-
-`alignment`
-
-**optional**, *default is `false`*
-
-Allows text alignment for paragraphs. When `true`, this property adds alignment buttons (left, center, right, and justify) to the toolbar.
-
-`colors`
-
-**optional**
-
-Colors displayed in the color selector. Comma-separated hexadecimal color codes without the `#` prefix (for example, `00923E,F8C100,28166F`).
-
-`fonts`
-
-**optional**
-
-List of font names displayed in the font selector. Separate entries with a semi-colon (for example, `Arial,sans-serif;Times New Roman,serif`). It is possible to have more than one font for each entry separated by a comma. A display name may be optionally defined by prefixing the entries with the name and the slash character.
-
-Your browser selects the nearest supported font from the font family’s list to render the text. Alternatively, you can use the [font plugin’s default values](https://ckeditor.com/docs/ckeditor5/latest/api/module_font_fontconfig-FontFamilyConfig.html#member-options). For example, when you want to load a list of default fonts, define an empty string in the definition.
-
-```yaml
-$type: richTextField
-fonts: ""
-```
-
-`fontSizes`
-
-**optional**
-
-List of fonts sizes displayed in the font selector. Separate entries with a semi-colon (for example, `16/16px;24/24px;48/48px`). Any CSS-supported size can be used (for example, `12px`, `2.3em`, `130%`, `tiny`, `small`, `big`, or `huge`). A display name may be optionally defined by prefixing the entries with the name and the slash character. For example, `Bigger Font/14px` will be displayed as **Bigger Font** in the list and outputted as `14px`.
-
-`height`
-
-**optional**, *default is `-1`*
-
-Height of the field (including the toolbar). This property accepts an integer (to denote a value in pixels). Value of `-1` means that the component will take the minimum necessary space.
-
-`images`
-
-**optional**, *default is `false`*
-
-Allows images from the DAM. When `true`, this property adds an image button to the toolbar. The user can define the size and alignment of the image and some metadata.
-
-`lists`
-
-**optional**, *default is `true`*
-
-Allows bulleted and numbered lists. When `false`, this property removes list buttons from the toolbar.
-
-`source`
-
-**optional**, *default is `false`*
-
-Allows toggling between text and HTML editing. When `true`, this property adds a source button to the toolbar.
-
-`tables`
-
-**optional**, *default is `false`*
-
-Allows tables. When `true`, this property adds a table button to the toolbar.
-
-`linkFieldDefinitions`
-
-**optional**
-
-List of JCR or DAM [link field](../Link-field/) definitions. It can be used to provide custom chooser dialogs.
-
-Example configuration
-
-```yml
-linkFieldDefinitions:
-  website:
-    $type: pageLinkField
-  dam:
-    $type: damLinkField
-```
-
-`editorType`
-
-**optional**
-
-Use this property to specify which editor you want to use from the ones configured in your [custom build](../CKEditor5-customization/#_using_a_custom_build), for example, `BalloonEditor` or `ClassicEditor`.
-
-#### [](#_common_simple_field_properties)Common simple field properties
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the field definition item. Derived from the configured node name. Use alphanumeric characters without spaces.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong> (unless <code>$type</code> is used)</p></div><div class="paragraph"><p>Type of the field definition item. The value must be a fully qualified class name and a subtype of <code>info.magnolia.ui.field.FieldDefinition</code>. See <a href="../../#_field_types" class="xref page">Field types</a> for possible values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>You can use this as a shortcut for <code>class</code> if the definition class is annotated with <code>info.magnolia.ui.field.FieldType</code>. The proper value is defined by the annotation.</p></div><div class="listingblock"><div class="title">Example class annotation</div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@FieldType("textField")
-public class TextFieldDefinition extends ConfiguredFieldDefinition&lt;String&gt; {
-...
-}</code></pre></div></div><div class="paragraph"><p>See <a href="../../#_field_types" class="xref page">Field types</a> for possible values.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p><a href="https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/PropertyType.html" target="_blank" rel="noopener">Property type</a> of the field.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">A default type is typically hard-coded in each definition class. You only need to add this property if you want to override the default implementation.</td></tr></tbody></table></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content"><div class="paragraph"><p>In <a href="../Text-field/" class="xref page">text fields</a>, make sure that <code>type</code> has a value matching the type of data you entered (for example, <code>java.lang.Long</code> for <code>long</code> values) and that <code>converterClass</code> is set accordingly.</p></div><div class="paragraph"><p>A scenario where you might require users to enter a particular numerical type is, for example, sorting the <a href="#rest:api:delivery-endpoint.adoc" class="xref unresolved">delivery REST JSON</a> on your frontend.</p></div><div class="listingblock"><div class="title">Long example definition</div><div class="content"><pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">text:
-  $type: textField
-  type: java.lang.Long
-  converterClass: com.vaadin.data.converter.StringToLongConverter</code></pre></div></div><div class="listingblock"><div class="title">Double example definition</div><div class="content"><pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">text:
-  $type: textField
-  type: java.lang.Double
-  converterClass: com.vaadin.data.converter.StringToDoubleConverter</code></pre></div></div></td></tr></tbody></table></div><div class="paragraph"><p>Unresolved include directive in modules/ROOT/partials/i/_Common-simple-field-properties.adoc - include::6.3@product-docs:ROOT:partial$developing/templating/_cautions/java-only-properties.adoc[]</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>converterClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Converts values between the presentation (UI) and model (stored data). The property must extend <a href="https://vaadin.com/api/framework/com/vaadin/data/Converter.html" target="_blank" rel="noopener"><code>com.vaadin.data.Converter</code></a>. Available classes:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.ui.editor.converter.JcrNodeToIdentifierConverter</code></p></li><li><p><code>info.magnolia.ui.editor.converter.JcrNodeToPathConverter</code></p></li><li><p><code>info.magnolia.ui.editor.converter.JcrNodeToWorkspaceAndIdConverter</code></p></li><li><p><code>info.magnolia.ui.editor.converter.JcrPathToIdentifierConverter</code></p></li></ul></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p><code>com.vaadin.data.converter.StringToBigDecimalConverter</code> and <code>com.vaadin.data.converter.StringToDoubleConverter</code> always round the presentation value by default. For non-rounding converters, use the following classes instead:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.ui.field.converter.NonRoundingStringToBigDecimalConverter</code></p></li><li><p><code>info.magnolia.ui.field.converter.NonRoundingStringToDoubleConverter</code></p></li></ul></div></td></tr></tbody></table></div><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content"><div class="paragraph"><p>You can’t configure this property through YAML but it can be used in your Java code.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>conversionErrorMessage</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is translated <code>conversion.message.error</code> key</em></p></div><div class="paragraph"><p>Message shown when there is an error in the conversion process. The value can be literal or a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>defaultValue</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Pre-filled default value displayed in the field. The value can be overwritten by the user. Use alphanumeric characters.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">This is only applied only when creating a new item, not for existing items.</td></tr></tbody></table></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content"><div class="paragraph"><p>For <code>defaultValue</code> to work, the <code>populate</code> property in <span class="inlineBean">info.magnolia.ui.dialog.actions.OpenDialogActionDefinition</span> must be set to <code>false</code>.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>description</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Help text displayed when the user clicks the help icon. The value can be literal or a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>factoryClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Defines the factory class that initializes and builds the Vaadin form field. The default factory class depends on the particular field.</p></div><div class="paragraph"><p>The value must be a fully qualified class name and a subtype of <code>info.magnolia.ui.field.FieldFactory</code>.</p></div><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content"><div class="paragraph"><p>You can’t configure this property through YAML but it can be used in your Java code.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldBinderClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Defines the binder class that applies configuration parameters from the field.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>i18n</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables <a href="../../../../../../Administration/Language/Language-configuration/" class="xref page">i18n authoring support</a>, which allows editors to write foreign-language or regionally targeted content.</p></div><div class="paragraph"><p>For more details, see <a href="#_i18n_in_new_ui_forms_and_vaadin_forms">i18n in New UI Forms and Vaadin forms</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>label</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Field label displayed to editors. The value can be literal or a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div><div class="paragraph"><p>If you do not provide the property, Magnolia will fall back to a generated i18n key.</p></div><div class="paragraph"><p>If you do not want to have any label, set the property to an empty string such as <code>label: ""</code> in YAML.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>readOnly</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Makes the field uneditable.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code id="_required">required</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em> (not relevant for <a href="../Checkbox-field/" class="xref page">checkbox field</a>)</p></div><div class="paragraph"><p>Makes the field required. When <code>true</code>, an asterisk is displayed next to the field label.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content"><div class="paragraph"><p>When <code>false</code>, empty values are accepted as valid. For those empty values, any <a href="../../Field-validators/" class="xref page">field validators</a> are ignored.</p></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>requiredErrorMessage</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is translated <code>validation.message.required</code> key</em></p></div><div class="paragraph"><p>Error message shown when <code>required</code> is set to <code>true</code> and the user saves an empty field. The value can be literal or a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_keys" class="xref page">key</a> of a <a href="../../../../../../Administration/Language/Internationalization/#_i18n_message_bundle" class="xref page">message bundle</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>styleName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Additional style information for an editor property definition item applied to the element when the form is rendered. The value can be a CSS class or a list of CSS classes separated by white spaces.</p></div><div class="paragraph"><p>The style name will be rendered as an HTML class name, which can be used in a CSS definition. The class name is added to the field by calling the Vaadin method <a href="https://vaadin.com/api/framework/8/com/vaadin/ui/AbstractComponent.html#addStyleName-java.lang.String-" target="_blank" rel="noopener"><code>addStyleName</code></a>.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>The referenced class can be defined in:</p></div><div class="ulist"><ul><li><p>An <a href="../../../../Theme/" class="xref page">out-of-the-box Magnolia theme</a>.</p></li><li><p>A <a href="https://vaadin.com/docs/v8/framework/themes/themes-creating.html" target="_blank" rel="noopener">custom theme</a>.</p></li><li><p>A <a href="https://vaadin.com/forum/thread/17175160/where-to-put-the-style-css" target="_blank" rel="noopener">custom component style sheet</a>.</p></li></ul></div></td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>validators</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of field validator definition items. Any value must be a subtype of <code>info.magnolia.ui.field.FieldValidatorDefinition</code>.</p></div><div class="paragraph"><p>See <a href="../../Field-validators/" class="xref page">Field validators</a> for more information.</p></div></div></td></tr></tbody></table></div>
-
-##### [](#_i18n_in_new_ui_forms_and_vaadin_forms)i18n in New UI Forms and Vaadin forms
-
-The rendering and behavior of internationalization (i18n) differ between the fields of the [New UI Forms](../../../New-ui-forms/) and the older Vaadin forms.
-
-###### [](#_fields_with_i18n_true)Fields with `i18n: true`
-
-| New UI Forms | Vaadin |
+| Property | Description |
 | --- | --- |
-| No language identifier is displayed next to the field’s name.<br><br>The field value you edit there and save is stored only for the selected language variant. | A two-letter language identifier (for example, `en`, `de`, `fr`) is displayed next to the field, as shown below on the right side of the screenshots - `en` or `de` next to the "Body Text" name of the rich text field.<br><br>The field value you edit there and save is stored only for the selected language variant. |
-
-###### [](#_fields_with_i18n_false_or_not_set_as_false_is_the_default)Fields with `i18n: false` (or not set, as `false` is the default)
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 50%;"> <col style="width: 50%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">New UI Forms</th><th class="tableblock halign-left valign-top">Vaadin</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Editing is only possible in the default language. The field is disabled in non-default language views.</p></div><div class="paragraph"><p>A globe icon is displayed next to the field.</p></div><div class="paragraph"><p>Hovering over the globe icon shows a tooltip with the following messages:</p></div><div class="ulist"><ul><li><p>In the default language view: "Global field. The field’s value is the same across all language variants."</p></li><li><p>In non-default language views: "Global field. Switch to the default language (&lt;default language name&gt;) to edit this field."</p></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>No language identifier is displayed next to the field’s name.</p></div><div class="paragraph"><p>The field is editable.</p></div><div class="paragraph"><p>The value you enter there and save is applied to all language variants.</p></div></div></td></tr></tbody></table></div>
-
-**Default language form views (English)**
-
-![Rendering of fields in forms in the default language (English)](../../../../../../_images/templating/i18n_forms_en.png)
-
-**Non-default language form views (German)**
-
-![Rendering of fields in forms in a non-default language (German)](../../../../../../_images/templating/i18n_forms_de.png)
-
-### [](#_more_example_definitions)More example definitions
-
-The first way to change the [rich text field](./) is by adding YAML field properties. The example at the top of the page is extended below to include colors, fonts, and font sizes in the CKEditor dialog toolbar.
-
-```yaml
-form:
-  properties:
-    richText:
-      $type: richTextField
-      label: Magnolia richTextField
-      height: 300
-      tables: true
-      source: true
-      colors: 00923E,F8C100,28166F
-      fonts: Arial/Arial,sans-serif;Times New Roman/Times New Roman,serif;Verdana
-      fontSizes: 16/16px;24/24px;48/48px
-```
-
-![Rich text field - custom YAML](../../../../../../_images/richTextField_customYAML.png)
+| `ckEditorVersion` | **optional** , *default is CKEDITOR_5* This property sets the version of CKEditor. You don’t need to add it to your field definitions in Magnolia 6.4. ** You must check the [migration recommendations](#_ckeditor_4_migration_to_ckeditor_5) when migrating rich text field definitions from Magnolia 6.2. In particular, the `configJsFile` [property](#_field_properties) is deprecated in Magnolia 6.4. | ** | You must check the [migration recommendations](#_ckeditor_4_migration_to_ckeditor_5) when migrating rich text field definitions from Magnolia 6.2. In particular, the `configJsFile` [property](#_field_properties) is deprecated in Magnolia 6.4. |
+| ** | You must check the [migration recommendations](#_ckeditor_4_migration_to_ckeditor_5) when migrating rich text field definitions from Magnolia 6.2. In particular, the `configJsFile` [property](#_field_properties) is deprecated in Magnolia 6.4. |
+| `alignment` | **optional** , *default is false* Allows text alignment for paragraphs. When `true` , this property adds alignment buttons (left, center, right, and justify) to the toolbar. |
+| `colors` | **optional** Colors displayed in the color selector. Comma-separated hexadecimal color codes without the `#` prefix (for example, `00923E,F8C100,28166F` ). |
+| `fonts` | **optional** List of font names displayed in the font selector. Separate entries with a semi-colon (for example, `Arial,sans-serif;Times New Roman,serif` ). It is possible to have more than one font for each entry separated by a comma. A display name may be optionally defined by prefixing the entries with the name and the slash character. Your browser selects the nearest supported font from the font family’s list to render the text. Alternatively, you can use the [font plugin’s default values](https://ckeditor.com/docs/ckeditor5/latest/api/module_font_fontconfig-FontFamilyConfig.html#member-options) . For example, when you want to load a list of default fonts, define an empty string in the definition. `$type: richTextField fonts: ""` |
+| `fontSizes` | **optional** List of fonts sizes displayed in the font selector. Separate entries with a semi-colon (for example, `16/16px;24/24px;48/48px` ). Any CSS-supported size can be used (for example, `12px` , `2.3em` , `130%` , `tiny` , `small` , `big` , or `huge` ). A display name may be optionally defined by prefixing the entries with the name and the slash character. For example, `Bigger Font/14px` will be displayed as **Bigger Font** in the list and outputted as `14px` . |
+| `height` | **optional** , *default is -1* Height of the field (including the toolbar). This property accepts an integer (to denote a value in pixels). Value of `-1` means that the component will take the minimum necessary space. |
+| `images` | **optional** , *default is false* Allows images from the DAM. When `true` , this property adds an image button to the toolbar. The user can define the size and alignment of the image and some metadata. |
+| `lists` | **optional** , *default is true* Allows bulleted and numbered lists. When `false` , this property removes list buttons from the toolbar. |
+| `source` | **optional** , *default is false* Allows toggling between text and HTML editing. When `true` , this property adds a source button to the toolbar. |
+| `tables` | **optional** , *default is false* Allows tables. When `true` , this property adds a table button to the toolbar. |
+| `linkFieldDefinitions` | **optional** List of JCR or DAM [link field](../Link-field/) definitions. It can be used to provide custom chooser dialogs. Example configuration `linkFieldDefinitions: website: $type: pageLinkField dam: $type: damLinkField` |
+| `editorType` | **optional** Use this property to specify which editor you want to use from the ones configured in your [custom build](../../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/CKEditor5-customization/#_using_a_custom_build) , for example, `BalloonEditor` or `ClassicEditor` . |
 
 ## [](#_decode_ckeditor_output_text)Decode CKEditor output text
 
@@ -204,9 +53,9 @@ If the content from a rich text field is not decoded, you can see the HTML tags 
 -   Preview after decoding
 
 
-![Rich text content not decoded](../../../../../../_images/richText_notDecoded.png)
+![Rich text content not decoded](../../../../../../../RNs-6-4-3/_images/richText_notDecoded.png)
 
-![Rich text content decoded](../../../../../../_images/richText_decoded.png)
+![Rich text content decoded](../../../../../../../RNs-6-4-3/_images/richText_decoded.png)
 
 CKEditor produces HTML such as `<p>` elements for paragraphs. However, text stored in JCR usually escapes HTML code. To render text that originates from a rich text field, you need to decode the stored content to make sure the HTML tags are rendered properly again.
 
@@ -216,18 +65,18 @@ Here is how to decode the `content` object in your FTL file and get the desired 
 ${cmsfn.decode(content).text!""}
 ```
 
-See [`cmsfn`: Decode HTML](../../../../Template-scripts/Templating-functions/cmsfn/#_decode_html) for more information.
+See [`cmsfn`: Decode HTML](../../../../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_decode_html) for more information.
 
 ## [](#_customization)Customization
 
-For more details, see [CKEditor 5 customization](../CKEditor5-customization/). If you are using CKEditor 4 for customization, set the [ckEditorVersion property](#_field_properties) to `CKEDITOR_4` and follow the [CKEditor 4 customization documentation](../CKEditor-customization/) on creating a CKEditor configuration file.
+For more details, see [CKEditor 5 customization](../../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/CKEditor5-customization/). If you are using CKEditor 4 for customization, set the [ckEditorVersion property](#_field_properties) to `CKEDITOR_4` and follow the [CKEditor 4 customization documentation](../../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/CKEditor-customization/) on creating a CKEditor configuration file.
 
 > **Caution:** You can’t currently use CKEditor 4 and CKEditor 5 in the same webapp because it may lead to unpredictable behavior. For example, if you edit a CKEditor field, its toolbar might not display until the page refreshes.
 
 Related topics
 
--   [Text blocks](../../../../../../Apps/List-of-apps/Stories-app/#_text_blocks)
+-   [Text blocks](../../../../../../../RNs-6-4-3/Apps/List-of-apps/Stories-app/#_text_blocks)
 
--   [Light rich text field](../../../../../../Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/)
+-   [Light rich text field](../../../../../../../RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/Light-rich-text-field/)
 
--   [Content Editor module](../../../../../../Modules/List-of-modules/Content-Editor-module/)
+-   [Content Editor module](../../../../../../../RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/)

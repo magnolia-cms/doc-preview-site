@@ -33,55 +33,11 @@ To view passed, logged, and blocked requests for your WAF:
 
 See the [Webapp firewall graphs](#_webapp_firewall_graphs) below for more details on each metric.
 
-## [](#_webapp_firewall_graphs)Webapp firewall graphs
-
-You can view information on the [Traffic](#_traffic) as well as the [Origin](#_origin) of requests easily in the Cockpit. You can also easily see which attacks occur most often in the [Blocked](#_blocked) tab and the top IPs in the [IP](#_ip) tab.
-
-### [](#_traffic)Traffic
-
-Under the **Traffic** tab, you can view the following:
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Metric</th><th class="tableblock halign-left valign-top">Description and Visual</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Total requests</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Displays the total requests to the WAF in the specified time period.</p></div><div class="paragraph"><p><span class="image zoom"><img src="../../_images/cdn/waf/traffic-totalRequests.totalBlockedRequests.totalRequestsPerWafStatus.jpg" alt="traffic totalRequests.totalBlockedRequests.totalRequestsPerWafStatus"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Total blocked requests</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Displays the total blocked requests to the WAF in the specified time period.</p></div><div class="paragraph"><p><span class="image zoom"><img src="../../_images/cdn/waf/traffic-totalRequests.totalBlockedRequests.totalRequestsPerWafStatus.jpg" alt="traffic totalRequests.totalBlockedRequests.totalRequestsPerWafStatus"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Total requests per WAF status</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Displays the total requests broken down by WAF status.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">This is not for the specified period, but the total requests over time.</td></tr></tbody></table></div><div class="ulist"><ul><li><p><code>PASSED</code> = Passed by the WAF and sent to the origin server.</p></li><li><p><code>LOGGED</code> = Logged by the WAF and sent to the origin server.</p></li><li><p><code>BLOCKED</code> = Blocked by the WAF.</p></li></ul></div><div class="paragraph"><p><span class="image zoom"><img src="../../_images/cdn/waf/traffic-totalRequests.totalBlockedRequests.totalRequestsPerWafStatus.jpg" alt="traffic totalRequests.totalBlockedRequests.totalRequestsPerWafStatus"></span></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Total requests per WAF status over time</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Displays the total requests broken down by WAF status by the time period.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">This <strong>is</strong> for the specified period, and you can drag over the graph to get even more granular results.</td></tr></tbody></table></div><div class="ulist"><ul><li><p><code>PASSED</code> = Passed by the WAF and sent to the origin server.</p></li><li><p><code>LOGGED</code> = Logged by the WAF and sent to the origin server.</p></li><li><p><code>BLOCKED</code> = Blocked by the WAF.</p></li></ul></div><div class="paragraph"><p><span class="image zoom"><img src="../../_images/cdn/waf/traffic-totalRequestsPerWafStatusOverTime.jpg" alt="traffic totalRequestsPerWafStatusOverTime"></span></p></div></div></td></tr></tbody></table></div>
-
-### [](#_origin)Origin
-
-Under the **Origin** tab, you can view the following:
-
- MetricDescription and Visual
-
-**Blocked request per zones**
-
-Displays (*as a map*) the blocked requests per geographic zone.
-
-> **Tip:** You can zoom in and out just as you would any other modern web map.
-
-![origin blockedRequestsPerZone](../../_images/cdn/waf/origin-blockedRequestsPerZone.jpg)
-
-### [](#_blocked)Blocked
-
-Under the **Blocked** tab, you can view the following:
-
- MetricDescription
-
-**Attacks per type**
-
-This graphic shows you the attacks per type for the selected cluster, domain, and time period.
-
-**Attacks per rule**
-
-This graphic shows you the attacks per rule for the selected cluster, domain, and time period.
-
-> **Tip:** Web Application Firewall (WAF) explains more about rules.
-
-**Attacks per path**
-
-This graphic shows you the attacks per path for the selected cluster, domain, and time period.
-
-### [](#_ip)IP
-
-Under the **IP** tab, you can view the following:
-
-| Metric | Description |
+| Metric | Description and Visual |
 | --- | --- |
-| **Top 10 IPs** | This shows you the top 10 IPs that have experienced attacks for the selected cluster, domain, and time period. |
-| **Attack per IP** | This shows the volume of attacks per IP for the selected cluster, domain, and time period. |
+| **Total requests** | Displays the total requests to the WAF in the specified time period. |
+| **Total blocked requests** | Displays the total blocked requests to the WAF in the specified time period. |
+| **Total requests per WAF status** | Displays the total requests broken down by WAF status. ** This is not for the specified period, but the total requests over time. • `PASSED` = Passed by the WAF and sent to the origin server. • `LOGGED` = Logged by the WAF and sent to the origin server. • `BLOCKED` = Blocked by the WAF. | ** | This is not for the specified period, but the total requests over time. |
+| ** | This is not for the specified period, but the total requests over time. |
+| **Total requests per WAF status over time** | Displays the total requests broken down by WAF status by the time period. ** This **is** for the specified period, and you can drag over the graph to get even more granular results. • `PASSED` = Passed by the WAF and sent to the origin server. • `LOGGED` = Logged by the WAF and sent to the origin server. • `BLOCKED` = Blocked by the WAF. | ** | This **is** for the specified period, and you can drag over the graph to get even more granular results. |
+| ** | This **is** for the specified period, and you can drag over the graph to get even more granular results. |

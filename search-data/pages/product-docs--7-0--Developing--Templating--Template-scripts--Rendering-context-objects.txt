@@ -8,7 +8,7 @@ breadcrumb: DX Core > Developing > Templating > Template scripts > Rendering con
 
 # Rendering context objects
 
-[FreeMarker development only](../../Renderers/#_renderers_provided_by_magnolia)
+[FreeMarker development only](../../../../../RNs-6-4-3/Developing/Templating/Renderers/#_renderers_provided_by_magnolia)
 
 Rendering context objects provide direct access to important Magnolia classes from a template script. You can get information such as the current template, user and request through these objects. Rendering content objects are set in info.magnolia.rendering.renderer.AbstractRenderer and its child classes.
 
@@ -43,7 +43,7 @@ A JavaBean created by the renderer based on the model class defined in the [temp
 
 > **Warning:** Not every template defines a model class. If no model is defined, no bean will be created and its reference will be null.
 
-A model can be implemented as a Java class by implementing info.magnolia.rendering.model.RenderingModel. Since Magnolia 5.5.6, a model can also be written in JavaScript (see [JavaScript Models module](#javascript-models:ROOT:index.adoc)).
+A model can be implemented as a Java class by implementing info.magnolia.rendering.model.RenderingModel. Since Magnolia 5.5.6, a model can also be written in JavaScript (see [JavaScript Models module](../../../../../../javascript-models/)).
 
 The `model` itself provides the following built-in properties:
 
@@ -137,9 +137,9 @@ Provides access to many properties such as:
 
 -   `mainContentNode` ([javax.jcr.Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html))
 
-    This property returns the node (of type `Node`) that contains the main content. For example, if a child node [inherits](../../../Reusing-configuration/YAML-inherit-and-include/#_yaml_inherit) content from another component and `state.mainContentNode` was applied to the child node, it is the child node’s main content that would be returned.
+    This property returns the node (of type `Node`) that contains the main content. For example, if a child node [inherits](../../../../../RNs-6-4-3/Developing/Reusing-configuration/YAML-inherit-and-include/#_yaml_inherit) content from another component and `state.mainContentNode` was applied to the child node, it is the child node’s main content that would be returned.
 
-    A use case for this is shown below. Since the type returned by `state.mainContentNode` is `Node`, the function [cmsfn.asContentMap](../Templating-functions/cmsfn/#_convert_node_to_content_map) converts that node to a `ContentMap`, providing access to its properties. Finally, the [cmsfn.page](../Templating-functions/cmsfn/#_page_by_content) function returns the page to which the content belongs.
+    A use case for this is shown below. Since the type returned by `state.mainContentNode` is `Node`, the function [cmsfn.asContentMap](../../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_convert_node_to_content_map) converts that node to a `ContentMap`, providing access to its properties. Finally, the [cmsfn.page](../../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_page_by_content) function returns the page to which the content belongs.
 
     ```yaml
     [#local currentPage = (cmsfn.page(cmsfn.asContentMap(state.mainContentNode)))!{}]

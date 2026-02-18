@@ -1,0 +1,68 @@
+---
+title: "REST Design – HTTP Methods and Status Rules"
+url: https://docs.magnolia-cms.com/rest-api-guidelines/1.0/http-methods/
+category: Modules
+version: modules
+breadcrumb: REST API Guidelines > HTTP Methods
+---
+
+# REST Design – HTTP Methods and Status Rules
+
+Describes how APIs must use standard HTTP status codes, explicitly document success and error responses, and follow established conventions for HTTP headers. It also clarifies how linking information should be represented in responses.
+
+## [](#150)**MUST** use standard HTTP status codes \[150\]
+
+Adopted
+
+APIs must use standard HTTP status codes consistently and according to their defined semantics.
+
+Success and error responses must be communicated using the appropriate status codes defined in RFC 7231 and related specifications. Custom or non-standard status codes must not be used.
+
+**Reference:** [Zalando rule #150](https://opensource.zalando.com/restful-api-guidelines/#150)
+
+## [](#151)**MUST** specify success and error responses \[151\]
+
+Adopted
+
+All APIs must explicitly define both success and error responses in their API specification.
+
+For each endpoint and HTTP method, all expected response status codes must be documented, including the response payload structure for both successful and error responses. This enables client developers to reliably handle all possible outcomes.
+
+**Reference:** [Zalando rule #151](https://opensource.zalando.com/restful-api-guidelines/#151)
+
+## [](#132)**SHOULD** use uppercase separate words with hyphens for HTTP headers \[132\]
+
+Adopted
+
+HTTP header names must consist of uppercase letters and use hyphens (`-`) to separate words.
+
+Examples:
+
+-   `X-REQUEST-ID`
+
+-   `CONTENT-TYPE`
+
+-   `IF-MATCH`
+
+
+This improves readability and aligns with common HTTP conventions.
+
+**Reference:** [Zalando rule #132](https://opensource.zalando.com/restful-api-guidelines/#132)
+
+## [](#166)**MUST** avoid link in header rule \[166\]
+
+Adopted
+
+Do not use the HTTP `Link` header to convey application-specific linking information.
+
+Instead, include links directly in the response body as part of the resource representation. This improves discoverability and ensures that clients without special header handling can still access linking information.
+
+**Reference:** [Zalando rule #166](https://opensource.zalando.com/restful-api-guidelines/#166)
+
+## [](#183)**SHOULD** use only the specified proprietary Zalando headers \[183\]
+
+Skipped
+
+Rationale: This rule defines proprietary Zalando-specific HTTP headers and constraints. These constraints are not adopted by Magnolia and are therefore not applicable in our API landscape.
+
+**Reference:** [Zalando rule #183](https://opensource.zalando.com/restful-api-guidelines/#183)

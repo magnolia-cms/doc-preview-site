@@ -8,13 +8,13 @@ breadcrumb: Content Translation Extended module > CTSX Instant Translation
 
 # CTSX Instant Translation
 
-[Content management](../../product-docs/7.0/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.0.0 [Magnolia 6.4](../../product-docs/7.0/) compatible
+[Content management](../../product-docs/RNs-6-4-3/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/pd/extensions/ps-maintained/content-translation-support-ext) Version 5.1.0 [Magnolia 6.4](../../product-docs/RNs-6-4-3/) compatible
 
 The **CTSX Instant Translation** module adds option (functionality) for quick translation of page/area/component.
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 > **Important:** In order to be able to use "Quick translate" action, please make sure that the core and apps modules in the Content Translation Extended have already been installed.
 
@@ -22,7 +22,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.translation</groupId>
   <artifactId>magnolia-content-translation-support-ext-instant</artifactId>
-  <version>5.0.0</version>
+  <version>5.1.0</version>
 </dependency>
 ```
 

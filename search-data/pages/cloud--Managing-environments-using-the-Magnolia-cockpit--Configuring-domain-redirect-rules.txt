@@ -1,0 +1,28 @@
+---
+title: "Configuring domain redirect rules"
+url: https://docs.magnolia-cms.com/cloud/Managing-environments-using-the-Magnolia-cockpit/Configuring-domain-redirect-rules/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Managing environments using the Magnolia cockpit > Configuring domain redirect rules
+---
+
+# Configuring domain redirect rules
+
+This page explains how to configure a root domain redirect rule for your cloud-based Magnolia package. You can change your root domain to use different subdomains if so required. For example, you could redirect `www.abc.com` to `abc.com`.
+
+> **Important:** Certificates for the domains you redirect from and to must be managed by Magnolia Cloud.
+
+![image](../../_images/cloud-redirect-config.png)
+
+| **Format** | `author-<environment>-<subscription>.de.magnolia-cloud.com` ** You can also use public subscription URLs as the target domain for a redirect. In this case, simply replace `author` with `public` . | ** | You can also use public subscription URLs as the target domain for a redirect. In this case, simply replace `author` with `public` . |
+| --- | --- | --- | --- |
+| ** | You can also use public subscription URLs as the target domain for a redirect. In this case, simply replace `author` with `public` . |
+| **Example** | `author-live-howdy.de.magnolia-cloud.com` |
+
+## [](#_delete_a_redirect_rule)Delete a redirect rule
+
+1.  In the Package overview page, click **Manage environments** in the Environments section.
+
+2.  Click **Configure redirect rules**.
+
+3.  In the bottom half of the page, click **Delete** next to the rule you want to delete.

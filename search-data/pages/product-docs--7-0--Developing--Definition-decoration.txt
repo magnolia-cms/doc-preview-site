@@ -22,7 +22,7 @@ It is possible to change definitions such as app descriptors, dialogs, field typ
 
 Decorated definitions can originate from any source, including the JCR, YAML files or even executable code like Blossom. However, decorators themselves can only be defined via [YAML](../YAML/) for the time being.
 
-![Module registry diagram with and without decoration](../../_images/with-without-decoration.png)
+![Module registry diagram with and without decoration](../../../RNs-6-4-3/_images/with-without-decoration.png)
 
 ## [](#_multiple_decorations)Multiple decorations
 
@@ -113,7 +113,7 @@ icon: icon-content-app
 
 Result:
 
-![Decorated tile](../../_images/6-2-1-definitionDecoration-decoratedTile.png)
+![Decorated tile](../../../RNs-6-4-3/_images/6-2-1-definitionDecoration-decoratedTile.png)
 
 ### [](#_changing_the_root_path_of_the_data_source_of_the_dam_app)Changing the root path of the data source of the dam app
 
@@ -125,7 +125,7 @@ rootPath: /tours
 
 Result:
 
-![Definitions app showing definition items read from the corresponding registry](../../_images/6-2-definitionDecoration-rootPath.png)
+![Definitions app showing definition items read from the corresponding registry](../../../RNs-6-4-3/_images/6-2-definitionDecoration-rootPath.png)
 
 (Screenshot taken from the [Definitions app](../../Apps/List-of-apps/Definitions-app/), which shows definition items read from the corresponding registry. Also, notice the presence of the tick in the *Is decorated?* column and on the row with `dam`.)
 
@@ -161,7 +161,7 @@ cssFiles:
     link: /.resources/my-module/webresources/css/minimum.css
 ```
 
-![Adding an additional CSS file](../../_images/6-2_definitionDecoration-defApp.png)
+![Adding an additional CSS file](../../../RNs-6-4-3/_images/6-2_definitionDecoration-defApp.png)
 
 #### [](#_b_overriding_the_property_completely_using_override)b) Overriding the property completely - using `!override`
 
@@ -173,4 +173,4 @@ cssFiles: !override
     link: /.resources/my-module/webresources/css/minimum.css
 ```
 
-![Overriding the property completely - using !override](../../_images/6-2_definitionDecoration-defApp_override.png)
+![Overriding the property completely - using !override](../../../RNs-6-4-3/_images/6-2_definitionDecoration-defApp_override.png)

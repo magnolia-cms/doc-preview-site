@@ -1,0 +1,111 @@
+---
+title: "Analytics integration framework"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/analytics-integration-framework/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Analytics integration framework
+---
+
+# Analytics integration framework
+
+[Analytics and optimization](../../../use-cases/analytics-and-optimization/) Unbundled: [Framework](../../#_module_types) License: [DX Core](../../../Administration/License/#_dx_core){frameworks-and-extensions-license-note}
+
+Measuring and improving the performance of your website is a universal requirement. The Analytics integration framework allows you to connect third-party web analytics tools such as Adobe Analytics, Google Analytics and Matomo (Piwik) to Magnolia. Editors and marketers can build their own *widgets* (charts) and dashboards dynamically in the user-friendly Analytics app UI.
+
+The typical scenario for using the Analytics integration framework is:
+
+-   Track metrics such as visitors and sessions on your Magnolia site using the third-party tool of your choice.
+
+-   Use the Analytics integration framework to fetch the analytics reporting data collected by the third-party tool.
+
+-   Build and display user-friendly widgets directly in the Magnolia Analytics app.
+
+
+With the Analytics integration framework, marketers and authors can make data-driven decisions about their content without switching tools.
+
+## [](#_licensing)Licensing
+
+The **Analytics integration framework** is included with your [DX Core license](../../../Administration/License/) and is free of charge. However, the associated extensions are paid and require an additional special license.
+
+## [](#_analytics_framework)Analytics framework
+
+The Analytics integration framework provides a generic framework to retrieve the web analytics data from the connected third-party tools.
+
+The framework provides a default implementation to connect to the extensive [amCharts data visualization library](https://www.amcharts.com/), which provides user-friendly JavaScript-based interactive charts.
+
+## [](#_analytics_extensions)Analytics extensions
+
+Your Magnolia administrator can [configure the connection details](analytics-data-suppliers/) of a third-party web analytics tool, such as the URL and authentication. The Analytics framework can then retrieve the analytics data you want, typically in .json format.
+
+Magnolia provides out-of-the-box extensions to:
+
+-   Adobe Analytics
+
+-   Google Analytics 4 (GA4)
+
+-   Matomo
+
+
+Your administrator can also configure a custom connector to another third-party tool.
+
+## [](#_analytics_app)Analytics app
+
+The [Analytics app](Analytics-app/) enables editors and marketers to build dashboards and *widgets*, or charts, to view analytics related to their content within Magnolia. By having access to key analytics in the UI, you can make faster data-driven decisions about your content.
+
+Magnolia provides an out-of-the-box dashboard of sample metrics about your Magnolia installation to illustrate what can be done. The example shows a pie, bar, line, and word cloud chart. The charts look and feel like an integral part of the Magnolia user interface.
+
+> **Note:** The demo dashboard shows chart types that aren’t provided out-of-the-box and require additional configuration to create. The demo dashboard also shows a customized pie chart where the number of labels is reduced.
+
+![Analytics app dashboard](../../../_images/analytics/analytics-demo-dashboard.png)
+
+> **Note:** The sample charts in the demo dashboard are enhanced using light development. For example, not all chart types or customization in terms of chart colors or labeling are available using the Analytics app UI alone.
+
+### [](#_build_your_own_dashboards_and_widgets)Build your own dashboards and widgets
+
+Create and update your own dashboards by [adding widgets](Analytics-app/#_adding_widget). Widgets are charts that display data from one of the out-of-the-box extensions–Analytics, Google Analytics, Matomo–or from any custom connectors to other third-party analytics data providers that your administrator has configured.
+
+Use the [Analytics app](Analytics-app/) user-friendly interface to define specific charts with metrics that are important for you. You can change your dashboard layout and drag and drop widgets around your dashboard as you require.
+
+![Adding widgets in the Analytics app](../../../_images/6-2-3-analytics-widget-1.png)
+
+### [](#_commonly_used_metrics_out_of_the_box)Commonly used metrics out-of-the-box
+
+To help you get started, Magnolia provides [common metrics](Analytics-app/#_commonly_used_metrics) that every analytics tool (GA, Adobe, Matomo) supports ready to use in your widgets.
+
+![Adding a commonly used metric](../../../_images/analytics/6-2-analytics-widget-common.png)
+
+### [](#_advanced_widgets)Advanced widgets
+
+If the commonly used metrics don’t cover your use case, you can explore your data and [add more metrics](Analytics-app/#_adding_advanced_widgets) from the Analytics app.
+
+![Adding an advanced widget](../../../_images/6-2-3-analytics-widget-custom-overview.png)
+
+The Add widget dialog expands to allow you to choose several additional chart types and select one or more series of dimension and metric combinations. A preview of the selected data displays directly in the dialog as you build your widget.
+
+In the case of internal data suppliers, such as file-based data supplier that fetches data from a .json file, a JSONPath evaluator is also provided to help you by displaying the resulting JSON for each expression.
+
+![JSON path evaluator](../../../_images/analytics/6-2-analytics-JSONPath-eval.png)
+
+> **Note:** Advanced widgets give you full access to your analytics data but not all customization possibilities in terms of chart types, colors or labeling for example. Developers can configure advanced custom charts using light development.
+
+### [](#_filter_your_analytics_data)Filter your analytics data
+
+Developers can [define filters](Analytics-app/#_filtering_data_displayed_in_charts) to drill down into the data displayed in the charts that are configured. When set, each filter is applied to all the charts in the dashboard simultaneously. For example, if you set a filter to display a given time range, all the charts display data for that time range.
+
+## [](#_analytics_where_you_need_them)Analytics where you need them
+
+In addition to viewing analytics in the dedicated app, you can display them next to the content they apply to in IUX (Integrated User eXperience) slots.
+
+*IUX slots* are places in the AdminCentral UI where elements from integrated applications or other Magnolia content apps can live. Analytics elements such as charts and widgets add value to the user’s workflow inside Magnolia. We pull in data from adjacent applications and content apps and display it in the right places so that users don’t need to switch from application to application.
+
+The first slot, introduced in Magnolia 6.2, is a wide horizontal slot at the top of content apps. Developers can [configure this slot](analytics-iux-slot/) to show page analytics provided by the Analytics module. For example, in this screenshot, users can select a page to see common metrics from the connected analytics source directly in the Magnolia UI.
+
+![Analytics displayed next to the content in IUX](../../../_images/6-2-3-analytics-iux-eg.png)
+
+Related topics
+
+-   [A/B/n Testing](../../List-of-modules/ABn-testing/)
+
+-   [Analytics module](Analytics-module/)
+
+-   [Analytics app](Analytics-app/)

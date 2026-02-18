@@ -1,0 +1,161 @@
+---
+title: "Dotdigital Integration module"
+url: https://docs.magnolia-cms.com/dotdigital/
+category: Modules
+version: modules
+breadcrumb: Dotdigital Integration module
+---
+
+# Dotdigital Integration module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/dotdigital-integration) |
+| Latest | 1.0 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_prerequisites)Prerequisites
+
+-   You should have a Dotdigital account.
+
+-   You must have a [Dotdigital API user](https://developer.dotdigital.com/docs/setting-up-an-api-user). This user and associated credentials ensure authentication for operations and method calls between Magnolia and Dotdigital.
+
+
+> **Warning:** This module is at the INCUBATOR level.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.marketing</groupId>
+  <artifactId>dotdigital-integration</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+After installing the module, you’ll need to make sure the following fields under Dotdigital configuration:
+
+-   `apiPwd` is your Dotdigital API password.
+
+-   `apiUsername` is your Dotdigital API username.
+
+-   `baseApiUrl` is your Dotdigital API base URL.
+
+
+![mgnl config](_images/mgnl-config.png)
+
+## [](#_usage)Usage
+
+This section helps you get accustomed with using the Dotdigital Integration module. There are several Dotdigital apps:
+
+-   Configuration
+
+-   Address books
+
+-   Contacts
+
+-   Campaigns
+
+-   Segments
+
+
+![mgnl apps](_images/mgnl-apps.png)
+
+### [](#_connect_magnolia_forms_to_dotdigital)Connect Magnolia forms to Dotdigital
+
+Integrate Magnolia forms with Dotdigital, allowing the contact data submitted in Magnolia to go to Dotdigital.
+
+```yaml
+SentContactToAddressBook:
+  class: info.magnolia.marketing.dotdigital.form.processors.SendContactToAddressBookProcessor
+  addressBookId: 216615 (1)
+  enabled: true
+```
+
+|     |     |
+| --- | --- |
+| **1** | The ID of the address book in Dotdigital. |
+
+### [](#_manage_dotdigital_in_magnolia)Manage Dotdigital in Magnolia
+
+You can also manage certain elements of Dotdigital directly from Magnolia’s AdminCentral such as:
+
+-   [Address Books](#_address_books)
+
+-   [Contacts](#_contacts)
+
+-   [Segments](#_segments)
+
+-   [Campaigns](#_campaigns)
+
+
+#### [](#_address_books)Address Books
+
+For **Address Books**, you can:
+
+-   List address books
+
+-   Add an address book
+
+-   Edit an address book
+
+-   Manage an address book (e.g., delete unused contacts)
+
+
+![mgnl addressbook](_images/mgnl-addressbook.png)
+
+#### [](#_contacts)Contacts
+
+For **Contacts**, you can:
+
+-   List contacts
+
+-   Add a contact
+
+-   Edit a contact
+
+-   Remove contact(s)
+
+
+![mgnl contacts](_images/mgnl-contacts.png)
+
+#### [](#_segments)Segments
+
+For **Segments**, you can:
+
+-   List segments
+
+-   Refresh (update) segments
+
+
+![mgnl segments](_images/mgnl-segments.png)
+
+#### [](#_campaigns)Campaigns
+
+For **Campaigns**, you can:
+
+-   List campaigns
+
+-   Add a campaign
+
+-   Edit campaigns
+
+-   Remove campaign(s)
+
+
+-   Campaigns
+
+-   Campaigns preview
+
+
+![mgnl campaigns](_images/mgnl-campaigns.png)
+
+![mgnl campaign preview](_images/mgnl-campaign-preview.png)
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

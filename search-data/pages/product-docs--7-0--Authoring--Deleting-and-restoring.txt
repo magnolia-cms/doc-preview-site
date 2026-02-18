@@ -12,7 +12,7 @@ Deleting content in many content apps is a two-step process:
 
 1.  First, you **mark for deletion**.
 
-    ![Marking an item for deletion confirmation dialog](../../_images/confirm-mark-for-deletion.png)
+    ![Marking an item for deletion confirmation dialog](../../../RNs-6-4-3/_images/confirm-mark-for-deletion.png)
 
     The content appears as grayed out in the app and is no longer available for selection in chooser dialogs. Content that’s already published remains published even when marked for deletion.
 
@@ -20,14 +20,14 @@ Deleting content in many content apps is a two-step process:
 
     This step gives you an opportunity to restore content deleted in error.
 
-    If [4-eye workflow](../../Modules/List-of-modules/Workflow-module/Magnolia-four-eye-workflow/) is enabled, permanent deletion may be delayed until it’s approved by someone with the right to do so, such as a user with the `publisher` role.
+    If [4-eye workflow](../../../RNs-6-4-3/Modules/List-of-modules/Workflow-module/Magnolia-four-eye-workflow/) is enabled, permanent deletion may be delayed until it’s approved by someone with the right to do so, such as a user with the `publisher` role.
 
-    ![Request permanent deletion dialog](../../_images/request-permanent-deletion.png)
+    ![Request permanent deletion dialog](../../../RNs-6-4-3/_images/request-permanent-deletion.png)
 
 
 The following diagram shows the different statuses possible in the process of deleting a page.
 
-![Deletion workflow diagram](../../_images/deletion-workflow-statuses.png)
+![Deletion workflow diagram](../../../RNs-6-4-3/_images/deletion-workflow-statuses.png)
 
 > **Note:** When an item is marked for deletion and its parent node is recursively published, the item is permanently deleted. For example, a parent page named scottish-islands contains child pages named bass-rock, mull, lewis, and skye. The child page bass-rock is marked for deletion. If you Publish incl. subpages the parent scottish-islands, all the child pages are published except for bass-rock, which is permanently deleted instead.
 
@@ -50,7 +50,7 @@ To delete content permanently from most content apps:
     2.  You can still [restore](#_restoring) the item at this point.
 
 
-3.  The next step depends on if [four-eye workflow](../../Modules/List-of-modules/Workflow-module/Magnolia-four-eye-workflow/) is enabled or not:
+3.  The next step depends on if [four-eye workflow](../../../RNs-6-4-3/Modules/List-of-modules/Workflow-module/Magnolia-four-eye-workflow/) is enabled or not:
 
     1.  If workflow isn’t enabled, click **Delete permanently** to complete the deletion process.
 

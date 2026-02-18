@@ -14,29 +14,13 @@ In DAM 6.x, you can choose to store both asset *metadata* and *binaries* in JCR,
 
 > **Tip:** Migration is optional when storing assets in JCR with DAM 6. The migration process updates existing assets with a property introduced in DAM 5 (mgnlBinaryReference). This property is added to all assets, regardless of storage choice, uploaded when using DAM 6.
 
-## [](#_prerequisites)Prerequisites
-
-1.  [Upgrade](../../../product-docs/7.0/Upgrading-to-Magnolia/) to the latest maintenance release of Magnolia 6.4.
-
-2.  Read the release notes for the version you are upgrading to as well as for all intermediate versions.
-
-3.  [Back up](../../../product-docs/7.0/Modules/List-of-modules/Backup-module/) the `dam` JCR workspace.
-
-4.  Make sure you have the following module versions installed:
-
-
 | DAM module version | Compatible module versions |
 | --- | --- |
 | 6.0.0 | Magnolia CMS 6.4.0+ |
-| [DAM App module](#dam-app:ROOT:index.adoc) 6.0.0 (required) |
-| [Imaging module](#imaging:ROOT:index.adoc) 5.0.0 (required) |
-| [Image Recognition extension](#image-recognition:ROOT:index.adoc) 4.0.0 (optional) |
-| [Image Focal extension](#image-focal:ROOT:index.adoc) 2.0.0 (optional) |
-
-5.  If you want to store binaries in S3, make sure you [install and configure the DAM S3 submodule](../../developers/dam-jcr-s3/) to connect to an appropriate AWS S3 account.
-
-6.  If you want to store binaries in Azure Blob, make sure you [install and configure the DAM Azure Blob submodule](../../developers/dam-azure-blob/) to connect to your Azure Storage account.
-
+| [DAM App module](../../../dam-app/) 6.0.0 (required) |
+| [Imaging module](../../../imaging/) 5.0.0 (required) |
+| [Image Recognition extension](../../../image-recognition/) 4.0.0 (optional) |
+| [Image Focal extension](../../../image-focal/) 2.0.0 (optional) |
 
 ## [](#_migrate_assets_from_dam_4_to_dam_6)Migrate assets from DAM 4 to DAM 6
 
@@ -74,21 +58,22 @@ Edit and run the `migrateAssets` Groovy script provided below on your author ins
     ```groovy
     import info.magnolia.dam.jcr.migration.AssetMigration
     import info.magnolia.dam.jcr.migration.MigrationConfig
+    import info.magnolia.dam.jcr.migration.MigrationUtils
     import info.magnolia.objectfactory.Components
 
     def startTime = System.currentTimeMillis()
     def service = Components.getComponent(AssetMigration) ?: {
-        println "Error: GenericAssetMigration not found."
+        println "Error: Asset migration script not found."
         return
     }()
 
     // Define provider
-    def provider = "s3" // "s3", "jcr", "azure-blob", "obs" etc. (1)
+    def provider = "s3" // "s3", "jcr" or "azure-blob" (1)
 
-    // Build config
+    // default build config, parallel processing
     def config = MigrationConfig
             .builder(provider)
-            // .sequential(true)  (2)
+    // .sequential(true)  (2)
             .build()
 
     def results = service?.migrateAll(config) ?: {
@@ -96,12 +81,12 @@ Edit and run the `migrateAssets` Groovy script provided below on your author ins
         return
     }()
 
-    print(AssetMigration.printSummary(results, startTime))
+    print(MigrationUtils.printSummary(results, startTime))
     ```
 
     |     |     |
     | --- | --- |
-    | **1** | Specify the target for binary storage such as `"jcr"`, `"s3"`, `"azure-blob"`, or another provider. |
+    | **1** | Specify the target for binary storage: `"jcr"`, `"s3"`, or `"azure-blob"`. |
     | **2** | The migration script processes assets in chunks and in parallel by default. Uncomment the `.sequential(true)` line in the configuration only to force sequential processing. |
 
 5.  Review the script output to confirm migration results.

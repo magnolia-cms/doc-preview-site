@@ -16,38 +16,11 @@ A `CustomerMagnoliaCrashLooping` alert is firing. Kubernetes has restarted a Mag
 
 Kubernetes will restart a pod if it exceeds its memory limit. The Magnolia JVM typically cannot exceed its memory limit - the JVM max heap setting - but the JVM also will consume a small amount of non-heap memory (usually about `200MB`) that can vary over time. Other containers running in the Magnolia pod may also consume memory but they usually use very small amounts (`10s` of `MB`). Temporary filesystems may use memory as well.
 
-## [](#_observations)Observations
-
-Here are the details on the alert:
-
-### [](#_alert_customermagnoliacrashlooping)Alert: CustomerMagnoliaCrashLooping
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>increase(kube_pod_container_status_restarts_total{container="magnolia-helm"}[15m]) &gt; 3</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>2</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>source</code></p></li><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>pod</code></p></li><li><p><code>instance</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_check_readiness_and_liveness_probe_config_for_magnolia_pod)Check readiness and liveness probe config for Magnolia pod
-
-The alert will note the affected Magnolia pod.
-
-You can view probes configuration for the Magnolia pod in Rancher or with kubectl.
-
-```bash
-kubectl -n <namespace from alert> describe pod <Magnolia pod from alert>
-```
-
-Look for the "Liveness" and "Readiness" sections in the output:
-
-```bash
-    Liveness:       http-get http://:liveness-port/livez delay=240s timeout=10s period=10s #success=1 #failure=4
-    Readiness:      http-get http://:liveness-port/readyz delay=2s timeout=1s period=2s #success=1 #failure=3
-```
-
-### [](#_check_bootstrapper_container_log_output_for_magnolia_pod)Check bootstrapper container log output for Magnolia pod
-
-The liveness and readiness probes actually check the bootstrapper instead of Magnolia. The bootstrapper then checks Magnolia and returns a result depending on Magnolia’s state.
-
-The bootstrapper’s log shows the results of liveness and readiness checks. You can view the bootstrapper log in the customer’s cockpit or in Grafana.
-
-> **Caution:** Be careful when adjusting the the readiness and liveness probes for the Magnolia pod: don’t set very long delays or failure thresholds until you have verified that Magnolia really needs to have more time when starting up.
+| **Expression** | `increase(kube_pod_container_status_restarts_total{container="magnolia-helm"}[15m]) > 3` |
+| --- | --- |
+| **Delay** | `2` minutes |
+| **Labels** | `team: customer` |
+| **Annotations** | • `source` • `summary` • `description` • `tenant` • `cluster_id` • `cluster_name` • `pod` • `instance` |
 
 ## [](#_solutions)Solutions
 

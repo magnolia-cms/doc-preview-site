@@ -1,0 +1,72 @@
+---
+title: "Category & Product use cases"
+url: https://docs.magnolia-cms.com/ecommerce/ecom-use-cases/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > Category & Product use cases
+---
+
+# Category & Product use cases
+
+## [](#_chooser_dialog_examples)Chooser dialog examples
+
+The type of dialog chooser component depends on what you want to retrieve from the external e-commerce solution. If you want to get a list of products based on `category ID`, then use `ecommerceProductListLinkField`.
+
+-   product-list-v3.yaml
+
+    ```yaml
+    form:
+      properties:
+        productList:
+          $type: ecommerceProductListLinkField
+    ```
+
+    See what it looks like…​
+
+    ![E-commerce product list](../_images/6-2_ecom-product-list-comp.png)
+
+
+On the other hand, if you want to get a product based on `product ID`, then use `ecommerceProductLinkField` instead. Two examples are illustrated below.
+
+-   product-detail-v3.yaml
+
+    ```yaml
+    form:
+      properties:
+        productDetail:
+          $type: ecommerceProductLinkField
+    ```
+
+    See what it looks like…​
+
+    ![E-commerce product detail](../_images/6-2_ecom-product-detail-comp.png)
+
+-   product-teaser-v3.yaml
+
+    ```yaml
+    form:
+      properties:
+        productTeaser:
+          $type: ecommerceProductLinkField
+    ```
+
+    See what it looks like…​
+
+    ![E-commerce product teaser](../_images/6-2_ecom-product-teaser.png)
+
+
+Furthermore, below is an example of the category list component with `enableCategorySelection` set to `false`. This configuration means you can only select a connector when adding a category list component to a page (see [Configuring chooser dialogs](../ecommerce-module/#_configuring_chooser_dialogs_v1_3) for more information about such properties).
+
+/ecommerce-templating/dialogs/components/category-list-v3.yaml
+
+```yaml
+form:
+  properties:
+    categoryList:
+      $type: ecommerceLinkField
+      enableCategorySelection: false
+```
+
+See what it looks like…​
+
+![E-commerce category list edited](../_images/6-2_ecom-category-list-comp.png)

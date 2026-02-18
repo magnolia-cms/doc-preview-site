@@ -1,0 +1,273 @@
+---
+title: "Creating plugins"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/developing-plugins/creating-plugins/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Creating plugins
+---
+
+# Creating plugins
+
+This page describes how you can create Magnolia CLI plugins.
+
+> **Note:** Below, FooPlugin (cli-foo-plugin) is just an example plugin name.
+
+## [](#_create_a_new_plugin)Create a new plugin
+
+1.  Run the [Generate plugin](../../available-plugins/generate-plugin/) as follows:
+
+    ```console
+    npx @magnolia/cli@latest generate-plugin
+    ```
+
+    > **Caution:** The plugin will be created in the current working directory.
+
+2.  When prompted by the generator dialog, provide the following information:
+
+    -   **Plugin name**
+
+        Recommended name pattern: `cli-<name>-plugin`, for example `cli-foo-plugin`.
+
+    -   **Main class name**
+
+        Recommended name pattern: `<Name>Plugin`, where `Name` is capitalized, hence `FooPlugin` for example.
+
+
+
+The command generates these files and folders:
+
+```console
+.npmignore
+cli-<name>-plugin.ts (1)
+index.ts
+package.json
+package-lock.json
+README.md
+tsconfig.json
+node_modules/
+tests/
+```
+
+|     |     |
+| --- | --- |
+| **1** | For example `cli-foo-plugin.ts`. |
+
+> **Tip:** The cli-<name>-plugin.ts file generated contains an example which you can try out before changing the plugin. See Testing new plugins for plugin testing instructions.
+
+### [](#_important_files)Important files
+
+#### [](#_cli_name_plugin_ts)`cli-<name>-plugin.ts`
+
+The file contains sample code to help you understand how to create a new plugin. Most of the changes you’ll need to make are in the `cli-<name>-plugin.ts` file.
+
+> **Tip:** Implement your plugin in TypeScript to benefit from type safety and to easily extend the PluginTemplate, which sets the necessary attributes and functions.
+
+#### [](#_package_json)`package.json`
+
+The `package.json` file is prepared for you. Feel free to change the `name` and `description` to better match your project’s requirements.
+
+You’ll find several dependencies included. They should simplify the development process of your plugin.
+
+## [](#_modify_the_new_plugin)Modify the new plugin
+
+To modify the plugin, open `cli-foo-plugin.ts`. There are five key elements to consider:
+
+-   Name
+
+-   Description
+
+-   Options
+
+-   The Start function
+
+-   The Stop function
+
+
+> **Tip:** Refer to the generated README.md file for additional information.
+
+### [](#_name)Name
+
+The name determines the command you’ll use to start the plugin. By default, it’s set to `pkg.name` from the `package.json`:
+
+```javascript
+export default class FooPlugin extends PluginTemplate {
+  ...
+  name = pkg.name; // Will be "cli-foo-plugin" in your case.
+  ...
+}
+```
+
+The form of the command you will use to start the plugin in your project:
+
+```console
+npm run mgnl -- cli-foo-plugin --name John
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+You can assign your own name:
+
+```javascript
+export default class FooPlugin extends PluginTemplate {
+  ...
+  name = "greet";
+  ...
+}
+```
+
+Then, the command will take this form:
+
+```console
+npm run mgnl -- greet --name John
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+### [](#_description)Description
+
+Description provides information about the plugin when the `--help` (or `-h`) option is used. By default, the description value is retrieved from `package.json`, but you can customize the value in the `package.json` or directly in the code:
+
+```javascript
+export default class FooPlugin extends PluginTemplate {
+...
+description = "This plugin greets the user by name."
+...
+}
+```
+
+Then, when you use the help option (`--help` or `-h`),
+
+```console
+npm run mgnl -- -h
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+you’ll get:
+
+```shell
+Welcome to Magnolia Accelerator!
+Usage: @magnolia/cli [options] [command]
+
+CLI for Magnolia projects
+
+Options:
+-V, --cli-version          output the version number
+-h, --help                 display help for command
+
+Commands:
+cli-foo-plugin [options]  This plugin greets the user by name.
+help [command]             display help for command
+```
+
+### [](#_options)Options
+
+This attribute is an array that defines the possible command-line options available to the user when invoking the plugin. To add a new option, add it to the `options` property.
+
+The [commander package](https://www.npmjs.com/package/commander) is utilized to achieve this. Within your plugin, the `Option` class from the commander is used to describe each command-line option.
+
+To understand the various configuration possibilities with the Option type, visit the [commander documentation](https://github.com/tj/commander.js#more-configuration).
+
+> **Note:** Remember to add the property to the PluginOptions interface.
+
+```javascript
+interface PluginOptions {
+  name: string;
+}
+
+export default class FooPlugin extends PluginTemplate {
+  ...
+  options = [
+    new Option('-n, --name <name>', 'Say hello to <name>')
+  ]
+  ...
+}
+```
+
+### [](#_start_function)Start function
+
+When the plugin is called from the CLI, for example with
+
+```console
+npm run mgnl cli-foo-plugin -- -plugin-option option-value
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+the `start` function gets called with all the options that are passed in the command line. You can modify the function as required.
+
+```javascript
+export default class FooPlugin extends PluginTemplate {
+  ...
+  async start(options: PluginOptions) {
+    logger?.info("Plugin started");
+    logger?.info(JSON.stringify(options));
+    if (options.name) {
+      this.sayHello(options.name) // example function
+    } else {
+      logger?.warn("No --name <name> passed in options");
+    }
+  }
+  ...
+}
+```
+
+### [](#_stop_function)Stop function
+
+The stop function gets called when the CLI detects a `SIGINT` signal (`ctrl+c`). The plugin should be responsible to gracefully end all the running processes with the stop function.
+
+```javascript
+export default class FooPlugin extends PluginTemplate {
+  ...
+  async stop() {
+    logger?.info("Plugin stopped");
+  }
+  ...
+}
+```
+
+## [](#_test_the_new_plugin)Test the new plugin
+
+The code generated contains an example which you can test. For more details about testing, see [Testing new plugins](../testing-plugins/).
+
+## [](#_plugintemplate)`PluginTemplate`
+
+`PluginTemplate` is a class that each plugin must extend to function properly. It defines:
+
+-   **Properties**
+
+    -   `name`, to define the command by which you’ll start the plugin.
+
+    -   `description`, to define a plugin description.
+
+    -   `version`, to define a plugin version.
+
+    -   `options`, to define a set of options of the plugin.
+
+    -   `usage`, to define plugin usage information.
+
+
+-   **Functions**
+
+    -   `start` — The start function which is called from the CLI after the plugin is stated.
+
+    -   `stop` — The stop function which is called when the CLI detects the `SIGINT` signal (`ctrl+c`).
+
+    -   `init` — The init function which is called before start to pass configuration data and to initialize the logger.
+
+
+
+### [](#_plugin_logger)Plugin logger
+
+`PluginTemplate` instantiates a logger passed from the CLI. Once a logger object is available, use it to log the errors and other plugin runtime information to help users mitigate issues that might occur.
+
+You can use the logger object like this:
+
+```js
+// Log information messages
+logger?.info("Application started.");
+// Log warning messages
+logger?.warn("Configuration file is missing.");
+// Log error messages
+logger?.error("An error occurred.");
+```

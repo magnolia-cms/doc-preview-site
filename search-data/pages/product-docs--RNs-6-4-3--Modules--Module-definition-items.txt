@@ -1,0 +1,105 @@
+---
+title: "Module definition items"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/Module-definition-items/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Module definition items
+---
+
+# Module definition items
+
+This page provides an overview of definition items which can be specified in Magnolia modules.
+
+A definition item is a component configuration for executing tasks in a Magnolia instance. [Template definitions](../../Developing/Templating/Template-definition/), [dialog definitions](../../Developing/Templating/Dialog-definition/), [app definitions](../../Apps/App-configuration/App-descriptor/) (also known as app descriptors), [renderer definitions](../../Developing/Templating/Renderers/#_renderer_definition), [themes definitions](../../Developing/Templating/Theme/#_theme_definition) and [field definitions](../../Developing/Templating/Dialog-definition/Field-definition/) are all examples of such definition items.
+
+The majority of these items can be configured via YAML, in which case they are registered in a specific registry. The items registered can be seen in the [Definitions app](../../Apps/List-of-apps/Definitions-app/) and can be modified through [definition decoration](../../Developing/Definition-decoration/). Even though definition items can be configured via JCR in the `configuration` workspace, configuring them in YAML files is the recommended approach.
+
+| Config item | Purpose | Visible |
+| --- | --- | --- |
+| `apps` | *optional* YAML supported; App descriptor files, defining Apps. | ✓ |
+| `blocks` | *optional* YAML supported; Block definitions. ** A block is the smallest piece of content in an implementation of the [Content editor](../List-of-modules/Content-Editor-module/) . | ** | A block is the smallest piece of content in an implementation of the [Content editor](../List-of-modules/Content-Editor-module/) . | ✓ |
+| ** | A block is the smallest piece of content in an implementation of the [Content editor](../List-of-modules/Content-Editor-module/) . |
+| `charts` |  | ✓ |
+| `commands` | *optional* Command definitions used with Magnolia command management. | ✓ |
+| `contentTypes` | A Magnolia content type is a formal definition for a type of content in Magnolia including the properties the type may contain and its relationships to other types of content. ** A content type is configured in a content type definition that includes the [data source definition](../../Developing/Content-Types/Content-type-definition/Content-type-Data-source-definition/) and the [model definition](../../Developing/Content-Types/Content-type-definition/Content-type-Model-definition/) . | ** | A content type is configured in a content type definition that includes the [data source definition](../../Developing/Content-Types/Content-type-definition/Content-type-Data-source-definition/) and the [model definition](../../Developing/Content-Types/Content-type-definition/Content-type-Model-definition/) . | ✓ |
+| ** | A content type is configured in a content type definition that includes the [data source definition](../../Developing/Content-Types/Content-type-definition/Content-type-Data-source-definition/) and the [model definition](../../Developing/Content-Types/Content-type-definition/Content-type-Model-definition/) . |
+| `dashboards` | *optional* YAML supported; Dashboard definitions for analytics dashboards. | ✓ |
+| `dataSuppliers` | *optional* YAML supported; Supplies the raw data for dashboards. | ✓ |
+| `dialogs` | *optional* YAML supported; Dialog definitions for content editing. | ✓ |
+| `ecommerces` | *optional* YAML supported; Allows use of the [E-commerce app](../../../../ecommerce/ecommerce-app/) . | ✓ |
+| `fieldTypes` | *optional* YAML supported; Field definitions for Magnolia 5 UI fields. | ✓ |
+| `graphqlTypes` | *optional* YAML supported; GraphQL type definitions. ** The [GraphQL module](../List-of-modules/GraphQL-module/) allows you to expose content stored in JCR through [GraphQL](http://graphql.org) POST and GET requests. | ** | The [GraphQL module](../List-of-modules/GraphQL-module/) allows you to expose content stored in JCR through [GraphQL](http://graphql.org) POST and GET requests. | ✓ |
+| ** | The [GraphQL module](../List-of-modules/GraphQL-module/) allows you to expose content stored in JCR through [GraphQL](http://graphql.org) POST and GET requests. |
+| `mediaEditors` | *optional* YAML supported; Media Editor definitions. | ✓ |
+| `messageViews` | *optional* YAML supported; Message view definitions. | ✓ |
+| `renderers` | *optional* YAML supported; Renderer definitions. Creating custom renderers for other templating languages such as Velocity is possible. ** Magnolia ships with the FreeMarker template renderer. | ** | Magnolia ships with the FreeMarker template renderer. | ✓ |
+| ** | Magnolia ships with the FreeMarker template renderer. |
+| `restClients` | *optional* YAML supported; Specifies REST clients that can be used together with the `$jsonDatasource` in content apps, link fields, or in [searchResultSuppliers](#searchResultSuppliers) . ** The [REST Client app](../../Apps/List-of-apps/REST-Client-app/) allows you to test REST clients. | ** | The [REST Client app](../../Apps/List-of-apps/REST-Client-app/) allows you to test REST clients. | ✓ |
+| ** | The [REST Client app](../../Apps/List-of-apps/REST-Client-app/) allows you to test REST clients. |
+| `restEndpoints` | *optional* YAML supported; REST endpoint definitions. | ✓ []() |
+| `searchResultSuppliers` | *optional* ; Search result suppliers are responsible for providing search results to search result area through the [Periscope module](../List-of-modules/Periscope-module/) . | ✓ |
+| `sites` | A site definition contains site-wide configuration such as navigation, common page areas, and JavaScript that you want to load on every page. | ✓ |
+| `templates` | *optional* YAML supported; Template definitions for pages, areas or components. | ✓ |
+| `themes` | *optional* YAML supported; Themes for the site. A [Theme](../../Developing/Templating/Theme/) is a collection of resource files that gives a site its visual identity through the use of colors and typography. A theme consists of cascading style sheets (CSS), JavaScript files and an imaging configuration that tells the Imaging module what to do with images for a particular page or component. | ✓ |
+| `traits` | *optional* A trait is an attribute or property of a visitor or visit, such as age or gender, that you can use to personalize content. | ✓ |
+| `virtualUriMappings` | *optional* YAML supported; URI mapping definitions that redirect an incoming request to the actual content location. | ✓ |
+
+## [](#_trait)Trait
+
+A trait is an attribute or property of a visitor or visit, such as age or gender, that you can use to personalize content.
+
+## [](#_configuring_in_jcr_and_in_yaml)Configuring in JCR and in YAML
+
+While all of the [configuration items](#_configuration_items) listed above can be stored as JCR nodes, not all of them have YAML support. The items which cannot be stored yet as YAML files may, however, get YAML support in future Magnolia versions.
+
+> **Tip:** We recommend using YAML files for definition items.
+
+Both JCR nodes and YAML files are observed. If a data change is detected, object representations are changed in the associated registries. For instance, a change in a template definition re-registers or updates info.magnolia.rendering.template.TemplateDefinition in info.magnolia.rendering.template.registry.TemplateDefinitionRegistry.
+
+Item definitions from both JCR nodes and YAML files can be decorated with a [definition decoration](../../Developing/Definition-decoration/).
+
+### [](#_jcr_nodes)JCR nodes
+
+In JCR context, module configuration items are stored as nodes in the `configuration` workspace. Use the [Configuration app](../../Apps/List-of-apps/Configuration-app/) to add, edit or delete JCR-based configuration. The items ares stored under `/modules/<module‑name>`, for instance under `/modules/myModule/templates`. JCR configuration nodes are observed using functions provided by the [Observation module](../List-of-modules/Observation-module/).
+
+Benefits:
+
+-   All configuration items are supported.
+
+-   Changes can be published to other instances.
+
+-   The *extends* mechanism is supported.
+
+
+### [](#_yaml_files)YAML files
+
+In a module, [YAML](../../Developing/YAML/) configuration files reside in their corresponding folders. For example, `<module‑name>/templates` is the folder for the templates. To add, edit or delete a YAML file, use any text editor of your choice. Many modern editors such as [Brackets](http://brackets.io/) or [Sublime Text](http://www.sublimetext.com/) support YAML syntax highlighting.
+
+Directories containing YAML-based configuration data are observed using info.magnolia.dirwatch.DirectoryWatcherService.
+
+Benefits:
+
+-   Text files are human readable and easy to compare, which makes collaboration better.
+
+-   No need to export. Files are already part of the project lifecycle.
+
+-   No need for version handlers for updates.
+
+-   Uninstalling is easy.
+
+-   The [include mechanism](../../Developing/YAML/#_yaml_include) is supported.
+
+
+| Item | YAML file path | JCR node path in the *config* workspace |
+| --- | --- | --- |
+| App descriptor | `$magnolia.resources.dir/<module‑name>/apps` | `/modules/<module‑name>/apps` |
+| Command definition | — | `/modules/<module‑name>/commands` |
+| Dialog definition | `$magnolia.resources.dir/<module‑name>/dialogs` | `/modules/<module‑name>/dialogs` |
+| Field type definition ( *Magnolia 5 UI* ) | `$magnolia.resources.dir/<module‑name>/fieldTypes` | `/modules/<module‑name>/fieldTypes` |
+| Media editor definition | `$magnolia.resources.dir/<module‑name>/mediaEditors` | `/modules/<module‑name>/mediaEditors` |
+| Message view definition | `$magnolia.resources.dir/<module‑name>/messageViews` | `/modules/<module‑name>/messageViews` |
+| Renderer definition | `$magnolia.resources.dir/<module‑name>/renderers` | `/modules/<module‑name>/renderers` |
+| REST endpoint definition | `$magnolia.resources.dir/<module‑name>/restEndpoints` | `/modules/<module‑name>/restEndpoints` |
+| Template definition | `$magnolia.resources.dir/<module‑name>/templates` | `/modules/<module‑name>/templates` |
+| Trait definition | — | `/modules/<module‑name>/traits` |
+| Virtual URI mapping definition | `$magnolia.resources.dir/<module‑name>/virtualUriMappings` | `/modules/<module‑name>/virtualUriMappings` |

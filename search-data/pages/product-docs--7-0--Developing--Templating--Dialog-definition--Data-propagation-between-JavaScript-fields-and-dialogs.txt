@@ -27,7 +27,7 @@ This page shows a full, minimal example of a custom JavaScript dialog field in M
 
     -   [Dialog definition](../)
 
-    -   [JavaScript UI module](#ui-framework-javascript:ROOT:index.adoc)
+    -   [JavaScript UI module](../../../../../../ui-framework-javascript/)
 
 
 
@@ -200,17 +200,13 @@ When you click **Save changes**, Magnolia persists the value to JCR.
 
 > **Note:** If you don’t call changeValue, the dialog remains clean. Even though you typed text into the HTML input, Magnolia doesn’t store anything.
 
-## [](#_review_the_supported_actions_api)Review the supported actions API
-
-The dialog renderer listens for specific `action` types sent through `postMessage`. All messages must include the `correlationId` you get during initialization.
-
 | Action | Description | Payload structure |
 | --- | --- | --- |
-| `changeValue` | Updates the value of the current field in the dialog form. | ```javascript<br>{<br>  action: 'changeValue',<br>  correlationId: '...',<br>  value: 'new value'<br>}<br>``` |
-| `changeHeight` | Adjusts the height of the iframe (useful for dynamic content). | ```javascript<br>{<br>  action: 'changeHeight',<br>  correlationId: '...',<br>  value: 500<br>}<br>``` |
-| `changeFormFieldValue` | Updates **another** field in the same dialog (cross-field dependency). | ```javascript<br>{<br>  action: 'changeFormFieldValue',<br>  correlationId: '...',<br>  fieldName: 'otherField',<br>  value: 'val'<br>}<br>``` |
-| `openDialog` | Opens a different dialog (such as a chooser or sub-dialog). | ```javascript<br>{<br>  action: 'openDialog',<br>  correlationId: '...',<br>  dialogId: 'module:path/to/dialog'<br>}<br>``` |
-| `callRestClient` | Proxies a REST request through Magnolia. | ```javascript<br>{<br>  action: 'callRestClient',<br>  correlationId: '...',<br>  restClientName: '...',<br>  restClientMethodName: '...'<br>}<br>``` |
+| `changeValue` | Updates the value of the current field in the dialog form. | `{ action: 'changeValue', correlationId: '...', value: 'new value' }` |
+| `changeHeight` | Adjusts the height of the iframe (useful for dynamic content). | `{ action: 'changeHeight', correlationId: '...', value: 500 }` |
+| `changeFormFieldValue` | Updates **another** field in the same dialog (cross-field dependency). | `{ action: 'changeFormFieldValue', correlationId: '...', fieldName: 'otherField', value: 'val' }` |
+| `openDialog` | Opens a different dialog (such as a chooser or sub-dialog). | `{ action: 'openDialog', correlationId: '...', dialogId: 'module:path/to/dialog' }` |
+| `callRestClient` | Proxies a REST request through Magnolia. | `{ action: 'callRestClient', correlationId: '...', restClientName: '...', restClientMethodName: '...' }` |
 
 ## [](#_key_takeaways)Key takeaways
 

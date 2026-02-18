@@ -1,0 +1,74 @@
+---
+title: "Personalization—Campaign Variants"
+url: https://docs.magnolia-cms.com/campaign-manager/3.1/personalization/
+category: Modules
+version: modules
+breadcrumb: Campaign manager module > Personalization—Campaign Variants
+---
+
+# Personalization—Campaign Variants
+
+In this tutorial you learn how to personalize content in the Campaign Manager. The scenario focuses on delivering tailored content to visitors from specific countries within a defined time period. You will learn how to create content variants, define target audiences, and validate the campaign behavior using the Preview app.
+
+## [](#_variant_resolver_filter)Variant resolver filter
+
+The original variant resolver filter (`info.magnolia.personalization.filter.VariantResolverFilter`) handled only variants originating from the website workspace.
+
+The Campaign Manager module replaces this resolver with `info.magnolia.campaign.manager.personalization.filter.VariantResolverFilter`, which supports multiple workspaces. Supported workspaces are configured in the filter via a `supportedWorkspaces` map, where keys such as website and campaign-manager are mapped to their corresponding node types (e.g. website→mgnl:page and campaign-manager→campaign-item).
+
+## [](#_component_variant_creation_in_a_campaign_creative)Component variant creation in a campaign creative
+
+Follow these steps to create personalized variants for a campaign creative component:
+
+1.  Create a new campaign and a creative in the Campaign Manager app.
+
+2.  In the creative’s main area, create and select a component to personalize.
+
+3.  Create two personalized variants of the selected component. In each variant, add content that is relevant and appealing to the intended audience.
+
+4.  Define the United Kingdom and China as target countries using the Country trait.
+
+5.  Configure the variants to be active during a specific time period using the Date trait.
+
+
+## [](#_creative_variants_creation)Creative variants creation
+
+Follow these steps to create personalized variants for a campaign creative:
+
+> **Note:** Please note that a creative cannot create variants if it contains components that already have variants.
+
+1.  Create a new campaign and a creative in the Campaign Manager app.
+
+2.  Create two personalized variants of the selected creative. In each variant, add content that is relevant and appealing to the intended audience.
+
+3.  Define the United Kingdom and China as target countries using the Country trait.
+
+4.  Configure the variants to be active during a specific time period using the Date trait.
+
+
+## [](#_preview_the_variants)Preview the variants
+
+Use the Preview app to verify that the correct variant is delivered based on audience and date conditions:
+
+1.  In the Pages app, assign the newly created campaign to a page.
+
+2.  Open the Preview app.
+
+3.  Navigate to the page that contains the campaign.
+
+    -   Expected result: The original (non-personalized) campaign component is displayed.
+
+
+4.  Select a Chinese persona.
+
+    -   Expected result: The original page is still displayed because no matching date is defined.
+
+
+5.  Set the preview date to a value that falls within the run dates configured for the Chinese variant.
+
+    -   Expected result: The Chinese variant is displayed.
+
+
+6.  Change the persona country to the United Kingdom and set a date that falls within the United Kingdom variant run period.
+
+    -   Expected result: The United Kingdom variant is displayed.

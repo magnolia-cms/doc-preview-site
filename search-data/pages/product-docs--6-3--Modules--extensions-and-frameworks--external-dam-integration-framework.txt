@@ -8,7 +8,7 @@ breadcrumb: DX Core > Modules > External DAM integration framework
 
 # External DAM integration framework
 
-[Digital asset management (DAM)](../../../use-cases/Digital-asset-management/) Unbundled: [Framework](../../#_module_types) License: [DX Core](../../../Administration/License/#_dx_core)\[[1](#_footnotedef_1 "View footnote.")\]
+[Digital asset management (DAM)](../../../use-cases/Digital-asset-management/) Unbundled: [Framework](../../#_module_types) License: [DX Core](../../../Administration/License/#_dx_core){frameworks-and-extensions-license-note}
 
 The DAM integration framework enables you to seamlessly integrate with your external DAM or storage system. This means you can access and use all your assets centrally from Magnolia regardless of where they are stored, eliminating the need for switching tools, costly and time-consuming asset migration or changing processes.
 
@@ -21,7 +21,7 @@ The DAM integration framework caters to enterprise customers who have thousands 
 
 > **Note:** If you want to connect to another third-party tool, extend the Magnolia DAM API and create your own asset provider
 
-Magnolia also provides the native Assets app for simple [digital asset management](../../../use-cases/Digital-asset-management/) scenarios.
+Magnolia also provides the native Assets app for simple [digital asset management](../../../../RNs-6-4-3/use-cases/Digital-asset-management/) scenarios.
 
 ## [](#_licensing)Licensing
 
@@ -31,7 +31,7 @@ The **External DAM integration framework** is included with your [DX Core licens
 
 The DAM integration framework makes assets from your asset provider account available directly within Magnolia, close to your content.
 
-![Assets app with Bynder and S3 tabs](../../../_images/6-2-3-extdam-intro.png)
+![Assets app with Bynder and S3 tabs](../../../../RNs-6-4-3/_images/6-2-3-extdam-intro.png)
 
 This means you can work with several DAM systems from one central location:
 
@@ -47,7 +47,7 @@ This means you can work with several DAM systems from one central location:
 
     > **Note:** For S3, asset names cannot be edited.
 
--   **Edit images** using the Assets app [basic editing feature](../../../Authoring/Editing-images/).
+-   **Edit images** using the Assets app [basic editing feature](../../../../RNs-6-4-3/Authoring/Editing-images/).
 
 -   **Publish assets** for Bynder.
 
@@ -62,37 +62,32 @@ This means you can work with several DAM systems from one central location:
 
 ## [](#_seamless_integration_with_your_content)Seamless integration with your content
 
-Content authors can use external assets seamlessly in the [Pages app](../../../Apps/List-of-apps/Pages-app/) or other content apps.
+Content authors can use external assets seamlessly in the [Pages app](../../../../RNs-6-4-3/Apps/List-of-apps/Pages-app/) or other content apps.
 
-![External asset in pages app](../../../_images/6-2-3-extdam-pages-app.png)
+![External asset in pages app](../../../../RNs-6-4-3/_images/6-2-3-extdam-pages-app.png)
 
-The DAM integration framework integrates the standard Magnolia [Text and image](../../../Developing/Templating/Templates-in-MTK/#_component_templates) page component in the [Pages app](../../../Apps/List-of-apps/Pages-app/) so that editors and marketers can select and use external assets directly.
+The DAM integration framework integrates the standard Magnolia [Text and image](../../../../RNs-6-4-3/Developing/Templating/Templates-in-MTK/#_component_templates) page component in the [Pages app](../../../../RNs-6-4-3/Apps/List-of-apps/Pages-app/) so that editors and marketers can select and use external assets directly.
 
-![Add text and image component](../../../_images/extdam/6-2-extdam-component.png)
+![Add text and image component](../../../../RNs-6-4-3/_images/extdam/6-2-extdam-component.png)
 
 When selecting an asset, choose from the configured providers to access the assets.
 
-![Select asset provider](../../../_images/extdam/extdam-selectinpages.png)
+![Select asset provider](../../../../RNs-6-4-3/_images/extdam/extdam-selectinpages.png)
 
 ## [](#_search_for_assets)Search for assets
 
 Use the Magnolia Find bar to search for assets across all your providers.
 
-![Search assets using the find bar](../../../_images/6-2-extdam-find-bar.png)
+![Search assets using the find bar](../../../../RNs-6-4-3/_images/6-2-extdam-find-bar.png)
 
 When using external assets in the Pages app via the asset chooser dialog, you can also search directly in the dialog before selecting your asset:
 
-![Search assets in dialog](../../../_images/extdam/extdam-dialog-search.png)
+![Search assets in dialog](../../../../RNs-6-4-3/_images/extdam/extdam-dialog-search.png)
 
 > **Note:** All the external assets loaded in Magnolia are searched, but not those that have not been loaded yet from your external provider.
 
 Related topics
 
--   [Assets app](../../../Apps/List-of-apps/Assets-app/)
+-   [Assets app](../../../../RNs-6-4-3/Apps/List-of-apps/Assets-app/)
 
--   [Digital asset management](../../../use-cases/Digital-asset-management/)
-
-
-* * *
-
-[1](#_footnoteref_1). The framework is included with your DX Core license. However, the associated extensions require an additional special license.
+-   [Digital asset management](../../../../RNs-6-4-3/use-cases/Digital-asset-management/)

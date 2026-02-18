@@ -14,58 +14,12 @@ breadcrumb: DX Core > Developing > Templating > Template scripts > Templating fu
 
 The `tagfn` [templating functions](../) are provided by the [Content Tags module](../../../../../Modules/List-of-modules/Content-Tags-module/). The Java class that implements the methods is info.magnolia.contenttags.templating.TagTemplatingFunctions.
 
-## [](#_getting_content_by_tag_and_adding_tags_to_the_tags_trait)Getting content by tag and adding tags to the tags trait
-
-The method searches content by workspace, root path and a list (array) of tags. Returned content nodes must have at least one of the tags of the given tag array.
-
-### [](#_method_signature)Method signature
-
-[`Set<ContentMap>`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)`getContentByTags(String workspace, String rootPath, String…​ tagsArray)`
-
-### [](#_arguments)Arguments
+| Argument | Description |
+| --- | --- |
+| `workspace` | **required** The [workspace](../../../../../Administration/Architecture/Workspaces/) to search in. |
+| `rootPath` | **required** The root path of the node to search in. |
+| `tagsArray` | **required** Any array of tags. |
 
 | Argument | Description |
 | --- | --- |
-| `workspace` | **required**<br><br>The [workspace](../../../../../Administration/Architecture/Workspaces/) to search in. |
-| `rootPath` | **required**<br><br>The root path of the node to search in. |
-| `tagsArray` | **required**<br><br>Any array of tags. |
-
-### [](#_returns)Returns
-
-A [Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html) of [`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap) objects.
-
-### [](#_usage)Usage
-
-/using-content-tags/templates/components/getContentByTags.ftl
-
-[getContentByTags.ftl](https://bitbucket.org/magnolia-cms/using-content-tags)
-
-## [](#_getting_tags_by_content)Getting tags by content
-
-Returns the tags of a given content node.
-
-### [](#_method_signature_2)Method signature
-
-`Set<String> getTags(` [`ContentMap`](../Templating-function-arguments-and-return-types/#_info.magnolia.jcr.util.contentmap)`content)`
-
-### [](#_arguments_2)Arguments
-
-| Argument | Description |
-| --- | --- |
-| `content` | **required**<br><br>The content map whose tags you want to find. |
-
-### [](#_returns_2)Returns
-
-A [Set](https://docs.oracle.com/javase/8/docs/api/java/util/Set.html) of Strings.
-
-### [](#_usage_2)Usage
-
-[getTags.ftl](https://bitbucket.org/magnolia-cms/using-content-tags)
-
-Related topics
-
--   [About templating functions](../)
-
--   [Content Tags module](../../../../../Modules/List-of-modules/Content-Tags-module/)
-
--   info.magnolia.contenttags.templating.TagTemplatingFunctions Javadoc
+| `content` | **required** The content map whose tags you want to find. |

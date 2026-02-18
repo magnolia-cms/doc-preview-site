@@ -1,0 +1,153 @@
+---
+title: "Cockpit"
+url: https://docs.magnolia-cms.com/cloud/Cockpit/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Cockpit
+---
+
+# Cockpit
+
+The Magnolia cockpit is the central point of access to all functionality provided by Magnolia in the cloud. This page gives you a brief overview of the main screens in the cockpit and what actions can be performed.
+
+## [](#_logging_in)Logging in
+
+A URL for the cockpit and login details for all the users you requested are provided by Magnolia when you subscribe to Magnolia’s cloud offering. Use this information to access the cockpit.
+
+![image](../_images/mnow_login.png)
+
+Once you have logged in, you can manage your user settings by clicking on your name in the top right corner.
+
+You are logged out automatically after 30 minutes of inactivity for security reasons.
+
+## [](#_subscription_packages)Subscription packages
+
+Welcome! The first page you will see upon logging in is the subscription packages page. It shows the package created for you by Magnolia and its status.
+
+![image](../_images/mnow_site_overview.png)
+
+From this page, you can:
+
+-   View your package and its current status. Click on the plus sign icon to see details about the status of the package.
+
+-   Click **Show packageoverview**to access the [package overview](#_package_overview.adoc).
+
+
+## [](#_notifications)Notifications
+
+The top banner in the cockpit displays notifications sent to you by Magnolia Helpdesk.
+
+![image](../_images/cloud-cockpit-banner.png)
+
+There are three types of notification:
+
+-   Red – Critical notifications
+
+-   Yellow – Warning notifications
+
+-   Blue – Information notifications
+
+
+Click the notifications box to access the [cockpit notifications](Understanding-cockpit-notifications/) and manage your messages.
+
+![image](../_images/cloud-cockpit-notifications.png)
+
+## [](#_package_overview)Package overview
+
+Click **Show package overview** in the subscription packages page to access the package overview page. This page is the access point for all the package administration actions for the cloud-based cloud Magnolia.
+
+![image](../_images/cloud-cockpit-package-overview-page.png)
+
+From this page you can:
+
+-   Access the [Activity log](#_activity_log)
+
+-   [Manage your environments](#_environments_overview)
+
+-   [Promote releases](#_promote_releases) and [Promote updates](#_promote_updates)
+
+-   [view stakeholders](#People)
+
+-   View [Additional information](#_additional_information) about your deployment
+
+
+### [](#_activity_log)Activity log
+
+The [activity log](Understanding-activity-logs/) displays a log of all major actions triggered from the cockpit providing a single location to see who did what when.
+
+![image](../_images/5-7-1-cloud-activity-log.png)
+
+## [](#_environments_overview)Environments overview
+
+The package overview page provides an overview of all the *[Environments](Magnolia-cockpit-concepts/#_environment)* and *[Spaces](Magnolia-cockpit-concepts/#_space)* that have been set up for the package.
+
+A Magnolia package typically consists of three environments:
+
+-   **Live** - Where the tested and approved version of the content product is delivered to customers.
+
+-   **UAT** (User Acceptance Testing) - Where the next version of the product is made available to editors and managers for testing and review.
+
+-   **Integration** - Where developers try out ideas and test solutions before giving internal users access.
+
+
+As features are developed, the configuration is tested and moved from Integration, through UAT and finally to Live.
+
+| Icon | Status |
+| --- | --- |
+|  | Environment running |
+|  | Environment rebooting |
+|  | Environment stopped |
+
+## [](#_promote_releases)Promote releases
+
+The package overview page provides information about what has been promoted in your package in the Promoted releases section.
+
+![image](../_images/mnow_site_release.png)
+
+You can view time-stamped releases and [promote updates](#_promote_updates).
+
+### [](#_promote_updates)Promote updates
+
+The **Manage updates** page is the access point for developers to retrieve their work and propagate it through the different environments and testing stages before putting it into production.
+
+See the following pages for information about how to:
+
+-   [Deploying a snapshot](../managing-updates-using-the-Magnolia-cockpit/deploying-snapshot/)
+
+-   [Creating a release](../managing-updates-using-the-Magnolia-cockpit/creating-a-release/)
+
+-   Promote a release
+
+    -   [to Integration](../managing-updates-using-the-Magnolia-cockpit/promoting-a-release-to-integration/)
+
+    -   [to UAT](../managing-updates-using-the-Magnolia-cockpit/promoting-a-release-to-UAT/)
+
+    -   [to Live](../managing-updates-using-the-Magnolia-cockpit/promoting-a-release-to-Live/)
+
+
+-   [Copy content for testing](../managing-updates-using-the-Magnolia-cockpit/Copying-content-for-testing/)
+
+-   [Change the version of Magnolia](../managing-updates-using-the-Magnolia-cockpit/Upgrading-Magnolia-in-the-cloud/)
+
+
+## [](#_users)Users
+
+The package overview page displays a list of stakeholders and their contact details in the **Users** (previously *People*) section. Here, you find Owners, Developers, Subscribers, and Magnolia Support contacts. Owners and Developers have Cockpit access and all of the privileges that come along with this. However, Subscribers do not have Cockpit access but simply receive notifications (such as RDS and maintenance emails) in relation to the Cockpit. See the [Managing subscribers](Managing-subscribers/) page for more information.
+
+## [](#_additional_information)Additional information
+
+Information related with the subscription package is displayed in the **Additional information** section of the package overview page.
+
+A **Logs view URL** link to [the Datadog service for your subscription package](../Managing-environments-using-the-Magnolia-cockpit/Monitoring-and-logging/) is provided.
+
+The **GIT repository** URL for the subscription package is provided: when you [develop locally](../Developing-for-Magnolia-in-the-cloud/), you must push your configuration changes to this GIT repository so they can be promoted in the Integration environment.
+
+![image](../_images/mnow_add-info.png)
+
+Related topics
+
+-   [Magnolia cockpit concepts](Magnolia-cockpit-concepts/) - Explains how the different elements mentioned in this page fit together.
+
+-   [Understanding cockpit notifications](Understanding-cockpit-notifications/)
+
+-   [Understanding activity logs](Understanding-activity-logs/)

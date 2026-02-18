@@ -1,0 +1,70 @@
+---
+title: "Create Virtual Uri plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/create-virtual-uri-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Create Virtual Uri plugin
+---
+
+# Create Virtual Uri plugin
+
+| Package name | `@magnolia/cli-create-light-module-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-create-virtual-uri-plugin](https://www.npmjs.com/package/@magnolia/cli-create-virtual-uri-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md](https://unpkg.com/@magnolia/cli-create-virtual-uri-plugin/CHANGELOG.md) |
+| Prototypes available | • `_default` - uses the `DefaultVirtualUriMapping` class. • `regexp` - uses the `RegexpVirtualUriMapping` class. • `empty` - doesn’t assign any class by default, you must set it manually. |
+
+## [](#_installing)Installing
+
+The plugin doesn’t come pre-installed with Magnolia CLI. You must add it to the `mgnl.config.js` project file.
+
+> **Note:** The plugin is installed automatically by the Jumpstart plugin if it is defined in a project template.
+
+### [](#_with_add_plugin)With add-plugin
+
+Run the following command in the project folder.
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-create-virtual-uri-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+The command automatically downloads, installs, and registers the plugin in the `mgnl.config.js` file.
+
+### [](#_manually)Manually
+
+1.  Run the following command in the project folder.
+
+    ```console
+    npm install @magnolia/cli-create-virtual-uri-plugin
+    ```
+
+2.  Modify the `mgnl.config.js` file accordingly.
+
+    ```js
+    import CreateVirtualUriPlugin from "@magnolia/cli-create-virtual-uri-plugin";
+
+    export default {
+      plugins: [
+        new CreateVirtualUriPlugin()
+      ]
+    };
+    ```
+
+
+| Form (short and long) | Description |
+| --- | --- |
+| `-f <uri>` `--from <uri>` | Sets the pattern to match in the requested uri. By default, uses an empty string. |
+| `-t <prefix:uri>` `--to <prefix:uri>` | Maps the request to a concrete uri. By default, uses an empty string. The following action prefixes are supported: • `redirect:` • `permanent:` • `forward:` |
+| `-lm [name]` `--light-module [name]` | Sets a light module for the virtual uri mapping. By default, uses the directory specified in the `mgnl.config.js` file. |
+| `-pd <path>` `--prototype-dir <path>` | The path to a custom prototype templates directory as the prototype source to create a mapping. |
+| `-p [name]` `--prototype [name]` | A prototype to create a virtual uri mapping. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+| Property name | Description |
+| --- | --- |
+| `lightModulesPath` | The path to a directory containing all light modules. |
+| `lightModule` | The name of a light module where the virtual uri will be created. Alternative forms: `-lm [name]` , `--light-module [name]` |

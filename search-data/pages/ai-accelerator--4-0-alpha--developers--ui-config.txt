@@ -1,0 +1,114 @@
+---
+title: "UI configuration"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/ui-config/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > UI configuration
+---
+
+# UI configuration
+
+The `config.yaml` file handles UI configuration and is typically found at `/my-light-module/decorations/ai-accelerator-ui/config.yaml`.
+
+ ParameterDescription
+
+`supportedFieldDefinitions`
+
+**required**
+
+**From version `1.0.5`**
+
+Defines the field types that are going to be filled out during component, variant or page generation. Default is textField, richTextField and damLinkField.
+
+```yaml
+supportedFieldDefinitions:
+  textField: textField
+  richTextField: richTextField
+  damLinkField: damLinkField
+```
+
+> **Caution:** Other field types can be configured but might not work as expected.
+
+`availableTemplates`
+
+**optional**
+
+**From version `1.0.5`**
+
+Defines the available templates for page generation in general. Availability rules through the site definition are working independently of this configuration.
+
+```yaml
+availableTemplates:
+  Basic:
+    id: mtk2:pages/basic
+```
+
+`availableComponents`
+
+**optional**
+
+**From version `1.0.5`**
+
+Defines the available component templates for page generation and component generation.
+
+```yaml
+availableComponents:
+  Link:
+    id: mtk2:components/link
+```
+
+`smartInjectTemplates`
+
+**optional**
+
+**From version `1.2.0`**
+
+Defines the available hyper prompt reference templates. They’re used to identify which dialog should be opened.
+
+```yaml
+smartInjectTemplates:
+  ref: (1)
+    name: JCR Chooser
+    dialogId: ui-framework-jcr:chooser
+    template: ref:(?<workspace>.*):(?<name>.*)\.(?<field>.*)
+    describeByProperty: path
+    type: jcr
+  pagesRef: (2)
+    name: Pages Chooser a
+    dialogId: pages-app:chooser
+    template: pagesRef:(?<name>.*)\.(?<field>.*)
+    describeByProperty: path
+    type: jcr
+  ecommerceRef: (3)
+    name: Product picker
+    dialogId: <your-lm>:product-chooser
+    template: ecommerceRef:(?<name>.*)\.(?<field>.*)
+    describeByProperty: name
+    type: ecommerce
+  jsonRef: (4)
+    name: JSON picker
+    dialogId: <your-lm>:json-chooser
+    template: jsonRef:(?<name>.*)\.(?<field>.*)
+    describeByProperty: name.official
+    type: rest
+```
+
+|     |     |
+| --- | --- |
+| **1** | Default JCR based reference template (included without configuration). |
+| **2** | Pages picker reference template (included without configuration) |
+| **3** | Product picker reference template (Not included. Note: JS fields need to be configured to support Ecommerce Dialogs) |
+| **4** | REST based item picker (Not included. Note: The dialog has to be configured with a REST based datasource) |
+
+`defaultExtensions`
+
+**optional**
+
+**From version `2.1.0`**
+
+Defines the default extension available for the `aiAssistedTextField`.
+
+defaultExtensions:
+  - ExpandBlockTool
+  - ExpandTool
+  #....

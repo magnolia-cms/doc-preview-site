@@ -8,29 +8,11 @@ breadcrumb: DX Core > Getting Started > Demo
 
 # Demo
 
-
-
-**Editor experience**
-
-[https://demoauthor.magnolia-cms.com](https://demoauthor.magnolia-cms.com/)
-
-> **Note:** Username: superuser Password: superuser
-
-**Visitor experience**
-
-[https://demopublic.magnolia-cms.com](https://demopublic.magnolia-cms.com/)
-
-**Developer experience**
-
-```sh
-git clone https://bitbucket.org/magnolia-cms/travel-demo.git
-```
-
-The Magnolia Travel Demo demonstrates key features of Magnolia. Use it to learn what Magnolia can do, how authors manage content, and how developers create Magnolia projects.
-
-The Travel Demo provides a best-practice example of templating ([MTE](../../Modules/List-of-modules/MTE-module/)), [YAML](../../Developing/YAML/) configuration and [resource loading](../../Developing/Resources/). In producing the demo, we attempted to strike a balance between demonstrating many Magnolia features in a realistic context, while staying as small and simple as possible.
-
-This page demonstrates features available in Magnolia DX Core, a paid edition. If you are working with the Community Edition some of the features will not be available, including [multisite](#_multisite), [personalization](#_personalization) and [marketing tags](#_marketing_tags).
+| **Editor experience** | [https://demoauthor.magnolia-cms.com](https://demoauthor.magnolia-cms.com/) ** Username: `superuser` Password: `superuser` | ** | Username: `superuser` Password: `superuser` |
+| --- | --- | --- | --- |
+| ** | Username: `superuser` Password: `superuser` |
+| **Visitor experience** | [https://demopublic.magnolia-cms.com](https://demopublic.magnolia-cms.com/) |
+| **Developer experience** | `git clone {repo-git-travelDemo}` |
 
 ## [](#_about_the_website)About the website
 
@@ -58,10 +40,10 @@ The Website pages demonstrate key features of Magnolia:
 -   The **About** page is an example of a conventional or simple page. It is the parent of a typical website tree of pages. The meta links in the footer also link to simple pages.
 
 -   The overview pages for each tour type and destination category have the same format. Each has an image, title and description, followed by a block of featured tours in the category, and then a block of all tours in the category. Go to **Beach** and **Cultural** in the **Tours** menu and **Europe** in the **Destinations** menus to see examples. Note the tour type icons below the title in the teasers. Tours can belong to multiple tour type categories and will display in all overview pages.
-    ![Overview Tours page](../../_images/6-2-demo-beachTours.png)
+    ![Overview Tours page](../../../RNs-6-4-3/_images/6-2-demo-beachTours.png)
 
 -   The format of the detail page of each tour is also the same. Click **View Tour** in any teaser to access the detail page. Tour type icons display in the title and lead to type overview pages. Below the tour details at the bottom of the page, there are card blocks of other tours within in the categories that a visitor might be interested in.
-    ![Greece](../../_images/6-2-demo-viewTourSpectacular.png)
+    ![Greece](../../../RNs-6-4-3/_images/6-2-demo-viewTourSpectacular.png)
 
 -   The **Members** page allows users of a public Magnolia site to register and access restricted content. User registration is powered by Magnolia’s [Public User Registration module](../../Modules/List-of-modules/Public-User-Registration-module/).
 
@@ -81,17 +63,17 @@ Open the **Pages app** and expand the `travel` and `about` nodes.
 -   The `travel` subpages, `tour-type`, `destination` and `tour` display the content for all tours. This content is added and stored in apps. Based on the URL, the content page retrieves the appropriate content item from the app and displays it.
 
 
-![Pages app with subpages](../../_images/6-2-30-demo-pagesApp.png)
+![Pages app with subpages](../../../RNs-6-4-3/_images/6-2-30-demo-pagesApp.png)
 
 Open the **Tour Categories** app to see the tour types and destinations. These are the tour type and destination categories that link the tours together.
 
-![Tour types folder structure](../../_images/6-2-30-demo-tourCategories.png)
+![Tour types folder structure](../../../RNs-6-4-3/_images/6-2-30-demo-tourCategories.png)
 
 Open the **Tours** content app to see the tours. This is where the bulk of the site content resides. In a way, the site *builds itself* - the navigation and tour pages are dynamically generated based on the content added in this app.
 
-![Tours content app](../../_images/6-2-30-demo-toursBrowser.png)
+![Tours content app](../../../RNs-6-4-3/_images/6-2-30-demo-toursBrowser.png)
 
-![Tour tab](../../_images/6-2-30-demo-tourDetail.png)
+![Tour tab](../../../RNs-6-4-3/_images/6-2-30-demo-tourDetail.png)
 
 ## [](#_magnolia_features)Magnolia Features
 
@@ -123,10 +105,10 @@ The Travel Demo supports two [content languages](../../Administration/Language/T
 To see this in action, edit the `contact` page.
 
 -   Use the language selector in the bottom bar to change from English to German. The content of the page is now displayed in German.
-    ![Contact page in German](../../_images/6-2-30-demo-contactPageDE.png)
+    ![Contact page in German](../../../RNs-6-4-3/_images/6-2-30-demo-contactPageDE.png)
 
 -   Click on **Main** bar and then on the edit icon in the **Jumbotron** bar. Use the language selector in the Text and Image dialog to view and edit the content in either language.
-    ![Text and image dialog](../../_images/6-2-30-demo-jumbotronEdit.png)
+    ![Text and image dialog](../../../RNs-6-4-3/_images/6-2-30-demo-jumbotronEdit.png)
 
 
 ### [](#_multilanguage_authoring)Multilanguage authoring
@@ -145,7 +127,7 @@ Compare the information in the Tours app to the content on the site pages to see
 
 ### [](#_content_delivery_methods_rest_and_graphql)Content delivery methods: REST and GraphQL
 
-The Tour Finder page of the demo also showcases two modern ways of content delivery, [REST](#rest:api:delivery-endpoint.adoc) and [GraphQL](../../Developing/API/GraphQL-API/).
+The Tour Finder page of the demo also showcases two modern ways of content delivery, [REST](../../../../rest/api/delivery-endpoint/) and [GraphQL](../../Developing/API/GraphQL-API/).
 
 In a REST implementation, searching a tour on the page sends a request to a configured REST delivery endpoint accessible through `https://demopublic.magnolia-cms.com/.rest/delivery/tours/v1/` whereas GraphQL-mediated tour searches are directed to a GraphQL endpoint available at `https://demopublic.magnolia-cms.com/.graphql`.
 
@@ -191,7 +173,7 @@ model:
 
 Let’s suppose you are interested in a family-type tour whose destination is in Europe. In the search form, you tick the following filter options:
 
-![REST and GraphQL options selection](../../_images/6-2-12-Demo-tourFinderRestGrapghQL-checkboxes.png)
+![REST and GraphQL options selection](../../../RNs-6-4-3/_images/6-2-12-Demo-tourFinderRestGrapghQL-checkboxes.png)
 
 Underneath, the values associated with such a filter configuration are in UUID form and are used as request parameters.
 
@@ -219,7 +201,7 @@ Underneath, the values associated with such a filter configuration are in UUID f
 
 The responses from the server for both of the delivery methods are then instantly rendered on the Tour Finder page as three tours matching the filter selection:
 
-![REST and GraphQL options in the Tour Finder - example where response matches a filter setting](../../_images/6-2-12-Demo-tourFinderRestGrapghQLResponses.png)
+![REST and GraphQL options in the Tour Finder - example where response matches a filter setting](../../../RNs-6-4-3/_images/6-2-12-Demo-tourFinderRestGrapghQLResponses.png)
 
 ### [](#_multisite)Multisite
 
@@ -238,7 +220,7 @@ To view the SportStation site, edit the `sportstation` page in the Pages app and
 -   The tour detail pages are very similar to those in Travel but do not include icons linking to tour types or destinations, nor are their related tours at the bottom of the page.
 
 
-![Sportstation preview page](../../_images/6-2-30-demo-sportstationPreview.png)
+![Sportstation preview page](../../../RNs-6-4-3/_images/6-2-30-demo-sportstationPreview.png)
 
 ### [](#_personalization)Personalization
 
@@ -257,7 +239,7 @@ To view the personalized pages:
 -   In the overlay select different sample users to view the page variants.
 
 
-![Preview as a visitor](../../_images/6-2-30-demo-sportstationPreview.png)
+![Preview as a visitor](../../../RNs-6-4-3/_images/6-2-30-demo-sportstationPreview.png)
 
 #### [](#_component_personalization)Component personalization
 

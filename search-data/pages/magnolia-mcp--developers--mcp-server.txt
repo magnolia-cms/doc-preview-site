@@ -1,0 +1,94 @@
+---
+title: "MCP server"
+url: https://docs.magnolia-cms.com/magnolia-mcp/developers/mcp-server/
+category: Modules
+version: modules
+breadcrumb: Magnolia MCP module > Configure > MCP server
+---
+
+# MCP server
+
+The [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server exposes MCP tools and Magnolia resources through a REST endpoint. This enables MCP-compatible AI assistants to interact with your Magnolia instance directly.
+
+## [](#_overview)Overview
+
+The embedded MCP server runs inside Magnolia and provides:
+
+-   **Tool exposure**: Tools contributed via `McpToolProvider` are automatically exposed as MCP tools
+
+-   **Resource access**: Resources contributed via `McpResourceProvider` are exposed to MCP clients
+
+-   **REST endpoint**: Available at `/.rest/mcp/v1` using JSON-RPC 2.0 protocol
+
+-   **Extensibility**: Custom tool and resource providers via Guice multibinding
+
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/.rest/mcp/v1` | POST | Main JSON-RPC 2.0 endpoint for MCP protocol requests |
+| `/.rest/mcp/v1` | GET | Streamable HTTP transport compatibility; returns `204 No Content` |
+| `/.rest/mcp/v1/health` | GET | Health check returning server status and provider count |
+| `/.rest/mcp/v1/info` | GET | Server information including available tools and resources |
+
+| Method | Description |
+| --- | --- |
+| `getRequiredString(args, key)` | Returns a non-blank string or throws `ToolExecutionException` |
+| `getOptionalString(args, key, default)` | Returns a string value or the default |
+| `getRequiredInt(args, key)` | Parses a number or throws `ToolExecutionException` |
+| `getOptionalInt(args, key, default)` | Parses a number or returns the default |
+| `getOptionalBoolean(args, key, default)` | Parses a boolean or returns the default |
+| `hasRequiredArgument(args, key)` | Checks presence and non-blankness |
+
+## [](#_testing_the_server)Testing the server
+
+You can test the MCP server using curl or any HTTP client:
+
+Health check
+
+```bash
+curl http://<host>:<port>/<context-path>/.rest/mcp/v1/health
+```
+
+Server info
+
+```bash
+curl http://<host>:<port>/<context-path>/.rest/mcp/v1/info
+```
+
+List available tools
+
+```bash
+curl -X POST http://<host>:<port>/<context-path>/.rest/mcp/v1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "tools/list"
+  }'
+```
+
+Execute a tool
+
+```bash
+curl -X POST http://<host>:<port>/<context-path>/.rest/mcp/v1 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": 2,
+    "method": "tools/call",
+    "params": {
+      "name": "my_tool_name",
+      "arguments": {
+        "param1": "value1"
+      }
+    }
+  }'
+```
+
+| Outcome | Meaning |
+| --- | --- |
+| `SUCCESS` | Operation completed successfully |
+| `ERROR` | Tool returned a failure result |
+| `VALIDATION_FAILURE` | Invalid or missing arguments |
+| `NOT_FOUND` | Tool or resource not found |
+| `INTERNAL_ERROR` | Unexpected exception during processing |

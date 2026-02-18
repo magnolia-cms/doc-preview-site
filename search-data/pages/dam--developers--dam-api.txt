@@ -8,7 +8,7 @@ breadcrumb: DAM module > DAM API
 
 # DAM API
 
-The DAM API abstracts the storage location of assets, allowing you to work with assets regardless of where they are stored. You use the API in templating, templates, and models. It provides read-only access to assets managed in the [Magnolia Assets subapp](#dam-app:ROOT:developers/dam-app-jcr.adoc).
+The DAM API abstracts the storage location of assets, allowing you to work with assets regardless of where they are stored. You use the API in templating, templates, and models. It provides read-only access to assets managed in the [Magnolia Assets subapp](../../../dam-app/developers/dam-app-jcr/).
 
 The DAM API provides the following features:
 
@@ -213,7 +213,7 @@ In order to access a custom property defined under a JCR Asset node, info.magnol
 
 ## [](#_accessing_the_dam_api)Accessing the DAM API
 
-To access `AssetProviderRegistry` from your custom module, adapt your `pom` and [module descriptor](../../../product-docs/7.0/Modules/Module-descriptor/) XML files to include a [dependency](../../../product-docs/7.0/Modules/Module-descriptor/#_module_dependencies). You can simply inject or use components to access `AssetProviderRegistry`.
+To access `AssetProviderRegistry` from your custom module, adapt your `pom` and [module descriptor](../../../product-docs/RNs-6-4-3/Modules/Module-descriptor/) XML files to include a [dependency](../../../product-docs/RNs-6-4-3/Modules/Module-descriptor/#_module_dependencies). You can simply inject or use components to access `AssetProviderRegistry`.
 
 ```java
     private final AssetProviderRegistry providerRegistry;
@@ -234,14 +234,14 @@ As a template developer, have a look at [`damfn`](../damfn/), a set of methods t
 
 Related topics
 
--   [Digital asset management](../../../product-docs/7.0/use-cases/Digital-asset-management/)
+-   [Digital asset management](../../../product-docs/RNs-6-4-3/use-cases/Digital-asset-management/)
 
--   [`damfn` templating functions](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/damfn/)
+-   [`damfn` templating functions](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/damfn/)
 
--   [How to work with images using `damfn`](../../../product-docs/7.0/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)
+-   [How to work with images using `damfn`](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)
 
--   [Image Recognition](#image-recognition:ROOT:index.adoc)
+-   [Image Recognition](../../../image-recognition/)
 
--   [Editing images](../../../product-docs/7.0/Authoring/Editing-images/)
+-   [Editing images](../../../product-docs/RNs-6-4-3/Authoring/Editing-images/)
 
--   [Managing assets](../../../product-docs/7.0/Authoring/Managing-assets/)
+-   [Managing assets](../../../product-docs/RNs-6-4-3/Authoring/Managing-assets/)

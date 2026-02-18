@@ -10,11 +10,13 @@ breadcrumb: DX Cloud > SSO in DX Cloud
 
 The instructions on this page focus primarily on the required steps to integrate into our Identity Platform (IdP) based on Keycloak, which gives you access to our DX Cloud Service via SSO.
 
-> **Tip:** Please note that we offer this IdP Integration to access our DX Cloud Service via SSO. If you have your own IdP, we recommended to use it on magnolia-sso:ROOT:index.adoc to access and secure the Magnolia AdminCentral. In that case, you must configure the IdP settings on your own.
+> **Tip:** Please note that we offer this IdP Integration to access our DX Cloud Service via SSO. If you have your own IdP, we recommended to use it on SSO module to access and secure the Magnolia AdminCentral. In that case, you must configure the IdP settings on your own.
 
 ## [](#_overview)Overview
 
-Unresolved include directive in modules/ROOT/pages/sso.adoc - include::magnolia-sso:ROOT:partial$c\_module-overview.adoc\[\]
+The Magnolia SSO (single sign-on) module delegates authentication from a Magnolia instance to an OpenID Connect identity and access management application. The current iteration of the module has been successfully tested with open source [Keycloak](https://www.keycloak.org) and cloud identity management software [Okta](https://www.okta.com), but all providers that follow the protocol should also be supported.
+
+As Magnolia is already capable of full-fledged security, the intent is to only replace the authentication mechanism. A user on a third-party system with roles and groups is mapped to the equivalent Magnolia user roles and groups.
 
 ## [](#_keycloak_settings_for_sso)Keycloak settings for SSO
 
@@ -126,7 +128,7 @@ Use the [DX Cloud groups](../cockpit/access-management/iam/#_groups) to prepare 
 
     Important if using SSO module
 
-    If you connect the [magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc) to our Keycloak IDP, you must get the `roles` by setting `targetProperty: <value>` to `magnolia-roles`.
+    If you connect the [SSO module](../../magnolia-sso/) to our Keycloak IDP, you must get the `roles` by setting `targetProperty: <value>` to `magnolia-roles`.
 
     ```yaml
     authorizationGenerators:
@@ -138,7 +140,7 @@ Use the [DX Cloud groups](../cockpit/access-management/iam/#_groups) to prepare 
 
     |     |     |
     | --- | --- |
-    | **1** | `targetProperty` maps to the groups in your IDP for the SSO module. See [SSO module: Configuring via yaml](#magnolia-sso:ROOT:index.adoc#_configuring_via_yaml) for more details. |
+    | **1** | `targetProperty` maps to the groups in your IDP for the SSO module. See [SSO module: Configuring via yaml](../../magnolia-sso/#_configuring_via_yaml) for more details. |
 
 
 1.  In **<customer> > Identity Providers > Mappers**, map `Claim Value` (set before in Azure as `AppRole`) of the OIDC Token Claim `roles` to the existing `Role` in Keycloak IdP.
@@ -146,7 +148,7 @@ Use the [DX Cloud groups](../cockpit/access-management/iam/#_groups) to prepare 
     ![Keycloak RoleMapping](../_images/sso/Keycloak_RoleMapping.png)
 
 
-Repeat the steps of [App mapping](#_app_mapping) per Application you want to integrate. For more information on installing and configuring the **SSO Module** and securing Magnolia Admincentral Access, check out [magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc).
+Repeat the steps of [App mapping](#_app_mapping) per Application you want to integrate. For more information on installing and configuring the **SSO Module** and securing Magnolia Admincentral Access, check out [SSO module](../../magnolia-sso/).
 
 Further reading
 
@@ -196,7 +198,7 @@ This section outlines steps to configure Single Sign-On (SSO) in the DX Cloud Pa
 
 ### [](#_configuration_steps)Configuration steps
 
-1.  [Configure JAAS](#magnolia-sso:ROOT:index.adoc#_configuring_jaas) in your webapp bundle.
+1.  [Configure JAAS](../../magnolia-sso/#_configuring_jaas) in your webapp bundle.
 
     WEB-INF/config/jaas.config
 
@@ -212,7 +214,7 @@ This section outlines steps to configure Single Sign-On (SSO) in the DX Cloud Pa
     };
     ```
 
-2.  Add the [SSO config yaml](#magnolia-sso:ROOT:index.adoc#_configuring_via_yaml) in the right place.
+2.  Add the [SSO config yaml](../../magnolia-sso/#_configuring_via_yaml) in the right place.
 
     1.  The default location is: `<light-modules>/magnolia-sso/config.yaml`.
 
@@ -292,13 +294,13 @@ This section outlines steps to configure Single Sign-On (SSO) in the DX Cloud Pa
             ```
 
 
-    4.  **Option 1**: Allow [groups claim](#magnolia-sso:ROOT:index.adoc#_prerequisites) in the access token.
+    4.  **Option 1**: Allow [groups claim](../../magnolia-sso/#_prerequisites) in the access token.
 
         1.  Configure groups to be returned in access token.
 
-            ![azure](magnolia-sso:ROOT:azure.png)
+            ![azure](../../magnolia-sso/_images/azure.png)
 
-        2.  Configure [authorizationGenerators](#magnolia-sso:ROOT:index.adoc#sso-yamlConfig-authGeneratorSection) in your SSO `config.yaml`. This defines the groups and roles for your client. They are needed for groups and fixed role generators. If you want a custom generator, follow the steps [here](#magnolia-sso:ROOT:guides/custom-auth-generators.adoc).
+        2.  Configure [authorizationGenerators](../../magnolia-sso/#sso-yamlConfig-authGeneratorSection) in your SSO `config.yaml`. This defines the groups and roles for your client. They are needed for groups and fixed role generators. If you want a custom generator, follow the steps [here](../../magnolia-sso/guides/custom-auth-generators/).
 
             ```yaml
             callbackUrl: /.auth
@@ -316,7 +318,7 @@ This section outlines steps to configure Single Sign-On (SSO) in the DX Cloud Pa
             ```
 
 
-    5.  **Option 2**: Include [this custom group authentication](#magnolia-sso:ROOT:guides/custom-auth-generators/custom-auth-with-azure.adoc).
+    5.  **Option 2**: Include [this custom group authentication](../../magnolia-sso/guides/custom-auth-generators/custom-auth-with-azure/).
 
 
 6.  If you want to hide client credentials from the configuration file, check whether you enabled them as `catalinaExtraEnv` for both author and public instances in your helm `values.yaml` file.
@@ -466,7 +468,7 @@ This section outlines steps to configure Single Sign-On (SSO) in the DX Cloud Pa
         ```
 
 
-2.  For public instances, when SSO is triggered on the main domain because of a missing multisite configuration. Define your [site definition](../../product-docs/7.0/Developing/Templating/Site-definition/#_mapping_a_site_definition_to_your_website) as follows.
+2.  For public instances, when SSO is triggered on the main domain because of a missing multisite configuration. Define your [site definition](../../product-docs/RNs-6-4-3/Developing/Templating/Site-definition/#_mapping_a_site_definition_to_your_website) as follows.
 
     ```yaml
     domains:

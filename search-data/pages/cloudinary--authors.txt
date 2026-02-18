@@ -1,0 +1,265 @@
+---
+title: "Authors"
+url: https://docs.magnolia-cms.com/cloudinary/authors/
+category: Modules
+version: modules
+breadcrumb: Cloudinary External DAM module > Authors
+---
+
+# Authors
+
+The Cloudinary External DAM module lets you store assets in Cloudinary while using them in Magnolia. You can edit images, tags, metadata and more - all in one place as well:
+
+-   Upload or download assets to and from Cloudinary directly from Magnolia.
+
+-   Browse and preview assets in Magnolia.
+
+-   Filter assets using the column filters in Magnolia.
+
+-   Edit key information for assets, such as the name or description where changes are automatically stored in Cloudinary.
+
+-   Edit images using the Magnolia Assets.
+
+-   Delete items from Magnolia.
+
+
+![cloudinary subapp general](_images/cloudinary-subapp-general.jpg)
+
+## [](#_managing_images_in_cloudinary)Managing images in Cloudinary
+
+Cloudinary provides a number of rich features such as transforming and optimizing assets so that your assets are beautifully displayed on all screen types and sizes. It provides secure and scalable storage as well so you can maintain your assets as they grow. Leveraging Cloudinary’s power directly in Magnolia is an optimal workflow and the Cloudinary External DAM module allows you to do just that.
+
+In fact, if you install the [Media Widget](../developers/configure-media-widget/), you can use the Cloudinary interface directly from within Magnolia. This is allowed by the Cloudinary widget field.
+
+![cloudinary widget field](_images/cloudinary-widget-field.png)
+
+When clicking on `Select Image or Video`, the following interface pops up.
+
+![cloudinary cloudinary dashboard](_images/cloudinary-cloudinary-dashboard.jpg)
+
+After inserting an image, the field value is set and the image can be displayed.
+
+There is also an option to select image variations, by double-clicking an image and selecting a variation as below.
+
+![cloudinary select image variation](_images/cloudinary-select-image-variation.png)
+
+After having selected a variation, the `Parameters` field will be filled as well.
+
+![cloudinary widget field parameters](_images/cloudinary-widget-field-parameters.png)
+
+This can be further customized as described on the image above. Authors just have to be careful to add valid transformations (parameters) in the correct format, because otherwise the image will not render.
+
+## [](#_default_transformation_parameters)Default transformation parameters
+
+In addition to selecting or customizing parameters manually, you can define a default transformation parameter for a Cloudinary widget field. This default value is automatically prefilled in the Parameters input whenever the dialog opens, allowing editors to work with consistent image transformations by default.
+
+You can configure a default parameter in your field definition like this:
+
+```yaml
+form:
+   implementationClass: info.magnolia.ui.javascript.form.FormViewWithChangeListener
+   properties:
+     image:
+        label: Cloudinary Image
+        $type: cloudinaryWidgetField
+        defaultParameter: t_example
+```
+
+When a default parameter is defined, it is automatically prefilled in the Parameters field each time the dialog opens. Editors can freely adjust or remove this value according to their needs.
+
+If the selected Cloudinary asset already includes its own derived transformation, that value will replace the default. When no transformation is provided by the asset, the default parameter is kept. This allows for consistent transformations while still giving editors full flexibility.
+
+## [](#_renaming_cloudinary_items)Renaming Cloudinary items
+
+The Cloudinary External DAM module supports Cloudinary’s [Dynamic folder mode](https://cloudinary.com/documentation/dam_folder_modes). You must set `isDynamic` to `true` in your [module configuration](../developers/configure-dam-connector/#_configuration) to avail of the feature.
+
+If you created a Cloudinary account on or after **June 4, 2024**, you can rename assets or folders in Magnolia or Cloudinary. If you created a Cloudinary account before **June 4, 2024**, you must contact [Cloudinary support](https://support.cloudinary.com/) to rename an asset or folder. Attempting to change the name in either Cloudinary or Magnolia modifies the URL and risks breaking production content.
+
+## [](#_adding_a_cloudinary_video_player_component)Adding a Cloudinary Video Player Component
+
+The following is a step-by-step guide on how to set up the **Cloudinary Video Player** in your Magnolia instance.
+
+> **Note:** This is a basic example to help you configure the new video component. For all features and best practices provided by Cloudinary, refer to the official documentation: https://cloudinary.com/documentation/cloudinary_video_player.
+
+> **Note:** If you are not interested in the features that Cloudinary Video Player provides, you can just use the already existing basic video player and skip this section.
+
+### [](#_1_add_a_dialog)1\. Add a Dialog
+
+Create a dialog in the following path:
+
+```adoc
+light-modules/cloudinary-media-widget-integration/dialogs/components
+```
+
+**cloudinary-video-player.yaml**:
+
+```yaml
+form:
+  implementationClass: info.magnolia.ui.javascript.form.FormViewWithChangeListener
+  properties:
+    cloudinaryVideo:
+      label: Cloudinary Video
+      $type: cloudinaryWidgetField
+```
+
+### [](#_2_add_templates_for_the_component)2\. Add Templates for the Component
+
+Create two files in:
+
+```adoc
+light-modules/cloudinary-media-widget-integration/templates/components
+```
+
+**cloudinary-video-player.yaml**:
+
+```yaml
+templateScript: /cloudinary-media-widget-integration/templates/components/cloudinary-video-player.ftl
+dialog: cloudinary-media-widget-integration:components/cloudinary-video-player
+renderType: freemarker
+title: Cloudinary Video Player
+```
+
+**cloudinary-video-player.ftl**:
+
+```freemarker
+[#assign cloudinary_video = content.cloudinaryVideo!""]
+[#assign cloud_name = "xxxxxx"] (1)
+[#assign cloudinary_player_id = "cld-video-player-" + (content.jcrIdentifier!"default-id"?replace("-", ""))]
+[#assign isEditMode = cmsfn.isEditMode()!false]
+
+[#if cloudinary_video?has_content]
+
+    [#if isEditMode]
+        <div class="cloudinary-author-info">
+            Longer or larger video files may take longer to load. Please give it a few seconds or minutes to load to see a preview or play the video.
+        </div>
+    [/#if]
+
+    <div class="cloudinary-video-wrapper" id="${cloudinary_player_id}-wrapper">
+        [#if isEditMode]
+            <div class="cloudinary-loading-overlay">
+                <div class="spinner"></div>
+            </div>
+        [/#if]
+
+        <video id="${cloudinary_player_id}" class="cld-video-player cld-fluid" controls playsinline width="100%"></video>
+    </div>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cloudinary-video-player@3.4.2/dist/cld-video-player.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/cloudinary-video-player@3.4.2/dist/cld-video-player.min.js"></script>
+    ${resfn.cachedCss("/cloudinary-media-widget-integration/.*cloudinary-video-player.*css")}
+
+    <script>
+        var player = cloudinary.videoPlayer("${cloudinary_player_id}", {
+            cloudName: "${cloud_name}",
+            controls: true,
+            autoplay: false,
+            muted: false,
+            fluid: true
+        });
+
+        var overlay = document.querySelector("#${cloudinary_player_id}-wrapper .cloudinary-loading-overlay");
+
+        function showLoading() {
+            if (overlay) overlay.style.display = "flex";
+        }
+
+        function hideLoading() {
+            if (overlay) overlay.style.display = "none";
+        }
+
+        showLoading();
+
+        player.on("ready", function () {
+            player.on("loadedmetadata", hideLoading);
+        });
+
+        player.source("${cloudinary_video?replace('cloudinary:', '')}");
+    </script>
+
+[/#if]
+```
+
+|     |     |
+| --- | --- |
+| **1** | Your Cloudinary Cloud Name |
+
+### [](#_3_add_css)3\. Add CSS
+
+Add a CSS file in:
+
+```adoc
+light-modules/cloudinary-media-widget-integration/webresources/css
+```
+
+**cloudinary-video-player.css**:
+
+```css
+.cloudinary-author-info {
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.cloudinary-video-wrapper {
+    position: relative;
+}
+
+.cloudinary-loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.85);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 14px;
+}
+
+.cloudinary-loading-overlay .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #ddd;
+    border-top: 4px solid #555;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+```
+
+### [](#_4_decorate_the_page)4\. Decorate the Page
+
+Finally, update the **cloudinary-page.yaml** to include the new video component:
+
+Path:
+
+```adoc
+light-modules/config-module/decorations/cloudinary-media-widget-integration/templates/pages
+```
+
+**cloudinary-page.yaml**:
+
+```yaml
+title: Cloudinary Page
+templateScript: /cloudinary-media-widget-integration/templates/pages/cloudinary-page.ftl
+renderType: freemarker
+visible: true
+areas:
+  main:
+    renderType: freemarker
+    availableComponents:
+      cloudinary-image:
+        id: cloudinary-media-widget-integration:components/cloudinary-image
+      cloudinary-video:
+        id: cloudinary-media-widget-integration:components/cloudinary-video
+      cloudinary-video-player:
+        id: cloudinary-media-widget-integration:components/cloudinary-video-player
+```

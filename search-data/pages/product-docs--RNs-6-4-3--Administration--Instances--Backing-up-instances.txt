@@ -1,0 +1,34 @@
+---
+title: "Backing up and restoring instances"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Instances/Backing-up-instances/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Instances > Backing up and restoring instances
+---
+
+# Backing up and restoring instances
+
+## [](#_high_level_steps)High-level steps
+
+On this page, we outline some high-level steps in the procedure of backing up and restoring your content. Exact details will depend on the databases in use and the respective tools available for those databases.
+
+-   **Jackrabbit files**: What gets stored in the database and files depends on Magnolia’s JCR configuration. The [persistence manager](../../Architecture/Repositories/repository-configuration/#_persistence_manager) is an internal Jackrabbit component that handles the persistent storage of content nodes and properties. Thus, you must make copies of any Jackrabbit files used to store your JCR content (each workspace has a separate `workspace.xml` file).
+
+-   **Databases**: Multiple databases may be configured in the `PersistenceManager` sections of the `workspace.xml` files. Use native database tools to generate and restore backups. Logical backups are a great option if you need to make a copy of the database to another environment.
+
+-   **All your content**: Make sure you back up both the content stored on your file system and in the database(s).
+
+-   **Database permissions**: See [What permissions does the database user need?](../../../Getting-started-with-Magnolia/FAQ/#_what_permissions_does_the_database_user_need) for more information about the minimum permissions required.
+
+-   **Database instances**: Each Magnolia instance may be backed up by an [independent database](../../../Getting-started-with-Magnolia/FAQ/#_how_many_database_instances_or_servers_do_i_need) to improve disaster tolerance. Take care when backing up that any hybrid setups and all cases are covered.
+
+
+Alternatively, there is the [Backup Extended module](../../../../../backup-extended-module/), which you can use to back up small to medium productive environments.
+
+## [](#_use_cases)Use cases
+
+**PostgreSQL**, **Oracle**, and **Microsoft SQL Server** databases are ideal for copying data from production. They can be configured for full database implementation, making copying data easier because you’re copying the tables.
+
+Things are different with **MySQL**. In particular, you must split things up between the database and the filesystem. If doing so, consider using the [Backup module](../../../Modules/List-of-modules/Backup-module/) to copy the data. Make sure you shut down the system before performing the backup.
+
+For **embedded databases** in production (which isn’t recommended), such as H2 or Derby, you simply copy the entire folder while the system is shut down. Embedded databases create a scenario where the database has to share memory with the application. There are scenarios where you might configure some workspaces to use embedded and others to use external. Still, using this kind of setup in productive environments is quite rare.

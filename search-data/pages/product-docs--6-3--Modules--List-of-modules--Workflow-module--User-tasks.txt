@@ -14,11 +14,11 @@ From the official jBPM [documentation](http://docs.jboss.org/jbpm/v6.0.1/usergui
 
 > Processes can also involve tasks that need to be executed by human actors. A User Task represents an atomic task to be executed by a human actor. It should have one incoming connection and one outgoing connection. User Tasks can be used in combination with Swimlanes to assign multiple human tasks to similar actors. Refer to the chapter on human tasks for more details. A User Task is actually nothing more than a specific type of service node (of type `Human Task`).
 >
-> ![User task 1](../../../../_images/UserTask.png)
+> ![User task 1](../../../../../RNs-6-4-3/_images/UserTask.png)
 
 Compared to [Custom tasks](../Custom-tasks/) a User task expects some kind of human interaction. When modeling a User Task in your process you have an edit mask giving you more possibilities to set parameters tailored for user interactions:
 
-![Edit User Task tab](../../../../_images/Screen-Shot-2014-03-25-at-17-22-30.png)
+![Edit User Task tab](../../../../../RNs-6-4-3/_images/Screen-Shot-2014-03-25-at-17-22-30.png)
 
 You can also define swim lanes inside your process in context with Human Tasks. A swim lane allows you to define multiple steps or user tasks inside your process to be automatically assigned to the first user who picks up the first task of the swim lane.
 
@@ -34,7 +34,7 @@ See [Tasks](../../../../Features/Tasks/) documentation for details.
 
 From a technical point of view there is no difference between [Custom tasks](../Custom-tasks/) and User Tasks; both are handled by a *WorkItemHandler registered at startup* and both implement the same interface. The handler for Human Tasks is configured as follows, where the `Human Task` value in the `name` property is mandatory for the jBPM engine to pick it up as handler for Human Tasks:
 
-![WorkItemHandler registry](../../../../_images/Screen-Shot-2014-06-18-at-15-09-01.png)
+![WorkItemHandler registry](../../../../../RNs-6-4-3/_images/Screen-Shot-2014-06-18-at-15-09-01.png)
 
 > **Note:** If you don’t use a Human Task, a user will not be informed about the workflow and they cannot interact with it. There will be no task in the Tasks app for users to act on.
 
@@ -59,6 +59,6 @@ The Parameter Resolver takes care of creating the data used by a user to fulfill
 
 As an example here is the definition of the `publish` task associated with publication:
 
-![Publish task definition](../../../../_images/Screen-Shot-2014-06-18-at-16-16-58.png)
+![Publish task definition](../../../../../RNs-6-4-3/_images/Screen-Shot-2014-06-18-at-16-16-58.png)
 
 > **Note:** The Content and Result Map can be any Map<String, Object> map where Object is a primitive Type.

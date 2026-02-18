@@ -53,7 +53,7 @@ In your SPA setup, you must specify the URL that will be loaded into the Magnoli
 -   For more flexibility, in a site prototype definition, shown further below in the [Site-aware external SPA](#_site_aware_external_spa) subsection.
 
 
-For more details about the `baseUrl` and `routeTemplate` properties, see the table under [Common template properties](../../../Templating/Template-definition/#_common_template_properties).
+For more details about the `baseUrl` and `routeTemplate` properties, see the table under [Common template properties](../../../../../RNs-6-4-3/Developing/Templating/Template-definition/#_common_template_properties).
 
 > **Tip:** See also our headless SPA demo project, showcasing Angular, Vue, React and Next.js (SSR and SSG):minimal-headless-spa-demos.
 
@@ -86,7 +86,7 @@ dialog: spa-lm:pages/basic
 
 How do I do that? See [Configuring a prototype in YAML](#_configuring_a_prototype_in_yaml) below.
 
-It can be very convenient to configure `baseUrl` and `routeTemplate` in a [site template prototype definition](../../../Templating/Site-definition/Template-prototype/) rather than in a [page template definition](../../../Templating/Template-definition/Page-definition/).
+It can be very convenient to configure `baseUrl` and `routeTemplate` in a [site template prototype definition](../../../../../RNs-6-4-3/Developing/Templating/Site-definition/Template-prototype/) rather than in a [page template definition](../../../../../RNs-6-4-3/Developing/Templating/Template-definition/Page-definition/).
 
 While maintained in a single site prototype definition, the properties will be applied to every page template in the site. In the page template, the `$type` must be then set to `siteSpa`.
 
@@ -168,7 +168,7 @@ To configure the prototype in YAML:
 
 3.  Create the prototype YAML file in the location defined in the `prototypeId` property and set the class property to `info.magnolia.module.site.templates.PrototypeTemplateDefinition` (or a subclass).
 
-    [https://bitbucket.org/magnolia-cms/travel-demo](https://bitbucket.org/magnolia-cms/travel-demo)
+    [{repo-travelDemo}]({repo-travelDemo})
 
 
 ### [](#_deployment)Deployment
@@ -265,4 +265,4 @@ Related topics
 
 Some topics below may take you to a different part of the docs site and away from the current **product-docs** section.
 
--   [Pages module](../../../../Modules/List-of-modules/Pages-module/)
+-   [Pages module](../../../../../RNs-6-4-3/Modules/List-of-modules/Pages-module/)

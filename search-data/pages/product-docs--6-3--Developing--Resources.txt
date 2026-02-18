@@ -23,33 +23,6 @@ Examples of resources:
 -   Definition files (YAML): [template definition](../Templating/Template-definition/), [dialog definition](../Templating/Dialog-definition/), [app descriptor](../../Apps/App-configuration/App-descriptor/)…
 
 
-## [](#_origins_and_loading_order)Origins and loading order
-
-Resource files can be loaded from different origins:
-
-1.  JCR `resources` workspace
-
-2.  File system
-
-3.  Classpath (JARs)
-
-4.  In memory
-
-    > **Note:** A ConfigurationSource implementation, which can be used for runtime manipulations with definition sets.
-
-
-Magnolia looks for a resource in this order. As soon as it finds the resource it stops looking. For example, if a resource is not found in the JCR `resources` workspace then Magnolia checks the file system. If the resource is found on the file system, Magnolia does not check the classpath or the in-memory resources.
-
-![Origins and loading order of the resources](../../_images/6-2-resource-loading.png)
-
-> **Warning:** Module namingAs all resources, whether light modules from the file system or Maven modules from the classpath, are loaded via the same mechanism, module names must remain unique across both sets. For example, you cannot use a Java module called my-module and a light module also called my-module.
-
-### [](#_1_jcr_resources_workspace)1\. JCR `resources` workspace
-
-Storing resource files in the JCR `resources` [workspace](../../Administration/Architecture/Workspaces/) is useful for hotfixes and patches. An administrator can make an urgent fix and publish it in the Resource Files app. Long term, we recommend that you keep resource files in the classpath of your module. This way they get into source control and are easier for large developer teams to work with.
-
-When you store resources in the `resources` workspace, organize them by module and type:
-
 | Type of resource | Node path in the `resources` workspace |
 | --- | --- |
 | App descriptor | `/my-module/apps/foobar.yaml` |
@@ -59,36 +32,13 @@ When you store resources in the `resources` workspace, organize them by module a
 | Template script (FreeMarker) | `/my-module/templates/pages/foo.ftl` |
 | Template model (JavaScript) | `/my-module/templates/pages/foo.js` |
 
-### [](#_2_file_system)2\. File system
-
-Storing resource files in the file system is a good option for front-end developers. You can edit CSS and JavaScript files with your favorite tools without Magnolia getting in the way.
-
-When you store resources on the file system, organize them by module and type. See: [Module structure](../../Modules/Module-structure/)
-
-| Type of resource | Path on the file system |
-| --- | --- |
-| App descriptor | `<magnolia.resources.dir>/my-module/apps/foobar.yaml` |
-| Dialog definition | `<magnolia.resources.dir>/my-module/dialogs/pages/foo.yaml` |
-| Static Web resource (CSS, JavaScript) | `<magnolia.resources.dir>/my-module/css/style.css` |
-| Template definitions (YAML) | `<magnolia.resources.dir>/my-module/templates/pages/foo.yaml` |
-| Template script (FreeMarker) | `<magnolia.resources.dir>/my-module/templates/pages/foo.ftl` |
-| Template model (JavaScript) | `<magnolia.resources.dir>/my-module/templates/pages/foo.js` |
-
 ## [](#_what_is_magnolia_resources_dir)What is `magnolia.resources.dir`?
 
-`magnolia.resources.dir` is a property defining the directory from which [resources](./) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../Apps/List-of-apps/About-Magnolia-app/).
+`magnolia.resources.dir` is a property defining the directory from which [resources](../../../RNs-6-4-3/Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../../RNs-6-4-3/Apps/List-of-apps/About-Magnolia-app/).
 
 > **Note:** You can use symbolic links (symlinks or soft links) in the resources directory to include light modules located elsewhere on your system.
 
-Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../Administration/Architecture/Configuration-management/#_defining_properties) section.)
-
-## [](#_what_is_a_classpath_originated_resource)What is a classpath-originated resource
-
-A resource originating from classpath is a resource in a [JAR](http://en.wikipedia.org/wiki/JAR_%28file_format%29) file, exposed to the classloader of the Magnolia webapp (in `WEB-INF/lib` of the webapp). The jar file can be a Magnolia Maven module or any other jar file provided by Magnolia or by a third party.
-
-Storing resources in a JAR and accessing them via the classpath is a best practice in the long term. It ensures that resource files are committed to source control, they participate in the software lifecycle like any other project artifact, and they are easier for large developer teams to work with.
-
-When you store resources in the classpath, add them to the `src/main/resources/<module-name>/resources` folder of your (Magnolia) Maven module.
+Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../../RNs-6-4-3/Administration/Architecture/Configuration-management/#_defining_properties) section.)
 
 | Type of resource | Path in a Maven module |
 | --- | --- |
@@ -98,12 +48,6 @@ When you store resources in the classpath, add them to the `src/main/resources/<
 | Template definitions (YAML) | `src/main/resources/my-module/templates/pages/foo.yaml` |
 | Template script (FreeMarker) | `src/main/resources/my-module/templates/pages/foo.ftl` |
 | Template model (JavaScript) | `src/main/resources/my-module/templates/pages/foo.js` |
-
-### [](#_where_should_i_store_my_resources)Where should I store my resources?
-
-During development, use file-based or classpath-based resources. These files are easier to create, maintain and diff when you work within a team.
-
-Use JCR-based resources to `override` an existing source or to add an additional resource within a running Magnolia system in production. This can be done in the [Resource Files app](#_resource_files_app).
 
 ## [](#_referencing_resources)Referencing resources
 
@@ -186,64 +130,11 @@ If you change resources which are used to define items - Magnolia will notice it
 -   Changes on classpath originating resources are only relevant during development. Watching changes in classpath resources must be enabled by setting the Magnolia property `magnolia.develop` to true (see [defining properties](../../Administration/Architecture/Configuration-management/)).
 
 
-## [](#_resource_files_app)Resource Files app
-
-The Resource Files app displays resources (CSS, JavaScript, template scripts, [YAML](../YAML/) configuration files) from all origins and allows you to edit JCR resources.
-
-> **Caution:** Resources on classpath should not contain sensitive information (for example passwords or api keys) as this type of information could be exposed via the Resource Files app.
-
-In the App launcher, go to **Web dev** and click **Resource Files** to open the app.
-
-![Resource Files app](../../_images/6-1-resources-appTile.png)
-
-The app indicates the origin of the resource with icons:
-
 | Icon | Resource origin |
 | --- | --- |
-| ![Classpath icon](../../_images/origin-icon-classPath.gif) | Classpath or classpath-legacy (JARs) |
-| ![File system icon](../../_images/origin-icon-file-system.gif) | File system |
-| ![Resources icon](../../_images/6-1-resources-resourceIcon.gif) | JCR `resources` workspace |
-
-You can use the app to add, preview, edit, delete and publish resources.
-
-![Resource files app](../../_images/6-2-Resources.png)
-
-### [](#_overriding_resources)Overriding resources
-
-Overriding classpath and file system resources is useful for **hot fixing**. You may need to change a resource urgently and don’t have opportunity to commit the change to source control until later.
-
-Edit a classpath or files system resource in the Resource Files app. This creates a JCR node representation of the file in the `resources` workspace. Since Magnolia [loads JCR resources first](#_origins_and_loading_order), the copy will override corresponding files on the file system and classpath. You can publish the copy to public instances without stopping or redeploying Magnolia.
-
-To override a resource:
-
-1.  Select a classpath or file system resource and click **Edit file**.
-    ![Edit file in the action bar](../../_images/6-2-30-Resources-overridingSelect.png)
-
-2.  Edit the resource file and save.
-    ![Save changes in the resource file](../../_images/6-2-30-Resources-overridingEdit.png)
-
-3.  The file is now JCR based and can be published.
-    ![Publish the file](../../_images/6-2-30-Resources-overridingDone.png)
-    A check mark in the Overrides column indicates that the new JCR file overrides another resource on the file system or classpath.
-
-    **Removing the hotfix**
-
-
-Please note that if you have an active [receiver](../../Administration/Instances/Receivers/), applying the **Delete file** action to the hotfixed resource will only mark the resource for deletion. It will not restore the original resource. To fully restore the function of the original resource, you need to publish it after deleting it.
-
-### [](#_publishing_resources)Publishing resources
-
-JCR based resources can be published. When publishing such a resource - its parent folder (actually all ancestor folders) are published automatically as well.
-
-After triggering the **Publish** action, check the situation on the public instance. Also, note that the parent folders have been published but no other files within the parent folders beside the one which was selected originally:
-
-![Published resources](../../_images/6-2-30-Resources-published.png)
-
-### [](#_deleting_jcr_based_resources)Deleting JCR based resources
-
-JCR based resources can be deleted. As known from other JCR content app (e.g. [Pages app](../../Apps/List-of-apps/Pages-app/)) - when triggering the delete action, the resource is marked as deleted. Afterward, you can **Request permanent deletion** or **Restore item**.
-
-The special thing compared to other JCR content apps: When deleting a JCR based resource which is the only resource in the folder, then the folder itself is deleted too. This is true for all ancestor folders.
+|  | Classpath or classpath-legacy (JARs) |
+|  | File system |
+|  | JCR `resources` workspace |
 
 ## [](#_restricting_access_to_resources)Restricting access to resources
 

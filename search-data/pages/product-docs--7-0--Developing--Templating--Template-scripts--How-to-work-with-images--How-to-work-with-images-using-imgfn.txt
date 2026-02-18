@@ -8,35 +8,16 @@ breadcrumb: DX Core > Developing > Templating > Template scripts > How to work w
 
 # How to work with images using imgfn
 
-[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+[FreeMarker development only](../../../../../../RNs-6-4-3/Developing/Templating/Renderers/#_renderers_provided_by_magnolia)
 
 This page explains how to work with images using [`imgfn`](../../Templating-functions/imgfn/) [templating functions](../../Templating-functions/) in template scripts. With `imgfn` you can get an image from any JCR workspace.
 
 If you manage your images with the Magnolia [Digital Asset Management module](../../../../../../../dam/developers/install/), we recommend using `damfn`. For more information, see [working with images using `damfn`](../How-to-work-with-images-using-damfn/).
 
-## [](#_imaging_modules)Imaging modules
-
-If you use a Magnolia bundle, the required and optional modules are already included.
-
-If you [created a custom webapp](../../../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/), add the following modules in the POM file of the webapp of your bundle. The modules may have dependencies to other modules but these dependencies are handled by Maven dependency management.
-
-### [](#_required_modules)Required modules
-
-Modules required for basic image operations.
-
 | artifactId | version |
 | --- | --- |
-| `magnolia-module-imaging` | 5.0.0 |
-| `magnolia-imaging-support` | 5.0.0 |
-
-### [](#_optional_modules)Optional modules
-
-Modules required when using size variations of an image. Recommended.
-
-| artifactId | version |
-| --- | --- |
-| `magnolia-site` | 3.0.0 |
-| `magnolia-templating-essentials-imaging` | 4.0.0 |
+| `magnolia-module-imaging` | {magnolia-imaging-64} |
+| `magnolia-imaging-support` | {magnolia-imaging-64} |
 
 ## [](#_uploading_the_image_with_a_basic_upload_field)Uploading the image with a basic upload field
 
@@ -61,7 +42,7 @@ Form:
 
 In the dialog definition, you can define the value of the `binaryNodeName` property (in the example the value is `myNode`). Keep in mind that you must know the name of this subnode to render the image later on.
 
-![Dialog definition](../../../../../_images/6-2-jcr-view-myNode.png)
+![Dialog definition](../../../../../../RNs-6-4-3/_images/6-2-jcr-view-myNode.png)
 
 You can check the JCR node structure in in the [JCR Browser app](../../../../../Apps/List-of-apps/JCR-Browser-app/).
 
@@ -98,4 +79,4 @@ To display an image, you must get the subnode of `content` and pass it as argume
 
 Here is the rendered result of the template script snippet above:
 
-![Rendered result of the template script snippet](../../../../../_images/imgfn-display.png)
+![Rendered result of the template script snippet](../../../../../../RNs-6-4-3/_images/imgfn-display.png)

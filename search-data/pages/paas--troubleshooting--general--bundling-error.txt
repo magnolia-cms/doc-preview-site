@@ -18,13 +18,13 @@ If the `values.yaml` file doesn’t autogenerate with the archetype, use the lat
 
 If your project doesn’t compile with the downloaded settings, use use the latest archetype version.
 
-> **Note:** The latest archetype version is 1.10.
+> **Note:** The latest archetype version is {paas-archetype-version}.
 
 ```sh
 mvn archetype:generate \
     -DarchetypeGroupId=info.magnolia.maven.archetypes \
     -DarchetypeArtifactId=magnolia-dx-core-custom-cloud-archetype \
-    -DarchetypeVersion=1.10 \
+    -DarchetypeVersion={paas-archetype-version} \
     -DarchetypeRepository=https://nexus.magnolia-cms.com/content/repositories/magnolia.public.releases <1>
 ```
 

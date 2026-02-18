@@ -1,0 +1,68 @@
+---
+title: "Create Content Type plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/create-content-type-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Create Content Type plugin
+---
+
+# Create Content Type plugin
+
+| Package name | `@magnolia/cli-create-content-type-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-create-content-type-plugin](https://www.npmjs.com/package/@magnolia/cli-create-content-type-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md](https://unpkg.com/@magnolia/cli-create-content-type-plugin/CHANGELOG.md) |
+
+## [](#_installing)Installing
+
+The plugin doesn’t come pre-installed with Magnolia CLI. You must add it to the `mgnl.config.js` project file.
+
+> **Note:** The plugin is installed automatically by the Jumpstart plugin if it is defined in a project template.
+
+### [](#_with_add_plugin)With add-plugin
+
+Run the following command in the project folder.
+
+```console
+npm run mgnl -- add-plugin @magnolia/cli-create-content-type-plugin
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+The command automatically downloads, installs, and registers the plugin in `mgnl.config.js`.
+
+### [](#_manually)Manually
+
+1.  Run the following command in the project folder.
+
+    ```console
+    npm install @magnolia/cli-create-content-type-plugin
+    ```
+
+2.  Modify the `mgnl.config.js` file accordingly.
+
+    ```js
+    import CreateContentTypePlugin from "@magnolia/cli-create-content-type-plugin";
+
+    export default {
+      plugins: [
+        new CreateContentTypePlugin()
+      ]
+    };
+    ```
+
+
+| Form (short and long) | Description |
+| --- | --- |
+| `-a [name]` `--app [name]` | Configure a content app and an associated workspace by creating a new app or choosing an existing one. We recommended using plural form for the `name` . |
+| `-lm [name]` `--light-module [name]` | Sets a light module for the content type. By default, the `name` is the directory specified in the `mgnl.config.js` file. |
+| `-pd <path>` `--prototype-dir <path>` | Use the specified path to the custom prototype templates directory as the prototype source for content type creation. |
+| `-p [name]` `--prototype [name]` | Selects a prototype for content type creation. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+| Property name | Description |
+| --- | --- |
+| `lightModulesPath` | The path to a directory containing all light modules. |
+| `lightModule` | The name of a light module where the content type will be created. Alternative forms: `-lm [name]` , `--light-module [name]` |

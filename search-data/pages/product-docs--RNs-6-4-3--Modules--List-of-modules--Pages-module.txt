@@ -1,0 +1,93 @@
+---
+title: "Pages module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Pages-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Pages module
+---
+
+# Pages module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [PAGES](https://magnolia-cms.atlassian.net/browse/PAGES) |
+| Maven site | [Pages](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fpages%2Fmagnolia-pages-parent%2F{magnolia-pages-64}) |
+| Latest | {magnolia-pages-64} |
+| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | Yes |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-app</artifactId>
+  <version>{magnolia-pages-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-app-compatibility</artifactId>
+  <version>{magnolia-pages-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-editor-widget</artifactId>
+  <version>{magnolia-pages-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-site-spa-rendering</artifactId>
+  <version>{magnolia-pages-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-spa-rendering</artifactId>
+  <version>{magnolia-pages-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pages</groupId>
+  <artifactId>magnolia-pages-jcr-rest</artifactId>
+  <version>{magnolia-pages-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |

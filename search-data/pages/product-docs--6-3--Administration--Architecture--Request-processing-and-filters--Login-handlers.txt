@@ -8,19 +8,14 @@ breadcrumb: DX Core > Administration > Architecture > Request processing and fil
 
 # Login handlers
 
-This page lists all the login handlers provided out of the box. For each handler, you can read about how it works, which security it provides, and any limitations you should consider when using it. This information lets you choose a login handler best suited for your DX Core installation safety level needs.
-
-[BasicLogin](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/master/magnolia-core/src/main/java/info/magnolia/cms/security/auth/login/BasicLogin.java) and [FormLogin](https://gitlab.magnolia-platform.com/pd/platform/main/-/blob/master/magnolia-core/src/main/java/info/magnolia/cms/security/auth/login/FormLogin.java) are both login handlers used in Magnolia’s [Login filter](../Filters/#_login). The filter’s fully qualified class name is info.magnolia.cms.security.auth.login.LoginFilter. The login filter verifies that user credentials are authenticated to ensure that only authenticated users become active users. Magnolia uses Java Authentication and Authorization Service ([JAAS](https://en.wikipedia.org/wiki/Java_Authentication_and_Authorization_Service)) for authentication.
-
-|     |     |
+| 📁 server |  |
 | --- | --- |
-| 📁 server |     |
-| 📁 filters |     |
-| 📁 login |     |
-| ⸬ loginHandlers |     |
-| ⸬ Basic |     |
+| 📁 filters |  |
+| 📁 login |  |
+| ⸬ loginHandlers |  |
+| ⸬ Basic |  |
 | ⬩ class | info.magnolia.cms.security.auth.login.BasicLogin |
-| ⸬ Form |     |
+| ⸬ Form |  |
 | ⬩ class | info.magnolia.cms.security.auth.login.FormLogin |
 | ⬩ class | info.magnolia.cms.security.auth.login.LoginFilter |
 
@@ -50,21 +45,21 @@ This section outlines some Magnolia modules that use login handlers. The ones li
 
     -   Filter class name: info.magnolia.cms.security.auth.login.CASLogin
 
-    -   [Configuration details](../../../../Modules/List-of-modules/CAS-module/#_configuring_jaas)
+    -   [Configuration details](../../../../../RNs-6-4-3/Modules/List-of-modules/CAS-module/#_configuring_jaas)
 
 
 -   WeChat Login module
 
     -   Filter class name: info.magnolia.cms.security.auth.login.SSOAuthenticationLoginFilter
 
-    -   [Configuration details](#wechat-connector:ROOT:index.adoc#_jaas_configuration_for_oauth_authentication)
+    -   [Configuration details](../../../../../../wechat-connector/#_jaas_configuration_for_oauth_authentication)
 
 
 -   The SSO and LDAP modules
 
-    -   Magnolia [LDAP Connector](../../../../Modules/List-of-modules/LDAP-Connector-module/) is a [JAAS login module](https://www.oracle.com/java/technologies/javase/javase-tech-security.html) that connects to any LDAP v3 directory service. Go to [JAAS login configuration](../../../../Modules/List-of-modules/LDAP-Connector-module/#_jaas_login_configuration) for more details.
+    -   Magnolia [LDAP Connector](../../../../../RNs-6-4-3/Modules/List-of-modules/LDAP-Connector-module/) is a [JAAS login module](https://www.oracle.com/java/technologies/javase/javase-tech-security.html) that connects to any LDAP v3 directory service. Go to [JAAS login configuration](../../../../Modules/List-of-modules/LDAP-Connector-module/#_jaas_login_configuration) for more details.
 
-    -   The [SSO module](#magnolia-sso:ROOT:index.adoc) delegates authentication away from Magnolia to an OpenID Connect identity and access management application. The delegation and setting of a successful login process is handled by info.magnolia.sso.auth.login.SsoLoginHandler.
+    -   The [SSO module](../../../../../../magnolia-sso/) delegates authentication away from Magnolia to an OpenID Connect identity and access management application. The delegation and setting of a successful login process is handled by info.magnolia.sso.auth.login.SsoLoginHandler.
 
 
 
@@ -107,8 +102,8 @@ Deploy your login handler to Magnolia’s WEB-INF/lib in a JAR file, and then co
 
 Related topics
 
--   [Filters](../Filters/)
+-   [Filters](../../../../../RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/Filters/)
 
--   [Login filter](../Filters/#_login)
+-   [Login filter](../../../../../RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/Filters/#_login)
 
--   [Authentication](../../../Security/#_authentication)
+-   [Authentication](../../../../../RNs-6-4-3/Administration/Security/#_authentication)

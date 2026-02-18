@@ -16,15 +16,15 @@ Magnolia can be integrated in various ways ranging from filters and servlets to 
 
 ### [](#_rest_service_and_api)REST service and API
 
-Magnolia [REST module](#rest:ROOT:index.adoc) provides preconfigured [REST endpoints](#rest:api:delivery-endpoint.adoc) for `nodes`, `properties` and `commands` allowing you to manipulate content through a Web API. You can create, read, update and delete nodes and properties in any JCR workspace. You can also execute commands to publish, export and import content.
+Magnolia [REST module](../../../../../rest/) provides preconfigured [REST endpoints](../../../../../rest/api/delivery-endpoint/) for `nodes`, `properties` and `commands` allowing you to manipulate content through a Web API. You can create, read, update and delete nodes and properties in any JCR workspace. You can also execute commands to publish, export and import content.
 
-Use the [delivery endpoint API](#rest:api:delivery-endpoint.adoc) and its search, filter and sorting features to get exactly the content you need, including linked content with the [reference resolving feature](#rest:api:Resolving-references-with-the-delivery-endpoint.adoc).
+Use the [delivery endpoint API](../../../../../rest/api/delivery-endpoint/) and its search, filter and sorting features to get exactly the content you need, including linked content with the [reference resolving feature](../../../../../rest/api/Resolving-references-with-the-delivery-endpoint/).
 
 You can control access to REST resources with Magnolia’s role-based security system and configure your desired [CORS behavior](../../../Administration/Architecture/Request-processing-and-filters/Filters/#_adding_http_headers).
 
 The REST modules also facilitates the [creation of custom endpoints](../../Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/): developers can create and maintain their own custom delivery APIs via YAML configuration.
 
-See also [Delivery API](#rest:api:delivery-endpoint.adoc)
+See also [Delivery API](../../../../../rest/api/delivery-endpoint/)
 
 ### [](#_rest_client)REST Client
 
@@ -36,7 +36,7 @@ The [REST Client module](../../../Modules/List-of-modules/REST-Client-module/) e
 
 Additional filters can be added in the filter chain or `web.xml` file. If you add them in the filter chain you benefit from Magnolia features such as security and caching. The additional filter can take over the handling of the request or delegate it to the remaining filter chain.
 
-![Filter chain integration](../../../_images/filter-chain-integration.png)
+![Filter chain integration](../../../../RNs-6-4-3/_images/filter-chain-integration.png)
 
 [Custom filters](../../../Administration/Architecture/Request-processing-and-filters/Custom-filters/) explains how to create and configure a custom Filter.
 
@@ -53,7 +53,7 @@ An independent servlet can be registered in the servlet filter. The easiest way 
 3.  The servlet handles the response.
 
 
-![Responding to a request with servlet](../../../_images/responding-to-request-with-servlet.png)
+![Responding to a request with servlet](../../../../RNs-6-4-3/_images/responding-to-request-with-servlet.png)
 
 [Registering a servlet](../../../Administration/Architecture/Request-processing-and-filters/Registering-a-servlet/) explains how to create and register a servlet.
 
@@ -74,7 +74,7 @@ As the Magnolia main filter is registered on forward, any servlet or filter can 
 5.  A page is rendered.
 
 
-![Forwarding a request](../../../_images/forwarding-a-request.png)
+![Forwarding a request](../../../../RNs-6-4-3/_images/forwarding-a-request.png)
 
 ## [](#_custom_renderer)Custom renderer
 

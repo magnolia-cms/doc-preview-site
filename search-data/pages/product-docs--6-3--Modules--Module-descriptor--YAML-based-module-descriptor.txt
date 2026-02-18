@@ -28,35 +28,10 @@ dependencies:
     optional: true
 ```
 
-## [](#_module_descriptor_elements)Module descriptor elements
-
 | Property | Description |
 | --- | --- |
-| `version` | **required**<br><br>The module [versions](#_module_versions). |
-| `dependencies` | **optional**<br><br>[Dependencies](#_module_dependencies) on other modules - the module will install only after the specified modules. |
-
-## [](#_module_versions)Module versions
-
-The syntax for a version is
-
-from version / to version
-
-where the version number consists of three parts: `x.y.z`. The `x.y` parts denote a major version and the `z` part a maintenance release. The `y.z` parts are optional. For a strict version dependency, use just one version string.
-
-The info.magnolia.module.model.VersionRange class supports the following syntax to indicate version dependencies. Only three parts are supported: major, minor and security versions. The build number is not supported. See [Runtime.Version](https://docs.oracle.com/javase/9/docs/api/java/lang/Runtime.Version.html) for more information.
-
--   `*`: all versions.
-
-    > **Important:** In a YAML file, make sure to wrap * with quotes (version: "*").
-
--   `1.2`: version 1.2 only.
-
--   `1.2/*`: version 1.2 or higher.
-
--   `1.2/1.2.9` or `[1.2,1.2.9]`: all versions between 1.2 and 1.2.9 (including 1.2 and 1.2.9).
-
--   `[1.2,1.2.9[` or `[1.2,1.2.9)`: all versions between 1.2 and 1.2.9 (including 1.2 but excluding 1.2.9).
-
+| `version` | **required** The module [versions](#_module_versions) . |
+| `dependencies` | **optional** [Dependencies](#_module_dependencies) on other modules - the module will install only after the specified modules. |
 
 | Example | Description |
 | --- | --- |

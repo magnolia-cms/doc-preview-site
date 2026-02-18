@@ -1,0 +1,37 @@
+---
+title: "Magnolia React Editor"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/headless/spa-development/magnolia-front-end-sdk/magnolia-react-editor/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development > Headless development guidelines > Magnolia front-end SDK > Magnolia React Editor
+---
+
+# Magnolia React Editor
+
+This page describes the installation, components and functions of the Magnolia React Editor — a lightweight, fully-featured library connecting React projects with the WYSIWYG authoring experience of the Magnolia Pages app.
+
+## [](#_installation)Installation
+
+To install the editor, open the command prompt and enter the following command.
+
+```none
+npm install @magnolia/react-editor
+```
+
+> **Note:** is the latest version of the Magnolia React Editor.
+
+| Property | Description |
+| --- | --- |
+| `content` | Area content that is passed as a property to the parent component where the `EditableArea` is used. Example : `import React from 'react'; import { EditableArea } from '@magnolia/react-editor'; function Home(props) { // main is area name as defined in page/component YAML definition const { main } = props; return ( <> {main && <EditableArea content={main} />} </> ); } export default Home;` |
+| `parentTemplateId` | Required only when using `templateDefinitions` . `import React from 'react'; import { EditableArea } from '@magnolia/react-editor'; function Home(props) { // main is area name as defined in page/component YAML definition // metadata is set of extra component informations added by react-editor const { main, metadata } = props; return ( <> {main && <EditableArea content={main} parentTemplateId={metadata['mgnl:template']} />} </> ); } export default Home;` |
+| `elementType` | `EditableArea` wraps its children components in a single `div` element. The wrapping element can be changed by passing a new element type with `elementType` , which must be a valid DOM element passed as `string` . Example : `<EditableArea content={main} /> /* <div> ...children </div> */ <EditableArea content={main} elementType='ul' /> /* <ul> ...children </ul> */` |
+| `className` | Used to add CSS classes to **EditableArea** wrapping element. `<EditableArea content={main} className='foo' /> /* <div class="foo"> ...children </div> */` |
+| `customView` | Function to overwrite the default behavior of the `EditableArea` . `customView` receives one variable with all area data passed as the `content` property. `import React from 'react'; import { EditableArea, EditableComponent } from '@magnolia/react-editor'; function myCustomView({ content }) { return ( <> {content['@nodes'].map((nodeName) => ( <EditableComponent key={content[nodeName]['@id']} content={content[nodeName]} /> ))} </> ); } function Home(props) { // main is area name as defined in page/component YAML definition const { main } = props; return ( <> {main && <EditableArea content={main} customView={myCustomView} />} </> ); } export default Home;` |
+
+## [](#_demo)Demo
+
+For headless SPA demos showcasing the Magnolia React Editor, see [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
+
+## [](#_changelog)Changelog
+
+A list of notable changes for any given version is available on the [changelog page](https://gitlab.com/magnolia-ce/frontend-sdk/react-editor/-/blob/main/CHANGELOG.md).

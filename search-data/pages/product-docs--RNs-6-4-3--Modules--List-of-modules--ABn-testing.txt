@@ -1,0 +1,148 @@
+---
+title: "A/B/n Testing"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/ABn-testing/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > A/B/n Testing
+---
+
+# A/B/n Testing
+
+Magnolia offers native A/B/n Testing to help you make decisions about your content based on real data from your existing traffic. Here, we explain what A/B/n Testing is, how results are calculated with Magnolia’s A/B/n Testing app, and a brief overview of what to expect using the app.
+
+For details on how to use the A/B/n Testing app, see the [A/B/n Testing app](ABn-testing-app/) page.
+
+> **Note:** Note that A/B/n Testing comes with a special license and runs as a connected service. Please contact your Magnolia Customer Success Manager or Support to find out more.
+
+## [](#_what_is_abn_testing)What is A/B/n Testing?
+
+A/B testing is a statistical testing strategy in which two versions of a page are compared with each other.
+
+The goal of testing is to determine which version of a page performs better among customers to increase your online conversion rates.
+
+![AB testing diagram](../../../_images/abntest/abtest-diagram.png)
+
+A/B/n testing is an extension of A/B testing in which *multiple* variants of a page are compared against each other.
+
+![ABN testing diagram](../../../_images/abntest/abn-diagram.png)
+
+> **Note:** We recommend you create no more than 5 variants in one test.
+
+## [](#_start_with_a_problem)Start with a problem
+
+Before designing a test, it’s good practice to identify a problem you want to solve and define a hypothesis. Existing problems are generally identified using [analytics for your site](../../extensions-and-frameworks/analytics-integration-framework/).
+
+![From problem to solution diagram](../../../_images/abntest/6-2-diagram-abtesting-process.png)
+
+Example:
+
+-   Problem: Form completion for a free trial is very low despite high traffic on the page.
+
+-   Hypothesis: By reducing the number of form fields from 15 to 5, we will increase the number of forms completed.
+
+-   A/B Test: Variant A uses the original 15 field form, variant B uses a new, shorter form.
+
+-   The resulting conversion rates show that variant B performs better. This page can be selected as the winner.
+
+
+## [](#_how_results_are_calculated)How results are calculated
+
+> **Tip:** The Magnolia algorithm is built on the Frequentist approach, which optimizes traffic volumes -even when traffic is low- as well as conversion rates and may reduce the number of observations required for a successful experiment by 50% or more. Predictions are made using data from the current experiment only.
+
+Your A/B/n test results are calculated by taking the user events from within your test (such as *click-through rates*) on a daily basis. These events are registered to a database and processed in a data pipeline to make the resulting content more usable for displaying results in the dashboard. Note that results can take 24 hours or more to become available, depending on your traffic.
+
+[Magnolia Analytics](../../extensions-and-frameworks/analytics-integration-framework/Analytics-module/) is used to display and visualize the results of A/B/n Testing results.
+
+> **Note:** GDPR ComplianceWhile collecting data, we do not store user-specific records, but rather test totals. When using the A/B/n Testing app, it is not possible to link back to any personally identifiable information from the test results.
+
+## [](#_dedicated_testing_app_in_magnolia)Dedicated Testing app in Magnolia
+
+Magnolia provides a marketer-friendly app to enable you to quickly create and manage your tests. The Testing app gives you a single location where you can create and see all your tests.
+
+![ABN testing app](../../../_images/abntest/ab-testing-app.png)
+
+The Testing app allows you to:
+
+-   Create tests using pages from the [Pages app](../../../Apps/List-of-apps/Pages-app/).
+
+-   Add a goal for your tests.
+
+-   Add, edit and preview variants for your test.
+
+-   Allocate an audience [segment](../../../use-cases/Personalization/) such as North America or EMEA. You do not have to narrow the audience if the test is meant for all users.
+
+-   Currently, site traffic is evenly distributed across all variants.
+
+-   Edit, abort, and delete tests.
+
+-   View test results.
+
+-   Replace the original page with a winning variant.
+
+
+To create a test, follow the instructions on the [A/B/n Testing app](ABn-testing-app/) page.
+
+## [](#_useful_terms)Useful terms
+
+-   [Base conversion](#_base_conversion)
+
+-   [Minimum detectable effect](#_minimum_detectable_effect)
+
+-   [Confidence level](#_confidence_level)
+
+-   [Confidence rate](#_confidence_rate)
+
+-   [Base variant](#_base_variant)
+
+-   [Variants](#_variants)
+
+-   [Segments](#_segments)
+
+-   [Significant results](#_significant_results)
+
+
+### [](#_base_conversion)Base conversion
+
+A conversion happens when a site visitor completes a specific action. Some examples of conversions are a user clicking a button or visiting a specific page. This specified conversion acts as the basis to compare variants via the targeted MDE.
+
+### [](#_minimum_detectable_effect)Minimum detectable effect
+
+The Minimum detectable effect (MDE) is the improvement (in %) you would like to detect relative to the base conversion rate.
+
+### [](#_confidence_level)Confidence level
+
+You define the confidence level for your test before it starts. When you define a confidence level, at least one variant of your test must reach this level to be the winner.
+
+The confidence level is the likelihood that a variant is truly better than the original and that your test results are not due to chance. A confidence level of 90% means that there is a 10% chance of a false positive where the variant is in fact not conclusively better than the original.
+
+### [](#_confidence_rate)Confidence rate
+
+The confidence rate is displayed in the Results tab and applies to the winning variant of the test. For example, a 97% confidence rate means that there is only a 3% chance that the winning variant is a false positive.
+
+### [](#_base_variant)Base variant
+
+The original page selected in the test. This becomes Variant A.
+
+### [](#_variants)Variants
+
+In A/B/n testing, variants are different versions of the original page (or base variant). They are used to determine which structure, design, or visual might be more beneficial to site visitors. The control (base) variant is typically compared against slightly different variants of itself. With A/B/n Testing at Magnolia, you can have as many variations of the original page as required for your test.
+
+> **Tip:** The term variant is also used in the context of Personalization, where a variant is an alternative content element that replaces the original element in personalized content delivery.
+
+### [](#_segments)Segments
+
+A segment is a portion of site visitors who meet specified criteria. You should create a segment when you know your audience well and you want to routinely target content to them. For A/B/n Testing with Magnolia, this is typically a demographic region such as *North America* or *Europe, Middle East, and Africa*. Segments are made using Magnolia [Personalization](../../../use-cases/Personalization/).
+
+> **Warning:** Segments are not locked nor copied when used in a test. The effect of deleting or modifying a segment that is actively being used in a test is not defined. We recommend you create dedicated segments for each test.
+
+### [](#_significant_results)Significant results
+
+Results are considered significant when at least one of your variants has met the [confidence levels](#_basic_setup) based on the base conversion and MDE (minimum detectable effect). This means that, based on preconfigured confidence levels, the variant has a conversion rate that is higher than the base conversion rate by a percentage at least as big as the MDE.
+
+Related topics
+
+-   [Personalization](../../../use-cases/Personalization/)
+
+-   [A/B/n Testing module](ABn-testing-module/)
+
+-   [A/B/n Testing app](ABn-testing-app/)

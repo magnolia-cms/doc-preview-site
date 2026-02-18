@@ -1,0 +1,150 @@
+---
+title: "Jumpstarting a FreeMarker-based Magnolia project"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Magnolia-front-end-development/Jumpstarting-a-freemarker-based-magnolia-project/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Front-end development > FreeMarker development guidelines > Jumpstarting a FreeMarker-based Magnolia project
+---
+
+# Jumpstarting a FreeMarker-based Magnolia project
+
+After creating a new project directory and running the [Magnolia CLI jumpstart plugin](../Getting-started-with-front-end-development/#_jumpstarting_a_project), you’re prompted to choose from available templates:
+
+```shell
+? Choose a template
+  1) standard-webapps (Magnolia without any content)
+  2) demo-webapps (Magnolia with travel demo)
+  3) headless (Magnolia with headless starter projects)
+```
+
+Select `2) demo-webapps` and press Enter.
+
+## [](#_selecting_a_starter_project)Selecting a starter project
+
+Next, choose the desired starter project for your edition:
+
+```shell
+? Choose a template
+  1) magnolia-community-demo-webapp
+  2) magnolia-dx-core-demo-webapp
+```
+
+For this guide, select `1) magnolia-community-demo-webapp`.
+
+This command downloads and configures all necessary files into the current working directory.
+
+## [](#_understanding_the_project_structure)Understanding the project structure
+
+Your new project directory includes:
+
+-   `apache-tomcat/` - Tomcat with Magnolia webapp
+
+-   `light-modules/` - Directory for your light modules
+
+-   `mgnl.config.js` - Configuration for Magnolia CLI and its plugins
+
+-   `mgnl.error.log` - Log file for Magnolia CLI plugin execution
+
+
+## [](#_magnolia_cli_configuration)Magnolia CLI configuration
+
+Inside `mgnl.config.js`, you see default plugins such as:
+
+```js
+plugins: [
+  new CreateComponentPlugin({...}),
+  new CreatePagePlugin({...}),
+  new CreateLightModulePlugin({...}),
+  new CreateAppPlugin({...}),
+  new StartPlugin({...})
+]
+```
+
+These plugins define how the CLI behaves when you create templates, components, or light modules.
+
+## [](#_creating_pages_and_components_with_cli)Creating pages and components with CLI
+
+Magnolia CLI provides commands to scaffold FreeMarker-based templates and configuration.
+
+### [](#_create_a_new_light_module)Create a new light module
+
+To start with a light module:
+
+```shell
+npm run mgnl -- create-light-module "my-lm"
+```
+
+This command creates the folder structure for your module and registers it in `mgnl.config.js`.
+
+### [](#_create_a_new_page_template)Create a new page template
+
+To create a new page template, run:
+
+```shell
+npm run mgnl -- create-page HomePage
+```
+
+Add an area inside the `<body> …​ </body>` element in the `/Path/to/project/light-modules/my-lm/templates/pages/HomePage.ftl` template manually:
+
+```freemarker
+[@cms.area name="main"/]
+```
+
+### [](#_create_a_new_component)Create a new component
+
+To create a new component inside `HomePage`, run:
+
+```shell
+npm run mgnl -- create-component Banner -a HomePage
+```
+
+This command generates a component template and adds it to `HomePage` inside `my-lm`.
+
+## [](#_starting_magnolia_cms)Starting Magnolia CMS
+
+In the project root, run:
+
+```shell
+npm run mgnl -- start
+```
+
+After the Magnolia instance is successfully started, visit [http://localhost:8080](http://localhost:8080).
+
+## [](#_login)Login
+
+Go to [`http://localhost:8080/magnoliaAuthor`](http://localhost:8080/magnoliaAuthor) and sign in as a `superuser` :
+
+-   Username: `superuser`
+
+-   Password: `superuser`
+
+
+Magnolia is ready to use and gives you a list of suggestions to get started.
+
+> **Note:** superuser is a system administrator account that has permissions to do everything. It’s useful for testing.
+
+## [](#_creating_pages_and_content_in_magnolia)Creating pages and content in Magnolia
+
+1.  Open the Pages app in AdminCentral.
+
+2.  Create a new page using the `HomePage` template.
+
+3.  Add the `Banner` component to the main area of the page.
+
+4.  Visit [http://localhost:8080](http://localhost:8080) to see your new content coming from Magnolia and rendered with FreeMarker.
+
+
+## [](#_next_steps)Next Steps
+
+You successfully jumpstarted a FreeMarker-based Magnolia project.
+
+Here are some ideas for what to explore next:
+
+-   Configure your setup - adjust `mgnl.config.js` to match your project’s needs.
+
+-   Create your own CLI plugin - extend the CLI using `generate-plugin`.
+
+-   Build a content app and a content type, then render the content in your FreeMarker template.
+
+
+[Want to try a headless project instead?](../Jumpstarting-a-headless-magnolia-project/)

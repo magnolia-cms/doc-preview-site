@@ -8,19 +8,19 @@ breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.5
 
 # Release notes for Magnolia CMS 6.3.5
 
-[LTS release](../../../../support/) • Delivered on February 21, 2025 • Changelog: [15689](https://magnolia-cms.atlassian.net/issues/?filter=15689)
+[LTS release](#support:ROOT:index.adoc) • Delivered on February 21, 2025 • Changelog: [15689](https://magnolia-cms.atlassian.net/issues/?filter=15689)
 
 **Magnolia 6.3.5** is primarily a bug-fixing and security release that delivers critical security fixes and [breaking changes](#_breaking_changes) in FreeMarker directives, content rendering, and in the configuration of the Content Translation Extended module.
 
-We keep the details of the security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](../../../../support/) if you need more information.
+We keep the details of the security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
 
--   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.5.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.5/magnolia-dx-core-webapp-6.3.5.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.5.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.5/magnolia-dx-core-webapp-6.3.5.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.5.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.5/travel-demo-webapp-6.3.5.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-webapp-6.3.5.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.5/travel-demo-webapp-6.3.5.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.5.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.5/travel-demo-community-webapp-6.3.5.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-community-webapp-6.3.5.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.5/travel-demo-community-webapp-6.3.5.war)
 
--   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.1.zip](../../_attachments/mtk2_3.0.1.zip) (*as a light module*)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [mtk2\_3.0.1.zip](../../_attachments/mtk2_3.0.1.zip) (*as a light module*)
 
 
 ## [](#_breaking_changes)Breaking changes
@@ -39,7 +39,36 @@ Alternatively, you can update the template scripts to use the new encoded conten
 
 
 ```groovy
-Unresolved include directive in modules/ROOT/pages/Releases/Release-notes-for-Magnolia-CMS-6.3.5.adoc - include::6.2.55@groovy-shell-scripts:ROOT:example$find-usage-of-unencoded-functions.groovy[]
+import info.magnolia.objectfactory.Components;
+import info.magnolia.resourceloader.ResourceOrigin;
+import info.magnolia.resourceloader.util.ResourcePredicates;
+import java.util.regex.Pattern;
+
+PATTERNS = [Pattern.compile("cmsfn.(contentByPath|contentById|nodeByPath|nodeById|search|simpleSearch)"),
+            Pattern.compile("searchfn.(searchPages|searchContent)"),
+            Pattern.compile("catfn.(getCategories|getRelatedCategories|getContentByCategory|getCategoryNodeByName)")]
+
+origin = Components.getComponent(ResourceOrigin.class);
+resources = origin.find("/", ResourcePredicates.pathMatchesGlob("/**/*.ftl")).toList();
+for (resource in resources) {
+    if (searchIn(resource) > 0) {
+        println resource.getPath();
+    }
+}
+
+
+def searchIn(resource) {
+    def count = 0
+    resource.openReader().withCloseable { reader ->
+        reader.eachLine { line ->
+            PATTERNS.each{ PATTERN ->
+                def matcher = PATTERN.matcher(line)
+                while (matcher.find()) count++
+            }
+        }
+    }
+    return count
+}
 ```
 
 ### [](#_content_translation_extended_module_config)Content Translation Extended module config
@@ -147,16 +176,16 @@ Unbundled modules released since Magnolia 6.3.4.
 
 -   **AI Accelerator module**
 
-    -   Version `2.2.0-beta1` (technical preview) was released on February 11, 2025. For more information, see the [changelog](#ai-accelerator:ROOT:changelog.adoc).
+    -   Version `2.2.0-beta1` (technical preview) was released on February 11, 2025. For more information, see the [changelog](../../../../ai-accelerator/4.0-alpha/changelog/).
 
-    -   Version `2.1.1` was released on February 3, 2025. For more information, see the [changelog](#ai-accelerator:ROOT:changelog.adoc).
+    -   Version `2.1.1` was released on February 3, 2025. For more information, see the [changelog](../../../../ai-accelerator/4.0-alpha/changelog/).
 
 
 -   **Content Translation Extended module** `4.1.0` was released on January 27, 2025. The `4.0.x` branch won’t receive any further updates. For more information, see the [changelog](../../../../content-translation-support-ext/#_changelog).
 
--   **Marketing Automation module** `2.0.1` was released on February 5, 2025. For more information, see the [changelog](../../Modules/extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-module/#_changelog).
+-   **Marketing Automation module** `2.0.1` was released on February 5, 2025. For more information, see the [changelog](../../../RNs-6-4-3/Modules/extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-module/#_changelog).
 
--   **SSO module** `4.0.2` was released on February 7, 2025. For more information, see the [changelog](#magnolia-sso:ROOT:changelog.adoc).
+-   **SSO module** `4.0.2` was released on February 7, 2025. For more information, see the [changelog](../../../../magnolia-sso/changelog/).
 
 
 ## [](#_acknowledgements)Acknowledgements

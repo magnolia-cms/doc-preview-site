@@ -8,36 +8,22 @@ breadcrumb: DX Core > Modules > REST Client module
 
 # REST Client module
 
-[Developer productivity](../../../use-cases/developer-productivity/) Bundled: Community edition
-
-|     |     |
+| Edition | CE |
 | --- | --- |
-| Edition | CE  |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLRESTCL](https://magnolia-cms.atlassian.net/browse/MGNLRESTCL) |
-| Maven site | [REST Client](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Frestclient%2Fmagnolia-rest-client%2F3.0.3) |
-| Latest | 3.0.3 |
-
-Magnolia REST Client module enables easy creation, configuration and usage of REST clients. Besides the ability to configure REST clients, the module also:
-
--   Provides the [REST Client app](../../../Apps/List-of-apps/REST-Client-app/) to test and debug configured clients.
-
--   Includes [`restfn`](../../../Developing/Templating/Template-scripts/Templating-functions/restfn/) templating functions that give access to REST clients within FreeMarker [template scripts](../../../Developing/Templating/Template-scripts/).
-
-
-This page describes the module, explains how to install it and gives a quick reference how to declare and configure REST clients.
-
-> **Note:** The ability to use REST clients in the UI (in apps and search result supplier) is a DX Core feature only, provided by the UI Framework REST Extensions module (artifactId magnolia-rest-client-ui, parent artifactId magnolia-parent-pom-enterprise).
+| Maven site | [REST Client](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Frestclient%2Fmagnolia-rest-client%2F{magnolia-rest-client-63}) |
+| Latest | {magnolia-rest-client-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.restclient</groupId>
   <artifactId>magnolia-rest-client</artifactId>
-  <version>3.0.3</version> (1)
+  <version>{magnolia-rest-client-63}</version> (1)
 </dependency>
 ```
 
@@ -49,7 +35,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.restclient</groupId>
   <artifactId>magnolia-rest-client-app</artifactId>
-  <version>3.0.3</version> (1)
+  <version>{magnolia-rest-client-63}</version> (1)
 </dependency>
 ```
 
@@ -64,267 +50,24 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 -   `magnolia-rest-client-app` - Installs the client app to test and debug configured REST clients. You can test your clients in the app before using them in template scripts, models or other Java classes.
 
 
-## [](#_configuration)Configuration
-
-REST clients can be configured within all Magnolia modules in the `restClients` folder.
-
-Example: A declaration of a client called `programming-quotations`. For the full use case, see [Hello Magnolia - with content via REST](../../../Developing/Hello-Magnolia---with-content-via-REST/), an extension of the [Hello Magnolia](../../../Getting-started-with-Magnolia/Hello-Magnolia/) introductory tutorial:
-
-/hello-magnolia/restClients/programming-quotations.yaml
-
-```yml
-baseUrl: https://programming-quotes-api.herokuapp.com
-restCalls:
-  random:
-    method: get
-    entityClass: com.fasterxml.jackson.databind.JsonNode
-    path: /quotes/random/lang/en
-```
-
-Additional examples of configuration and use are available on the [Example REST client configurations](Example-REST-client-configurations/) page. Most of the configurations listed on that page are from the `declarative-rest-demo` light modules stored in our Gitlab repository:
-
--   [`rest-client`](https://gitlab.magnolia-platform.com/pd/modules/rest-client)
-
--   [`rest-client-ui`](https://gitlab.magnolia-platform.com/pd/enterprise/rest-client-ui)
-
-    (WARNING: Only available for the Magnolia DX Core Edition.)
-
-
-### [](#_rest_client_properties)REST Client properties
-
- PropertyDescription
-
-`<rest client name>`
-
-**required**
-
-Add a node for each REST client. The name is arbitrary, but it is good practice to use a descriptive name. The node name is used when obtaining instances of clients.
-
-     `baseUrl`
-
-**required**
-
-Base URL of the REST endpoint to connect with the client.
-
-> **Tip:** You can also use the API_BASE_URL environment variable in the value. For more details, see the Using environment variables section.
-
-     `class`
-
-**optional**, *default is \`info.magnolia.rest.client.ConfiguredRestClientDefinition\`*
-
-REST client definition class. In additional to the default class, you may use also the `info.magnolia.openapi.client.OpenApiRestClientDefinition` to leverage a schema based on the [OpenAPI Specification](https://en.wikipedia.org/wiki/OpenAPI_Specification).
-
-     `clientFactoryClass`
-
-**optional**, *default is \`info.magnolia.rest.client.factory.DefaultClientFactory\`*
-
-The factory class. The default factory class is used with the `ConfiguredRestClientDefinition`.
-
-The info.magnolia.openapi.client.factory.OpenApiClientFactory class is used with `OpenApiRestClientDefinition` class.
-
-     `schemaUrl`
-
-**required** if `OpenApiRestClientDefinition` is used
-
-Full path (URL or file) to the resource containing an OpenAPI schema.
-
-     `clientConfiguratorClass`
-
-**optional**
-
-Custom class that specifies the client builder.
-
-Allows you to configure the client ex post, without the need to create a new factory or extend it.
-
-See also [Jakarta RESTful Web Services](https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services).
-
-     `components`
-
-**optional**
-
-List of components (for example `ClientRequestFilter`, `ClientResponseFilter`).
-
-Registered components will be executed on every request.
-
-**Example configuration**
-
-```yaml
-baseUrl: https://cdn-url
-components:
-  cdn-purge:
-     class: com.example.ipnp.magnolia.core.caching.CdnPurgeRequest
-restCalls:
-    cdn-purge-rest-call:
-        method: post
-        path:   /.purge-cdn
-```
-
-     `enabled`
-
-**optional**, *default* is `true`
-
-Enables or disables the client.
-
-     `exceptionHandlerClass`
-
-**optional**
-
-Custom class that handles the HTTP standard response exceptions such as code 404 - `Not Found`.
-
-Any `javax.ws.rs.WebApplicationException` will be handled.
-
-     `name`
-
-**optional**
-
-Overrides the name assigned to the client through the node name.
-
-The name should be unique. By default, file name is used in a file-based client definition.
-
-     `proxies`
-
-**optional**
-
-List of info.magnolia.rest.client.proxy.ProxyDefinition objects.
-
-You can use definitions with `client.proxy()` in the `DefaultRestClient`.
-
-### [](#_rest_calls)REST calls
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;rest client name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>restCalls</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of REST call configurations.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;call name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Add a node for each call configuration. The name is arbitrary but should be unique in the configuration.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>entityClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Entity type of the REST call, for example:</p></div><div class="ulist"><ul><li><p><code>java.lang.String</code></p></li><li><p><code>com.fasterxml.jackson.databind.JsonNode</code></p></li><li><p><code>java.util.HashMap</code></p></li><li><p><code>javax.ws.rs.core.Response</code></p></li></ul></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">OpenAPI responses are always interpreted as <code>JsonNode</code> entities.</td></tr></tbody></table></div><div class="paragraph"><p>You can also use your own Java class. Jackson will try to map a response to it. For example:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.rest.client.Articles</code></p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>method</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Definition of the REST method: <code>GET</code>, <code>POST</code>, <code>HEAD</code>, <code>PUT</code>, or <code>DELETE</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>path</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Definition of the path for the REST call.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>body</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Object containing request body.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">If you intend to send a list of values in the body, you need to convert the list to a string.</td></tr></tbody></table></div><div class="paragraph"><p>For example, to send this:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">body:
-  userId: 1
-  title: aTitle
-  list:
-    - 5</code></pre></div></div><div class="paragraph"><p>you need to convert it to and send this:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">body: 'userId={userId}&amp; title ={title}'
-defaultValues:
-  list: "[5]"</code></pre></div></div><div class="paragraph"><p>Likewise, none of the following will work:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">body: '{"userId": 1, "title": "aTitle", "list": {list}}'
-defaultValues:
-  list:
-    - 5</code></pre></div></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">body:
-  list: "{list}"</code></pre></div></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">body:
-  list: "[5]"</code></pre></div></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">A custom body can be passed to and issued with a REST call without the need to configure them in a REST client definition file.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>cookies</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of accepted request cookies.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Custom cookies can be passed to and issued with a REST call without the need to configure them in a REST client definition file.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>defaultValues</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of default values. Default values can be used in any query parameter and can be overridden using <code>invoke(&lt;call-name&gt;, &lt;call-values&gt;)</code>.</p></div><div class="paragraph"><p>For example, the default values <code>{ theUserId: 1 }</code> and <code>{ id: "1" }</code> on lines 12 and 18 below are used in templates <code>{theUserId}</code> and <code>{id}</code> on lines 11 and 17, respectively:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-numberLines hljs" data-lang="numberLines">baseUrl: https://jsonplaceholder.typicode.com
-
-class: info.magnolia.rest.client.ConfiguredRestClientDefinition
-clientFactoryClass: info.magnolia.rest.client.factory.DefaultClientFactory
-
-restCalls:
-  byUserId:
-    method: get
-    entityClass: com.fasterxml.jackson.databind.node.ArrayNode
-    path: /posts
-    queryParameters: {userId: "{theUserId}"}
-    defaultValues: { theUserId: 1 }
-
-  single:
-    method: get
-    entityClass: com.fasterxml.jackson.databind.JsonNode
-    path: /posts/{id}
-    defaultValues: { id: "1" }</code></pre></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>headers</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of accepted request headers.</p></div><div class="paragraph"><p>Example:</p></div><div class="paragraph"><p><code>headers:</code> + <code>Content-Type: "application/json; charset=UTF-8"</code></p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Custom headers can be passed to and issued with a REST call without the need to configure them in a REST client definition file.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>queryParameters</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of request query parameters.</p></div><div class="paragraph"><div class="title">Example</div><p>Using a template <code>{query}</code> for a URL such as <code><a href="http://www.example.com/search?q=title~" &lt;something&gt;""="" class="bare">http://www.example.com/search?q=title~"&lt;something&gt;"</a></code>.</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">queryParameters:
-  q: "title~\"{query}\""</code></pre></div></div><div class="paragraph"><p>Custom query parameters can be passed to and issued with a REST call without the need to configure them in a REST client definition file.</p></div><div class="admonitionblock caution"><table><tbody><tr><td class="icon"><i class="fa icon-caution" title="Caution"></i></td><td class="content">Query parameter values are processed as a space-separated list by default.</td></tr></tbody></table></div><div class="paragraph collapse"><p>Read more</p></div><div class="sidebarblock collapse-content"><div class="content"><div class="tabset is-loading"><div class="ulist tabs"><ul><li><p><a id="tabset1_configuration-span-class-icon-i-class-fa-fa-code-i-span"></a>Configuration<span class="icon"><i class="fa fa-code"></i></span></p></li><li><p><a id="tabset1_notes-span-class-icon-i-class-fa-fa-pencil-square-o-i-span"></a>Notes<span class="icon"><i class="fa fa-pencil-square-o"></i></span></p></li></ul></div><div class="content"><div class="tab-pane" aria-labelledby="tabset1_configuration-span-class-icon-i-class-fa-fa-code-i-span"><div class="paragraph"><p>Where the query parameter is <code>my search</code>.</p></div><div class="listingblock"><div class="title">Configuration</div><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">queryParameters:
-  q: "{q}"</code></pre></div></div><div class="listingblock"><div class="title">Output</div><div class="content"><pre class="highlightjs highlight"><code class="language-none hljs">/search?q=my&amp;q=search</code></pre></div></div></div><div class="tab-pane" aria-labelledby="tabset1_notes-span-class-icon-i-class-fa-fa-pencil-square-o-i-span"><div class="paragraph"><p>This behavior is designed to support use cases where multiple values need to be passed for a single query parameter (as in <code>q=value1&amp;q=value2</code> for APIs that accept repeated parameters). However, for use cases requiring a single parameter value with spaces (a search query like <code>my search</code>), the split may be unexpected.</p></div><div class="paragraph"><p>To ensure spaces are encoded as <code>%20</code> within a single parameter value, encode the value before passing it to the REST client.</p></div><div class="listingblock"><div class="title">Example</div><div class="content"><pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">String query = "my search"; <i class="conum" data-value="1"></i><b>(1)</b>
-String encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8);</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Pass this encoded value as <code>{q}</code>.</td></tr></tbody></table></div></div></div></div></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>responseContentType</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>A <code>Content-Type</code> header value, in case the header is missing in a response.</p></div><div class="paragraph"><p>Example:</p></div><div class="paragraph"><p><code>responseContentType: application/json</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>securityScheme</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Name of a configured security scheme the call uses.</p></div></div></td></tr></tbody></table></div>
-
-### [](#_trust_store)Trust store
-
-If the target server uses a self-signed certificate, you can add a trust store configuration to the client.
-
 | Property | Description |
 | --- | --- |
-| `<rest client name>` |     |
-| `trustStoreConfiguration` | **optional**<br><br>A node for a trust store configuration. |
-| `trustStorePassword` | **required**<br><br>String specifying the password for the certification trust store.<br><br>Required when used with a REST client definition with SSL support. |
-| `trustStorePath` | **required**<br><br>String specifying the location of the certification trust store.<br><br>Required when used with a REST client definition with SSL support. |
-| `trustStoreType` | **required**<br><br>String specifying the type of the certification trust store.<br><br>Required when used with a REST client definition with SSL support. |
-| `trustSelfSignedCertificates` | **optional**, *default* is `false`<br><br>Setting the property to `true` makes all self-signed certificates valid without the trust store. |
-
-### [](#_security_scheme)Security scheme
-
-If the REST API service needs an authentication of a REST call, you can configure a security (authentication) scheme under the `securitySchemes` node of the client configuration. Two security handlers are available out of the box:
-
--   `basic` ([RFC 7617](https://tools.ietf.org/html/rfc7617))
-
--   `bearer` ([RFC 6750](https://tools.ietf.org/html/rfc6750))
-
-
-#### [](#_example_configuration)Example configuration
-
-Example configuration of a security scheme named `b1`, with a binding to a REST call named `myCommand` via the `securityScheme` property.
-
-$magnolia.resources.dir/example-light-module/restClients/basic-security.yaml
-
-```yaml
-baseUrl: http://localhost:8080/magnoliaPublic
-securitySchemes: # define one or more schemes
-  b1:
-    $type: basic
-    username: superuser
-    password: superuser
-restCalls:
-  myCommand:
-    method: post
-    entityClass: com.fasterxml.jackson.databind.JsonNode
-    path: /.rest/commands/v2/myCatalog/myCommand
-    securityScheme: b1 # set the scheme for the call
-```
-
-#### [](#_basic_security_scheme)Basic security scheme
-
-| Property | Description |
-| --- | --- |
-| `<rest client name>` |     |
-| `securitySchemes` | **optional**<br><br>List of basic security scheme configurations. |
-| `<security scheme name>` | **required**<br><br>Scheme name. The name is arbitrary. |
-| `class` or `$type` | **required**<br><br>The basic security must use the info.magnolia.rest.client.authentication.definition.BasicSecuritySchemeDefinition class.<br><br>Alternatively, `$type: basic` may be used instead of the class definition. |
-| `username` | **optional**<br><br>Username used in the basic security scheme. Template values(`'{@password:<uuid>}'`) can be used, for example:<br><br>`username: ‘{@password:ec0dd396-c7f0-4851-aa62-d91eed8f8b5e}’` |
-| `password` | **optional**<br><br>Password used in the basic security scheme. Template values (`'{@password:<uuid>}'`) can be used, for example:<br><br>`password: ‘{@password:1a057890-55bd-4aa1-92b7-aab9e9740fd1}’` |
-
-#### [](#_bearer_security_scheme)Bearer security scheme
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;rest client name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>securitySchemes</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>List of bearer security scheme configurations.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>&lt;security scheme name&gt;</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Scheme name. The name is arbitrary.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code> or <code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The bearer scheme must use the <span class="inlineBean">info.magnolia.rest.client.authentication.definition.BearerSecuritySchemeDefinition</span> class.</p></div><div class="paragraph"><p>Alternatively, <code>$type: bearer</code> may be used instead of the class definition.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>restClientName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the REST client that invokes the authentication call.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>restCallName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Name of the configured authentication REST call in the REST client.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>tokenJsonPath</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The name of the property containing token information in the response. For example:</p></div><div class="paragraph"><p><code>tokenJsonPath: '$.access_token'</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>expiry</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Node with specification of a bearer token expiration resolution. The following resolution types (classes) are available:</p></div><div class="ulist"><ul><li><p><code>duration</code> (<span class="inlineBean">info.magnolia.rest.client.authentication.definition.DurationExpiryDefinition</span>) + Resolves token expiration as duration, presented as a long number.</p></li><li><p><code>fixedDateTime</code> (<span class="inlineBean">info.magnolia.rest.client.authentication.definition.FixedExpiryDateTimeDefinition</span>) + Resolves expiration as a date-time string.</p></li><li><p><code>fixedLong</code> (<span class="inlineBean">info.magnolia.rest.client.authentication.definition.FixedExpiryInLongDefinition</span>) + Resolves expiration time presented as a long number.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>class</code> or <code>$type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>The class used to resolve token expiration, for example <span class="inlineBean">info.magnolia.rest.client.authentication.definition.DurationExpiryDefinition</span>.</p></div><div class="paragraph"><p>Alternatively, a <code>$type</code> alias may be used instead of the class definition:, for example <code>$type: duration</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>expiryDateTimePattern</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Mandatory for expiration <code>$type: fixedDateTime</code>.</p></div><div class="paragraph"><p>Specification of the date-time pattern that needs to be parsed to obtain the expiry value.</p></div><div class="paragraph"><p>Example:</p></div><div class="paragraph"><p><code>expiryDateTimePattern: 'yyyy-MM-dd HH:mm:ss'</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>expiryJsonPath</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Name of the property containing expiration information.</p></div><div class="paragraph"><p>Example:</p></div><div class="paragraph"><p><code>expiryJsonPath: '$.expires_in'</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>expiryTimeUnit</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is `MILLISECONDS`</em></p></div><div class="paragraph"><p>Used for expiration <code>$type: duration</code>.</p></div><div class="paragraph"><p>Time unit of expiration duration. If the service requires a different unit other than <code>MILLISECONDS</code>, refer to <a href="https://docs.oracle.com/en/java/javase/13/docs/api/java.base/java/util/concurrent/TimeUnit.html" target="_blank" rel="noopener"><code>java.util.concurrent.TimeUnit</code></a> for a list of supported values.</p></div><div class="paragraph"><p>Example:</p></div><div class="paragraph"><p><code>expiryTimeUnit: 'SECONDS'</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>expiryZoneId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Mandatory for expiration <code>$type: fixedDateTime</code>.</p></div><div class="paragraph"><p>Specification of the time zone in whose context the expiration is to be evaluated.</p></div><div class="paragraph"><p>Example:</p></div><div class="paragraph"><p><code>expiryZoneId: 'UTC'</code></p></div></div></td></tr></tbody></table></div>
-
-### [](#_timeouts)Timeouts
-
-| Property | Description |
-| --- | --- |
-| `<rest client name>` |     |
-| `timeoutConfiguration` | **optional**<br><br>A node to configure how request timeouts should be handled. |
-| `connectTimeout` | **optional**<br><br>Time limit (in seconds) within which the connection to the server must be made, otherwise an exception is thrown. |
-| `fallbackToCache` | **optional**<br><br>The property takes a boolean value, which controls fallbacking to cache.<br><br>If set to `true`, the cache will be used as fallback when a timeout is reached. |
-| `readTimeout` | **optional**<br><br>Time limit (in seconds) within which the data-read time of the specified server must be made, otherwise an exception is thrown. |
-| `timeoutHandlerClass` | **optional**<br><br>Custom class that handles timeout (request processing) exceptions (`javax.ws.rs.ProcessingException`).<br><br>If no custom handler is provided, the default one will be used. |
-
-### [](#_caching)Caching
-
-| Property | Description |
-| --- | --- |
-| `<rest client name>` |     |
-| `cacheConfiguration` | **optional**<br><br>A node to configure how caching should be handled. |
-| `implementationClass` | **optional**, default is `info.magnolia.rest.client.cache.filter.CachingFilter`<br><br>Specifies the implementation class. |
-| `expireIn` | **optional**<br><br>Specifies an expiration time (in seconds) for a cache entry. In the default implementation, the expiration time is set to `0`.<br><br>See also the `fallbackToCache` property in [Timeout configuration properties](#_timeouts). |
-
-#### [](#_example_configuration_for_caching_and_timeouts)Example configuration for caching and timeouts
-
-```yml
-baseUrl: http://httpbin.org/
-cacheConfiguration:
-  expireIn: 60
-
-timeoutConfiguration:
-  readTimeout: 5
-  fallbackToCache: true
-
-restCalls:
-  delay:
-    method: GET
-    entityClass: java.lang.String
-    path: delay/{delay_period}
-    defaultValues:
-      delay_period: 3
-```
+| `<rest client name>` | **required** Add a node for each REST client. The name is arbitrary, but it is good practice to use a descriptive name. The node name is used when obtaining instances of clients. |
+| `baseUrl` | **required** Base URL of the REST endpoint to connect with the client. ** You can also use the `API_BASE_URL` environment variable in the value. For more details, see the [Using environment variables](#_using_environment_variables) section. | ** | You can also use the `API_BASE_URL` environment variable in the value. For more details, see the [Using environment variables](#_using_environment_variables) section. |
+| ** | You can also use the `API_BASE_URL` environment variable in the value. For more details, see the [Using environment variables](#_using_environment_variables) section. |
+| `class` | **optional** , *default is `info.magnolia.rest.client.ConfiguredRestClientDefinition`* REST client definition class. In additional to the default class, you may use also the `info.magnolia.openapi.client.OpenApiRestClientDefinition` to leverage a schema based on the [OpenAPI Specification](https://en.wikipedia.org/wiki/OpenAPI_Specification) . |
+| `clientFactoryClass` | **optional** , *default is `info.magnolia.rest.client.factory.DefaultClientFactory`* The factory class. The default factory class is used with the `ConfiguredRestClientDefinition` . The info.magnolia.openapi.client.factory.OpenApiClientFactory class is used with `OpenApiRestClientDefinition` class. |
+| `schemaUrl` | **required** if `OpenApiRestClientDefinition` is used Full path (URL or file) to the resource containing an OpenAPI schema. |
+| `clientConfiguratorClass` | **optional** Custom class that specifies the client builder. Allows you to configure the client ex post, without the need to create a new factory or extend it. See also [Jakarta RESTful Web Services](https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services) . |
+| `components` | **optional** List of components (for example `ClientRequestFilter` , `ClientResponseFilter` ). Registered components will be executed on every request. **Example configuration** `baseUrl: https://cdn-url components: cdn-purge: class: com.example.ipnp.magnolia.core.caching.CdnPurgeRequest restCalls: cdn-purge-rest-call: method: post path: /.purge-cdn` |
+| `enabled` | **optional** , *default* is `true` Enables or disables the client. |
+| `exceptionHandlerClass` | **optional** Custom class that handles the HTTP standard response exceptions such as code 404 - `Not Found` . Any `javax.ws.rs.WebApplicationException` will be handled. |
+| `name` | **optional** Overrides the name assigned to the client through the node name. The name should be unique. By default, file name is used in a file-based client definition. |
+| `proxies` | **optional** List of info.magnolia.rest.client.proxy.ProxyDefinition objects. You can use definitions with `client.proxy()` in the `DefaultRestClient` . |
 
 ## [](#_using_environment_variables)Using environment variables
 
-You can use environment variables in plain YAML configuration files (not in [YAML decorator files](../../../Developing/YAML/#_definition_decoration)).
+You can use environment variables in plain YAML configuration files (not in [YAML decorator files](../../../../RNs-6-4-3/Developing/YAML/#_definition_decoration)).
 
 Example of using environment variables
 
@@ -345,7 +88,7 @@ securitySchemes:
 
 ## [](#_hiding_sensitive_information)Hiding sensitive information
 
-In the `path`, `queryParameters`, `headers`, `cookies` and `body` properties, and in the `username` and `password` properties of the basic security scheme, you can use the password template (`{@password:<passwordIdentifier>}`) and the respective password identifier from the [Passwords app](../../../Apps/List-of-apps/Passwords-app/) to hide password values in the requests. Example:
+In the `path`, `queryParameters`, `headers`, `cookies` and `body` properties, and in the `username` and `password` properties of the basic security scheme, you can use the password template (`{@password:<passwordIdentifier>}`) and the respective password identifier from the [Passwords app](../../../../RNs-6-4-3/Apps/List-of-apps/Passwords-app/) to hide password values in the requests. Example:
 
 ```yml
 baseUrl: https://example.com
@@ -357,7 +100,7 @@ restCalls:
 
 ## [](#_service_interface_declaration)Service interface declaration
 
-For [`restfn`](../../../Developing/Templating/Template-scripts/Templating-functions/restfn/) functions that utilize a service, you need to declare a service as a Java interface using [`javax.ws.rs`](https://docs.oracle.com/javaee/6/api/javax/ws/rs/package-summary.html) annotations. The interface must be part of a [Magnolia Maven module](../../Module-structure/).
+For [`restfn`](../../../Developing/Templating/Template-scripts/Templating-functions/restfn/) functions that utilize a service, you need to declare a service as a Java interface using [`javax.ws.rs`](https://docs.oracle.com/javaee/6/api/javax/ws/rs/package-summary.html) annotations. The interface must be part of a [Magnolia Maven module](../../../../RNs-6-4-3/Modules/Module-structure/).
 
 You can use these service interfaces in `restfn` and REST clients.
 
@@ -416,7 +159,7 @@ Display the response status code ([https://jakarta.ee/specifications/platform/8/
 </p>
 ```
 
-![Response code](../../../_images/6-2-TmpHandlingResponseCodes_500.png)
+![Response code](../../../../RNs-6-4-3/_images/6-2-TmpHandlingResponseCodes_500.png)
 
 ### [](#_get_statusinfo)Get StatusInfo
 
@@ -430,7 +173,7 @@ Display the response status information ([https://jakarta.ee/specifications/plat
 </p>
 ```
 
-![Not found response code](../../../_images/6-2-TmpHandlingResponseCodes_404.png)
+![Not found response code](../../../../RNs-6-4-3/_images/6-2-TmpHandlingResponseCodes_404.png)
 
 See also [RFC-2616: 10 Status Code Definitions](https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
 
@@ -446,7 +189,7 @@ The script refers to a REST client definition (`errors1234`) that doesn’t exis
 </p>
 ```
 
-![Unknown client code](../../../_images/6-2-TmpHandlingResponseCodes-wrongClient.png)
+![Unknown client code](../../../../RNs-6-4-3/_images/6-2-TmpHandlingResponseCodes-wrongClient.png)
 
 ### [](#_non_existing_call_name)Non-existing call name
 
@@ -459,11 +202,11 @@ The script refers to a call name (`requestCode1234`) that doesn’t exist:
 </p>
 ```
 
-![Non-existing call name code](../../../_images/6-2-TmpHandlingResponseCodes-callName.png)
+![Non-existing call name code](../../../../RNs-6-4-3/_images/6-2-TmpHandlingResponseCodes-callName.png)
 
 ## [](#_testing_clients_in_the_rest_client_app)Testing clients in the Rest Client app
 
-See the [REST Client app](../../../Apps/List-of-apps/REST-Client-app/) page.
+See the [REST Client app](../../../../RNs-6-4-3/Apps/List-of-apps/REST-Client-app/) page.
 
 You need to [configure](#_configuration) and [declare](#_service_interface_declaration) REST clients before you can test them in the app.
 
@@ -471,10 +214,10 @@ See also info.magnolia.rest.client.RestClient.
 
 Related topics
 
--   [REST Client app](../../../Apps/List-of-apps/REST-Client-app/)
+-   [REST Client app](../../../../RNs-6-4-3/Apps/List-of-apps/REST-Client-app/)
 
--   [UI Framework REST Extensions module](../UI-Framework-REST-Extensions-module/)
+-   [UI Framework REST Extensions module](../../../../RNs-6-4-3/Modules/List-of-modules/UI-Framework-REST-Extensions-module/)
 
--   [Hello Magnolia - with content via REST](../../../Developing/Hello-Magnolia---with-content-via-REST/)
+-   [Hello Magnolia - with content via REST](../../../../RNs-6-4-3/Developing/Hello-Magnolia---with-content-via-REST/)
 
--   [Example REST client configurations](Example-REST-client-configurations/)
+-   [Example REST client configurations](../../../../RNs-6-4-3/Modules/List-of-modules/REST-Client-module/Example-REST-client-configurations/)

@@ -1,0 +1,58 @@
+---
+title: "E-commerce Category Sync"
+url: https://docs.magnolia-cms.com/ecommerce-catalogsync/
+category: Modules
+version: modules
+breadcrumb: E-commerce Category Sync
+---
+
+# E-commerce Category Sync
+
+[Commerce](../product-docs/RNs-6-4-3/use-cases/commerce/) [Incubator](https://gitlab.magnolia-platform.com/ps/services/ecommerce-catalogsync) [ECOMCATSYN](https://magnolia-cms.atlassian.net/browse/ECOMCATSYN) [Magnolia 6.2](#6.2@product-docs:ROOT:index.adoc) compatible
+
+The **ecommerce-catalogsync** module brings everything you need to enhance e-commerce categories with data collected in Magnolia as well as to play them out in an optimized order. It is based on the [E-commerce module](../ecommerce/ecommerce-module/). For this purpose, the new [CategoryImportCommand](https://gitlab.magnolia-platform.com/ps/services/ecommerce-catalogsync/-/blob/main/src/main/java/info/magnolia/ecommerce/catalogsync/CategoryImportCommand.java) command is registered. To make use of this command, the [E-Commerce Categories](https://gitlab.magnolia-platform.com/ps/services/ecommerce-catalogsync/-/blob/main/src/main/resources/ecommerce-catalogsync-app/apps/ecommerce-catalogsync-app.yaml) app is registered, which can be extended as desired via decoration. For the Categories App, a special field is also provided with which the displayed order of the products of a category can be changed by using drag-and-drop.
+
+> **Warning:** This module is at the INCUBATOR level.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce.catalogsync</groupId>
+  <artifactId>category-importer</artifactId>
+  <version>1.1.2</version>
+</dependency>
+```
+
+| Command | Description |
+| --- | --- |
+| `workspace` | **optional** , *default is ecommerce-categories* The `workspace` in which the categories are synced. |
+| `contentType` | **optional** , *default is ecomcategory* The ContentType under which the categories are saved. |
+| `nodeNameProperty` | **optional** , *default is name* The property under which the name of the category is stored in JCR. |
+| `externalIdProperty` | **optional** , *default is externalId* The property under which the external ID of the category is stored in JCR. |
+
+## [](#_usage)Usage
+
+Once the E-Commerce Categories App module is installed and configured, a dedicated app becomes available in Magnolia AdminCentral. This app allows authors to synchronize categories between Magnolia and the connected external e-commerce provider.
+
+The sync automatically retrieves the latest categories from Magnolia and updates your e-commerce provider accordingly. There is no need to select a page or vendor manually.
+
+1.  In Magnolia, open the E-Commerce Categories App.
+
+2.  In the action bar, click the Sync Categories action.
+
+    ![sync categories](_images/sync-categories.jpg)
+
+
+| Version | Notes |
+| --- | --- |
+| `1.1.2` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20ECOMCATSYN%20AND%20fixVersion%20%3D%201.1.2) |
+| `1.1.1` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20ECOMCATSYN%20AND%20fixVersion%20%3D%201.1.1) |
+| `1.1.0` | Several updates: • Introduced default values for command definition. • Introduced the visualMerchandise Field which can be used in the app to change the order of products via drag-and-drop. • Improved root category detection so the configuring of the root node is not necessary anymore. • Included the base app into the command module to bring base app and command together. |
+| `1.0.4` | Minor updates. |
+| `1.0.3` | Minor updates. |
+| `1.0.2` | Minor updates. |
+| `1.0.1` | Minor updates. |
+| `1.0.0` | Initial release of the module. |

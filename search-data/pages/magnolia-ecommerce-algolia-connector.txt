@@ -1,0 +1,44 @@
+---
+title: "Algolia E-commerce connector"
+url: https://docs.magnolia-cms.com/magnolia-ecommerce-algolia-connector/
+category: Modules
+version: modules
+breadcrumb: Algolia E-commerce connector
+---
+
+# Algolia E-commerce connector
+
+| Issues | [ALGECOM](https://magnolia-cms.atlassian.net/browse/ALGECOM) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/magnolia-ecommerce-algolia-connector) |
+| Latest | 1.0.2 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.ecommerce</groupId>
+  <artifactId>magnolia-ecommerce-algolia-connector</artifactId>
+  <version>1.0.2</version>
+</dependency>
+```
+
+> **Tip:** You might also want to check out the E-commerce module for other useful ecommerce connectors. They are not just third party ecommerce vendor implementation, but also some utility modules like the magnolia-ecommerce-ui one which would let you ensure that your configuration is working.
+
+| Attribute name | Description | Attributes for faceting |
+| --- | --- | --- |
+| `objectID` | The Algolia object id. Is used as a unique key for the product SKU, mapping might change in future version | **Not required** |
+| `productName` | The product name | **Not required** |
+| `shortDescription` | The product description | **Not required** |
+| `priceFormatted` | The product price | **Not required** |
+| `catTags` | The product categories list | **Filter only** |
+| `productPicture` | The product picture link | **Not required** |
+
+| Version | Notes |
+| --- | --- |
+| `1.0.2` | [Changelog](https://jira.magnolia-cms.com/browse/ALGECOM-2?jql=project%20%3D%20ALGECOM%20AND%20fixVersion%20%3D%201.0.2) |
+| `1.0.1` | • [ALGECOM-1](https://magnolia-cms.atlassian.net/browse/ALGECOM-1) |
+| `1.0.0` | • Initial release of the module. |

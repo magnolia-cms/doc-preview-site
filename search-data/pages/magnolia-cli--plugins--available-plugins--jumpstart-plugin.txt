@@ -1,0 +1,130 @@
+---
+title: "Jumpstart plugin"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/available-plugins/jumpstart-plugin/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Jumpstart plugin
+---
+
+# Jumpstart plugin
+
+| Package name | `@magnolia/cli-jumpstart-plugin` |
+| --- | --- |
+| Repository link | [@magnolia/cli-jumpstart-plugin](https://www.npmjs.com/package/@magnolia/cli-jumpstart-plugin) |
+| Latest version |  |
+| Changelog | [CHANGELOG.md](https://unpkg.com/@magnolia/cli-jumpstart-plugin/CHANGELOG.md) |
+
+## [](#_installing)Installing
+
+This plugin comes pre-installed and ready to be used.
+
+> **Warning:** You must install it manually for use in an already initialized project (containing the mgnl.config.js file).
+
+| Form (short and long) | Description |
+| --- | --- |
+| `[name]` | Optional project directory name. If provided, creates the project in a new directory with this name. Supports nested paths like `my-project/nested` . |
+| `-m <version>` `--magnolia <version>` | Sets the Magnolia version for your project. By default, it uses the latest stable version. |
+| `-s` `--snapshot` | Downloads the latest snapshot version of the webapp specified. |
+| `-t <name>` `--template <name>` | Sets a template from the available project templates. |
+| `-pt <source>` `--project-templates <source>` | Specifies the source location to load the project templates from. |
+| `-v` `--version` | Displays the version. |
+| `-h` `--help` | Displays help information. |
+
+## [](#_extensions)Extensions
+
+The *extensions* is a functionality in this plugin that allows developers to create a more interactive and automated project setup process, making it easier for the users to set up a new Magnolia project.
+
+### [](#_extension_yaml_configuration_file)Extension YAML configuration file
+
+The plugin searches for the `<rootdir>/extensions/extension.yaml` file in your project directory:
+
+The file defines the additional prompts and post-command functions which can be helpful for tailoring the plugin’s functionality to specific requirements of your project.
+
+#### [](#_file_structure)File structure
+
+The YAML file typically contains the following key sections:
+
+-   `extend`: Specifies a JavaScript file that the extension will tie into for additional logic or configuration.
+
+-   `prompts`: A series of input prompts to gather the necessary information from the user. Each prompt can specify:
+
+    -   `type`: The type of prompt, such as `input` for user text input.
+
+    -   `name`: The internal name used to reference the data collected.
+
+    -   `message`: The message displayed to the user during the prompt.
+
+    -   `default`: The default value for the prompt, used if the user provides no input.
+
+
+-   `commands`: Actions to be taken after the prompts have been completed, such as:
+
+    -   `post`: Commands to be executed after the setup process. This could involve downloading the dependencies, setting up environment variables, and so on.
+
+
+
+### [](#_example)Example
+
+```yaml
+extend: ./example.js
+prompts:
+  - type: input
+    name: clientId
+    message: Client ID
+    default: clientId_001
+
+  - type: input
+    name: organizationId
+    message: Organization Id
+    default: organizationId_001
+
+  - type: input
+    name: siteId
+    message: Site Id
+    default: siteId_001
+
+commands:
+  post:
+    - function: example
+      retry: 3
+      delay: 1000
+```
+
+### [](#_execution_flow)Execution flow
+
+Upon project initialization, if an extension file is detected, the Jumpstart plugin executes the following steps:
+
+1.  **Input Gathering**: It asks the user for input based on the `prompts` defined in the extension’s YAML file.
+
+2.  **Configuration Integration**: The plugin retrieves the main `package.json` file. The responses gathered from the prompts are then added to this configuration object under the `answers` property.
+
+    This augmented `package.json` object is then used to automatically populate the corresponding placeholders within your project files.
+
+3.  **Post-Command Execution**: Each `post-command` function specified in the YAML file is executed. These functions have access to the `prompts` object, which contains the user’s responses, allowing the functions to perform tasks that are tailored to the user’s input.
+
+
+### [](#_customization_example)Customization example
+
+After gathering the inputs, a file with placeholders, for instance,
+
+```javascript
+// config.js
+
+export default {
+  clientId: <%=answers.siteId%>,
+  organizationId: <%=answers.organizationId%>,
+  siteId: <%=answers.siteId%>
+};
+```
+
+is transformed into the following:
+
+```javascript
+// config.js
+
+export default {
+  clientId: clientId_001,
+  organizationId: organizationId_001,
+  siteId: siteId_001
+};
+```

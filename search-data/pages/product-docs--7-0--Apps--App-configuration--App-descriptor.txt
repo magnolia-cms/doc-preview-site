@@ -22,26 +22,24 @@ label: Base App
 subApps:
 ```
 
-## [](#_descriptor_properties)Descriptor properties
-
 | Property | Description |
 | --- | --- |
-| `subApps` | **required**<br><br>Node containing [subapps](../Subapp-descriptor/). |
-| `appClass` | **required**<br><br>Fully qualified name of the class that contains the app business logic. The class must implement the info.magnolia.ui.api.app.App interface. |
-| `name` | **optional**<br><br>App name. If no value is specified, either the file name (without the suffix `.yaml`) or the JCR node name will be used. |
-| `class` | **optional**, *default is `info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor`*<br><br>App descriptor class that reads the configuration. The class must implement the info.magnolia.ui.api.app.AppDescriptor interface. Use the fully qualified class name.<br><br>Another possible value is `info.magnolia.ui.contentapp.configuration.ContentAppDescriptor`. |
-| `datasource` | **optional**<br><br>Connects the app to a [data source](../Data-source-definition/). For this to work, you have to use the `info.magnolia.ui.contentapp.configuration.ContentAppDescriptor` class. |
-| `enabled` | **optional**, *default is `true`*<br><br>When `false`, the app is disabled. |
-| `icon` | **optional**<br><br>CSS class that identifies an icon used for the app. See [How to add SVG icons for apps](../../Developing-an-app/Specific-aspects/How-to-add-SVG-icons-for-apps/). |
-| `label` | **optional**<br><br>Text or [message bundle key](../../../Administration/Language/Internationalization/#_i18n_message_keys) displayed on the app icon in the app launcher. |
-| `permissions` | **optional**<br><br>Provisions the app to certain users. See [Permissions](#_permissions). |
-| `theme` | **optional**<br><br>Name of a custom app theme. |
+| `subApps` | **required** Node containing [subapps](../Subapp-descriptor/) . |
+| `appClass` | **required** Fully qualified name of the class that contains the app business logic. The class must implement the info.magnolia.ui.api.app.App interface. |
+| `name` | **optional** App name. If no value is specified, either the file name (without the suffix `.yaml` ) or the JCR node name will be used. |
+| `class` | **optional** , *default is info.magnolia.ui.api.app.registry.ConfiguredAppDescriptor* App descriptor class that reads the configuration. The class must implement the info.magnolia.ui.api.app.AppDescriptor interface. Use the fully qualified class name. Another possible value is `info.magnolia.ui.contentapp.configuration.ContentAppDescriptor` . |
+| `datasource` | **optional** Connects the app to a [data source](../Data-source-definition/) . For this to work, you have to use the `info.magnolia.ui.contentapp.configuration.ContentAppDescriptor` class. |
+| `enabled` | **optional** , *default is true* When `false` , the app is disabled. |
+| `icon` | **optional** CSS class that identifies an icon used for the app. See [How to add SVG icons for apps](../../Developing-an-app/Specific-aspects/How-to-add-SVG-icons-for-apps/) . |
+| `label` | **optional** Text or [message bundle key](../../../Administration/Language/Internationalization/#_i18n_message_keys) displayed on the app icon in the app launcher. |
+| `permissions` | **optional** Provisions the app to certain users. See [Permissions](#_permissions) . |
+| `theme` | **optional** Name of a custom app theme. |
 
 ## [](#_permissions)Permissions
 
 The permission to use an app is granted in the `permissions` configuration. The subnodes are roles. This allows you to provision the app to certain users in your organization.
 
-In the following example, the app is provisioned to the `travel-demo-editor` and `travel-demo-publisher` roles. The property names (`editors` and `publishers`) are arbitrary—you can use any name you like. The value must be a valid [role name](../../../Administration/IAM/Default-permissions/#_roles).
+In the following example, the app is provisioned to the `travel-demo-editor` and `travel-demo-publisher` roles. The property names (`editors` and `publishers`) are arbitrary—you can use any name you like. The value must be a valid [role name](../../../../RNs-6-4-3/Administration/IAM/Default-permissions/#_roles).
 
 ```yml
 appClass: info.magnolia.ui.framework.app.BaseApp
@@ -56,13 +54,13 @@ permissions:
 
 ## [](#_app_descriptors_for_content_type_apps)App descriptors for content-type apps
 
-In Magnolia, app descriptors can also be used to create apps based on Magnolia [Content Types](../../../Features/Content-Types/). For this, a special directive must be used in the YAML descriptor: `!content-type`.
+In Magnolia, app descriptors can also be used to create apps based on Magnolia [Content Types](../../../../RNs-6-4-3/Features/Content-Types/). For this, a special directive must be used in the YAML descriptor: `!content-type`.
 
 There are several advantages to configuring an app this way. Such an app:
 
 -   Always leverages a well-defined content type definition.
 
-    Data of content type based apps can be accessed not only using [Delivery API](#rest:api:delivery-endpoint.adoc), but also through [GraphQL API](../../../Developing/API/GraphQL-API/).
+    Data of content type based apps can be accessed not only using [Delivery API](../../../../../rest/api/delivery-endpoint/), but also through [GraphQL API](../../../../RNs-6-4-3/Developing/API/GraphQL-API/).
 
 -   Allows the editors to start entering content right away.
 
@@ -115,110 +113,6 @@ In this case, the app will be interpreted as a *5 UI* app and the app descriptor
 
 > **Important:** Even though you can still use apps built in the 5 UI framework in Magnolia 6.3.x, this framework has been deprecated.
 
-## [](#_content_type_and_vanilla_descriptors_side_by_side_examples)Content-Type and vanilla descriptors (side-by-side examples)
-
-This subsection outlines the primary distinctions between two methods for configuring app descriptors: a content type-based configuration and a fully manual (vanilla) configuration.
-
 | Content Type-Based Approach | The Vanilla Approach |
 | --- | --- |
-| Streamlines the app configuration file, yielding a shorter, more concise structure.<br><br>Magnolia automatically provides essential app descriptor components, such as the [browser](../Subapp-descriptor/#_browser_descriptor) and [detail](../Subapp-descriptor/#_detail_descriptor) subapps, along with the [action](../Action-definition/), [action bar](../Action-bar-definition/), and [form](../../../Developing/Templating/Dialog-definition/Form-definition/) definitions. Developers can still override or extend these Magnolia-provided elements by modifying the app descriptor with explicit overrides or inheritance. | Requires a more detailed and verbose configuration process.<br><br>Developers must possess a clear understanding of each component’s configuration requirements and their respective locations.<br><br>However, this approach provides greater initial flexibility, enabling developers to manually define all aspects of the app without depending on a predefined content type definition. |
-
-### [](#_the_foo_example_apps)The `foo` example apps
-
-The example apps configured below, named `foo2` and `foo`, are part of a light module called `app-minimal`. You can [clone this module from our Bitbucket repository](https://bitbucket.org/magnolia-cms/app-minimal/src/main/) and install it in your Magnolia instance.
-
-Both apps implement a minimal feature: users can add content to their respective workspaces (named `foo2` and `foo`) using a dialog with a single text field labeled *Name*.
-
-![The add content dialog in the foo2 and foo apps](../../../_images/apps/configuration/docu3815-addItemDialog63.png)
-
-> **Note:** To keep the configuration straightforward, internationalization (i18n) labels are omitted from these examples. You can enhance the apps later by adding an i18n message bundle as needed.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 50%;"> <col style="width: 50%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">The <code>foo2</code> app (content-type descriptor app)</th><th class="tableblock halign-left valign-top">The <code>foo</code> app (vanilla descriptor app)</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">The <code>foo2</code> app is a content type-based app, defined across two YAML files:</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">The <code>foo</code> app is a vanilla app, also configured with two YAML files, but with distinct characteristics:</p></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>The <code>foo2.yaml</code> file (in the <code>contentTypes</code> folder) registers the <em>Name</em> field as a content type field.</p><div class="paragraph"><p>This transforms the Name field into structured content, directly accessible via GraphQL or similar interfaces.</p></div></li><li><p>The <code>foo2.yaml</code> file (in the <code>apps</code> folder) leverages the content type to define the app succinctly, avoiding the need for an extensive configuration structure.</p><div class="paragraph"><p>Magnolia automatically enriches the <code>foo2</code> app with additional user actions beyond the basic "add content" functionality tied to the <em>Name</em> field.</p></div></li></ul></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p>The <code>foo.yaml</code> file (in the <code>contentTypes</code> folder) solely establishes the <code>foo</code> workspace for the app; it does not register the <em>Name</em> field as a content type field.</p><div class="paragraph"><p>If the <code>foo</code> workspace already exists, only the app descriptor file would be necessary to activate the app.</p></div></li><li><p>The <code>foo.yaml</code> file (in the <code>apps</code> folder explicitly configures all the required components of the app, providing full control over its structure and behavior.</p></li></ul></div></div></td></tr></tbody></table></div>
-
-#### [](#_content_type_definitions)Content-Type definitions
-
--   `/app-minimal/contentTypes/foo2.yaml`
-
--   `/app-minimal/contentTypes/foo.yaml`
-
-
-```yaml
-datasource:
-  $type: jcrContentTypeDatasource
-  workspace: foo2
-  autoCreate: true
-
-model:
-  properties:
-    - name: name
-```
-
-```yaml
-datasource:
-  workspace: foo
-  autoCreate: true
-```
-
-#### [](#_app_descriptors)App descriptors
-
--   `/app-minimal/apps/foo2.yaml`
-
--   `/app-minimal/apps/foo.yaml`
-
-
-```yaml
-!content-type:foo2
-name: foo2
-```
-
-```yaml
-appClass: info.magnolia.ui.framework.app.BaseApp
-class: info.magnolia.ui.contentapp.configuration.ContentAppDescriptor
-
-datasource:
-  $type: jcrDatasource
-  workspace: foo
-  allowedNodeTypes:
-    - mgnl:content
-
-subApps:
-  browser:
-    class: info.magnolia.ui.contentapp.configuration.BrowserDescriptor
-    actions:
-      add:
-        $type: openDetailSubappAction
-        appName: foo
-        subAppName: detail
-        viewType: add
-        availability:
-          root: true
-          nodes: false
-
-    actionbar:
-      sections:
-        - name: actions
-          availability:
-            root: true
-          groups:
-            - name: add
-              items:
-                - name: add
-
-    workbench:
-      contentViews:
-        list:
-          $type: listView
-          columns:
-            jcrName:
-              $type: jcrTitleColumn
-
-  detail:
-    class: info.magnolia.ui.contentapp.detail.DetailDescriptor
-    itemProvider:
-      $type: jcrNodeFromLocationProvider
-      workspace: foo
-    form:
-      properties:
-        name:
-          $type: textField
-```
+| Streamlines the app configuration file, yielding a shorter, more concise structure. Magnolia automatically provides essential app descriptor components, such as the [browser](../Subapp-descriptor/#_browser_descriptor) and [detail](../Subapp-descriptor/#_detail_descriptor) subapps, along with the [action](../Action-definition/) , [action bar](../Action-bar-definition/) , and [form](../../../Developing/Templating/Dialog-definition/Form-definition/) definitions. Developers can still override or extend these Magnolia-provided elements by modifying the app descriptor with explicit overrides or inheritance. | Requires a more detailed and verbose configuration process. Developers must possess a clear understanding of each component’s configuration requirements and their respective locations. However, this approach provides greater initial flexibility, enabling developers to manually define all aspects of the app without depending on a predefined content type definition. |

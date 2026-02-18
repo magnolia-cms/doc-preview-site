@@ -22,94 +22,9 @@ Roles are also used when configuring [App permissions](../App-permissions/).
 
 > **Tip:** Select any role and click Role assignments in the action bar to view the users who have that role assigned to them.
 
-## [](#_jcr_acl_structure)JCR ACL structure
-
-Magnolia allows you to define different JCR ACLs for each role. With this method, you can assign exact access credentials.
-
-A JCR ACL consists of one or more rules where permissions are applied to the controlled resource. The ACL itself defines *what* permission is granted. Attaching the ACL to a role defines *who* has the permission. Any groups and users that the role is assigned to, either directly or through groups, have the permissions granted in the ACL.
-
-ACLs are defined in roles.
-
-![Defining ACLs in Roles](../../../_images/ACL-details.png)
-
-One JCR ACL specifies:
-
--   **Workspace**. ACL rules are defined per workspace, for example `website`, `dam`, or `templates`. A single ACL can contain rules for several workspaces.
-
--   **Permission**. Type of permissions applied to the controlled resource: *Deny* access, *Read-only*, or *Read/Write*.
-
--   **Path**. Points to the node path that’s controlled. This can be an exact node path or include subnodes through the use of the `*` wildcard.
-
-
-For example, the following ACL gives editors permission to edit news pages under `siteA/news`.
-
 | Workspace | Permission | Path |
 | --- | --- | --- |
 | `website` | Read/Write | `/siteA/news` |
-
-The power of ACLs is in the combination of the rules. The following ACL first denies access to the complete website, then specifically allows read access to `/siteA` and its subpages, and write access to subpages under `/siteA/news`. Users whose access is controlled with this ACL can see `/siteA` and all its subpages but can edit only pages under `/siteA/news`.
-
-| Workspace | Permission | Path |
-| --- | --- | --- |
-| `website` | Deny access | `/` |
-|     | Read-only | `/siteA`<br><br>`/siteA/*` |
-|     | Read/Write | `/siteA/news` |
-
-> **Note:** In this example, the role below grants access to only subnodes of the travel page in the website workspace. It consists of two permissions: one to grant only read access to the travel page and another to grant read and write access to all its subpages.
-
-### [](#_creating_jcr_acls)Creating JCR ACLs
-
-1.  Open the Security app.
-
-2.  Select the role to which you want to attach the ACL or create a new role. ACLs are always attached to roles.
-
-3.  Click **Edit role**.
-
-4.  In the **Workspace access** section, next to a workspace such as `Website`, click **Add new** to create a rule.
-
-5.  Select:
-
-    -   **Path**: Browse to the controlled object.
-
-    -   **Permission**: Read-only, Read/Write or Deny access.
-
-
-6.  Click **Save changes**.
-
-
-#### [](#_duplicating_existing_roles)Duplicating existing roles
-
-You can duplicate existing roles to speed up creation. The duplicated role is created with all the same ACLs as the original, but without any of the groups assigned.
-
-> **Caution:** When you duplicate roles, you must also configure app availability permissions for the new role. Without this step, users assigned to the duplicated or custom role can’t access apps, pages, or sites that require role-based permissions.
-
-For example, if you duplicate the `editor` role to create `editor0`, the new role inherits all JCR ACLs and Web access permissions from the original role. However, `editor0` is not automatically included in the role list for app permissions, page visibility, or site role availability. You must manually add the new role to:
-
--   [App permissions](../App-permissions/): Configure the role in the app’s permissions settings (for example, `modules/pages/apps/pages/permissions/roles` for the Pages app).
-
--   [Page visibility](../../../Developing/Templating/Template-definition/Page-definition/#_page_template_properties): Add the role to pages that use the `visible` property for role-based visibility.
-
--   [Site role availability](../../../Developing/Templating/Template-availability/#_availability_by_role): Add the role to sites that use role availability settings.
-
-
-If you don’t configure these permissions, users with the duplicated or custom role may appear to have the correct ACLs but are unable to access the intended resources.
-
-#### [](#_controlling_write_access_example)Controlling write access example
-
-A common use case is a user who is permitted to publish content but not edit content.
-
-1.  Open the **Security** app.
-
-2.  Create a new user.
-
-3.  In the assigning roles section, grant the user the **publishers** role.
-
-4.  Log into Magnolia as the new user.
-
-5.  Open the **Pages** app and observe the status column.
-
-    ![Status column in the Pages app](../../../_images/peter-write-restriction.png)
-
 
 ## [](#_web_access)Web access
 
@@ -141,43 +56,12 @@ DX Core allows you to manage multiple websites in a single Magnolia instance. Yo
 
 See [Cross-site security](../../Security/Cross-site-security/) for a detailed discussion and configuration examples.
 
-## [](#_evaluation_of_permissions)Evaluation of permissions
-
-When a user signs into Magnolia, the system collects all their ACLs, including:
-
--   ACLs attached to the user’s roles.
-
--   ACLs attached to the user’s groups' roles.
-
--   ACLs attached to any of the user’s nested groups' roles.
-
-
-When the user attempts to access a resource, Magnolia tests all the ACL rules the user has inherited to decide which rule matches the requested resource.
-
-If a user has multiple ACLs through role and group assignment that specifically list the requested resource, the ACL with the longest pattern determines the permission.
-
-> **Note:** The order of the rules isn’t considered.
-
-This is a critical point to note, although it only applies if the user has more than one ACL that govern the requested resource. Of equally long patterns, the one that grants the broadest permissions is applied.
-
-Example
-
-A sports editor attempts to edit a sports story on page `/siteA/news/sports`. The user has inherited the following ACL rules through their roles, groups' roles, and nested groups' roles.
-
 | Workspace | Permission | Path | Comments |
 | --- | --- | --- | --- |
-| `website` | Read-only | `/siteA` |     |
-|     | Read-only | `/siteA/news` |     |
-|     | Read/Write | `/siteA/news/sports` | Longest pattern. Used to grant permission. |
-|     | Deny | `/siteA/news/sports/NHL` | Even longer but not for the requested resource. |
-
-Assigning a user to all roles and all groups may not result in the broadest possible access for the user. This is because ACLs are evaluated specifically in regard to the requested resources and there may be a very long rule that denies access to a particular resource.
-
-> **Note:** Be sure to add users to groups and roles with the understanding that any resource that’s governed by more than one rule will behave according to the longest pattern principle.
-
-## [](#_acl_storage_location)ACL storage location
-
-Magnolia stores users, groups, roles and ACLs in separate workspaces.
+| `website` | Read-only | `/siteA` |  |
+|  | Read-only | `/siteA/news` |  |
+|  | Read/Write | `/siteA/news/sports` | Longest pattern. Used to grant permission. |
+|  | Deny | `/siteA/news/sports/NHL` | Even longer but not for the requested resource. |
 
 | Workspace | What’s stored |
 | --- | --- |
@@ -185,45 +69,16 @@ Magnolia stores users, groups, roles and ACLs in separate workspaces.
 | `usergroups` | Groups |
 | `userroles` | Roles and ACLs. Since ACLs are always attached to roles, they’re stored in the same workspace. |
 
-## [](#_acl_rules_are_stored_as_regular_expressions)ACL rules are stored as regular expressions
-
-To understand the pattern length criterion, it helps to look at how Magnolia stores the ACL rules internally. Each rule is translated into one or more [regular expression patterns](http://en.wikipedia.org/wiki/Regular_expression).
-
--   `/path/to/node` translates to the selected path.
-
--   `/path/to/node/*` translates to sub nodes. The asterisk means "everything under this".
-
--   Two regular expressions `/path/to/node` and `/path/to/node/*` translates to the selected node and its sub nodes. Together they mean "this node and everything under it".
-
-
 | Scope | Path | Translated to a regular expression |
 | --- | --- | --- |
 | Selected | `/server/admin` | `/server/admin` |
 | Sub pages | `/siteA` | `/siteA/*` |
-| Selected and sub pages | `/siteA` | `/siteA`<br><br>`/siteA/*` |
-
-When Magnolia searches for the longest matching pattern, it compares the length of the regular expression patterns, not the length of the path you select.
-
-## [](#_marking_the_end_of_a_path)Marking the end of a path
-
-Use the RegEx metacharacter **`$`** to mark the end of a path.
-
-Example
-
-You have a page `/news/sports` and you want to grant sports editors the ability to edit that page, its properties, and its subpages. You don’t want them to be able to delete the page. Create the following ACL rules in the `website`\-controlled workspace:
+| Selected and sub pages | `/siteA` | `/siteA` `/siteA/*` |
 
 | Workspace | Permission | Path |
 | --- | --- | --- |
-| `website` | Read/Write | `/news/sports`<br><br>`/news/sports/*` |
-|     | Read-only | `/news/sports$` |
-
-The first rule grants write permission to the page and all its children.
-
-The second rule grants read-only permission to the page itself, not affecting permissions to the page properties.
-
-When the system evaluates permissions for `/news/sports`, both rules are valid. However, the second rule is longer, therefore it’s evaluated as more appropriate and applied.
-
-When the system evaluates permissions for subpages like `/news/sports/NBA`, only the first rule matches. The second doesn’t because the `$` sign marks the `end`, so the editor has complete control of all the subpages.
+| `website` | Read/Write | `/news/sports` `/news/sports/*` |
+|  | Read-only | `/news/sports$` |
 
 ## [](#_app_launcher_access)App launcher access
 

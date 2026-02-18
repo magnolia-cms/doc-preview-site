@@ -1,0 +1,113 @@
+---
+title: "Hero"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/hero/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Hero
+---
+
+# Hero
+
+The Hero component is a full-width banner, ideal for landing pages or section highlights. It supports a title, description, optional background image, and an optional CTA button.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `title` (required) - The main headline displayed prominently in the hero section.
+
+-   `description` (required) - Supporting text shown below the title.
+
+-   `imageChooser` (required, default: `image`) - A switchable field for background image selection:
+
+    -   If `image` is selected:
+
+        -   `image` (required) - Internal image chooser from Magnolia DAM.
+
+        -   `altText` (optional) - Alt text for accessibility.
+
+
+    -   If `externalImage` is selected:
+
+        -   `externalImage` (required) - Full URL to the external image.
+
+        -   `externalImageAlt` (optional) - Alt text for accessibility.
+
+
+
+-   `ctaChooser` (required, default: `noCta`) - A switchable field to define if a call-to-action button is included:
+
+    -   `noCta`
+
+    -   `withCta` - If selected:
+
+        -   `ctaText` (required) - Label text of the CTA button.
+
+        -   `ctaLink` (required, default: `internalPageLink`) - Switchable between internal and external:
+
+            -   If `internalPageLink` is selected:
+
+                -   `internalLink` (required) - Page link chooser.
+
+
+            -   If `externalPageLink` is selected:
+
+                -   `externalLink` (required) - Full URL to the external page.
+
+
+
+
+
+-   `height` (required, default: `h-screen`) - Height class for the section.
+
+    -   `h-screen`
+
+    -   `h-[75vh]`
+
+    -   `h-[50vh]`
+
+    -   `h-96`
+
+    -   `h-80`
+
+    -   `h-64`
+
+
+
+## [](#_behavior)Behavior
+
+-   The hero section stretches full-width and uses the defined height class.
+
+-   Title and description are always shown.
+
+-   If an image is provided, it’s rendered as the background of the hero.
+
+-   If CTA is enabled:
+
+    -   A button is shown below the description.
+
+    -   The button links to the selected internal or external URL.
+
+
+-   Styling (including text alignment, spacing, image positioning) is handled in the front-end implementation.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Hero -p hero
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

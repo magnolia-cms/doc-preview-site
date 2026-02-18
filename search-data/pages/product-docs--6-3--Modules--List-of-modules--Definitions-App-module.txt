@@ -8,26 +8,22 @@ breadcrumb: DX Core > Modules > Definitions App module
 
 # Definitions App module
 
-[Administration](../../../use-cases/administration/) Bundled: Community edition
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [CFGUI](https://magnolia-cms.atlassian.net/browse/CFGUI) |
-| Maven site | [UI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fdefinitions%2Fmagnolia-definitions-app%2F3.0.4) |
-| Latest | 3.0.4 |
-
-[Definitions app](../../../Apps/List-of-apps/Definitions-app/) displays active definitions from all sources (JCR and YAML).
+| Maven site | [UI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fdefinitions%2Fmagnolia-definitions-app%2F{magnolia-definitions-app-63}) |
+| Latest | {magnolia-definitions-app-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.definitions</groupId>
   <artifactId>magnolia-definitions-app</artifactId>
-  <version>3.0.4</version> (1)
+  <version>{magnolia-definitions-app-63}</version> (1)
 </dependency>
 ```
 

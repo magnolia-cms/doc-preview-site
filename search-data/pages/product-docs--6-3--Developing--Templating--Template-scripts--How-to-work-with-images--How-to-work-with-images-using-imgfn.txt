@@ -14,33 +14,14 @@ This page explains how to work with images using [`imgfn`](../../Templating-func
 
 If you manage your images with the Magnolia [Digital Asset Management module](../../../../../../../dam/developers/install/), we recommend using `damfn`. For more information, see [working with images using `damfn`](../How-to-work-with-images-using-damfn/).
 
-## [](#_imaging_modules)Imaging modules
-
-If you use a Magnolia bundle, the required and optional modules are already included.
-
-If you [created a custom webapp](../../../../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/), add the following modules in the POM file of the webapp of your bundle. The modules may have dependencies to other modules but these dependencies are handled by Maven dependency management.
-
-### [](#_required_modules)Required modules
-
-Modules required for basic image operations.
-
 | artifactId | version |
 | --- | --- |
-| `magnolia-module-imaging` | 4.0.4 |
-| `magnolia-imaging-support` | 4.0.4 |
-
-### [](#_optional_modules)Optional modules
-
-Modules required when using size variations of an image. Recommended.
-
-| artifactId | version |
-| --- | --- |
-| `magnolia-site` | 2.0.2 |
-| `magnolia-templating-essentials-imaging` | 3.0.2 |
+| `magnolia-module-imaging` | {magnolia-imaging-63} |
+| `magnolia-imaging-support` | {magnolia-imaging-63} |
 
 ## [](#_uploading_the_image_with_a_basic_upload_field)Uploading the image with a basic upload field
 
-With a [basic upload field](../../../../../../../magnolia-5-ui-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Basic-upload-field-5-UI/) you can upload an image directly to the node of your context. When saving the data of the dialog, Magnolia creates a subnode of the node of your context and stores the binary data of the image as property of the subnode.
+With a [basic upload field](#6.2@Support/Magnolia-5-UI-documentation/Dialog-definition-5-UI/Field-definition-5-UI/List-of-fields-5-UI/Basic-upload-field-5-UI.adoc) you can upload an image directly to the node of your context. When saving the data of the dialog, Magnolia creates a subnode of the node of your context and stores the binary data of the image as property of the subnode.
 
 -   If the dialog is for a [Component](../../../Template-definition/Component-definition/), the system creates a subnode of the component node.
 
@@ -61,7 +42,7 @@ Form:
 
 In the dialog definition, you can define the value of the `binaryNodeName` property (in the example the value is `myNode`). Keep in mind that you must know the name of this subnode to render the image later on.
 
-![Dialog definition](../../../../../_images/6-2-jcr-view-myNode.png)
+![Dialog definition](../../../../../../RNs-6-4-3/_images/6-2-jcr-view-myNode.png)
 
 You can check the JCR node structure in in the [JCR Browser app](../../../../../Apps/List-of-apps/JCR-Browser-app/).
 
@@ -98,4 +79,4 @@ To display an image, you must get the subnode of `content` and pass it as argume
 
 Here is the rendered result of the template script snippet above:
 
-![Rendered result of the template script snippet](../../../../../_images/imgfn-display.png)
+![Rendered result of the template script snippet](../../../../../../RNs-6-4-3/_images/imgfn-display.png)

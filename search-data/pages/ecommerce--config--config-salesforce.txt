@@ -1,0 +1,115 @@
+---
+title: "Salesforce Commerce Cloud extension configuration"
+url: https://docs.magnolia-cms.com/ecommerce/config/config-salesforce/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > Salesforce Commerce Cloud extension configuration
+---
+
+# Salesforce Commerce Cloud extension configuration
+
+Commerce Unbundled: [Extension](../../../product-docs/RNs-6-4-3/Modules/#_module_types) License: [Special license](../../../product-docs/RNs-6-4-3/Administration/License/#_special_licenses){frameworks-and-extensions-license-note}
+
+To create or edit the configuration, [decorate](../../../product-docs/RNs-6-4-3/Developing/Definition-decoration/) the extension under `/<light-module>/decorations/salesforce-commerce/ecommerces/salesforce-commerce.yaml`.
+
+## [](#_licensing)Licensing
+
+The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../product-docs/RNs-6-4-3/Administration/License/).
+
+| Property | Description |
+| --- | --- |
+| `class` | **required** `info.magnolia.ecommerce.common.EcommerceDefinition` |
+| `type` | **required** Your e-commerce solution: `salesforce-commerce` |
+| `enabled` | **required** `true` or `false` |
+| `connections` |  |
+| `connectionName` |  |
+| `authUrl` | **required** Authentication URL. |
+| `baseUrl` | **required** Base URL. |
+| `enabled` | **required** Shows if the connection is enabled or not: `true` or `false` |
+| `credentials` |  |
+| `username` | **required** Salesforce Commerce Cloud `client_id` . The `username` and `password` (see below) parameter values are the Salesforce API `client_id` and password you retrieve from the Salesforce Commerce Cloud Account Manager: [https://account.demandware.com/](https://account.demandware.com/) . First, log into your **Salesforce Account Manager** ( [https://account.demandware.com](https://account.demandware.com) ) and go to the **API Client** tab to create a new API client. When creating the API client, note that: • The password you create for the new API client is used as the `password` parameter value (see next cell). • We recommend you use the `Salesforce Commerce API` role, `client_secret_post` Token Endpoint Auth method and `JWT` Access Token Format. ** See [Add an API Client](https://documentation.b2c.commercecloud.salesforce.com/DOC4/index.jsp?topic=%2Fcom.demandware.dochelp%2Fcontent%2Fb2c_commerce%2Ftopics%2Faccount_manager%2Fb2c_account_manager_add_api_client_id.html) in the Salesforce documentation for more information. Next, log into the **Salesforce Business Manager** to configure Open Commerce API (OCAPI) client permissions for the API client you created: • Select **Administration** > **Site Development** > **Open Commerce API Settings** . • Add the API client for both the **Shop** and **Data** APIs. Shop API configuration example: Basic sample sandbox configuration: [shop_api.xml](../../../product-docs/RNs-6-4-3/_attachments/ecom/shop_api.xml) Data API configuration example: Basic sample sandbox configuration: [data_api.xml](../../../product-docs/RNs-6-4-3/_attachments/ecom/data_api.xml) • Use the `client_id` from Salesforce as the `username` in the Magnolia `salesforce-commerce.yaml` file. ** See "Client Permissions" in the [Salesforce documentation](https://documentation.b2c.commercecloud.salesforce.com/DOC4/index.jsp?topic=%2Fcom.demandware.dochelp%2FOCAPI%2Fcurrent%2Fusage%2FOCAPISettings.html) for more information. | ** | See [Add an API Client](https://documentation.b2c.commercecloud.salesforce.com/DOC4/index.jsp?topic=%2Fcom.demandware.dochelp%2Fcontent%2Fb2c_commerce%2Ftopics%2Faccount_manager%2Fb2c_account_manager_add_api_client_id.html) in the Salesforce documentation for more information. | ** | See "Client Permissions" in the [Salesforce documentation](https://documentation.b2c.commercecloud.salesforce.com/DOC4/index.jsp?topic=%2Fcom.demandware.dochelp%2FOCAPI%2Fcurrent%2Fusage%2FOCAPISettings.html) for more information. |
+| ** | See [Add an API Client](https://documentation.b2c.commercecloud.salesforce.com/DOC4/index.jsp?topic=%2Fcom.demandware.dochelp%2Fcontent%2Fb2c_commerce%2Ftopics%2Faccount_manager%2Fb2c_account_manager_add_api_client_id.html) in the Salesforce documentation for more information. |
+| ** | See "Client Permissions" in the [Salesforce documentation](https://documentation.b2c.commercecloud.salesforce.com/DOC4/index.jsp?topic=%2Fcom.demandware.dochelp%2FOCAPI%2Fcurrent%2Fusage%2FOCAPISettings.html) for more information. |
+| `password` | **required** Password entered when creating the Salesforce Commerce Cloud API client (or the path to the Magnolia password manager where the password is stored). See details in the cell above. |
+| `parameters` |  |
+| `shopUrl` | **required** URL used for cart and checkout functionality for Salesforce. |
+| `siteId` | **required** The `site_id` from Salesforce. You must enter a valid `site_id` value for product pricing information to be displayed correctly. You can set this property to `no-site` to create a connection to all unassigned Salesforce catalogs. However, if you do so, note that no price information is displayed in the product detail component for the selected product. |
+
+## [](#_viewing_and_testing_connections)Viewing and testing connections
+
+This section explains how to view and test the connection between the Magnolia E-commerce add-on module and your external commerce solution using the [E-commerce app](../../ecommerce-app/).
+
+1.  Open the E-commerce app **Configuration** tab.
+
+2.  Select a connection.
+
+3.  Click **View** to see the details of your connection to an external e-commerce solution.
+
+    ![View connection dialog](../../_images/6-1-ecom-view-connection-dialog.png)
+
+
+Depending on your external e-commerce solution, the connection information displayed may be:
+
+-   **Definition name** - The unique definition name. This name appears in the Catalogs subapp.
+
+-   **Connection name** - The unique name for the connection configured.
+
+-   **E-commerce type** - The type of external e-commerce solution you are connected to.
+
+-   **Authentication URL** - Authentication URL for the solution you are connected to.
+
+-   **Base URL** - Base URL for the solution you are connected to.
+
+-   **Username** and **Password** - Credentials to access the external solution. Passwords or client secrets can be managed in the [Passwords app](../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Passwords-app/).
+
+-   **Connection enabled** - Shows if the connection is enabled or not. You may choose to disable the configuration, for example, to improve performance times or to test a connection in one environment before enabling it in another.
+
+
+Click **Test connection** to check the connection configuration is correct. A message appears indicating if the test is successful or not.
+
+Once you’ve tested your connection, go to the E-commerce tab. You can see the connections you have configured listed with the catalogs they contain.
+
+| Property | Description |
+| --- | --- |
+| `images` | **required** |
+| `label` | **optional** Field label displayed to editors. The value can be literal or a [key](../../../product-docs/RNs-6-4-3/Administration/Language/Internationalization/) of a [message bundle](../../../product-docs/RNs-6-4-3/Administration/Language/Internationalization/) . If you do not provide the property, Magnolia will fall back to a generated i18n key. If you do not want a label at all, define the property and set its value to a blank space such as `label: " "` in YAML. |
+| `$type` | **required** Field type: • `multipleImageField` displays all images for the product (use with `URLsToStrings` converter). • `URLImageField` displays only the first image for the product (use with `ListOfURLsToString` converter). |
+| `converterClass` | **required** `info.magnolia.ecommerce.app.productdetail.field.URLsToStrings` converts all images for the product. `info.magnolia.ecommerce.app.productdetail.field.ListOfURLsToString` converts only the first image for the product. |
+| `imageRatio` | **optional** Defines the ratio of displayed images to the original images in percentage. In the example above, the value `60` is 60% of the original image size. If the property isn’t set, the images are displayed in their original size. |
+
+## [](#_configure_the_maximum_number_of_items_in_api_responses)Configure the maximum number of items in API responses
+
+E-commerce module 2.0.3 introduces the info.magnolia.ecommerce.common.LimitProvider interface to define the maximum number of items that can be retrieved in a single REST endpoint request from an e-commerce API.
+
+The default limit is set to `20` in the `getDefaultLimit()` method. Each Commerce integration framework extension has it’s own default limit, which is the maximum batch size allowed by that platform’s API.
+
+For the Salesforce extension, the info.magnolia.ecommerce.salesforce.common.SalesforceLimitProvider is set to `200` by default.
+
+To configure, decorate the extension configuration to add `limitProvider` under the `implementation` node:
+
+/salesforce-commerce/ecommerces/salesforce-commerce.yaml
+
+```yaml
+class: info.magnolia.ecommerce.common.EcommerceDefinition
+type: salesforce-commerce
+enabled: true
+implementation:
+  products:
+    all: info.magnolia.ecommerce.salesforce.products.All
+    byId: info.magnolia.ecommerce.salesforce.products.ById
+    byCategoryId: info.magnolia.ecommerce.salesforce.products.ByCategoryId
+    searchByText: info.magnolia.ecommerce.salesforce.products.SearchByText
+  categories:
+    all: info.magnolia.ecommerce.salesforce.categories.All
+    byId: info.magnolia.ecommerce.salesforce.categories.ById
+    byParentCategoryId: info.magnolia.ecommerce.salesforce.categories.ByParentCategoryId
+    byProductId: info.magnolia.ecommerce.salesforce.categories.ByProductId
+  connectionValidator: info.magnolia.ecommerce.salesforce.common.SalesforceConnectionValidator
+  limitProvider: info.magnolia.ecommerce.salesforce.common.SalesforceLimitProvider (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Add the `limitProvider` for your e-commerce extension. |
+
+> **Note:** You can’t change the default limitProvider value set.

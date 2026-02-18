@@ -1,0 +1,52 @@
+---
+title: "System probes"
+url: https://docs.magnolia-cms.com/instrumentation/probes/system-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > System probes
+---
+
+# System probes
+
+| Property | Default | Description |
+| --- | --- | --- |
+| `class` |  | The fully qualified class name of the probe to instantiate. ** The class must implement the `info.magnolia.services.instrumentation.probes.LaunchableProbe` interface. | ** | The class must implement the `info.magnolia.services.instrumentation.probes.LaunchableProbe` interface. |
+| ** | The class must implement the `info.magnolia.services.instrumentation.probes.LaunchableProbe` interface. |
+| `enabled` | `true` | Flag controlling if the probe is active and can provide measurements ( `true` ) or is disabled and not providing measurements ( `false` ). |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.environment.SystemProbe` . | **** |
+| `name` | The metric name used by Prometheus. Taken as from the node name when configured. | **** |
+| `description` | A description of the metric. |  |
+| `properties` | An array of properties names. ** If defined, only system properties matching a defined property name will be collected. | ** | If defined, only system properties matching a defined property name will be collected. |  |
+| ** | If defined, only system properties matching a defined property name will be collected. |
+| `excludedProperties` | An array of property names to exclude from collection. `excludedProperties` lets you "blacklist" selected properties: any property name in excludedProperties will not be collected and saved. ** If defined, only system properties not matching the excluded properties will be collected. ** You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). | ** | If defined, only system properties not matching the excluded properties will be collected. | ** | You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). |  |
+| ** | If defined, only system properties not matching the excluded properties will be collected. |
+| ** | You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.environment.SystemPropertiesProbe` . | **** |
+| `name` | The metric name used by Prometheus. Taken as from the node name when configured. | **** |
+| `description` | A description of the metric. |  |
+| `properties` | An array of properties names. ** If defined, only system properties matching a defined property name will be collected. | ** | If defined, only system properties matching a defined property name will be collected. |  |
+| ** | If defined, only system properties matching a defined property name will be collected. |
+| `excludedProperties` | An array of property names to exclude from collection. `excludedProperties` lets you "blacklist" selected properties: any property name in excludedProperties will not be collected and saved. ** If defined, only system properties not matching the excluded properties will be collected. ** You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). | ** | If defined, only system properties not matching the excluded properties will be collected. | ** | You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). |  |
+| ** | If defined, only system properties not matching the excluded properties will be collected. |
+| ** | You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). |
+
+## [](#_environmentprobe)EnvironmentProbe
+
+> **Caution:** EnvironmentProbe was deprecated in v1.3. Use SystemProbe instead.
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | Should be `info.magnolia.services.instrumentation.probes.environment.EnvironmentPropertiesProbe` . | **** |
+| `name` | The metric name used by Prometheus. Taken as from the node name when configured. | **** |
+| `description` | A description of the metric. |  |
+| `properties` | An array of properties names. ** If defined, only system properties matching a defined property name will be collected. | ** | If defined, only system properties matching a defined property name will be collected. |  |
+| ** | If defined, only system properties matching a defined property name will be collected. |
+| `excludedProperties` | An array of property names to exclude from collection. `excludedProperties` lets you "blacklist" selected properties: any property name in excludedProperties will not be collected and saved. ** If defined, only system properties not matching the excluded properties will be collected. ** You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). | ** | If defined, only system properties not matching the excluded properties will be collected. | ** | You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). |  |
+| ** | If defined, only system properties not matching the excluded properties will be collected. |
+| ** | You can use both properties and excludedProperties, but any property name listed in excludedProperties will not be collected, even it is also defined in properties (i.e. "blacklisting" a property overrides "whitelisting" a property). |

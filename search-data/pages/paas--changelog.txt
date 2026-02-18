@@ -5,4 +5,10 @@ category: DX Cloud
 version: cloud
 ---
 
-![create user group](../cockpit/_images/access-management/create-user-group.jpg)
+```yaml
+# Sticky session cookie
+nginx.ingress.kubernetes.io/session-cookie-name: "INGRESSCOOKIE"
+
+# Redirect server cookie (must be different)
+redirect.session-cookie-name: "REDIRECTCOOKIE"
+```

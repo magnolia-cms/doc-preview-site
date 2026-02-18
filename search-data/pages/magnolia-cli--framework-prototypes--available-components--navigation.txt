@@ -1,0 +1,84 @@
+---
+title: "Navigation"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/navigation/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Navigation
+---
+
+# Navigation
+
+The Navigation component displays a logo and a list of internal or external links for site navigation.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `logo` (optional) - A switchable field for logo image selection:
+
+    -   If `image` is selected:
+
+        -   `image` (required) - Internal image chooser from Magnolia DAM.
+
+        -   `altText` (optional) - Alt text for accessibility.
+
+
+    -   If `externalImage` is selected:
+
+        -   `externalImage` (required) - Full URL to the external image.
+
+        -   `externalImageAlt` (optional) - Alt text for accessibility.
+
+
+
+-   `links` (required) - A list field. At least one item is required. Each link item includes:
+
+    -   `field` (required, default: `internalLink`) - Switchable field to define link type:
+
+        -   If `internalLink` is selected:
+
+            -   `internalLink` (required) - Magnolia page chooser.
+
+            -   `text` (required) - The text displayed for the link.
+
+
+        -   If `externalLink` is selected:
+
+            -   `externalLink` (required) - Full URL.
+
+            -   `text` (required) - The text displayed for the link.
+
+
+
+
+
+## [](#_behavior)Behavior
+
+-   If a logo is provided, it is displayed on the left side of the navigation bar.
+
+-   Navigation links are displayed horizontally on the right.
+
+-   Each link opens the specified internal or external target.
+
+-   Styling and layout are handled via the front-end implementation.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Navigation -p navigation
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

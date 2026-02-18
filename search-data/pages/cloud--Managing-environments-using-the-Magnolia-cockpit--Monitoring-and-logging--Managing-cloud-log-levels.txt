@@ -1,0 +1,59 @@
+---
+title: "Managing cloud log levels"
+url: https://docs.magnolia-cms.com/cloud/Managing-environments-using-the-Magnolia-cockpit/Monitoring-and-logging/Managing-cloud-log-levels/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Managing environments using the Magnolia cockpit > Monitoring and logging > Managing cloud log levels
+---
+
+# Managing cloud log levels
+
+Magnolia Cloud integrates with [Datadog for monitoring and logging](../) services.
+
+This page explains where you can change the level of logs displayed for your Magnolia cloud instance and add loggers in the cockpit.
+
+> **Note:** If you want to access Magnolia cloud instance logs and integrate them with other external tools, use the REST API logs endpoint.The log displayed is the catalina.out log.
+
+## [](#_setting_log_levels)Setting log levels
+
+To change the log levels for your running instances:
+
+1.  In the Package overview page, click **Manage environments** in the Environments section.
+
+2.  Click **Log levels**.
+
+    ![cockpit log levels](../../../_images/cockpit-log-levels.jpg)
+
+3.  Select the instance for which you want to change log levels in the **Log levels for** dropdown.
+
+    ![image](../../../_images/image2018-4-17_11-12-33.png)
+
+4.  Select the required log level for each logger using the drop-downs on each line.
+
+    > **Important:** The levels available are standard Log4J log levels: ALL; TRACE; DEBUG; INFO; WARN; ERROR; FATAL; OFF.Any change you make in the loggers is applied immediately to the instance you selected. You can see this by logging into the instance inquestion and looking in Tools > Log Tools app > Log Levels tab.If the Log Tools app is open when you change the log levels in the Cockpit, you must close the app and open it again to see your changes reflected.When the instance is restarted, the logs are set back to their default levels.
+
+
+## [](#_adding_loggers)Adding loggers
+
+To add a logger for your running instances:
+
+1.  In the Package overview page, click **Manage environments** in the Environments section.
+
+2.  Click **Log levels**.
+
+3.  Select the instance for which you want to add a logger in the **Log levels for** dropdown.
+
+4.  Type in the name of the logger you want to add in the field at the bottom of the list.
+
+5.  Select the required log level for the new logger.
+
+    > **Important:** The levels available are standard Log4J log levels: ALL; TRACE; DEBUG; INFO; WARN; ERROR; FATAL; OFF.Any change you make in the loggers is applied immediately to the instance you selected. You can see this by logging into the instance in question and looking in Tools > Log Tools app > Log Levels tab.
+
+
+Related topics
+
+-   [Monitoring and logging](../)
+
+-   [Using REST to access cloud logs](../Using-REST-to-access-cloud-logs/)
+
+-   [Log Tools app](../../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Log-Tools-app/)

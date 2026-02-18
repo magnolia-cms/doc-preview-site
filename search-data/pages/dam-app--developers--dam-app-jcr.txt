@@ -1,0 +1,94 @@
+---
+title: "Configure the Magnolia Assets subapp"
+url: https://docs.magnolia-cms.com/dam-app/developers/dam-app-jcr/
+category: Modules
+version: modules
+breadcrumb: DAM App module > Assets subapp
+---
+
+# Configure the Magnolia Assets subapp
+
+Magnolia Assets subapp is Magnolia’s native solution for simple Digital Asset Management (DAM) scenarios.
+
+Installing the `dam-app-jcr` submodule automatically adds the subapp to the Assets app. The submodule uses a [definition decoration](../../../product-docs/RNs-6-4-3/Developing/Definition-decoration/) at `/dam-app-jcr/decorations/dam-assets-app/apps/dam.subApps.yaml` to register itself with the container app. For installation information, see [DAM App module](../install/).
+
+## [](#_configuration)Configuration
+
+Image manipulation actions such as resizing or cropping are provided by the [UI Media Editor module](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/UI-module/UI-Media-Editor-module/). Configuration of these actions can be found at `/modules/ui-mediaeditor/mediaEditors/image`, with some of its parts defined in YAML-based decorations under `/ui-mediaeditor/decorations/ui-mediaeditor/mediaEditors`.
+
+### [](#_bulk_publishing)Bulk publishing
+
+Bulk publishing allows you to simultaneously publish multiple assets. This feature is preconfigured and enabled by default for the Assets app.
+
+The publish, unpublish, and delete actions in the Magnolia Assets subapp are configured with `bulk: true`, which uses the `uuids` parameter instead of a single path to process multiple items.
+
+To disable bulk publishing for a specific action, set `bulk: false` in the action configuration or remove the `bulk` property.
+
+For more information on bulk publishing configuration, see [Publishing module: Activate bulk publishing](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Publishing-module/#_activate_bulk_publishing).
+
+### [](#_turning_image_thumbnails_off_in_the_asset_browser)Turning image thumbnails off in the asset browser
+
+By default, image thumbnails are displayed next to the asset names in the asset browser. This behavior can be changed by setting the `thumbnails` property to `false` for the `jcrName` column (line 15 in the configuration snippet below):
+
+```yaml
+  workbench:
+    contentViews:
+      - name: tree
+        $type: treeView
+        dropConstraint:
+          $type: jcrDropConstraint
+          primaryNodeType: mgnl:asset
+        multiSelect: true
+        columns:
+          jcrName: &name
+            class: info.magnolia.dam.app.contentview.column.JcrAssetNameColumnDefinition
+            nodeTypeToComponent:
+              mgnl:folder:
+                icon: icon-folder
+              mgnl:asset:
+                icon: icon-assets-app
+            thumbnails: false
+```
+
+A universal icon is then displayed next to the asset names instead of thumbnails:
+
+![Universal icon instead of thumbnails next to the asset names](../../_images/MagnoliaAssetsSubapp-thumbnailsFalse.png)
+
+## [](#_workspace)Workspace
+
+The subapp operates on the JCR `dam` workspace. The `dam` workspace stores the uploaded original assets and variations created with image operations such as cropping.
+
+## [](#_node_types)Node types
+
+The DAM module registers a custom `mgnl:asset` [node type](../../../product-docs/RNs-6-4-3/Administration/Architecture/Node-types/). Magnolia Assets subapp operates on nodes of this type and on folders.
+
+## [](#_how_to_handle_many_assets)How to handle many assets
+
+The DAM can handle a very large number of assets and is used in installations with hundreds of thousands or even millions of files. To keep both JCR operations and the Assets app UI fast and usable, avoid very flat hierarchies and organize assets into folders, aiming for roughly 500 assets per folder and using subfolders where needed.
+
+When your total volume of assets or the size of individual binaries starts to impact publication times, storage footprint, or operational workflows, consider offloading binaries to [DAM 6.0](../../../dam/), our [External DAM integration framework](../../../product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/external-dam-integration-framework/), our [DAM API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/DAM-API/), or one of our [Incubator modules](../../../incubator-modules/) extensions.
+
+How many assets should I put in a folder?
+
+For best performance with JCR assets, limit each folder to around 500 assets regardless of type (images, PDFs, etc.)
+
+Use subfolders to stay organized and avoid performance issues.
+
+-   Avoid placing too many assets in a single folder.
+
+-   Use subfolders to improve performance and maintain structure.
+
+
+## [](#_using_the_app)Using the app
+
+See [Managing assets](../../../product-docs/RNs-6-4-3/Authoring/Managing-assets/) for how to use the subapp.
+
+Related topics
+
+-   [Assets app](../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Assets-app/)
+
+-   [External DAM integration framework](../../../product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/external-dam-integration-framework/)
+
+-   [DAM API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/DAM-API/)
+
+-   [Image recognition](../../../image-recognition/)

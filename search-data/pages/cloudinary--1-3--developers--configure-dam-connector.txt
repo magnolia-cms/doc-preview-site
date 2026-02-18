@@ -14,105 +14,14 @@ This sections details how to use the module.
 
 You must have a [Cloudinary account](https://cloudinary.com/).
 
-## [](#_configuration)Configuration
-
-Once the Cloudinary app module is installed there is some import basic configuration. We need to configure credentials for `magnolia-dam-cloudinary-app`.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Parameter</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxResults</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="dlist"><dl><dt class="hdlist1">From version <code>1.1.4</code></dt><dd><p>Defines the number of resources displayed per folder, default is <code>50</code>, max value is <code>500</code>.</p></dd></dl></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiKey</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>mandatory</strong></p></div><div class="paragraph"><p>Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>apiSecret</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>mandatory</strong></p></div><div class="paragraph"><p>Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>cloudName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>mandatory</strong></p></div><div class="paragraph"><p>Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>isDynamic</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Boolean indicating if folder and asset renaming is <a href="../../authors/#_renaming_cloudinary_items" class="xref page">dynamic</a>.</p></div><div class="ulist"><ul><li><p><code>true</code> = you can rename your folder or assets from within Magnolia.</p></li><li><p><code>false</code> = you <strong>cannot</strong> rename your folder or assets from within Magnolia.</p></li></ul></div><div class="paragraph"><p>Defaults to <code>false</code> if left unspecified.</p></div><div class="admonitionblock important"><table><tbody><tr><td class="icon"><i class="fa icon-important" title="Important"></i></td><td class="content">This is only available for Cloudinary accounts created on or after <strong>June 4, 2024</strong>. Those created prior to this date must contact <a href="{cloudinary-support}" target="_blank" rel="noopener">Cloudinary support</a>.</td></tr></tbody></table></div></div></td></tr></tbody></table></div>
-
-### [](#_credentials)Credentials
-
-Credentials can be stored on the Passwords app see the screenshot below. You can override them in the `config.yaml` file as so.
-
-> **Note:** By default editors will have access to Cloudinary images allow to this account, they will be able to create/edit/delete, add roles to prevent those actions if needed or restrict the actions by user groups/roles.
-
-```yaml
-apiKey: /cloudinary-credentials/apiKey
-apiSecret: /cloudinary-credentials/apiSecret
-cloudName: cloudName
-```
-
-![cloudinary credentials](../_images/dam-connector/cloudinary-credentials.jpg)
-
-### [](#_provider)Provider
-
-Cloudinary provider is installed automatically from the first time it’s installed. If you don’t see this, it may not be installed properly, or it may be deleted by accidentally, you can recreate it similar to this structure.
-
-![cloudinary provider](../_images/dam-connector/cloudinary-provider.jpg)
-
-### [](#_renderer)Renderer
-
-This implementation provides its own renderer:
-
-```java
-info.magnolia.external.dam.cloudinary.renderer.CloudinaryAssetRenderer
-```
-
-This renderer will get the renditions from Cloudinary directly, if the rendition is just a number, it will append 'w\_' by default for compatibility with the demo project, other renditions can be get like this:
-
-```java
-damfn.getRendition(asset, "w_400,h_400,c_crop,g_face,r_max/w_200")
-```
-
-### [](#_endpoint)Endpoint
-
-From version `1.1.2/*`, there is configuration that adds an endpoint and a rest role added to the `anonymous` user for Cloudinary access.
-
-The endpoint receives Cloudinary notifications to refresh the cache when working directly with Cloudinary server.
-
-To configure the `notification_url`:
-
-1.  Log into your Cloudinary Management Console.
-
-2.  Set the `notification_url` to the domain name and the endpoint path.
-
-    ```none
-    http://YOUR_DOMAIN.com/.rest/cloudinary/v1/resetCaches (1)
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | Replace `YOUR_DOMAIN` with your actual domain. |
-
-
-![cloudinary endpoint](../_images/dam-connector/cloudinary-endpoint.jpg)
-
-#### [](#_from_version_1_1_13)From version `1.1.13/*`
-
-There is configuration that adds an endpoint to cache Cloudinary assets based on Cloudinary webhook notifications. The endpoint receives Cloudinary notifications to generate and/or update cached assets and reduce Cloudinary API calls.
-
-To configure the `notification_url`:
-
-1.  Log into the Cloudinary Management Console.
-
-2.  Find Webhook Notifications and look for the `notification_url` setting.
-
-3.  Set the `notification_url` to the domain name and the endpoint path.
-
-    ```none
-    http://YOUR_DOMAIN.com/.rest/cloudinary/v1/notifications (1)
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | Replace `YOUR_DOMAIN` with your actual domain. |
-
-
-You can create a Warm-up Cache for Cloudinary using the rest endpoints. The cached assets are stored in the `cloudinary-media` workspace. The three endpoints create, publish, and delete the JCR cache.
-
-Make a GET call to the endpoints to trigger the cache operations.
-
-```none
-http://YOUR_DOMAIN.com/.rest/cloudinary/v1/warmupJcrCache/load (1)
-http://YOUR_DOMAIN.com/.rest/cloudinary/v1/warmupJcrCache/publish (1)
-http://YOUR_DOMAIN.com/.rest/cloudinary/v1/deleteJcrCache (1)
-```
-
-|     |     |
+| Parameter | Description |
 | --- | --- |
-| **1** | Replace `YOUR_DOMAIN` with your actual domain. |
-
-![cloudinary webhooks](../_images/dam-connector/cloudinary-webhooks.jpg)
+| `maxResults` | **optional** From version `1.1.4` : Defines the number of resources displayed per folder, default is `50` , max value is `500` . |
+| `apiKey` | **mandatory** Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app. |
+| `apiSecret` | **mandatory** Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app. |
+| `cloudName` | **mandatory** Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app. |
+| `isDynamic` | **optional** Boolean indicating if folder and asset renaming is [dynamic](../../../authors/#_renaming_cloudinary_items) . • `true` = you can rename your folder or assets from within Magnolia. • `false` = you **cannot** rename your folder or assets from within Magnolia. Defaults to `false` if left unspecified. ** This is only available for Cloudinary accounts created on or after **June 4, 2024** . Those created prior to this date must contact [Cloudinary support]({cloudinary-support}) . | ** | This is only available for Cloudinary accounts created on or after **June 4, 2024** . Those created prior to this date must contact [Cloudinary support]({cloudinary-support}) . |
+| ** | This is only available for Cloudinary accounts created on or after **June 4, 2024** . Those created prior to this date must contact [Cloudinary support]({cloudinary-support}) . |
 
 ## [](#_cloudinary_app)Cloudinary app
 

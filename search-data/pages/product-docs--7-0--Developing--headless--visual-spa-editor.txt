@@ -90,53 +90,23 @@ The SPA instantiates 1) *the specified components*, with 2) *that content*, in 3
 
 > **Note:** When the user navigates to a new Route (aka Page), the SPA hits the endpoint again and refreshes its content.
 
-## [](#_how_it_works_in_editing_experience)How it works in Editing Experience
-
-An Author opens a page in the Magnolia Pages App. The template has `renderType: spa`.
-
-Page Editor loads the SPA which is bundled in a Magnolia module.
-
-It hits a Magnolia REST Delivery endpoint as above.
-
-It hits the `templateDefinition` Magnolia REST endpoint for information about all the templates on the page. For example it provides which components are available in an area.
-
-The JS library instantiates the components as above, but additionally adds hints/annotations for the Page Editor in the form of the HTML comments, for every area and component on the page. Then it calls the `mgnlRefresh` method to request the Edit Bars.
-
-The Page Editor injects the green Edit Bars into the DOM, based on the annotations.
-
-Author uses the Edit Bars.
-
-Edits are persisted to Magnolia. The Page Editor reloads the page in the `iframe`.
-
-### [](#_not_seeing_green_bars_while_editing)Not seeing green bars while editing?
-
-In some instances, you may not be seeing the green edit bars while using the Visual SPA editor. If this is the case, try some of the following techniques.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 5%;"> <col style="width: 25%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top"></th><th class="tableblock halign-left valign-top">Tip</th><th class="tableblock halign-left valign-top">Notes</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>1</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>iframe</code> preview URL</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Make sure your <code>iframe</code> preview URL in the <a href="../concepts/content-modelling/#_pages_app" class="xref page">Pages app</a> is correct.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">This should be the Author SPA with the correct path name and query parameters.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>2</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Correct environment</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Make sure the Author SPA is fetching data from the correct environment, the Magnolia Author instance.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">It should fetch both the pages data and template annotations for the correct page.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>3</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Correct libraries</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Ensure you’re using the latest <a href="../spa-development/magnolia-front-end-sdk/#_supported_framework_versions" class="xref page">frontend libraries</a>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>4</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>HTML DOM comments</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Check to see if there are any HTML comments in the DOM.</p></div><div class="tabset is-loading"><div class="ulist tabs"><ul><li><p><a id="tabset1_see-comments-span-class-icon-i-class-fa-fa-comments-i-span"></a>See comments?<span class="icon"><i class="fa fa-comments"></i></span></p></li><li><p><a id="tabset1_don-8217-t-see-comments-span-class-icon-i-class-fa-fa-window-close-i-span"></a>Don’t see comments?<span class="icon"><i class="fa fa-window-close"></i></span></p></li></ul></div><div class="content"><div class="tab-pane" aria-labelledby="tabset1_see-comments-span-class-icon-i-class-fa-fa-comments-i-span"><div class="paragraph"><p>Try running the <code>window.mgnlFrameReady()</code> function from inside the preview <code>iframe</code> to attempt to render the green bars. There could be a race condition<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup> which essentially tries to render the bars before your site is ready.</p></div><div class="paragraph"><p>If this is the case, manually call <code>window.mgnlFrameReady()</code>:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-js hljs" data-lang="js">function myFunction() {
-  const element = document.querySelector('.mgnlEditorBar');
-
-  if (element) {
-    clearInterval(intervalId);
-  } else {
-    window.mgnlFrameReady();
-  }
-}
-
-const intervalId = setInterval(myFunction, 200); <i class="conum" data-value="1"></i><b>(1)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Where the time delay (<code>200</code>) is in milliseconds.</td></tr></tbody></table></div></div><div class="tab-pane" aria-labelledby="tabset1_don-8217-t-see-comments-span-class-icon-i-class-fa-fa-window-close-i-span"><div class="paragraph"><p>The green bars are placed in the Page Editor based on the comments that the frontend places in the HTML using one of the <a href="../spa-development/magnolia-front-end-sdk/#_supported_framework_versions" class="xref page">frontend libraries</a>. It is <strong>imperative</strong> to have the HTML comments rendered.</p></div><div class="ulist"><ul><li><p>Make sure the SPA fetches template annotations properly. It could be that it’s unaware it’s in the authoring context.</p></li><li><p>Make sure the call that the SPA makes can be run in incognito mode in your browser. Potentially, some security settings are preventing SPA from fetching template annotations.</p></li></ul></div><div class="olist arabic"><div class="title">Check the console log</div><ol class="arabic"><li><p>In your code, go to where you fetch the <code>template-annotations</code>.</p></li><li><p>Check the console log to ensure it’s working properly.</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-js hljs" data-lang="js">if (I_AM_INSIDE_MAGNOLIA) { <i class="conum" data-value="1"></i><b>(1)</b>
-  console.log('Hooray, I am here.') <i class="conum" data-value="2"></i><b>(2)</b>
-  console.log('I am trying to fetch:', 'MAGNOLIA/.rest/template-annotations/v1' + PATH_TO_NODE) <i class="conum" data-value="2"></i><b>(2)</b>
-  const templateAnnotationsRes = await fetch(
-    'MAGNOLIA/.rest/template-annotations/v1' + PATH_TO_NODE
-  );
-  ...
-  console.log('RESPONSE', templateAnnotations)
-}</code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>If the code runs successfully inside the <code>if</code> statement, then it is running in the correct context for the Pages app.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>Print something along these lines to ensure the console log outputs the statement. This checks the correct URL is being used and you’re fetching from the correct Magnolia instance and page.</td></tr></tbody></table></div><div class="paragraph"><p><span class="icon"><i class="fa fa-code"></i></span>If the response is okay, you should get the mappings for your HTML comments.</p></div></li></ol></div></div></div></div><div id="footnotes"><hr><div class="footnote" id="_footnotedef_1"><a href="#_footnoteref_1">1</a>. A race condition is a situation when several processes or threads are attempting to access the same resource.</div></div></div></td></tr></tbody></table></div>
+|  | Tip | Notes |
+| --- | --- | --- |
+| **1** | `iframe` preview URL | Make sure your `iframe` preview URL in the [Pages app](../../../../RNs-6-4-3/Developing/headless/concepts/content-modelling/#_pages_app) is correct. ** This should be the Author SPA with the correct path name and query parameters. | ** | This should be the Author SPA with the correct path name and query parameters. |
+| ** | This should be the Author SPA with the correct path name and query parameters. |
+| **2** | Correct environment | Make sure the Author SPA is fetching data from the correct environment, the Magnolia Author instance. ** It should fetch both the pages data and template annotations for the correct page. | ** | It should fetch both the pages data and template annotations for the correct page. |
+| ** | It should fetch both the pages data and template annotations for the correct page. |
+| **3** | Correct libraries | Ensure you’re using the latest [frontend libraries](../../../../RNs-6-4-3/Developing/headless/spa-development/magnolia-front-end-sdk/#_supported_framework_versions) . |
+| **4** | HTML DOM comments | Check to see if there are any HTML comments in the DOM. • []() See comments? ** • []() Don’t see comments? ** Try running the `window.mgnlFrameReady()` function from inside the preview `iframe` to attempt to render the green bars. There could be a race condition [ [1](#_footnotedef_1) ] which essentially tries to render the bars before your site is ready. If this is the case, manually call `window.mgnlFrameReady()` : `function myFunction() { const element = document.querySelector('.mgnlEditorBar'); if (element) { clearInterval(intervalId); } else { window.mgnlFrameReady(); } } const intervalId = setInterval(myFunction, 200); (1)` ** **1** Where the time delay ( `200` ) is in milliseconds. The green bars are placed in the Page Editor based on the comments that the frontend places in the HTML using one of the [frontend libraries](../../../../RNs-6-4-3/Developing/headless/spa-development/magnolia-front-end-sdk/#_supported_framework_versions) . It is **imperative** to have the HTML comments rendered. • Make sure the SPA fetches template annotations properly. It could be that it’s unaware it’s in the authoring context. • Make sure the call that the SPA makes can be run in incognito mode in your browser. Potentially, some security settings are preventing SPA from fetching template annotations. Check the console log • In your code, go to where you fetch the `template-annotations` . • Check the console log to ensure it’s working properly. `if (I_AM_INSIDE_MAGNOLIA) { (1) console.log('Hooray, I am here.') (2) console.log('I am trying to fetch:', 'MAGNOLIA/.rest/template-annotations/v1' + PATH_TO_NODE) (2) const templateAnnotationsRes = await fetch( 'MAGNOLIA/.rest/template-annotations/v1' + PATH_TO_NODE ); ... console.log('RESPONSE', templateAnnotations) }` ** **1** If the code runs successfully inside the `if` statement, then it is running in the correct context for the Pages app. ** **2** Print something along these lines to ensure the console log outputs the statement. This checks the correct URL is being used and you’re fetching from the correct Magnolia instance and page. ** If the response is okay, you should get the mappings for your HTML comments. [1](#_footnoteref_1) . A race condition is a situation when several processes or threads are attempting to access the same resource. | ** **1** | Where the time delay ( `200` ) is in milliseconds. | ** **1** | If the code runs successfully inside the `if` statement, then it is running in the correct context for the Pages app. | ** **2** | Print something along these lines to ensure the console log outputs the statement. This checks the correct URL is being used and you’re fetching from the correct Magnolia instance and page. |
+| ** **1** | Where the time delay ( `200` ) is in milliseconds. |
+| ** **1** | If the code runs successfully inside the `if` statement, then it is running in the correct context for the Pages app. |
+| ** **2** | Print something along these lines to ensure the console log outputs the statement. This checks the correct URL is being used and you’re fetching from the correct Magnolia instance and page. |
 
 ## [](#_how_to_make_your_spa_editable)How to Make your SPA Editable
 
 > **Tip:** Check out the Hello Magnolia - SPA tutorial to really get hands-on.
 
-Start by browsing the [`minimal-headless-spa-demos`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos) repository. There you can see a well organized, complete working example.
+Start by browsing the [`minimal-headless-spa-demos`]({spa-headless-demo-url}) repository. There you can see a well organized, complete working example.
 
 ### [](#_step_by_step)Step by step
 
@@ -151,23 +121,23 @@ Start by browsing the [`minimal-headless-spa-demos`](https://bitbucket.org/magno
 
 1.  Create a SPA component to represent your page. Use a `prop`, like `title`.
 
-    link:[`/spa/react-minimal/src/pages/Basic.js`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/spa/react-minimal/src/pages/Basic.js`](link:{spa-headless-demo-url})
 
 2.  Load the content from the delivery endpoint for the the current route.
 
-    link:[`/spa/react-minimal/src/helpers/PageLoader.js`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/spa/react-minimal/src/helpers/PageLoader.js`](link:{spa-headless-demo-url})
 
 3.  Load the template information from the `templateDefinition` endpoint, based on the templateID of the route page.
 
-    link:[`/spa/react-minimal/src/helpers/PageLoader.js`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/spa/react-minimal/src/helpers/PageLoader.js`](link:{spa-headless-demo-url})
 
 4.  Create a component mapping configuration.
 
-    link:[`/spa/react-minimal/src/magnolia.config.js`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/spa/react-minimal/src/magnolia.config.js`](link:{spa-headless-demo-url})
 
 5.  Use the `Page` component from the Magnolia JS library to instantiate a frontend component. based on the templateId of the magnolia page, and the mapping.
 
-    link:[`/spa/react-minimal/src/helpers/PageLoader.js`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/spa/react-minimal/src/helpers/PageLoader.js`](link:{spa-headless-demo-url})
 
 6.  Deploy your SPA. Typically on its own server.
 
@@ -175,7 +145,7 @@ Start by browsing the [`minimal-headless-spa-demos`](https://bitbucket.org/magno
 
 7.  Create a Page Template definition and point it to the SPA URL. Add a dialog with a `title` property.
 
-    link:[`/magnolia/light-modules/react-minimal-lm/templates/pages/basic.yaml`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/magnolia/light-modules/react-minimal-lm/templates/pages/basic.yaml`](link:{spa-headless-demo-url})
 
 8.  Run the page app. Edit the title.
 
@@ -191,11 +161,11 @@ Start by browsing the [`minimal-headless-spa-demos`](https://bitbucket.org/magno
 
 1.  Create frontend components as usual.
 
-    link:[`/magnolia/light-modules/spa-lm/dialogs/components/headline.yaml`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/magnolia/light-modules/spa-lm/dialogs/components/headline.yaml`](link:{spa-headless-demo-url})
 
 2.  Create Magnolia components for each frontend component. (Just a definition and dialog, no template script needed!) Dialog properties will be available in your frontend component as `props`.
 
-    link:[`/magnolia/light-modules/spa-lm/templates/components/headline.yaml`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos) link:[`/magnolia/light-modules/spa-lm/dialogs/components/headline.yaml`](https://bitbucket.org/magnolia-cms/minimal-headless-spa-demos)
+    [`/magnolia/light-modules/spa-lm/templates/components/headline.yaml`](link:{spa-headless-demo-url}) [`/magnolia/light-modules/spa-lm/dialogs/components/headline.yaml`](link:{spa-headless-demo-url})
 
 3.  Add the component to your mapping configuration file.
 

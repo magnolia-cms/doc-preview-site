@@ -60,90 +60,10 @@ Example: Get the children nodes of the node of the current nodes, convert the re
     <li>${child.title}</li>
 \[/#list\]
 
-## [](#_item_asset_folder_map_of_an_asset_assetrendition)`Item`, `Asset`, `Folder`, `Map` (of an asset), `AssetRendition`
-
-### [](#_itemkey_of_an_asset)itemKey of an asset
-
-Some methods in [`damfn`](../damfn/) require a String argument called `itemKey`. An item key uniquely identifies an asset among different asset providers.
-
-When JCR is used as asset provider, the item key is composed of `jcr:<node-UUID>`, for instance `jcr:20d6e4e3-fe53-4b23-8d64-6e67a1c1667f`. Typically you need to get the item key from a content node that is created when a component is saved in the JCR.
-
-**Example**: A component node contains a reference to an image.
-
-![Component node with image reference](../../../../../_images/ADVT-temp-fcnt-arg.png)
-
-In a Java context, if you have an asset and want to know its item key as a String, use:
-
-```java
-asset.getItemKey().asString()
-```
-
-In a FreeMarker context, if you have an asset and want to know its item key as a String, use:
-
-\[#assign itemKey = myAsset.getItemKey().asString()\]
-
-### [](#_info_magnolia_dam_api_item)info.magnolia.dam.api.Item
-
-info.magnolia.dam.api.Item is the common supertype of Asset and Folder. Some methods of the [damfn](../damfn/) will return Item.
-
-### [](#_info_magnolia_dam_api_asset)info.magnolia.dam.api.Asset
-
-An asset is a digital resource with associated metadata. This interface provides many methods that you may want to call directly within your script.
-
-Example:
-
-\[#assign myAsset = damfn.getAsset("jcr", "/photos/dilbert.jpg")!\]
-get the link of an asset to display an image <img src="${myAsset.getLink()}"/> - when the asset is an image
-or a download link: <a href="${myAsset.getLink()}">Link to the asset</a>
-
-### [](#_info_magnolia_dam_api_folder)info.magnolia.dam.api.Folder
-
-A Folder represents a structural item holding [Assets](#_info.magnolia.dam.api.asset). Depending on the provider, this can be directly mapped to the concept of folders/directories (JCR, FileSystems, and so on); for others this might map to the concept of albums, playlists, sets, and so on.
-
-Example:
-
-\[#assign photosFolder = damfn.getFolder("jcr", "/photos")\]
-The folder ${photosFolder.name} contains the following images:
-<ul>
-\[#list photosFolder.getChildren() as item\]
-    <li>${item.getName()}</li>
-\[/#list\]
-</ul>
-
-### [](#_map_of_an_asset_and_its_metadata)Map of an asset and its metadata
-
-The DAM templating functions ([damfn](../damfn/)) provide a method which returns a `java.util.Map` containing all the bean properties of the asset.
-
-\[#assign myAsset = damfn.getAsset("jcr", "photos/pool.jpg")!\]
-\[#assign myAssetMap = damfn.getAssetMap(myAsset)\]
-fileSize: ${myAssetMap.fileSize}
-folder: ${myAssetMap.caption?string}
-name: ${myAssetMap.name}
-title: ${myAssetMap.title}
-caption: ${myAssetMap.caption}
-copyright: ${myAssetMap.copyright}
-
-See info.magnolia.dam.api.Asset for all public methods indicating the available properties.
-
-Additionally, the map may contain further nested maps with the properties of classes implementing info.magnolia.dam.api.metadata.AssetMetadata. The metadata sub maps are collected under the key `metadata`.
-
-If the asset is provided by info.magnolia.dam.jcr.JcrAssetProvider (that is, if the asset is derived from the JCR workspace `dam`), the following submaps are provided on the asset map:
-
 | Metadata class | Key | Composed key | Example |
 | --- | --- | --- | --- |
 | `info.magnolia.dam.api.metadata.DublinCore` | `dc` | `metadata.dc` | `myAssetMap.metadata.dc.format` |
 | `info.magnolia.dam.api.metadata.MagnoliaAssetMetadata` | `mgnl` | `metadata.mgnl` | `myAssetMap.metadata.mgnl.width` |
-
-\[#assign myAsset = damfn.getAsset("jcr", "photos/pool.jpg")!\]
-\[#assign myAssetMap = damfn.getAssetMap(myAsset)\]
-width: ${myAssetMap.metadata.mgnl.width}
-format: ${myAssetMap.metadata.dc.format}
-
-### [](#_info_magnolia_dam_api_assetrendition)info.magnolia.dam.api.AssetRendition
-
-info.magnolia.dam.api.AssetRendition is a `variation` on a asset, for a specific MimeType.
-
-The renditions are defined per Theme in the [Site](../../../Site-definition/). For instance the node `/modules/site/config/themes/examples-theme/imaging/variations/small-square` defines in the theme `examples-theme` a rendition named `small-square`.
 
 ## [](#_site_and_theme)`Site` and `Theme`
 

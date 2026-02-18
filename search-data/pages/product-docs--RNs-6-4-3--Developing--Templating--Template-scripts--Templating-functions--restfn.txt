@@ -1,0 +1,56 @@
+---
+title: "restfn"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/restfn/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > Templating functions > restfn
+---
+
+# restfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+`restfn` templating functions give access to REST clients configured with the [REST Client module](../../../../../Modules/List-of-modules/REST-Client-module/).
+
+## [](#_accessing_3rd_party_systems_with_rest)accessing 3rd party systems with REST
+
+> **Note:** Using Magnolia REST clients with restfn in FTL template scripts could slow or even block the rendering of the scripts, because the call is synchronous and waits till the request returns. Before an actual implementation, always consider at least the following:The reliability of the endpoint.Implementing restfn in an asynchronous way via a client side request.Accessing the endpoint directly with client side code.How any of your page caching configurations will affect content delivered from restfn.
+
+| Argument | Description |
+| --- | --- |
+| `restClientName` | **required** Name of a configured client. |
+| `restCallName` | **required** Name of a configured call. See also below [the form of the REST call name](#_the_form_of_the_restcallname) . |
+| `customValues` | **optional** A map of custom values passed to the endpoint with the call. |
+| `errorHandler` | **optional** Specification of a handler for errors, for example `{"code": 404}` . |
+
+| Argument | Description |
+| --- | --- |
+| `restClientName` | **required** Name of a configured client. |
+| `restCallName` | **required** Name of a configured call. See also below [the form of the REST call name](#_the_form_of_the_restcallname) . |
+| `customValues` | **optional** A map of custom values passed to the endpoint with the call. |
+
+| Argument | Description |
+| --- | --- |
+| `restClientName` | **required** Name of a configured client. |
+| `proxyClassName` | **required** Name of a proxy class. |
+
+| Argument | Description |
+| --- | --- |
+| `proxy` | **required** Instance of a declared proxy. |
+| `methodName` | **required** Name of the method of the proxy. |
+| `args` | **required** A [varargs](https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html) parameter. In FreeMarker context, just pass an array of arguments. |
+
+| Argument | Description |
+| --- | --- |
+| `restClientName` | **required** Name of a configured client. |
+| `proxyClass` | **required** Name of a proxy class. |
+| `methodName` | **required** Name of the method. |
+| `args` | **required** A [varargs](https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html) parameter. In FreeMarker context, just pass an array of arguments. |
+
+| Argument | Description |
+| --- | --- |
+| `jsonNode` | **required** Variable of type `com.fasterxml.jackson.databind.JsonNode` . |
+
+| Argument | Description |
+| --- | --- |
+| `jsonNode` | **required** Variable of type `com.fasterxml.jackson.databind.JsonNode` . |

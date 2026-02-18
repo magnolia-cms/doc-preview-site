@@ -132,85 +132,6 @@ Dedicated actions allow you to access a definition for editing in either the [Re
 
 All YAML definitions display in the **Origin** column as *file*. The origin of these definitions could be the file system or the classpath. You can see each origin in the Resource Files app.
 
-## [](#_using_the_registry_api)Using the Registry API
-
-The Definitions app provides a visual interface to explore definitions. You can also access these definitions programmatically through the Registry API in your Java code.
-
-### [](#_basic_usage_pattern)Basic usage pattern
-
-All definition registries follow the same pattern: get the registry component and call `getAllDefinitions()` to retrieve an iterator.
-
-```java
-// Generic pattern for accessing any registry
-Iterator<DefinitionType> iterator = Components.getComponent(DefinitionTypeRegistry.class).getAllDefinitions().iterator();
-while (iterator.hasNext()) {
-    DefinitionType definition = iterator.next();
-    // Work with the definition
-}
-```
-
-### [](#_common_registry_examples)Common registry examples
-
-#### [](#_templates)Templates
-
-```java
-import info.magnolia.rendering.template.registry.TemplateDefinitionRegistry;
-import info.magnolia.rendering.template.TemplateDefinition;
-
-Iterator<TemplateDefinition> templateDefinitionIterator =
-    Components.getComponent(TemplateDefinitionRegistry.class).getAllDefinitions().iterator();
-while (templateDefinitionIterator.hasNext()) {
-    TemplateDefinition template = templateDefinitionIterator.next();
-    System.out.println("Template: " + template.getName());
-}
-```
-
-#### [](#_dialogs)Dialogs
-
-```java
-import info.magnolia.ui.dialog.registry.DialogDefinitionRegistry;
-import info.magnolia.ui.dialog.DialogDefinition;
-
-Iterator<DialogDefinition> dialogDefinitionIterator =
-    Components.getComponent(DialogDefinitionRegistry.class).getAllDefinitions().iterator();
-while (dialogDefinitionIterator.hasNext()) {
-    DialogDefinition dialog = dialogDefinitionIterator.next();
-    System.out.println("Dialog: " + dialog.getName());
-}
-```
-
-#### [](#_apps)Apps
-
-```java
-import info.magnolia.registry.AppRegistry;
-import info.magnolia.ui.api.app.AppDescriptor;
-
-Iterator<AppDescriptor> appIterator =
-    Components.getComponent(AppRegistry.class).getAllDefinitions().iterator();
-while (appIterator.hasNext()) {
-    AppDescriptor app = appIterator.next();
-    System.out.println("App: " + app.getName());
-}
-```
-
-#### [](#_sites)Sites
-
-```java
-import info.magnolia.module.site.registry.SiteDefinitionRegistry;
-import info.magnolia.module.site.SiteDefinition;
-
-Iterator<SiteDefinition> siteIterator =
-    Components.getComponent(SiteDefinitionRegistry.class).getAllDefinitions().iterator();
-while (siteIterator.hasNext()) {
-    SiteDefinition site = siteIterator.next();
-    System.out.println("Site: " + site.getName());
-}
-```
-
-### [](#_common_registry_classes)Common registry classes
-
-The following table lists the most commonly used registry classes and their corresponding definition types:
-
 | Registry class | Definition type | Use case |
 | --- | --- | --- |
 | `TemplateDefinitionRegistry` | `TemplateDefinition` | Page and component templates |
@@ -221,22 +142,6 @@ The following table lists the most commonly used registry classes and their corr
 | `FieldTypeDefinitionRegistry` | `FieldTypeDefinition` | Custom field types |
 | `RendererDefinitionRegistry` | `RendererDefinition` | Template renderers |
 | `VirtualUriMappingRegistry` | `VirtualUriMappingDefinition` | URL mappings |
-
-### [](#_accessing_specific_definitions)Accessing specific definitions
-
-To get a specific definition instead of all definitions, most registries provide methods to get definitions by name:
-
-```java
-// Get a specific template by name
-TemplateDefinitionRegistry templateRegistry = Components.getComponent(TemplateDefinitionRegistry.class);
-TemplateDefinition specificTemplate = templateRegistry.getDefinition("my-template-name");
-
-// Get a specific dialog by name
-DialogDefinitionRegistry dialogRegistry = Components.getComponent(DialogDefinitionRegistry.class);
-DialogDefinition specificDialog = dialogRegistry.getDefinition("my-dialog-name");
-```
-
-> **Note:** The getDefinition() methods may return null if the definition doesn’t exist. Always check for null before using the result.
 
 ## [](#_configuration)Configuration
 

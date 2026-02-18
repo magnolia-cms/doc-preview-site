@@ -1,0 +1,134 @@
+---
+title: "Public User Registration Database module"
+url: https://docs.magnolia-cms.com/public-user-registration-db/
+category: Modules
+version: modules
+breadcrumb: Public User Registration Database module
+---
+
+# Public User Registration Database module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [PURDB](https://magnolia-cms.atlassian.net/browse/PURDB) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/public-user-registration-db) |
+| Latest | 1.0.1 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+-   PUR DB Core
+
+-   PUR DB App
+
+-   PUR DB REST
+
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pur</groupId>
+  <artifactId>magnolia-module-pur-db-core</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pur</groupId>
+  <artifactId>magnolia-module-pur-db-app</artifactId>
+  <version>1.0.1</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.support.compatibility</groupId>
+  <artifactId>magnolia-livecopy-authoring-compatibility</artifactId> <1>
+  <version>1.0</version>
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | This is only needed if using [Live Copy](../live-copy/4.x/). |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.pur</groupId>
+  <artifactId>magnolia-module-pur-db-rest</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+This usage section is broken down into the PUR DB Core and PUR DB REST usage.
+
+> **Note:** Once installed, the PUR DB App is used and accessed directly from admincentral.
+
+### [](#_pur_db_core)PUR DB Core
+
+To function properly, this module requires configuration(s) in module configuration locations. Configuration can be located in JCR config node or a `config.yaml` file.
+
+First, we need to pass the database connection information to the module. This is minimum configuration that needs to be passed to the module so it can connect to a database instance:
+
+-   Format
+
+-   Example
+
+
+```yaml
+datasource:
+  username: [db_user]
+  password: [db_password]
+  url: [db_url]
+  driver: [db_driver]
+  migration:
+    path: pur-db-core/dbmigration/[db_type]
+    run: [true/false]
+```
+
+```yaml
+datasource:
+  username: user
+  password: password
+  url: jdbc:mysql://127.0.0.1:3306/pur
+  driver: com.mysql.cj.jdbc.Driver
+  migration:
+    path: pur-db-core/dbmigration/mysql
+    run: true
+```
+
+Ebean
+
+All properties that are prefixed with "pur-db." are be passed to the ebean server. This way we can easily tune ebean ORM framework.
+
+For more info on Ebean ORM, see [here](https://ebean.io/docs/).
+
+#### [](#_database_info_and_requirements)Database info and requirements
+
+This module does not create a database. The database must exist and a database user has to have also `CREATE/DROP/ALTER` RIGHTS on that database.
+
+In case database structure needs to be updated, it has to be done through ebean dbmigration (*manual db update is not allowed by ebean as there is a `checksum` verification*). This can be done by simply updating domain beans (*new or removed fields*), and running main method from `GenerateDbMigration` class (*\`pathToResource\` might have to be adapted there*) which will generate new files in corresponding path.
+
+For the database connection to work, we need the appropriate database driver to be available on the classpath. For example, if we are using a mysql database with a tomcat server, we need to place "mysql-connector-java-8.0.18.jar" in the tomcat `lib` folder.
+
+### [](#_pur_db_rest)PUR DB REST
+
+To function properly the PUR DB REST module requires configuration in module configuration locations. Configurations can be located in JCR config node or the `config.yaml` file.
+
+Below is default module configuration which can be overwritten if needed, by providing custom Form Processors.
+
+```yaml
+registrationProcessorClass: 'info.magnolia.module.publicuserregistration.processors.RegistrationProcessor'
+validateRegistrationProcessorClass: 'info.magnolia.module.publicuserregistration.processors.EnableUserByUuidProcessor'
+loginProcessorClass: 'info.magnolia.pur.db.app.processors.DbLoginProcessor'
+forgotPasswordProcessorClass: 'info.magnolia.pur.db.app.processors.DbPasswordProcessor'
+changePasswordProcessorClass: 'info.magnolia.module.publicuserregistration.processors.TokenPasswordProcessor'
+updateProfileProcessorClass: 'info.magnolia.module.publicuserregistration.processors.UpdateProcessor'
+```
+
+| Version | Notes |
+| --- | --- |
+| `1.0.1` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20PURDB%20AND%20fixVersion%20%3D%201.0.1) |
+| `1.0` | Initial release of the module. |

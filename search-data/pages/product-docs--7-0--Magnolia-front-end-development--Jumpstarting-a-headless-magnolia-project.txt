@@ -73,31 +73,6 @@ Learn more in the [Mapping between Magnolia and SPA components](../../Developing
 
 > **Tip:** For more information about the React starter project structure, see the README.md in the spa/ folder.
 
-## [](#_magnolia_cli_configuration)Magnolia CLI configuration
-
-Some important values inside `mgnl.config.js`:
-
-```js
-...
-plugins: [
-  new CreateComponentPlugin({
-    ...
-  }),
-  new CreatePagePlugin({
-    ...
-  }),
-  ...
-],
-type: "jsx",
-lightModulesPath: "./light-modules",
-lightModule: "spa-lm",
-componentMappingFilePath: "./spa/src/magnolia.config.js"
-```
-
-### [](#_configuration_breakdown)Configuration breakdown
-
-These settings allow Magnolia CLI to set up and map pages and components inside your React app.
-
 | Setting | Description |
 | --- | --- |
 | `type: "jsx"` | Enables React JSX template generation |
@@ -225,9 +200,9 @@ Here are some ideas for what to explore next:
 
 -   Create your first content app and content type and render the content in your React app
 
--   Use REST APIs - Review `restEndpoints/delivery` config in `spa-lm` and visit the [Delivery API documentation](#rest:api:delivery-endpoint.adoc)
+-   Use REST APIs - Review `restEndpoints/delivery` config in `spa-lm` and visit the [Delivery API documentation](../../../../rest/api/delivery-endpoint/)
 
 -   Learn about the [Magnolia React Editor](../../Developing/headless/spa-development/magnolia-front-end-sdk/magnolia-react-editor/) `@magnolia/react-editor`
 
 
-[Want to try FreeMarker next?](../Jumpstarting-a-freemarker-based-magnolia-project/)
+[Want to try FreeMarker next?](../../../RNs-6-4-3/Magnolia-front-end-development/Jumpstarting-a-freemarker-based-magnolia-project/)

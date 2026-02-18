@@ -1,0 +1,46 @@
+---
+title: "Managing pages"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Authoring/Managing-pages/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Authoring > Authoring content > Managing pages
+---
+
+# Managing pages
+
+The Pages app displays your site hierarchy. Here you can add pages and move them around.
+
+| Status | Description |
+| --- | --- |
+| Published | Content is published from the author instance to the public instance. Identical content exists on both instances. |
+| Modified | Content was modified since publication. The author instance isn’t in sync with the public. |
+| Draft | Content exists only on the author instance. |
+| Marked for deletion | Content is marked for deletion but still appears in the list (grayed out). It can be restored or permanently deleted. |
+
+## [](#_the_integrated_user_experience_feature)The Integrated User Experience feature
+
+The IUX feature can be found in the Pages app by clicking the IUX icon ![IUX icon](../../_images/iux-icon.png). It’s used to display charts and widgets showing data from adjacent applications and content apps directly in Pages without having to switch between apps. Select one of the connected analytics sources, add a time frame and then choose a page to see common metrics from that analytics connector.
+
+![IUX displayed in Pages](../../_images/iux-pages.png)
+
+For more information about configuring IUX slots, see [IUX slot for analytics](../../Modules/extensions-and-frameworks/analytics-integration-framework/analytics-iux-slot/) or [IUX slot with Magnolia Headless](../../Developing/headless/concepts/integration/#iux-slots).
+
+|  | Common Name | Unicode Code and Name |
+| --- | --- | --- |
+|  | Space | `0020` `SPACE` |
+| `*` | Asterisk (Star) | `002A` `ASTERISK` |
+| `/` | Forward slash | `002F` `SOLIDUS` |
+| `:` | Colon | `003A` `COLON` |
+| `[` | Left square bracket | `005B` `LEFT SQUARE BRACKET` |
+| `]` | Right square bracket | `005D` `RIGHT SQUARE BRACKET` |
+| `|` | Vertical bar (Pipe) | `007C` `VERTICAL LINE` |
+
+## [](#_assigning_a_template_to_a_page)Assigning a template to a page
+
+All pages are based on Templating. The template assigned to a page is displayed in the **Template** column. The template determines what content is displayed and how.
+
+Template availability defines what template you can assign to a page.
+
+You can change a page template. However, the new template may not be able to render content entered using the previous template. If content can’t be rendered, you cannot edit it. The original content exists in the repository, however. If you change the template back to the original, the content is rendered again.
+
+If a template is able to render a component that was originally entered with a different template, the component may be displayed even if the current template does not offer it in the corresponding area. For example, if you enter a text component on a Travel Standard page and later change the page template to a custom template that also offers a text component, the component may still be displayed.

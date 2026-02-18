@@ -17,7 +17,7 @@ Inheritance causes components from parent pages to be automatically rendered on 
 -   It is also useful within a section of a site, for example, a subpage of the home page could have a "section" area with an offer only relevant to this section of the website. Content in the area will appear on every subpage of the section page, but not on the home page or on other sections.
 
 
-![Inheritable components diagram](../../../../../_images/templating/inheritable-components-diagram.png)
+![Inheritable components diagram](../../../../../../RNs-6-4-3/_images/templating/inheritable-components-diagram.png)
 
 ## [](#_inheritance_behavior)Inheritance behavior
 
@@ -42,26 +42,14 @@ Inheritance works *bottom up*. When an area is rendered, and it has inheritance 
 
 > **Note:** Use inheritance on an area on a page definition. This is the typical use case.For example, an "extras" area.Editors can add additional components to the area on subpages.Or use inheritance on multiple areas on a page: like "extras-list-1", "extras-list-2".Use inheritance on an area on a page, but only allow a single component.This is useful for a "footer" or "header".The component can be sophisticated, for example, including an area itself.Avoid using multiple nested levels of inheritance.The inheritance feature is powerful, but can become hard to understand when inheritance is used on multiple nested content.If you are confused by the behavior, try to simplify, and review the Understanding inheritance section above.
 
-## [](#_inheritance_properties)Inheritance properties
-
-Configure component inheritance in an [area definition](../).
-
-An example where all components are inherited:
-
-```js
-areas:
-  promos:
-    renderType: freemarker
-    type: list
-    availableComponents:
-      text:
-        id: my-module:components/text
-    inheritance:
-      enabled: true
-      components: all
-```
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p><code>true</code> enables component inheritance in the area.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>components</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>filtered</code></em></p></div><div class="paragraph"><p>Defines which components are inherited to child pages.</p></div><div class="paragraph"><p>Valid values:</p></div><div class="ulist"><ul><li><p><code>all</code> : Inherit all components.</p></li><li><p><code>filtered</code>: Inherit only components where the <code>inheritable</code> property is set to true. See also below <a href="#_implementing_filtering_through_the_inheritable_property">Implementing filtering through the inheritable property</a>.</p></li><li><p><code>none</code>: Don’t inherit any components.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>properties</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>all</code></em></p></div><div class="paragraph"><p>Inherits <a href="../" class="xref page">area properties</a> such as <code>title</code> and <code>description</code> to child pages. This is useful when you want to inherit just the area configuration, not its content.</p></div><div class="paragraph"><p>Valid values:</p></div><div class="ulist"><ul><li><p><code>all</code> : All area properties are inherited.</p></li><li><p><code>none</code>: No area properties are inherited.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>nodeComparatorClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>info.magnolia.rendering.template.configured.ConfiguredInheritance.NodeDepthComparator</code></em></p></div><div class="paragraph"><p>Defines the order in which inherited components are displayed on the child page. The default <code>NodeDepthComparator</code> follows the order of nodes in the JCR repository. Nodes higher up in the hierarchy are displayed before nodes deeper down. Nodes on the same level are displayed as siblings. This means that inherited components are displayed in the same order on parent and child pages by default. You can implement a custom <code>nodeComparatorClass</code> to change the sort order. Set the property to a fully qualified class name.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>nodeTypes</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default are <code>mgnl:component</code> and <code>mgnl:resource</code></em></p></div><div class="paragraph"><p>A list of content node types that can be returned.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>predicateClass</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>info.magnolia.rendering.template.configured.FilteredInheritancePredicate</code></em></p></div><div class="paragraph"><p>In Java, predicate is a functional interface that returns either <code>true</code> or <code>false</code>. Here, we use a predicate to decide whether a component or property should be inherited or not. The default <span class="inlineBean">info.magnolia.rendering.template.configured.FilteredInheritancePredicate</span> checks whether inheritance is enabled and how the <code>components</code> and <code>properties</code> are set, then it makes the decision. You can implement a custom predicate class that makes the decision based on some other variables. Set the property to a fully qualified class name.</p></div></div></td></tr></tbody></table></div>
+| Property | Description |
+| --- | --- |
+| `enabled` | **optional** , *default is false* `true` enables component inheritance in the area. |
+| `components` | **optional** , *default is filtered* Defines which components are inherited to child pages. Valid values: • `all` : Inherit all components. • `filtered` : Inherit only components where the `inheritable` property is set to true. See also below [Implementing filtering through the inheritable property](#_implementing_filtering_through_the_inheritable_property) . • `none` : Don’t inherit any components. |
+| `properties` | **optional** , *default is all* Inherits [area properties](../../../../../../RNs-6-4-3/Developing/Templating/Template-definition/Area-definition/) such as `title` and `description` to child pages. This is useful when you want to inherit just the area configuration, not its content. Valid values: • `all` : All area properties are inherited. • `none` : No area properties are inherited. |
+| `nodeComparatorClass` | **optional** , *default is info.magnolia.rendering.template.configured.ConfiguredInheritance.NodeDepthComparator* Defines the order in which inherited components are displayed on the child page. The default `NodeDepthComparator` follows the order of nodes in the JCR repository. Nodes higher up in the hierarchy are displayed before nodes deeper down. Nodes on the same level are displayed as siblings. This means that inherited components are displayed in the same order on parent and child pages by default. You can implement a custom `nodeComparatorClass` to change the sort order. Set the property to a fully qualified class name. |
+| `nodeTypes` | **optional** , *default are mgnl:component and mgnl:resource* A list of content node types that can be returned. |
+| `predicateClass` | **optional** , *default is info.magnolia.rendering.template.configured.FilteredInheritancePredicate* In Java, predicate is a functional interface that returns either `true` or `false` . Here, we use a predicate to decide whether a component or property should be inherited or not. The default info.magnolia.rendering.template.configured.FilteredInheritancePredicate checks whether inheritance is enabled and how the `components` and `properties` are set, then it makes the decision. You can implement a custom predicate class that makes the decision based on some other variables. Set the property to a fully qualified class name. |
 
 ## [](#_specific_configuration_scenarios)Specific configuration scenarios
 
@@ -73,7 +61,7 @@ Filtering can be achieved by using the `inheritable` property, which is read at 
 
 #### [](#_example_inheritable_as_checkbox_field)Example: Inheritable as checkbox field
 
-The following configuration allows you to switch inheritance for components with a [checkbox field](../../../Dialog-definition/Field-definition/List-of-fields/Checkbox-field/).
+The following configuration allows you to switch inheritance for components with a [checkbox field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Checkbox-field/).
 
 <module-name>/dialogs/components/disclaimer.yaml
 
@@ -101,7 +89,7 @@ form:
 
 #### [](#_example_inheritable_as_hidden_field)Example: Inheritable as hidden field
 
-This variant allows you to switch inheritance for components with a [hidden field](../../../Dialog-definition/Field-definition/List-of-fields/Hidden-field/). The configuration makes the component always inherited, the component cannot be changed.
+This variant allows you to switch inheritance for components with a [hidden field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Hidden-field/). The configuration makes the component always inherited, the component cannot be changed.
 
 <module-name>/dialogs/components/disclaimer.yaml
 
@@ -126,7 +114,7 @@ form:
 
 ### [](#_returning_area_contents_when_area_has_content_subnodes)Returning area contents when area has content subnodes
 
-In some cases, you want to retrieve the content of the area itself. By default, only single properties are inherited. Content subnodes (such as a [multi field](../../../Dialog-definition/Field-definition/List-of-fields/Multi-field/), [composite field](../../../Dialog-definition/Field-definition/List-of-fields/Composite-field/), or [switchable field](../../../Dialog-definition/Field-definition/List-of-fields/Switchable-field/)) that are relevant to the area’s dialog are not returned.
+In some cases, you want to retrieve the content of the area itself. By default, only single properties are inherited. Content subnodes (such as a [multi field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Multi-field/), [composite field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Composite-field/), or [switchable field](../../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Switchable-field/)) that are relevant to the area’s dialog are not returned.
 
 You can configure the inheritance to return them by adding the `contentNode` node type, as shown at the end of the following example.
 
@@ -154,7 +142,7 @@ areas:
 
 ### [](#_component_inheritance_in_spa)Component inheritance in SPA
 
-See [Component inheritance](../../../../headless/spa-development/component-autogeneration-and-inheritance/#_component_inheritance) in the Headless Docs section.
+See [Component inheritance](../../../../../../RNs-6-4-3/Developing/headless/spa-development/component-autogeneration-and-inheritance/#_component_inheritance) in the Headless Docs section.
 
 > **Note:** For this usage, the endpoint must be configured with $type: jcrPagesDeliveryEndpoint_v2.
 
@@ -162,8 +150,8 @@ See [Component inheritance](../../../../headless/spa-development/component-autog
 
 ## [](#_example_definitions)Example definitions
 
-See the [`component-inheritance-examples`](https://bitbucket.org/magnolia-cms/component-inheritance-examples) repository for examples of component inheritance in FreeMarker and headless/SPA projects.
+See the [`component-inheritance-examples`]({repo-componentInheritanceExamples}) repository for examples of component inheritance in FreeMarker and headless/SPA projects.
 
 Related topics
 
--   [Area definition](../)
+-   [Area definition](../../../../../../RNs-6-4-3/Developing/Templating/Template-definition/Area-definition/)

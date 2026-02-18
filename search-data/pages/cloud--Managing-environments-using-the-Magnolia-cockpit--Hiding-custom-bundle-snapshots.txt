@@ -1,0 +1,35 @@
+---
+title: "Hiding custom bundle snapshots"
+url: https://docs.magnolia-cms.com/cloud/Managing-environments-using-the-Magnolia-cockpit/Hiding-custom-bundle-snapshots/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Managing environments using the Magnolia cockpit > Hiding custom bundle snapshots
+---
+
+# Hiding custom bundle snapshots
+
+Related topics
+
+-   [Cockpit](../../Cockpit/)
+
+-   [Setting up a new environment](../Setting-up-a-new-environment/)
+
+-   [Upgrading Magnolia in the cloud](../../managing-updates-using-the-Magnolia-cockpit/Upgrading-Magnolia-in-the-cloud/)
+
+
+This page explains how to hide [custom bundle](../../Supported-modules-in-the-cloud/) snapshots from view in the Cockpit. This minimizes the number of bundles you see while setting up or upgrading environments. Using this feature, you only see completed bundles and no snapshots.
+
+> **Tip:** This is useful when you do not want to install snapshot versions in certain environments.
+
+To hide custom bundle snapshots:
+
+1.  In the Package overview page, select **Manage environments** in the Environments section.
+
+2.  Under Modify the setup of your package, choose **Set availability of snapshot versions for custom bundles**.
+    ![image](../../_images/cloud-cockpit-select-hide-custom-bundles.png)
+
+3.  In the pop-up window, choose the Environments in which you want to hide the custom bundle snapshots.
+    ![image](../../_images/cloud-cockpit-hide-custom-bundle-popup.png)
+
+4.  **Save** your changes.
+    The pop-up window disappears when successful and you receive an on-screen notification.

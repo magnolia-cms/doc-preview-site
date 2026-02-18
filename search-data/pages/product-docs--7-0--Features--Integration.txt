@@ -10,143 +10,9 @@ breadcrumb: DX Core > Magnolia DXP > Integrate with Magnolia
 
 Magnolia is designed to be integrated with other systems. This allows you to take a best-of-breed approach and create the CMS/DXP platform that is best for your company. You can choose the tools that really work for you, integrate the systems you already have, and create a holistic UI that empowers your whole team, from developers to content authors and marketeers.
 
-## [](#_integration_approaches)Integration approaches
-
-Magnolia fits into your network diagram, however simple or complex that might be. For example: you can run your entire digital experience on Magnolia, or integrate it with a few of your existing content sources, or go headless and plug Magnolia content authoring features into your existing website delivery system.
-
-|     |     |     |
+|  |  |  |
 | --- | --- | --- |
-| ![Integration approach diagram showing Magnolia at the heart of a simple network](../../_images/integration/simple-integration-architecture.jpg) | ![Integration approach diagram showing Magnolia integrated with a few external content sources](../../_images/integration/multichannel-integration-architecture.jpg) | ![Integration approach diagram showing Magnolia fitting in well in sophisticated environments](../../_images/integration/complex-integration-architecture.jpg) |
 | Magnolia at the heart of a simple network | Magnolia integrated with external content sources | Magnolia fitting seamlessly as part of a highly-sophisticated environment |
-
-Why Magnolia is good for integration:
-
--   **Standard UI** – All integrations follow standard UI patterns. This makes the integrations easy to learn and use for content authors and administrators.
-
--   **Front-end and back-end** – The most common customizations can be performed by front-end or back-end developers via configuration, templating and JavaScript. Deeper integrations can be done with Java or additional modules.
-
--   **Rich Integration API** – Magnolia has [Integration points](../../Developing/Integration/Integration-points/) at every level and within every aspect of the system.
-
--   **Modular architecture** – The completely [modular architecture](../../Modules/) means you can build the system that has everything you want, and nothing you don’t.
-
--   **Open Source** – When you have a unique requirement, you can go right to the source in [Magnolia Community Edition](../../Administration/License/) to truly understand the system.
-
--   **Custom Java** – Complete control via your own custom Java implementations.
-
-
-### [](#_headless_cms_integrate_magnolia_as_a_content_source)Headless CMS – Integrate Magnolia as a content source
-
-To implement a headless CMS scenario, integrate Magnolia as a content repository and as a content and digital experience authoring tool for your content creators. Retrieve content via Magnolia’s REST API’s, Java APIs, directly from the JCR repository or via templating for use in your native mobile apps, existing delivery system, or other channels.
-
-Pure Headless
-
-![Pure headless diagram](../../_images/integration/headless-simple.jpg)
-
--   Do *not* use the Pages app in your project.
-
--   Store primary content in Content apps and Content editor apps.
-
--   Deliver the content via REST endpoints.
-
-
-Result
-
-Authors can enter content and can create experiences with a content editor app like the Stories app.
-
-All frontends and channels are outside of Magnolia - so authors, marketers and other non-developers cannot change the overall structure of the site or application.
-
-* * *
-
-Hybrid Headless
-
-![Hybrid headless diagram](../../_images/integration/headless-hybrid.jpg)
-
--   Store primary content in Content apps and Content editor apps.
-
--   Deliver the content via REST endpoints.
-
--   Use the Pages app to curate the content and supply a traditional server-rendered website.
-
-
-Result
-
-As previous, except that non-developers can still build and maintain the website, and the Pages app gives them true WYSIWYG feedback so they can build the exact experience they want.
-
-* * *
-
-Hybrid headless - advanced
-
-![Hybrid headless advanced diagram](../../_images/integration/headless-hybrid-advanced.jpg)
-
--   Store primary content in Content apps and Content editor apps.
-
--   Use the Pages app like a `Structure app`: non-developers can use it to assemble collections of content with a lot of control over the composition of a `page`.
-
--   Deliver the content via REST endpoints.
-
--   Deliver the structure and content collections from the Pages app via REST endpoints.
-
--   The developer-built presentation reads both the content and the structure from the Pages app - and it uses the structure information to assemble its views.
-
-
-Result
-
-Content authors use the Pages app to assemble content rather than as a WYSIWYG editor. They can build the experiences that they need without requiring a developer.
-
-### [](#_two_way_api_interaction_with_magnolia)Two-way API interaction with Magnolia
-
-REST API interaction is not limited to getting content from Magnolia. External systems can also *trigger* Magnolia commands via the Magnolia [API](../../Developing/API/) - for example, to perform publications, flush the cache, synchronize content, and more.
-
-You can also add, edit and move content into Magnolia using the REST API. For example, save user-generated content from forms on your website.
-
-### [](#_content_hub_integrate_content_from_other_systems_in_magnolia)Content hub – Integrate content from other systems in Magnolia
-
-You can work with external content in the same way as with content stored in Magnolia’s repository.
-
-Display your external content in apps in Magnolia, where users can view and perform actions on the items. Enable content authors to link external content items and Magnolia content items together. Or enable them to augment and override parts of the external content with Magnolia content, all without changing the external content. In this way, you can use Magnolia as a content hub for all of your content. For example, you can integrate image and video assets stored in an [external DAM system](../../Modules/extensions-and-frameworks/external-dam-integration-framework/).
-
-For an omnichannel experience, you can use internal and external content together in Magnolia. For example in an e-commerce scenario, you could integrate external content from a PIM (Product Information Content).
-
-![Products app](../../_images/6-2-PIM-example.png)
-
-![Products app page subapp](../../_images/6-2-PIM-example-detail.png)
-
-You could allow content authors to override the external content - for example supplying a different image, or tweaking the description of an item, but have those overrides only stored in Magnolia, not changing the external content. Content authors can create stories in Magnolia that link to the augmented PIM items, and display them together in the website for a content commerce scenario that presents those products in an attractive way that encourages sales.
-
-You can also integrate data from external tools. For example, in this screenshot, **Page views** and **Exit rate** values are supplied by an integrated Google Analytics account.
-
-![Page views and Exit rate values shown in Pages app](../../_images/6-2-google-analytics.png)
-
-### [](#_front_end_integration)Front-end integration
-
-Many integrations can be performed by embedding frontend resources (JS, CSS, HTML) in the public website. Magnolia provides several mechanisms to include these resources and can control how they are provisioned.
-
--   Developers can supply front-end [resources](../../Developing/Resources/) by including them on the file system or within Java modules. [Themes](../../Developing/Templating/Theme/) and the [resfn templating functions](../../Developing/Templating/Template-scripts/Templating-functions/resfn/) make it easy to include these resources on web pages.
-
--   The [templating](../../Developing/Templating/) system allows developers to provision templates. Authors can control these templates to add special SaaS-based integrations like social media widgets, maps, interactive charts, external forms, live chat and so on.
-
--   [Marketing tags](../../Apps/List-of-apps/Marketing-Tags-app/) let content authors put JS tags on whatever pages they want, with no development required. For example, marketing tags can be used to integrate things like analytics systems, social sharing widgets, and live chat systems.
-
--   Developers have the freedom to use whatever CSS and JS frameworks they want.
-
--   For integrations requiring authenticated [REST/AJAX](../../Developing/Integration/Integration-points/#_integration_web_services) calls to external servers, developers can use Magnolia as a proxy to make the request from the server in order to not expose sensitive information in a browser-based request.
-
-
-### [](#_unified_ui_for_multiple_systems)Unified UI for multiple systems
-
-In addition to including external content in Magnolia, you can also supply tools to interact with that external content and create a unified, consistent UI for your users: content authors, marketing teams, unit leaders and administrators.
-
-This gives your users the information and tools they need where and when they need them so that they can make the best decisions as easily and quickly as possible. With Magnolia you can, for example, give your team analytics information at-a-glance, directly in the content editing tool instead of requiring them to jump from one tool to another.
-
-Magnolia’s rich user and access controls also make it much easier to define which of your users can access which information and what they are permitted to do.
-
-For deeper integrations, you can wire up actions in the Magnolia UI to trigger activities on the external systems. For example, you could configure a trigger for a MAT (Marketing Automation Tool) to send a newsletter to a mailing list.
-
-All integrations follow standard UI patterns within Magnolia. This makes the integrations easy to learn and use for content authors and administrators. It also makes it easier for developers to create the integrations because the UI patterns, elements and styles are already available for them.
-
-### [](#_integration_platforms)Integration platforms
-
-Dedicated Integration Platforms such as Mulesoft, Zapier or Boomi can also be integrated with Magnolia. Using an integration platform can accelerate your integration implementation as they typically have ready-built connectors for 100’s of products and services. These platforms can be integrated via Magnolia’s REST endpoints.
 
 ## [](#_integration_modules)Integration modules
 
@@ -181,7 +47,7 @@ Magnolia can be integrated in various ways ranging from custom templates to full
 
 ### [](#_light_development_and_magnolia_cloud)Light development and Magnolia Cloud
 
-Many [integration points](../../Developing/Integration/Integration-points/) can be implemented with [Light Development](../../Developing/Light-development-in-Magnolia/) and do not require Java development. This means that front-end developers can use them and that they are all available on [Magnolia Cloud](#cloud:ROOT:index.adoc).
+Many [integration points](../../Developing/Integration/Integration-points/) can be implemented with [Light Development](../../Developing/Light-development-in-Magnolia/) and do not require Java development. This means that front-end developers can use them and that they are all available on [Magnolia Cloud](../../../../cloud/).
 
 -   Apps and Actions (Including customizing the stock apps.)
 

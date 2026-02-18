@@ -1,0 +1,310 @@
+---
+title: "Configuration"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/vector-db/configuration/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Configuration
+---
+
+# Configuration
+
+## [](#_configuration_file_locations)Configuration file locations
+
+The Vector Database integration uses two configuration files:
+
+```text
+# Context Core configuration (indexing, extractors)
+/my-light-module/decorations/ai-accelerator-context-core/config.yaml
+
+# pgvector configuration (database connection)
+/my-light-module/decorations/ai-accelerator-context-pgvector/config.yaml
+```
+
+| Parameter | Description |
+| --- | --- |
+| `url` | **Required** PostgreSQL JDBC connection URL. `url: jdbc:postgresql://localhost:5432/magnolia` For production deployments: `url: jdbc:postgresql://postgres.example.com:5432/magnolia_prod` |
+| `collectionName` | **Required** Table name for storing vectors. Use different table names for different environments. `collectionName: magnolia_content_prod` ** Use environment-specific table names: `magnolia_content_dev` , `magnolia_content_staging` , `magnolia_content_prod` | ** | Use environment-specific table names: `magnolia_content_dev` , `magnolia_content_staging` , `magnolia_content_prod` |
+| ** | Use environment-specific table names: `magnolia_content_dev` , `magnolia_content_staging` , `magnolia_content_prod` |
+| `username` | **Required** Database username. `username: magnolia` For production, use environment variables: `username: ${env.PGVECTOR_USER}` |
+| `password` | **Required** Database password. `password: magnolia` For production, use environment variables: `password: ${env.PGVECTOR_PASSWORD}` |
+| `vectorDimension` | **Required** Dimension of embedding vectors. Must match your embedding model’s output dimension. `vectorDimension: 1536 # OpenAI text-embedding-3-small` Common dimensions: • OpenAI `text-embedding-3-small` : 1536 • OpenAI `text-embedding-3-large` : 3072 • Azure OpenAI: same as OpenAI models ** Mismatched dimensions will cause indexing errors. | ** | Mismatched dimensions will cause indexing errors. |
+| ** | Mismatched dimensions will cause indexing errors. |
+| `distanceMetric` | **Optional** **Default** : `cosine` Distance metric for vector similarity search. Must match the characteristics of your embedding model. `distanceMetric: cosine` Available metrics: • `cosine` - Best for normalized embeddings (OpenAI, Azure OpenAI, most cloud providers) • `l2` - Euclidean distance, for non-normalized embeddings • `inner_product` - Dot product, alternative for normalized embeddings ** Changing the distance metric requires re-creating the vector index. After changing, run a full re-index. See [Distance Metrics](../providers/#distance-metrics) for details. | ** | Changing the distance metric requires re-creating the vector index. After changing, run a full re-index. |
+| ** | Changing the distance metric requires re-creating the vector index. After changing, run a full re-index. |
+
+## [](#_context_core_configuration)Context Core configuration
+
+Configure indexing behavior and content extraction:
+
+```yaml
+# /my-light-module/decorations/ai-accelerator-context-core/config.yaml
+
+# Indexing configuration
+indexing:
+  enabled: true
+  observationDelay: 2000
+  authorOnly: true
+  workspaces:
+    website:
+      # workspace-specific settings
+
+# Content processing
+removeHtml: true
+minTextLength: 10
+maxTextLength: 8000
+
+# Batch processing
+batchProcessingEnabled: true
+batchSize: 100
+```
+
+| Parameter | Description |
+| --- | --- |
+| `indexing.enabled` | **Required** Enable or disable the entire indexing system. `indexing: enabled: true` |
+| `indexing.observationDelay` | **Optional** **Default** : `2000` Delay in milliseconds before processing content changes. This debouncing mechanism prevents excessive indexing during rapid content edits. `indexing: observationDelay: 2000 # 2 seconds` |
+| `indexing.authorOnly` | **Optional** **Default** : `true` Only process indexing on author instance. `indexing: authorOnly: true` |
+
+| Parameter | Description |
+| --- | --- |
+| `removeHtml` | **Optional** **Default** : `true` Remove HTML tags from rich text fields before indexing. `removeHtml: true` |
+| `minTextLength` | **Optional** **Default** : `10` Minimum text length (in characters) to index. Content shorter than this is skipped. `minTextLength: 10` |
+| `maxTextLength` | **Optional** **Default** : `8000` Maximum text length (in characters) to index. Content longer than this is truncated. `maxTextLength: 8000` ** OpenAI’s `text-embedding-3-small` model supports up to 8191 tokens. Keep maxTextLength around 8000 characters. | ** | OpenAI’s `text-embedding-3-small` model supports up to 8191 tokens. Keep maxTextLength around 8000 characters. |
+| ** | OpenAI’s `text-embedding-3-small` model supports up to 8191 tokens. Keep maxTextLength around 8000 characters. |
+
+| Parameter | Description |
+| --- | --- |
+| `batchProcessingEnabled` | **Optional** **Default** : `true` Enable batch processing for indexing jobs. `batchProcessingEnabled: true` |
+| `batchSize` | **Optional** **Default** : `100` Number of documents to process in each batch. `batchSize: 100` |
+| `retryAttempts` | **Optional** **Default** : `3` Number of retry attempts for failed batches. `retryAttempts: 3` |
+| `retryDelay` | **Optional** **Default** : `1000` Delay in milliseconds between retry attempts. `retryDelay: 1000` |
+| `continueOnError` | **Optional** **Default** : `true` Continue processing remaining documents if one fails. `continueOnError: true` |
+| `maxErrorsPerBatch` | **Optional** **Default** : `10` Maximum number of errors allowed per batch before stopping. `maxErrorsPerBatch: 10` |
+
+| Parameter | Description |
+| --- | --- |
+| `chunking.defaultStrategy` | **Optional** **Default** : `semantic` Strategy for splitting text into chunks. `chunking: defaultStrategy: semantic` Available strategies: • `semantic` - Paragraph and section-aware chunking (recommended) • `fixed_size` - Fixed character size with optional overlap • `sentence` - Sentence-based chunking |
+| `chunking.defaultChunkSize` | **Optional** **Default** : `1000` Target chunk size in characters. `chunking: defaultChunkSize: 1000` |
+| `chunking.defaultChunkOverlap` | **Optional** **Default** : `200` Number of overlapping characters between consecutive chunks. Overlap helps preserve context across chunk boundaries. `chunking: defaultChunkOverlap: 200` |
+| `chunking.minChunkSize` | **Optional** **Default** : `100` Minimum chunk size in characters. Chunks smaller than this are merged with adjacent chunks. `chunking: minChunkSize: 100` |
+| `chunking.maxChunkSize` | **Optional** **Default** : `8000` Maximum chunk size in characters. Chunks larger than this are split further. `chunking: maxChunkSize: 8000` |
+
+| Parameter | Description |
+| --- | --- |
+| `reranking.enabled` | **Optional** **Default** : `false` Enable reranking of search results. `reranking: enabled: true` |
+| `reranking.taskId` | **Required** when reranking is enabled AI task ID used for reranking. `reranking: taskId: "ai-accelerator-context-core:rerankLightweight"` |
+| `reranking.finalTopK` | **Optional** **Default** : `10` Number of results to return after reranking. The system retrieves more candidates initially and narrows down to this count. `reranking: finalTopK: 10` |
+
+| Parameter | Description |
+| --- | --- |
+| `queryExpansion.enabled` | **Optional** **Default** : `true` Enable query expansion. `queryExpansion: enabled: true` |
+| `queryExpansion.maxExpandedTerms` | **Optional** **Default** : `20` Maximum number of expanded terms to add to the query. `queryExpansion: maxExpandedTerms: 20` |
+| `queryExpansion.minSimilarityThreshold` | **Optional** **Default** : `0.7` Minimum similarity score for expanded terms to be included. `queryExpansion: minSimilarityThreshold: 0.7` |
+| `queryExpansion.expanderEnabled` | **Optional** Enable or disable individual expanders. Each expander adds terms using a different strategy. `queryExpansion: expanderEnabled: synonym: true (1) context-aware: true (2) semantic: false (3) keyword: false (4) hierarchical: false (5)` ** **1** Synonym-based expansion (default: enabled) ** **2** Context-aware expansion (default: enabled) ** **3** Semantic expansion using embeddings (default: disabled, requires setup) ** **4** Keyword extraction expansion (default: disabled) ** **5** Hierarchical term expansion (default: disabled) | ** **1** | Synonym-based expansion (default: enabled) | ** **2** | Context-aware expansion (default: enabled) | ** **3** | Semantic expansion using embeddings (default: disabled, requires setup) | ** **4** | Keyword extraction expansion (default: disabled) | ** **5** | Hierarchical term expansion (default: disabled) |
+| ** **1** | Synonym-based expansion (default: enabled) |
+| ** **2** | Context-aware expansion (default: enabled) |
+| ** **3** | Semantic expansion using embeddings (default: disabled, requires setup) |
+| ** **4** | Keyword extraction expansion (default: disabled) |
+| ** **5** | Hierarchical term expansion (default: disabled) |
+
+| Parameter | Description |
+| --- | --- |
+| `metadataEnrichment.enabled` | **Optional** **Default** : `true` Enable the metadata enrichment pipeline. `metadataEnrichment: enabled: true` |
+| `metadataEnrichment.failOnError` | **Optional** **Default** : `false` Whether to fail the entire indexing operation if an enricher fails. When `false` , enrichment errors are logged but indexing continues. `metadataEnrichment: failOnError: false` |
+| `metadataEnrichment.minContentLength` | **Optional** **Default** : `50` Minimum content length (in characters) required for enrichment. Shorter content is skipped. `metadataEnrichment: minContentLength: 50` |
+| `metadataEnrichment.asyncProcessingEnabled` | **Optional** **Default** : `false` Enable asynchronous enrichment processing. `metadataEnrichment: asyncProcessingEnabled: true asyncWorkers: 4 (1) asyncQueueSize: 1000 (2) asyncTimeout: 5000 (3)` ** **1** Number of worker threads (default: `4` ) ** **2** Maximum queue size (default: `1000` ) ** **3** Timeout per enrichment in milliseconds (default: `5000` ) | ** **1** | Number of worker threads (default: `4` ) | ** **2** | Maximum queue size (default: `1000` ) | ** **3** | Timeout per enrichment in milliseconds (default: `5000` ) |
+| ** **1** | Number of worker threads (default: `4` ) |
+| ** **2** | Maximum queue size (default: `1000` ) |
+| ** **3** | Timeout per enrichment in milliseconds (default: `5000` ) |
+| `metadataEnrichment.enricherEnabled` | **Optional** Enable or disable individual enrichers. `metadataEnrichment: enricherEnabled: entity-extraction: true topic-classification: true sentiment-analysis: false` ** `entity-extraction` , `topic-classification` , and `sentiment-analysis` are considered expensive enrichers and may impact indexing performance. | ** | `entity-extraction` , `topic-classification` , and `sentiment-analysis` are considered expensive enrichers and may impact indexing performance. |
+| ** | `entity-extraction` , `topic-classification` , and `sentiment-analysis` are considered expensive enrichers and may impact indexing performance. |
+
+## [](#_complete_configuration_example)Complete configuration example
+
+### [](#_pgvector_configuration_2)pgvector Configuration
+
+```yaml
+# /my-light-module/decorations/ai-accelerator-context-pgvector/config.yaml
+
+url: jdbc:postgresql://localhost:5432/magnolia
+username: magnolia
+password: magnolia
+collectionName: magnolia_content
+vectorDimension: 1536
+```
+
+### [](#_context_core_configuration_2)Context Core configuration
+
+```yaml
+# /my-light-module/decorations/ai-accelerator-context-core/config.yaml
+
+# Indexing configuration
+indexing:
+  enabled: true
+  observationDelay: 2000
+  authorOnly: true
+
+  workspaces:
+    # Pages workspace
+    website:
+      enabled: true
+      workspace: website
+      enableObservation: true
+      extractor:
+        $type: page
+      nodeTypes: [mgnl:page]
+      observedPaths: [/]
+      excludedPaths: [/jcr:system, /modules]
+      includeSubNodes: true
+
+    # Assets workspace
+    dam:
+      enabled: true
+      workspace: dam
+      enableObservation: true
+      extractor:
+        $type: asset
+      nodeTypes: [mgnl:asset]
+      observedPaths: [/]
+      excludedPaths: [/jcr:system]
+      binaryExtraction:
+        enabled: true
+        mimeTypes:
+          - application/pdf
+          - application/msword
+          - text/plain
+        maxFileSize: 10485760
+
+    # Tours content workspace
+    tours:
+      enabled: true
+      workspace: tours
+      enableObservation: true
+      extractor:
+        $type: content
+      nodeTypes: [mgnl:content]
+      observedPaths: [/]
+      properties:
+        - name
+        - description
+        - duration
+        - price
+        - location
+        - highlights
+
+    # Archive workspace (manual re-index only)
+    archive:
+      enabled: true
+      workspace: archive
+      enableObservation: false
+      extractor:
+        $type: page
+      nodeTypes: [mgnl:page]
+
+# Content processing
+removeHtml: true
+minTextLength: 10
+maxTextLength: 8000
+
+# Batch processing
+batchProcessingEnabled: true
+batchSize: 100
+retryAttempts: 3
+retryDelay: 1000
+continueOnError: true
+maxErrorsPerBatch: 10
+
+# Error handling
+logErrors: true
+
+# Chunking
+chunking:
+  defaultStrategy: semantic
+  defaultChunkSize: 1000
+  defaultChunkOverlap: 200
+  minChunkSize: 100
+  maxChunkSize: 8000
+
+# Reranking
+reranking:
+  enabled: false
+  taskId: "ai-accelerator-context-core:rerankLightweight"
+  finalTopK: 10
+
+# Query expansion
+queryExpansion:
+  enabled: true
+  maxExpandedTerms: 20
+  minSimilarityThreshold: 0.7
+  expanderEnabled:
+    synonym: true
+    context-aware: true
+    semantic: false
+    keyword: false
+    hierarchical: false
+
+# Metadata enrichment
+metadataEnrichment:
+  enabled: true
+  failOnError: false
+  minContentLength: 50
+```
+
+## [](#_environment_specific_configuration)Environment-Specific Configuration
+
+Use environment variables for sensitive data and environment-specific settings:
+
+```yaml
+# pgvector configuration with environment variables
+url: ${env.PGVECTOR_URL:jdbc:postgresql://localhost:5432/magnolia}
+username: ${env.PGVECTOR_USER:magnolia}
+password: ${env.PGVECTOR_PASSWORD:magnolia}
+collectionName: ${env.PGVECTOR_COLLECTION:magnolia_content}
+vectorDimension: 1536
+```
+
+Set environment variables:
+
+```bash
+export PGVECTOR_URL=jdbc:postgresql://postgres.prod.example.com:5432/magnolia
+export PGVECTOR_USER=magnolia_app
+export PGVECTOR_PASSWORD=secure-password
+export PGVECTOR_COLLECTION=magnolia_content_prod
+```
+
+## [](#_configuration_validation)Configuration validation
+
+The module validates configuration on startup. Check logs for validation messages:
+
+```text
+[INFO] =============== Vector Database Module Configuration ===============
+[INFO] Provider: pgvector
+[INFO] URL: jdbc:postgresql://localhost:5432/magnolia
+[INFO] Collection Name: magnolia_content
+[INFO] Vector Dimension: 1536
+[INFO] Observation Indexing Enabled: true
+[INFO] Workspace 'website': enabled=true, extractor=PAGE, nodeTypes=[mgnl:page]
+[INFO] Workspace 'dam': enabled=true, extractor=ASSET, nodeTypes=[mgnl:asset]
+[INFO] ====================================================================
+```
+
+### [](#_common_configuration_errors)Common configuration errors
+
+**Error**: `Workspace 'xyz' not found`
+
+**Solution**: Verify workspace name matches JCR workspace name exactly (case-sensitive).
+
+**Error**: `No workspace configurations found`
+
+**Solution**: Add at least one workspace configuration under `indexing.workspaces`.
+
+**Error**: `Vector dimension mismatch`
+
+**Solution**: Ensure `vectorDimension` matches your embedding model’s output dimension.
+
+## [](#_next_steps)Next steps
+
+-   [Index your content](../indexing/)
+
+-   [Configure embedding providers](../providers/)
+
+-   [Search your content](../search/)

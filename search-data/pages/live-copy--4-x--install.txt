@@ -1,0 +1,40 @@
+---
+title: "Live Copy module"
+url: https://docs.magnolia-cms.com/live-copy/4.x/install/
+category: Modules
+version: modules
+breadcrumb: Live Copy module > Install
+---
+
+# Live Copy module
+
+| **Issues** | [LIVECOPY](https://magnolia-cms.atlassian.net/browse/LIVECOPY) |
+| --- | --- |
+| **Nexus** | [Nexus](https://nexus.magnolia-cms.com/content/repositories/magnolia.addons.releases/info/magnolia/livecopy/) |
+| **Latest** | 4.1.2 ** The latest version is compatible with Magnolia 6.3. | ** | The latest version is compatible with Magnolia 6.3. |
+| ** | The latest version is compatible with Magnolia 6.3. |
+| **Available on SPA/Headless** | Yes |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.livecopy</groupId>
+  <artifactId>magnolia-livecopy</artifactId>
+  <version>4.1.2</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+Related topics
+
+-   [Site definition](../../../product-docs/6.3/Developing/Templating/Site-definition/)
+
+-   [Internationalization](../../../product-docs/6.3/Administration/Language/Internationalization/)
+
+-   [Language Configuration](../../../product-docs/6.3/Administration/Language/Language-configuration/)

@@ -1,0 +1,160 @@
+---
+title: "Segment CDP extension"
+url: https://docs.magnolia-cms.com/cdp-integration-framework/segment/
+category: Modules
+version: modules
+breadcrumb: CDP integration framework > Segment CDP extension
+---
+
+# Segment CDP extension
+
+[Customer data](../../product-docs/RNs-6-4-3/use-cases/customer-data/) [Unbundled: Extension](https://gitlab.magnolia-platform.com/ps/incubator/customer-data-platform) Version [3.0.1](https://magnolia-cms.atlassian.net/browse/CUSTDP)
+
+The **Segment CDP extension** enables Magnolia Authors to create multichannel personalized experiences based on insights from [Segment](https://segment.com/customer-data-platform/) without ever leaving the Magnolia UI. This module leverages the personalization feature in Magnolia.
+
+You should be familiar with Personalization before continuing.
+
+Security considerations
+
+You should use the Segment CDP extension to encapsulate rest-based calls of a frontend to third party systems through Magnolia. This way passwords and other critical security information are hidden the browser.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.cdp</groupId>
+  <artifactId>magnolia-cdp-segment</artifactId>
+  <version>3.0.1</version>
+</dependency>
+```
+
+## [](#_configuration)Configuration
+
+The configuration consists of two parts:
+
+-   A [Rest Endpoint](#_rest_endpoint) that can be called from the desired frontend
+
+-   A [Rest Client](#_rest_client) that controls the call to the third party system.
+
+-   A [Trait Definition](#_trait_definition) that defines the user traits used for personalization.
+
+
+### [](#_rest_endpoint)Rest Endpoint
+
+<light-module-name>/restEndpoints/<restEndpointName>
+
+```yaml
+class: info.magnolia.cdp.common.rest.service.ConfiguredRestProxyEndpointDefinition
+implementationClass: info.magnolia.cdp.common.rest.service.RestProxyEndpoint
+restClientName: <restClientName>
+restCallName: <restClientMethodName>
+```
+
+### [](#_rest_client)Rest Client
+
+<light-module-name>/restClients/<restClientName>
+
+```yaml
+baseUrl: <URL to the external Service>
+securitySchemes:
+  b1:
+    $type: basic
+    username: <username to the third party system>
+    password: ''
+restCalls:
+  <restClientMethodName>:
+    method: get
+    path: /<path of the method>/${idProperty}
+    securityScheme: b1
+```
+
+### [](#_frontend_call_example)Frontend call example
+
+```js
+await fetch('/.rest/<restClientName>', {
+    method: 'POST', (1)
+    headers: { 'Content-Type': 'application/json' },
+    body: `{"idProperty":"${idProperty}"}`
+});
+```
+
+|     |     |
+| --- | --- |
+| **1** | The Rest Client can be both `GET` and `POST`, but the Rest Endpoint must be called with `POST`. |
+
+### [](#_trait_definition)Trait Definition
+
+To enable personalization based on user data from Segment, define traits in your Magnolia light module’s personalization configuration. Traits map user data (e.g., from Segment or request parameters) to personalization rules.
+
+The following example defines a trait for the last viewed product category. It captures the category (e.g., via a request parameter like `?category=Kitchenware`) and maps it to predefined categories for use in personalization.
+
+Place this trait definition in your light module under the `traits` directory. For example, if your light module is named `my-cdp-module`, create the file at:
+
+<your-magnolia-project>/light-modules/my-cdp-module/traits/segmentLastViewedCategory.yaml
+
+```yaml
+name: segmentLastViewedCategory (1)
+$type: requestParameterTrait (2)
+ruleField:
+  $type: comboBoxField
+  name: value
+  datasource: &datasource
+    $type: optionListDatasource
+    options:
+      - name: Bathroom
+        value: 30e3595e-0973-4873-960b-83555f8de813 (3)
+      - name: Garden
+        value: dba8b1e4-69bb-4e6b-a0ce-764308cb3ca0
+      - name: Kitchenware
+        value: 4e94006f-a35c-43de-b7f5-4977110ce7b8
+      - name: Living
+        value: 4d7a73d2-f3bd-475b-9dbe-74888a265d69
+valueField:
+  $type: comboBoxField
+  datasource: *datasource
+traitStorageClass: info.magnolia.personalization.trait.storage.StorageAwareTraitCollector$RequestScopedTraitStorage (4)
+```
+
+|     |     |
+| --- | --- |
+| **1** | The `name` (`segmentLastViewedCategory`) identifies the trait in personalization rules. |
+| **2** | The `$type: requestParameterTrait` indicates the trait is populated from a request parameter (e.g., `?category=Kitchenware`). |
+| **3** | The UUIDs must match content nodes in Magnolia’s JCR repository (e.g., product categories). Verify UUIDs using the JCR Browser or Content Editor app. |
+| **4** | The `traitStorageClass` stores the trait for the duration of the user’s request, ideal for temporary data like recent browsing activity. |
+
+> **Tip:** To verify, restart Magnolia and check the Personalization app in AdminCentral; the segmentLastViewedCategory trait should appear in the trait selection dropdown.
+
+## [](#_usage)Usage
+
+Here, we provide some basic examples of using the CDP integration framework.
+
+### [](#_create_a_content_variant)Create a content variant
+
+The variant can be configured completely differently in terms of copy or images.
+
+1.  On your desired page, click the Component you want to edit.
+
+    ![add component variant](_images/add-component-variant.jpg)
+
+2.  Click **Edit component** and change something to create a component variant.
+
+    ![add component variant dialog](_images/add-component-variant-dialog.jpg)
+
+
+Example
+
+In the example here, we are choosing a different image for the particular component.
+
+For more on components in Magnolia, see [Editing pages](../../product-docs/RNs-6-4-3/Authoring/Editing-pages/).
+
+### [](#_choose_the_variant_audience)Choose the variant audience
+
+1.  Select the variant you just created, and click **Choose audience**.
+
+    ![choose audience segment](_images/choose-audience-segment.jpg)
+
+2.  Define your audience and select the **traits**. *Here, you’ll see **traits** that are taken directly from Segment. Cool, huh?*
+
+    ![choose audience segment traits](_images/choose-audience-segment-traits.jpg)

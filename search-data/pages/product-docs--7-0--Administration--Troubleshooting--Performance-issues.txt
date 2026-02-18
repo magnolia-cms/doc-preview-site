@@ -10,13 +10,13 @@ breadcrumb: DX Core > Administration > Troubleshooting > Performance issues
 
 ## [](#_slow_admincentral_with_many_tasks_and_notifications)Slow AdminCentral with many tasks and notifications
 
-AdminCentral might get slow over time. One of the possible causes – especially when there’s no log indication of any specific issue – is a high number of [tasks](../../../Features/Tasks/) and [notifications](../../../Apps/Developing-an-app/Specific-aspects/Messages/Message-types/#_notification) stored in the user profile.
+AdminCentral might get slow over time. One of the possible causes – especially when there’s no log indication of any specific issue – is a high number of [tasks](../../../../RNs-6-4-3/Features/Tasks/) and [notifications](../../../../RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Messages/Message-types/#_notification) stored in the user profile.
 
-You can check the total number of tasks and notifications using the [Tasks](../../../Apps/List-of-apps/Tasks-app/) and [Notifications](../../../Apps/List-of-apps/Notifications-app/) apps, respectively.
+You can check the total number of tasks and notifications using the [Tasks](../../../../RNs-6-4-3/Apps/List-of-apps/Tasks-app/) and [Notifications](../../../../RNs-6-4-3/Apps/List-of-apps/Notifications-app/) apps, respectively.
 
 > **Warning:** You should not experience performance issues unless more than several thousand items are stored in your profile.
 
-Tasks and notifications are aggregated by [group](../../IAM/Roles-groups-and-users/#_default_groups). If a person belonging to the `editors` group deletes all items, this action will impact all others in that group.
+Tasks and notifications are aggregated by [group](../../../../RNs-6-4-3/Administration/IAM/Roles-groups-and-users/#_default_groups). If a person belonging to the `editors` group deletes all items, this action will impact all others in that group.
 
 Finally, remember to check all author instances for a high number of items (production, UAT/QA, development and others).
 

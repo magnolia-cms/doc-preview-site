@@ -38,7 +38,7 @@ Three slot configurations are described in this section.
 
 ## [](#_iux_slot_configuration_in_the_browser_subapp)IUX slot configuration in the browser subapp
 
-At a technical level, the IUX slot is an extension panel in the browser subapp. The panel allows you to configure a list of extension views in the [workbench](../../../../Apps/App-configuration/Workbench-definition/) - see [`extensionViews`](../../../../Apps/App-configuration/Workbench-definition/#extensionViews) for configuration and properties.
+At a technical level, the IUX slot is an extension panel in the browser subapp. The panel allows you to configure a list of extension views in the [workbench](../../../../../RNs-6-4-3/Apps/App-configuration/Workbench-definition/) - see [`extensionViews`](../../../../../RNs-6-4-3/Apps/App-configuration/Workbench-definition/#extensionViews) for configuration and properties.
 
 Any view implementing `UiFrameworkView` could be inserted into the slot. You can create a view for displaying data that would benefit from value context and can switch data whenever the selected item changes. The following is an example view for displaying page titles, with `valueContext.observe` triggering an update whenever selection changes.
 

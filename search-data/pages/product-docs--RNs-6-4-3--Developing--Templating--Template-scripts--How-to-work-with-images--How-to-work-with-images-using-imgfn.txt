@@ -1,0 +1,82 @@
+---
+title: "How to work with images using imgfn"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-imgfn/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Template scripts > How to work with images > How to work with images using imgfn
+---
+
+# How to work with images using imgfn
+
+[FreeMarker development only](../../../Renderers/#_renderers_provided_by_magnolia)
+
+This page explains how to work with images using [`imgfn`](../../Templating-functions/imgfn/) [templating functions](../../Templating-functions/) in template scripts. With `imgfn` you can get an image from any JCR workspace.
+
+If you manage your images with the Magnolia [Digital Asset Management module](../../../../../../../dam/developers/install/), we recommend using `damfn`. For more information, see [working with images using `damfn`](../How-to-work-with-images-using-damfn/).
+
+| artifactId | version |
+| --- | --- |
+| `magnolia-module-imaging` | {magnolia-imaging-64} |
+| `magnolia-imaging-support` | {magnolia-imaging-64} |
+
+## [](#_uploading_the_image_with_a_basic_upload_field)Uploading the image with a basic upload field
+
+With a basic upload field you can upload an image directly to the node of your context. When saving the data of the dialog, Magnolia creates a subnode of the node of your context and stores the binary data of the image as property of the subnode.
+
+-   If the dialog is for a [Component](../../../Template-definition/Component-definition/), the system creates a subnode of the component node.
+
+-   If the dialog is for a an item of a [content app](../../../../../Apps/#_what_is_an_app), the system creates a subnode of the content item node.
+
+
+Example - code fragment from a [dialog definition](../../../Dialog-definition/)
+
+```js
+Form:
+  tabs:
+    - name: tabImage
+      fields:
+        - name: image
+          class: info.magnolia.ui.form.field.definition.BasicUploadFieldDefinition
+          binaryNodeName: myNode
+```
+
+In the dialog definition, you can define the value of the `binaryNodeName` property (in the example the value is `myNode`). Keep in mind that you must know the name of this subnode to render the image later on.
+
+![Dialog definition](../../../../../_images/6-2-jcr-view-myNode.png)
+
+You can check the JCR node structure in in the [JCR Browser app](../../../../../Apps/List-of-apps/JCR-Browser-app/).
+
+## [](#_displaying_an_image_variation_using_imgfn)Displaying an image variation using imgfn
+
+Using `imgfn`, you can create a link to an image stored in any workspace as long as you know the path to the node which stores the binary data of the image.
+
+Look at the screenshot above showing the JCR browser. It highlights the subnode of a component node. Within the rendering context of a component template script you have the [`content`](../../Rendering-context-objects/#_content) object which is the component node. In the screenshot above, the node with the name `0` is the content object.
+
+To display an image, you must get the subnode of `content` and pass it as argument to the `imgfn` templating function. You can use the same method to get the original version of the image and to get a variation.
+
+```numberLines
+[#assign binaryNode = cmsfn.asJCRNode(content).getNode('myNode') /]
+[#assign imgLink = imgfn.getImageVariationLinkFromBinary(binaryNode,'original') /]
+[#assign imgLink240 = imgfn.getImageVariationLinkFromBinary(binaryNode,'240') /]
+
+<div>
+    <span>The default image</span><br/>
+    <img src="${imgLink}"><br/>
+    <span>Image variation 240</span><br/>
+    <img src="${imgLink240}">
+</div>
+```
+
+-   Line: Get the subnode which contains the binary data. You need to know the subnode name, `myNode` in the example.
+
+-   Line 2, 3: Create a link to the image. Use `original` to get the original size of the uploaded image.
+
+-   Line 2, 3: Create a link to the image. Use `240` to get a link to an image variation named *240.*
+
+    -   Make sure the [image variation](../../../Theme/#_image_variations) you want to use is configured in your site [theme](../../../Theme/). Each variation should be a node under `<my-theme>/imaging/variations`.
+
+
+
+Here is the rendered result of the template script snippet above:
+
+![Rendered result of the template script snippet](../../../../../_images/imgfn-display.png)

@@ -8,44 +8,29 @@ breadcrumb: DX Core > Modules > Soft Locking module
 
 # Soft Locking module
 
-[Collaboration and workflow](../../../use-cases/collaboration-and-workflow/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLSLOCK](https://magnolia-cms.atlassian.net/browse/MGNLSLOCK) |
-| Maven site | [Soft Locking](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fsoft-locking%2Fmagnolia-soft-locking%2F5.0.0) |
-| Latest | 5.0.0 |
+| Maven site | [Soft Locking](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fsoft-locking%2Fmagnolia-soft-locking%2F{magnolia-soft-locking-64}) |
+| Latest | {magnolia-soft-locking-64} |
 
-The Soft Locking module provides concurrent editing capabilities. Multiple editors can edit pages simultaneously and coordinate their activities within the authoring interface. Soft locking differs from JCR hard locking in that it stores information about who is editing content and this information is displayed as a warning to other users editing the same page. Whereas hard locking would prevent another user from editing the page, soft locking provides multiple-user access to content and facilitates efficient content contribution.
-
-## [](#_module_structure)Module structure
-
- artifactID
-
-`magnolia-soft-locking-parent`
-
-Parent reactor.
-
-     `magnolia-soft-locking`
-
-Main module containing the implementation as well as the integration functions for the [Pages app](../../../Apps/List-of-apps/Pages-app/).
-
-     `magnolia-module-soft-locking`
-
-Submodule containing the Soft Locking compatibility module. Bundled in `magnolia-dx-core-webapp` and used for backward compatibility.
-
-> **Note:** For custom bundles, you have to add it yourself.
+| artifactID |  |
+| --- | --- |
+| `magnolia-soft-locking-parent` | Parent reactor. |
+| `magnolia-soft-locking` | Main module containing the implementation as well as the integration functions for the [Pages app](../../../Apps/List-of-apps/Pages-app/) . |
+| `magnolia-module-soft-locking` | Submodule containing the Soft Locking compatibility module. Bundled in `magnolia-dx-core-webapp` and used for backward compatibility. ** For custom bundles, you have to add it yourself. | ** | For custom bundles, you have to add it yourself. |
+| ** | For custom bundles, you have to add it yourself. |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.soft-locking</groupId>
   <artifactId>magnolia-soft-locking</artifactId>
-  <version>5.0.0</version> (1)
+  <version>{magnolia-soft-locking-64}</version> (1)
 </dependency>
 ```
 
@@ -57,13 +42,13 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 
 The number of concurrent editors is displayed at the bottom of the page editor. Click the icon to see who is editing the same page.
 
-![Tour preview with the number of users editing the page at the bottom](../../../_images/6-2_soft-locking_collaborating-users.png)
+![Tour preview with the number of users editing the page at the bottom](../../../../RNs-6-4-3/_images/6-2_soft-locking_collaborating-users.png)
 
 If users leave the page or new users start editing the page, the icon showing currently active users is updated accordingly. Additionally, notification messages are displayed in certain situations:
 
 -   When another user saves their changes.
 
-    ![Notification message](../../../_images/6-2_soft-locking_reload-page.png)
+    ![Notification message](../../../../RNs-6-4-3/_images/6-2_soft-locking_reload-page.png)
 
 -   If the page is moved.
 

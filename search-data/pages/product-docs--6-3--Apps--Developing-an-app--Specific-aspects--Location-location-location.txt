@@ -14,7 +14,7 @@ On this page we look at typical Magnolia URLs and learn how the fragment part of
 
 A typical URL in the Magnolia back-end looks like this:
 
-![A typical URL in the Magnolia back-end](../../../../_images/url-admincentral.png)
+![A typical URL in the Magnolia back-end](../../../../../RNs-6-4-3/_images/url-admincentral.png)
 
 Parts of a URL:
 
@@ -37,7 +37,7 @@ A servlet responds to a request. Servlets are mapped in the [servlet filter chai
 
 A [REST](#3.1@rest:api:delivery-endpoint.adoc) URL is a good example of complex servlet mapping. The URL requests the page `/travel/about`. The servlet mapping part contains detailed information about the requested resource.
 
-![URL with the servlet mapping part marked](../../../../_images/url-rest.png)
+![URL with the servlet mapping part marked](../../../../../RNs-6-4-3/_images/url-rest.png)
 
 Parts of a servlet mapping:
 
@@ -60,7 +60,7 @@ The parts that come after the hash are separated with a colon `:`
 
 **Example**: This fragment identifies the [Contacts app](../../../List-of-apps/Contacts-app/). The detail subapp is currently open. The user is viewing version 1.0 of the node `/vvangogh`
 
-![image](../../../../_images/url-fragment-content-app.png)
+![image](../../../../../RNs-6-4-3/_images/url-fragment-content-app.png)
 
 Parts of a fragment:
 
@@ -107,7 +107,7 @@ A node path is the most common example of a parameter. The path identifies the n
 
 Here is an example of custom parameters in the fragment. The [Preview app](../../../List-of-apps/Preview-app/) is being used to preview personalized content.
 
-![Fragment in the URL](../../../../_images/url-fragment-custom-parameters.png)
+![Fragment in the URL](../../../../../RNs-6-4-3/_images/url-fragment-custom-parameters.png)
 
 Parameters:
 
@@ -118,13 +118,13 @@ Parameters:
 
 Here’s what the Preview app looks like in the browser.
 
-![Preview app in the browser](../../../../_images/6-2-personalization-preview-parameters.png)
+![Preview app in the browser](../../../../../RNs-6-4-3/_images/6-2-personalization-preview-parameters.png)
 
 ### [](#_selectors)Selectors
 
 A selector is a part of a URI between the first selector delimiter `~` (tilde) and the last selector delimiter.
 
-![Selector marked in the URL](../../../../_images/selector.png)
+![Selector marked in the URL](../../../../../RNs-6-4-3/_images/selector.png)
 
 Selectors are similar to query parameters in that they allow you to pass information to a servlet. The difference is that a query parameter sends input to be processed whereas a selector describes how you want to receive the requested resource. In this respect selectors are like extensions. The extension `.html` specifies that you want to receive the resource as an HTML document. The selector `Culture` specifies that you want a list of tours about culture. It is still the same resource (tours list page) but instead of all tours you want it filtered by the category Culture.
 
@@ -138,7 +138,7 @@ The info.magnolia.cms.core.Path class sets `~` (tilde) as the delimiter in the `
 
 The whole selector can be split into several selectors separated from each other by the same delimiter `~` (tilde):
 
-![A selector split into several selectors](../../../../_images/selector-multiple.png)
+![A selector split into several selectors](../../../../../RNs-6-4-3/_images/selector-multiple.png)
 
 -   Whole selector: `Culturea=1b=2`
 

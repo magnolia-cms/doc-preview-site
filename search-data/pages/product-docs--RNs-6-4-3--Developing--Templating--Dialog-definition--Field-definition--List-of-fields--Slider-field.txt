@@ -1,0 +1,36 @@
+---
+title: "Slider field"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/List-of-fields/Slider-field/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Slider field
+---
+
+# Slider field
+
+info.magnolia.ui.field.SliderFieldDefinition renders a horizontal bar that allows you to set a numeric value within a defined range by dragging a handle with the mouse. The value appears as you move the handle.
+
+> **Note:** Slider field definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.field.SliderFieldDefinition.This field has been introduced since Magnolia 6.2. There is no corresponding implementation in the Magnolia 5 UI framework.
+
+## [](#_example_definition)Example definition
+
+```yml
+slider:
+  $type: sliderField
+  label: Percentage
+  defaultValue: 50
+  stepSize: 5
+  displayStepSize: 25
+  valueFormat: PERCENTAGE
+```
+
+> **Tip:** You can preview this example using the field-examples-module. See Field examples module for more information.
+
+| Property | Description |
+| --- | --- |
+| `title` | **optional** Title displayed above the slider. The value is [i18n](../../../../../../Administration/Language/Internationalization/#_i18n_message_keys) -able. |
+| `min` | **optional** , *default is 0* Minimum value of the slider range. |
+| `max` | **optional** , *default is 100* Maximum value of the slider range. |
+| `stepSize` | **optional** , *default is 1* Size of increments by which the slider handle moves. For this to work, the value must be greater than `0` . |
+| `displayStepSize` | **optional** , *default is 0* Size of increments by which values appear on the slider. `0` means no values are displayed. For this to work, the value must be greater than or equal to `0` . |
+| `valueFormat` | **optional** , *default is NUMBER* Value format can be `NUMBER` or `PERCENTAGE` . When set to `PERCENTAGE` , the `%` character is appended to all displayed values. |

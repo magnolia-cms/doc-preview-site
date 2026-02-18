@@ -1,0 +1,67 @@
+---
+title: "Cloud domains and certificates"
+url: https://docs.magnolia-cms.com/cloud/Onboarding-to-Magnolia-Cloud/Cloud-domains-and-certificates/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Onboarding to Magnolia Cloud > Cloud domains and certificates
+---
+
+# Cloud domains and certificates
+
+| Option | Notes |
+| --- | --- |
+| [Magnolia-managed setup](#_magnolia_managed_setup) | In this case, you leave the management of your domain(s) and certificate(s) to Magnolia, with limited redirects in place. Your involvement is limited to registering your domains and requesting your domain mappings via the [Cockpit](../../Cockpit/) . |
+| [Unmanaged setup](#_unmanaged_setup) | This might involve multiple domains, your own pre-existing infrastructure or regulatory constraints. You prefer to keep full ownership and control of your domain and certificate management. In this case, you fall under the unmanaged setup option, meaning that Magnolia does not manage domains and certificates for you. |
+
+| Environment | Technical domain assigned to the public space |
+| --- | --- |
+| Integration | public-integration-<subscription-code>.de.magnolia-cloud.com |
+| UAT | public-uat-<subscription-code>.de.magnolia-cloud.com |
+| **Live** | public-live-<subscription-code>.de.magnolia-cloud.com |
+
+## [](#_unmanaged_setup)Unmanaged setup
+
+If you already have infrastructure supporting your enterprise domain management system or need to comply with specific regulatory or security constraints, you may choose to manage your own domains and certificates.
+
+> **Note:** SLAIn an unmanaged setup, note that your Magnolia SLA and availability and uptime checks and monitors of the subscription are affected.
+
+### [](#_unmanaged_certificates)Unmanaged certificates
+
+When Magnolia does not manage the creation of certificates, we offer a manual import of the certificate for the root domain.
+
+Once the initial certificate import is done, you or your cloud partner are responsible for installing renewed certificates. Magnolia does *not* oversee this process including certificate renewal.
+
+> **Note:** See Managing certificates for steps on importing certificates via the Cockpit.
+
+AWS | Importing Certificates
+
+> To import a self–signed SSL/TLS certificate into ACM, you must provide the certificate and its private key. To import a signed certificate, you must also include the certificate chain. Your certificate must satisfy the following criteria:
+>
+> The certificate must specify a cryptographic algorithm and a key size. The following algorithms are supported by ACM:
+>
+> -   1024-bit RSA (`RSA_1024`)
+>
+> -   2048-bit RSA (`RSA_2048`)
+>
+> -   4096-bit RSA (`RSA_4096`)
+>
+> -   Elliptic Prime Curve 256 bit (`EC_prime256v1`)
+>
+> -   Elliptic Prime Curve 384 bit (`EC_secp384r1`)
+>
+> -   Elliptic Prime Curve 521 bit (`EC_secp521r1`)
+>
+>
+> See [AWS Importing Certificate](https://docs.aws.amazon.com/acm/latest/userguide/import-certificate.html) for more in-depth information.
+
+> **Note:** There is a maximum of 25 domain certificates.
+
+### [](#_unmanaged_domains)Unmanaged domains
+
+Managing your own domains gives you the most flexibility but you must have your own infrastructure or service to do so.
+
+If you or your cloud partner decide to manage your own domains and certificates, Magnolia only provides the CNAME entries and the associated public IPs for the Magnolia cloud instances, such as `[public|author]-<environment>-<subscription-code>.magnolia-cloud.com`.
+
+| From | To |
+| --- | --- |
+| my-company.com | **www.** my-company.com |

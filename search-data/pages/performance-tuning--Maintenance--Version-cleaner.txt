@@ -1,0 +1,20 @@
+---
+title: "Version Cleaner module"
+url: https://docs.magnolia-cms.com/performance-tuning/Maintenance/Version-cleaner/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Maintenance > Version Cleaner module
+---
+
+# Version Cleaner module
+
+> **Caution:** Magnolia 6.4 may not fully support all incubator modules yet. Please get in touch with Magnolia support for more information.
+
+The Version Cleaner module is an [incubator module](../../../product-docs/RNs-6-4-3/Modules/#_module_list). It provides commands to remove old or duplicated versions from your version store. Which versions are selected for removal can be configured through voters.
+
+| Command | Description |
+| --- | --- |
+| `cleanVersions` | Remove unneeded versions according to its configuration. |
+| `cleanAllVersions` | Remove all versions found except root and leaf versions. ** Unlike `cleanVersions` , `cleanAllVersions` does not require possibly complicated configuration. | ** | Unlike `cleanVersions` , `cleanAllVersions` does not require possibly complicated configuration. |
+| ** | Unlike `cleanVersions` , `cleanAllVersions` does not require possibly complicated configuration. |
+| `cleanNodeVersions` | Clean versions from a workspace and path. |

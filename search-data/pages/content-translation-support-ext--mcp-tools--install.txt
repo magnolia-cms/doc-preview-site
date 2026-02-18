@@ -1,0 +1,153 @@
+---
+title: "Install CTSX MCP tools"
+url: https://docs.magnolia-cms.com/content-translation-support-ext/mcp-tools/install/
+category: Modules
+version: modules
+breadcrumb: Content Translation Extended module > MCP tools > Install
+---
+
+# Install CTSX MCP tools
+
+The Content Translation Support Extended (CTSX) module exposes translation and metadata capabilities as [MCP (Model Context Protocol)](https://modelcontextprotocol.io) tools. These tools are served by the [Magnolia embedded MCP server](../../../magnolia-mcp/developers/mcp-server/) and consumed by the AI Accelerator agent, which acts as an AI assistant in the Magnolia Smart Chat.
+
+| Module | Purpose |
+| --- | --- |
+| `magnolia-content-translation-support-ext-definitions` | Shared tool definitions and JSON schemas. Lightweight module with only the MCP protocol dependency. |
+| `magnolia-content-translation-support-ext-instant-command` | The `InstantTranslationCommand` — business logic for instant translation. |
+| `magnolia-content-translation-support-ext-instant-mcp` | MCP tool provider and executor that wires the instant translation command to the embedded MCP server. |
+| `magnolia-content-translation-support-ext-metadata-command` | The `GenerateLocalizedMetadataCommand` — business logic for AI-powered metadata generation. |
+| `magnolia-content-translation-support-ext-metadata-mcp` | MCP tool provider and executor that wires the metadata command to the embedded MCP server. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+To expose the CTSX MCP tools through the embedded MCP server, add the following dependencies to your [bundle](../../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/).
+
+> **Important:** The Magnolia embedded MCP server (magnolia-mcp-server-embedded) must be installed for these tools to be exposed. The MCP server is only available on author instances.
+
+### [](#_instant_translation_tool)Instant translation tool
+
+```xml
+<dependency>
+  <groupId>info.magnolia.translation</groupId>
+  <artifactId>magnolia-content-translation-support-ext-instant-mcp</artifactId>
+  <version>5.1.0</version>
+</dependency>
+```
+
+This transitively includes `magnolia-content-translation-support-ext-instant-command` and `magnolia-content-translation-support-ext-definitions`.
+
+### [](#_localized_metadata_tool)Localized metadata tool
+
+```xml
+<dependency>
+  <groupId>info.magnolia.translation</groupId>
+  <artifactId>magnolia-content-translation-support-ext-metadata-mcp</artifactId>
+  <version>5.1.0</version>
+</dependency>
+```
+
+This transitively includes `magnolia-content-translation-support-ext-metadata-command` and `magnolia-content-translation-support-ext-definitions`.
+
+> **Note:** If you only need the command (e.g., for use in actions or workflows) without the MCP integration, you can depend on the -command modules directly instead of the -mcp modules.
+
+## [](#_module_dependencies)Module dependencies
+
+This section details the dependencies for each module.
+
+### [](#_magnolia_content_translation_support_ext_definitions)magnolia-content-translation-support-ext-definitions
+
+Lightweight module containing only the tool schema definitions (`TranslationTools.java`, `MetadataTools.java`).
+
+**Dependencies:**
+
+-   `magnolia-mcp-protocol`
+
+
+### [](#_magnolia_content_translation_support_ext_instant_command)magnolia-content-translation-support-ext-instant-command
+
+Contains the `InstantTranslationCommand` that performs the actual translation.
+
+**Dependencies:**
+
+-   `magnolia-core`
+
+-   `magnolia-content-translation-support-ext-core`
+
+-   `magnolia-site`
+
+
+**Magnolia module dependencies:**
+
+-   `core`
+
+-   `content-translation-support-ext-core`
+
+
+### [](#_magnolia_content_translation_support_ext_instant_mcp)magnolia-content-translation-support-ext-instant-mcp
+
+Wires the instant translation command to the embedded MCP server via `TranslationToolProvider` and `InstantTranslationExecutor`.
+
+**Dependencies:**
+
+-   `magnolia-content-translation-support-ext-definitions`
+
+-   `magnolia-mcp-protocol`
+
+-   `magnolia-mcp-tools-core`
+
+-   `magnolia-core`
+
+
+**Magnolia module dependencies:**
+
+-   `core`
+
+-   `content-translation-support-ext-instant-command` (required)
+
+-   `mcp-server-embedded` (**optional** — tools register only when the MCP server is present)
+
+
+### [](#_magnolia_content_translation_support_ext_metadata_command)magnolia-content-translation-support-ext-metadata-command
+
+Contains the `GenerateLocalizedMetadataCommand` that performs the metadata generation.
+
+**Dependencies:**
+
+-   `magnolia-core`
+
+-   `magnolia-i18n`
+
+-   `magnolia-rest-services` (for page content serialization)
+
+-   `magnolia-ai-accelerator-core` (version 3.0)
+
+
+**Magnolia module dependencies:**
+
+-   `core`
+
+-   `ai-accelerator-core` (**optional**)
+
+
+### [](#_magnolia_content_translation_support_ext_metadata_mcp)magnolia-content-translation-support-ext-metadata-mcp
+
+Wires the metadata command to the embedded MCP server via `MetadataToolProvider` and `GenerateLocalizedMetadataExecutor`.
+
+**Dependencies:**
+
+-   `magnolia-content-translation-support-ext-definitions`
+
+-   `magnolia-mcp-protocol`
+
+-   `magnolia-mcp-tools-core`
+
+-   `magnolia-core`
+
+
+**Magnolia module dependencies:**
+
+-   `core`
+
+-   `content-translation-support-ext-metadata-command` (required)
+
+-   `mcp-server-embedded` (**optional** — tools register only when the MCP server is present)

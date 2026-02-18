@@ -8,15 +8,13 @@ breadcrumb: DX Core > Modules > Personalization module
 
 # Personalization module
 
-[Personalization](../../../use-cases/Personalization/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html)<br><br>This module includes GeoLite2 data created by MaxMind, available from [www.maxmind.com](https://www.maxmind.com). |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) This module includes GeoLite2 data created by MaxMind, available from [www.maxmind.com](https://www.maxmind.com) . |
 | Issues | [MGNLPN](https://magnolia-cms.atlassian.net/browse/MGNLPN) |
-| Maven site | [Personalization](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fpersonalization%2Fmagnolia-personalization-integration%2F4.0.0) |
-| Latest | 4.0.0 |
-| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | Yes |
+| Maven site | [Personalization](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fpersonalization%2Fmagnolia-personalization-integration%2F{magnolia-personalization-64}) |
+| Latest | {magnolia-personalization-64} |
+| [Available on SPA/Headless](../../../../RNs-6-4-3/Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | Yes |
 
 ## [](#_personalization)Personalization
 
@@ -38,7 +36,7 @@ Magnolia’s Personalization feature consists of the following modules.
 
 -   [Preview app](../../../Apps/List-of-apps/Preview-app/): App for testing content delivery by impersonating a visitor.
 
--   REST: [Personalization support for the Delivery API](#rest:api:Requesting-personalized-content-with-the-delivery-endpoint.adoc).
+-   REST: [Personalization support for the Delivery API](../../../../../rest/api/Requesting-personalized-content-with-the-delivery-endpoint/).
 
 -   Segmentation app: Provides the Segments app for grouping visitors into [segments](../../../Getting-started-with-Magnolia/Glossary/#_segment).
 
@@ -51,7 +49,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-components</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -63,7 +61,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-core</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -75,7 +73,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-integration</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -87,7 +85,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-pages</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -99,7 +97,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-personas-app</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -111,7 +109,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-preview-app</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -123,7 +121,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-rest</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -135,7 +133,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-segmentation-app</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -147,7 +145,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-traits</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -159,7 +157,7 @@ Magnolia’s Personalization feature consists of the following modules.
 <dependency>
   <groupId>info.magnolia.personalization</groupId>
   <artifactId>magnolia-personalization-widget</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-personalization-64}</version> (1)
 </dependency>
 ```
 
@@ -177,7 +175,7 @@ Part of the module is also the `magnolia-personalization-blossom-compatibility`.
     <dependency>
       <groupId>info.magnolia.personalization</groupId>
       <artifactId>magnolia-personalization-blossom-compatibility</artifactId>
-      <version>4.0.0</version> (1)
+      <version>{magnolia-personalization-64}</version> (1)
     </dependency>
     ```
 
@@ -185,7 +183,7 @@ Part of the module is also the `magnolia-personalization-blossom-compatibility`.
     | --- | --- |
     | **1** | Should you need to specify the module version, do it using `<version>`. |
 
-2.  Make sure that in the content of your `pom.xml` for your webapp you include the following two dependencies **if your project is generated from the [Magnolia webapp archetype](../../../Developing/Development-how-tos/How-to-use-Magnolia-Maven-archetypes/)**:
+2.  Make sure that in the content of your `pom.xml` for your webapp you include the following two dependencies **if your project is generated from the [Magnolia webapp archetype](../../../../RNs-6-4-3/Developing/Development-how-tos/How-to-use-Magnolia-Maven-archetypes/)**:
 
     ```xml
     ...
@@ -219,46 +217,11 @@ Part of the module is also the `magnolia-personalization-blossom-compatibility`.
     > ...
 
 
-## [](#_configuration)Configuration
-
-> **Tip:** See an overview of differences between FreeMarker and headless templating.
-
-### [](#_variant_rendering_restrictions_on_public_instances)Variant rendering restrictions on public instances
-
-Public users cannot preview content variants. When a public user tries to access a variant—either directly or via a link, they see the original page with no variants applied.
-
-A default rendering filter at `/server/filters/cms/rendering` continues to block direct URL access to `mgnl:variant` nodes on public instances for security purposes, returning a `404 not found` response. This doesn’t affect normal page rendering, Delivery API responses, or the Preview app, but means variants cannot be tested via direct URLs.
-
-To test variants, use the [Preview app](../../../Apps/List-of-apps/Preview-app/).
-
-For more information, see [Restricting node type rendering](../../../Administration/Architecture/Request-processing-and-filters/Filters/#_restricting_node_type_rendering).
-
-### [](#_components_submodule)Components submodule
-
-Nested variants occur when a page variant contains component variants. Control the ability for editors to create nested variants using the `allowNestedVariants` property on the module level configuration.
-
 | Node name | Value |
 | --- | --- |
-| personalization-components |     |
-| config |     |
+| personalization-components |  |
+| config |  |
 | allowNestedVariants | false |
-
-| Property | Description |
-| --- | --- |
-| `allowNestedVariants` | **optional**, *default is `false`*<br><br>Allows you to create component variants inside a page variant if set to `true`. |
-
-### [](#_traits_submodule)Traits submodule
-
-Provides out-of-the-box functionality for the following trait types:
-
--   All name-and-value based traits.
-
--   Cookie trait.
-
--   Header trait.
-
--   Request parameter trait.
-
 
 ## [](#_custom_traits)Custom traits
 
@@ -296,7 +259,7 @@ Related topics
 
 -   [Component personalization](../../../Features/Personalization/Component-personalization/)
 
--   [Requesting personalized content with the delivery endpoint](#rest:api:Requesting-personalized-content-with-the-delivery-endpoint.adoc)
+-   [Requesting personalized content with the delivery endpoint](../../../../../rest/api/Requesting-personalized-content-with-the-delivery-endpoint/)
 
 -   [Personalization of headless SPA projects](../../../Developing/headless/spa-development/personalization-of-headless-SPA-projects/)
 

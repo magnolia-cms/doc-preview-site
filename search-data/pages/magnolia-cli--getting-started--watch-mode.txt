@@ -1,0 +1,136 @@
+---
+title: "Watch mode"
+url: https://docs.magnolia-cms.com/magnolia-cli/getting-started/watch-mode/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Watch mode
+---
+
+# Watch mode
+
+Watch mode lets Magnolia CLI watch your project files and re-run selected plugins whenever matching files are created, changed, or deleted. The watchers are managed entirely by the CLI. Plugins don’t manage the watchers themselves.
+
+## [](#_how_it_works)How it works
+
+-   The CLI detects the `watch-mode` command and reads the `watchMode` configuration from `mgnl.config.js` or uses the `--use-config` option.
+
+-   It configures file watchers for each enabled plugin and their `watchPaths`.
+
+-   When a change is detected, the CLI logs the change and the plugin to be executed, then invokes the plugin as usual.
+
+-   Plugins run exactly as they do when invoked manually. The CLI re-invokes the plugin and passes the changed file paths as `source`.
+
+
+> **Note:** The following are ignored by default at any directory level: /node_modules/, /.git/, /dist/, /build/, and /mgnl.error.log.
+
+## [](#_running_a_watch_mode)Running a watch mode
+
+### [](#_prerequisites)Prerequisites
+
+-   Define `watchMode` for at least one plugin in `mgnl.config.js`, or use the `--use-config` option.
+
+
+### [](#_start_all_configured_watchers)Start all configured watchers
+
+```console
+npm run mgnl -- watch-mode
+```
+
+> **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+> **Caution:** On first runs, keep an eye on the CLI logs. Some plugins may prompt for input (for example, confirmations or additional options), and you could miss the prompt if the terminal isn’t in focus.
+
+### [](#_start_a_watch_mode)Start a watch mode
+
+-   With an inline configuration
+
+    ```console
+    npm run mgnl -- watch-mode --use-config "CreateRestEndpointPlugin"
+    ```
+
+    > **Note:** If no watch paths are specified for a plugin, the CLI defaults to **/*.yaml. This pattern searches relative to the current working directory where the CLI is executed.
+
+-   With custom watch paths for plugins
+
+    ```console
+    npm run mgnl -- watch-mode --use-config "CreateRestEndpointPlugin::**/apps/*.yaml::**/dialogs/**/*.yaml"
+    ```
+
+-   With multiple plugins with different configurations
+
+    ```console
+    npm run mgnl -- watch-mode --use-config "CreateRestEndpointPlugin::**/apps/*.yaml" "CreateModelPlugin::**/dialogs/**/*.yaml"
+    ```
+
+
+## [](#_example_configuration_mgnl_config_js)Example configuration (`mgnl.config.js`)
+
+```js
+export default {
+  ...
+  plugins: [
+    new CreateRestEndpointPlugin({...}),
+    new CreateModelPlugin({...})
+  ],
+  watchMode: {
+    CreateRestEndpointPlugin: {
+      enabled: true,
+      watchPaths: [
+		'**/dialogs/**/*.yaml',
+		'**/contentTypes/*.yaml',
+		'**/apps/*.yaml',
+	  ],
+    },
+    CreateModelPlugin: {
+      enabled: true,
+      watchPaths: '**/dialogs/**/*.yaml'
+    }
+  }
+};
+```
+
+## [](#_watch_mode_options)`watch-mode` options
+
+-   `-uc, --use-config [configs…​]`: Specify plugin configurations. The format is: `<plugin-name>[::<watch-path1>…​]`.
+
+
+Examples:
+
+-   `"CreateRestEndpointPlugin"`
+
+-   `"CreateRestEndpointPlugin::**/apps/*.yaml::**/dialogs/**/*.yaml"`
+
+
+### [](#_configuration_format)Configuration format
+
+The `--use-config` option accepts plugin configurations in the format:
+
+`<plugin-name>[::<watch-path1>[::<watch-path2>…​]]`
+
+-   Plugin name only: Uses the default watch paths (`**/*.yaml`).
+
+-   Plugin with paths: Uses specified watch paths separated by `::`.
+
+
+> **Important:** Use double colons (::) to separate the plugin name from the watch paths. Single colons (:) will not work correctly.
+
+### [](#_path_exclusion)Path exclusion
+
+The CLI automatically validates and excludes problematic paths that match:
+
+-   `/node_modules/`
+
+-   `/.git/`
+
+-   `/dist/`
+
+-   `/build/`
+
+-   `/mgnl.error.log`
+
+
+This validation applies to both `--use-config` and `mgnl.config.js` configurations. If you specify excluded paths, the CLI will warn you and fall back to the default watch paths.
+
+## [](#_stopping)Stopping
+
+Press Ctrl+C to stop. The watchers are cleaned up on termination.

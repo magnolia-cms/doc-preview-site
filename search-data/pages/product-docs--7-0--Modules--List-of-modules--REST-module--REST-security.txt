@@ -3,7 +3,7 @@ title: "REST security"
 url: https://docs.magnolia-cms.com/product-docs/7.0/Modules/List-of-modules/REST-module/REST-security/
 category: Magnolia 6.4
 version: latest
-breadcrumb: DX Core > Modules > rest:ROOT:index.adoc > REST security
+breadcrumb: DX Core > Modules > REST module > REST security
 ---
 
 # REST security
@@ -17,7 +17,7 @@ There are three levels of control when REST requests are issued:
 -   Command-level access
 
 
-Permissions to issue REST requests are controlled using Magnolia’s standard [role-based security mechanism](../../../../Administration/IAM/Roles-and-access-control-lists/).
+Permissions to issue REST requests are controlled using Magnolia’s standard [role-based security mechanism](../../../../../RNs-6-4-3/Administration/IAM/Roles-and-access-control-lists/).
 
 ## [](#_security_strategy)Security strategy
 
@@ -27,7 +27,7 @@ REST endpoints are a powerful tool but can also make your site vulnerable. Make 
 
 Web access security is checked by info.magnolia.cms.security.URISecurityFilter. The filter checks whether the role(s) of the requesting user allow the user to request a given path with given method.
 
-Web permissions are granted as [web access lists](../../../../Administration/IAM/Roles-and-access-control-lists/) per role. They grant access to a path for **Get** or **Get & Post**.
+Web permissions are granted as [web access lists](../../../../../RNs-6-4-3/Administration/IAM/Roles-and-access-control-lists/) per role. They grant access to a path for **Get** or **Get & Post**.
 
 -   **Get** - Grants the HTTP method `GET` for a given URI.
 
@@ -58,38 +58,18 @@ Role-based access to specific commands are configured in the `rest-services` mod
 
 Commands are custom actions executed at pre-defined trigger points. Magnolia uses commands to publish content, send email, flush the cache, take backups, import and export data, and to do many other tasks. Commands can perform duties within the system or connect to external resources.
 
-## [](#_security_for_endpoints_summary)Security for endpoints - summary
-
-Endpoints always require URI access, they may also require JCR access or a specific role defined at a command level.
-
-When you request a REST URL, URI security is checked first:
-
--   If the URI security check fails, the request is redirected to the login page by default.
-
--   If the the URI security check is passed, the request is delegated to the endpoint in question.
-
-
-If the endpoint concerns JCR access, JCR access security is checked too:
-
--   If the user is not granted access to the requested node, the endpoint responds with an HTTP error.
-
--   If JCR security access is granted, the endpoint responds with an HTTP response code 200 and a response body if appropriate.
-
-
-If the endpoint triggers commands, the command definition grants access via specifically defined roles defined per command:
-
-|     | Method | Web access security required | JCR access security | Specific role-based security |
+|  | Method | Web access security required | JCR access security | Specific role-based security |
 | --- | --- | --- | --- | --- |
-| **delivery** | `GET` | `/.rest/delivery/*` | **Read-only** access for the delivery API path | \-  |
-| **nodes** | `GET` | `/.rest/nodes/v1/{workspace}/{path}` | **Read-only** access for a path on a workspace | \-  |
-| `PUT` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | \-  |
-| `POST` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | \-  |
-| `DELETE` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | \-  |
-| **properties** | `GET` | `/.rest/nodes/v1/{workspace}/{path}` | **Read-only** access for a path on a workspace | \-  |
-| `PUT` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | \-  |
-| `POST` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | \-  |
-| `DELETE` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | \-  |
-| **commands** | `POST` | `/.rest/commands/v2/{catalogName}/{command}` | \-  | required |
+| **delivery** | `GET` | `/.rest/delivery/*` | **Read-only** access for the delivery API path | - |
+| **nodes** | `GET` | `/.rest/nodes/v1/{workspace}/{path}` | **Read-only** access for a path on a workspace | - |
+| `PUT` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `POST` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `DELETE` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| **properties** | `GET` | `/.rest/nodes/v1/{workspace}/{path}` | **Read-only** access for a path on a workspace | - |
+| `PUT` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `POST` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| `DELETE` | `/.rest/nodes/v1/{workspace}/{path}` | **Read/Write** access for a path on a workspace | - |
+| **commands** | `POST` | `/.rest/commands/v2/{catalogName}/{command}` | - | required |
 
 ## [](#_rest_roles)REST roles
 
@@ -104,65 +84,6 @@ The REST module installs four default roles with the following permissions:
 -   `rest-backup` - The REST backup role grants permission to execute the `backup` command from a running Magnolia instance.
 
 
-## [](#_rest_default_permissions)REST default permissions
-
-### [](#_rest_admin_role)`rest-admin` role
-
-> **Note:** The superuser account has the rest-admin role by default so you can use superuser to test your requests. However, for production use, you should create a custom REST role. The anonymous role is specifically denied access to the REST endpoints.
-
 | Permission | Path |
 | --- | --- |
 | Get & Post | `/.rest/*` |
-
-| Applies to | Name | Path |
-| --- | --- | --- |
-| Commands | Delete | `/modules/rest-services/rest-endpoints/commands/enabledCommands/markAsDeleted/access/roles` |
-|     | Publish | `/modules/rest-services/rest-endpoints/commands/enabledCommands/activate/access/roles` |
-
-### [](#_rest_editor_role)`rest-editor` role
-
-| Permission | Path |
-| --- | --- |
-| Deny | `/.rest*` |
-| Get | `/.rest/delivery/*` |
-| Deny | `/.rest/commands*` |
-| Deny | `/.rest/nodes*` |
-| Get & Post | `/.rest/nodes/v1/website*` |
-| Deny | `/.rest/properties*` |
-| Get & Post | `/.rest/properties/v1/website*` |
-| Get & Post | `/.rest/cache/v1*` |
-
-### [](#_rest_anonymous_role)`rest-anonymous` role
-
-> **Note:** If you’re a PaaS customer, there are some differences with the rest-anonymous role. This is highlighted below in a PaaS-specific section in the table.
-
-| Permission | Path |
-| --- | --- |
-| Deny | `/.rest*` |
-| Get | `/.rest/delivery/*` |
-| **PaaS only** |     |
-| Get & Post | `/.rest/configuration/*` |
-| Get & Post | `/.rest/cloud/*` |
-| Get | `/.rest/status` |
-
-### [](#_rest_backup_role)`rest-backup` role
-
-| Permission | Path |
-| --- | --- |
-| Get & Post | `/.rest/commands/v2/backup/backup` |
-
-| Applies to | Name | Path |
-| --- | --- | --- |
-| Command | Backup | `/modules/rest-services/rest-endpoints/commands/enabledCommands/backup/access/roles` |
-
-### [](#_custom_rest_roles)Custom REST roles
-
-Magnolia recommends you create custom REST roles granting specific access for specific use cases.
-
-The custom roles you create depend on your individual project requirements. In general, we recommend you:
-
--   First deny everything, then specifically grant only what is required.
-
--   Avoid granting write permissions on JCR workspaces for anonymous users.
-
--   Create different roles for each use case.

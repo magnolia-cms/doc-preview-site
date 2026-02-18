@@ -8,9 +8,9 @@ breadcrumb: DX Core > Modules > Privacy module > GDPR and forms
 
 # GDPR and forms
 
-This page describes how to create a new GDPR-compliant form as well as how to adapt an existing form (containing a field where users may enter personal data) to comply with [GDPR](../../../../Features/Data-privacy/) requirements.
+This page describes how to create a new GDPR-compliant form as well as how to adapt an existing form (containing a field where users may enter personal data) to comply with [GDPR](../../../../../RNs-6-4-3/Features/Data-privacy/) requirements.
 
-The examples on this page make use of the [Privacy module](../) and the [Travel Demo](../../../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/).
+The examples on this page make use of the [Privacy module](../../../../../RNs-6-4-3/Modules/List-of-modules/Privacy-module/) and the [Travel Demo](../../../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/).
 
 ## [](#_simple_form_processing_compared_to_gdpr_compliant_form_processing)Simple form processing compared to GDPR-compliant form processing
 
@@ -29,7 +29,7 @@ In the example below, we assume that we have a text input form field called `ful
 
 **Visitors app adds also contacts**
 
-In the Magnolia DX Core Travel Demo, the `contacts` workspace is registered in the configuration of the Privacy module for demonstration purposes of dealing with personal data. This means the Visitors app interacts not only with the `visitors` workspace but also with the `contacts` workspace, which is otherwise primarily used by the [Contacts app](../../../../Apps/List-of-apps/Contacts-app/).
+In the Magnolia DX Core Travel Demo, the `contacts` workspace is registered in the configuration of the Privacy module for demonstration purposes of dealing with personal data. This means the Visitors app interacts not only with the `visitors` workspace but also with the `contacts` workspace, which is otherwise primarily used by the [Contacts app](../../../../../RNs-6-4-3/Apps/List-of-apps/Contacts-app/).
 
 ## [](#_gdpr_data_is_stored_on_public_and_must_be_synchronized_on_clusters)GDPR data is stored on public and must be synchronized on clusters
 
@@ -103,9 +103,9 @@ This component template is preconfigured to:
 
 ### [](#_updating_privacy_module_configuration)Updating Privacy module configuration
 
-Since this step is done in the [Configuration app](../../../../Apps/List-of-apps/Configuration-app/), you need the `superuser` [role](../../../../Administration/IAM/Roles-groups-and-users/) to access the app and change the configuration.
+Since this step is done in the [Configuration app](../../../../../RNs-6-4-3/Apps/List-of-apps/Configuration-app/), you need the `superuser` [role](../../../../../RNs-6-4-3/Administration/IAM/Roles-groups-and-users/) to access the app and change the configuration.
 
-Both the `email` field (it comes preconfigured with the **(GDPR) Store data form** template) and the `fullname` field (added to the form’s field set) must be database names registered in the system for GDPR-compliant data processing. This is done in the configuration of the [Privacy module](../).
+Both the `email` field (it comes preconfigured with the **(GDPR) Store data form** template) and the `fullname` field (added to the form’s field set) must be database names registered in the system for GDPR-compliant data processing. This is done in the configuration of the [Privacy module](../../../../../RNs-6-4-3/Modules/List-of-modules/Privacy-module/).
 
 1.  Open the `visitor-manager` module configuration at `/modules/visitor-manager/config/personalFields`.
 
@@ -133,7 +133,7 @@ First, you need to change the form’s template to use one that is designed for 
 
 Now, you have to make the **Full Name** field in the first field set a member of the other field set. With the `superuser` role, you can do that in the JCR Browser app:
 
-![Relocating the text input field](../../../../_images/GDPRfieldMove.png)
+![Relocating the text input field](../../../../../RNs-6-4-3/_images/GDPRfieldMove.png)
 
 After this operation, the **Full Name** field is located next to the **Email** field.
 
@@ -151,10 +151,10 @@ When submitting the page, the user is asked to give consent for both text input 
 
 Related topics
 
--   [Data privacy](../../../../Features/Data-privacy/)
+-   [Data privacy](../../../../../RNs-6-4-3/Features/Data-privacy/)
 
--   [Data privacy API](../../../../Developing/API/Java-Server-APIs/Data-privacy-API/)
+-   [Data privacy API](../../../../../RNs-6-4-3/Developing/API/Java-Server-APIs/Data-privacy-API/)
 
--   [Privacy module](../)
+-   [Privacy module](../../../../../RNs-6-4-3/Modules/List-of-modules/Privacy-module/)
 
--   [Visitors app](../../../../Apps/List-of-apps/Visitors-app/)
+-   [Visitors app](../../../../../RNs-6-4-3/Apps/List-of-apps/Visitors-app/)

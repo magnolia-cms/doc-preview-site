@@ -1,0 +1,191 @@
+---
+title: "Release notes for Magnolia DX Core 6.4.2"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Releases/Release-notes-for-Magnolia-DX-Core-6.4.2/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Releases > Release notes for Magnolia DX Core 6.4.2
+---
+
+# Release notes for Magnolia DX Core 6.4.2
+
+Delivered on January 26, 2026 • Changelog: [22603](https://magnolia-cms.atlassian.net/issues/?filter=22603)
+
+**Magnolia 6.4.2** is centered on platform stability, security, and infrastructure flexibility, highlighted by the introduction of native Azure Blob Storage support for DAM. This integration brings full feature parity with our existing S3 support, allowing you to store heavy asset binaries in your preferred cloud container while maintaining a seamless authoring experience. We have also upgraded the CKEditor 5 to v47, transitioning to modernized installation methods that ensure a more robust and future-proof editing environment.
+
+For developers, this release streamlines maintenance with a new filtering option in the Definitions app, designed to help you quickly isolate and inspect project-specific modules. We have also enhanced the Webhooks module, replacing deprecated parameters with clearer properties for handling request bodies and context to support more complex integrations.
+
+Finally, we have reinforced system integrity through essential security hardening measures across the platform. These improvements include stricter content validation for the HTML component in the Magnolia Templating Kit (MTK) and new depth and complexity limits for GraphQL queries to protect against potential performance vulnerabilities.
+
+-   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.4.2.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.4.2/magnolia-dx-core-webapp-6.4.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.4.2.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.4.2/travel-demo-webapp-6.4.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.4.2.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.4.2/travel-demo-community-webapp-6.4.2.war)
+
+-   ![Download icon](../../_images/icons/download.svg) [mtk2\_4.0.1.zip](../../_attachments/mtk2_4.0.1.zip) (*as a light module*)
+
+
+> **Note:** There are minor breaking changes in this release:safeHtml validator configuration needs an update for CKEditor 5 v47. See SafeHtml validator and list item ids below.In the HTML component in MTK. See more details below in the HTML component validation in MTK subsection.
+
+## [](#_whats_new)What’s new
+
+### [](#_azure_blob_storage_for_dam)Azure Blob Storage for DAM
+
+We have expanded our decoupled storage architecture to support Azure Blob Storage as a native external storage provider for DAM. This functionality is handled by the new [Azure Blob submodule](../../../../dam/developers/dam-azure-blob/).
+
+Previously available only for AWS S3, this integration allows you to store heavy asset binaries externally in your Azure container while keeping lightweight metadata within the local JCR workspace. This feature achieves full feature parity with our existing S3 integration, ensuring a seamless experience for both developers and content authors.
+
+Key Benefits:
+
+-   Infrastructure flexibility: Support for the two leading cloud providers allows you to align your DAM storage strategy with your existing organizational infrastructure (Azure or AWS).
+
+-   Seamless authoring: The AdminCentral UI remains unchanged; authors interact with assets exactly as they did before, regardless of where the binaries are hosted.
+
+-   Simplified configuration: The setup process for Azure mirrors the established configuration patterns used for S3, reducing the learning curve for system administrators.
+
+
+-   [MGNLDAM-1918](https://magnolia-cms.atlassian.net/browse/MGNLDAM-1918) External asset binaries: Azure integration
+
+
+| Scenario | HTTP code before | HTTP code now |
+| --- | --- | --- |
+| `ValidationError` (for example, `DuplicateDirectiveName` , `FieldUndefined` , `UnusedVariable` ) | `500` | `400` |
+| Query batching (JSON array format) | `500` | `400` |
+| Malformed JSON in request body | `500` | `400` |
+
+## [](#_bug_fixes)Bug fixes
+
+-   [ADMINCTR-636](https://magnolia-cms.atlassian.net/browse/ADMINCTR-636) Incorrect filter order in publishing configuration causes failures
+
+-   [LOGTOOLS-21](https://magnolia-cms.atlassian.net/browse/LOGTOOLS-21) Handle empty log directory gracefully in Log Tools app
+
+-   [MAGNOLIA-9859](https://magnolia-cms.atlassian.net/browse/MAGNOLIA-9859) Link management – Transformer fails to create bean for node
+
+-   [MGNLPN-816](https://magnolia-cms.atlassian.net/browse/MGNLPN-816) Variant marker isn’t displayed at new page import
+
+-   [MGNLPN-865](https://magnolia-cms.atlassian.net/browse/MGNLPN-865) Duplicating a page with variants is missing the icon indicator
+
+-   [MGNLREST-900](https://magnolia-cms.atlassian.net/browse/MGNLREST-900) REST API returns HTML instead of JSON on `401 Unauthorized`
+
+-   [MGNLUI-8663](https://magnolia-cms.atlassian.net/browse/MGNLUI-8663) **Show versions** action always shows latest version on custom content apps
+
+-   [MGNLUI-9123](https://magnolia-cms.atlassian.net/browse/MGNLUI-9123) Searching can push selected items out of view
+
+-   [MGNLUI-9262](https://magnolia-cms.atlassian.net/browse/MGNLUI-9262) `jcrMultiLinkField` doesn’t maintain the order in which the nodes were selected
+
+-   [MGNLUI-9327](https://magnolia-cms.atlassian.net/browse/MGNLUI-9327) `JcrSelectFieldSupport` is no longer public
+
+-   [MGNLUI-9349](https://magnolia-cms.atlassian.net/browse/MGNLUI-9349) Links inside the `compositeFields` aren’t correctly rewired on Livecopy creation
+
+-   [PAGES-1792](https://magnolia-cms.atlassian.net/browse/PAGES-1792) Vaadin error occurs when clicking on external components
+
+
+## [](#_deprecations)Deprecations
+
+### [](#_ckeditor_4)CKEditor 4
+
+With this upgrade, the CKEditor 4 is deprecated and in the maintenance mode only.
+
+-   [MGNLUI-9344](https://magnolia-cms.atlassian.net/browse/MGNLUI-9344) Mark CKEditor 4 as deprecated
+
+
+### [](#_timetolive_property_in_rest)`timeToLive` property in REST
+
+The `timeToLive` configuration property for REST delivery endpoints has been deprecated with this release. Previously, using this property could result in duplicated `Cache-Control` headers.
+
+Caching behavior for endpoints should now be managed centrally via the [Cache modules](../../Modules/List-of-modules/Cache-modules/). To enable caching for REST endpoints, which often utilize URLs without file extensions, you should adjust the `emptyExtensionVote` property in your cache configuration.
+
+To cache REST endpoints, set the `emptyExtensionVote` property to `false` at the following configuration path:
+
+`/modules/cache/config/contentCaching/defaultPageCache/browserCachePolicy/policies/dontCachePages/voters/contentType`
+
+For more configuration details, see [Cache control directives](../../Modules/List-of-modules/Cache-modules/Cache-core/#_cache_control_directives).
+
+-   [MGNLREST-896](https://magnolia-cms.atlassian.net/browse/MGNLREST-896) Deprecate the `timeToLive` config for delivery endpoints
+
+
+## [](#_updated_modules)Updated modules
+
+Bundled modules included with this release.
+
+-   Admincentral `6.4.1`
+
+-   CKEditor 5 Build `2.0.0`
+
+-   Community Edition `6.4.2`
+
+-   Content Editor `4.0.2`
+
+-   DAM App `6.0.2`
+
+-   DAM `6.0.2`
+
+-   DX Core `6.4.2`
+
+-   Definitions App `4.0.2`
+
+-   Demo Projects `6.4.2`
+
+-   GraphQL `3.0.1`
+
+-   Log Tools `3.0.1`
+
+-   Magnolia `6.4.2`
+
+-   Multiple Pages Apps `3.0.1`
+
+-   Multisite `4.0.1`
+
+-   Pages `6.4.1`
+
+-   Personalization `4.0.1`
+
+-   Publishing Transactional `3.0.1`
+
+-   Publishing `4.0.2`
+
+-   REST Client `4.0.1`
+
+-   REST Framework `4.0.2`
+
+-   Repository Tools `3.0.1`
+
+-   Site `3.0.1`
+
+-   Templating Essentials `4.0.1`
+
+-   Third-party library BOM for Extensions `6.4.2`
+
+-   Third-party library BOM `6.4.2`
+
+-   UI `6.4.2`
+
+-   Usage Metrics `3.0.1`
+
+-   Vaadin Compatibility Addons `2.0.1`
+
+-   Warp Forms `1.0.2`
+
+-   Webhooks `3.0.1`
+
+
+### [](#_unbundled_modules)Unbundled modules
+
+Unbundled modules released since Magnolia 6.4.1.
+
+-   [AI Accelerator](../../../../ai-accelerator/4.0-alpha/) `3.1.0`
+
+-   [Campaign Manager](../../../../campaign-manager/) `5.0.3`
+
+-   [CDP integration framework](../../../../cdp-integration-framework/) `3.0.1`
+
+-   [Cloudinary External DAM](../../../../cloudinary/) `3.0.1`
+
+-   [Frontify DAM connector](../../../../frontify-dam-connector/) `3.0.1`
+
+-   [VWO AB Testing](../../../../vwo-abtesting/) `3.0.1`
+
+
+## [](#_acknowledgements)Acknowledgements
+
+The Magnolia team would also like to thank everyone who reported issues, contributed patches or simply commented on issues for this release. Your continued interest helps us make Magnolia better.

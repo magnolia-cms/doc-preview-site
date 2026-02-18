@@ -26,67 +26,17 @@ subApps:
     label: Base Subapp
 ```
 
-## [](#_descriptor_properties)Descriptor properties
-
- PropertyDescription
-
-`<subapp name>`
-
-**required**
-
-Subapp node name. The internal ID used to reference the subapp (for example, in [URL fragments](../../Developing-an-app/Specific-aspects/Location-location-location/)).
-
-     `subAppClass`
-
-**required**
-
-Fully qualified name of the class that contains the subapp business logic. The class must implement the info.magnolia.ui.api.app.SubApp interface.
-
-     `class`
-
-**required**, *default is `info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor`*
-
-Subapp descriptor class that reads the configuration. The class must implement the info.magnolia.ui.api.app.SubAppDescriptor interface. Use the fully qualified class name.
-
-Another possible value is `info.magnolia.ui.contentapp.configuration.ContentSubAppDescriptor`.
-
-     `datasource`
-
-**optional**
-
-Connects the subapp to a [data source](../Data-source-definition/). For this to work, you have to use the `info.magnolia.ui.contentapp.configuration.ContentSubAppDescriptor` class.
-
-If no value is specified, the subapp will inherit the app data source.
-
-     `actions`
-
-**optional**
-
-Defines actions in the subapp. Specified actions are rendered as buttons via info.magnolia.ui.api.action.ActionDefinition.
-
-Only the actions that are defined will be provided.
-
-     `closable`
-
-**optional**, *default is `true`*
-
-Defines whether the subapp can be closed. When `false`, no **Close** icon (`X`) is displayed.
-
-     `icon`
-
-**optional**
-
-CSS class that identifies an icon used for the subapp tab. See [How to add SVG icons for apps](../../Developing-an-app/Specific-aspects/How-to-add-SVG-icons-for-apps/).
-
-If an icon isn’t set for the first subapp, a home icon is used along with the default i18n key for `label`, which is **Home**.
-
-     `label`
-
-**optional**
-
-Text or [message bundle key](../../../Administration/Language/Internationalization/#_i18n_message_keys) displayed on the subapp tab.
-
-> **Note:** The order in which you configure subapps is important. The first subapp is the default subapp and is started first.
+| Property | Description |
+| --- | --- |
+| `<subapp name>` | **required** Subapp node name. The internal ID used to reference the subapp (for example, in [URL fragments](../../Developing-an-app/Specific-aspects/Location-location-location/) ). |
+| `subAppClass` | **required** Fully qualified name of the class that contains the subapp business logic. The class must implement the info.magnolia.ui.api.app.SubApp interface. |
+| `class` | **required** , *default is info.magnolia.ui.api.app.registry.ConfiguredSubAppDescriptor* Subapp descriptor class that reads the configuration. The class must implement the info.magnolia.ui.api.app.SubAppDescriptor interface. Use the fully qualified class name. Another possible value is `info.magnolia.ui.contentapp.configuration.ContentSubAppDescriptor` . |
+| `datasource` | **optional** Connects the subapp to a [data source](../Data-source-definition/) . For this to work, you have to use the `info.magnolia.ui.contentapp.configuration.ContentSubAppDescriptor` class. If no value is specified, the subapp will inherit the app data source. |
+| `actions` | **optional** Defines actions in the subapp. Specified actions are rendered as buttons via info.magnolia.ui.api.action.ActionDefinition . Only the actions that are defined will be provided. |
+| `closable` | **optional** , *default is true* Defines whether the subapp can be closed. When `false` , no **Close** icon ( `X` ) is displayed. |
+| `icon` | **optional** CSS class that identifies an icon used for the subapp tab. See [How to add SVG icons for apps](../../Developing-an-app/Specific-aspects/How-to-add-SVG-icons-for-apps/) . If an icon isn’t set for the first subapp, a home icon is used along with the default i18n key for `label` , which is **Home** . |
+| `label` | **optional** Text or [message bundle key](../../../Administration/Language/Internationalization/#_i18n_message_keys) displayed on the subapp tab. ** The order in which you configure subapps is important. The first subapp is the default subapp and is started first. | ** | The order in which you configure subapps is important. The first subapp is the default subapp and is started first. |
+| ** | The order in which you configure subapps is important. The first subapp is the default subapp and is started first. |
 
 ## [](#_browser_descriptor)Browser descriptor
 

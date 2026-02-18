@@ -8,7 +8,7 @@ breadcrumb: DX Core > Modules > Module structure
 
 # Module structure
 
-![Modular architecture](../../_images/modular-architecture.png)
+![Modular architecture](../../../RNs-6-4-3/_images/modular-architecture.png)
 
 A Magnolia module can be purely file based or it can be wrapped in a Maven project.
 
@@ -65,43 +65,31 @@ $magnolia.resources.dir/
 
 > **Note:** These two folder trees show typical folder structures rather than structures with all folders possible.
 
-`magnolia.resources.dir` is a property defining the directory from which [resources](../../Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../Apps/List-of-apps/About-Magnolia-app/).
+`magnolia.resources.dir` is a property defining the directory from which [resources](../../../RNs-6-4-3/Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../../RNs-6-4-3/Apps/List-of-apps/About-Magnolia-app/).
 
 > **Note:** You can use symbolic links (symlinks or soft links) in the resources directory to include light modules located elsewhere on your system.
 
-Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../Administration/Architecture/Configuration-management/#_defining_properties) section.)
+Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../../RNs-6-4-3/Administration/Architecture/Configuration-management/#_defining_properties) section.)
 
 The `<module-name>` folder contains exactly the same content in a Maven module and folder-based module. In a Maven module this folder is within `src/main/resources`. In a folder-based modules this folder is within `$magnolia.resources.dir`.
 
-> **Caution:** A module name must match the [a-zA-Z0-9-_] regular expression.Reserved namesThe following names cannot be used for a module name:META-INFVAADINcom.oracle.javacom.oracle.toolscom.sungwt-unitCachejavajavaxjdklombokoracleorg.apachesunReserved charactersDo not use the following characters in a module name:the space characteraccented characters such as é, à, ç, ä, ö, üspecial characters such as slashes /, \ and so on.
+> **Caution:** A module name must match the [a-zA-Z0-9-_] regular expression.Reserved namesThe following names cannot be used for a module name:META-INFVAADINcom.oracle.javacom.oracle.toolscom.sungwt-unitCachejavajakartajavaxjdklombokoracleorg.apachesunReserved charactersDo not use the following characters in a module name:the space characteraccented characters such as é, à, ç, ä, ö, üspecial characters such as slashes /, \ and so on.
 
-The `create-light-module` command in the [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) creates the module folder structure on the file system automatically.
-
-## [](#_module_subfolders)Module subfolders
+The `create-light-module` command in the [Magnolia CLI](../../../../magnolia-cli/) creates the module folder structure on the file system automatically.
 
 | Subfolder | Description |
 | --- | --- |
-| `apps` | **optional**<br><br>Configuration data (YAML files) for apps. |
-| `decorations` | **optional**<br><br>Definition decorators (YAML files). Contains subfolders. |
-| `dialogs` | **optional**<br><br>Dialogs (YAML files). May contain subfolders. |
-| `fieldTypes` | **optional**<br><br>Field type definitions (YAML files) for *Magnolia 5 UI*. |
-| `i18n` | **optional**<br><br>i18n message bundles (`.properties` files). |
-| `messageViews` | **optional**<br><br>Message view definitions (YAML files). |
-| `renderers` | **optional**<br><br>Renderer definitions. |
-| `restEndpoints` | **optional**<br><br>REST endpoint definitions (YAML files) with subfolders. |
-| `templates` | **optional**<br><br>Template definitions (YAML files) and scripts with subfolders. |
-| `virtualURImappings` | **optional**<br><br>Virtual URI mapping definitions (YAML files) to redirect incoming requests to actual content locations. |
-| `webResources` | **optional**<br><br>All web resources (typically contains subfolders). Folder name is arbitrary. |
-
-### [](#_definition_item_folders)Definition item folders
-
-A definition item is a component configuration for executing tasks in a Magnolia instance. [Template definitions](../../Developing/Templating/Template-definition/), [dialog definitions](../../Developing/Templating/Dialog-definition/), [app definitions](../../Apps/App-configuration/App-descriptor/), [renderer definitions](../../Developing/Templating/Renderers/#_renderer_definition), [themes definitions](../../Developing/Templating/Theme/#_theme_definition),[field definitions](../../Developing/Templating/Dialog-definition/Field-definition/) and REST endpoint definitions are all examples of such definition items.
-
-The majority of these items can be configured via YAML, in which case they are registered in a specific registry. The items registered can be seen in the [Definitions app](../../Apps/List-of-apps/Definitions-app/). Even though definition items can be configured via JCR in the `configuration` workspace, configuring them in YAML files is the recommended approach.
-
-The following folders host the definition items: `apps`, `commands`, `dialogs`, `fieldTypes`, `messageViews`, `renderers`, `templates`, `traits`, `virtualURIMappings`.
-
-> **Tip:** For more information see Module definition items.
+| `apps` | **optional** Configuration data (YAML files) for apps. |
+| `decorations` | **optional** Definition decorators (YAML files). Contains subfolders. |
+| `dialogs` | **optional** Dialogs (YAML files). May contain subfolders. |
+| `fieldTypes` | **optional** Field type definitions (YAML files) for *Magnolia 5 UI* . |
+| `i18n` | **optional** i18n message bundles ( `.properties` files). |
+| `messageViews` | **optional** Message view definitions (YAML files). |
+| `renderers` | **optional** Renderer definitions. |
+| `restEndpoints` | **optional** REST endpoint definitions (YAML files) with subfolders. |
+| `templates` | **optional** Template definitions (YAML files) and scripts with subfolders. |
+| `virtualURImappings` | **optional** Virtual URI mapping definitions (YAML files) to redirect incoming requests to actual content locations. |
+| `webResources` | **optional** All web resources (typically contains subfolders). Folder name is arbitrary. |
 
 ## [](#_magnolia_module_specific_files)Magnolia module specific files
 
@@ -129,9 +117,9 @@ By default, `$magnolia.resources.dir` is the webapp folder (for example, `magnol
 
 ## [](#_creating_a_light_module_with_magnolia_cli)Creating a light module with Magnolia CLI
 
-Using the [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) you can create the folder structure for a light module with the command `create-light-module`.
+Using the [Magnolia CLI](../../../../magnolia-cli/) you can create the folder structure for a light module with the command `create-light-module`.
 
-1.  Ensure you have [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) v5 installed:
+1.  Ensure you have [Magnolia CLI](../../../../magnolia-cli/) v5 installed:
 
     ```sh
     mgnl -V
@@ -161,7 +149,7 @@ If you are familiar with Java and Maven, you can use Maven to create and build y
 
 Magnolia provides a set of Maven archetypes for various tasks, one of which is creating a Magnolia Maven module.
 
-Before running the Maven `archetype` command, please read [How to use Magnolia Maven archetypes](../../Developing/Development-how-tos/How-to-use-Magnolia-Maven-archetypes/).
+Before running the Maven `archetype` command, please read [How to use Magnolia Maven archetypes](../../../RNs-6-4-3/Developing/Development-how-tos/How-to-use-Magnolia-Maven-archetypes/).
 
 #### [](#_executing_the_archetype_plugin_command)Executing the archetype plugin command
 

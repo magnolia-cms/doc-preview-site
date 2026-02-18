@@ -33,14 +33,10 @@ This architecture provides the following advantages over the default DX Core pub
 
 > **Caution:** These benefits come with the added complexity of provisioning, configuring, and maintaining the external version store. For smaller sites, you might not consider the extra effort justified.
 
-## [](#_comparing_publishing_methods)Comparing publishing methods
-
-A comparison table for the two publication options outlined above is shown below.
-
-|     | DX Core publishing | Swift publication |
+|  | DX Core publishing | Swift publication |
 | --- | --- | --- |
-| Workflow | **Four-eye workflow**: it can be disabled if you don’t have separate editor and publisher roles.<br><br>The four-eye workflow is primarily used in the Pages app. | Swift publication can be used as a replacement for DX Core publishing.<br><br>Publication is carried out asynchronously and is shown by an `In Progress` status in the Pages app. |
-| Versioning | Versions are managed internally within the author instance. Content is copied to a **JCR version workspace** on the author instance when published. | Swift publication stores versions in an **external version store** (for example, S3).<br><br>This means that when changes are published, the respective versions are sent to the external store, reducing the load on the author instance. Public instances then take the changes from the external store. |
-| Performance | The load can impact the performance since **all versions are maintained on the author instance**.<br><br>This can lead to slower publishing processes, especially for larger content repositories. | The architecture allows for **better scalability** regarding the size and frequency of publications and the number of public instances. |
-| Infrastructure | **No additional infrastructure** required for publishing. | Swift publication requires **additional infrastructure**, in particular an external version store (S3). |
-| Authentication and security | Data is transferred through the instances using **public-key cryptography**. | For S3, you must specify security credentials to authenticate and authorize your requests. |
+| Workflow | **Four-eye workflow** : it can be disabled if you don’t have separate editor and publisher roles. The four-eye workflow is primarily used in the Pages app. | Swift publication can be used as a replacement for DX Core publishing. Publication is carried out asynchronously and is shown by an `In Progress` status in the Pages app. |
+| Versioning | Versions are managed internally within the author instance. Content is copied to a **JCR version workspace** on the author instance when published. | Swift publication stores versions in an **external version store** (for example, S3). This means that when changes are published, the respective versions are sent to the external store, reducing the load on the author instance. Public instances then take the changes from the external store. |
+| Performance | The load can impact the performance since **all versions are maintained on the author instance** . This can lead to slower publishing processes, especially for larger content repositories. | The architecture allows for **better scalability** regarding the size and frequency of publications and the number of public instances. |
+| Infrastructure | **No additional infrastructure** required for publishing. | Swift publication requires **additional infrastructure** , in particular an external version store (S3). |
+| Authentication and security | Data is transferred through the instances using **public-key cryptography** . | For S3, you must specify security credentials to authenticate and authorize your requests. |

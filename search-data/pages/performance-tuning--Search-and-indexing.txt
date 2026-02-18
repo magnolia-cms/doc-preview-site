@@ -1,0 +1,60 @@
+---
+title: "Search and indexing"
+url: https://docs.magnolia-cms.com/performance-tuning/Search-and-indexing/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Search and indexing
+---
+
+# Search and indexing
+
+## [](#_overview)Overview
+
+At the low level, the Jackrabbit repository provides search and indexing in Magnolia, which uses the default Lucene algorithm to calculate the score for ranking results. A layer above JCR indexing, the User Result Ranker module sorts and highlights the search results. Additionally, you can set up Solr search to manage high volumes of assets. You can tune grid responsiveness if many items are in the workspace or numerous actions are performed quickly.
+
+Tuning tips - Search and indexing
+
+-   **Search results**
+
+    -   Configure how many search results are displayed in the App Launcher to finetune its usability.
+
+    -   Modify in-app search filters to suit your needs.
+
+        For more, see [Configuring search in Magnolia 6.4](Configuring-search/).
+
+
+-   **Indexing**
+
+    -   Examine data models to determine whether indexing particular node properties would improve overall performance.
+
+        For more, see [Search index configuration file](Search-index-configuration-file/).
+
+
+-   **Concurrent users and grid responsiveness**
+
+    -   Reduce the number of observation events to make the grid more responsive for larger workspaces or when numerous events occur.
+
+        For more, see [JCR observation definition](JCR-observation-definition/).
+
+
+-   **Result ranking metrics**
+
+    -   Analyze search result ranking metrics to understand which content users and user groups access most. They can give you insights into whether your navigations and on-page elements effectively steer readers to the content they use most.
+
+        For more, see [User Result Ranker module](User-result-ranker-module/).
+
+
+
+## [](#_subpages_in_this_section)Subpages in this section
+
+-   [JCR observation definition](JCR-observation-definition/)
+
+-   [User Result Ranker module](User-result-ranker-module/)
+
+-   [Configuring search in Magnolia 6.4](Configuring-search/)
+
+-   [Solr module](Solr-module/)
+
+-   [Jackrabbit search](Jackrabbit-search/)
+
+-   [Search index configuration file](Search-index-configuration-file/)

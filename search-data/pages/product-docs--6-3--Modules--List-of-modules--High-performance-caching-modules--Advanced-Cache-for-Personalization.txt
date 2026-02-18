@@ -8,26 +8,22 @@ breadcrumb: DX Core > Modules > High performance caching modules > Advanced Cach
 
 # Advanced Cache for Personalization
 
-[Operations](../../../../use-cases/operations/) Bundled: Extension
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLADVCACHE](https://magnolia-cms.atlassian.net/browse/MGNLADVCACHE) |
-| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache-personalization%2F3.0.1) |
-| Latest | 3.0.1 |
-
-This module sets the cache policy and cache store configuration on installation, allowing you to cache pages that contain personalized content. See [Personalization](../../../../use-cases/Personalization/).
+| Maven site | [Advanced Cache](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fadvancedcache%2Fmagnolia-advanced-cache-personalization%2F{magnolia-advanced-cache-63}) |
+| Latest | {magnolia-advanced-cache-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.advancedcache</groupId>
   <artifactId>magnolia-advanced-cache-personalization</artifactId>
-  <version>3.0.1</version> (1)
+  <version>{magnolia-advanced-cache-63}</version> (1)
 </dependency>
 ```
 

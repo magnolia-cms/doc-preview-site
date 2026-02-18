@@ -12,42 +12,13 @@ Generic i18n keys can be used in more than one location simultaneously, such as 
 
 > **Note:** These generic i18n keys are part of the Magnolia 6 UI framework.
 
-## [](#_reusing_keys_from_other_modules)Reusing keys from other modules
-
-At startup, Magnolia creates a global message bundle by reading keys from all `.properties` files of all modules in the current project. The global bundle is a virtual bundle, not a physical file. It includes keys from your module and keys from Magnolia’s own modules such as `ui-admincentral` and `ui-framework`.
-
-This means that you do not need to provide keys for all UI elements in your app. Keys for commonly reused elements such as buttons and subapps are in Magnolia’s own modules. Just reuse the UI element in your app, and Magnolia will find the existing key automatically. In simple terms, the shorter the form of the key, the more places it will apply to.
-
-**Example**: The contact edit form has **Save changes** and **Cancel** buttons.
-
-The [Contacts app](../../../Apps/List-of-apps/Contacts-app/) does not provide the text for either button in its own message bundle. They are provided in the [`module-ui-framework-messages_en.properties`](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/master/magnolia-ui-framework-compatibility/src/main/resources/mgnl-i18n/module-ui-framework-messages_en.properties) file of the `ui-framework` module.
-
-module-ui-framework-messages\_en.properties
-
-```powershell
-# Default Action Labels
-actions.commit=save changes
-actions.cancel=cancel
-```
-
-Therefore, it is not necessary to insert two specific keys such as the following into the `.properties` file of the Contacts app.
-
-contacts-app-messages\_en.properties
-
-```powershell
-contacts-app.actions.commit=save changes
-contacts-app.actions.cancel=cancel
-```
-
-If your app needs these buttons, just name your [actions](../../../Developing/Templating/Dialog-definition/) `commit` and `cancel`.
-
 | Node name | Value |
 | --- | --- |
-| 📁 actions |     |
-| 📁 commit |     |
+| 📁 actions |  |
+| 📁 commit |  |
 | ⬩ class | info.magnolia.ui.form.action.SaveFormActionDefinition |
 | ⬩ implementationClass | info.magnolia.contacts.app.form.action.SaveContactFormAction |
-| 📁 cancel |     |
+| 📁 cancel |  |
 | ⬩ class | info.magnolia.ui.form.action.CancelFormActionDefinition |
 
 ## [](#_providing_a_key_to_other_modules_or_apps)Providing a key to other modules or apps

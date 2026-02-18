@@ -1,0 +1,75 @@
+---
+title: "Image placement module"
+url: https://docs.magnolia-cms.com/image-placement/
+category: Modules
+version: modules
+breadcrumb: Image placement module
+---
+
+# Image placement module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [IMGPLACE](https://magnolia-cms.atlassian.net/browse/IMGPLACE) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/services/image-placement) |
+| Latest | 2.0 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.dam</groupId>
+  <artifactId>magnolia-image-placement</artifactId>
+  <version>2.0</version>
+</dependency>
+```
+
+| Property | Description |
+| --- | --- |
+| `scheduled` | **optional** , *default is `false`* `False` : In this case, the placements are updated for images with every change of an image. `True` : In this case, a scheduler validates whether an update of all placements is necessary. If yes, the scan is carried out. |
+| `workspaceConfig` | **required** Defines the workspaces in which placements are searched for. |
+| `referenceProperties` | **required** Defines the property names that can trigger an update event. |
+
+## [](#_usage)Usage
+
+![dam app](_images/dam-app.jpg)
+
+### [](#_scanned_workspaces)Scanned workspaces
+
+As per default, the following workspaces are scanned:
+
+-   `pages`
+
+-   `stories`
+
+
+> **Tip:** If you wish to add more, you need to decorate the config.yaml here /image-placement/config.yaml.
+
+### [](#_scanned_properties)Scanned properties
+
+As per default, the module scan only the following node properties for image references:
+
+-   `contact`
+
+-   `image`
+
+-   `link`
+
+-   `teaserImg`
+
+
+> **Tip:** If you have image data linked in other node properties, you need to decorate the config.yaml here /image-placement/config.yaml..
+
+### [](#_post_process)Post process
+
+In case you install this module after assigning images, you can use the groovy script `imagePlacementProcessor` for indexing the images accordingly.
+
+![groovy script](_images/groovy-script.jpg)
+
+| Version | Notes |
+| --- | --- |
+| `2.0` | IMGPLACE-1 - Placement count is not removed if image is not used anymore |
+| `1.0.7` |  |

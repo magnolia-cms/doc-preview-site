@@ -1,0 +1,78 @@
+---
+title: "Customer Journey Mapping module"
+url: https://docs.magnolia-cms.com/customer-journey/
+category: Modules
+version: modules
+breadcrumb: Customer Journey Mapping module
+---
+
+# Customer Journey Mapping module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [CUSTMAP](https://magnolia-cms.atlassian.net/browse/CUSTMAP) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/customer-journey) |
+| Latest | 1.0 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.personalization</groupId>
+  <artifactId>magnolia-customer-journey-core</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+A better way to deal with real-life user journeys is to first listen to the user’s actions. Then inject "nudges" which guide the user towards the waypoints you would like them to reach. Magnolia’s customer journey mapping essentially creates an underflow, beneath the user’s real steps, which can then poke the user in the desired direction.
+
+Practically, nudges are targeted content fragments that help complete certain steps in the desired customer journey.
+
+Nudges are dynamically inserted into the user’s self-controlled, real journey. The underflow orchestration in Magnolia allows us to inject nudges into the real journey, triggered by customer data and behavior.
+
+To give you an example let’s have a look at the following case:
+
+A company launches a new series of products. Visitors must become aware of the new line of products. Once they are aware, they have to consider one or more products or variations. Once a decision towards one of the products has been made, it may help to send another nudge in the checkout process to make sure that this critical step is also completed.
+
+Magnolia’s customer journey mapping tool enables you to do this: Plan an underflow of desired waypoints without trying to force the user down a particular path. Then create nudges for every step on the journey, and dynamically inject the pointers into the experience.
+
+### [](#_create_a_customer_journey)Create a customer journey
+
+A customer journey is composed of different steps. Once a customer is in a specific step in his journey then matching nudge experiences are served. The next step becomes active if the previous step has been fulfilled.
+
+In the customer-journey-app, you can manage your customer journey as shown on the below screenshot.
+
+![create customer journey](_images/create-customer-journey.jpg)
+
+### [](#_configure_a_customer_journey_step)Configure a customer journey step
+
+A step is linked to an event on the page. The following example shows how to configure a click event. To add and configure a new customer journey step, click on Add step and then Configure journey step
+
+You can configure the page on which you want to observe the event click.
+
+![observe click event](_images/observe-click-event.jpg)
+
+And, as well, the DOM element
+
+![observe click event dom element](_images/observe-click-event-dom-element.jpg)
+
+### [](#_edit_a_customer_journey_step)Edit a customer journey step
+
+Once the customer journey step is configured, you can define its content by clicking on Edit journey step. The system will display a graphical fragment editor as shown below.
+
+![edit customer journey](_images/edit-customer-journey.jpg)
+
+### [](#_add_the_fragment_to_your_page)Add the fragment to your page
+
+In the pages app, drop the customer journey fragment as follows:
+
+![customer journey fragment](_images/customer-journey-fragment.jpg)
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

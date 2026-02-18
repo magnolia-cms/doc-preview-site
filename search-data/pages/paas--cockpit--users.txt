@@ -32,22 +32,14 @@ When you sign up to DX Cloud, your credentials grant you access via SSO so that 
 1.  In the top right corner, click the logout icon.
 
 
-## [](#_user_preferences)User preferences
+| Ref | Preference | Description |
+| --- | --- | --- |
+| **1** | `Language` | Select your user language from the drop-down menu. Currently supported languages • English • Deutsch • Español • Schwizerdütsch • Polski • Français |
+| **2** | `Theme` | Choose your UI theme for the Cockpit. • **Dark** = high contrast black background with bright color graphs, etc. • **Light** = light background with a standard Magnolia palette • **Auto** = detects your browser settings |
+| **3** | `Email notifications` | Toggle email notifications on or off. When `on` , you’ll receive email alerts on the health and status of your deployment. This includes any relevant [Manage DX Cloud](../) . |
 
-Set your user preferences in DX Cloud by selecting the user icon .
-
-> **Tip:** Don’t forget to click Update to save your changes.
-
-![go to user preferences](../_images/go-to-user-preferences.jpg)
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 10%;"> <col style="width: 30%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Ref</th><th class="tableblock halign-left valign-top">Preference</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>1</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>Language</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Select your user language from the drop-down menu.</p></div><div class="ulist"><div class="title">Currently supported languages</div><ul><li><p>English</p></li><li><p>Deutsch</p></li><li><p>Español</p></li><li><p>Schwizerdütsch</p></li><li><p>Polski</p></li><li><p>Français</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>2</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>Theme</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Choose your UI theme for the Cockpit.</p></div><div class="ulist"><ul><li><p><strong>Dark</strong> = high contrast black background with bright color graphs, etc.</p></li><li><p><strong>Light</strong> = light background with a standard Magnolia palette</p></li><li><p><strong>Auto</strong> = detects your browser settings</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>3</strong></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><code>Email notifications</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Toggle email notifications on or off. When <code>on</code>, you’ll receive email alerts on the health and status of your deployment. This includes any relevant <a href="../" class="xref page">Manage DX Cloud</a>.</p></div></div></td></tr></tbody></table></div>
-
-## [](#_subscription_notifications)Subscription notifications
-
-See your subscription notifications for Magnolia CMS by selecting the bell icon in the top right next to your user profile.
-
-### [](#_filter_notifications)Filter notifications
-
-You notifications are categorized by Info, Warning, and Critical.
-
-<div class="joplin-table-wrapper"><table id="notification-dropdown-options" class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 10%;"> <col style="width: 20%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Icon</th><th class="tableblock halign-left valign-top">Level</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><span class="green"><span class="icon"><i class="fa fa-info-circle"></i></span></span></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Info</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Info notifications inform you of minor updates and/or items that do not require your attention.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><span class="yellow"><span class="icon"><i class="fa fa-warning"></i></span></span></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Warning</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Warning notifications inform you of events that might require your attention.</p></div><div class="ulist"><div class="title">Examples</div><ul><li><p>release</p></li><li><p>bug fixes</p></li><li><p>maintenance windows</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><span class="red"><span class="icon"><i class="fa fa-warning"></i></span></span></p></td><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Critical</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Critical notifications inform you of events that require your attention.</p></div><div class="ulist"><div class="title">Examples</div><ul><li><p>an instance is down</p></li><li><p>upcoming changes that may temporarily limit development</p></li></ul></div></div></td></tr></tbody></table></div>
+| Icon | Level | Description |
+| --- | --- | --- |
+| ** | **Info** | Info notifications inform you of minor updates and/or items that do not require your attention. |
+| ** | **Warning** | Warning notifications inform you of events that might require your attention. Examples • release • bug fixes • maintenance windows |
+| ** | **Critical** | Critical notifications inform you of events that require your attention. Examples • an instance is down • upcoming changes that may temporarily limit development |

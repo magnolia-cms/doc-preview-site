@@ -16,7 +16,7 @@ We assume that you already know some basics about Magnolia [site definition conf
 
 ## [](#_site_definition)Site definition
 
-Go to [Configuring a site definition](../../#_configuring_a_site_definition) to configure a site definition.
+Go to [Configuring a site definition](../../../../../../RNs-6-4-3/Developing/Templating/Site-definition/#_configuring_a_site_definition) to configure a site definition.
 
 ## [](#_site_definition_name)Site definition name
 
@@ -28,122 +28,18 @@ If a site is properly configured, it can be accessed using the following URL:
 
 > **Note:** This only works if the domain part of the URL is different from the domain that is mapped to the site of the given site-definition-name.
 
-## [](#_mappings_and_domains)Mappings and domains
-
-The `mappings` and `domains` nodes are required in a multisite context. You must create a least one entry on both mappings and domains to ensure a proper site definition for a distinct site.
-
-Example:
-
-<my-light-module>/sites/comics.yaml
-
-```yaml
-mappings:
-  website:
-    URIPrefix:
-    handlePrefix: /comics
-    repository: website
-  jolly-jumper:
-    URIPrefix: /jollyjumper
-    handlePrefix: /comics/belgian-comics/morris/lucky-luke/jolly-jumper
-    repository: website
-domains:
-  best-comics:
-    name: www.best-comics.net
-```
-
-The site defined above allows you to access:
-
--   The content node `/comics` via the URL http://www.best-comics.net.
-
--   The content node `/comics/belgian-comics/morris/lucky-luke/jolly-jumper` via the URL http://www.best-comics.net/jollyjumper.
-
-
-Use different values for the `site-definition-name` and the name of the mapped node (`handlePrefix`).
-
-### [](#_mappings_configuration)`mappings` configuration
-
-The mapping nodes define the JCR content nodes (usually page nodes) assigned to the site definition.
-
-A mapping has the following properties:
-
- PropertyDescription
-
-`<mapping-node>`
-
-**required**
-
-Each site can contain multiple mappings. The name of a mapping node is arbitrary (in the example above, the node name is `website`).
-
-The corresponding class for a mapping is info.magnolia.cms.beans.config.URI2RepositoryMapping.
-
-     `repository`
-
-**required**
-
-Name of the JCR workspace the mapping applies to.
-
-     `handlePrefix`
-
-**required**
-
-The path in the workspace the content is served from.
-
-     `URIPrefix`
-
-**required**
-
-Creates a node handle based on a URI. By default, a content request that does not contain a prefix is served from the node defined on `handlePrefix` of the given repository.
-
-The `URIPrefix` property can be used to shorten URLs. (See the `jolly-jumper` example above and the [Multisite example - Shorten URL with handlePrefix](../Multisite-example-Minisite-using-URL-prefix-and-domain/#_shortening_the_url_with_handleprefix_within_an_existing_site_definition) example.) Short URLs are easier to remember, quicker to type, take less space in print ads, and are ranked more favorably by search engines than content deep down in the site hierarchy.
-
-> **Warning:** If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or /) if you do not need it.
-
-Note that [URIPrefix configuration](../../../../../Administration/URI-mapping/) can also be applied in modules independent from site definitions.
-
-Configuration in the site definition overrides the configuration in `/server/URI2RepositoryMapping/mappings/<workspace>`, resulting in site-specific definitions.
-
-### [](#_domains_configuration)`domains` configuration
-
-A domain node assigns a domain to the given site definition. It defines how the above mapped content node(s) can be accessed by URL. You can map multiples domain to the same site.
-
-A domain mapping has the following properties:
-
 | Property | Description |
 | --- | --- |
-| `<domain-node>` | **required**<br><br>The name of a domain mapping node is arbitrary. You can apply multiple domain nodes per site. |
-| `name` | **required**<br><br>Domain name such as http://www.best-comics.net. |
-| `port` | **optional**<br><br>Port represents the port the web application was deployed on.<br><br>*Default* is 80. |
-| `protocol` | **optional**<br><br>HTTP or HTTPS.<br><br>*Default* is HTTP. |
-| `context` | **optional**<br><br>The context path of the Magnolia instance webapp such as `magnoliaAuthor` or `magnoliaPublic`.  <br>You do not need to set the context property if the webapp is served from root context. |
-
-> **Note:** The optional properties port, protocol and context are only used to build links between the pages of different sites. In a typical production setup, where you serve the webapps from the root context on different domains, you do not have to set port and context.
-
-## [](#_extending_site_definitions)Extending site definitions
-
-Another configuration strategy is to have one site definition for your `main` site with a [template prototype](../../Template-prototype/) that you can then reuse on other site definitions. This is a common alternative to having multiple independent site definitions.
-
-In the example below, `site-2` and `site-3` inherit from `site-1`.
+| `<mapping-node>` | **required** Each site can contain multiple mappings. The name of a mapping node is arbitrary (in the example above, the node name is `website` ). The corresponding class for a mapping is info.magnolia.cms.beans.config.URI2RepositoryMapping . |
+| `repository` | **required** Name of the JCR workspace the mapping applies to. |
+| `handlePrefix` | **required** The path in the workspace the content is served from. |
+| `URIPrefix` | **required** Creates a node handle based on a URI. By default, a content request that does not contain a prefix is served from the node defined on `handlePrefix` of the given repository. The `URIPrefix` property can be used to shorten URLs. (See the `jolly-jumper` example above and the [Multisite example - Shorten URL with handlePrefix](../Multisite-example-Minisite-using-URL-prefix-and-domain/#_shortening_the_url_with_handleprefix_within_an_existing_site_definition) example.) Short URLs are easier to remember, quicker to type, take less space in print ads, and are ranked more favorably by search engines than content deep down in the site hierarchy. ** If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. Note that [URIPrefix configuration](../../../../../Administration/URI-mapping/) can also be applied in modules independent from site definitions. Configuration in the site definition overrides the configuration in `/server/URI2RepositoryMapping/mappings/<workspace>` , resulting in site-specific definitions. | ** | If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. |
+| ** | If this property is not set, info.magnolia.multisite.MultiSiteURI2RepositoryManager throws an exception (leading to a runtime exception and a server error 500). Add the property with an empty value (or `/` ) if you do not need it. |
 
 | Node or property | Value |
 | --- | --- |
-| `site-1` |     |
-| `site-2` |     |
+| `site-1` |  |
+| `site-2` |  |
 | `extends` | `../site-1` |
-| `site-3` |     |
+| `site-3` |  |
 | `extends` | `../site-1` |
-
-> **Warning:** Inheriting mappings and domain can lead to unexpected results and may destroy your site setup.
-
-When extending site definitions, turn off inheritance for `mapping` and `domains` by using @extends=override.
-
-| Node or property | Value |
-| --- | --- |
-| `site-1` |     |
-| `site-2` |     |
-| `extends` | `../site-1` |
-| `mappings` |     |
-| `extends` | `override` |
-| `domains` |     |
-| `extends` | `override` |
-
-> **Caution:** Make sure you have no unwanted virtualURIMapping redirections on the public context.Use the Configuration app on the public context and search for virtualURIMapping.On a standard Magnolia bundle, you most probably find the node/modules/ui-admincentral/virtualURIMapping/defaultwhich redirects to/.magnolia/admincentralYou must delete the node to ensure a request to http://<your-domain>/ really serves the root page of your site. See an example.

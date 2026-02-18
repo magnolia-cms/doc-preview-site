@@ -22,7 +22,7 @@ In order to not have to set up a separate storage mechanism in Magnolia for the 
 
 Magnolia stores all runtime data from the jBPM engine in the `workflow` workspace. By default, workflow is only enabled on the author instance.
 
-![Workflow workspace](../../../../../_images/workflow_workspace.png)
+![Workflow workspace](../../../../../../RNs-6-4-3/_images/workflow_workspace.png)
 
 jBPM stores most of the data used for its execution as binary data using marshalling mechanisms. This makes the underlying scheme rather simple.
 
@@ -30,7 +30,7 @@ jBPM stores most of the data used for its execution as binary data using marshal
 
 As we are using the [singleton strategy](http://docs.jboss.org/jbpm/v6.0.1/userguide/jBPMCoreEngine.html#d0e1975) for our runtime engine we are only dealing with one session. This session is stored under the `sessions` node with `0` as static identifier and is never removed. All data is marshalled into the binary property `bytes`.
 
-![Session node](../../../../../_images/Screen-Shot-2014-03-21-at-10-50-25.png)
+![Session node](../../../../../../RNs-6-4-3/_images/Screen-Shot-2014-03-21-at-10-50-25.png)
 
 The session ID is not using the key generator Magnolia uses for storing processes and workItems. One reason is that by using the singleton strategy this is not necessary at the moment at least. Another reason ist that the interfaces and implementation classes used inside the jBPM persistence package is restricted to use integers as IDs, compared to processInstances and workItems using a long.
 
@@ -69,7 +69,7 @@ Persisting the SessionInfo is handled by the `JcrSessionStore` implementation in
 
 Processes are stored under the `processInstances` node inside the `workflow` workspace. As this data is used during the actual execution of processes, the data is removed when the process terminates. Magnolia’s current implementation does not support logging completed processes for further auditing. For more information how this could be implemented, see the documentation of [jBPM Audit data model](https://docs.jbpm.org/7.73.0.Final/jbpm-docs/html_single/#auditlog-datamodel-ref_business-processes).
 
-![ProcessInstance node](../../../../../_images/Screen-Shot-2014-03-21-at-12-29-16.png)
+![ProcessInstance node](../../../../../../RNs-6-4-3/_images/Screen-Shot-2014-03-21-at-12-29-16.png)
 
 #### [](#_key_generator)Key generator
 
@@ -85,7 +85,7 @@ Persisting the ProcessInstanceInfo is handled by the `JcrProcessStore` implement
 
 ### [](#_workitem)Workitem
 
-![Workitem node](../../../../../_images/Screen-Shot-2014-03-21-at-13-36-13.png)
+![Workitem node](../../../../../../RNs-6-4-3/_images/Screen-Shot-2014-03-21-at-13-36-13.png)
 
 #### [](#_key_generator_2)Key generator
 
@@ -194,4 +194,4 @@ A similar interceptor is used for persisting the session state.
 
 This diagram shows the most important classes used for persisting sessions, work items and processes to JCR.
 
-![JCR persistence diagram](../../../../../_images/UML_peristence.png)
+![JCR persistence diagram](../../../../../../RNs-6-4-3/_images/UML_peristence.png)

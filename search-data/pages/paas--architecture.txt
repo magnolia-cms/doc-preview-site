@@ -135,55 +135,10 @@ It’s important to understand how your traffic is routed within a Kubernetes an
 10.  Response Back to User: Finally, the content is delivered to the user.
 
 
-## [](#_kubernetes_and_sidecars)Kubernetes and sidecars
-
-DX Cloud uses [Kubernetes](https://kubernetes.io/) for baseline orchestration of its environments.
-
-> **Important:** This is an explicit dependency. Helm charts are used to deploy releases on the Kubernetes cluster.
-
-![architectural overview rebrand](../_images/deployment/architectural-overview-rebrand.jpg)
-
- ItemNote
-
-**A**
-
-The CDN is deployed between the end user and the Magnolia instances.
-
-**B**
-
-Magnolia instances (*author/public*) are each deployed in a Kubernetes pod containing their own sidecars and K8s workers.
-
-**C**
-
-Sidecar containers are deployed to initialize containers before Magnolia CMS starts.
-
-> **Note:** Sidecars are secondary containers that focus on a specific task. They are placed in the same pod as the primary container because resources are shared. Typically sidecars come after the main container in the configuration so the main container is the default target for kubectl execute as shown in the example below (1):
-
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: webserver
-spec:
-  volumes:
-    - name: shared-logs
-      emptyDir: {}
-
-  containers:
-    - name: nginx
-      image: nginx
-      volumeMounts:
-        - name: shared-logs
-          mountPath: /var/log/nginx
-
-    - name: sidecar-container (1)
-      image: busybox
-      command: ["sh","-c","while true; do cat /var/log/nginx/access.log /var/log/nginx/error.log; sleep 30; done"]
-      volumeMounts:
-        - name: shared-logs
-          mountPath: /var/log/nginx
-```
-
-**D**
-
-The [K8s workers](https://kubernetes.io/docs/concepts/architecture/nodes/) handle pod availability.
+| Item | Note |
+| --- | --- |
+| **A** | The CDN is deployed between the end user and the Magnolia instances. |
+| **B** | Magnolia instances ( *author/public* ) are each deployed in a Kubernetes pod containing their own sidecars and K8s workers. |
+| **C** | Sidecar containers are deployed to initialize containers before Magnolia CMS starts. ** [Sidecars](https://kubernetes.io/docs/concepts/workloads/pods/#using-pods) are secondary containers that focus on a specific task. They are placed in the same pod as the primary container because resources are shared. Typically sidecars come after the main container in the configuration so the main container is the default target for `kubectl execute` as shown in the example below ( **1** ): `apiVersion: v1 kind: Pod metadata: name: webserver spec: volumes: - name: shared-logs emptyDir: {} containers: - name: nginx image: nginx volumeMounts: - name: shared-logs mountPath: /var/log/nginx - name: sidecar-container (1) image: busybox command: ["sh","-c","while true; do cat /var/log/nginx/access.log /var/log/nginx/error.log; sleep 30; done"] volumeMounts: - name: shared-logs mountPath: /var/log/nginx` | ** | [Sidecars](https://kubernetes.io/docs/concepts/workloads/pods/#using-pods) are secondary containers that focus on a specific task. They are placed in the same pod as the primary container because resources are shared. Typically sidecars come after the main container in the configuration so the main container is the default target for `kubectl execute` as shown in the example below ( **1** ): |
+| ** | [Sidecars](https://kubernetes.io/docs/concepts/workloads/pods/#using-pods) are secondary containers that focus on a specific task. They are placed in the same pod as the primary container because resources are shared. Typically sidecars come after the main container in the configuration so the main container is the default target for `kubectl execute` as shown in the example below ( **1** ): |
+| **D** | The [K8s workers](https://kubernetes.io/docs/concepts/architecture/nodes/) handle pod availability. |

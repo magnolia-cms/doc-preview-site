@@ -1,0 +1,96 @@
+---
+title: "Elasticsearch provider module"
+url: https://docs.magnolia-cms.com/magnolia-elasticsearch-provider/
+category: Modules
+version: modules
+breadcrumb: Elasticsearch provider module
+---
+
+# Elasticsearch provider module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Issues | [ELASTIC](https://magnolia-cms.atlassian.net/browse/ELASTIC) |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/services/magnolia-elasticsearch-provider) |
+| Latest | 1.0.1 ** Compatible with Magnolia 6.2, 6.1. | ** | Compatible with Magnolia 6.2, 6.1. |
+| ** | Compatible with Magnolia 6.2, 6.1. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.elasticsearch</groupId>
+  <artifactId>magnolia-es-query-manager</artifactId>
+  <version>1.0.1</version>
+</dependency>
+
+<dependency>
+  <groupId>info.magnolia.elasticsearch</groupId>
+  <artifactId>magnolia-es-content-delivery</artifactId>
+  <version>1.0.1</version>
+</dependency>
+```
+
+### [](#_elasticsearch)Elasticsearch
+
+-   With Brew
+
+-   Without Brew
+
+
+```none
+brew install elasticsearch
+brew services start elasticsearch
+
+brew install logstash
+brew services start logstash
+brew install kibana
+brew services start kibana
+```
+
+1.  Download the Binaries [https://www.elastic.co/downloads/elasticsearch](https://www.elastic.co/downloads/elasticsearch)
+
+2.  Download the Binaries for Kibana [https://www.elastic.co/downloads/kibana](https://www.elastic.co/downloads/kibana)
+
+3.  Follow the installation steps on the page previously listed.
+
+4.  Run `bin/elasticsearch` from your command line.
+
+
+#### [](#_set_up_elasticsearch_cluster)Set up Elasticsearch cluster
+
+1.  Copy the config directory from /config to new folder, i.e. `<path-to-installation>/configurations/001/config`. Brew installations, the file is located at: `/usr/local/etc/elasticsearch`.
+
+2.  Uncomment and modify the following in `elasticsearch.yml`:
+
+    ```yaml
+    cluster.name: magnolia-cluster
+    http.cors:
+        enabled: true
+        allow-origin: "*"
+    ```
+
+3.  If you’re using multiple configuration, you’ll also need to uncomment and modify the following in `elasticsearch.yml`:
+
+    ```yaml
+    path.data: <path-to-installation>/data
+    path.logs: <path-to-installation>/logs
+    http.port: 9201 # Or whatever unique port you prefer.
+    export ES_PATH_CONF=<path-to-installation>/config
+    ```
+
+
+> **Tip:** You can validate both servers are running by opening a browser and going to http://localhost:9200 (along with the other node ports you may have configured) and you will see a JSON response in the magnolia-cluster.
+
+| Analyzer | Overview | Sample |
+| --- | --- | --- |
+| **Edge NGram Analyzer** | Useful for suggestion and autocomplete | This analyzer will use the a default tokenizer that takes in search terms and applies the terms in lower-case (making a more efficient search). Fields: Name = edge_ngram_search_analyzer Tokenizer = lowercase Type = standard |
+| **Keyword Analyzer** | Searches via keywords. | This analyzer is similar to the previous, but applies the tokenizer created in the earlier section. Fields: Name = edge_ngram_analyzer Tokenizer = edge_ngram_tokenizer Filters = Lower Case Type = standard Default Analyzer? = selected Name = edgengram Type = text Search Analyzer = edge_ngram_search_analyzer |
+| **Keyword HTML Analyzer** | Tokenizes out HTML text, and provides clean keyword searching. | This analyzer uses keyword analysis against text that is in the form of HTML. Basically, the text is indexed in a way that search analysis against it will be accomplished with it’s HTML parts stripped out. Fields: Name = keyword_html_analyzer Tokenizer = keyword Filters = Lower Case, ASCII Folding, and Trim Character Filters = HTML Strip Type = custom |
+| **Edge NGram Search Analyzer** | Same as above, but provided with different name to distinguish for future modifications. | This analyzer is similar to the previous, with the exception that it is applied to text without HTML tags. Fields: Name = keyword_analyzer Tokenizer = keyword Filters = Lower Case, ASCII Folding, and Trim Type = custom HTML Alternative for = keyword_html_analyzer Default Analyzer? = selected Name = completion Type = completion This analyzer and the next are interchangeable. The system will automatically detect if the text value is of type "HTML", and automatically apply the next analyzer in place, as defined by the "HTML Alternative for:" field. |
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

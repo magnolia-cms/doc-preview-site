@@ -1,0 +1,105 @@
+---
+title: "Campaign importer module"
+url: https://docs.magnolia-cms.com/campaign-manager/campaign-importer/
+category: Modules
+version: modules
+breadcrumb: Campaign manager module > Campaign importer module
+---
+
+# Campaign importer module
+
+[Content management](../../product-docs/RNs-6-4-3/use-cases/content-management/) Incubator
+
+The **Campaign Importer** module enables you to import static campaign pages into magnolia without templating.
+
+Therefore it allows you to import static HTML files and related resources (CSS, JS) into Magnolia and convert them into magnolia pages.
+
+Campaigns
+
+Marketing campaigns typically have a very short lifespan. A campaign promotes specific products or services and is decommissioned after the campaign ends. A marketing agency commonly creates the campaign outside of Magnolia and delivers it as static HTML pages. Integrating such as campaign into Magnolia usually requires the services of an IT professional or developer.
+
+The Campaign Importer app eliminates this need, allowing marketers to import and publish marketing campaigns without IT support. The campaign can then take full advantage of Magnolia’s features such as integrated marketing tags management , multilanguage support, A/B testing using page variants and personalization .
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.campaign</groupId>
+  <artifactId>magnolia-campaign-import</artifactId>
+  <version>5.0.3</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+The Campaign Importer app is installed by the Campaign Importer module. The app is located at `Configuration > /modules/campaign-importer/`.
+
+Workspace
+
+The app operates on the campaigns workspace where campaign content is stored.
+
+Node types
+
+The Campaign Importer module registers a custom `mgnl:campaign` node type. The app operates on nodes of this type.
+
+### [](#_importing_a_campaign_archive)Importing a campaign archive
+
+To import a campaign archive:
+
+1.  Open the Campaign Importer app.
+
+2.  Click Import Campaign.
+
+3.  Browse to a .zip archive that contains the static campaign content.
+
+4.  Click Save changes.
+
+
+The archived contents are now displayed in the app.
+
+#### [](#_campaign_archive_file_format)Campaign archive file format
+
+> **Warning:** Please note that in the current versions CSS files can’t have absolute paths references to images.
+
+The app imports campaign files as a compressed archive (.zip) and creates a Magnolia node structure that matches the internal structure of the archive. HTML files are at the archive root and CSS, JavaScript and image files in separate directories.
+
+```none
+css/
+js/
+images/
+fonts/
+index.html
+register.html
+thanks.html
+```
+
+While this is the typical structure the App can also import campaigns that are structured differently. For example, if a campaign archive contains a large number of HTML pages structured into separate subfolders the app will respect this structure and create a similar representation in the Magnolia content tree.
+
+> **Note:** Please note the your zip file needs an index.html file
+
+### [](#_creating_campaign_pages)Creating campaign pages
+
+To create pages from the imported files:
+
+1.  Select the imported campaign and click Create Pages.
+
+2.  Select a node in the content tree under which you want to create the campaign pages. To create pages at the root level type / (forward slash).
+
+3.  Open the Pages app to view the created pages.
+
+
+### [](#_resources)Resources
+
+When you create the pages the app also creates dependent resources such as CSS and JavaScript in the resources workspace. You can find them in the Resources app.
+
+### [](#_editing_and_publishing_campaigns)Editing and publishing campaigns
+
+You can edit the campaign pages just like normal pages in the Pages app:
+
+1.  *Optional*: Assign a different template to a campaign page.
+
+2.  Edit a page to change its content.
+
+3.  Publish.

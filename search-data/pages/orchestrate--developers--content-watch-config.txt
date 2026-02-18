@@ -1,0 +1,67 @@
+---
+title: "Configure Content Watch Tools"
+url: https://docs.magnolia-cms.com/orchestrate/developers/content-watch-config/
+category: Modules
+version: modules
+breadcrumb: Orchestrate module > Content Watch tools
+---
+
+# Configure Content Watch Tools
+
+The Content Watch tools expose URL monitoring and AI-powered content idea generation as MCP tools through the Magnolia embedded MCP server. These tools are available to [Smart Chat](../../../product-docs/RNs-6-4-3/) and can be used by authors directly from the Smart Chat chat.
+
+> **Note:** To use Content Watch tools, first install the required Maven dependencies.
+
+For author-facing usage instructions and example prompts, see [Content Watch](../../authors/content-watch/).
+
+| Name | Type | Required | Description | Default |
+| --- | --- | --- | --- | --- |
+| **sourceUrl** | string | Yes | URL of the page to analyze for content ideas. Example: `https://competitor.com/blog/ai-trends` | — |
+| **numberOfIdeas** | integer | No | Number of content ideas to generate. | 4 |
+| **createTasks** | boolean | Yes | Whether to create tasks in Orchestrate module for the generated ideas. Set to `true` to create tasks, `false` to only return the ideas. | — |
+
+## [](#_architecture)Architecture
+
+The Content Watch tools are split across three modules to separate concerns:
+
+`orchestrate-tool-definitions`
+
+Contains the `ContentWatchTools` class, which is the single source of truth for all tool schemas and command bindings. Each tool is defined as an `McpToolSpec` record (from `magnolia-mcp-protocol`). This module has no Magnolia runtime dependencies and can be shared with the standalone MCP server.
+
+`orchestrate-contentwatch-mcp`
+
+Contains the MCP infrastructure: one `CommandBackedToolExecutor` per tool, a `ContentWatchToolProvider` (provider ID: `content-watch`, priority: `100`), and the Guice configuration that registers everything. The provider is auto-discovered when the module is installed alongside `mcp-server-embedded`.
+
+`orchestrate-contentwatch`
+
+Contains the business logic: Magnolia commands (`ContentWatchCommand`, `ScheduleContentWatchCommand`, `ListContentWatchesCommand`, `CancelContentWatchCommand`) and services (`ContentWatchOrchestrationService`, `WebScrapingService`, `ContentIdeaGenerationService`, `TaskCreationService`).
+
+### [](#_execution_flow)Execution flow
+
+1.  An MCP `tools/call` request arrives at the embedded server for a `contentwatch.*` tool.
+
+2.  The `ContentWatchToolProvider` dispatches to the matching `CommandBackedToolExecutor`.
+
+3.  The executor places MCP arguments into a `SimpleContext` and invokes the bound Magnolia command via `CommandsManager`.
+
+4.  The command delegates to domain services (web scraping, AI idea generation, task creation, or scheduler operations).
+
+5.  The result is stored in the command context and returned as a `ToolResult`.
+
+
+## [](#_extending_with_new_tools)Extending with new tools
+
+To add a new content watch tool:
+
+1.  Define a new `McpToolSpec` in `ContentWatchTools` (tool name, description, input schema, command catalog, command name).
+
+2.  Create the Magnolia command in `orchestrate-contentwatch` that implements the business logic.
+
+3.  Register the command in the YAML command catalog under `contentwatch`.
+
+4.  Create a `CommandBackedToolExecutor` subclass in `orchestrate-contentwatch-mcp` that passes the spec and `CommandsManager`.
+
+5.  Add the executor to the Guice `Multibinder<McpToolExecutor>` in `ContentWatchGuiceModule`.
+
+
+The new tool is automatically discovered by the embedded MCP server and available to Smart Chat.

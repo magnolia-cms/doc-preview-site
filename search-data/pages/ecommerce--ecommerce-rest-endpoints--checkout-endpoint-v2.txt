@@ -1,0 +1,36 @@
+---
+title: "Checkout endpoint v2"
+url: https://docs.magnolia-cms.com/ecommerce/ecommerce-rest-endpoints/checkout-endpoint-v2/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > E-commerce REST endpoints > Checkout endpoint v2
+---
+
+# Checkout endpoint v2
+
+This page describes the `checkout` endpoint, which can be used to interact with your external e-commerce solution’s REST checkout service.
+
+In v2, all the rest-call paths have been slightly changed to be more descriptive and intuitive. The v2 checkout endpoint sets the address of a `cartId` to ensure the correct resource is consistently identified. For example, the v1 `/checkouts/address/{cartId}` becomes in v2 `/carts/{cartId}/address`.
+
+In general, the checkout process involves four steps:
+
+1.  Set an address.
+
+2.  Get shipping methods.
+
+3.  Set a shipping method.
+
+4.  Create an order.
+
+
+Note that in Adobe Commerce (formerly Magento), steps 1 and 2 are combined in step 2. Get shipping methods, where you must provide the `address` object as a required parameter.
+
+> **Note:** Magento is now Adobe Commerce, powered by Magento. In the examples and configuration below, we may refer to Adobe Commerce as Magento.
+
+| Parameter | Description | Type | Data Type |
+| --- | --- | --- | --- |
+| `definitionName` | **required** The definition name. | `query` | `string` |
+| `connectionName` | **required** The connection name. | `query` | `string` |
+| `addressWrapper` | **required** The JSON param for the address object. | `body` | `address` |
+| `cartId` | **required** The ID for the checkout cart. | `path` | `string` |
+| `accessToken` | **required** The user’s access token. | `header` | `string` |

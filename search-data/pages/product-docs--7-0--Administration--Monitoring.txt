@@ -10,205 +10,15 @@ breadcrumb: DX Core > Administration > Monitoring
 
 Monitoring is a process that detects, diagnoses, remedies and reports an application’s performance and availability to ensure that it meets user expectations. Magnolia provides built-in tools for logging and debugging application behavior. It also supports Java Management Extensions (JMX), a Java technology for managing and monitoring. These mechanisms provide developers, administrators and especially the support team detailed context for application failures.
 
-## [](#_log4j_2)Log4j 2
-
-Magnolia uses [Apache Log4j 2](https://logging.apache.org/log4j/2.x/), a Java-based logging utility. It logs events in Magnolia core code as well as any modules that support logging. Logging is configured in three places:
-
 | Type | Location | Description |
 | --- | --- | --- |
-| `log4j2.xml` | `/WEB-INF/config/default` | A permanent configuration which persists restarts. In the XML file you can also choose whether you wish to log a [Class or package](#_class_or_package). Any changes made to the file will require a restart of the server. |
-| Log Tools app | Tools menu | A transient configuration which resets after a restart. In the [Log Tools app](../../Apps/List-of-apps/Log-Tools-app/) you can choose whether you wish to log a Class or package. Any changes made in the app are active immediately. This tool is useful for ad-hoc debugging of production issues since you don’t need to restart Magnolia to turn it on. |
-| Audit Logging | `/server/auditLogging` | [Audit logging](Audit/) means tracking user activity in the system such as who signed in and what they did. Here you select the actions you want to audit such as login, create, publish and so on. |
-
-### [](#_debugging_your_configuration)Debugging your configuration
-
-It is possible to debug the log4j 2 configuration itself. Add the status attribute to the Configuration element of the `log4j2.xml` configuration file.
-
-```cnd
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="debug">
-...
-...
-```
-
-For more information on this topic see [Log4j 2 Status Messages](https://logging.apache.org/log4j/2.x/manual/configuration.html#StatusMessages).
-
-### [](#_loggers)Loggers
-
-Loggers define what data is logged and how much detail is provided. Think of this as a configuration for the classes and packages you want to log.
-
-Here’s an example from the default `log4j2.xml`.
-
-```xml
-<!-- Publishing - additivity is true so logs also go to sub-categories' appenders -->
-<Logger name="info.magnolia.publishing" level="INFO" additivity="true">
-    <AppenderRef ref="log-publishing"/>
-</Logger>
-```
-
-> **Caution:** Apps configured in the new App Launcher layout will cause entries to appear in the log. To keep the log tidy, we recommend adjusting your App Launcher layout configuration and removing any apps you don’t use.
-
-#### [](#_class_or_package)Class or package
-
-The choice between logging a single class or the whole package depends on whether the issue is limited to a single class. In the example above we log everything within the package `info.magnolia.publishing`.
-
-To summarize:
-
--   To log a specific class, use the fully qualified class name for the XML `name` attribute in the Logger entry.
-
--   To log a whole package, use the fully qualified package name for the XML `name` attribute in the Logger entry.
-
-
-#### [](#_level)Level
-
-Magnolia uses the standard log4j [logging levels](https://logging.apache.org/log4j/2.0/log4j-api/apidocs/org/apache/logging/log4j/Level.html).
-
-| Level | Description |
-| --- | --- |
-| OFF | The highest possible rank and is intended to turn off logging. |
-| FATAL | Severe errors that cause premature termination. Visible in console. |
-| ERROR | Other runtime errors or unexpected conditions. Visible in console. |
-| WARN | Use of deprecated APIs, poor use of API, `almost` errors, other runtime situations that are undesirable or unexpected, but not necessarily `wrong`. Visible in console. |
-| INFO | Interesting runtime events (startup/shutdown). Visible in console, so be conservative and keep to a minimum. |
-| DEBUG | Detailed information on the flow through the system. Written to logs only. |
-| TRACE | More detailed information. Written to logs only. |
-
-### [](#_pattern_layout)Pattern Layout
-
-Log4j2’s [Pattern Layout](https://logging.apache.org/log4j/2.x/manual/layouts.html#PatternLayout) is a customizable log message formatter that uses conversion patterns to generate structured log outputs.
-
-The log message is encoded to address [CWE 117 (Improper Output Neutralization for Logs)](https://www.veracode.com/security/java/cwe-117), ensuring user-supplied data is properly sanitized so as to prevent log injection attacks.
-
-`WEBAPP/src/main/webapp/WEB-INF/config/default/log4j2.xml`
-
-```xml
-<PatternLayout  pattern="%d %-5p %-50.50c: [publishingId:%X{mgnlPublishingId}]%encode{%m}{CRLF}%n"> (1)
-```
-
-<div class="joplin-table-wrapper"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Where the pattern matches:<div class="ulist"><ul><li><p><code>%d</code> = the date.</p></li><li><p><code>%-5p</code> = the priority (p) left justified by 5 characters.</p></li><li><p><code>%-50.50c:</code> = the name of the logger that published the logging event.</p></li><li><p><code>publishingId:%X{mgnlPublishingId}</code> tracks publishing events across author and public instances by including the <code>publishingId</code> in the log.</p></li><li><p><code>%encode{%m}{CRLF}%n</code> = encodes the user message preventing the CRLF characters from the stream.</p></li></ul></div></td></tr></tbody></table></div>
-
-### [](#_appenders)Appenders
-
-Appenders define where the output is directed. The following [appenders](https://logging.apache.org/log4j/2.x/manual/appenders.html) are configured by default in `log4j2.xml`. They write messages to the console and to various log files.
-
-  AppenderWrites toNotes
-
-`console`
-
-Console
-
-Default output for DEBUG messages
-
-`log-debug`
-
-`magnolia-debug.log`
-
-Default output for DEBUG messages.
-
-`log-error`
-
-`magnolia-error.log`
-
-Default output for ERROR messages.
-
-`log-publishing`
-
-`magnolia-publishing.log`
-
-Content publishing.
-
-`log-bootstrap`
-
-`bootstrap.log`
-
-Bootstrap process.
-
-`log-access`
-
-`magnolia-access.log`
-
-System access.
-
-`log-audit`
-
-`magnolia-audit.log`
-
-See [Audit](Audit/).
-
-`log-form`
-
-`magnolia-form.log`
-
-See [Logging form data](../../Modules/List-of-modules/Form-module/#_logging_form_data).
-
-`mail`
-
-Sends mail.
-
-Disabled by default.
-
-> **Tip:** You can enable it by uncommenting the mail appender XML section commented out by default in this file in your installation: war/WEB-INF/config/default/log4j2.xml.See the shipped version of the file also here.
-
-Example: The `log-publication` appender is used to log events related to content publishing.
-
-```xml
-<RollingFile name="sync-log-publishing"
-             fileName="${magnolia.logs.dir}/magnolia-publishing.log"
-             filePattern="${magnolia.logs.dir}/magnolia-publishing-%i.log"
-             append="true">
-  <PatternLayout pattern="%-5p %c %d{dd.MM.yyyy HH:mm:ss} -- %encode{%m}{CRLF}%n"/>
-  <ThresholdFilter level="ERROR"/>
-  <Policies>
-    <SizeBasedTriggeringPolicy size="1MB"/>
-  </Policies>
-  <DefaultRolloverStrategy max="5"/>
-</RollingFile>
-<Async name="log-publishing">
-  <AppenderRef ref="sync-log-publishing"/>
-</Async>
-```
-
-It is actually two appenders: `log-publishing` appender uses the `Async` class to queue up the messages while the referenced `sync-log-publishing` appender does the actually writing of the messages to the `magnolia-publishing.log` file.
-
-All appenders that write to a log file use the `RollingFile` class. Rolling means that the system takes a backup of the log file when its size reaches a limit set in the `SizeBasedTriggeringPolicy`
-
-(1 MB by default). The old file is date-stamped and a new file is started in the same directory.
-
-### [](#_example_debugging_content_publication)Example: Debugging content publication
-
-This example shows how to log more detail about content publication. It is useful when publication fails and the default INFO messages do not provide enough information to pinpoint the root cause.
-
-Add the Logger to `log4j2.xml` if not already there:
-
-```xml
-<!-- Publishing - additivity is true so logs also go to sub-categories' appenders -->
-<Logger name="info.magnolia.publishing" level="INFO" additivity="true">
-    <AppenderRef ref="log-publishing"/>
-</Logger>
-```
-
-Each category references the `log-publishing` appender which sends output to the `magnolia-publication.log` file. Since `additivity` is `true`, output is also sent to ancestor appenders, in this case the console.
-
-Priority is set at INFO level by default. If more information is needed, this is the detail that needs to be changed.
-
-To change the level to DEBUG:
-
-1.  Stop the Magnolia instance.
-
-2.  Change `priority` in the three categories to DEBUG.
-
-3.  Save the file.
-
-4.  Start Magnolia.
-
-
-To test the new configuration, publish some content and view the logged DEBUG messages in the `magnolia-publication.log`.
-
-Note that by default there is a temp folder called `tmp` configured in `magnolia.properties` in the actual webapp. This folder contains various `exchange_*.xml.gz` files that are stored when debugging is enabled for publication. The location of the files is specified by the `magnolia.upload.tmpdir`.
+| `log4j2.xml` | `/WEB-INF/config/default` | A permanent configuration which persists restarts. In the XML file you can also choose whether you wish to log a [Class or package](#_class_or_package) . Any changes made to the file will require a restart of the server. |
+| Log Tools app | Tools menu | A transient configuration which resets after a restart. In the [Log Tools app](../../../RNs-6-4-3/Apps/List-of-apps/Log-Tools-app/) you can choose whether you wish to log a Class or package. Any changes made in the app are active immediately. This tool is useful for ad-hoc debugging of production issues since you don’t need to restart Magnolia to turn it on. |
+| Audit Logging | `/server/auditLogging` | [Audit logging](../../../RNs-6-4-3/Administration/Monitoring/Audit/) means tracking user activity in the system such as who signed in and what they did. Here you select the actions you want to audit such as login, create, publish and so on. |
 
 ## [](#_log_tools_app)Log Tools app
 
-It is also possible to adjust the log4j settings from inside a running instance. This is a transient configuration which resets after a restart. From the [Log Tools app](../../Apps/List-of-apps/Log-Tools-app/) you can choose whether you wish to log a Class or package. Any changes made in the app are active immediately. This tool is useful for ad-hoc debugging of production issues since you don’t need to restart Magnolia to turn it on.
+It is also possible to adjust the log4j settings from inside a running instance. This is a transient configuration which resets after a restart. From the [Log Tools app](../../../RNs-6-4-3/Apps/List-of-apps/Log-Tools-app/) you can choose whether you wish to log a Class or package. Any changes made in the app are active immediately. This tool is useful for ad-hoc debugging of production issues since you don’t need to restart Magnolia to turn it on.
 
 ## [](#_capturing_request_and_response_headers)Capturing request and response headers
 
@@ -320,7 +130,7 @@ You can observe Java Virtual Machine and application server performance through 
 3.  Click **Connect**
 
 
-![JConsole New Connection pop up](../../_images/jconsole-connect.png)
+![JConsole New Connection pop up](../../../RNs-6-4-3/_images/jconsole-connect.png)
 
 See [Using JConsole](http://docs.oracle.com/javase/1.5.0/docs/guide/management/jconsole.html) for instructions on how to view and interpret the charts.
 
@@ -348,7 +158,7 @@ JMX is not only used to observe events. You can also invoke operations. In this 
 4.  Click **flushAll** to invoke the flush operation.
 
 
-![List of CacheMonitor MBean operations](../../_images/jconsole-flushall.png)
+![List of CacheMonitor MBean operations](../../../RNs-6-4-3/_images/jconsole-flushall.png)
 
 ### [](#_jmxterm)Jmxterm
 

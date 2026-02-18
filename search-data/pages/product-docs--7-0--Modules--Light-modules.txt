@@ -52,56 +52,56 @@ Magnolia light modules must reside within the Magnolia *resources* directory; th
 
 ### [](#_what_is_magnolia_resources_dir)What is `magnolia.resources.dir`?
 
-`magnolia.resources.dir` is a property defining the directory from which [resources](../../Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../Apps/List-of-apps/About-Magnolia-app/).
+`magnolia.resources.dir` is a property defining the directory from which [resources](../../../RNs-6-4-3/Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../../RNs-6-4-3/Apps/List-of-apps/About-Magnolia-app/).
 
 > **Note:** You can use symbolic links (symlinks or soft links) in the resources directory to include light modules located elsewhere on your system.
 
-Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../Administration/Architecture/Configuration-management/#_defining_properties) section.)
+Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../../RNs-6-4-3/Administration/Architecture/Configuration-management/#_defining_properties) section.)
 
 A change in the light modules folder may also flush the server cache. You can configure this behavior under `/modules/cache/config/contentCaching/defaultPageCache/flushPolicy/policies/lightModule/pathToCacheMappings/defaultPageCache` with the `pattern` property, which specifies the pattern for the operation. The default value is `.**/(templates|webresources|i18n)/.**`.
 
 ## [](#_what_items_can_be_defined_in_a_light_module)What items can be defined in a light module?
 
-The following items can be defined within a light module using YAML. Items defined by YAML can be [decorated](../../Developing/Definition-decoration/), or can be reused with [YAML inherit and include](../../Developing/Reusing-configuration/YAML-inherit-and-include/).
+The following items can be defined within a light module using YAML. Items defined by YAML can be [decorated](../../../RNs-6-4-3/Developing/Definition-decoration/), or can be reused with [YAML inherit and include](../../../RNs-6-4-3/Developing/Reusing-configuration/YAML-inherit-and-include/).
 
--   [App definitions](../../Apps/App-configuration/App-descriptor/)
+-   [App definitions](../../../RNs-6-4-3/Apps/App-configuration/App-descriptor/)
 
 -   Content type definitions
 
--   [Dialog definitions](../../Developing/Templating/Dialog-definition/)
+-   [Dialog definitions](../../../RNs-6-4-3/Developing/Templating/Dialog-definition/)
 
--   [Field type definitions](../../Developing/Templating/Dialog-definition/Field-definition/Custom-fields/)
+-   [Field type definitions](../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/Custom-fields/)
 
--   [Media editor definitions](../List-of-modules/UI-module/UI-Media-Editor-module/)
+-   [Media editor definitions](../../../RNs-6-4-3/Modules/List-of-modules/UI-module/UI-Media-Editor-module/)
 
--   [Message view definitions](../../Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
+-   [Message view definitions](../../../RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/)
 
--   [Module configurations](../Module-configuration/)
+-   [Module configurations](../../../RNs-6-4-3/Modules/Module-configuration/)
 
--   [Renderer definitions](../../Developing/Templating/Renderers/)
+-   [Renderer definitions](../../../RNs-6-4-3/Developing/Templating/Renderers/)
 
--   [REST endpoint definitions](../../Developing/Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/)
+-   [REST endpoint definitions](../../../RNs-6-4-3/Developing/Development-how-tos/How-to-create-a-custom-Java-based-REST-endpoint/)
 
--   [Site definitions](../../Developing/Templating/Site-definition/#_configuring_a_site_definition)
+-   [Site definitions](../../../RNs-6-4-3/Developing/Templating/Site-definition/#_configuring_a_site_definition)
 
--   [Template definitions](../../Developing/Templating/Template-definition/)
+-   [Template definitions](../../../RNs-6-4-3/Developing/Templating/Template-definition/)
 
--   [Theme definitions](../../Developing/Templating/Theme/)
+-   [Theme definitions](../../../RNs-6-4-3/Developing/Templating/Theme/)
 
--   [Virtual URI mappings](../../Administration/URI-mapping/Virtual-URI-mapping/)
+-   [Virtual URI mappings](../../../RNs-6-4-3/Administration/URI-mapping/Virtual-URI-mapping/)
 
--   [Workflow definitions](../List-of-modules/Workflow-module/Workflow-processes/)
+-   [Workflow definitions](../../../RNs-6-4-3/Modules/List-of-modules/Workflow-module/Workflow-processes/)
 
--   [Work item handler definitions](../List-of-modules/Workflow-module/Custom-tasks/)
+-   [Work item handler definitions](../../../RNs-6-4-3/Modules/List-of-modules/Workflow-module/Custom-tasks/)
 
 
-> **Note:** Non YAML-based items can also be used/found in light modules.i18n message bundles and related pagesjavascript-models:ROOT:index.adoc
+> **Note:** Non YAML-based items can also be used/found in light modules.i18n message bundles and related pagesJavascript Models
 
 ## [](#_creating_a_light_module_with_magnolia_cli)Creating a light module with Magnolia CLI
 
-Using the [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) you can create the folder structure for a light module with the command `create-light-module`.
+Using the [Magnolia CLI](../../../../magnolia-cli/) you can create the folder structure for a light module with the command `create-light-module`.
 
-1.  Ensure you have [magnolia-cli:ROOT:index.adoc](#magnolia-cli:ROOT:index.adoc) v5 installed:
+1.  Ensure you have [Magnolia CLI](../../../../magnolia-cli/) v5 installed:
 
     ```sh
     mgnl -V

@@ -1,0 +1,71 @@
+---
+title: "Optimize for AI search engines"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/authors/optimize-geo/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Authors > GEO optimization
+---
+
+# Optimize for AI search engines
+
+Generates AI-optimized structured data for Generative Engine Optimization (GEO), including JSON-LD schema, voice summaries, FAQs, and entity mentions to improve visibility in AI search engines and voice assistants.
+
+> **Note:** Supports multilingual sites and automatically detects content changes to optimize API usage.
+
+## [](#_usage)Usage
+
+Once the Optimize GEO feature is activated, go to the **Pages** app and select a page. In the action bar, click **Optimize GEO** to generate AI-optimized structured data for the page.
+
+The feature analyzes your page content and automatically generates:
+
+-   **JSON-LD structured data** - Schema.org markup for AI search engines
+
+-   **Voice summary** - A 40-60 word summary optimized for voice assistants
+
+-   **FAQs** - Relevant questions and answers based on your content
+
+-   **Entity mentions** - Links to Wikipedia for entities mentioned in your content
+
+
+## [](#_what_gets_optimized)What gets optimized
+
+The AI analyzes your page content in order of importance:
+
+1.  Meta information (title, description, keywords)
+
+2.  Main headings (H1, H2, H3, etc.)
+
+3.  Body text content
+
+
+It then generates structured data that helps AI search engines like Google SGE, Bing Chat, and Perplexity understand your content better and provide more accurate answers to user queries.
+
+## [](#_generated_data)Generated data
+
+The optimization creates several types of structured data:
+
+-   **WebPage schema** - With speakable markup for voice search
+
+-   **FAQPage schema** - With relevant Q&A pairs from your content
+
+-   **Entity information** - Links to authoritative sources (such as Wikipedia) for entities mentioned
+
+
+## [](#_multilingual_support)Multilingual support
+
+The feature automatically detects the language of your content and generates structured data in the same language, making it suitable for multilingual websites.
+
+## [](#_when_to_use)When to use
+
+Use GEO optimization when you want to:
+
+-   Improve visibility in AI-powered search results
+
+-   Optimize content for voice search queries
+
+-   Provide structured data for AI chatbots and assistants
+
+-   Stay ahead of traditional SEO with AI-ready content
+
+
+The feature automatically detects if your content has changed and only regenerates the structured data when necessary, saving API tokens and ensuring efficiency.

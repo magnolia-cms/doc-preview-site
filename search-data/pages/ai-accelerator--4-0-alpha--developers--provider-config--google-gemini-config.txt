@@ -1,0 +1,32 @@
+---
+title: "Google Gemini configuration"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/provider-config/google-gemini-config/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Set up a provider > Google Gemini
+---
+
+# Google Gemini configuration
+
+-   `config.yaml` file
+
+-   Configuration app
+
+-   Passwords app
+
+
+`/my-light-module/decorations/ai-accelerator-gemini/config.yaml`
+
+```yaml
+apiKey: <your-google-gemini-key>
+```
+
+![jcr config](../../_images/jcr-config.png)
+
+```yaml
+apiKey: /path/to/apikey
+```
+
+For more, see [Passwords app](../../../../../product-docs/RNs-6-4-3/Apps/List-of-apps/Passwords-app/).
+
+> **Note:** Currently only one LLM provider is possible.

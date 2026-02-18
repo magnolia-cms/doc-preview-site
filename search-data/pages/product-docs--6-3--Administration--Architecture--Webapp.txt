@@ -12,160 +12,37 @@ A Java Web Application (webapp) is a collection of servlets, other Java classes,
 
 It can be packaged as a [WAR file](https://en.wikipedia.org/wiki/WAR_%28file_format%29). A webapp usually contains already packed portions called libraries or modules as [JAR](https://en.wikipedia.org/wiki/JAR_%28file_format%29) files.
 
-## [](#_list_of_webapps)List of webapps
-
-Magnolia provides the following stand-alone, pre-configured Apache Tomcat server that does not include a webapp:
-
 | Artifact | Download | Usage |
 | --- | --- | --- |
-| `` `magnolia-tomcat-barebone` `` | [Nexus](https://nexus.magnolia-cms.com/#browse/search/maven=attributes.maven2.artifactId%3Dmagnolia-tomcat-barebone) | A preconfigured Tomcat server ready to be used with any Magnolia webapp. |
-
-Magnolia provides the following webapps and bundles.
-
-> **Tip:** To get the complete list of the modules in each webapp or bundle, look at the corresponding POM file of the bundle.
-
-### [](#_dx_core)DX Core
-
-  ArtifactUsage
-
-`dx-core-webapp`
-
-This is the DX Core webapp for projects. Use `dx-core-webapp` for local Magnolia Cloud development. (*If you are a partner, see dx-core-cloud-webapp below*).
-
-> **Note:** Add a tomcat-bundle classifier to use with Apache Tomcat
-
-[](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.20/magnolia-dx-core-webapp-6.3.20.war)
-
-`travel-demo-webapp`
-
-DX Core webapp plus the Travel Demo for evaluation purposes.
-
-> **Note:** Add a tomcat-bundle classifier to use with Apache Tomcat.
-
-[](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.20/travel-demo-webapp-6.3.20.war)
-
-`magnolia-dx-core-custom-cloud-webapp`
-
-For internal and partner cloud Magnolia usage.
-
-> **Note:** Partners should use magnolia-dx-core-custom-cloud-webapp for local Magnolia Cloud development or when creating a custom cloud bundle for a customer
-
-> **Important:** Use dx-core-webapp for local Magnolia Cloud development.
-
-[](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-custom-cloud-webapp/6.3.20/magnolia-dx-core-custom-cloud-webapp-6.3.20.war)
-
-### [](#_community)Community
-
-| Artifact | Usage |     |
-| --- | --- | --- |
-| `magnolia-empty-webapp` | This is the most basic Magnolia webapp. Use this as a basis for your custom webapp. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/magnolia-empty-webapp/6.3.20/magnolia-empty-webapp-6.3.20.war) |
-| `magnolia-community-webapp` | Complete Magnolia Community Edition webapp for community projects. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/bundle/magnolia-community-webapp/6.3.20/magnolia-community-webapp-6.3.20.war) |
-| `travel-demo-community-webapp` | Community Edition webapp plus the Travel Demo for evaluation purposes. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.20/travel-demo-community-webapp-6.3.20.war) |
-| `travel-demo-community-webapp` with tomcat | Community Edition webapp plus the Travel Demo for evaluation purposes bundled with Apache Tomcat. | [](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.20/travel-demo-community-webapp-6.3.20-tomcat-bundle.zip) |
-
-## [](#_webapp_directory_structure)Webapp directory structure
-
-The directory structure is the container that holds the components of a webapp. The first step in creating a Magnolia webapp is creating this structure. The following table describes what each directory should contain.
-
- PathContents
-
-`cache/`
-
-Files with cached content.
-
-`docroot/`
-
-Files extracted from `mgnl-files/docroot` in the JAR.
-
-`logs/`
-
-Magnolia log files.
-
-`META-INF/`
-
-Meta information files, e.g., from Maven.
-
-`repositories/`
-
-Repository.
-
-`templates/`
-
-Templates extracted from `mgnl-files/templates` in the JAR.
-
-`tmp/`
-
-Temporary work directory.
-
-`WEB-INF/`
-
-All resources related to the application that are not in the document root. WEB-INF directory is not part of the public document.
-
-> **Note:** No files contained in this directory can be served directly to a client.
-
-`WEB-INF/bootstrap`
-
-Bootstrap files. Empty by default.
-
-`WEB-INF/bootstrap/common`
-
-Bootstrapped on author and public instances.
-
-`WEB-INF/bootstrap/author`
-
-Bootstrapped on author instance only.
-
-`WEB-INF/bootstrap/public`
-
-Bootstrapped on public instance only.
-
-`WEB-INF/classes`
-
-Class path for manually deployed classes.
-
-`WEB-INF/config`
-
-Configuration files for repository and properties.
-
-`WEB-INF/config/default`
-
-Configuration files.
-
-`WEB-INF/config/default/magnolia.properties`
-
-Properties such as: repository location, persistence manager to be used, should samples be bootstrapped, should installation be done in unattended mode etc.
-
-`WEB-INF/config/default/repositories.xml`
-
-Defines repository configuration.
-
-`WEB-INF/config/default/log4j.xml`
-
-Log4j logging configuration.
-
-`WEB-INF/config/magnoliaAuthor`
-
-Properties used on author instance only.
-
-`WEB-INF/config/magnoliaPublic`
-
-Properties used on public instance only.
-
-`WEB-INF/config/repo-config/typeOfPM.xml`
-
-Persistence manager configuration files.
-
-`WEB-INF/config/jaas.config`
-
-Configuration for authentication and authorization.
-
-`WEB-INF/lib`
-
-JAR files.
-
-`WEB-INF/web.xml`
-
-Deployment descriptor. Describes configuration information for the entire web application.
+| `magnolia-tomcat-barebone` | [Nexus](https://nexus.magnolia-cms.com/#browse/search/maven=attributes.maven2.artifactId%3Dmagnolia-tomcat-barebone) | A preconfigured Tomcat server ready to be used with any Magnolia webapp. |
+
+| Path | Contents |
+| --- | --- |
+| `cache/` | Files with cached content. |
+| `docroot/` | Files extracted from `mgnl-files/docroot` in the JAR. |
+| `logs/` | Magnolia log files. |
+| `META-INF/` | Meta information files, e.g., from Maven. |
+| `repositories/` | Repository. |
+| `templates/` | Templates extracted from `mgnl-files/templates` in the JAR. |
+| `tmp/` | Temporary work directory. |
+| `WEB-INF/` | All resources related to the application that are not in the document root. WEB-INF directory is not part of the public document. ** No files contained in this directory can be served directly to a client. | ** | No files contained in this directory can be served directly to a client. |
+| ** | No files contained in this directory can be served directly to a client. |
+| `WEB-INF/bootstrap` | Bootstrap files. Empty by default. |
+| `WEB-INF/bootstrap/common` | Bootstrapped on author and public instances. |
+| `WEB-INF/bootstrap/author` | Bootstrapped on author instance only. |
+| `WEB-INF/bootstrap/public` | Bootstrapped on public instance only. |
+| `WEB-INF/classes` | Class path for manually deployed classes. |
+| `WEB-INF/config` | Configuration files for repository and properties. |
+| `WEB-INF/config/default` | Configuration files. |
+| `WEB-INF/config/default/magnolia.properties` | Properties such as: repository location, persistence manager to be used, should samples be bootstrapped, should installation be done in unattended mode etc. |
+| `WEB-INF/config/default/repositories.xml` | Defines repository configuration. |
+| `WEB-INF/config/default/log4j.xml` | Log4j logging configuration. |
+| `WEB-INF/config/magnoliaAuthor` | Properties used on author instance only. |
+| `WEB-INF/config/magnoliaPublic` | Properties used on public instance only. |
+| `WEB-INF/config/repo-config/typeOfPM.xml` | Persistence manager configuration files. |
+| `WEB-INF/config/jaas.config` | Configuration for authentication and authorization. |
+| `WEB-INF/lib` | JAR files. |
+| `WEB-INF/web.xml` | Deployment descriptor. Describes configuration information for the entire web application. |
 
 ## [](#_adding_the_magnolia_main_filter_to_the_webapp)Adding the Magnolia main filter to the webapp
 

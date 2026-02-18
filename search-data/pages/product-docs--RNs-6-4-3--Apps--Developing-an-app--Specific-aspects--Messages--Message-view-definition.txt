@@ -1,0 +1,35 @@
+---
+title: "Message view definition"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Messages/Message-view-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > Messages > Message view definition
+---
+
+# Message view definition
+
+A message view defines how a [notification](../Message-types/#_notifications) (a message type) is displayed in the [Notifications app](../../../../List-of-apps/Notifications-app/) and what users can do with it. Magnolia’s `default` message view can display any system notification and allows the user to delete them. For a more advanced example, see the `workflow` message view in `/modules/workflow/messageViews/workflow`.
+
+| Property | Description |
+| --- | --- |
+| `<view name>` | **required** Name of view. |
+| `actions` | **required** An action definition that defines what actions the user can perform on the message. For example, a user can approve or reject a published page. |
+| `form` | **required** A [form definition](../../../../../Developing/Templating/Dialog-definition/Form-definition/) that defines what message details are displayed in the view, such as the sender and the subject. The form fields are rendered as static text in the message view, not as fillable fields. |
+| `actionbar` | **required** An [action bar definition](../../../../App-configuration/Action-bar-definition/) that references actions defined in the message view or somewhere else. The action bar is displayed on side of the message view. |
+
+## [](#_using_a_view_in_code)Using a view in code
+
+To use your custom message view in code, set the view on the info.magnolia.ui.api.message.Message object before sending it.
+
+```java
+void sendMessageWithCustomView(String messageText) {
+   final Message message = new Message();
+   message.setMessage(messageText);
+   message.setType(MessageType.INFO);
+
+   // format when referencing a view
+   // module-name:view-name (as defined in the configuration)
+   message.setView("admincentral:myCustomView");
+   messagesManager.sendLocalMessage(message);
+}
+```

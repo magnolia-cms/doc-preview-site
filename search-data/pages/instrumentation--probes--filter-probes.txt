@@ -1,0 +1,180 @@
+---
+title: "Filter probes"
+url: https://docs.magnolia-cms.com/instrumentation/probes/filter-probes/
+category: Modules
+version: modules
+breadcrumb: Instrumentation module > Filter probes
+---
+
+# Filter probes
+
+Filter probes are just normal filters in defined in the Magnolia filter chain (see [Request processing and filters](../../../product-docs/RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/) for more). Filters are executed in the order they are defined in the filter chain. Filter probes are able to collect their metrics from the point they are defined in the filter chain.
+
+There are two types of filter probes:
+
+-   filter probes that measure execution time of requests
+
+-   filter probes that count requests
+
+
+Available filter probes
+
+-   [SimpleCounterFilterProbe](#_simplecounterfilterprobe): maintains a count of requests being processed
+
+-   [SimplePassthroughFilterProbe](#_simplepassthroughfilterprobe): measures the processing time to handle a request
+
+-   [SimpleSummaryPassthroughFilterProbe](#_simplesummarypassthroughfilterprobe): maintains a histogram of the processing times for requests
+
+-   [SimpleFilterSequenceProbe](#_simplefiltersequenceprobe): measures the processing time between two points in the filter chain
+
+-   [CounterFilterProbe](#_counterfilterprobe): maintains a count of requests being processed with the request details as labels
+
+-   [PassthroughFilterProbe](#_passthroughfilterprobe): measures the processing time to handle a request with the request details as labels
+
+-   [SummaryPassthroughFilterProbe](#_summarypassthroughfilterprobe): maintains a histogram of the processing times for request with the request details as labels
+
+-   [FilterSequenceProbe](#_filtersequenceprobe): measures the processing time between two points in the filter chain
+
+-   [ServletContextProbe](#_servletcontextprobe): captures information about the servlet context
+
+
+## [](#_using_filter_probes)Using Filter Probes
+
+The filter chain is the heart of Magnolia’s request processing. While filter probes don’t use a lot of system resources in making their measurements, adding many filter probes to the filter chain may affect Magnolia’s ability to process requests.
+
+Prometheus and Grafana can also post-process measurements collected by filter probes. You can make queries to pull larges amounts of request measurements into dashboards that can affect Prometheus and Grafana performance.
+
+Here are some recommendations to keep in mind when using filter probes.
+
+If you are not interested in the request details such as URI, URL or request method, use the "simple" versions of the filter probes - SimpleCounterFilterProbe, SimplePassthroughFilterProbe, SimpleSummaryPassthroughFilterProbe or SimpleFilterSequenceProbe - since these probes do not collect the request details.
+
+If you do want the request details when using CounterFilterProbe, PassthroughFilterProbe, SummaryPassthroughFilterProbe or FilterSequenceProbe, try to limit the labels collected to just what is needed.
+
+If you want to monitor requests to specific URLs, use voters to limit the requests monitored by filter probes.
+
+## [](#_limiting_filter_probes)Limiting Filter Probes
+
+All filter probes can use voters to limit the requests that are measured. Voters can check the attributes of a request to see if it should be measured by a filter probe, including:
+
+-   The request URI
+
+-   The user agent
+
+-   Request headers
+
+-   Request parameters
+
+
+> **Note:** You can also use logical operations to combine the results of several voters.
+
+> **Tip:** See Voters for more about voters. See here for a list for available voters.
+
+You can configure voters in a filter probe like this:
+
+![FilterProbe voters example](../../_images/probes/FilterProbe-voters-example.jpg)
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.SimpleCounterFilterProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` |  | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+| `activeCount` | Maintain a total of all requests seen or a running tally of active requests. • If set to `true` , a running tally of active requests will be counted. When a request is received, the tally will be incremented and when the request has been processed, the tally will be decremented. • If set to `false` , a running total of all requests will be maintained. **Default** = `false` |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.SimplePassthroughFilterProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` |  | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+| `activeCount` | Maintain a total of all requests seen or a running tally of active requests. • If set to `true` , a running tally of active requests will be counted. When a request is received, the tally will be incremented and when the request has been processed, the tally will be decremented. • If set to `false` , a running total of all requests will be maintained. **Default** = `false` |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.SimpleSummaryPassthroughFilterProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` |  | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+| `activeCount` | Maintain a total of all requests seen or a running tally of active requests. • If set to `true` , a running tally of active requests will be counted. When a request is received, the tally will be incremented and when the request has been processed, the tally will be decremented. • If set to `false` , a running total of all requests will be maintained. **Default** = `false` |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.SimpleFilterSequenceProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` |  | **** |
+| `attributeName` | The attribute name of the timer added to the request. The attributeName should be unique. The attribute name is used to store the timer in the request. It should be used in the configuration of the corresponding FilterTimerTrigger. | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.CounterFilterProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` | A description of the metric. | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+| `labels` | The measurement labels as described above. |  |
+| `activeCount` | Maintain a total of all requests seen or a running tally of active requests. • If set to `true` , a running tally of active requests will be counted. When a request is received, the tally will be incremented and when the request has been processed, the tally will be decremented. • If set to `false` , a running total of all requests will be maintained. **Default** = `false` |  |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.PassthroughFilterProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` | A description of the metric. | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.SummaryPassthroughFilterProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` | A description of the metric. | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.FilterSequenceProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` |  | **** |
+| `attributeName` | The attribute name of the timer added to the request. The attributeName should be unique. The attribute name is used to store the timer in the request. It should be used in the configuration of the corresponding FilterTimerTrigger. | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |
+
+| Property | Description | Required |
+| --- | --- | --- |
+| `class` | `info.magnolia.services.instrumentation.probes.filter.ServletContextProbe` | **** |
+| `name` | The name of the filter. ** The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. | **** |
+| ** | The name of the filter probe will not be used as the Prometheus metric name. The metric name is specified by the `probeName` property. |
+| `enabled` | Enable or disable the collection of filter metrics for this probe. **Default** = `true` |  |
+| `probeName` | The metric name, must be unique among all active probes. | **** |
+| `probeDescription` | A description of the metric. | **** |
+| `voters` | A list of request voters. Requests matching the voters will be measured by the filter probe. Those requests that do not will be ignored. ** See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. | ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |  |
+| ** | See [Limiting Filter Probes](#_limiting_filter_probes) above for more on using voters. |

@@ -10,7 +10,7 @@ breadcrumb: DX Core > Developing > Development how-tos > How to work with JavaSc
 
 This page explains in detail how to use JavaScript models for templates. JavaScript models can be done via [Light development](../../Light-development-in-Magnolia/), thus enabling fast development and deployment without the need for Java, Maven or WAR deployment. JavaScript models represent a type of Magnolia [Resources](../../Resources/).
 
-If you want to use JavaScript models, make sure that your bundle contains the `magnolia-module-javascript-models` module. For further information see [JavaScript Models module - Installing](#javascript-models:ROOT:index.adoc).
+If you want to use JavaScript models, make sure that your bundle contains the `magnolia-module-javascript-models` module. For further information see [JavaScript Models module - Installing](../../../../../javascript-models/).
 
 ## [](#_defining_referencing_and_using_a_javascript_model)Defining, referencing and using a JavaScript model
 
@@ -263,9 +263,9 @@ Provides access to many properties such as:
 
 -   `mainContentNode` ([javax.jcr.Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html))
 
-    This property returns the node (of type `Node`) that contains the main content. For example, if a child node [inherits](../../Reusing-configuration/YAML-inherit-and-include/#_yaml_inherit) content from another component and `state.mainContentNode` was applied to the child node, it is the child node’s main content that would be returned.
+    This property returns the node (of type `Node`) that contains the main content. For example, if a child node [inherits](../../../../RNs-6-4-3/Developing/Reusing-configuration/YAML-inherit-and-include/#_yaml_inherit) content from another component and `state.mainContentNode` was applied to the child node, it is the child node’s main content that would be returned.
 
-    A use case for this is shown below. Since the type returned by `state.mainContentNode` is `Node`, the function [cmsfn.asContentMap](../../Templating/Template-scripts/Templating-functions/cmsfn/#_convert_node_to_content_map) converts that node to a `ContentMap`, providing access to its properties. Finally, the [cmsfn.page](../../Templating/Template-scripts/Templating-functions/cmsfn/#_page_by_content) function returns the page to which the content belongs.
+    A use case for this is shown below. Since the type returned by `state.mainContentNode` is `Node`, the function [cmsfn.asContentMap](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_convert_node_to_content_map) converts that node to a `ContentMap`, providing access to its properties. Finally, the [cmsfn.page](../../../../RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/cmsfn/#_page_by_content) function returns the page to which the content belongs.
 
     ```yaml
     [#local currentPage = (cmsfn.page(cmsfn.asContentMap(state.mainContentNode)))!{}]
@@ -320,7 +320,7 @@ var localizedText2 = i18n.translate("javascript-model-samples.frontend.footer.ha
 
 Edit the configuration of the module with the [Configuration app](../../../Apps/List-of-apps/Configuration-app/). For each templating function you want to use, add an entry at `/modules/javascript-models/config/engineConfiguration/exposedComponents`.
 
-![Templating function in the Configuration app](../../../_images/ADVT-HTjs-templ.png) The stock configuration of the module shows just the version of the module. You have to create the subtree starting with the folder `/modules/javascript-models/config`.
+![Templating function in the Configuration app](../../../../RNs-6-4-3/_images/ADVT-HTjs-templ.png) The stock configuration of the module shows just the version of the module. You have to create the subtree starting with the folder `/modules/javascript-models/config`.
 
 ### [](#_using_templating_functions_in_a_javascript_model)Using templating functions in a JavaScript model
 
@@ -439,7 +439,7 @@ new MyModel();
 
 ## [](#_exposing_other_components)Exposing other components
 
-You can expose any other component in the same way as [enabling the templating functions](#_enabling_templating_functions), see [JavaScript Models module - Exposing components](#javascript-models:ROOT:index.adoc). A component is a Java class (or an interface for which a type mapping exists within the framework) having a default constructor that can be resolved and instantiated by the IoC framework.
+You can expose any other component in the same way as [enabling the templating functions](#_enabling_templating_functions), see [JavaScript Models module - Exposing components](../../../../../javascript-models/). A component is a Java class (or an interface for which a type mapping exists within the framework) having a default constructor that can be resolved and instantiated by the IoC framework.
 
 > **Warning:** This is a very powerful mechanism and should be used carefully. Fortunately, its power can be limited by restricting access to the Java API.
 
@@ -456,7 +456,7 @@ There are two Nashorn engine options to limit the power:
 -   `--no-syntax-extensions` makes sure that only standard ECMAScript syntax is supported, disabling the [Nashorn extensions](https://wiki.openjdk.java.net/display/Nashorn/Nashorn-extensions).
 
 
-![Disabling Nashorn extensions and Java syntax extensions in the Configuration app](../../../_images/ADVT-HTjs-nash.png)
+![Disabling Nashorn extensions and Java syntax extensions in the Configuration app](../../../../RNs-6-4-3/_images/ADVT-HTjs-nash.png)
 
 ### [](#_using_class_filter_to_exclude_instantiation_of_some_java_classes)Using class filter to exclude instantiation of some Java classes
 
@@ -466,7 +466,7 @@ The filter is applied when you explicitly use the types in the Nashorn code, for
 
 If the filter prevents the usage of a class – technically speaking, if the filter returns `false` – Nashorn then handles this case as a `java.lang.ClassNotFoundException` which leads to a `java.lang.RuntimeException`.
 
-![Using class filter to exclude instantiation of some Java classes](../../../_images/ADVT-HTjs-classf.png)
+![Using class filter to exclude instantiation of some Java classes](../../../../RNs-6-4-3/_images/ADVT-HTjs-classf.png)
 
 **Example:**
 
@@ -511,4 +511,4 @@ this.test3 = function (workspaceName) {
 
 Related topics
 
--   [JavaScript Models module](#javascript-models:ROOT:index.adoc)
+-   [JavaScript Models module](../../../../../javascript-models/)

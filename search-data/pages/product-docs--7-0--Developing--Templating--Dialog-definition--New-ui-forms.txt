@@ -215,63 +215,32 @@ See [Current and planned support](#_current_and_planned_support) for details on 
 
 See [Current and planned support](#_current_and_planned_support) for a full list of which properties are ignored.
 
-## [](#_current_and_planned_support)Current and planned support
-
-This section outlines which standard Magnolia fields and related features are supported in the new UI.
-
-### [](#_standard_form_fields_supported)Standard form fields supported
-
-The standard fields are described in the [Field definition](../Field-definition/) section of the Magnolia documentation.
-
-| Supported fields | Fields not yet supported |
+| Supported fields | Fields not yet supported ** |
 | --- | --- |
 | [checkBoxField](../Field-definition/List-of-fields/Checkbox-field/) | [jsonComboBoxField](../Field-definition/List-of-fields/Combobox-field/) |
 | [checkBoxGroupField](../Field-definition/List-of-fields/Checkbox-group-field/) | [jsonLinkField](../Field-definition/List-of-fields/Link-field/) |
 | [compositeField](../Field-definition/List-of-fields/Composite-field/) | [sliderField](../Field-definition/List-of-fields/Slider-field/) |
-| [damLinkField](../Field-definition/List-of-fields/Link-field/) |     |
-| [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) |     |
-| [dateField](../Field-definition/List-of-fields/Date-field/) |     |
-| [jcrMultiField](../Field-definition/List-of-fields/Multi-field/) |     |
-| [jcrMultiLinkField](../Field-definition/List-of-fields/Multi-field/) (renders as [jcrMultiField](../Field-definition/List-of-fields/Multi-field/)) |     |
-| [jcrMultiValueField](../Field-definition/List-of-fields/Multi-field/) |     |
-| [listSelectField](../Field-definition/List-of-fields/List-field/) |     |
-| [pageLinkField](../Field-definition/List-of-fields/Link-field/) |     |
-| [radioButtonGroupField](../Field-definition/List-of-fields/Radio-button-group-field/) |     |
-| [richTextField](../Field-definition/List-of-fields/Rich-text-field/) |     |
-| [textField](../Field-definition/List-of-fields/Text-field/) |     |
-| [tokenField](../Field-definition/List-of-fields/Token-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/)) |     |
-| [twinColSelectField](../Field-definition/List-of-fields/Select-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/)) |     |
-| [switchableField](../Field-definition/List-of-fields/Switchable-field/) |     |
-| [passwordField](../Field-definition/List-of-fields/Password-field/) |     |
-| [linkField](../Field-definition/List-of-fields/Link-field/) |     |
-| [staticField](../Field-definition/List-of-fields/Static-field/) |     |
-| [codeField](../Field-definition/List-of-fields/Code-field/)<br><br>In Magnolia 6.4.1 and later, the `codeField` is available.<br><br>To use it in your project, you must add the `magnolia.warp.forms.field.codeField` property to the configuration of your instance and set it to `true`.<br><br>For more details, see [MicroProfile Config](../../../../Administration/Architecture/configuration-management/microprofile-config/). |     |
-
-> **Note:** The fields from Magnolia and Marketplace Extensions are not yet supported.
-
-### [](#_features_not_yet_supported)Features not yet supported
-
-Several features aren’t supported yet:
-
--   Tabs: Tabs are ignored. The form renders all fields together.
-
--   The `jcrNodeToPathConverter` converter class. It forces a fallback to Vaadin.
-
--   A `MultiField` cannot directly contain switchable fields. It forces a fallback to Vaadin.
-
--   Usage in all dialogs.
-
--   Usage in the Page editor.
-
-
-### [](#_features_that_will_no_longer_be_supported)Features that will no longer be supported
-
-Form layouts aren’t supported as they lack the flexibility of previous versions and therefore aren’t planned for future development.
-
-> **Note:** In 6.4 switchable fields, setting removePreviouslySelected=false isn’t supported in New UI Forms.If you rely on this property in your templates, see the migration information on page Migrating the removePreviouslySelected property.
+| [damLinkField](../Field-definition/List-of-fields/Link-field/) |  |
+| [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) |  |
+| [dateField](../Field-definition/List-of-fields/Date-field/) |  |
+| [jcrMultiField](../Field-definition/List-of-fields/Multi-field/) |  |
+| [jcrMultiLinkField](../Field-definition/List-of-fields/Multi-field/) (renders as [jcrMultiField](../Field-definition/List-of-fields/Multi-field/) ) |  |
+| [jcrMultiValueField](../Field-definition/List-of-fields/Multi-field/) |  |
+| [listSelectField](../Field-definition/List-of-fields/List-field/) |  |
+| [pageLinkField](../Field-definition/List-of-fields/Link-field/) |  |
+| [radioButtonGroupField](../Field-definition/List-of-fields/Radio-button-group-field/) |  |
+| [richTextField](../Field-definition/List-of-fields/Rich-text-field/) |  |
+| [textField](../Field-definition/List-of-fields/Text-field/) |  |
+| [tokenField](../Field-definition/List-of-fields/Token-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) ) |  |
+| [twinColSelectField](../Field-definition/List-of-fields/Select-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) ) |  |
+| [switchableField](../Field-definition/List-of-fields/Switchable-field/) |  |
+| [passwordField](../Field-definition/List-of-fields/Password-field/) |  |
+| [linkField](../Field-definition/List-of-fields/Link-field/) |  |
+| [staticField](../Field-definition/List-of-fields/Static-field/) |  |
+| [codeField](../Field-definition/List-of-fields/Code-field/) In Magnolia 6.4.1 and later, the `codeField` is available. To use it in your project, you must add the `magnolia.warp.forms.field.codeField` property to the configuration of your instance and set it to `true` . For more details, see [MicroProfile Config](../../../../Administration/Architecture/configuration-management/microprofile-config/) . |  |
 
 ## [](#_creating_custom_fields_in_new_ui_forms)Creating custom fields in New UI Forms
 
 JavaScript fields are the supported way to build custom fields for Magnolia’s New UI Forms.
 
-The [JavaScript UI module](#ui-framework-javascript:ROOT:index.adoc) lets you build custom form fields with your own frontend, loaded from a module or an external URL, and embedded via an iframe.
+The [JavaScript UI module](../../../../../../ui-framework-javascript/) lets you build custom form fields with your own frontend, loaded from a module or an external URL, and embedded via an iframe.

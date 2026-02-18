@@ -1,0 +1,171 @@
+---
+title: "WeChat Login module"
+url: https://docs.magnolia-cms.com/wechat-connector/
+category: Modules
+version: modules
+breadcrumb: WeChat Login module
+---
+
+# WeChat Login module
+
+[Security and authentication](../product-docs/RNs-6-4-3/use-cases/security-and-authentication/) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/wechat-login) Version [1.0.0](https://magnolia-cms.atlassian.net/browse/WECHATCON) [Magnolia 6.2 & 6.3](../product-docs/6.3/) compatible\[[1](#_footnotedef_1 "View footnote.")\]
+
+The **WeChat Login module** integrates [WeChat](https://developers.weixin.qq.com/doc/oplatform/en/Website_App/WeChat_Login/Wechat_Login.html) as an authentication method for Magnolia. It builds on top of the [SSO Module](https://docs.magnolia-cms.com/magnolia-sso/) by adding necessary configuration and client support for WeChat.
+
+> **Warning:** This module is at the INCUBATOR level.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.wechat</groupId>
+  <artifactId>wechat-login</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+### [](#_preconditions)Preconditions
+
+To enable WeChat authentication, you need to register your application on the [WeChat Open Platform](https://open.weixin.qq.com/) and retrieve the necessary credentials:
+
+1.  Register Your Application
+
+2.  Get Your Credentials: After successful registration, WeChat will provide you with:
+
+    App ID → corresponds to wechat.key
+    App Secret → corresponds to wechat.secret
+
+3.  Make sure the domain of your Magnolia instance is whitelisted in your WeChat application settings. ![wechat key](_images/wechat-key.png)
+
+
+### [](#_configuring_jaas)Configuring JAAS
+
+Please follow the [JAAS configuration guide](https://docs.magnolia-cms.com/magnolia-sso/#jaas-config-anchor) provided by the Magnolia SSO documentation
+
+### [](#_install_verification)Install verification
+
+To verify the installation, ensure the following configuration and user setup are in place.
+
+#### [](#_login_handler_configuration)Login Handler Configuration
+
+Check the login handler under
+
+Config → /server/filters/login/loginHandlers/sso
+
+```none
+class info.magnolia.sso.auth.login.CustomSsoLoginHandler
+```
+
+* * *
+
+#### [](#_default_user_groups_roles)Default User Groups & Roles
+
+Ensure the following is configured:
+
+-   User Groups: `wechat-login-base`
+
+-   User Roles: `wechat-login-base`
+
+
+These are required for proper role-based access control.
+
+### [](#_sso_configuration)SSO configuration
+
+Follow the guide on [SSO YAML configuration](https://docs.magnolia-cms.com/magnolia-sso/#_configuring_via_yaml). Below is an example configuration snippet for WeChat SSO:
+
+```yaml
+callbackUrl: /.auth
+postLogoutRedirectUri: <postLogoutRedirectUri>
+
+authorizationGenerators:
+  - name: fixedRoleAuthorization
+    fixed:
+      targetRoles:
+        - wechat-login-base
+      targetGroups:
+        - wechat-login-base
+
+clients:
+  wechat.class: org.pac4j.oauth.client.WechatClient
+  wechat.key: <wechat.key>
+  wechat.secret: <wechat.secret>
+  wechat.callbackUrl: <callbackUrl>
+  wechat.authorizationGenerators: fixedRoleAuthorization
+
+userFieldMappings:
+  name: nickname
+  fullName: nickname
+  email: unionid        # Substitute for email since WeChat doesn't return one
+  language: language
+  removeEmailDomainFromUserName: false
+  removeSpecialCharactersFromUserName: false
+```
+
+### [](#_wechat_login_settings)WeChat Login Settings
+
+You can control user creation and authorization behavior using the following options:
+
+```yaml
+createShadowUser: false # true or false
+defaultUserGroups:
+  - group1
+  - group2
+defaultUserRoles:
+  - role1
+  - role2
+```
+
+#### [](#_explanation)Explanation:
+
+-   `createShadowUser` under *Users → /admin/sso-external-users*:
+
+    -   `true`: Creates a shadow user in Magnolia based on the unionid during the first login, assigning defaultUserGroups and defaultUserRoles
+
+    -   `false`: No user is created. Authorization is managed via fixedRoleAuthorization.
+
+
+-   `defaultUserGroups`: Groups assigned to the shadow user upon creation.
+
+-   `defaultUserRoles`: Roles assigned to the shadow user upon creation.
+
+
+### [](#_usage_scenarios)Usage Scenarios
+
+After the module is installed and configured, when a user accesses the Magnolia instance, a WeChat QR code will be displayed on the login screen. The user must scan this QR code using the WeChat mobile app to authenticate. Once logged in, the system will handle authorization based on the createShadowUser flag in your configuration:
+
+![wechat qrcode](_images/wechat-qrcode.png)
+
+-   If `createShadowUser: true`
+
+    -   A shadow user will be created in Magnolia using the unionid from WeChat. This user will be assigned the defaultUserGroups and defaultUserRoles as defined in the configuration. For subsequent logins, the system will authorize the user based on Magnolia’s internal security configuration (groups and roles). ![wechat user creation](_images/wechat-user-creation.png)
+
+
+-   If `createShadowUser: false`
+
+    -   No user account will be created in Magnolia. Instead, the system will authorize the user using the fixedRoleAuthorization defined in the SSO configuration.
+
+
+
+### [](#_refs)REFs:
+
+-   [https://open.weixin.qq.com/](https://open.weixin.qq.com/)
+
+-   [https://developers.weixin.qq.com/doc/oplatform/en/Mobile\_App/WeChat\_Login/Development\_Guide.html](https://developers.weixin.qq.com/doc/oplatform/en/Mobile_App/WeChat_Login/Development_Guide.html)
+
+-   [https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/wechat/WechatProfile.java](https://github.com/pac4j/pac4j/blob/master/pac4j-oauth/src/main/java/org/pac4j/oauth/profile/wechat/WechatProfile.java)
+
+
+### [](#_contributors)Contributors:
+
+-   Thanh Le [thanh.lehai@magnolia-cms.com](mailto:thanh.lehai@magnolia-cms.com)
+
+
+| Version | Notes |
+| --- | --- |
+| `Version 1.0.0` | Initial release of the module. |
+
+* * *
+
+[1](#_footnoteref_1). This module was last tested on Magnolia 6.2.59 & 6.3.9. If you are using a previous Magnolia release or version, please take this into consideration.

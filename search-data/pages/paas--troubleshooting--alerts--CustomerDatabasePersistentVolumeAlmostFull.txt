@@ -14,31 +14,11 @@ A `CustomerDatabasePersistentVolumeAlmostFull` alert is firing.
 
 > **Note:** CustomerDatabasePersistentVolumeAlmostFull alerts are sent to subscribers via email.
 
-## [](#_observations)Observations
-
-Here are the details on the alerts:
-
-### [](#_alert_customerdatabasepersistentvolumealmostfull)Alert: CustomerDatabasePersistentVolumeAlmostFull
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 15%;"> <col style="width: 85%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>(kubelet_volume_stats_available_bytes{persistentvolumeclaim=~"data.*"} / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~"data.*"}) * 100 &lt; 1</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>15</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>namespace</code></p></li><li><p><code>pvc</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_determine_the_current_size_of_the_database_persistent_volume)Determine the current size of the database persistent volume
-
-The name of the database persistent volume claim and its namespace are contained in the alert, for example "database-prod-magnolia-helm-public-db-0". You can find the details on the persistent volume by displaying the persistent volume claim using kubectl:
-
-```bash
-kubectl -n <namespace from alert> get pvc <persistent volume claim from alert>
-```
-
-Executing the above will list the size of the persistent volume:
-
-```bash
-$ kubectl -n prod get pvc database-prod-magnolia-helm-public-db-0
-NAME                                     STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-database-prod-magnolia-helm-public-db-0   Bound    pvc-e695274c-5794-4a78-afe0-e86b0efd40ed   10Gi       RWO            local-path     9d
-```
-
-Note the value listed in the "CAPACITY" column.
+| **Expression** | `(kubelet_volume_stats_available_bytes{persistentvolumeclaim=~"data.*"} / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim=~"data.*"}) * 100 < 1` |
+| --- | --- |
+| **Delay** | `15` minutes |
+| **Labels** | `team: customer` |
+| **Annotations** | • `summary` • `description` • `tenant` • `cluster_id` • `cluster_name` • `namespace` • `pvc` |
 
 ## [](#_solutions)Solutions
 

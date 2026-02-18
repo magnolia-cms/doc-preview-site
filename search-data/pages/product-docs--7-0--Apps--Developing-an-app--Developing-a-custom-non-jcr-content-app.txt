@@ -8,7 +8,7 @@ breadcrumb: DX Core > Apps > Developing an app > Developing a custom (non-JCR) c
 
 # Developing a custom (non-JCR) content app
 
-This page shows how to create an app that operates on data stored outside the JCR repository. The app uses the [content app](../My-first-content-app/#_content_app) framework but stores data on the local file system. This is an example of connecting to a custom data source. Editors don’t have to leave Magnolia in order to work on third-party data.
+This page shows how to create an app that operates on data stored outside the JCR repository. The app uses the [content app](../../../../RNs-6-4-3/Apps/Developing-an-app/My-first-content-app/#_content_app) framework but stores data on the local file system. This is an example of connecting to a custom data source. Editors don’t have to leave Magnolia in order to work on third-party data.
 
 ## [](#_background)Background
 
@@ -41,13 +41,13 @@ Choose this option if you know how to work with Magnolia projects and Git. You g
 
 ### [](#_option_2_add_the_project_as_a_dependency_to_your_bundle)Option 2: Add the project as a dependency to your bundle
 
-Choose this option if you want to add the project to your own Magnolia bundle. The module code will not be stored on your local system. Add the following dependency to your [bundle](../../../Developing/Bundles-and-webapps/):
+Choose this option if you want to add the project to your own Magnolia bundle. The module code will not be stored on your local system. Add the following dependency to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.documentation</groupId>
   <artifactId>fs-browser-app</artifactId>
-  <version>1.3.0</version> (1)
+  <version>1.3</version> (1)
 </dependency>
 ```
 
@@ -59,7 +59,7 @@ Choose this option if you want to add the project to your own Magnolia bundle. T
 
 Choose this option if you are new to Magnolia or don’t have a development environment. You get the complete app and can use it.
 
-1.  Download the [fs-browser-app-1.3.0.jar](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/documentation/fs-browser-app/1.3.0/fs-browser-app-1.3.0.jar) file from Nexus and follow the standard [module installation instructions](../../../Modules/Installing-a-module/).
+1.  Download the [fs-browser-app-1.3.jar](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/documentation/fs-browser-app/1.3/fs-browser-app-1.3.jar) file from Nexus and follow the standard [module installation instructions](../../../../RNs-6-4-3/Modules/Installing-a-module/).
 
 2.  Copy the JAR into the `<CATALINA_HOME>/webapps/<contextPath>/WEB-INF/lib` folder. Typically, this is `<CATALINA_HOME>/webapps/magnoliaAuthor/WEB-INF/lib`.
 
@@ -85,7 +85,7 @@ To create a custom content app, you need to implement:
 
 ## [](#_creating_a_data_source_definition_and_configuring_data_source_components)Creating a data source definition and configuring data source components
 
-[Data source definition](../../App-configuration/Data-source-definition/) represents the source of data. The `FSDatasourceDefinition` class:
+[Data source definition](../../../../RNs-6-4-3/Apps/App-configuration/Data-source-definition/) represents the source of data. The `FSDatasourceDefinition` class:
 
 -   Extends `info.magnolia.ui.datasource.BaseDatasourceDefinition`.
 
@@ -94,7 +94,7 @@ To create a custom content app, you need to implement:
 -   Adds a root path field to configure the relative root of data objects.
 
 
-[`FSDatasourceDefinition.java`](https://bitbucket.org/magnolia-cms/fs-browser-app)
+[`FSDatasourceDefinition.java`]({repo-fsBrowserApp})
 
 ```java
 public class FSDatasourceDefinition extends BaseDatasourceDefinition {
@@ -117,7 +117,7 @@ public class FSDatasourceDefinition extends BaseDatasourceDefinition {
 
 Next, implement an item resolver component that could return the IDs of items and vice versa.
 
-[`FileItemResolver.java`](https://bitbucket.org/magnolia-cms/fs-browser-app)
+[`FileItemResolver.java`]({repo-fsBrowserApp})
 
 ```java
 public class FileItemResolver implements ItemResolver<File> {
@@ -137,7 +137,7 @@ public class FileItemResolver implements ItemResolver<File> {
 
 Also, you need to implement `info.magnolia.ui.datasource.PropertySetFactory` to be able to read from (and possibly write into) the beans.
 
-[`FSPropertySetFactory.java`](https://bitbucket.org/magnolia-cms/fs-browser-app)
+[`FSPropertySetFactory.java`]({repo-fsBrowserApp})
 
 ```java
 public class FSPropertySetFactory implements PropertySetFactory<File> {
@@ -156,7 +156,7 @@ public class FSPropertySetFactory implements PropertySetFactory<File> {
 
 If required, you can implement an image provider to supply icons and action bar previews.
 
-[`FSImageProvider.java`](https://bitbucket.org/magnolia-cms/fs-browser-app)
+[`FSImageProvider.java`]({repo-fsBrowserApp})
 
 ```java
 public class FSImageProvider implements PreviewProvider<File> {
@@ -209,7 +209,7 @@ Alongside the data source definition and item resolver, you need to implement da
 -   A hierarchical provider which implements fetching of children of a given data element (`info.magnolia.filesystembrowser.app.contentview.HierarchicalFSDataProvider`).
 
 
-[`FSDataProvider.java`](https://bitbucket.org/magnolia-cms/fs-browser-app) (excerpt, fetch method)
+[`FSDataProvider.java`]({repo-fsBrowserApp}) (excerpt, fetch method)
 
 ```java
 public class FSDataProvider extends AbstractBackEndDataProvider<File, DataFilter> {
@@ -225,7 +225,7 @@ public class FSDataProvider extends AbstractBackEndDataProvider<File, DataFilter
 }
 ```
 
-[`HierarchicalFSDataProvider.java`](https://bitbucket.org/magnolia-cms/fs-browser-app) (excerpt, fetch method)
+[`HierarchicalFSDataProvider.java`]({repo-fsBrowserApp}) (excerpt, fetch method)
 
 ```java
 public class HierarchicalFSDataProvider extends AbstractHierarchicalDataProvider<File, DataFilter> {
@@ -248,9 +248,9 @@ public class HierarchicalFSDataProvider extends AbstractHierarchicalDataProvider
 
 ## [](#_content_views_and_presenters)Content views and presenters
 
-[Workbench](../../App-configuration/Workbench-definition/) is a view that displays a list of content items in a workspace. It is typically defined in the `browser` subapp.
+[Workbench](../../../../RNs-6-4-3/Apps/App-configuration/Workbench-definition/) is a view that displays a list of content items in a workspace. It is typically defined in the `browser` subapp.
 
-The workbench contains a list of [content views](../../App-configuration/Content-view-definition/), such as `tree`, `list` and `thumbnail` —  the most common view types available in a typical JCR content app. Other view types can be defined as well.
+The workbench contains a list of [content views](../../../../RNs-6-4-3/Apps/App-configuration/Content-view-definition/), such as `tree`, `list` and `thumbnail` —  the most common view types available in a typical JCR content app. Other view types can be defined as well.
 
 For each view type, you need to implement a custom presenter — a presenter attached to the right data provider. The following are the base presenter classes in the `info.magnolia.ui.contentapp.browser` package.
 
@@ -263,7 +263,7 @@ For each view type, you need to implement a custom presenter — a presenter
 
 Once you have implemented the classes, you must provide type-mapping of the presenters. This is done in the module descriptor.
 
-[`fs-browser-app.xml`](https://bitbucket.org/magnolia-cms/fs-browser-app) (excerpt)
+[`fs-browser-app.xml`]({repo-fsBrowserApp}) (excerpt)
 
 ```xml
     <type-mapping>
@@ -289,7 +289,7 @@ Your data source is now anchored in the content app and is ready to be used. The
 
 You can start with `info.magnolia.filesystembrowser.app.action.DuplicateFileAction`, for example. This action execute method takes a single item from value context (that is an item or a file which is selected in the browser) and duplicates it within the filesystem.
 
-[`DuplicateFileAction.java`](https://bitbucket.org/magnolia-cms/fs-browser-app)
+[`DuplicateFileAction.java`]({repo-fsBrowserApp})
 
 ```java
 public class DuplicateFileAction<D extends DuplicateFileActionDefinition> extends AbstractAction<D> {
@@ -339,7 +339,7 @@ public class DuplicateFileAction<D extends DuplicateFileActionDefinition> extend
 
 All parts of the app are now ready and the app’s configuration can be finalized in the app descriptor. See below a complete YAML definition of the `fs-browser-app`:
 
-[`fs-browser.yaml`](https://bitbucket.org/magnolia-cms/fs-browser-app) (app descriptor)
+[`fs-browser.yaml`]({repo-fsBrowserApp}) (app descriptor)
 
 ```yml
 class: info.magnolia.ui.contentapp.configuration.ContentAppDescriptor

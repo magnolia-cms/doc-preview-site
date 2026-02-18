@@ -1,0 +1,42 @@
+---
+title: "Configuring search in Magnolia"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Configuring-search/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Configuring search in Magnolia
+---
+
+# Configuring search in Magnolia
+
+By default, Magnolia’s search functionality is provided by the Jackrabbit repository which uses the default Lucene algorithm to calculate the score for ranking results.
+
+> **Tip:** For more advanced search options and especially if you need to manage high volumes of assets, you can set up Magnolia to use Solr search.
+
+Jackrabbit allows you to control which properties of a node are indexed and how much they will affect the `jcr:score` value which represents the full-search score of the node serving as a measure of that node’s relevance to the full-text search expression result. Once those properties are defined in the index configuration file, Lucene calculates how to index the content of a workspace.
+
+| `jcr:score` | Text property |
+| --- | --- |
+| 1000 | "Apache Jackrabbit" |
+| 848 | "some test jackrabbit apache, apache is great" |
+| 350 | "this is a text that is much larger than the first one and only contains the word apache once." |
+
+| Property | Description |
+| --- | --- |
+| `suppliers` | **optional** List of search result suppliers. See also [Search result suppliers](#_search_result_suppliers) . |
+| `supplierOrder` | **optional** List defining the ordering of search result groups. |
+| `editorRoles` | **optional** List of user roles available in the **Author** search filter. All users are available unless specified otherwise. |
+| `defaultCountPerSupplier` | **optional** , *default is 50* Integer defining the maximum number of search results shown from any single search supplier. |
+
+| Property | Description |
+| --- | --- |
+| `sortFilterOptions` | **optional** , *default is true* Sorts the filters by their labels from A-Z. It gets the order from the definition mapping. |
+| `searchEnabled` | **optional** *default is true* Enables the full-text search field. |
+| `searchPlaceholder` | **optional** , *default is Type to search…​* Placeholder text for the full-text-search field. |
+| `filters` | **optional** Map of filter configurations. If no filters are defined, only the search field appears. See the following table for filter properties. |
+
+| Status | Description |
+| --- | --- |
+| Published | Content is published from the author instance to the public instance. Identical content exists on both instances. |
+| Modified | Content was modified since publication. The author instance isn’t in sync with the public. |
+| Draft | Content exists only on the author instance. |
+| Marked for deletion | Content is marked for deletion but still appears in the list (grayed out). It can be restored or permanently deleted. |

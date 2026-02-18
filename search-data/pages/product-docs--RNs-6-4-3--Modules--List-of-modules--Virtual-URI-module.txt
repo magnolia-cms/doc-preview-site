@@ -1,0 +1,37 @@
+---
+title: "Virtual URI module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Virtual-URI-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Virtual URI module
+---
+
+# Virtual URI module
+
+| Download | [Download JAR 6.4.3](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/core/magnolia-virtual-uri/6.4.3/magnolia-virtual-uri-6.4.3.jar) |
+| --- | --- |
+| Edition | CE |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MAGNOLIA](https://magnolia-cms.atlassian.net/browse/MAGNOLIA) |
+| Maven site | [Virtual URI](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcore%2Fmagnolia-virtual-uri%2F6.4.3) |
+| Latest | 6.4.3 |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.core</groupId>
+  <artifactId>magnolia-virtual-uri</artifactId>
+  <version>6.4.3</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+## [](#_usage)Usage
+
+See the [Virtual URI mapping](../../../Administration/URI-mapping/Virtual-URI-mapping/) page.

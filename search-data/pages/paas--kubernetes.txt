@@ -107,9 +107,9 @@ When a pod gets created, the new pod is scheduled to run on a node in your clust
 
 In order to manage those scenarios in Kubernetes there are workload resources like deployments or stateful sets:
 
--   Deployments are used for Magnolia [author](../../product-docs/7.0/Getting-started-with-Magnolia/Glossary/#_author_instance) web application pods, since they are stateless and can be replaced if needed.
+-   Deployments are used for Magnolia [author](../../product-docs/RNs-6-4-3/Getting-started-with-Magnolia/Glossary/#_author_instance) web application pods, since they are stateless and can be replaced if needed.
 
--   Stateful sets are used for Magnolia [public](../../product-docs/7.0/Getting-started-with-Magnolia/Glossary/#_public_instance) web application pods, and also for Magnolia database pods, since they both require a state to track.
+-   Stateful sets are used for Magnolia [public](../../product-docs/RNs-6-4-3/Getting-started-with-Magnolia/Glossary/#_public_instance) web application pods, and also for Magnolia database pods, since they both require a state to track.
 
 
 > **Note:** Notice in either deployments or stateful sets, the number of replicas represents the number of pods running on nodes. For example, in order to add a new public instance, the workload’s replicas config would need to be increased by one.

@@ -1,0 +1,66 @@
+---
+title: "Freeze module"
+url: https://docs.magnolia-cms.com/freeze/
+category: Modules
+version: modules
+breadcrumb: Freeze module
+---
+
+# Freeze module
+
+[Content management](../product-docs/RNs-6-4-3/use-cases/content-management/) [Incubator](https://gitlab.magnolia-platform.com/ps/services/freeze) Version [4.0.0](https://magnolia-cms.atlassian.net/browse/FREEZE) [Magnolia 6.4](../product-docs/6.3/) compatible\[[1](#_footnotedef_1 "View footnote.")\]
+
+The **Freeze** module allows you to stop all publication activity on a Magnolia author instance temporarily. Authors can continue to work in the system during the freeze but they cannot version content or publish content. Freeze is useful when you want to swap author instances or you want to make sure that public instances stay in sync during an upscaling event.
+
+The Freeze module provides commands for managing a global freeze flag. With these commands, it’s possible to set and unset the freeze flag.
+
+> **Warning:** With version 2.0, the Freeze module was reorganized into several separate modules:magnolia-freeze: the core Freeze module with minimal dependencies on other Magnolia modules (just Magnolia v5.7 or later, Magnolia publishing v1.0 or later and Magnolia REST v2.1 or latermagnolia-freeze-apps: integration of publication freeze checks into the Magnolia Assets, Pages and Stories appsmagnolia-freeze-personalization: integrate of publication freeze checks into the Magnolia Personalization publication commands
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.freeze</groupId>
+  <artifactId>magnolia-freeze</artifactId>
+  <version>4.0.0</version>
+</dependency>
+```
+
+Add the following dependency to add publication freeze checks to the publication actions in the Pages, Assets and Stories apps:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.freeze</groupId>
+  <artifactId>magnolia-freeze-apps</artifactId>
+  <version>4.0.0</version>
+</dependency>
+```
+
+Add this dependency to add publication freeze checks to activation commands in Magnolia’s Personalization module:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.freeze</groupId>
+  <artifactId>magnolia-freeze-personalization</artifactId>
+  <version>4.0.0</version>
+</dependency>
+```
+
+| Command | Description |
+| --- | --- |
+| `startGlobalFreeze` | Start a global freeze, or continue a global freeze. ** If called multiple times without a corresponding calls to `stopGlobalFreeze` or `toggleGlobalFreeze` , the freeze will stay in place until the same number of calls to `stopGlobalFreeze` are executed or a single call to `toggleGlobalFreeze` is made. | ** | If called multiple times without a corresponding calls to `stopGlobalFreeze` or `toggleGlobalFreeze` , the freeze will stay in place until the same number of calls to `stopGlobalFreeze` are executed or a single call to `toggleGlobalFreeze` is made. |
+| ** | If called multiple times without a corresponding calls to `stopGlobalFreeze` or `toggleGlobalFreeze` , the freeze will stay in place until the same number of calls to `stopGlobalFreeze` are executed or a single call to `toggleGlobalFreeze` is made. |
+| `stopGlobalFreeze` | Attempts to stop a global freeze. The outcome of the attempt is dependent on sequence factors. The index in which the stop is called makes a difference in the default use case. However, using the force parameter in the command context can be used to end a freeze immediately. Set the boolean parameter to true to force the stop to be final. |
+| `toggleGlobalFreeze` | Toggles the state of the flag. Will start a global freeze if a freeze is not active or end a global freeze is one is currently active. ** Using `toggleGlobalFreeze` will always start or stop a freeze, even if a freeze has been invoked multiple times. | ** | Using `toggleGlobalFreeze` will always start or stop a freeze, even if a freeze has been invoked multiple times. |
+| ** | Using `toggleGlobalFreeze` will always start or stop a freeze, even if a freeze has been invoked multiple times. |
+| `checkGlobalFreeze` | Check the state of the freeze flag. Will return `false` if a global freeze is active and `true` if not. You can use this command in command chains to check if a global freeze is in place. |
+
+| Version | Notes |
+| --- | --- |
+| `4.0.0` | Release for Magnolia 6.4 compatibility. [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20FREEZE%20AND%20fixVersion%20%3D%204.0.0) |
+
+* * *
+
+[1](#_footnoteref_1). This module was last tested on Magnolia 6.4. If you are using a previous Magnolia release or version, please take this into consideration.

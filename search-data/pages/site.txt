@@ -1,0 +1,78 @@
+---
+title: "Site module"
+url: https://docs.magnolia-cms.com/site/
+category: Modules
+version: modules
+breadcrumb: Site module
+---
+
+# Site module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [MGNLSITE](https://magnolia-cms.atlassian.net/browse/MGNLSITE) |
+| Git | [Git](https://gitlab.magnolia-platform.com/pd/modules/site) |
+| Maven site | [Site](https://nexus.magnolia-cms.com/service/rest/repository/browse/magnolia.public.sites/modules/site/) |
+| Latest | {magnolia-site-64} |
+
+## [](#_modules)Modules
+
+Magnolia’s Site module reactor consists of the following submodules:
+
+-   Site
+
+-   Site Themes
+
+-   Site JCR
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your bundle:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.site</groupId>
+  <artifactId>magnolia-site</artifactId>
+  <version>{magnolia-site-64}</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.site</groupId>
+  <artifactId>magnolia-site-themes</artifactId>
+  <version>{magnolia-site-64}</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.site</groupId>
+  <artifactId>magnolia-site-jcr</artifactId>
+  <version>{magnolia-site-64}</version>
+</dependency>
+```
+
+| Property | Description |
+| --- | --- |
+| `templates` | **optional** |
+| `prototype` | **optional** The [template prototype](../product-docs/RNs-6-4-3/Developing/Templating/Site-definition/Template-prototype/) is a master template definition which applies to the whole site. Anything you configure in the prototype is applied to all page templates. |
+| `availability` | **optional** Template availability defines which [page templates](../product-docs/RNs-6-4-3/Developing/Templating/Template-definition/Page-definition/) are available to the editors using the [Pages app](../product-docs/RNs-6-4-3/Apps/List-of-apps/Pages-app/) . There are more ways to control [page template availability](../product-docs/RNs-6-4-3/Developing/Templating/Template-availability/#_page_template_availability) . |
+| `enabled` | **optional,** *default is true* Enables and disables the site definition. |
+| `domains` | **optional** Maps domain names to the site. Requires the [Multisite module](../multisite/3.0.0/) . |
+| `theme` | **optional** Reference to a [theme](../product-docs/RNs-6-4-3/Developing/Templating/Theme/) that defines the look and feel of the site. |
+| `i18n` | **optional** Node containing a [locale](../product-docs/RNs-6-4-3/Administration/Language/Language-configuration/) configuration, with which you can add support for entering and serving content in multiple languages in your project. ** For the properties configurable under the `i18n` node, see the separate [i18n node properties table below](#_i18n_node) . | ** | For the properties configurable under the `i18n` node, see the separate [i18n node properties table below](#_i18n_node) . |
+| ** | For the properties configurable under the `i18n` node, see the separate [i18n node properties table below](#_i18n_node) . |
+| `mappings` | **optional** [URI mappings](../product-docs/RNs-6-4-3/Administration/URI-mapping/) that define which node in a workspace should be served when a particular URI is requested. |
+| `trustedProxyConfig` | **optional** Configuration of a [trusted proxy headers filter](../product-docs/RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/Filters/#_trusted_proxy_headers) for the given site. `travel ... trustedProxyConfig: forwardingEnabled: true headers: xForwardedFor: name: x_forwarded_for values: 0: example.com ...` ** Incorrect filter configuration may block all user traffic. If access to Magnolia is blocked by an incorrect filter configuration, you can fix this by decorating the site config and overriding the incorrect values. Filter configuration parameters determine which headers are allowed or checked by this filter. • If `forwardingEnabled` is set to `false` (default), the filter blocks requests containing specific headers. This is to ensure security when proxy headers aren’t expected. The default setting prevents undesired traffic blocking. • If `forwardingEnabled` is set to `true` , the filter checks the values of specific headers in incoming requests. Requests with unexpected header values are blocked for security reasons. Available header names: • `x_forwarded_for` for `X-Forwarded-For` • `x_forwarded_host` for `X-Forwarded-Host` • `x_forwarded_proto` for `X-Forwarded-Proto` • `x_forwarded_port` for `X-Forwarded-Port` ** When using a proxy in front of Magnolia, it’s highly recommended to apply IP filtering in Tomcat so that only requests from the trusted proxy would be processed. For more details about setting IP filtering, see [Remote Address Valve](https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html#Remote_Address_Valve) . | ** | Incorrect filter configuration may block all user traffic. If access to Magnolia is blocked by an incorrect filter configuration, you can fix this by decorating the site config and overriding the incorrect values. | ** | When using a proxy in front of Magnolia, it’s highly recommended to apply IP filtering in Tomcat so that only requests from the trusted proxy would be processed. For more details about setting IP filtering, see [Remote Address Valve](https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html#Remote_Address_Valve) . |
+| ** | Incorrect filter configuration may block all user traffic. If access to Magnolia is blocked by an incorrect filter configuration, you can fix this by decorating the site config and overriding the incorrect values. |
+| ** | When using a proxy in front of Magnolia, it’s highly recommended to apply IP filtering in Tomcat so that only requests from the trusted proxy would be processed. For more details about setting IP filtering, see [Remote Address Valve](https://tomcat.apache.org/tomcat-9.0-doc/config/valve.html#Remote_Address_Valve) . |
+| `parameters` | **optional** [Custom template properties](../product-docs/RNs-6-4-3/Developing/Templating/Template-definition/#_custom_template_properties) that you can access from a script without having to write a class. |
+| `variations` | **optional** Variations adapt the site for different devices or geographical locations. |
+| `cors` | **optional** A CORS configuration for the site definition. For configuration details, see [Request processing and filters: Properties](../product-docs/RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/CORS/#_properties) . |
+
+## [](#_usage)Usage
+
+See [Site definition](../product-docs/RNs-6-4-3/Developing/Templating/Site-definition/).

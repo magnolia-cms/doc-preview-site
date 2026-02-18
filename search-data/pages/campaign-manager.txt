@@ -1,0 +1,50 @@
+---
+title: "Campaign manager module"
+url: https://docs.magnolia-cms.com/campaign-manager/
+category: Modules
+version: modules
+breadcrumb: Campaign manager module
+---
+
+# Campaign manager module
+
+[Content management](../product-docs/RNs-6-4-3/use-cases/content-management/) [Unbundled: Extension](https://gitlab.magnolia-platform.com/pd/extensions/campaign) Version [5.0.3](https://magnolia-cms.atlassian.net/browse/CAMPMAN) [Magnolia 6.4](../product-docs/RNs-6-4-3/) compatible
+
+The Campaign Manager module allows you to create, manage and schedule campaigns and rich banners in one place with comprehensive editing options.
+
+![flyer campaign orchestration](_images/flyer-campaign-orchestration.png)
+
+Use the Campaign Manager module to craft appealing campaigns with complex layouts.
+
+Each campaign you create is essentially a component you can then use in a page. While content apps focus on managing structured content, the Campaign Manager module provides an authoring experience similar to that of the Pages editor with visual feedback and layout capabilities.
+
+> **Warning:** Versions prior to 2.0.4Used a different artifactId. Please make note of the change.Used a version of the template-extended module which had a different artifactId. Be sure you don’t have templating-extended.jar in your classpath after updating.
+
+> **Note:** Before you can apply the YAML decoration to the Campaign manager creative template, you need to remove the config of module from the Configuration app.
+
+> **Tip:** See an overview of differences between FreeMarker and headless templating.
+
+## [](#_business_cases_for_using_campaign_manager)Business cases for using Campaign Manager
+
+1.  **Multi-channel campaign coordination**: Consolidate and manage marketing efforts across various channels (web, email, social media) from a single platform, ensuring consistent messaging and branding.
+
+2.  **Targeted content delivery**: Create and schedule campaigns tailored to specific audience segments, enhancing personalization and engagement.
+
+3.  **Performance tracking**: Monitor campaign effectiveness through integrated analytics, allowing real-time adjustments and improvements.
+
+    In particular, you can send events to your analytics provider using the [campaign ID](configuration/#_using_campaigns_on_sites) of the component containing your campaigns to get an impression of what users have looked at. Configuration in the Campaign Manager involves adding an analytics tracking ID into the creative component’s metadata. This tracking tag is then the key to performance analytics.
+
+4.  **Resource efficiency**: Streamline content creation and approval workflows, reducing time-to-market for campaigns.
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.campaign</groupId>
+  <artifactId>magnolia-campaign-manager</artifactId>
+  <version>5.0.3</version>
+</dependency>
+```

@@ -1,0 +1,79 @@
+---
+title: "Embed"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/embed/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Embed
+---
+
+# Embed
+
+The Embed component lets you display embedded content from platforms like YouTube, Pinterest, X (Twitter), or insert custom HTML.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `embedChooser` (required, default: `pinterest`) - A switchable field to choose the type of embedded content:
+
+    -   `pinterest` - Displays a Pinterest pin:
+
+        -   `pinterestURL` (required) - URL of the Pinterest pin.
+
+
+    -   `twitter` - Displays a Tweet:
+
+        -   `twitterURL` (required) - URL of the post on X (formerly Twitter).
+
+
+    -   `youtube` - Embeds a YouTube video:
+
+        -   `youtubeVideoTitle` (required) - Title for the video.
+
+        -   `youtubeVideoID` (required) - The YouTube video ID.
+
+        -   `youtubeVideoWidth` (optional) - Width in pixels (default: `560`).
+
+        -   `youtubeVideoHeight` (optional) - Height in pixels (default: `315`).
+
+
+    -   `html` - Embeds custom code:
+
+        -   `html` (required) - Raw HTML to be embedded. Provided via code field.
+
+
+
+
+## [](#_behavior)Behavior
+
+-   Based on the selected embed type, the component renders the corresponding embed code:
+
+    -   Pinterest and X use platform-specific embedding via URL.
+
+    -   YouTube embed uses the video ID and optional dimensions.
+
+    -   HTML option renders the raw HTML directly.
+
+
+-   Only one embed type can be used at a time.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Embed -p embed
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

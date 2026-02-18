@@ -16,13 +16,13 @@ A best practice is a way of working that consistently yields better results. Bes
 
 We recommend that you allocate at least 50GB of disk space for an author instance and 25GB for a public instance.
 
-See [Disk space](../../Getting-started-with-Magnolia/Installing-Magnolia/Disk-space/)
+See [Disk space](../../../RNs-6-4-3/Getting-started-with-Magnolia/Installing-Magnolia/Disk-space/)
 
 ## [](#_apps)Apps
 
 ### [](#_changing_the_location_in_the_app_ui)Changing the location in the app UI
 
-See [Location, location, location](../../Apps/Developing-an-app/Specific-aspects/Location-location-location/)
+See [Location, location, location](../../../RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Location-location-location/)
 
 ### [](#_add_a_container_instance_in_your_contentconnector)Add a Container instance in your ContentConnector
 
@@ -30,7 +30,7 @@ Make the Container instance available in your ContentConnector. This makes it ea
 
 ### [](#_displaying_content_stored_in_apps)Displaying content stored in apps
 
-See [Search](../../use-cases/search-and-discovery/)
+See [Search](../../../RNs-6-4-3/use-cases/search-and-discovery/)
 
 ### [](#_define_as_a_component_anything_that_is_likely_to_change)Define as a component anything that is likely to change
 
@@ -38,9 +38,9 @@ Defining something as a component allows other developers to quickly change the 
 
 Examples
 
--   [Defining an app or subapp as a component](../../Apps/Developing-an-app/General-aspects/Programming-an-app/)
+-   [Defining an app or subapp as a component](../../../RNs-6-4-3/Apps/Developing-an-app/General-aspects/Programming-an-app/)
 
--   [Write your own views](../../Apps/Developing-an-app/Specific-aspects/Customizing-an-app/)
+-   [Write your own views](../../../RNs-6-4-3/Apps/Developing-an-app/Specific-aspects/Customizing-an-app/)
 
 
 ## [](#_fields)Fields
@@ -53,147 +53,44 @@ The delegating transformer classes should be your first choice since they are th
 
 ### [](#_checking_for_null_values)Checking for null values
 
-See [Field validators](../Templating/Dialog-definition/Field-definition/Field-validators/)
+See [Field validators](../../../RNs-6-4-3/Developing/Templating/Dialog-definition/Field-definition/Field-validators/)
 
 ## [](#_internal_linking)Internal linking
 
 Implementing internal links in Magnolia involves deciding how to resolve and handle links between nodes in the JCR repository. Each approach, `JcrNodeToPathConverter`, `JcrNodeToIdConverter`, or relying on the Magnolia core templating functions, offers unique advantages and trade offs depending on project requirements.
 
-See [Internal linking best practices](../best-practices/internal-linking/) for more details.
+See [Internal linking best practices](../../../RNs-6-4-3/Developing/best-practices/internal-linking/) for more details.
 
-## [](#_http_headers_and_security_best_practices)HTTP headers and security best practices
-
-In this subsection, we provide some ideas how you can improve security through select HTTP headers.
-
-### [](#_content_security_policy_csp_header)Content Security Policy (CSP) header
-
-Content Security Policy governs what a web browser (or a user agent, in general) is allowed to load as part of a page. Setting a CSP header allows the creator of a page to control what other resources might be loaded by the underlying HTML or JavaScript code. This is a powerful way to mitigate many Cross-site scripting (XSS) and clickjacking attacks.
-
-> **Important:** CSP configuration is mandatory for production deployments. You should configure a restrictive CSP on all HTML resources before deploying to production.CSP Level 2 is supported by all major browsers and should be used for production deployments.
-
-You should list, as part of the header value, the origin and all the endpoints required for the page to function. However, if you allow any endpoint that is not within your control, you are opening a hole through which an attack might be staged.
-
-If necessary, we recommend you customize the header to define your own whitelist.
-
--   Create a new filter manually in the [Configuration app](../../Apps/List-of-apps/Configuration-app/) and add the `Content-Security-Policy` property under it.
-
--   An example configuration could look similar to the one below. The path `server/filters/HeaderFilterOne` is only a suggestion. When adding CSP headers, you only need to place the header values into the `Content-Security-Policy` property.
-
-    |     |     |
-    | --- | --- |
-    | 📁 server |     |
-    | 📁 filters |     |
-    | 📁 HeaderFilterOne |     |
-    | ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
-    | ⬩ enabled | true |
-    | 📁 headers |     |
-    | ⬩ Content-Security-Policy | default-src \`self' \`unsafe-inline' \`unsafe-eval' [https://ga-dev-tools.appspot.com](https://ga-dev-tools.appspot.com) [https://apis.google.com](https://apis.google.com) [https://www.google.com](https://www.google.com) [https://content.googleapis.com](https://content.googleapis.com) [https://ajax.googleapis.com](https://ajax.googleapis.com) ; img-src \`self' data:; |
-
-
-> **Note:** The Vaadin framework performs the CSP check explicitly instead of relying on browser to do so as part of policy execution. You can see official Vaadin statement here.
-
-#### [](#_strong_csp_level_2_policy_example)Strong CSP level 2 policy example
-
-For production deployments, use a restrictive CSP Level 2 policy such as the example one below.
-
-```text
-Content-Security-Policy: default-src 'none'; script-src 'nonce-r4nd0mN0nce'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; report-uri https://cspreport.example.com/log
-```
-
-This policy:
-
--   `default-src 'none'` - Blocks all resources by default
-
--   `script-src 'nonce-r4nd0mN0nce'` - Only allows scripts with the specified nonce
-
--   `frame-ancestors 'none'` - Prevents the page from being embedded in frames (clickjacking protection)
-
--   `base-uri 'self'` - Restricts base element URLs to same origin
-
--   `form-action 'self'` - Restricts form submissions to same origin
-
--   `report-uri` - Sends violation reports to the specified endpoint
-
-
-#### [](#_development_configuration)Development configuration
-
-During development, you can enable reporting of violations without blocking content by using the `Content-Security-Policy-Report-Only` header instead of `Content-Security-Policy`. This allows you to test and refine your policy before enforcing it in production.
-
-#### [](#_json_requests_are_processed_when_content_type_is_textplain)JSON requests are processed when Content-Type is text/plain?
-
-This does not present a security vulnerability in Vaadin. Vaadin doesn’t enforce `Content-Type: application/json` because it doesn’t rely on it for security.
-
-Requests with an incorrect `Content-Type` fail if the content is malformed. This ensures compatibility with technologies like Portlets. For more details, see [Advanced Vaadin Topics: Content Type Incorrectly Stated](https://vaadin.com/docs/latest/flow/security/advanced-topics/frequent-issues#content-type-incorrectly-stated).
-
-Vaadin secures requests using CSRF tokens, not `Content-Type` validation.
-
-#### [](#_csp_evaluation_and_testing)CSP evaluation and testing
-
-Use the [CSP Evaluator tool](https://csp-evaluator.withgoogle.com/) to test and validate your Content Security Policy configuration. This tool helps identify potential security issues and provides recommendations for improving your policy.
-
-See also
-
--   [github.com: Insufficient Content-Type: application/json Validation](https://github.com/vaadin/framework/issues/9492#issuecomment-306716024)
-
--   [Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
-
--   [MDN: Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
-
-
-### [](#_strict_transport_security_sts_header)`Strict-Transport-Security` (STS) header
-
-The STS header informs the browser that a page should only be accessed over the HTTPS protocol. The browser will use this knowledge and set all future requests for the same domain to go through HTTPS automatically, thus preventing the extra round trip that might be required otherwise.
-
-Using HTTPS instead of HTTP enables traffic encryption between the page and the client, preventing anyone from intercepting the communication. Using this header is considered more secure than using the 301 redirect on the server when an attempt for the over-the-HTTP access is made.
-
-See also:
-
--   [HSTS - Web Security Best Practices](https://www.checkbot.io/guide/security/hsts/)
-
--   [MDN: Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
-
-
-### [](#_x_content_type_options_xcto_header)`X-Content-Type-Options` (XCTO) header
-
-XCTO is a marker header that tells the client that the media types (MIME types) advertized as part of the Content-Type headers should be strictly followed and not changed. This helps avoid *MIME Type Sniffing*.
-
-See also:
-
--   [MDN: X-Content-Type-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options)
-
-
-### [](#_x_frame_options_xfo_header)`X-Frame-Options` (XFO) header
-
-Setting the XFO header tells the browser that the given page is not allowed to be embedded in another page. This header setting helps mitigate stealing content, *clickjacking* (UI redress attack) or allowing malicious sites to pose as the regular ones and fool the users to not check the URLs closely but think instead that they are on a safe page when they are actually not.
-
-See also:
-
--   [Current best practices to restrict framing in the browser](https://pragmaticwebsecurity.com/articles/securitypolicies/preventing-framing-with-policies.html)
-
--   [MDN: X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
-
+| 📁 server |  |
+| --- | --- |
+| 📁 filters |  |
+| 📁 HeaderFilterOne |  |
+| ⬩ class | info.magnolia.cms.filters.AddHeadersFilter |
+| ⬩ enabled | true |
+| 📁 headers |  |
+| ⬩ Content-Security-Policy | default-src `self' `unsafe-inline' `unsafe-eval' [https://ga-dev-tools.appspot.com](https://ga-dev-tools.appspot.com) [https://apis.google.com](https://apis.google.com) [https://www.google.com](https://www.google.com) [https://content.googleapis.com](https://content.googleapis.com) [https://ajax.googleapis.com](https://ajax.googleapis.com) ; img-src `self' data:; |
 
 ## [](#_language)Language
 
 ### [](#_provide_a_message_bundle)Provide a message bundle
 
-With [message bundles](../../Administration/Language/Internationalization/) a translator can work with a plain text file and doesn’t need to touch the code.
+With [message bundles](../../../RNs-6-4-3/Administration/Language/Internationalization/) a translator can work with a plain text file and doesn’t need to touch the code.
 
-See [Internationalization](../../Administration/Language/Internationalization/)
+See [Internationalization](../../../RNs-6-4-3/Administration/Language/Internationalization/)
 
 ### [](#_use_utf_8)Use UTF-8
 
 Magnolia requires everyone to use UTF-8 character encoding in `.properties` files.
 
-See [Internationalization](../../Administration/Language/Internationalization/)
+See [Internationalization](../../../RNs-6-4-3/Administration/Language/Internationalization/)
 
 ### [](#_avoid_hard_coded_strings)Avoid hard-coded strings
 
 Avoid hard-coded strings exposed to visitors, editors or administrators. Always allow localization of texts displayed on the website and in Magnolia Shell.
 
-See [Types of translatable text](../../Administration/Language/Types-of-translatable-text/)
+See [Types of translatable text](../../../RNs-6-4-3/Administration/Language/Types-of-translatable-text/)
 
-See [Types of translatable text](../../Administration/Language/Types-of-translatable-text/)
+See [Types of translatable text](../../../RNs-6-4-3/Administration/Language/Types-of-translatable-text/)
 
 ## [](#_modules)Modules
 
@@ -203,13 +100,13 @@ To create a custom Magnolia webapp, always start with a *preconfigured* Magnolia
 
 Use the `properties` section to define versions. The section may the serve as a central part for organizing all versions required by your project.
 
-See [Creating a custom webapp with Maven](../Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/)
+See [Creating a custom webapp with Maven](../../../RNs-6-4-3/Developing/Bundles-and-webapps/Creating-a-custom-webapp-with-Maven/)
 
 ### [](#_create_separate_modules_for_templates_content_and_resources)Create separate modules for templates, content and resources
 
 When you are creating a website project, you should have one module for templates, another module for content, a third for a theme and so on.
 
-See [Modules](../../Modules/)
+See [Modules](../../../RNs-6-4-3/Modules/)
 
 ## [](#_multisite)Multisite
 
@@ -231,7 +128,7 @@ Disable the `uri-starts-with-sitename` rule in the public context.
 
 Add an additional voter AdminOnlyMatcher to the rule. This way you can use the same configuration on both the author and public instances.
 
-See [How to use Multisite](../Templating/Site-definition/How-to-use-Multisite/)
+See [How to use Multisite](../../../RNs-6-4-3/Developing/Templating/Site-definition/How-to-use-Multisite/)
 
 ## [](#_personalization)Personalization
 
@@ -239,19 +136,19 @@ See [How to use Multisite](../Templating/Site-definition/How-to-use-Multisite/)
 
 Every trait has inherent allowed values. For example, locations are countries, ages are numbers, and genders are either male or female. Create traits that have a clear set of allowed values. Traits that have vague values are difficult to detect and assign. Also, make sure the trait applies to the majority of your audience. "New vs. returning visitor" is a good trait because the values are easy to detect and it applies to every visitor.
 
-See [Personalization](../../use-cases/Personalization/)
+See [Personalization](../../../RNs-6-4-3/use-cases/Personalization/)
 
 ### [](#_create_a_segment_only_when_you_know_your_audience_well)Create a segment only when you know your audience well
 
 Create a segment only when you know your audience well and have targeted at least one successful campaign to them using local rules. Visitors who share a combination of traits are good candidates for segmentation if they respond well to personalization. For example, add visitors who previously bought a product to a "Previous buyers" segment and offer them a discount as a reward for return business. Segmentation helps you repeat successful personalization experiments. Start with local rules, move to segmentation later.
 
-See [Personalization](../../use-cases/Personalization/)
+See [Personalization](../../../RNs-6-4-3/use-cases/Personalization/)
 
 ## [](#_resources)Resources
 
 ### [](#_use_a_dedicated_css_pre_processor)Use a dedicated CSS pre-processor
 
-See [Resources](../Resources/)
+See [Resources](../../../RNs-6-4-3/Developing/Resources/)
 
 ## [](#_rest)REST
 
@@ -283,7 +180,7 @@ Following these best practices help improve the response times and performance f
 
     Using cache can boost the performance of your endpoint. The default cache response threshold value is `500`. This means that responses for data larger than 500 kilobytes are not cached.
 
-    If your endpoint will be handling much larger chunks of data, consider modifying the `cacheResponseThreshold` property accordingly. For more details, see [cache threshold](../../Modules/List-of-modules/Cache-modules/Cache-core/#_cache_threshold).
+    If your endpoint will be handling much larger chunks of data, consider modifying the `cacheResponseThreshold` property accordingly. For more details, see [cache threshold](../../../RNs-6-4-3/Modules/List-of-modules/Cache-modules/Cache-core/#_cache_threshold).
 
 
 ## [](#_security)Security
@@ -292,19 +189,19 @@ Following these best practices help improve the response times and performance f
 
 Create a new app group for your own apps, especially if you have multiple apps. This approach is better than placing your apps in the native Magnolia groups. A dedicated group gives your organization’s apps an identity and makes them instantly recognizable.
 
-See [App permissions](../../Administration/IAM/App-permissions/)
+See [App permissions](../../../RNs-6-4-3/Administration/IAM/App-permissions/)
 
 ### [](#_provision_apps_only_to_users_who_need_them)Provision apps only to users who need them
 
 Provision apps only to users who actually need them. This ensures that the app launcher stays uncluttered and users find apps quickly.
 
-See [App permissions](../../Administration/IAM/App-permissions/)
+See [App permissions](../../../RNs-6-4-3/Administration/IAM/App-permissions/)
 
 ### [](#_ldap_groups)LDAP groups
 
 When you store groups in LDAP, create one matching group per role in Magnolia. Assign roles to the group in Magnolia in order to grant users the permissions they need. This minimizes the number of groups you need to create in Magnolia.
 
-See [Group resolving](../../Modules/List-of-modules/LDAP-Connector-module/)
+See [Group resolving](../../../RNs-6-4-3/Modules/List-of-modules/LDAP-Connector-module/)
 
 ## [](#_separate_message_bundles)Separate message bundles
 
@@ -312,9 +209,9 @@ Create separate message bundles for user interface labels and template labels. D
 
 **Example**: Message files in the Travel Demo
 
--   [`module-travel-demo-backend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (user interface labels)
+-   [`module-travel-demo-backend_en.properties`]({repo-travelDemo}) (user interface labels)
 
--   [`module-travel-demo-frontend_en.properties`](https://bitbucket.org/magnolia-cms/travel-demo) (template labels)
+-   [`module-travel-demo-frontend_en.properties`]({repo-travelDemo}) (template labels)
 
 
 ## [](#_workflow_and_tasks)Workflow and tasks
@@ -323,10 +220,10 @@ Create separate message bundles for user interface labels and template labels. D
 
 Do not use tasks if you don’t have any human activity in your workflow. They are great for humans but unnecessary for operations that only involve the system itself.
 
-See [Tasks](../../Features/Tasks/)
+See [Tasks](../../../RNs-6-4-3/Features/Tasks/)
 
 ### [](#_configure_your_content_staging_instance_as_a_public_instance)Configure your content staging instance as a public instance
 
 Configure your content staging instance as a public instance so that users cannot edit pages on it. The Pages app does not display the green edit bars on public instances. You typically don’t want reviewers to change content on the staging instance. While reviewers may need permission to log into the AdminCentral to review functionality such as new apps, they should not edit pages. The staging instance is intended for testing and approving only. If something is not correct, fix it on the author instance and publish again to staging for another test.
 
-See [Content staging](../../Administration/Instances/Content-staging/)
+See [Content staging](../../../RNs-6-4-3/Administration/Instances/Content-staging/)

@@ -1,0 +1,40 @@
+---
+title: "How to delete a JCR workspace"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Architecture/Workspaces/How-to-delete-a-JCR-workspace/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Workspaces > How to delete a JCR workspace
+---
+
+# How to delete a JCR workspace
+
+This page explains how to delete a JCR workspace on a Magnolia system.
+
+## [](#_jcr_api_and_jackrabbit)JCR API and Jackrabbit
+
+You *cannot* delete a JCR workspace programmatically with Magnolia. You must delete it manually.
+
+[Apache Jackrabbit](http://jackrabbit.apache.org/), which is the JCR implementation used by Magnolia, doesn’t implement the `#deleteWorkpace` method defined in the JCR 2.0 API (see [javax.jcr.Workspace](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Workspace.html)).
+
+`org.apache.jackrabbit.core.WorkspaceImpl#delete`
+
+```java
+public void deleteWorkspace(String name) throws AccessDeniedException, UnsupportedRepositoryOperationException, RepositoryException {
+  this.context.getRepository().getWorkspaceInfo(name);
+  this.context.getAccessManager().checkRepositoryPermission(32768);
+  throw new UnsupportedRepositoryOperationException("not yet implemented");
+}
+```
+
+For more information, see [ApacheJackrabbit - Frequently Asked Questions](https://jackrabbit.apache.org/jcr/frequently-asked-questions.html#How_do_I_delete_a_workspace_in_Jackrabbit).
+
+| `magnolia.repositories.home` | `/var/lib/author/tomcat/webapps/author/repositories` |
+| --- | --- |
+| Workspace name | `dms` |
+| Folder to delete | `/var/lib/author/tomcat/webapps/author/repositories/magnolia/workspaces/dms` |
+
+## [](#_multiple_instances_and_clustering)Multiple instances and clustering
+
+Depending on how your Magnolia [instances](../../../Instances/) are set up and if you use [clustering](../../../Instances/Clustering/), you must delete a workspace in one or several locations.
+
+> **Note:** Make sure you delete the workspace on both the author instance and on all public instances.

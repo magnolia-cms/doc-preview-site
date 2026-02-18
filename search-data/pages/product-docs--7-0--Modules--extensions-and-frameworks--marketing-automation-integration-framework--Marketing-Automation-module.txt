@@ -8,39 +8,30 @@ breadcrumb: DX Core > Modules > Marketing automation integration framework > Ado
 
 # Marketing Automation module
 
-[Customer data](../../../../use-cases/customer-data/) Unbundled: [Extension](../../../#_module_types) License: [Special license](../../../../Administration/License/#_special_licenses)\[[1](#_footnotedef_1 "View footnote.")\]
-
-|     |     |
-| --- | --- |
 | **License** | [MLA](https://www.magnolia-cms.com/mla.html) |
+| --- | --- |
 | **Issues** | [MKTAUT](http://jira.magnolia-cms.com/browse/MKTAUT) |
 | **Maven site** | [marketingautomation](https://nexus.magnolia-cms.com/repository/magnolia.addons.releases/info/magnolia/marketingautomation/) |
-| **Latest** | 3.0.0 |
-| **[Available on SPA/Headless](../../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features)** | Yes |
-
-The Marketing Automation integration framework allows you to capture leads on your website. This feature is commonly called web-to-lead.
-
-Use the Marketing Automation modules to connect your third-party marketing software solution to Magnolia. Render a form configured in your marketing software solution as a Magnolia form and automatically send the lead data back to your solution. We provide out-of-the-box connectors for Marketo and Salesforce Sales Cloud. The Salesforce connector stores the captured leads as [Lead objects](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_lead.htm) in Salesforce. The Marketo connector stores them in Marketo.
-
-## [](#_module_structure)Module structure
+| **Latest** | {magnolia-marketing-automation-64} |
+| **Available on SPA/Headless** | Yes |
 
 | artifactID | Description |
 | --- | --- |
 | `magnolia-marketing-automation-parent` | Parent reactor. |
 | `magnolia-marketing-automation` | Provides the foundation and the API for marketing automation. |
 | `magnolia-marketing-automation-ui` | Provides the sample templating scripts and component definitions to quickly enable external forms in your Magnolia pages. |
-| `magnolia-marketing-automation-marketo-connector` | Provides a default implementation to connect to [Marketo](https://www.marketo.com/). |
-| `magnolia-marketing-automation-salesforce-connector` | Provides a default implementation to connect to [Salesforce Sales Cloud](https://www.salesforce.com/). |
+| `magnolia-marketing-automation-marketo-connector` | Provides a default implementation to connect to [Marketo](https://www.marketo.com/) . |
+| `magnolia-marketing-automation-salesforce-connector` | Provides a default implementation to connect to [Salesforce Sales Cloud](https://www.salesforce.com/) . |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.marketingautomation</groupId>
   <artifactId>magnolia-marketing-automation</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-marketing-automation-64}</version> (1)
 </dependency>
 ```
 
@@ -52,7 +43,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.marketingautomation</groupId>
   <artifactId>magnolia-marketing-automation-ui</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-marketing-automation-64}</version> (1)
 </dependency>
 ```
 
@@ -64,7 +55,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.marketingautomation</groupId>
   <artifactId>magnolia-marketing-automation-marketo-connector</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-marketing-automation-64}</version> (1)
 </dependency>
 ```
 
@@ -76,7 +67,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.marketingautomation</groupId>
   <artifactId>magnolia-marketing-automation-salesforce-connector</artifactId>
-  <version>3.0.0</version> (1)
+  <version>{magnolia-marketing-automation-64}</version> (1)
 </dependency>
 ```
 
@@ -84,513 +75,29 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 | --- | --- |
 | **1** | Should you need to specify the module version, do it using `<version>`. |
 
-## [](#_configuration)Configuration
-
-> **Tip:** See an overview of differences between FreeMarker and headless templating.
-
-This section explains how to configure the connection between the Marketing Automation module and your external marketing software solution. Essentially, you:
-
--   Provide connection details for your external solution.
-
--   Map your external solution fields to Magnolia field types.
-
--   Configure the cache if necessary.
-
-
-You can create or edit the configuration in the JCR or the File System (YAML) under `<module-name>/marketing-automations/<definition-name>`.
-
-Before you configure the connection, make sure you know:
-
--   Which solution you want to connect to. Default implementations are provided for:
-
-    -   Marketo
-
-    -   Salesforce Sales Cloud
-
-
--   The relevant URLs to connect to your external marketing software solution.
-
--   Connection credentials for your solution.
-
-
-> **Tip:** The Marketing Automation integration framework provides out-of-the-box connectors to the Marketo and Salesforce Sales Cloud. If you use another third-party marketing software solution, you can write your own implementation to configure your own connector.
-
-### [](#_marketo_connection_configuration)Marketo connection configuration
-
-To use Marketo forms in Magnolia, you must have a working Marketo account.
-
-#### [](#_licensing)Licensing
-
-The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../Administration/License/).
-
-#### [](#_credentials)Credentials
-
-You need Marketo credentials to access the forms. Credentials consist of two parts:
-
--   clientId
-
--   clientSecret
-
-
-You can configure these credentials in the `/marketing-automation-marketo/marketing-automations/marketo.yaml` file.
-
-Alternatively, you can add the `clientSecret` part of your credentials to your Magnolia instance in the [Password manager app](../../../../Apps/List-of-apps/Passwords-app/) and reference the path in the configuration.
-
-#### [](#_connecting)Connecting
-
-Add your connection configuration to the connections list (see YAML line 12).
-
-Magnolia provides a default implementation to retrieve forms and leads from Marketo (YAML lines 4-11).
-
--   The default configuration is to create or update leads using [API](https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update) (see YAML line 17). This `submittedActionType` property can only be used with `submitBy: info.magnolia.mkautomation.marketo.forms.SubmitBy`. (line )
-
-
-/marketing-automation-marketo/marketing-automations/marketo.yaml
-
-```yml
-class: info.magnolia.mkautomation.definition.DefaultMarketingFormDefinition
-enabled: true
-type: marketo
-implementation:
-  forms:
-    all: info.magnolia.mkautomation.marketo.forms.All
-    byId: info.magnolia.mkautomation.marketo.forms.ById
-    byName: info.magnolia.mkautomation.marketo.forms.ByName
-    submitBy: info.magnolia.mkautomation.marketo.forms.SubmitBy
-  leads:
-    searchBy: info.magnolia.mkautomation.marketo.leads.SearchByFilterType
-connection:
-  baseUrl: https://641-OQJ-158.mktorest.com
-  authUrl: https://641-OQJ-158.mktorest.com/identity/oauth/token
-  clientId: b96f40ff-38fb-4832-ab80-080c067debe7
-  clientSecret: client_secret_or_path_to_password_manager
-formSelectorId: marketing-automation-ui:fieldsSelectionForm
-submittedActionType: createOrUpdate  # Default is createOrUpdate. Another type can be createOnly, updateOnly, or createDuplicate
-```
-
--   If you want to provide functionality equivalent to a Marketo Form submission and support, create a *Fill out Form* activity by replacing `submitBy` (see YAML line 9) with `info.magnolia.mkautomation.marketo.forms.SubmitForm`. This will sync leads to Marketo using [API](https://developers.marketo.com/rest-api/lead-database/leads/#submit_form).
-
-
-/marketing-automation-marketo/marketing-automations/marketo.yaml
-
-```yml
-class: info.magnolia.mkautomation.definition.DefaultMarketingFormDefinition
-type: marketo
-enabled: true
-implementation:
-  forms:
-    all: info.magnolia.mkautomation.marketo.forms.All
-    byId: info.magnolia.mkautomation.marketo.forms.ById
-    byName: info.magnolia.mkautomation.marketo.forms.ByName
-    submitBy: info.magnolia.mkautomation.marketo.forms.SubmitForm
-  leads:
-    searchBy: info.magnolia.mkautomation.marketo.leads.SearchByFilterType
-connection:
-  baseUrl: https://641-OQJ-158.mktorest.com
-  authUrl: https://641-OQJ-158.mktorest.com/identity/oauth/token
-  clientId: your-client-id
-  clientSecret: your-client-secret
-```
-
-### [](#_salesforce_connection_configuration)Salesforce connection configuration
-
-To use Salesforce web-to-lead functionality in Magnolia, you must have a working Salesforce account that supports the Web Services API. See the “Web Services API” row here (under All features > Connect sales info to any app): [https://www.salesforce.com/editions-pricing/sales-cloud/](https://www.salesforce.com/editions-pricing/sales-cloud/).
-
-#### [](#_licensing_2)Licensing
-
-The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../Administration/License/).
-
-#### [](#_credentials_2)Credentials
-
-You need the following Salesforce credentials:
-
--   clientId
-
--   clientSecret
-
--   username and password
-
-
-You can configure these credentials in the `/marketing-automation-salesforce/marketing-automations/salesforce.yaml` file.
-
-Alternatively, you can add the `clientSecret` and `password` parts of your credentials to your Magnolia instance in the [Password manager app](../../../../Apps/List-of-apps/Passwords-app/) and reference the path in the configuration.
-
-#### [](#_connecting_2)Connecting
-
-Add your connection configuration to the connections list (see YAML line 12).
-
-Magnolia provides a default implementation to retrieve forms and leads from Salesforce (see YAML lines 4-11).
-
-/marketing-automation-salesforce/marketing-automations/salesforce.yaml
-
-```yml
-class: info.magnolia.mkautomation.definition.DefaultMarketingFormDefinition
-enabled: true
-type: salesforce
-implementation:
-  forms:
-    all: info.magnolia.mkautomation.salesforce.forms.All
-    byId: info.magnolia.mkautomation.salesforce.forms.ById
-    byName: info.magnolia.mkautomation.salesforce.forms.ByName
-    submitBy: info.magnolia.mkautomation.salesforce.forms.SubmitBy
-  leads:
-    searchBy: info.magnolia.mkautomation.salesforce.leads.SearchByQuery
-connection:
-  baseUrl: https://mianlien.my.salesforce.com/services
-  authUrl: https://login.salesforce.com/services/oauth2/token
-  credentials:
-    username: email@email.com
-    password: password_or_path_to_password_manager
-  clientId: 3MVG96_7YM2sI9wT5awWympuHDV97wt6AsbvT1ILMqMWXfUgSfB0e4SztxStXnyjskXpQC571mKsUx2qddJiw
-  clientSecret: client_secret_or_path_to_password_manager
-selectedForms:
-  - Lead
-  - Account
-  - Contact
-formSelectorId: marketing-automation-ui:fieldsSelectionForm
-```
-
-### [](#_connection_configuration_properties)Connection configuration properties
-
-These are the properties used to configure a connection to your external marketing software solution. The properties required vary depending on your solution. Select the tab relevant to your connector.
-
--   Marketo
-
--   Salesforce
-
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><code>info.magnolia.mkautomation.definition.DefaultMarketingFormDefinition</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables the connector. Set to <code>true</code> to enable.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Your marketing software solution: <code>marketo</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>implementation</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>forms</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>all</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.marketo.forms.All</code></em></p></div><div class="paragraph"><p>Implementation to retrieve all forms from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>byId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.marketo.forms.ById</code></em></p></div><div class="paragraph"><p>Implementation to retrieve forms by ID from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>byName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.marketo.forms.ByName</code></em></p></div><div class="paragraph"><p>Implementation to retrieve forms by name from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>submitBy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.marketo.forms.SubmitBy</code></em></p></div><div class="paragraph"><p>Implementation to submit form by form name/id to your external marketing software solution.</p></div><div class="paragraph"><p><em><code>info.magnolia.mkautomation.marketo.forms.SubmitForm</code></em></p></div><div class="paragraph"><p>Implementation to sync leads to Marketo and create a <em>Fill out Form</em> activity.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>submittedActionType</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Use <code>createOrUpdate</code> to add one more <code>submittedActionType</code> property with default value . Other options here are <code>createOnly, updateOnly, or createDuplicate</code>. This property <code>submittedActionType</code> can be used with <code><strong>submitBy: info.magnolia.mkautomation.marketo.forms.SubmitBy</strong></code> API only.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>leads</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>searchBy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><em>default for Marketo is <code>info.magnolia.mkautomation.marketo.leads.SearchByFilterType</code></em></p></div><div class="paragraph"><p>Implementation to retrieve leads based on a search query or filter from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>connection</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>authUrl</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Authentication URL for the external solution you want to connect to.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>baseUrl</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Base URL for the external solution you want to connect to.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>credentials</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>clientId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>User name for your external solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>clientSecret</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Client secret for your external solution or the path to the Magnolia password manager.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>selectedForms</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Filters the forms displayed.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">The values are case sensitive.</td></tr></tbody></table></div><div class="paragraph"><p>For example, with these values set, only the Lead, Account and Contact forms are available in the Marketing Form dialog:</p></div><div class="paragraph"><p><code>- Lead</code><br><code>- Account</code><br><code>- Contact</code></p></div><div class="paragraph"><p>If the <code>selectedForms</code> property isn’t set or if it’s empty, all forms are displayed.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>formSelectorId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Path to the definition that configures if whole forms or form fields can be selected.</p></div><div class="paragraph"><p>Magnolia provides the following form definitions:</p></div><div class="ulist"><ul><li><p><code>marketing-automation-ui:defaultForm</code></p></li><li><p><code>marketing-automation-ui:fieldsSelectionForm</code></p></li></ul></div><div class="paragraph"><p>You can create your own <a href="../../../../Developing/Templating/Dialog-definition/Form-definition/" class="xref page">Form definitions</a> to suit your requirements.</p></div><div class="paragraph"><p>If the <code>formSelectorId</code> property isn’t set or if it’s empty, only whole forms can be selected in the dialog</p></div></div></td></tr></tbody></table></div>
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>class</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><code>info.magnolia.mkautomation.definition.DefaultMarketingFormDefinition</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>enabled</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>Enables the connector. Set to <code>true</code> to enable.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Your marketing software solution: <code>salesforce</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>implementation</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>forms</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>all</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.salesforce.forms.All</code></em></p></div><div class="paragraph"><p>Implementation to retrieve all forms from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>byId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.salesforce.forms.ById</code></em></p></div><div class="paragraph"><p>Implementation to retrieve forms by ID from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>byName</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.salesforce.forms.ByName</code></em></p></div><div class="paragraph"><p>Implementation to retrieve forms by name from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>submitBy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong>, <em>default is <code>info.magnolia.mkautomation.salesforce.forms.SubmitBy</code></em></p></div><div class="paragraph"><p>Implementation to submit form by form name/id to your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>leads</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>searchBy</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p><em>default for Salesforce is <code>info.magnolia.mkautomation.salesforce.leads.SearchByQuery</code></em></p></div><div class="paragraph"><p>Implementation to retrieve leads based on a search query or filter from your external marketing software solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>connection</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>authUrl</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Authentication URL for the external solution you want to connect to.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>baseUrl</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Base URL for the external solution you want to connect to.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>credentials</code></p></td><td class="tableblock halign-left valign-top"><div class="content"></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>username</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>User name for Salesforce.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>password</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Password for Salesforce or the path to the Magnolia password manager.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>clientId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>User name for your external solution.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>clientSecret</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Client secret for your external solution or the path to the Magnolia password manager.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>selectedForms</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Filters the forms displayed. For the Salesforce connector, the filter is based on <a href="https://developer.salesforce.com/docs/atlas.en-us.api.meta/api/sforce_api_objects_list.htm">Salesforce sObject</a> form names.</p></div><div class="admonitionblock warning"><table><tbody><tr><td class="icon"><i class="fa icon-warning" title="Warning"></i></td><td class="content">The values are case sensitive.</td></tr></tbody></table></div><div class="paragraph"><p>For example, with these values set, only the Lead, Account and Contact forms are available in the Marketing Form dialog:</p></div><div class="paragraph"><p><code>- Lead</code><br><code>- Account</code><br><code>- Contact</code></p></div><div class="paragraph"><p>If the <code>selectedForms</code> property isn’t set or if it’s empty, all forms are displayed.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>formSelectorId</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Path to the definition that configures if whole forms or form fields can be selected.</p></div><div class="paragraph"><p>Magnolia provides the following form definitions:</p></div><div class="ulist"><ul><li><p><code>marketing-automation-ui:defaultForm</code></p></li><li><p><code>marketing-automation-ui:fieldsSelectionForm</code></p></li></ul></div><div class="paragraph"><p>You can create your own <a href="../../../../Developing/Templating/Dialog-definition/Form-definition/" class="xref page">Form definitions</a> to suit your requirements.</p></div><div class="paragraph"><p>If the <code>formSelectorId</code> property isn’t set or if it’s empty, only whole forms can be selected in the dialog</p></div></div></td></tr></tbody></table></div>
-
-### [](#_enabling_form_field_selection)Enabling form field selection
-
-If you want your editors to be able to choose individual fields rather than whole forms, you must enable field selection in the Marketing Form dialog and provide a definition to configure the display.
-
-Magnolia provides basic definitions out-of-the-box:
-
--   `defaultForm` - only forms can be selected.
-
--   `fieldsSelectionForm` - form fields can be selected.
-
-
-However, you can create your own [form definitions](../../../../Developing/Templating/Dialog-definition/Form-definition/) to suit your requirements under: `/marketing-automation-<your-module>/marketing-formselectors/<configured form>.yaml`
-
-> **Tip:** In the samples provided, field selection is enabled by default in the Salesforce example and not enabled in the Marketo example.
-
-To enable form field selection:
-
-1.  Add the `formSelectorId` property to the `/marketing-automation-<your-connector>/marketing-automations/<your-connector>.yaml` file.
-
-2.  Set the value of the property to the path to the field selection definition.
-    Magnolia provides the following definitions out-of-the-box:
-
-    1.  `defaultForm` - only forms can be selected (red rectangle in the image).
-
-    2.  `fieldsSelectionForm` - form fields can be selected (blue rectangle in the image).
-
-        ![Out-of-the-box definitions](../../../../_images/6-2-mktaut-formselectors.png)
-
-        > **Note:** The final set of selected fields for the marketing form can only originate from one form. You cannot select multiple fields from different forms.
-
-
-3.  Edit the samples or create your own form definition under `/marketing-automation-<your-module>/marketing-formselectors/<configured form>.yaml`.
-    For example:
-
-    /marketing-automation-ui/marketing-formselectors/fieldsSelectionForm.yaml
-
-    ```yml
-    implementationClass: info.magnolia.mkautomation.ui.form.MarketingSwitchableSubFormView
-    properties:
-      marketingForm:
-        $type: comboBoxField
-        filteringMode: STARTSWITH
-        textInputAllowed: true
-        emptySelectionAllowed: false
-        required: true
-        requiredErrorMessage: marketing-automation-ui.form.field.validation.message.required
-        label: marketing-automation-ui.editForm.marketingForm
-        datasource:
-          $type: formOptionListDatasource
-      marketingFields:
-        $type: marketingTwin
-        label: marketing-automation-ui.editForm.marketingTwin
-        leftColumnCaption: marketing-automation-ui.editForm.marketingTwin.leftColumnCaption
-        rightColumnCaption: marketing-automation-ui.editForm.marketingTwin.rightColumnCaption
-        datasource:
-          $type: fieldOptionListDatasource
-        validators:
-          - name: requiredFields
-            $type: requiredFieldsValidator
-    ```
-
-
-#### [](#_properties_used_in_the_example)Properties used in the example
-
- PropertyDescription
-
-`implementationClass`
-
-**required**
-
-`info.magnolia.mkautomation.ui.form.MarketingSwitchableSubFormView`
-
-         `$type`
-
-**required**
-
-Use a valid field alias name to [reference a field type](../../../../Developing/Templating/Dialog-definition/Field-definition/).
-
-         `filteringMode`
-
-**required**
-
-Vaadin [`FilteringMode`](https://vaadin.com/api/com/vaadin/shared/ui/combobox/class-use/FilteringMode.html). Available values are `contains` and `startswith`
-
-         `textInputAllowed`
-
-**optional**, *default is `false`*
-
-When `true`, the user can type into the field to filter the available items. The `filteringMode` property defines how the options are filtered.
-
-When `false`, the field just shows the current selection.
-
-         `emptySelectionAllowed`
-
-**optional**, *default is `false`*
-
-Defines whether the user can select nothing in the field. When `true`, an empty item appears to the user.
-
-         `required`
-
-**optional**, *default is `false`*
-
-Makes the field required. An asterisk is displayed next to the field label.
-
-         `requiredErrorMessage`
-
-**optional**, *default is `validation.message.required`*
-
-Error message shown when `required` is set to `true` and the user saves an empty field. The value can be literal or retrieved from the [message bundle](../../../../Administration/Language/Internationalization/) with a [key](../../../../Administration/Language/Internationalization/). Use alphanumeric characters in literal values.
-
-         `label`
-
-**optional**
-
-Field label displayed to editors. The value can be literal or a [key](../../../../Administration/Language/Internationalization/) of a message bundle.
-
-> **Note:** If you don’t provide the property, Magnolia falls back to a generated i18n key.
-
-If you don’t want to have any label, set the property to an empty string such as `label: ""` in YAML.
-
-         `datasource`
-
-             `$type`
-
-**required**
-
-Use a valid field alias name to [reference a field type](../../../../Developing/Templating/Dialog-definition/Field-definition/).
-
-         `leftColumnCaption`
-
-**optional**
-
-Left column label displayed to editors. The value can be literal or a [key](../../../../Administration/Language/Internationalization/) of a [message bundle](../../../../Administration/Language/Internationalization/).
-
-         `rightColumnCaption`
-
-**optional**
-
-Left column label displayed to editors. The value can be literal or a [key](../../../../Administration/Language/Internationalization/) of a [message bundle](../../../../Administration/Language/Internationalization/).
-
-         `validators`
-
-**optional**
-
-List of [field validator definition items](../../../../Developing/Templating/Dialog-definition/Field-definition/Field-validators/).
-
-### [](#_disabling_form_pre_filling)Disabling form pre-filling
-
-Form pre-filling is an option offered by many marketing automation solutions. Pre-filling is when values previously entered by a visitor in a form are loaded into the corresponding form fields on a subsequent visit. By default, form pre-filling is enabled in Magnolia.
-
-You can disable this feature by adding a `formPrefillingEnabled` property set to `false` in your connector configuration under `<module-name>/marketing-automations/<definition-name>`.
-
-```none
-...
-formPrefillingEnabled: false
-```
-
-### [](#_configuring_field_mapping_between_your_external_solution_and_magnolia)Configuring field mapping between your external solution and Magnolia
-
-Map your fields to HTML field types in the `marketing-automation-<marketo/salesforce>-connector/config.yaml` file.
-
--   Marketo example
-
--   Salesforce example
-
-
-```yml
-fieldsMappingConfiguration:
-  dataTypeField: $.dataType
-  fieldsMapping:
-    currency: text
-    checkbox:
-      name: booleanCheckbox
-      value: $.defaultValue
-      label:
-      defaultValue: $.defaultValue
-    date: date
-    datetime: datetime
-    double: number
-    email: email
-    hidden: hidden
-    profiling: hidden
-    int: number
-    number: number
-    phone: tel
-    select:
-      name: select
-      value: $.fieldMetaData.values[*].value
-      label: $.fieldMetaData.values[*].label
-      multiSelect: $.fieldMetaData.multiSelect
-      defaultValue: $.defaultValue
-    text: text
-    textarea: textarea
-    htmltext:
-      name: htmlText
-      defaultValue: $.htmlText
-    url: url
-    checkboxes:
-      name: checkbox
-      value: $.fieldMetaData.values[*].value
-      label: $.fieldMetaData.values[*].label
-      defaultValue: $.defaultValue
-    radioButtons:
-      name: radio
-      value: $.fieldMetaData.values[*].value
-      label: $.fieldMetaData.values[*].label
-      defaultValue: $.defaultValue
-```
-
-```yaml
-fieldsMappingConfiguration:
-  dataTypeField: $.type
-  fieldsMapping:
-    string: text
-    boolean:
-      name: booleanCheckbox
-      value: $.label
-      label:
-      defaultValue:
-    textarea: textarea
-    double: number
-    phone: tel
-    email: email
-    url: url
-    address: text
-    currency: number
-    int: number
-    reference:
-      name: select
-      value: $.picklistValues[*].value
-      label: $.picklistValues[*].label
-      defaultValue:
-    picklist:
-      name: select
-      value: $.picklistValues[*].value
-      label: $.picklistValues[*].label
-      defaultValue:
-    multipicklist:
-      name: select
-      value: $.picklistValues[*].value
-      label: $.picklistValues[*].label
-      multiSelect: true
-      defaultValue:
-    date: date
-    datetime: datetime
-```
-
-#### [](#_field_mapping_properties)Field mapping properties
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>fieldsMappingConfiguration</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>dataTypeField</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="paragraph"><p>Defines the field type in JSONPath format. For example: <code>$.dataType</code> gets the dataType field type.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; <code>fieldsMapping</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <code>leftValue: rightValue</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>required</strong></p></div><div class="ulist"><ul><li><p>For <em>simple</em> fields, such as <code>text: text</code>:</p><div class="ulist"><ul><li><p>The <code>leftValue</code> represents the data type returned from your external marketing software solution.</p></li><li><p>The <code>rightValue</code> maps to HTML field types, for example <code>text: text</code> means the field type <code>text</code> from your external marketing software solution is rendered as an &lt;input type=<code>text</code>… /&gt; field in the browser.</p><div class="paragraph"><p>You can list as many field mappings as required.</p></div></li></ul></div></li><li><p>For <em>complex</em> HTML fields that need extra values, such as select fields or checkboxes, you can also configure additional values. For example:</p><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">  select:
-      name: select
-      value: $.fieldMetaData.values[*].value
-      label: $.fieldMetaData.values[*].label
-      multiSelect: $.fieldMetaData.multiSelect
-      defaultValue: $.defaultValue</code></pre></div></div><div class="paragraph"><p>Where:</p></div><div class="ulist"><ul><li><p><code>select</code> - Field type returned by the provider.</p></li><li><p><code>name</code> - Magnolia HTML field type, for example <code>select</code></p></li><li><p><code>value</code> - Value for the field options (for select, checkbox, radio type fields) in JSONPath format. For example: <code>$.fieldMetaData.values[*].value</code></p></li><li><p><code>label</code> - Label for the field options (for select, checkbox, radio type fields) in JSONPath format. For example: <code>$.fieldMetaData.values[*].label</code></p></li><li><p><code>multiSelect</code> - For a field with multiple options. For example: <code>$.fieldMetaData.multiSelect</code></p></li><li><p><code>defaultValue</code> - The property that stores the default value. For example: <code>$.defaultValue</code></p></li></ul></div></li><li><p>For <em>read-only</em> fields, such as <code>htmltext</code>, that contain pre-defined rich HTML content mapped from Marketo, no user input is expected. These fields should be displayed as static content in the form.</p><div class="paragraph"><p>For example:</p></div><div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">htmltext:
-    name: htmlText
-    defaultValue: $.htmlText</code></pre></div></div><div class="paragraph"><p>Where:</p></div><div class="ulist"><ul><li><p><code>htmltext</code> - Field type received from the provider.</p></li><li><p><code>name</code> - Magnolia HTML field type, mapped as <code>htmlText</code>.</p></li><li><p><code>defaultValue</code> - The property storing the predefined HTML content, extracted from the external system (<code>$.htmlText</code>).</p></li></ul></div></li></ul></div><div class="admonitionblock tip"><table><tbody><tr><td class="icon"><i class="fa icon-tip" title="Tip"></i></td><td class="content">See <a href="https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/assets/forms#field-types" target="_blank" rel="noopener">Marketo field types documentation</a> and <a href="https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/field_types.htm" target="_blank" rel="noopener">Salesforce field types</a>.</td></tr></tbody></table></div></div></td></tr></tbody></table></div>
-
-#### [](#_visibility_rules)Visibility rules
-
-In Marketo, each field can have [visibility rules](https://experienceleague.adobe.com/en/docs/marketo-developer/marketo/rest/assets/forms#visibility-rule) that determine whether it appears to a visitor based on their form inputs. For example, if a user selects "United States" in the `country` field, a second field displaying U.S. states should be shown.
-
-In Marketing Automation 2.0.1 and later, Magnolia supports optional rendering values for fields and uses a `data-visibility-rules` [data attribute](https://developer.mozilla.org/en-US/docs/Learn_web_development/Howto/Solve_HTML_problems/Use_data_attributes) for rendering. This attribute is added to the `<div>` container wrapping the field.
-
-For example, for a field that is always visible:
-
-```html
-<div class="form-row" data-visibility-rules="{"ruleType":"alwaysShow"}">
-    <label>
-        <span>
-            Email Address:
-        </span>
-    </label>
-    <input value="" name="Email" id="email" type="email" onfocusout="...">
-</div>
-```
-
-If you want to change how conditional fields behave:
-
-1.  [Decorate](../../../../Developing/Definition-decoration/) the `marketing-automation-ui/templates/components/marketingForm.yaml` file to reference your templating script.
-
-    marketingForm.yaml
-
-    ```yml
-    renderType: freemarker
-    templateScript: /marketing-automation-ui/templates/components/form.ftl
-    modelClass: info.magnolia.mkautomation.ui.form.FormModel
-    title: templates.components.marketingForm.title
-    dialog: marketing-automation-ui:editForm
-    areas:
-      formFields:
-        templateScript: /marketing-automation-ui/templates/components/formFields.ftl (1)
-        title: Form Fields
-        modelClass: info.magnolia.mkautomation.ui.form.FormFieldsModel
-      honeypot:
-        availableComponents:
-          formHoneypot:
-            id: form:components/formHoneypot
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | `templateScript` points to `formFields.ftl` |
-
-2.  Modify your templating script to extend and interact with `data-visibility-rules`. Ensure that the attribute value aligns with the JSON field references provided by Marketo. Alternatively, include an additional JavaScript script in your template to read and process this attribute as needed.
-
-    formFields.ftl
-
-    ```html
-    [#assign visibilityRules = formField.visibilityRules!""]
-
-    <div class="${divClass}" [#if visibilityRules?has_content]data-visibility-rules='${visibilityRules}'[/#if]>
-    ```
-
-
-### [](#_configuring_the_cache)Configuring the cache
-
-By default, the cache is enabled and content pulled from your external solution is updated every 300 seconds (5 minutes).
-
-You can enable or disable the cache and change the frequency via YAML:
-
-/marketing-automation/config.yaml
-
-```yml
-cachingDefinition:
-  enabled: true
-  invalidateInSeconds: 300
-```
+| Property | Description |
+| --- | --- |
+| `class` | **required** `info.magnolia.mkautomation.definition.DefaultMarketingFormDefinition` |
+| `enabled` | **required** , *default is false* Enables the connector. Set to `true` to enable. |
+| `type` | **required** Your marketing software solution: `marketo` |
+| `implementation` |  |
+| `forms` |  |
+| `all` | **required** , *default is info.magnolia.mkautomation.marketo.forms.All* Implementation to retrieve all forms from your external marketing software solution. |
+| `byId` | **required** , *default is info.magnolia.mkautomation.marketo.forms.ById* Implementation to retrieve forms by ID from your external marketing software solution. |
+| `byName` | **required** , *default is info.magnolia.mkautomation.marketo.forms.ByName* Implementation to retrieve forms by name from your external marketing software solution. |
+| `submitBy` | **required** , *default is info.magnolia.mkautomation.marketo.forms.SubmitBy* Implementation to submit form by form name/id to your external marketing software solution. *info.magnolia.mkautomation.marketo.forms.SubmitForm* Implementation to sync leads to Marketo and create a *Fill out Form* activity. |
+| `submittedActionType` | **optional** Use `createOrUpdate` to add one more `submittedActionType` property with default value . Other options here are `createOnly, updateOnly, or createDuplicate` . This property `submittedActionType` can be used with `submitBy: info.magnolia.mkautomation.marketo.forms.SubmitBy` API only. |
+| `leads` |  |
+| `searchBy` | **required** *default for Marketo is info.magnolia.mkautomation.marketo.leads.SearchByFilterType* Implementation to retrieve leads based on a search query or filter from your external marketing software solution. |
+| `connection` |  |
+| `authUrl` | **required** Authentication URL for the external solution you want to connect to. |
+| `baseUrl` | **required** Base URL for the external solution you want to connect to. |
+| `credentials` |  |
+| `clientId` | **required** User name for your external solution. |
+| `clientSecret` | **required** Client secret for your external solution or the path to the Magnolia password manager. |
+| `selectedForms` | **optional** Filters the forms displayed. ** The values are case sensitive. For example, with these values set, only the Lead, Account and Contact forms are available in the Marketing Form dialog: `- Lead` `- Account` `- Contact` If the `selectedForms` property isn’t set or if it’s empty, all forms are displayed. | ** | The values are case sensitive. |
+| ** | The values are case sensitive. |
+| `formSelectorId` | **optional** Path to the definition that configures if whole forms or form fields can be selected. Magnolia provides the following form definitions: • `marketing-automation-ui:defaultForm` • `marketing-automation-ui:fieldsSelectionForm` You can create your own [Form definitions](../../../../Developing/Templating/Dialog-definition/Form-definition/) to suit your requirements. If the `formSelectorId` property isn’t set or if it’s empty, only whole forms can be selected in the dialog |
 
 ## [](#_configuring_your_own_connector)Configuring your own connector
 
@@ -717,7 +224,7 @@ The `magnolia-marketing-automation-ui` submodule provides a sample Marketing For
 
 When you add the **Marketing Form** component to a page, a sample dialog enables you to select the connector you have configured. Once you select the connector, you can choose the form and, if you have [enabled form field selection](#_enabling_form_field_selection), the form fields you want.
 
-![Marketing form](../../../../_images/image2019-11-22_11-51-27.png) ![Marketing form](../../../../_images/6-2-mktaut-dialog-fieldsel.png)
+![Marketing form](../../../../../RNs-6-4-3/_images/image2019-11-22_11-51-27.png) ![Marketing form](../../../../../RNs-6-4-3/_images/6-2-mktaut-dialog-fieldsel.png)
 
 > **Note:** The final set of selected fields for the marketing form can only originate from one form. You cannot select multiple fields from different forms.
 
@@ -732,11 +239,11 @@ When field selection is enabled, note that:
 
 When field selection is not enabled, the form fields are defined directly in your external marketing software solution and you only select the form in the dialog.
 
-![Marketing form dialog](../../../../_images/6-2-mktaut-dialog-formsel.png)
+![Marketing form dialog](../../../../../RNs-6-4-3/_images/6-2-mktaut-dialog-formsel.png)
 
 Once you have added a form to a page, you can [publish](../../../../Authoring/Publishing/) the page and make it available to your website users. Data entered by your users in the rendered form is sent directly back to your external marketing software solution.
 
-![Marketing automation form in Pages app](../../../../_images/6-2-3-marketing-automation-form-in-page.png)
+![Marketing automation form in Pages app](../../../../../RNs-6-4-3/_images/6-2-3-marketing-automation-form-in-page.png)
 
 Progressive forms are supported by Magnolia if they are enabled in your external marketing software solution.
 
@@ -752,8 +259,6 @@ Released on **November 12, 2025**.
 
 Compatible with Magnolia 6.4.
 
-## [](#_compatibility)Compatibility
-
 | Module version | Magnolia CMS version |
 | --- | --- |
 | **3.0+** | **6.4+** |
@@ -763,18 +268,6 @@ Compatible with Magnolia 6.4.
 | 1.0.2 | 6.2.2+ |
 | 1.0.1 | 6.2.2 |
 | 1.0 | 6.2 |
-
-> **Note:** A note about connector compatibiltyThe third-party versions listed below are the versions Magnolia has developed and tested against. If you don’t see a particular version listed, it simply means that we do not routinely test on it. If you are using another version of the third-party tool and run into compatibility issues, please contact our Magnolia DX Core support.
-
-| Module version | Marketo API |
-| --- | --- |
-| **2.0** | Tested against **2.2.0** |
-| 1.0 | Tested against 2.2.0 |
-
-| Module version | [Salesforce Lightening Platform REST API](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_what_is_rest_api.htm) |
-| --- | --- |
-| **2.0** | Tested against **45.0** |
-| 1.0 | Tested against 45.0 |
 
 ## [](#_issues)Issues
 
@@ -790,7 +283,3 @@ at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:592) ~[?:?]
 at groovy.lang.GroovyClassLoader.loadClass(GroovyClassLoader.java:862) ~[groovy-4.0.22.jar:4.0.22]
 at groovy.lang.GroovyClassLoader.loadClass(GroovyClassLoader.java:736) ~[groovy-4.0.22.jar:4.0.22]
 ```
-
-* * *
-
-[1](#_footnoteref_1). The framework is included with your DX Core license. However, the associated extensions require an additional special license.

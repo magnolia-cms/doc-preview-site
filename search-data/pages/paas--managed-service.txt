@@ -27,10 +27,6 @@ This documentation enables you to:
 -   **Troubleshoot**: Resolve common issues independently
 
 
-## [](#_dx_cloud_vs_dx_cloud_managed_service)DX Cloud vs DX Cloud Managed Service
-
-The table below compares the standard DX Cloud PaaS offering with the DX Cloud Managed Service.
-
 | Area | DX Cloud PaaS | DX Cloud Managed Service |
 | --- | --- | --- |
 | **Packages** | Basic, Standard, Premium | Basic, Standard, Premium |
@@ -39,7 +35,7 @@ The table below compares the standard DX Cloud PaaS offering with the DX Cloud M
 | **Magnolia DX Core version** | 6.2.x, 6.3.x, 6.4.x | 6.4.x |
 | **Customization** | Full flexibility | Customization only possible via JavaScript fields |
 | **Magnolia application bundle** | Cloud Parent POM | Managed Service POM with pre-configured supported core modules, incubators, and extensions |
-| **Available modules & incubators** | No restrictions | Only modules and incubators supported from [Magnolia 6.4](../../product-docs/) |
+| **Available modules & incubators** | No restrictions | Only modules and incubators supported from [Magnolia 6.4](../../product-docs/RNs-6-4-3/) |
 | **Update frequency** | At customer’s discretion | Quarterly feature releases; security patches applied when needed |
 | **Bring your own** | CDN & Git repository | No bring-your-own options. Fastly CDN and SaaS GitLab are mandatory (5 seats included). |
 | **Available embedded services** | Frontend hosting, SOLR hosting, GitLab hosting, design system hosting, log shipping, advanced security packages | Frontend hosting, SOLR hosting, design system hosting, log shipping, advanced security packages |
@@ -90,7 +86,7 @@ We manage the build and deployment phases of the Magnolia web app pipeline to en
 
 ### [](#_magnolia_modules)Magnolia modules
 
-The Managed Service includes modules compatible from [Magnolia 6.4](../../product-docs/Modules/).
+The Managed Service includes modules compatible from [Magnolia 6.4](../../product-docs/RNs-6-4-3/Modules/).
 
 This includes:
 
@@ -121,116 +117,116 @@ Additionally, the following are included
 
 #### [](#_core_modules)Core Modules
 
--   [About App module](../../product-docs/Modules/List-of-modules/About-App-module/)
+-   [About App module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/About-App-module/)
 
--   [Admincentral module](../../product-docs/Modules/List-of-modules/Admincentral-module/)
+-   [Admincentral module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Admincentral-module/)
 
--   [Cache modules](../../product-docs/Modules/List-of-modules/Cache-modules/)
+-   [Cache modules](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Cache-modules/)
 
--   [Categorization module](../../product-docs/Modules/List-of-modules/Categorization-module/)
+-   [Categorization module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Categorization-module/)
 
--   [Content Dependencies module](../../product-docs/Modules/List-of-modules/Content-Dependencies-module/)
+-   [Content Dependencies module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Content-Dependencies-module/)
 
--   [Content Editor module](../../product-docs/Modules/List-of-modules/Content-Editor-module/)
+-   [Content Editor module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Content-Editor-module/)
 
--   [Content Importer module](../../product-docs/Modules/List-of-modules/Content-Importer-module/)
+-   [Content Importer module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Content-Importer-module/)
 
--   [Content Tags module](../../product-docs/Modules/List-of-modules/Content-Tags-module/)
+-   [Content Tags module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Content-Tags-module/)
 
--   [content-types:ROOT:index.adoc](#content-types:ROOT:index.adoc)
+-   [Content Types module](../../content-types/2.0.0/)
 
 -   [DAM](../../dam/)
 
--   [Definitions App module](../../product-docs/Modules/List-of-modules/Definitions-App-module/)
+-   [Definitions App module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Definitions-App-module/)
 
--   [Diff module](../../product-docs/Modules/List-of-modules/Diff-module/)
+-   [Diff module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Diff-module/)
 
--   [GraphQL module](../../product-docs/Modules/List-of-modules/GraphQL-module/)
+-   [GraphQL module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/GraphQL-module/)
 
--   [Groovy module](../../product-docs/Modules/List-of-modules/Groovy-module/)
+-   [Groovy module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Groovy-module/)
 
--   [imaging:ROOT:index.adoc](#imaging:ROOT:index.adoc)
+-   [Imaging](../../imaging/)
 
--   [JCR Tools module](../../product-docs/Modules/List-of-modules/JCR-Tools-module/)
+-   [JCR Tools module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/JCR-Tools-module/)
 
--   [Log Tools module](../../product-docs/Modules/List-of-modules/Log-Tools-module/)
+-   [Log Tools module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Log-Tools-module/)
 
--   [Marketing Tags module](../../product-docs/Modules/List-of-modules/Marketing-Tags-module/)
+-   [Marketing Tags module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Marketing-Tags-module/)
 
--   [Messages App module](../../product-docs/Modules/List-of-modules/Messages-App-module/)
+-   [Messages App module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Messages-App-module/)
 
--   [Multisite module](../../product-docs/Modules/List-of-modules/Multisite-module/)
+-   [Multisite module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Multisite-module/)
 
--   [Observation module](../../product-docs/Modules/List-of-modules/Observation-module/)
+-   [Observation module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Observation-module/)
 
--   [Pages module](../../product-docs/Modules/List-of-modules/Pages-module/)
+-   [Pages module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Pages-module/)
 
--   [page-editor-apps:ROOT:index.adoc](#page-editor-apps:ROOT:index.adoc)
+-   [Page-editor apps extension](../../page-editor-apps/)
 
--   [Password Manager module](../../product-docs/Modules/List-of-modules/Password-Manager-module/)
+-   [Password Manager module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Password-Manager-module/)
 
--   [Periscope module](../../product-docs/Modules/List-of-modules/Periscope-module/)
+-   [Periscope module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Periscope-module/)
 
--   [Personalization module](../../product-docs/Modules/List-of-modules/Personalization-module/)
+-   [Personalization module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Personalization-module/)
 
--   [Publishing Transactional module](../../product-docs/Modules/List-of-modules/Publishing-Transactional-module/)
+-   [Publishing Transactional module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Publishing-Transactional-module/)
 
--   [Publishing module](../../product-docs/Modules/List-of-modules/Publishing-module/)
+-   [Publishing module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Publishing-module/)
 
--   [REST Client module](../../product-docs/Modules/List-of-modules/REST-Client-module/)
+-   [REST Client module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/REST-Client-module/)
 
--   [Tools module](../../product-docs/Modules/List-of-modules/Tools-module/)
+-   [Tools module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Tools-module/)
 
--   [Resources module](../../product-docs/Modules/List-of-modules/Resources-module/)
+-   [Resources module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Resources-module/)
 
--   [Scheduler module](../../product-docs/Modules/List-of-modules/Scheduler-module/)
+-   [Scheduler module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Scheduler-module/)
 
--   [Security app module](../../product-docs/Modules/List-of-modules/Security-App-module/)
+-   [Security app module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Security-App-module/)
 
--   [Site module](../../product-docs/Modules/List-of-modules/Site-module/)
+-   [Site module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Site-module/)
 
--   [SiteMesh module](../../product-docs/Modules/List-of-modules/High-performance-caching-modules/SiteMesh-module/)
+-   [SiteMesh module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/High-performance-caching-modules/SiteMesh-module/)
 
--   [Soft Locking module](../../product-docs/Modules/List-of-modules/Soft-Locking-module/)
+-   [Soft Locking module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Soft-Locking-module/)
 
--   [Synchronization module](../../product-docs/Modules/List-of-modules/Synchronization-module/)
+-   [Synchronization module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Synchronization-module/)
 
--   [Tasks app](../../product-docs/Apps/List-of-apps/Tasks-app/)
+-   [Tasks app](../../product-docs/RNs-6-4-3/Apps/List-of-apps/Tasks-app/)
 
--   [Text Classification module](../../product-docs/Modules/List-of-modules/Text-Classification-module/)
+-   [Text Classification module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Text-Classification-module/)
 
--   [UI module](../../product-docs/Modules/List-of-modules/UI-module/)
+-   [UI module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/UI-module/)
 
--   [webhooks:ROOT:index.adoc](#webhooks:ROOT:index.adoc)
+-   [Webhooks module](../../webhooks/3.0/)
 
--   [Workflow module](../../product-docs/Modules/List-of-modules/Workflow-module/)
+-   [Workflow module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Workflow-module/)
 
 
 #### [](#_extensions)Extensions
 
--   [ai-accelerator:ROOT:index.adoc](#ai-accelerator:ROOT:index.adoc)
+-   [AI Accelerator module](../../ai-accelerator/4.0-alpha/)
 
--   [campaign-manager:ROOT:index.adoc](#campaign-manager:ROOT:index.adoc)
+-   [Campaign manager module](../../campaign-manager/)
 
--   [Campaign Publisher](../../product-docs/Modules/List-of-modules/Campaign-Publisher/)
+-   [Campaign Publisher](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Campaign-Publisher/)
 
--   [image-focal:ROOT:index.adoc](#image-focal:ROOT:index.adoc)
+-   [Image Focal module](../../image-focal/)
 
--   [image-recognition:ROOT:index.adoc](#image-recognition:ROOT:index.adoc)
+-   [Image Recognition](../../image-recognition/)
 
--   [ui-framework-javascript:ROOT:index.adoc](#ui-framework-javascript:ROOT:index.adoc)
+-   [JavaScript UI module](../../ui-framework-javascript/)
 
--   [live-copy:ROOT:index.adoc](#live-copy:ROOT:index.adoc)
+-   [Live Copy](../../live-copy/4.x/)
 
--   [Observation module](../../product-docs/Modules/List-of-modules/Observation-module/)
+-   [Observation module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Observation-module/)
 
--   [Privacy module](../../product-docs/Modules/List-of-modules/Privacy-module/)
+-   [Privacy module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Privacy-module/)
 
--   [Solr module](../../product-docs/Modules/List-of-modules/Solr-module/)
+-   [Solr module](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Solr-module/)
 
--   [magnolia-sso:ROOT:index.adoc](#magnolia-sso:ROOT:index.adoc)
+-   [SSO module](../../magnolia-sso/)
 
--   [Swift publication](../../product-docs/Modules/List-of-modules/Swift-publication/)
+-   [Swift publication](../../product-docs/RNs-6-4-3/Modules/List-of-modules/Swift-publication/)
 
 
 #### [](#_incubators)Incubators
@@ -239,7 +235,7 @@ Additionally, the following are included
 
 -   [CTSX ChatGPT Translator](../../content-translation-support-ext/chatgpt/)
 
--   [Instrumentation module](../../instrumentation/2.0/)
+-   [Instrumentation module](../../instrumentation/)
 
 
 ## [](#_out_of_scope)Out of scope

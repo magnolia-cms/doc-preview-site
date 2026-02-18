@@ -19,28 +19,11 @@ Before you start:
 -   Install the [Personalization module](../).
 
 
-## [](#_use_case_festival_tours)Use case: Festival tours
-
-Various festivals are held in different countries on different dates throughout the year. Create a personalized campaign that promotes the Puck Fair festival to U.K. visitors and the Dragon Boat Festival to Chinese visitors.
-
-Your tasks:
-
-1.  Create a Festivals page.
-
-2.  Create two personalized variants of the page. In each variant, add content that appeals to the target audience.
-
-3.  Define U.K. and China as target countries using the Country trait.
-
-4.  Run the campaign for two weeks prior to the festival date using the Date trait.
-
-5.  Test the campaign to ensure that correct variant is served to visitors.
-
-
 | Target info | Component info |
 | --- | --- |
-| none | Festivals<br><br>Text<br><br>Experience diverse cultures at their most festive. Join in the fun of festivals around the world with our exclusive festival tour packages.<br><br>Image<br><br>![Image of festival fireworks](../../../../_images/festivals.jpg)<br><br>*Credit: photo by [Stewart White](https://www.flickr.com/photos/stewartwhite/3894985764)* |
-| China; 26 May > 9 June | Dragon Boat Festival<br><br>Text<br><br>The Dragon Boat Festival is also known as the Duanwu Festival. It is a traditional holiday that commemorates the life and death of the famous Chinese scholar Qu Yuan. The festival occurs on the fifth day of the fifth month on the Chinese lunar calendar.<br><br>Image<br><br>![Huge groups of rowers](../../../../_images/dragonboat.jpg)<br><br>*Credit: photo by [Iidxplus](https://commons.wikimedia.org/wiki/File:Dragonboat_racing.jpg)* |
-| UK/IE; 27 July > 10 August | Puck Fair<br><br>Text<br><br>On August 10, a three-day festival known as Puck Fair is held in Killorglin, Ireland. Residents of the town capture a goat and proclaim it to be the King for three days of revelry.<br><br>Image<br><br>![Statue of a goat with a crown](../../../../_images/kingpuck.jpg)<br><br>*Credit: photo by [Buck Lewis](https://www.flickr.com/photos/thephotoholic/1083574355/)* |
+| none | Festivals Text : Experience diverse cultures at their most festive. Join in the fun of festivals around the world with our exclusive festival tour packages. Image : *Credit: photo by Stewart White* |
+| China; 26 May > 9 June | Dragon Boat Festival Text : The Dragon Boat Festival is also known as the Duanwu Festival. It is a traditional holiday that commemorates the life and death of the famous Chinese scholar Qu Yuan. The festival occurs on the fifth day of the fifth month on the Chinese lunar calendar. Image : *Credit: photo by Iidxplus* |
+| UK/IE; 27 July > 10 August | Puck Fair Text : On August 10, a three-day festival known as Puck Fair is held in Killorglin, Ireland. Residents of the town capture a goat and proclaim it to be the King for three days of revelry. Image : *Credit: photo by Buck Lewis* |
 
 ## [](#_create_original_page)Create original page
 
@@ -62,7 +45,7 @@ Create a new page in the Travel Demo site:
 
 
 
-![Creating an orignal page example](../../../../_images/6-2-original-page.png)
+![Creating an orignal page example](../../../../../RNs-6-4-3/_images/6-2-original-page.png)
 
 ## [](#_variant)Variant
 
@@ -75,9 +58,9 @@ Create two [variants](../../../../use-cases/Personalization/) of the Festivals p
 2.  Click **Add page variant** two times.
 
 
-Magnolia creates two variants. The system also marks the original page with the variant icon ![The variant icon](../../../../_images/icon-variant.gif). This icon tells editors that the page has alternative content.
+Magnolia creates two variants. The system also marks the original page with the variant icon ![The variant icon](../../../../../RNs-6-4-3/_images/icon-variant.gif). This icon tells editors that the page has alternative content.
 
-![Pages app with pages and its variants](../../../../_images/6-2-new-variant.png)
+![Pages app with pages and its variants](../../../../../RNs-6-4-3/_images/6-2-new-variant.png)
 
 ## [](#_choose_audience)Choose audience
 
@@ -95,7 +78,7 @@ Choose an audience for the Chinese variant:
 
 
 
-![Audience choosing field](../../../../_images/chinese-audience.png)
+![Audience choosing field](../../../../../RNs-6-4-3/_images/chinese-audience.png)
 
 Choose an audience for the U.K. variant:
 
@@ -111,7 +94,7 @@ Choose an audience for the U.K. variant:
 
 
 
-![Choosing audience for the UK variant](../../../../_images/uk-audience.png)
+![Choosing audience for the UK variant](../../../../../RNs-6-4-3/_images/uk-audience.png)
 
 ## [](#_personalize_content)Personalize content
 
@@ -127,7 +110,7 @@ Personalize the page variants:
 
     -   **Image**: dragonboat.jpg
 
-        ![Preview of the Dragon Boat Festival page](../../../../_images/6-2-chinese-variant.png)
+        ![Preview of the Dragon Boat Festival page](../../../../../RNs-6-4-3/_images/6-2-chinese-variant.png)
 
 
 3.  Edit the U.K. page variant.
@@ -142,7 +125,7 @@ Personalize the page variants:
 
 
 
-![Preview of the Puck Fair festival page](../../../../_images/6-2-uk-variant.png)
+![Preview of the Puck Fair festival page](../../../../../RNs-6-4-3/_images/6-2-uk-variant.png)
 
 ## [](#_preview_the_variants)Preview the variants
 
@@ -153,25 +136,25 @@ Test the campaign in the Preview app. Impersonate Chinese and U.K. visitors and 
 2.  Go to the festivals page.
 
     -   Expected result: The original page is served, not a personalized variant.
-        ![Preview of the original page](../../../../_images/preview-default.png)
+        ![Preview of the original page](../../../../../RNs-6-4-3/_images/preview-default.png)
 
 
 3.  Select a Chinese persona 王芳 Wang Fang.
 
     -   Expected result: The original page is still served because you have not defined a date.
-        ![Preview of the page for the chinese persona](../../../../_images/preview-default-chinese-persona.png)
+        ![Preview of the page for the chinese persona](../../../../../RNs-6-4-3/_images/preview-default-chinese-persona.png)
 
 
 4.  Set **Date** to 2019-06-09 or any other day during the Chinese variant run dates.
 
     -   Expected result: The Chinese variant is served.
-        ![Preview of the page for the chinese persona with the changed date](../../../../_images/preview-chinese-variant.png)
+        ![Preview of the page for the chinese persona with the changed date](../../../../../RNs-6-4-3/_images/preview-chinese-variant.png)
 
 
 5.  Set **Country** to United Kingdom and **Date** to 2019-08-10 or any other day during the U.K. variant run dates.
 
     -   Expected result: The U.K. variant is served. This is an example where the country trait you explicitly chose (U.K) overrides the country of the persona (China).
-        ![Preview of the page for the UK persona with the changed date](../../../../_images/preview-uk-variant.png)
+        ![Preview of the page for the UK persona with the changed date](../../../../../RNs-6-4-3/_images/preview-uk-variant.png)
 
 
 

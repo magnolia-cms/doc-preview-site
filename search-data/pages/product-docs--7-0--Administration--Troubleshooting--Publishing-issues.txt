@@ -8,7 +8,7 @@ breadcrumb: DX Core > Administration > Troubleshooting > Publishing issues
 
 # Publishing issues
 
-This page describes issues that may occur when [publishing](../../Architecture/Publishing/) content from the author instance to the public instance(s).
+This page describes issues that may occur when [publishing](../../../../RNs-6-4-3/Administration/Architecture/Publishing/) content from the author instance to the public instance(s).
 
 > **Note:** Communication between the Magnolia instances is a normal HTTP request between the author and the public instances with the URIs provided in the configuration. Ensure you have HTTP/S network visibility within the Magnolia instances and that ports are open. You can use utilities like nmap, lsof, ss, or netcat to check your network visibility for JCR nodes.
 
@@ -56,9 +56,9 @@ info.magnolia.publishing.operation.SendOperation$OperationExecutionException: [W
     at java.lang.Thread.run(Thread.java:748) ~[?:1.8.0_144]
 ```
 
-To resolve the issue, [generate a new public key](../../Security/Publishing-security/#_generating_a_new_public_key) and copy it to the public instance.
+To resolve the issue, [generate a new public key](../../../../RNs-6-4-3/Administration/Security/Publishing-security/#_generating_a_new_public_key) and copy it to the public instance.
 
-See also [Monitoring](../../Monitoring/) for more about logging and debugging Magnolia.
+See also [Monitoring](../../../../RNs-6-4-3/Administration/Monitoring/) for more about logging and debugging Magnolia.
 
 #### [](#_handshaking_errors)Handshaking errors
 
@@ -126,11 +126,11 @@ info.magnolia.publishing.operation.SendOperation$OperationExecutionException: [W
     ...
 ```
 
-To fix this, you must [update the cipher](../../Architecture/Configuration-management/#cipher-anchor) set in the `magnolia.properties` file for all the instances at the same time.
+To fix this, you must [update the cipher](../../../../RNs-6-4-3/Administration/Architecture/Configuration-management/#cipher-anchor) set in the `magnolia.properties` file for all the instances at the same time.
 
 ### [](#_cleaning_the_errors)Cleaning the errors
 
-During the publishing process Magnolia makes a copy of the current content on the public instance and stores it in the `mgnlSystem` workspace. The system rolls back any changes using the backup copy if [transactional publishing](../../../Modules/List-of-modules/Publishing-Transactional-module/) fails for some reason. If publishing succeeds, the system overwrites the current content with the published content and removes the backup copy.
+During the publishing process Magnolia makes a copy of the current content on the public instance and stores it in the `mgnlSystem` workspace. The system rolls back any changes using the backup copy if [transactional publishing](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-Transactional-module/) fails for some reason. If publishing succeeds, the system overwrites the current content with the published content and removes the backup copy.
 
 The tips and tools mentioned below could help you either detect the issue or clean up unnecessary content before publishing:
 
@@ -145,7 +145,7 @@ The tips and tools mentioned below could help you either detect the issue or cle
 
 #### [](#_debugging_the_publishing_process)Debugging the publishing process
 
-On the public instance, the steps of a publishing process can be viewed by turning the `XAReceiveFilter` to `DEBUG` using the [Log Tools app](../../../Modules/List-of-modules/Log-Tools-module/).
+On the public instance, the steps of a publishing process can be viewed by turning the `XAReceiveFilter` to `DEBUG` using the [Log Tools app](../../../../RNs-6-4-3/Modules/List-of-modules/Log-Tools-module/).
 
 To set the `XAReceiveFilter` to `DEBUG`:
 
@@ -213,15 +213,15 @@ After a successful publication, a cleanup procedure is run to remove the backup 
 ERROR actional.receiver.util.PublishingTransactionalUtil: Failed to cleanup backup of b06b82a2-74b0-4994-8015-028c4fd60716. Publication of this content will not be possible until manual cleanup of mgnlSystem workspace is performed.
 ```
 
-To try resolve the issue, clean the `mgnlSystem` workspace yourself on the public instance. There is a cleaning tool in the [Publishing Tools app](../../../Apps/List-of-apps/Publishing-Tools-app/). This is the same procedure that’s run during startup but triggered manually using this app:
+To try resolve the issue, clean the `mgnlSystem` workspace yourself on the public instance. There is a cleaning tool in the [Publishing Tools app](../../../../RNs-6-4-3/Apps/List-of-apps/Publishing-Tools-app/). This is the same procedure that’s run during startup but triggered manually using this app:
 
-![Cleaning tool in the Publishing Tools app](../../../_images/6-2-clean-mgnlSystem-workspace.png)
+![Cleaning tool in the Publishing Tools app](../../../../RNs-6-4-3/_images/6-2-clean-mgnlSystem-workspace.png)
 
 After running the action be sure to check the log. If you see repository exceptions, then you need to take other actions. For example, restarting the server to release any locks that may still be present. Restarting it will automatically call the cleanup procedure described above. If locks was the issue, then you should see the system successfully remove the backup copies during the restart. However, if you still see repository exceptions in your log during startup, then you most likely have a repository corruption issue. In that case probably the best course of action would be to recreate the workspace from scratch.
 
 #### [](#_visual_inspection)Visual inspection
 
-The [JCR Browser app](../../../Apps/List-of-apps/JCR-Browser-app/) will allow you to visually inspect the workspace as well.
+The [JCR Browser app](../../../../RNs-6-4-3/Apps/List-of-apps/JCR-Browser-app/) will allow you to visually inspect the workspace as well.
 
 The `mgnlSystem` workspace should normally be empty if no publishing action is in progress. After cleaning, make sure the website tree is OK on your public instance.
 
@@ -231,10 +231,10 @@ We have temporarily added a five-minute timeout for the locking mechanism to mit
 
 Related topics
 
--   [Publishing overview](../../Architecture/Publishing/)
+-   [Publishing overview](../../../../RNs-6-4-3/Administration/Architecture/Publishing/)
 
--   [Publishing module](../../../Modules/List-of-modules/Publishing-module/)
+-   [Publishing module](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-module/)
 
--   [Publishing Transactional module](../../../Modules/List-of-modules/Publishing-Transactional-module/)
+-   [Publishing Transactional module](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-Transactional-module/)
 
--   [Publishing security](../../Security/Publishing-security/)
+-   [Publishing security](../../../../RNs-6-4-3/Administration/Security/Publishing-security/)

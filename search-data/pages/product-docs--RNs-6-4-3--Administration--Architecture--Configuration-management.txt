@@ -1,0 +1,179 @@
+---
+title: "Configuration management"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/Architecture/Configuration-management/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > Architecture > Configuration management
+---
+
+# Configuration management
+
+|  | Source | Location | Path |
+| --- | --- | --- | --- |
+| 1 | Bean properties | classpath | `/mgnl-beans.properties` |
+| 2 | Module properties | [Module descriptor](../../../Modules/Module-descriptor/) | `<properties> <property> <name>defaultPublicURI</name> <value>redirect:/help.html</value> </property> </properties>` |
+| 3 | Global file properties | web application | `WEB-INF/config/magnolia.properties` |
+| 4 | Default file properties | web application | `WEB-INF/config/default/magnolia.properties` |
+| 5 | Web application file properties | web application | `WEB-INF/config/(webapp)/magnolia.properties` |
+| 6 | Server file properties | web application | `WEB-INF/config/(servername)/magnolia.properties` |
+| 7 | Web application at server file properties | web application | `WEB-INF/config/(servername)/(webapp)/magnolia.properties` |
+| 8 | [Environment variables](https://smallrye.io/smallrye-config/Main/config/getting-started/#environment-variables) | host operating system |  |
+| 9 | [System properties](https://smallrye.io/smallrye-config/Main/config/getting-started/#system-properties) | JVM options ( `-Dx=y` ) |  |
+
+## [](#_interpolate_environment_variables_in_light_modules)Interpolate environment variables in light modules
+
+Use these subsections to learn how to enable YAML variable interpolation in light modules and how to view the resulting interpolated values in the UI.
+
+### [](#_enable_and_use_interpolation)Enable and use interpolation
+
+You can have different configurations in one or more environments. To enable interpolation, you must first set the `magnolia.yaml.envsubst` feature flag (JVM option) to `true`. You can then use the following syntax in a YAML file, which parses the environment variable:
+
+```yaml
+label: !env ${ENV} (1)
+<url>: !env https://${ENV}.api.com/<endpoint>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Make sure you have a space after the `!env` annotation as shown above. |
+
+This feature only works via environment variables, not Java options or Magnolia properties. Environment variables are created from your terminal or IDE. You’ll need to export the variable(s) like so:
+
+```sh
+export API_BASE_URL=https://example.com/
+```
+
+> **Note:** Interpolating environment variables only applies to plain YAML definitions and YAML decorator files, not to YAML bootstrap files.
+
+### [](#_view_interpolated_values_and_sensitive_data)View interpolated values and sensitive data
+
+By default, all configuration values in the [About](../../../Apps/List-of-apps/About-Magnolia-app/) app are blurred to hide sensitive data, such as API tokens; click them to unblur them. Sensitive data from environment variables is visible in [Definition](../../../Apps/List-of-apps/Definitions-app/#_interpolated_variables) apps only to users with a superuser role.
+
+To view an environment variable’s value:
+
+1.  Open the [About](../../../Apps/List-of-apps/About-Magnolia-app/) app and go to the Config Info tab.
+
+2.  Click a row to reveal and copy the variable’s value (values are blurred by default).
+
+
+If you don’t know the environment variable’s name:
+
+1.  In the Resources app, locate the YAML source file that contains the property using the `!env` placeholder.
+
+2.  The variable’s value is hidden, but once identified, note the variable name of the placeholder in the file.
+
+3.  Return to the About app to retrieve and copy its value as described above.
+
+
+## [](#_component_and_type_mappings_overriding)Component and type mappings, overriding
+
+> **Note:** You can override Magnolia defaults within your module descriptors, except for observed components, which are managed via JCR.Ensure to include a module descriptor dependency for the module you are overriding.
+
+### [](#_type_mapping)Type mapping
+
+Type mappings allow specifying or overriding the implementation used when creating instances of a type via `componentProvider#newInstance`.
+
+For example, the following configuration defines an implementation:
+
+```xml
+<type-mapping>
+  <type>info.magnolia.rendering.template.TemplateDefinition</type>
+  <implementation>info.magnolia.rendering.template.configured.ConfiguredTemplateDefinition</implementation>
+</type-mapping>
+```
+
+You can then override an implementation used when calling:
+
+```java
+componentProvider#newInstance(TemplateDefinition.class)
+```
+
+For more details, see `<type-mapping>` for example in the [`magnolia-ce / ui`](https://gitlab.com/search?group_id=99294163&nav_source=navbar&project_id=66245872&repository_ref=master&scope=blobs&search=%3Ctype-mapping%3E+extension%3Axml&search_code=true) Gitlab repository.
+
+### [](#_component_mapping)Component mapping
+
+Component mappings define or override the implementation used when injecting a component, such as through constructor injection.
+
+For example, suppose you have the following configuration:
+
+```xml
+<component>
+  <type>info.magnolia.ui.contentapp.observation.JcrObservation</type>
+  <implementation>info.magnolia.ui.contentapp.observation.JcrObservation</implementation>
+</component>
+```
+
+You can then override an implementation used when injecting `JcrObservation`:
+
+```java
+@Inject
+SomeConstructor(JcrObservation jcrObservation) {
+   this.jcrObservation = jcrObservation;
+}
+```
+
+For more details, see `<component>` for example in the [`magnolia-ce / ui`](https://gitlab.com/search?group_id=99294163&nav_source=navbar&project_id=66245872&repository_ref=master&scope=blobs&search=%3Ccomponent%3E+extension%3Axml&search_code=true) Gitlab repository.
+
+### [](#_observed_components)Observed components
+
+Observed components are configured to delegate their configuration fully to JCR, typically manageable at runtime via the JCR Configuration app.
+
+Their implementation cannot be overridden by other modules.
+
+They often include setters to allow runtime configuration.
+
+An example configuration is:
+
+```xml
+<component>
+  <type>info.magnolia.audit.AuditLoggingManager</type>
+  <workspace>config</workspace>
+  <path>/server/auditLogging</path>
+  <observed>true</observed>
+  <scope>singleton</scope>
+</component>
+```
+
+For more details, see the Magnolia CMS online demo, in the Configuration app: [`auditLogging@class`](https://demo.magnolia-cms.com/.magnolia/admincentral#app:configuration:browser;/server/auditLogging@class:treeview).
+
+## [](#_extending_configuration)Extending configuration
+
+You can extend a configuration by defining an `extends` property and setting its value to the source configuration you want it to inherit. The target configuration inherits everything from the source and adds its own exceptions. This can save time and effort as you only need to define exceptions explicitly. The mechanism is only available in the `config` repository.
+
+In the example below, the `sportstation` site definition extends the `travel` site definition. The definition inherits all configuration from the `travel` configuration and adds its own domains, internationalization and URI-to-repository mappings, theme and templates. The `extends` property can point to the source configuration with an absolute or relative path.
+
+![Definition example](../../../_images/ADVT-configmgt-ext.png)
+
+### [](#_overriding)Overriding
+
+Extending is additive by default, which means that configuration specified at the extending level is added to the inherited configuration. Setting the `extends` property to `override` changes this behavior. An override allows the extending node to completely remove the inherited content and replace it with its own content entries. In the example below, the `travel` site definition supports two locales, `en` (English) and `de` (German), whereas site `travel-fr` is targeted to French speakers only.
+
+The French site extends `travel`. It inherits all configuration except the locales. An override under the locales node removes `en` and `de`. Only the French locale `fr` defined at this level is applied. This means that authors can enter only French content on the French site.
+
+![Locales node](../../../_images/ADVT-configmgt-override.png)
+
+## [](#_observation)Observation
+
+Observation is a feature of the Java Content Repository that enables applications to register interest in events that describe changes to a workspace. The applications can then monitor and respond to those events. The observation mechanism dispatches events when a persistent change is made to the workspace. Magnolia uses observation heavily. For instance, observation is used to reload module configurations and to reload all objects provided by the FactoryUtil. To use observation you must at least specify the workspace, the path to the node which should be observed, and an event listener. The event listener’s `onEvent()` method is called whenever there are changes in the observed node.
+
+Magnolia provides the info.magnolia.observation.WorkspaceEventListenerRegistration helper class to assist you in using observation for your project. info.magnolia.cms.util.ObservationUtil has been deprecated since Magnolia 5.4.6.
+
+| Where it’s used | What is configured |
+| --- | --- |
+| info.magnolia.cms.beans.config.ServerConfiguration | Basic server configuration: `defaultBaseURL` , `defaultExtension` , `instanceUuid` , etc. ** `defaultBaseURL` is the default base URL of the server root. The property is used to create absolute links in emails or other external systems. | ** | `defaultBaseURL` is the default base URL of the server root. The property is used to create absolute links in emails or other external systems. |
+| ** | `defaultBaseURL` is the default base URL of the server root. The property is used to create absolute links in emails or other external systems. |
+| info.magnolia.cms.beans.config.VirtualURIManager | Mapping virtual URIs to pages. |
+| info.magnolia.cms.filters.FilterManagerImpl | Filter chain |
+| info.magnolia.cms.i18n.DefaultMessagesManager | Messages for localized labels and descriptions in the UI. |
+| info.magnolia.commands.CommandsManager | [Commands](../../../Developing/Commands/) and command catalogs. |
+| info.magnolia.module.ModuleManagerImpl | Module definitions |
+| info.magnolia.objectfactory.ConfiguredComponentFactory | Builds a component configured in the repository. |
+| info.magnolia.objectfactory.ObservedComponentFactory | info.magnolia.objectfactory.guice.GuiceConfiguredComponentProvider Guice Provider that creates an object by reading it from the repository. |
+| info.magnolia.rendering.renderer.registry.ConfiguredRendererProvider | RendererProvider that instantiates a renderer from a configuration node. |
+| info.magnolia.rendering.template.registry.ConfiguredTemplateDefinitionProvider | `TemplateDefinitionProvider` that instantiates a template from a configuration node. |
+
+| Vote results | VoterSet result |
+| --- | --- |
+| -3, 0, 2 | -3 |
+| -3, 0, 3 | 3 |
+| -3, 0, 4 | 4 |

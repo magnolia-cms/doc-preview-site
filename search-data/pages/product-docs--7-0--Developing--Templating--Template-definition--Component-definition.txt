@@ -8,34 +8,20 @@ breadcrumb: DX Core > Developing > Templating > Template definition > Component 
 
 # Component definition
 
-[Light developers](../../../Light-development-in-Magnolia/) can use the `create-component` command in the [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) to create page templates.
+[Light developers](../../../Light-development-in-Magnolia/) can use the `create-component` command in the [Magnolia CLI](../../../../../../magnolia-cli/) to create page templates.
 
-A component is the smallest block of content that editors can edit, delete and move as a single unit on the page. A component definition is similar to a [page definition](../Page-definition/) and uses the same definition object. You can [configure a template in a YAML file or a JCR node](../../../../Modules/Module-configuration/#_changing_module_configuration).
+A component is the smallest block of content that editors can edit, delete and move as a single unit on the page. A component definition is similar to a [page definition](../../../../../RNs-6-4-3/Developing/Templating/Template-definition/Page-definition/) and uses the same definition object. You can [configure a template in a YAML file or a JCR node](../../../../../RNs-6-4-3/Modules/Module-configuration/#_changing_module_configuration).
 
-At its simplest, a component may be just text. However, a component can contain almost anything: a related image, a list of links or a teaser to another page. Components render content entered by editors in [dialogs](../../Dialog-definition/).
+At its simplest, a component may be just text. However, a component can contain almost anything: a related image, a list of links or a teaser to another page. Components render content entered by editors in [dialogs](../../../../../RNs-6-4-3/Developing/Templating/Dialog-definition/).
 
-## [](#_component_properties)Component properties
-
-Simple example definition:
-
-my-module/templates/components/text.yaml
-
-```yaml
-renderType: freemarker
-templateScript: /my-module/templates/components/text.ftl
-dialog: my-module:components/text
-modelClass: com.example.templates.TextComponentModel
-deletable: false
-moveable: false
-personalizable: false
-class: com.example.templates.TextComponentDefinition
-```
-
-> **Tip:** See an overview of differences between FreeMarker and headless templating.
-
-You can use [common template properties](../) and the following properties in a component definition:
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>deletable</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Determines if component can be deleted. Set to <code>false</code> to prevent editors deleting the component.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>escapeHtml</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Escapes any HTML code entered into the component if the component contains an <a href="../../Dialog-definition/Field-definition/" class="xref page">input field</a>. This is a security feature that prevents XSS attacks. Default is <code>true</code> for all form fields except where default is <code>false</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>fragmentDefinition</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><span class="blue-bg"><a href="../../Renderers/#_renderers_provided_by_magnolia" class="xref page">FreeMarker development only</a></span></p></div><div class="paragraph"><p><strong>optional</strong> (DX Core only)</p></div><div class="paragraph"><p>Allows you to mark a component as dynamic. See <a href="../../../../Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-Dynamic-Page-Caching/" class="xref page">Advanced Cache Dynamic Page Caching</a> and <a href="../../../../Modules/List-of-modules/High-performance-caching-modules/SiteMesh-module/" class="xref page">SiteMesh module</a>.</p></div><div class="paragraph"><p>Properties:</p></div><div class="ulist"><ul><li><p><code>class</code>: <code>info.magnolia.module.advancedcache.rendering.DynamicFragmentDefinition</code> supports an advanced definition for dynamic fragments.</p></li><li><p><code>cacheKeyGeneratorClass</code>: Cache key generator class. <em>Default is null</em>.</p></li><li><p><code>dynamic</code>: Enables and disables dynamic caching. <em>default is <code>true</code></em>.</p></li><li><p><code>mechanism</code>: Mechanism used. Sitemesh mechanism is supported. <em>Default is null</em>.</p></li><li><p><code>ttl</code>: Time to live setting. <em>Default is <code>0</code></em>.</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>moveable</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Determines if component can be moved. Set to <code>false</code> to prevent editors moving the component.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>personalizable</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong> (DX Core), <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Determines if component can be personalized. Set to <code>false</code> to prevent editors personalizing the component.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>writable</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Determines if component can be edited. Set to <code>false</code> to prevent editors editing the component.</p></div></div></td></tr></tbody></table></div>
+| Property | Description |
+| --- | --- |
+| `deletable` | **optional** , *default is true* Determines if component can be deleted. Set to `false` to prevent editors deleting the component. |
+| `escapeHtml` | **optional** , *default is true* Escapes any HTML code entered into the component if the component contains an [input field](../../Dialog-definition/Field-definition/) . This is a security feature that prevents XSS attacks. Default is `true` for all form fields except where default is `false` . |
+| `fragmentDefinition` | [FreeMarker development only](../../../../../RNs-6-4-3/Developing/Templating/Renderers/#_renderers_provided_by_magnolia) **optional** (DX Core only) Allows you to mark a component as dynamic. See [Advanced Cache Dynamic Page Caching](../../../../../RNs-6-4-3/Modules/List-of-modules/High-performance-caching-modules/Advanced-Cache-Dynamic-Page-Caching/) and [SiteMesh module](../../../../../RNs-6-4-3/Modules/List-of-modules/High-performance-caching-modules/SiteMesh-module/) . Properties: • `class` : `info.magnolia.module.advancedcache.rendering.DynamicFragmentDefinition` supports an advanced definition for dynamic fragments. • `cacheKeyGeneratorClass` : Cache key generator class. *Default is null* . • `dynamic` : Enables and disables dynamic caching. *default is true* . • `mechanism` : Mechanism used. Sitemesh mechanism is supported. *Default is null* . • `ttl` : Time to live setting. *Default is 0* . |
+| `moveable` | **optional** , *default is true* Determines if component can be moved. Set to `false` to prevent editors moving the component. |
+| `personalizable` | **optional** (DX Core), *default is true* Determines if component can be personalized. Set to `false` to prevent editors personalizing the component. |
+| `writable` | **optional** , *default is true* Determines if component can be edited. Set to `false` to prevent editors editing the component. |
 
 ## [](#_location_of_component_definitions)Location of component definitions
 
@@ -50,48 +36,18 @@ Component templates can be provided by more than one module, and you can configu
 
 ## [](#_component_availability)Component availability
 
-Component availability is configured in an [area definition](../Area-definition/). The area can then be used on many [page definitions](../Page-definition/).
+Component availability is configured in an [area definition](../../../../../RNs-6-4-3/Developing/Templating/Template-definition/Area-definition/). The area can then be used on many [page definitions](../../../../../RNs-6-4-3/Developing/Templating/Template-definition/Page-definition/).
 
 Configure a content map of components in each area definition using the `id` property to link to the component definition.
 
 > **Tip:** See Restricting component availability in an area template for more details.
 
-## [](#_nested_components)Nested components
-
-You can create composite components with nested subcomponents. The nested components are configured under an `areas` item or node. This part of the configuration follows the same pattern as an [area definition](../Area-definition/).
-
-**Example**: Two link components inside a composite link list component.
-
-/my-module/components/linkList.yaml
-
-```yaml
-renderType: freemarker
-templateScript: /my-module/components/linkList.ftl
-dialog: my-module:components/compositeLink
-i18nBasename: info.magnolia.module.my-module.messages
-title: components.compositeLink.title
-description: components.compositeLink.description
-areas:
-  linkList:
-    type: list
-    templateScript: /my-module/components/linkList.ftl
-    title: components.compositeLink.title
-    description: components.link-list.description
-    availableComponents:
-      internalLink:
-        id: my-module:components/internalLink
-      externalLink:
-        id: my-module:components/externalLink
-```
-
-Nodes and properties:
-
-| `<component name>` |     |
+| `<component name>` |  |
 | --- | --- |
 | `areas` | Marks the configuration as an area. |
-| `<area name>` |     |
+| `<area name>` |  |
 | `availableComponents` | Components available in the area. |
 | `<component name>` | Map of nested components available in the area. |
 | `id` | Component definition ID in `<module-name>:<path to component definition>` format. |
-| `<area properties>` | All properties available in list and single [area definitions](../Area-definition/#_area_properties) can be used. |
+| `<area properties>` | All properties available in list and single [area definitions](../../../../../RNs-6-4-3/Developing/Templating/Template-definition/Area-definition/#_area_properties) can be used. |
 | `<component properties>` | All properties available in [component definitions](#_component_properties) can be used. |

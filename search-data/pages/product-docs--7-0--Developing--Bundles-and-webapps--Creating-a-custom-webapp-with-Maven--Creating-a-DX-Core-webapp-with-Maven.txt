@@ -266,7 +266,7 @@ In the webapp POM file, modify the `dependencies` section.
 
 Want to add your own dependencies?
 
-Suppose you want to add, for example, the E-commerce dependencies outlined on this page: [E-commerce Module](#ecommerce:ROOT:ecommerce-module.adoc). In that case, you must check whether the Magnolia bundle version is suitable for them. For instance, E-commerce 1.3.1 requires at least Magnolia 6.2.7; however, this tutorial uses the Magnolida bundle 6.2 when creating the webapp archetype. This can be resolved by increasing the Magnolia bundle version `magnoliaBundleVersion` in the parent POM file or decreasing the E-commerce version dependencies in the webapp POM file.
+Suppose you want to add, for example, the E-commerce dependencies outlined on this page: [E-commerce Module](../../../../../../ecommerce/ecommerce-module/). In that case, you must check whether the Magnolia bundle version is suitable for them. For instance, E-commerce 1.3.1 requires at least Magnolia 6.2.7; however, this tutorial uses the Magnolida bundle 6.2 when creating the webapp archetype. This can be resolved by increasing the Magnolia bundle version `magnoliaBundleVersion` in the parent POM file or decreasing the E-commerce version dependencies in the webapp POM file.
 
 > **Tip:** If you cannot find the necessary dependency information on a module page, please inspect the build log for missing dependencies when building the project with Maven.
 
@@ -296,11 +296,11 @@ In this step, you add the (default) `magnolia.properties` file and customize the
 
 ## [](#_what_is_magnolia_resources_dir)What is `magnolia.resources.dir`?
 
-`magnolia.resources.dir` is a property defining the directory from which [resources](../../../Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../../../Apps/List-of-apps/About-Magnolia-app/).
+`magnolia.resources.dir` is a property defining the directory from which [resources](../../../../../RNs-6-4-3/Developing/Resources/) are loaded in a Magnolia instance. This directory is used for file-based resources such as light modules and for overriding classpath resources. The property is configured in `WEB-INF/config/default/magnolia.properties` and its default value is `$magnolia.home/modules`. To see the current value of the property, go to the Config Info tab in the [About Magnolia app](../../../../../RNs-6-4-3/Apps/List-of-apps/About-Magnolia-app/).
 
 > **Note:** You can use symbolic links (symlinks or soft links) in the resources directory to include light modules located elsewhere on your system.
 
-Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../../../Administration/Architecture/Configuration-management/#_defining_properties) section.)
+Set the `magnolia.resources.filesystem.observation.excludedDirectories` property to exclude directories from being observed for changes. (See the table in the [Configuration management: Defining properties](../../../../../RNs-6-4-3/Administration/Architecture/Configuration-management/#_defining_properties) section.)
 
 1.  Create the `magnolia.properties` file in the following folder: `custom-dx-core-project/custom-dx-core-project-webapp/src/main/webapp/WEB-INF/config/default/`.
 
@@ -340,4 +340,4 @@ Related topics
 
 -   [Apache Maven](https://maven.apache.org/)
 
--   [Maven setup](../../../Development-environment/Maven/)
+-   [Maven setup](../../../../../RNs-6-4-3/Developing/Development-environment/Maven/)

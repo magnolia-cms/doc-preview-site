@@ -10,7 +10,7 @@ breadcrumb: DX Core > Administration > Troubleshooting > Debugging package
 
 The Core module comes equipped with several classes to troubleshoot and debug your Magnolia instance. This page covers each of these classes and explains how you can use them.
 
-Servlet filters intercept and process requests or responses. They can do this either before the requests are sent to servlets or before the servlets send the responses back to clients. The [Servlets filter chain](../../Architecture/Request-processing-and-filters/Filters/#_servlets_filter_chain) defines the order in which filters are applied.
+Servlet filters intercept and process requests or responses. They can do this either before the requests are sent to servlets or before the servlets send the responses back to clients. The [Servlets filter chain](../../../../RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/Filters/#_servlets_filter_chain) defines the order in which filters are applied.
 
 Always use caution when placing a filter in the chain manually and keep in mind that position in the chain matters. Depending on what you are trying to debug you may need to use a filter many times or even move it to different positions within the chain.
 
@@ -24,18 +24,18 @@ The general procedure for enabling filters is as follows.
 
 1.  Download the filter.
 
-    -   [Call tracking](#_call_tracking) filter download link: [config.server.filters.callTrackingFilter.xml](../../../_attachments/config.server.filters.callTrackingFilter.xml)
+    -   [Call tracking](#_call_tracking) filter download link: [config.server.filters.callTrackingFilter.xml](../../../../RNs-6-4-3/_attachments/config.server.filters.callTrackingFilter.xml)
 
-    -   [Dump headers](#_dump_headers) filter download link: [config.server.filters.dumpHeaders.xml](../../../_attachments/config.server.filters.dumpHeaders.xml)
+    -   [Dump headers](#_dump_headers) filter download link: [config.server.filters.dumpHeaders.xml](../../../../RNs-6-4-3/_attachments/config.server.filters.dumpHeaders.xml)
 
-    -   [Performance test](#_performance_test) filter download link: [config.server.filters.performanceTestFilter.xml](../../../_attachments/config.server.filters.performanceTestFilter.xml)
+    -   [Performance test](#_performance_test) filter download link: [config.server.filters.performanceTestFilter.xml](../../../../RNs-6-4-3/_attachments/config.server.filters.performanceTestFilter.xml)
 
-    -   [Session debugger](#_session_debugger) filter download link: [config.server.filters.sessionDebugger.xml](../../../_attachments/config.server.filters.sessionDebugger.xml)
+    -   [Session debugger](#_session_debugger) filter download link: [config.server.filters.sessionDebugger.xml](../../../../RNs-6-4-3/_attachments/config.server.filters.sessionDebugger.xml)
 
 
 2.  To enable a filter follow the steps below.
 
-    1.  Open the [Configuration app](../../../Apps/List-of-apps/Configuration-app/) and click the node: `/server/filters`.
+    1.  Open the [Configuration app](../../../../RNs-6-4-3/Apps/List-of-apps/Configuration-app/) and click the node: `/server/filters`.
 
     2.  From the Action bar, click `Import`.
 
@@ -51,7 +51,7 @@ The general procedure for enabling filters is as follows.
 
 To disable a filter:
 
-1.  Open the [Configuration app](../../../Apps/List-of-apps/Configuration-app/) and click the node: `/server/filters`.
+1.  Open the [Configuration app](../../../../RNs-6-4-3/Apps/List-of-apps/Configuration-app/) and click the node: `/server/filters`.
 
 2.  Select the filter you want to disable
 
@@ -251,7 +251,7 @@ The point of this filter is to log the round-trip time it takes to fulfill the r
 
 #### [](#_usage_4)Usage
 
-To use the filter, you need to decide where to place it in the [filter chain](../../Architecture/Request-processing-and-filters/Filters/). In the standard output below, the filter was the second filter in the chain (after the `context` filter). Everything below the filter is included in the time measurement, and so, in this case, it is about the total time to fulfill the request.
+To use the filter, you need to decide where to place it in the [filter chain](../../../../RNs-6-4-3/Administration/Architecture/Request-processing-and-filters/Filters/). In the standard output below, the filter was the second filter in the chain (after the `context` filter). Everything below the filter is included in the time measurement, and so, in this case, it is about the total time to fulfill the request.
 
 ```shell
 INFO info.magnolia.debug : /magnoliaPublic/travel.html : performanceTestFilter: 154

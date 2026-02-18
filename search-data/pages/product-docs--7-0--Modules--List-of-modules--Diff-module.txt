@@ -8,31 +8,23 @@ breadcrumb: DX Core > Modules > Diff module
 
 # Diff module
 
-[Content management](../../../use-cases/content-management/) Bundled: DX Core
-
 | Edition | DX Core |
 | --- | --- |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLDIFF](https://magnolia-cms.atlassian.net/browse/MGNLDIFF) |
-| Maven site | [Diff](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fdiff%2Fmagnolia-diff%2F4.0.0) |
-| Latest | 4.0.0 |
-| [Available on SPA/Headless](../../../Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | No  |
-
-The Diff module enhances Magnolia core [versioning](../../../Authoring/Versioning/) functionality. The module uses the [daisydiff](http://code.google.com/p/daisydiff/) Java library to compare two HTML files. Insertions are highlighted in green and deletions in red. Users can see exactly what has changed between two versions of the same content. The module is used by the Pages app to compare page versions. Line-by-line text comparison and changes in asset selection allow editors and publishers to see at a glance exactly what has changed.
-
-![Diff module result in Show changes tab](../../../_images/6-2-diffModule.png)
-
-> **Tip:** See an overview of differences between FreeMarker and headless templating.
+| Maven site | [Diff](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fdiff%2Fmagnolia-diff%2F{magnolia-diff-64}) |
+| Latest | {magnolia-diff-64} |
+| [Available on SPA/Headless](../../../../RNs-6-4-3/Developing/Templating/Freemarker-vs-headless/#_magnolia_modules_and_features) | No |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.diff</groupId>
   <artifactId>magnolia-diff</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-diff-64}</version> (1)
 </dependency>
 ```
 
@@ -46,7 +38,7 @@ For integration with the Pages app there is also `magnolia-diff-pages-integratio
 <dependency>
   <groupId>info.magnolia.diff</groupId>
   <artifactId>magnolia-diff-pages-integration</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-diff-64}</version> (1)
 </dependency>
 ```
 
@@ -71,7 +63,7 @@ Add the following snippet to your POM file:
 <dependency>
   <groupId>info.magnolia.diff</groupId>
   <artifactId>magnolia-diff-compatibility</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-diff-64}</version> (1)
 </dependency>
 ```
 
@@ -89,7 +81,7 @@ However, [version comparison](../../../Apps/Developing-an-app/Specific-aspects/E
 
 info.magnolia.module.diff.VersionDiffHtmlServlet is registered in the Magnolia [filter chain](../../../Administration/Architecture/Request-processing-and-filters/Filters/) in the **Configuration** app > `/server/filters/servlets/VersionDiffHtmlServlet`. The controller generates the diff view between two versions of a page by checking the `toVersionNr` and `fromVersionNr` request parameters.
 
-![Diff servlet configuration](../../../_images/ADVT-diff-servlet.png)
+![Diff servlet configuration](../../../../RNs-6-4-3/_images/ADVT-diff-servlet.png)
 
 ### [](#_diff_configuration)Diff configuration
 
@@ -97,7 +89,7 @@ The default settings for headers, cookies, host and port can be set by configura
 
 By default Magnolia is set to generate a JSESSIONID cookie. This is configured in the `diff` module in the **Configuration** app > `/modules/diff/config/cookies`.
 
-![Diff configuration](../../../_images/ADVT-diff-config.png)
+![Diff configuration](../../../../RNs-6-4-3/_images/ADVT-diff-config.png)
 
 You can configure custom settings for:
 
@@ -112,7 +104,7 @@ You can configure custom settings for:
 
 > **Important:** Headers and cookies are configured separately.
 
-![Headers and cookies configuration](../../../_images/ADVT-diff-cookies.png)
+![Headers and cookies configuration](../../../../RNs-6-4-3/_images/ADVT-diff-cookies.png)
 
 ### [](#_diff_html_generator)Diff HTML generator
 
@@ -165,7 +157,7 @@ Two utility classes are provided:
 
 info.magnolia.module.diff.app.action.CompareLocalizedVersionsAction and info.magnolia.module.diff.app.action.CompareToPreviousLocalizedVersionAction open the [diff subapp](#_diff_subapp) (see below) configured in the **Pages** app. The action definitions are configured in the **Configuration** app > `/modules/pages/apps/pages/subApps/browser/actions`.
 
-![Compare actions configuration](../../../_images/ADVT-diff-compare.png)
+![Compare actions configuration](../../../../RNs-6-4-3/_images/ADVT-diff-compare.png)
 
 ### [](#_diff_subapp)Diff subapp
 
@@ -178,7 +170,7 @@ The diff view that opens when comparing different page versions is configured in
 -   `subAppClass`: info.magnolia.ui.framework.app.embedded.EmbeddedPageSubApp is the main tab in an embedded page app.
 
 
-![Diff subapp configuration](../../../_images/ADVT-diff-subapp.png)
+![Diff subapp configuration](../../../../RNs-6-4-3/_images/ADVT-diff-subapp.png)
 
 **Example:** Here’s the `diff` subapp for the `/travel/about/what-we-believe` page. The URL is:
 

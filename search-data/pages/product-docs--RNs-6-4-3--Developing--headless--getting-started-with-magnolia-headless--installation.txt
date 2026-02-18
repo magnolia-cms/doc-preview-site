@@ -1,0 +1,19 @@
+---
+title: "Installation"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/headless/getting-started-with-magnolia-headless/installation/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Installation
+---
+
+# Installation
+
+## [](#_overview)Overview
+
+In this section, we are going to make our local system ready to install and develop the demo projects.
+
+|  | Instructions |
+| --- | --- |
+| **Check for JAVA_HOME** | • Open the command prompt. • Type `set` and press `ENTER` . • Find `JAVA_HOME` in the command output and verify that the path points to your JDK installation directory, for example, `C:\Program Files\Java\jdk-<version>>.xx` . • If `JAVA_HOME` is missing or it points to the wrong directory, see **Set JAVA_HOME** . |
+| **Set JAVA_HOME** | • Open the Command Prompt as an administrator. • Set the path for `JAVA_HOME` . `setx /m JAVA_HOME "path\to\Java\jdk" (1)` ** **1** Where `path\to\Java\jdk` is where your Java Development Kit is saved. The `set` command creates the `JAVA_HOME` environment variable and sets its value to the JDK directory. The command is executed when Magnolia starts. | ** **1** | Where `path\to\Java\jdk` is where your Java Development Kit is saved. |
+| ** **1** | Where `path\to\Java\jdk` is where your Java Development Kit is saved. |

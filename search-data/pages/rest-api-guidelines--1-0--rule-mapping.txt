@@ -1,0 +1,97 @@
+---
+title: "Magnolia REST API Rule Mapping"
+url: https://docs.magnolia-cms.com/rest-api-guidelines/1.0/rule-mapping/
+category: Modules
+version: modules
+breadcrumb: REST API Guidelines > Rule Mapping
+---
+
+# Magnolia REST API Rule Mapping
+
+Quick reference for all Zalando Zally rules and their Magnolia status.
+
+Source of truth: `zally-ruleset-zalando` artifact (36 rules)
+
+## [](#_legend)Legend
+
+-   **ADOPT** – Follow the Zalando rule as-is
+
+-   **SKIP** – Do not enforce (with rationale documented)
+
+-   **CUSTOMIZE** – Modified for Magnolia conventions
+
+-   **TBD** – Decision pending
+
+
+| # | Rule Name | Zally Class | Severity | Status | Magnolia Convention |
+| --- | --- | --- | --- | --- | --- |
+| 101 | Provide API Specification using OpenAPI | `UseOpenApiRule` | MUST | ADOPT |  |
+| 215 | Provide API Identifier | `ApiIdentifierRule` | MUST | SKIP | Not required for internal APIs |
+| 218 | Contain API Meta Information | `ApiMetaInformationRule` | MUST | SKIP | Magnolia uses own metadata format |
+| 219 | Provide API Audience | `ApiAudienceRule` | MUST | SKIP | Not applicable |
+
+| # | Rule Name | Zally Class | Severity | Status | Magnolia Convention |
+| --- | --- | --- | --- | --- | --- |
+| 118 | Property Names Must be ASCII snake_case | `SnakeCaseInPropNameRule` | MUST | SKIP | Use camelCase |
+| 120 | Array names should be pluralized | `PluralizeNamesForArraysRule` | SHOULD | ADOPT |  |
+| 120 | Array names should be pluralized (whitelist) | `WhiteListedPluralizeNamesForArraysRule` | SHOULD | ADOPT |  |
+| 125 | Represent enumerations as strings | `EnumValueTypeRule` | SHOULD | ADOPT |  |
+| 129 | Lowercase words with hyphens | `KebabCaseInPathSegmentsRule` | MUST | SKIP | Paths can be arbitrary (JCR paths) |
+| 130 | Use snake_case for Query Parameters | `SnakeCaseForQueryParamsRule` | MUST | SKIP | Use camelCase |
+| 134 | Pluralize Resource Names | `PluralizeResourceNamesRule` | MUST | ADOPT |  |
+| 224 | Follow Naming Convention for Hostnames | `FunctionalNamingForHostnamesRule` | MUST | SKIP | Magnolia Cloud handles hostnames |
+| 235 | Name date/time properties using "_at" suffix | `DateTimePropertiesSuffixRule` | SHOULD | SKIP | Use camelCase (e.g., createdAt, modifiedAt) |
+| 240 | Declare enum values using UPPER_SNAKE_CASE | `UpperCaseEnums` | SHOULD | ADOPT |  |
+
+| # | Rule Name | Zally Class | Severity | Status | Magnolia Convention |
+| --- | --- | --- | --- | --- | --- |
+| 132 | Use uppercase separate words with hyphens for HTTP headers | `PascalCaseHttpHeadersRule` | SHOULD | ADOPT |  |
+| 150 | Use Standard HTTP Status Codes | `UseStandardHttpStatusCodesRule` | MUST | ADOPT |  |
+| 151 | Specify Success and Error Responses | `JsonProblemAsDefaultResponseRule` | MUST | ADOPT |  |
+| 166 | Avoid Link in Header Rule | `AvoidLinkHeadersRule` | MUST | ADOPT |  |
+| 183 | Use Only the Specified Proprietary Zalando Headers | `ProprietaryHeadersRule` | SHOULD | SKIP | Zalando-specific headers not applicable |
+
+| # | Rule Name | Zally Class | Severity | Status | Magnolia Convention |
+| --- | --- | --- | --- | --- | --- |
+| 136 | Avoid Trailing Slashes | `AvoidTrailingSlashesRule` | MUST | ADOPT |  |
+| 143 | Resources must be identified via path segments | `IdentifyResourcesViaPathSegments` | MUST | ADOPT |  |
+| 145 | Consider Using (Non-) Nested URLs | `NestedPathsMayBeRootPathsRule` | MAY | ADOPT |  |
+| 146 | Limit number of resource types | `LimitNumberOfResourcesRule` | SHOULD | ADOPT |  |
+| 147 | Limit number of Sub-resources level | `LimitNumberOfSubResourcesRule` | SHOULD | ADOPT |  |
+
+| # | Rule Name | Zally Class | Severity | Status | Magnolia Convention |
+| --- | --- | --- | --- | --- | --- |
+| 107 | Prefer Compatible Extensions | `ExtensibleEnumRule` | SHOULD | ADOPT |  |
+| 110 | Response As JSON Object | `SuccessResponseAsJsonObjectRule` | MUST | ADOPT |  |
+| 154 | Use Form-Style Query Format for Collection Parameters | `QueryParameterCollectionFormatRule` | SHOULD | ADOPT |  |
+| 171 | Define Format for Type Number and Integer | `FormatForNumbersRule` | MUST | ADOPT |  |
+| 172 | Prefer standard media type names | `MediaTypesRule` | SHOULD | ADOPT |  |
+| 174 | Use common field names | `CommonFieldTypesRule` | MUST | CUSTOMIZE | Align with Magnolia field conventions |
+| 176 | Use Problem JSON | `UseProblemJsonRule` | MUST | ADOPT |  |
+
+| # | Rule Name | Zally Class | Severity | Status | Magnolia Convention |
+| --- | --- | --- | --- | --- | --- |
+| 115 | Do Not Use URI Versioning | `NoVersionInUriRule` | MUST | ADOPT | Version in meta object |
+| 116 | Use Semantic Versioning | `VersionInInfoSectionRule` | MUST | ADOPT | Major versions only |
+
+| # | Rule Name | Zally Class | Severity | Status | Magnolia Convention |
+| --- | --- | --- | --- | --- | --- |
+| 104 | Secure Endpoints | `SecureAllEndpointsRule` | MUST | SKIP | Magnolia handles security |
+| 105 | Secure All Endpoints With Scopes | `SecureAllEndpointsWithScopesRule` | MUST | SKIP | Magnolia handles security |
+| 153 | Use 429 With Header For Rate Limits | `Use429HeaderForRateLimitRule` | MUST | SKIP | Infrastructure responsibility |
+
+| Status | Count | Percentage |
+| --- | --- | --- |
+| ADOPT | 22 | 61% |
+| SKIP | 12 | 33% |
+| CUSTOMIZE | 2 | 6% |
+| **Total** | **36** | **100%** |
+
+| # | Principle | Magnolia Approach |
+| --- | --- | --- |
+| 100 | Follow API first principle | OpenAPI spec before implementation (process/methodology) |
+| 177 | Do not expose stack traces | Error responses use Problem JSON without internals (runtime behavior) |
+
+| Rule ID | Rule Name | Class | Severity | Status | Description |
+| --- | --- | --- | --- | --- | --- |
+| M100 | Provide API Status | `ApiStatusRule` | MUST | Active | [Require x-api-status in info section](../documentation/#M100) |

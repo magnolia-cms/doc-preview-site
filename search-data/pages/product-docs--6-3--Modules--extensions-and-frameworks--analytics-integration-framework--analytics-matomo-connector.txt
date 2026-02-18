@@ -16,41 +16,17 @@ You must have an appropriate account and credentials to connect to Matomo.
 
 The associated framework is included with your DX Core license and is free of charge. However, this extension is paid and requires an additional [special license](../../../../Administration/License/).
 
-## [](#_connecting_matomo_as_your_data_supplier)Connecting Matomo as your data supplier
-
-Define the data supplier(s) for the charts to be displayed in the Analytics app dashboard. Marketers or editors can select the data suppliers you configure when they create dashboards and widgets in the Analytics app.
-
-Data suppliers are defined under: `/<module name>/dataSuppliers/<dataSupplierRegistryFile.yaml>`.
-
-/matomo/dataSuppliers/demoMatomoSupplier.yaml
-
-```yml
-class: info.magnolia.analytics.matomo.datasource.MatomoDataSupplierWithTransformer
-credentials:
-  parameters:
-    serverUrl: https://demo.matomo.org
-    tokenAuth: anonymous
-parameters:
-  method: API.get
-  module: API
-  idSite: 1
-  date: last7
-  period: day
-  format: json
-defaultAPIMethodForTotalReport: API.get
-```
-
 | Property | Description |
 | --- | --- |
-| `class` | **required**<br><br>info.magnolia.analytics.matomo.datasource.MatomoDataSupplierWithTransformer |
+| `class` | **required** info.magnolia.analytics.matomo.datasource.MatomoDataSupplierWithTransformer |
 | `credentials` | **required** |
 | `parameters` | **required** |
-| `serverUrl` | **required**<br><br>The URL to your Matomo server. |
-| `tokenAuth` | **required**<br><br>The [authentication token from Matomo](https://matomo.org/faq/general/faq_114/). |
-| `parameters` | **required**<br><br>The parameters used in the REST call to configure the JSON results retrieved. These parameters vary depending on the data supplier used.<br><br>Each parameter is a key-value pair.<br><br>For Matomo, at least the `format: json` key-value is required to retrieve JSON format data.<br><br>See the [Matomo API documentation](https://developer.matomo.org/api-reference/reporting-api#API) to find valid parameters for Matomo. For example, the Matomo example above retrieves JSON format data using the [Matomo API.get](https://developer.matomo.org/api-reference/reporting-api#API). |
-| `filteringSubSetExpression` | **optional**<br><br>Use to configure segment filtering. |
-| `segment` | **optional**<br><br>Expression to filter a segment.<br><br>For example: `pageUrl=@%s` |
-| `defaultAPIMethodForTotalReport` | **required**<br><br>Use to configure the API to get a total report. Specific to the Metric number chart.<br><br>API suggestion: **API.get** |
+| `serverUrl` | **required** The URL to your Matomo server. |
+| `tokenAuth` | **required** The [authentication token from Matomo](https://matomo.org/faq/general/faq_114/) . |
+| `parameters` | **required** The parameters used in the REST call to configure the JSON results retrieved. These parameters vary depending on the data supplier used. Each parameter is a key-value pair. For Matomo, at least the `format: json` key-value is required to retrieve JSON format data. See the [Matomo API documentation](https://developer.matomo.org/api-reference/reporting-api#API) to find valid parameters for Matomo. For example, the Matomo example above retrieves JSON format data using the [Matomo API.get](https://developer.matomo.org/api-reference/reporting-api#API) . |
+| `filteringSubSetExpression` | **optional** Use to configure segment filtering. |
+| `segment` | **optional** Expression to filter a segment. For example: `pageUrl=@%s` |
+| `defaultAPIMethodForTotalReport` | **required** Use to configure the API to get a total report. Specific to the Metric number chart. API suggestion: **API.get** |
 
 ## [](#_further_reading)Further reading
 

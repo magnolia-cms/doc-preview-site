@@ -112,130 +112,28 @@ website.my-page.yaml
 >   LC_TIME="en_US.UTF-8"
 >   LC_ALL="en_US.UTF-8"
 
-## [](#_importing_and_exporting_jcr_data_with_apps_from_the_admin_ui)Importing and exporting JCR data with apps from the Admin UI
-
-Many Magnolia content apps that store their data in JCR workspaces provide actions to import and export JCR data. Some examples: [Pages app](../../../Apps/List-of-apps/Pages-app/), [Assets app](../../../Apps/List-of-apps/Assets-app/), [Contacts app](../../../Apps/List-of-apps/Contacts-app/), [Categories app](../../../Apps/List-of-apps/Categories-app/).
-
-Additionally, the [JCR Tools app](../../../Apps/List-of-apps/JCR-Tools-app/) allow you to operate on data in all Magnolia workspaces, including those where the Export and Import actions aren’t available in the workspace-specific app, for example in the [Security](../../../Apps/List-of-apps/Security-app/) app.
-
-Note that all the apps mentioned, including the JCR Tools app, rely on the default import and export actions defined in the module `magnolia-ui-admincentral`.
-
-### [](#_default_import_and_export_actions)Default import and export actions
-
-The default import and export actions are used in content apps and the JCR Tools app.
-
-The **Import** and **Export** actions use `JCRImportCommand` and `JCRExportCommand`. The commands are defined in the `magnolia-ui-admincentral` module and implemented in the info.magnolia.importexport.command.JcrImportCommand and info.magnolia.importexport.command.JcrExportCommand classes.
-
-The default import command can be configured in the `Configuration` app under this node: */modules/ui-admincentral/commands/default/import*.
-
 | Property | Description |
 | --- | --- |
-| `fileName` | **required**<br><br>Name of the file to be imported. |
-| `stream` | **required** (unless `importPath` is specified)<br><br>*java.io.Inputstream* with the content to be imported. |
-| `importPath` | **required** (unless `stream` is specified)<br><br>Sub-path of the XML tree that’s to be imported. |
-| `saveAfterImport` | *default is `true`*<br><br>Save JCR session after command execution. |
-| `validate` | *default is `true`*<br><br>Validates imported content for potentially malicious binaries. Such binaries are removed, and a detailed exception is thrown, keeping the rest of the imported content. This is supported only if `saveAfterImport=true`. |
-
-The export action can also contain filters.
-
-Exporting binary data (such as images or videos) from JCR to YAML throws an exception. Magnolia doesn’t allow you to export binary data to YAML files in order to prevent excessive memory consumption.
-
-### [](#_export_filters)Export filters
-
-The default export action provides the ability to apply filters to improve readability and omit data you don’t need outside of Magnolia. Filtered properties aren’t exported to the XML or YAML file. However, when you import the file back into the JCR repository, the created JCR node contains all properties according to its node type definition.
-
-The default export action defines a filter for the `configuration` workspace and excludes the following properties:
-
--   `jcr:created`, `jcr:createdBy`, `jcr:uuid`
-
--   `mgnl:activationStatus`, `mgnl:created`, `mgnl:createdBy`, `mgnl:lastActivated`, `mgnl:lastActivatedBy`, `mgnl:lastModified`, `mgnl:lastModifiedBy`
-
-
-See [this configuration](https://demo.magnolia-cms.com/.magnolia/admincentral#app:configuration:browser;/modules/ui-admincentral/commands/default/export/filters/config/propertyPredicate/excludedNames@jcrCreated:treeview) as an example.
-
-You can adapt the filter or apply other filters for other workspaces according to your requirements.
-
-### [](#_exporting_and_importing_from_content_apps)Exporting and importing from content apps
-
-The screenshot below is based on the Pages app. However, importing and exporting JCR data works in the same way on every content app which provides these actions. Note that you can add these actions to your custom content apps too.
-
-**Export** and **Import** actions are available in the action bar and in the context menu (right-click).
-
-When you import a file, the imported nodes become children of the selected parent node.
-
-To export:
-
-1.  Select a node to export the node and its children.
-
-2.  Click **Export**.
-
-3.  Choose a format: **XML** or **YAML**.
-
-
-To import:
-
-1.  Select a parent node under which you want to import the nodes.
-
-2.  Click **Import**.
-
-3.  Choose a format: **XML** or **YAML**.
-
-
-By default new UUIDs are generated for nodes that have the same ID as an existing node in the repository. When using the JCR Tools app, you can change this behavior while using the [Import tool](../../../Apps/List-of-apps/JCR-Tools-app/).
-
-### [](#_exporting_and_importing_from_the_jcr_tools_app)Exporting and importing from the JCR Tools app
-
-The import and export tools in the [JCR Tools app](../../../Apps/List-of-apps/JCR-Tools-app/) allow you to operate on data in all Magnolia workspaces, including those where the Export and Import actions aren’t available in the workspace-specific app, for example in the [Security](../../../Apps/List-of-apps/Security-app/) app.
-
-To export:
-
-1.  Select the Workspace where the content resides.
-
-2.  In **Base path**, type the path to the node to export.
-
-3.  Select **Format**: XML or YAML.
-
-4.  Select the type of **Compression**: None, ZIP, or GZIP.
-
-5.  Click **Execute**.
-
-
-To import:
-
-1.  Select the **Workspace** into which the content should be imported.
-
-2.  In **Base path**, type the path into which content should be imported.
-
-3.  Browse to the file to import.
-
-4.  Select how to handle conflicting **UUIDs**. These options only apply when the file to import contains a UUID - remember that the UUID can be omitted during export - and when an identical UUID already exists in the repository.
-
-    -   **Only import if no existing node** only import and generate a new UUID if the node does not already exist.
-
-    -   **Generate a new id for imported nodes** will result in a new UUID being generated for nodes being imported.
-
-    -   **Remove existing nodes with the same id** will result in nodes with the same UUID as those imported being deleted before the import.
-
-    -   **Replace existing nodes with the same id** will result in nodes with the same UUID as those imported being replaced with the imported nodes.
-
-
-5.  Click **Execute**.
-
+| `fileName` | **required** Name of the file to be imported. |
+| `stream` | **required** (unless `importPath` is specified) *java.io.Inputstream* with the content to be imported. |
+| `importPath` | **required** (unless `stream` is specified) Sub-path of the XML tree that’s to be imported. |
+| `saveAfterImport` | *default is true* Save JCR session after command execution. |
+| `validate` | *default is true* Validates imported content for potentially malicious binaries. Such binaries are removed, and a detailed exception is thrown, keeping the rest of the imported content. This is supported only if `saveAfterImport=true` . |
 
 ## [](#_importing_bootstrap_files_from_modules)Importing bootstrap files from modules
 
 As a developer, you typically adapt configuration data and content on your development environment. You then need to make it accessible on the production environment without manually importing the bootstrap files. Magnolia provides mechanisms to automatically import bootstrap files, for example when a module is installed for the first time.
 
-The bootstrapping mechanism, directory location and management for [Maven modules](../../../Modules/#_maven_module) and [light modules](../../../Modules/#_light_module) is different. See:
+The bootstrapping mechanism, directory location and management for [Maven modules](../../../../RNs-6-4-3/Modules/#_maven_module) and [light modules](../../../../RNs-6-4-3/Modules/#_light_module) is different. See:
 
--   [Bootstrapping in Maven modules](Bootstrapping-in-Maven-modules/).
+-   [Bootstrapping in Maven modules](../../../../RNs-6-4-3/Administration/Importing-and-exporting-data/Importing-and-exporting-JCR-data-for-bootstrapping/Bootstrapping-in-Maven-modules/).
 
--   [Bootstrapping in light modules](Bootstrapping-in-light-modules/).
+-   [Bootstrapping in light modules](../../../../RNs-6-4-3/Administration/Importing-and-exporting-data/Importing-and-exporting-JCR-data-for-bootstrapping/Bootstrapping-in-light-modules/).
 
 
 ## [](#_importing_and_exporting_jcr_data_with_groovy_scripts)Importing and exporting JCR data with Groovy scripts
 
-You can execute Groovy scripts on a running instance to both export and import JCR data. This type of export or import only supports XML file format. See the [Groovy module](../../../Modules/List-of-modules/Groovy-module/) and [Groovy app](../../../Apps/List-of-apps/Groovy-app/) for information about how to execute Groovy scripts on a running Magnolia instance.
+You can execute Groovy scripts on a running instance to both export and import JCR data. This type of export or import only supports XML file format. See the [Groovy module](../../../../RNs-6-4-3/Modules/List-of-modules/Groovy-module/) and [Groovy app](../../../../RNs-6-4-3/Apps/List-of-apps/Groovy-app/) for information about how to execute Groovy scripts on a running Magnolia instance.
 
 Sample Groovy script to export the node `/my-page` from the `website` workspace:
 
@@ -289,8 +187,8 @@ Alternatively, you can use the info.magnolia.importexport.BootstrapUtil class.
 
 Related topics
 
--   [Bootstrapping in Maven modules](Bootstrapping-in-Maven-modules/)
+-   [Bootstrapping in Maven modules](../../../../RNs-6-4-3/Administration/Importing-and-exporting-data/Importing-and-exporting-JCR-data-for-bootstrapping/Bootstrapping-in-Maven-modules/)
 
--   [Bootstrapping in light modules](Bootstrapping-in-light-modules/)
+-   [Bootstrapping in light modules](../../../../RNs-6-4-3/Administration/Importing-and-exporting-data/Importing-and-exporting-JCR-data-for-bootstrapping/Bootstrapping-in-light-modules/)
 
--   [JCR Tools app](../../../Apps/List-of-apps/JCR-Tools-app/)
+-   [JCR Tools app](../../../../RNs-6-4-3/Apps/List-of-apps/JCR-Tools-app/)

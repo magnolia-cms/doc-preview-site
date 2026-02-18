@@ -8,37 +8,22 @@ breadcrumb: DX Core > Modules > Groovy module
 
 # Groovy module
 
-[Developer productivity](../../../use-cases/developer-productivity/) Bundled: Extension
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLGROOVY](https://magnolia-cms.atlassian.net/browse/MGNLGROOVY) |
-| Maven site | [Groovy](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fgroovy%2Fmagnolia-groovy%2F4.0.0) |
-| Latest | 4.0.0 |
-
-Magnolia Groovy module adds Groovy capabilities to Magnolia. Groovy is a popular dynamic language for the JVM. To know more about it, visit the [Groovy official website](http://www.groovy-lang.org/) which has many tutorials and documentation both for beginners and advanced users of the language.
-
-The module provides:
-
--   A web based Unix-like console where you can access contents in Magnolia repositories in a `groovyish` way
-
--   A `scripts` repository where you can store your scripts
-
--   The ability to plug in Groovy classes into Magnolia at runtime, without the need for deploying them and restarting the servlet container.
-
-
-All these tools make for a more agile approach to coding and maintaining Magnolia-based websites.
+| Maven site | [Groovy](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fgroovy%2Fmagnolia-groovy%2F{magnolia-groovy-63}) |
+| Latest | {magnolia-groovy-63} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.groovy</groupId>
   <artifactId>magnolia-groovy</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-groovy-63}</version> (1)
 </dependency>
 ```
 
@@ -65,97 +50,13 @@ Add the following snippet to your POM file:
 <dependency>
   <groupId>info.magnolia.groovy</groupId>
   <artifactId>magnolia-groovy-compatibility</artifactId>
-  <version>4.0.0</version> (1)
+  <version>{magnolia-groovy-63}</version> (1)
 </dependency>
 ```
 
 |     |     |
 | --- | --- |
 | **1** | Should you need to specify the module version, do it using `<version>`. |
-
-## [](#_usage)Usage
-
-### [](#_security_advisory)Security advisory
-
-The Groovy module is rooted in the [Apache Groovy](https://en.wikipedia.org/wiki/Apache_Groovy) language and its implementation in Java. In the context of the operating system, the module allows execution of commands with permissions of the user running the parent Java process.
-
-Anyone with permissions to use the module and its Groovy console is implicitly granted access to the host operating system. Such a user can then execute commands and processes in the system as their owner.
-
-While this might not constitute an issue in context of containerized deployment with minimal access rights, you should still always consider your security design and implementation.
-
-#### [](#_restricting_access)Restricting access
-
--   A good practice is to run your application server (Tomcat, for example) with minimal user privileges and never under the root account. If you run the server under a non-existing user, make sure that the default privileges are minimal rather than system-wide.
-
--   Restrict the use of the Groovy module only to those system administrators who already have enough privileges to access the underlying operating system, thus eliminating the need to broaden their existing privileges.
-
--   If necessary, apply the `SecurityManager` to your app server Java process and configure it to reject all commands that might be dangerous in your context. If you’re not sure, you should disallow execution of all commands in the shell context of the operating system.
-
-
-The Groovy module is an optional module and its purpose is to allow server-side scripting and to facilitate some otherwise cumbersome developer tasks such as migration of content from one type to another. Such tasks are typically one-time operations that can also be safely achieved by update tasks, without using the Groovy module.
-
-> **Note:** The module is not essential for Magnolia CMS to function properly. Consider whether installing and using the module is necessary in your context.
-
-### [](#_repository_data_navigation_simplified)Repository data navigation simplified
-
-Thanks to the . *(dot)* notation and other shortcuts such as `.nodes` (alternatively `.children`), `.properties`, `.metaData`, and `.parent`, you can read any content node and property, change their values, create nodes, and delete them, all with clean, concise syntax.
-
-The module is shipped with some preinstalled scripts that demonstrate most of these features. This example shows how to navigate to and print the node data named `title`:
-
-```groovy
-session = ctx.getJCRSession('website')
-node = session.getNode('/travel')
-node.about.title
-```
-
-One noticeable thing about the above snippet is that it’s all you need to write: no imports, no need to catch exceptions, and so on. Compare it to the Java code that achieves the same result.
-
-```java
-import info.magnolia.context.MgnlContext;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-public class Test {
-    public static void main(String[] args) {
-        try {
-            Session session = MgnlContext.getJCRSession("website");
-            Node node = session.getNode("/travel/about");
-            String value = node.getProperty("title").getString();
-            System.out.println(value);
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        }
-    }
-}
-```
-
-> **Important:** With Groovy you do not need to deploy your class and restart the server. As an additional bonus, when using the Groovy Unix-like shell that comes with the module, when you navigate a repository, by calling the print() method on a node its children and properties are shown in the output, giving you an overview of the data structure. The screenshot below illustrates this. Using the print() method differs from previous versions where the data structure was displayed automatically on pressing the Enter key. However, in many cases that caused the output to be unnecessarily verbose. What is printed now by default is only the node path.
-
-![Groovy module](../../../_images/6-2-groovyModule.png)
-
-Being able to navigate a repository data like this is convenient, for instance, when writing and testing your own scripts or trying things out. Or when you need to use the [Rescue App](#_rescue_app) because the Magnolia UI, for whatever reason, isn’t available.
-
-As `node` here is basically an instance of a JCR [Node](https://developer.adobe.com/experience-manager/reference-materials/spec/jsr170/javadocs/jcr-2.0/javax/jcr/Node.html) coated in a special `groovyish` wrapper, you can call any of the Node interface methods and take advantage of Groovy features at the same time.
-
-```none
-node.about.properties.each { println it.name }
-println node.about.parent //(this can be null)
-```
-
-> **Tip:** If you want to print out all node properties except jcr ones, you can do:
-
-```none
-node.about.properties.findAll { !it.name.startsWith('jcr:') }.each{ println it.name }
-```
-
-### [](#_built_in_help)Built-in Help
-
-Type `help` (or `?`) followed by Enter to view the built-in help (including keyboard shortcuts) for the Groovy shell.
-
-### [](#_keyboard_shortcuts)Keyboard Shortcuts
-
-The `ctx` context object is always available. In Groovy it represents `MgnlGroovyConsoleContext`, a special instance of Magnolia’s `Context`.
 
 | Binding | Description |
 | --- | --- |
@@ -170,260 +71,6 @@ The `ctx` context object is always available. In Groovy it represents `MgnlGroov
 | **→** or **CTRL** + **F** | Move cursor one character right |
 | **HOME** or **CTRL** + **A** | Move to beginning of line |
 | **END** or **CTRL** + **E** | Move to end of line |
-
-### [](#_create_and_update_properties)Create and update properties
-
-You can assign values to properties or create new ones.
-
-```none
-node.foo = 3.14d
-node.bar = true
-node.baz = 'some text'
-node.qux = 100
-```
-
-This assigns the values on the right hand side to the properties on left hand side. If they don’t exist, they’re automatically created. Moreover, the correct type is detected based on the value assigned (`Boolean`, `String`, `Long` or `Double`).
-
-All the above assignments are in-memory only unless explicitly persisted via a call to `save()` on the current JCR session.
-
-### [](#_use_groovy_classes_instead_of_java_classes)Use Groovy classes instead of Java classes
-
-This feature allows you to virtually replace every Magnolia Java classwith a Groovy one. Although not a major issue for most tasks, due to its dynamic nature Groovy is slower than Java on the first run. This because Groovy code must be compiled into byte-code before it can be run on the JVM.
-
-Nevertheless, replacing classes can be useful in situations where you cannot deploy and restart the server, but need to quickly fix or add a piece of logic.
-
-Apache Ant
-
-Two [Apache Ant](http://ant.apache.org/) version 1.9.2 jars are required to test this example.
-
-[Download Ant 1.9.2](http://archive.apache.org/dist/ant/binaries/apache-ant-1.9.2-bin.zip) and extract the files.
-
-Add `ant.jar` and `ant-launcher.jar`. to your file system at:
-
-`/<CATALINA_HOME>/webapps/<contextPath>/WEB-INF/lib` and restart Magnolia.
-
-The Groovy module ships with a sample class called `sample.commands.GroovyMailCommand` that sends an email. Here is how you could use it to create a new scheduled job on the fly using a Groovy command and the [Scheduler module](../Scheduler-module/).
-
-1.  Find the `GroovyMailCommand` in **Dev > Groovy** `/samples/commands/GroovyMailCommand`.
-
-    GroovyMailCommand
-
-    ```none
-    package samples.commands
-    import info.magnolia.commands.*
-
-    /*
-    * This Groovy class is an example that serves to show how it can be used as a replacement of a traditional Java class on the fly.
-    */
-    public class GroovyMailCommand extends MgnlCommand {
-
-        public boolean execute(Context ctx) {
-
-            def ant = new AntBuilder()
-            def buildname = ctx.get('buildname')
-            ant.mail(mailhost:'mailhost', mailport:'25', subject: ctx.get('subject')) {
-               from(address:ctx.get('from'))
-               to(address:ctx.get('to'))
-               message("The ${buildname} nightly build has completed")
-            }
-        }
-    }
-    ```
-
-    > **Warning:** Replace mailhost with your SMTP server address.
-
-2.  Create a command configuration in the **Configuration** app as shown below.
-
-    We added it to the Mail module in `/modules/mail/commands/default`, but you can add it to your own module or another of your choice.
-
-3.  Specify the fully qualified name of the Groovy class (matching the path in the repository where it is saved `samples.commands`) as if it were a plain Java class (*which it actually is*).
-
-    ![Command configuration in the Configuration app](../../../_images/ADVT-groovy-mod-1.png)
-
-4.  Create a scheduled job configuration referring to the command in the **Configuration** app > `/modules/scheduler/config/jobs`. The parameters are used at runtime by the Groovy script.
-
-    ![Scheduled job configuration](../../../_images/ADVT-groovy-mod-2.png)
-
-5.  Replace the `from` and `to` email addresses with actual addresses.
-
-
-You can use this command to replace a similar Java command at runtime. Or you can edit it and have it compiled and replaced on the fly (a kind of class hot deploy). This relies on the Magnolia observation mechanism. Every time the value of the `class` node data changes the Groovy class is recompiled.
-
-### [](#_rescue_app)Rescue App
-
-The `MgnlGroovyRescueApp` is a special [Vaadin](https://vaadin.com/) app that can be used to bypass the Magnolia filter chain. This is useful when you need to perform rescue operations on a corrupted Magnolia instance or when the Magnolia UI is not loading.
-
-> **Warning:** All operations performed in the Groovy Rescue App are executed in system context, meaning no security restrictions are enforced. This might expose your data to risk of irreversible damages if you are not aware of what you are doing. In other words, use it at your own risk.
-
-There are three steps to using the Rescue App:
-
-1.  [Registering the Rescue App](#_register_the_groovy_rescue_app)
-
-2.  [Making the required changes](#_make_the_required_changes)
-
-3.  [Deregistering the Rescue App](#_deregister_the_groovy_rescue_app)
-
-
-#### [](#_register_the_groovy_rescue_app)Register the Groovy Rescue App
-
-1.  Stop Magnolia.
-
-2.  Open `/<CATALINA_HOME>/webapps/<contextPath>/WEB-INF/web.xml` in a text editor.
-
-3.  Comment out the `filter` and `filter-mapping` sections as shown in the example below:
-
-    ```xml
-    <!--
-    <filter>
-       <display-name>Magnolia global filters</display-name>
-       <filter-name>magnoliaFilterChain</filter-name>
-       <filter-class>info.magnolia.cms.filters.MgnlMainFilter</filter-class>
-    </filter>
-    <filter-mapping>
-       <filter-name>magnoliaFilterChain</filter-name>
-       <url-pattern>*</url-pattern>
-       <dispatcher>REQUEST</dispatcher>
-       <dispatcher>FORWARD</dispatcher>
-       <dispatcher>ERROR</dispatcher>
-    </filter-mapping>
-    -->
-    ```
-
-4.  Add the following lines to the `web.xml` file to register the Groovy Rescue App:
-
-    ```xml
-    <servlet>
-    <servlet-name>Vaadin</servlet-name>
-      <servlet-class>com.vaadin.server.VaadinServlet</servlet-class>
-        <init-param>
-          <description>Groovy Rescue App</description>
-          <param-name>UI</param-name>
-          <param-value>info.magnolia.module.groovy.rescue.MgnlGroovyRescueApp</param-value>
-       </init-param>
-       <init-param>
-          <param-name>widgetset</param-name>
-    <!-- <param-value>info.magnolia.widgetset.MagnoliaWidgetSet</param-value> -->
-    <!-- <param-value>info.magnolia.widgetset.MagnoliaProWidgetSet</param-value> -->
-       </init-param>
-    </servlet>
-    <servlet-mapping>
-      <servlet-name>Vaadin</servlet-name>
-      <url-pattern>/*</url-pattern>
-    </servlet-mapping>
-    ```
-
-5.  Uncomment the following line(s):
-
-    ```xml
-       <init-param>
-          <param-name>widgetset</param-name>
-    <!-- <param-value>info.magnolia.widgetset.MagnoliaWidgetSet</param-value> --> (1)
-    <!-- <param-value>info.magnolia.widgetset.MagnoliaProWidgetSet</param-value> --> (2)
-       </init-param>
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | **For Magnolia CE:** `<param-value>info.magnolia.widgetset.MagnoliaWidgetSet</param-value>` |
-    | **2** | **For DX Core**: `<param-value>info.magnolia.widgetset.MagnoliaProWidgetSet</param-value>` |
-
-6.  Save the `web.xml file`.
-
-7.  Start Magnolia.
-
-8.  Open a web browser and access the Groovy Rescue App at `http://host/<contextPath>`.
-
-    ![Groovy rescue app](../../../_images/rescue-app.png)
-
-
-#### [](#_make_the_required_changes)Make the required changes
-
-Use Groovy commands to navigate to the data you want to change. This section provides some practical examples.
-
--   Delete wrong configuration
-
--   Disable `I18nContentSupportFilter`
-
--   Reset superuser password
-
-
-Delete an erroneous configuration node `untitled` from `/config/modules/someModule/virtualURIMapping`.
-
-1.  Assign `Session` of `config` repository to `session`.
-
-    ```groovy
-    session = ctx.getJCRSession('config')
-    ```
-
-2.  Assign the parent node content to `root`.
-
-    ```groovy
-    root = session.getNode('/modules/someModule/virtualURIMapping/')
-    ```
-
-3.  Get and remove the child node `untitled`.
-
-    ```groovy
-    root.getNode('untitled').remove()
-    ```
-
-4.  Save the session.
-
-    ```groovy
-    session.save() (1)
-    ```
-
-    |     |     |
-    | --- | --- |
-    | **1** | It’s critical that you remember to save the session after modifying a node. |
-
-
-```groovy
-mgnl> session = ctx.getJCRSession('config')
-====> session-admin-213
-mgnl> root = session.getNode('/server/filters/i18n') (1)
-====> node /server/filters/i18n
-mgnl> root.getProperty('enabled').getString() (2)
-====> true
-mgnl> root.setProperty('enabled', 'false') (3)
-====> property /server/filters/i18n/enabled
-mgnl> root.getProperty('enabled').getString() (4)
-====> false
-mgnl> session.save() (5)
-```
-
-|     |     |
-| --- | --- |
-| **1** | Assign the content of the `/server/filters/i18n` node to `root`. |
-| **2** | Check the current setting of the `enabled` property. |
-| **3** | Set the property to `false`. |
-| **4** | Verify that the configuration has been changed. |
-| **5** | Save the session. |
-
-When resetting the `superuser` password, you must not forget to delete the index for the `users` workspace.
-
-```groovy
-session = MgnlContext.getJCRSession('users')
-superuser = session.getNode('/system/superuser')
-superuser.setProperty('enabled', 'true')
-superuser.pswd = info.magnolia.cms.security.SecurityUtil.getBCrypt('superuser')
-session.save() (1)
-```
-
-|     |     |
-| --- | --- |
-| **1** | It’s critical that you remember to save the session after modifying a node. |
-
-#### [](#_deregister_the_groovy_rescue_app)Deregister the Groovy Rescue App
-
-1.  In the `web.xml` file, remove the [servlet registration](#_register_the_groovy_rescue_app) lines you added above.
-
-2.  Remove comments from the filter and filter-mapping sections.
-
-3.  Save the `web.xml` file.
-
-
-> **Tip:** Tomcat should notice that web.xml has changed and read the changes automatically. If this does not happen, stop Magnolia, edit the web.xml file, and start Magnolia again. Then try to access Magnolia.
 
 ## [](#_further_resources)Further resources
 

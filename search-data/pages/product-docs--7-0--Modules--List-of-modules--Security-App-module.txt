@@ -8,26 +8,22 @@ breadcrumb: DX Core > Modules > Security app module
 
 # Security app module
 
-[Security and authentication](../../../use-cases/security-and-authentication/) Bundled: Community edition
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [SECURITY](https://magnolia-cms.atlassian.net/browse/SECURITY) |
-| Maven site | [Security](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fsecurity%2Fmagnolia-security-app%2F8.0.0) |
-| Latest | 8.0.0 |
-
-The Security app module installs the [Security app](../../../Apps/List-of-apps/Security-app/) where you can manage access to Magnolia. See [Security](../../../Administration/Security/) for more information.
+| Maven site | [Security](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fsecurity%2Fmagnolia-security-app%2F{magnolia-security-64}) |
+| Latest | {magnolia-security-64} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.security</groupId>
   <artifactId>magnolia-security-app</artifactId>
-  <version>8.0.0</version> (1)
+  <version>{magnolia-security-64}</version> (1)
 </dependency>
 ```
 

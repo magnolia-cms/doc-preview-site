@@ -1,0 +1,35 @@
+---
+title: "Extended Health Check module"
+url: https://docs.magnolia-cms.com/healthcheck/
+category: Modules
+version: modules
+breadcrumb: Extended Health Check module
+---
+
+# Extended Health Check module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/services/healthcheck) |
+| Latest | 1.0 ** Compatible with Magnolia 6.2, 5.7. | ** | Compatible with Magnolia 6.2, 5.7. |
+| ** | Compatible with Magnolia 6.2, 5.7. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>healthcheck</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+| Node name | Value |
+| --- | --- |
+| modules healthcheck config outcomes <health outcome N> <health outcome N> <health outcome N> |  |
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | Initial release of the module. |

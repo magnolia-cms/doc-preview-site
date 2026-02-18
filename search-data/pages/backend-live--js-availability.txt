@@ -1,0 +1,64 @@
+---
+title: "Backend Live - Javascript Availability"
+url: https://docs.magnolia-cms.com/backend-live/js-availability/
+category: Modules
+version: modules
+breadcrumb: Backend Live > Availability Rules
+---
+
+# Backend Live - Javascript Availability
+
+The **Javascript Availability** extension provides you with the ability to define your *own* Availability Rules that can be used across any definition that originally extends from `info.magnolia.ui.api.availability.ConfiguredAvailabilityRuleDefinition`. You just need to create a Javascript file that specifies the `isAvailableFor` function returning `true` or `false`.
+
+## [](#_installing_to_a_bundle)Installing to a Bundle
+
+If you have an existing bundle, perhaps obtained by using the Magnolia CLI, you will need to add the modules as defined at [Javascript Models 2.0](../../javascript-models/#_installing_to_a_bundle), as well as its dependencies to each webapp’s `/WEB-INF/lib` directories:
+
+[Backend Live Availability JAR](https://nexus.magnolia-cms.com/service/local/repositories/magnolia.forge.releases/content/info/magnolia/backendlive/backend-live-availability/1.1.0/backend-live-availability-1.1.0.jar)
+
+Using a standard Magnolia Bundle, these directories would be:
+
+-   `apache-tomcat/webapps/magnoliaAuthor/WEB-INF/lib/`
+
+-   `apache-tomcat/webapps/magnoliaPublic/WEB-INF/lib/`
+
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+your-webapp-maven-project/pom.xml
+
+```xml
+<dependency>
+  <groupId>info.magnolia.backendlive</groupId>
+  <artifactId>backend-live-availability</artifactId>
+  <version>1.1.0</version>
+</dependency>
+```
+
+| Component | Description |
+| --- | --- |
+| `cmsfn` | Navigate content and create links. |
+| `damfn` | Get assets and renditions and create links to assets. |
+| `sitefn` | Get sites and themes. |
+| `imgfn` | Get links to images from any workspace. |
+| `resfn` | Create links to css and js files by given patterns. |
+| `restfn` | Access REST clients. |
+| `searchfn` | Search pages and content. |
+| `navfn` | Create site navigation. |
+| `catfn` | Get categories (tags) and access content by category. |
+
+| Component | Description |
+| --- | --- |
+| `parameters` | Custom definition items defined in the YAML file under the `parameters` property. |
+| `content` | This is the item selected when clicking on the Action. If in the Pages App, it is the page node, for example. |
+| `definition` | This is the YAML definition that you’ve specified when declaring the `$type: jsAvailability` . This is the primary definition you will need to access for this rules properties. |
+| `def` | This is a shorthand representation of the `definition` , simply used as it is carried over from previous versions. |
+| `availabilityDefinition` | The availability definition points specifically to the Availability definition rather than the Rule Definition itself. |
+| `log` | This is the Magnolia Log4j log bound to the Javascript Availability Rule class. You can log `debug` , `info` , `warn` and `error` messages using this. |
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | • Custom Javascript Availability Rules Released |
+| `1.1.0` | • Align all provided Backend Live extensions. • Resolved issue with improper JS Models JAR module reference. |

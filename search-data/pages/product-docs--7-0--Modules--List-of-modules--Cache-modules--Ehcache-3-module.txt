@@ -8,28 +8,22 @@ breadcrumb: DX Core > Modules > Cache modules > Ehcache 3 module
 
 # Ehcache 3 module
 
-[Operations](../../../../use-cases/operations/) Bundled: Community edition
-
 | Edition | CE, Cloud |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [MGNLCACHE](https://magnolia-cms.atlassian.net/browse/MGNLCACHE) |
-| Maven site | [Cache](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcache%2Fmagnolia-cache-ehcache3%2F7.0.0) |
-| Latest | 7.0.0 |
-
-Magnolia uses Ehcache 3 for its back-end cache functionality by default. [Ehcache](http://www.ehcache.org) is a robust, proven and full-featured cache product which has made it the most widely-used Java cache.
-
-Compared with Ehcache 2, the 3.x line brings important changes and improvements such as full compatibility with javax.cache API ([JSR-107](https://www.jcp.org/en/jsr/detail?id=107)), off-heap storage capabilities, a revamped API, persistence, improved performance over Ehcache 2.x and much more.
+| Maven site | [Cache](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcache%2Fmagnolia-cache-ehcache3%2F{magnolia-module-cache-64}) |
+| Latest | {magnolia-module-cache-64} |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.cache</groupId>
   <artifactId>magnolia-cache-ehcache3</artifactId>
-  <version>7.0.0</version> (1)
+  <version>{magnolia-module-cache-64}</version> (1)
 </dependency>
 ```
 
@@ -135,129 +129,31 @@ Only a cache with a disk storage tier can be persisted, so if you want a persist
 
 As mentioned, a persistent cache has to have a disk storage tier. The cache can configured to be persistent by setting the property `**persistent**` for the disk tier configuration `/modules/cache/config/cacheFactory/delegateFactories/ehcache3/caches/<cache name>/resourcePoolsBuilder/pools/<disk tier name>` to `true`.
 
-## [](#_configuration)Configuration
-
-Ehcache has its own configuration options that can be set in `/modules/cache/config/cacheFactory/`.
-
-**Example configuration**
-
 | Node name | Value |
 | --- | --- |
-| ⸬ cacheFactory |     |
+| ⸬ cacheFactory |  |
 | ⬩ class | info.magnolia.module.cache.factory.DelegatingCacheFactory |
-| ⸬ delegateFactories |     |
-| ⸬ ehcache3 |     |
+| ⸬ delegateFactories |  |
+| ⸬ ehcache3 |  |
 | ⬩ class | info.magnolia.module.cache.ehcache3.EhCache3Factory |
-| ⸬ caches |     |
-| ⸬ default |     |
+| ⸬ caches |  |
+| ⸬ default |  |
 | ⬩ class | info.magnolia.module.cache.ehcache3.configuration.EhCache3ConfigurationBuilder |
 | ⬩ keyType | java.io.Serializable |
 | ⬩ valueType | java.io.Serializable |
-| ⸬ resourcePoolsBuilder |     |
+| ⸬ resourcePoolsBuilder |  |
 | ⬩ class | info.magnolia.module.cache.ehcache3.configuration.Ehcache3ResourcePoolsBuilder |
-| ⸬ pools |     |
-| ⸬ heap |     |
+| ⸬ pools |  |
+| ⸬ heap |  |
 | ⬩ resourceType | HEAP |
 | ⬩ class | info.magnolia.module.cache.ehcache3.configuration.Ehcache3ResourcePoolBuilder |
 | ⬩ size | 10000 |
 | ⬩ resourceUnit | ENTRIES |
-| ⸬ disk |     |
+| ⸬ disk |  |
 | ⬩ resourceType | DISK |
 | ⬩ class | info.magnolia.module.cache.ehcache3.configuration.Ehcache3ResourcePoolBuilder |
 | ⬩ persistent | true |
 | ⬩ size | 1000 |
-| ⬩ resourceUnit | MB  |
-| ⸬ expiryPolicy |     |
+| ⬩ resourceUnit | MB |
+| ⸬ expiryPolicy |  |
 | ⬩ class | info.magnolia.module.cache.ehcache3.configuration.EhCache3Expiry |
-
-**Properties**
-
-  PropertyDefaultDescription
-
-`keyType`
-
-`none`
-
-**required**
-
-The key type for the cache.
-
-`valueType`
-
-`none`
-
-**required**
-
-The value type for the cache.
-
-`resourceType`
-
-`HEAP`
-
-The type of the cache pool: `HEAP`, `OFFHEAP`, or `DISK`.
-
-See **Storage tiers** in [http://www.ehcache.org/documentation/3.0/caching-concepts.html](http://www.ehcache.org/documentation/3.0/caching-concepts.html).
-
-`resourceUnit`
-
-`ENTRIES`
-
-**optional**
-
-The size-type applied for the given resource pool.
-
-The `HEAP` pool can be sized by entries (`ENTRIES`) or by bytes (`B`, `KB`, `MB`, `GB`, `TB`, `PB`).
-
-> **Tip:** If you leave resouceUnit unset, but set size (see below) to 10 for example, then it is interpreted as 10 entries.
-
-The `OFFHEAP` and `DISK` pools are sized by bytes only (`B`, `KB`, `MB`, `GB`, `TB`, `PB`).
-
-`persistent`
-
-`false`
-
-Persistence of the disk storage pool. Persistence means the cache will survive a JVM restart.
-
-Only a `DISK` tier can set `persistent` to `true`. Setting a `HEAP` or `OFFHEAP` tier to be persistent will result in an error.
-
-`size`
-
-`10`
-
-**required**
-
-The size of the given resource pool.
-
-> **Important:** A DISK size limit applies to every individual cache, not the DISK size in total. To limit the size of any individual cache, extend the default cache configuration and set the limit there.Table 2. /modules/cache/config/cacheFactory/delegateFactories/ehcache3/caches/  NameValue⸬ someCache     ⸬ resourcePoolsBuilder         ⸬ pools             ⸬ disk                 ⬩ size1                 ⬩ resourceUnitGB⬩ extends../default
-
-`expiryPolicy` / `create`
-
-`infinite`
-
-Lifetime in seconds for all entries when those are initially added. This does not apply to entries with an explicitly specified time to live (TTL).
-
-`infinite` means that the mapping will never expire.
-
-`expiryPolicy` / `update`
-
-`none`
-
-Expiration time in seconds when an existing entry is updated.
-
-`none` means that the expiration time remains unchanged.
-
-`expiryPolicy` / `access`
-
-`none`
-
-Expiration time in seconds when an existing entry is accessed.
-
-`none` means that the expiration time remains unchanged.
-
-`blockingTimeout`
-
-`10000`
-
-Instructs Ehcache to wait the specified time in milliseconds before attempting to cache the request.
-
-> **Warning:** Create the blockingTimeout property in the tree at the same level where the info.magnolia.module.cache.ehcache3.EhCache3Factory class is defined, not inside the <cacheName> node.

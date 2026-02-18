@@ -1,0 +1,97 @@
+---
+title: "Personalization of headless SPA projects"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/headless/spa-development/personalization-of-headless-SPA-projects/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Headless docs > SPA development > Personalization of headless SPA projects
+---
+
+# Personalization of headless SPA projects
+
+Magnolia’s personalization features can be used on headless projects, including support for the Visual SPA Editor, as well as traditional FreeMarker-based projects. These features are available on headless and SPA with [Personalization module](../../../../Modules/List-of-modules/Personalization-module/) (version 2.1.0 and later) and the Magnolia `react-editor`, `vue-editor`, `angular-editor` [npm packages](https://www.npmjs.com/~magnolia) (version 1.1.0 and later).
+
+As described on [Requesting personalized content with the delivery endpoint](../../../../../../rest/api/Requesting-personalized-content-with-the-delivery-endpoint/), the Personalization module brings personalization to the REST delivery endpoint as well as new simple request-based traits. These traits are ideal for headless scenarios where you would like to provide the trait information explicitly on the request via a cookie, header, query string, or body parameter.
+
+This page describes how to implement personalization in an SPA project, using a [`minimal-headless-spa-demos`]({spa-headless-demo-url}) as a concrete example.
+
+## [](#_configure_a_personalized_delivery_endpoint)Configure a personalized delivery endpoint
+
+Since version 2.1.0, the delivery endpoint can return a personalized response. While the content storage contains all of the content variants that authors have created, the endpoint will only return the *winning* variants where the *Choose audience* configuration matches the current request. This means that the frontend can be *dumb* and simply render the content returned by the endpoint. The frontend need have no knowledge of the personalization execution.
+
+To enable this behavior, add this property to the delivery endpoint that you use to fetch page content:
+
+personalized: true
+
+See in [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
+
+## [](#_configure_one_or_more_traits)Configure one or more traits
+
+Traits are what authors can use in Magnolia to define the audience for any content variants that they create in the page editor. When developers define traits, they are then available to authors in the Choose audience dialog, and can also be used in defining segments.
+
+Magnolia has several traits available out-of-the-box, or you can add traits with [a simple configuration](../../../../Modules/List-of-modules/Personalization-module/Creating-custom-traits-without-Java/Cookies-trait-configuration/) or [with Java](../../../../Modules/List-of-modules/Personalization-module/Creating-custom-traits/).
+
+There are three trait types that enable developers to easily add traits commonly used in headless scenarios. The trait values are included directly on the http request to the delivery endpoint:
+
+-   `requestParameterTrait` (for query string or body parameters)
+
+-   `headerTrait`
+
+-   `cookieTrait`
+
+
+The name of the trait definition determines the name the system will look for in the request. For example, the demo project provides a `headerTrait` named `x-mgnl-age`. The system will personalize based on headers named `x-mgnl-age`. See in the [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
+
+> **Note:** Cookie considerationsKeep in mind that browsers are becoming stricter about cross-site cookies, with varying behavior in different browsers.If your SPA is hosted on a different host (for example a different domain) than your Magnolia instance, then cookies might not make it from Magnolia to your SPA or vice versa. This can also interfere with Magnolia’s session handling. It is possible to use cookies, but out of the scope of this document.
+
+## [](#_adjust_your_spa_or_frontend_project)Adjust your SPA or frontend project
+
+In your `package.json`, ensure you are using version 1.1.1 (or higher) of the `react-editor`, `vue-editor` or `angular-editor`. See in the [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
+
+How you adjust the code of your frontend is dependent on your particular use case. There are, however, some general requirements.
+
+In order for the **Preview as visitor** feature to work, the request to the delivery endpoint must include the query string parameters present on the page itself. In the demo project, the parameters are read with:
+
+const params = new URLSearchParams(window.location.search);
+
+If the parameters are appended to the REST URL, they are then included in the request to the delivery endpoint.
+
+Otherwise, the key thing that the frontend must do is include any special header, parameter, or cookie.
+
+> **Important:** If the mgnlPreview query parameter is present in iframe src, make sure you include variants=all in the query params.This applies to the page edit and preview modes,iframe src: example.com/foobar.html?mgnlPreview=false&mgnlChannel=desktop
+>
+> iframe src: example.com/foobar.html?mgnlPreview=true&mgnlChannel=desktopbut not to the preview-as-visitor mode:iframe src: example.com/foobar.html?mgnlPreviewAsVisitor=true
+
+In this demo project, a user enters their age in a form, and then an `x-mgnl-age` header is included in the request with the value "Child", "Adult" or "Senior". See in the [`minimal-headless-spa-demos`]({spa-headless-demo-url}).
+
+## [](#_result)Result
+
+The frontend includes values to be used for personalization in each request to the delivery endpoint. In this example, it includes both a header and a query string so that the **Preview as Visitor** feature works.
+
+The delivery endpoint
+
+Returns a personalized content payload, with just the content that matches this request.
+
+The frontend
+
+Renders all the content it receives. It does not *know* or have to do anything about the personalization.
+
+## [](#_notes)Notes
+
+### [](#_variant_aware_template_annotations)Variant-aware template annotations
+
+Personalization support is provided automatically if the [Personalization module](../../../../Modules/List-of-modules/Personalization-module/) is installed. In this case the Template annotations endpoint is automatically updated to use the `info.magnolia.personalization.rest.spa.VariantAwareTemplateAnnotationEndpoint` implementation class.
+
+No additional configuration of the endpoint is required.
+
+### [](#_different_workspace)Different workspace
+
+In case your content resides in a custom workspace, for example `general-content`, you need to reconfigure the Template annotations endpoint for this, as is shown below.
+
+light-modules/my-sample-project/restEndpoints/templateAnnotations/general-content.yaml
+
+```yaml
+$type: jcrDeliveryEndpoint_v2
+implementationClass: info.magnolia.personalization.rest.spa.VariantAwareTemplateAnnotationEndpoint
+workspace: general-content
+endpointPath: template-annotations/v1/general-content
+```

@@ -8,69 +8,43 @@ breadcrumb: DAM module > Install
 
 # DAM module
 
-[Digital asset management (DAM)](../../../product-docs/7.0/use-cases/Digital-asset-management/) Bundled: Community edition
-
-| Edition | CE  |
+| Edition | CE |
 | --- | --- |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [DAM](https://magnolia-cms.atlassian.net/browse/MGNLDAM) |
-| Maven site | [DAM](https://nexus.magnolia-cms.com/#browse/browse:modules:info%2Fmagnolia%2Fdam%2Fmagnolia-dam-parent%2F6.0.1) |
-| Latest | 6.0.1 |
-
-The DAM (Digital Asset Management) module provides the DAM API and its implementation.
-
-## [](#_prerequisites)Prerequisites
-
-DAM 6 works with Magnolia 6.4 (DX Core and CE). It requires the installation of the following versions of modules:
+| Maven site | [DAM](https://nexus.magnolia-cms.com/#browse/browse:modules:info%2Fmagnolia%2Fdam%2Fmagnolia-dam-parent%2F6.0.3) |
+| Latest | 6.0.3 |
 
 | DAM module version | Compatible module versions |
 | --- | --- |
 | 6.0.0 | Magnolia CMS 6.4.0+ |
-| [DAM App module](#dam-app:ROOT:index.adoc) 6.0.0 (required) |
-| [Imaging module](#imaging:ROOT:index.adoc) 5.0.0 (required) |
-| [Image Recognition extension](#image-recognition:ROOT:index.adoc) 4.0.0 (optional) |
-| [Image Focal extension](#image-focal:ROOT:index.adoc) 2.0.0 (optional) |
+| [DAM App module](../../../dam-app/) 6.0.0 (required) |
+| [Imaging module](../../../imaging/) 5.0.0 (required) |
+| [Image Recognition extension](../../../image-recognition/) 4.0.0 (optional) |
+| [Image Focal extension](../../../image-focal/) 2.0.0 (optional) |
 
-### [](#_limitations)Limitations
-
-Be aware of these constraints, especially when upgrading or using non-JCR binary storage:
-
--   No rollback support: After you install DAM 6.x, reverting to DAM 4.x (6.3) isn’t supported.
-
--   Non-JCR binary storage limitations:
-
-    -   Import and export aren’t available.
-
-    -   Full-text search in binary documents (for example, PDFs) isn’t supported.
-
-    -   Binary files are excluded from publication workflows.
-
-
-
-## [](#_module_structure)Module structure
-
-| artifactId |     |
+| artifactId |  |
 | --- | --- |
 | `magnolia-dam-parent` | Parent reactor. |
-| `dam-api` | API for the base classes such as info.magnolia.dam.api.Item, info.magnolia.dam.api.ItemKey, info.magnolia.dam.api.Asset, info.magnolia.dam.api.Folder, info.magnolia.dam.api.AssetRendition, info.magnolia.dam.api.AssetProvider, info.magnolia.dam.api.AssetRenderer. |
+| `dam-api` | API for the base classes such as info.magnolia.dam.api.Item , info.magnolia.dam.api.ItemKey , info.magnolia.dam.api.Asset , info.magnolia.dam.api.Folder , info.magnolia.dam.api.AssetRendition , info.magnolia.dam.api.AssetProvider , info.magnolia.dam.api.AssetRenderer . |
 | `magnolia-dam-binary-api` | Provides the core interfaces and API definitions for handling DAM binaries in Magnolia CMS. |
 | `magnolia-dam-binary-core` | Implements the core functionality for managing DAM binaries, including storage and retrieval operations. |
 | `magnolia-dam-binary-tck` | Contains the Technology Compatibility Kit (TCK) for testing and validating the implementation of the DAM binary management system. |
 | `dam-bom` | Provides a Maven Bill of Materials (BOM) to simplify dependency management. |
-| `dam-core` | Provides main components and configuration for Magnolia DAM.<br><br>Provides core functionality. Contains an implementation for info.magnolia.dam.api.AssetProviderRegistry, info.magnolia.dam.core.download.DamDownloadServlet and others.  <br>A Magnolia module holding the info.magnolia.dam.core.config.DamCoreConfiguration module class.<br><br>See the [`dam-core` submodule](../dam-core/) page for configuration information. |
-| `dam-jcr` | JCR based implementation of AssetProvider.<br><br>See the [`dam-jcr` submodule](../dam-jcr/) page for configuration information. |
-| `dam-jcr-s3` | Connects Magnolia to your AWS S3 bucket for asset binary storage. See the [`dam-jcr-s3` submodule](../dam-jcr-s3/) page for configuration information. |
-| `dam-azure-blob` | Connects Magnolia to your Azure Blob Storage account for asset binary storage. See the [`dam-azure-blob` submodule](../dam-azure-blob/) page for configuration information. |
+| `dam-core` | Provides main components and configuration for Magnolia DAM. Provides core functionality. Contains an implementation for info.magnolia.dam.api.AssetProviderRegistry , info.magnolia.dam.core.download.DamDownloadServlet and others. A Magnolia module holding the info.magnolia.dam.core.config.DamCoreConfiguration module class. See the [dam-core submodule](../dam-core/) page for configuration information. |
+| `dam-jcr` | JCR based implementation of AssetProvider. See the [dam-jcr submodule](../dam-jcr/) page for configuration information. |
+| `dam-jcr-s3` | Connects Magnolia to your AWS S3 bucket for asset binary storage. See the [dam-jcr-s3 submodule](../dam-jcr-s3/) page for configuration information. |
+| `dam-azure-blob` | Connects Magnolia to your Azure Blob Storage account for asset binary storage. See the [dam-azure-blob submodule](../dam-azure-blob/) page for configuration information. |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-parent</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -82,7 +56,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-api</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -94,7 +68,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-binary-api</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -106,7 +80,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-binary-core</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -118,7 +92,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-binary-tck</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -130,7 +104,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-bom</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -142,7 +116,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-core</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -154,7 +128,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-jcr</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -166,7 +140,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-jcr-s3</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -178,7 +152,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.dam</groupId>
   <artifactId>magnolia-dam-azure-blob</artifactId>
-  <version>6.0.1</version> (1)
+  <version>6.0.3</version> (1)
 </dependency>
 ```
 
@@ -190,10 +164,10 @@ Related topics
 
 -   [Configure the DAM core submodule](../dam-core/)
 
--   [DAM API](../../../product-docs/7.0/Developing/API/Java-Server-APIs/DAM-API/)
+-   [DAM API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/DAM-API/)
 
--   [JCR API](../../../product-docs/7.0/Developing/API/Java-Server-APIs/JCR-API/)
+-   [JCR API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/JCR-API/)
 
--   [`damfn` templating functions](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/damfn/)
+-   [`damfn` templating functions](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/Templating-functions/damfn/)
 
--   [How to work with images using `damfn`](../../../product-docs/7.0/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)
+-   [How to work with images using `damfn`](../../../product-docs/RNs-6-4-3/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)

@@ -1,0 +1,136 @@
+---
+title: "License"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Administration/License/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Administration > License
+---
+
+# License
+
+> **Note:** The automatic retrieval and monitoring options on this page aren’t yet released. They will be released with the next 6.4 release. Currently, you must manually enter your license.
+
+Magnolia DX Core requires a license to run. You receive a license key from Magnolia with your purchase. Magnolia can automatically retrieve and [register the license at startup](#_updating_a_license_key) from several sources. Choose the option that best fits your [security](#_security_considerations) and environment requirements.
+
+Additionally, you can provide the license [manually through the UI](#_manually_entering_a_license). You must register the same license on both the author and public instances.
+
+## [](#_editions_and_licenses)Editions and licenses
+
+Magnolia on-premise is available in the following editions:
+
+-   [DX Core](#_dx_core)
+
+-   [Community Edition](#_community_edition)
+
+-   [Special licenses](#_special_licenses)
+
+
+> **Note:** Some modules have undergone licensing changes with Magnolia 6.3. See Old module packs, new extensions and Modules for more details.
+
+### [](#_dx_core)DX Core
+
+DX Core is your core system for content and experience management. DX Core provides all the features you need for creation, management and delivery of personalized experience across the web and all your channels.
+
+Each instance of DX Core requires a license.
+
+### [](#_community_edition)Community Edition
+
+Free, open-source GPLv3 license. The Community Edition has fewer features than DX Core and is limited to one [receiver](../Instances/Receivers/).
+
+> **Note:** Community Edition does not require a license key.
+
+### [](#_special_licenses)Special licenses
+
+Some modules are specialized as they include optional features that extend Magnolia for specific use cases. These modules require a special license. Special licenses are typically given during the sales process. You can also request directly through your account manager.
+
+## [](#_try_it_out)Try it out
+
+[Try Magnolia CMS](https://www.magnolia-cms.com/get-started/developer-trial.html). You can try our Client Hosted or Cloud deployment. Download our open source community edition for free or apply for time-limited trials of our DX Core offers.
+
+## [](#_buying_a_license)Buying a license
+
+[Contact us](https://www.magnolia-cms.com/contact.html) to buy a license for DX Core or your desired extension.
+
+## [](#_requesting_license_key_renewal)Requesting license key renewal
+
+If your license key has expired, send a mail to [info@magnolia-cms.com](mailto:info@magnolia-cms.com) and request a new key.
+
+```txt
+Hello Magnolia,
+
+Please send me a renewed license key.
+
+- License owner's name:
+- License owner's email address:
+- Company name:
+- Phone:
+
+Thanks
+```
+
+## [](#_checking_license_details)Checking license details
+
+Open the About Magnolia app to check your license details.
+
+![About Magnolia app license](../../_images/6-1-license-aboutMagnoliaApp.png)
+
+## [](#_updating_a_license_key)Updating a license key
+
+At startup, Magnolia attempts to register the license automatically using the following sources, in the order given.
+
+The `magnolia.license.location` folder and default location `${magnolia.home}/license.key` are monitored for file changes to provide a convenient way to update the license without manual intervention through the UI or restarting the application to reload it from a configuration (system properties, environment variables, etc.).
+
+1.  Using the [`magnolia.license.key`](../Architecture/Configuration-management/#magnolia-license-key) property set via any configuration mechanism supported by Magnolia. That includes environment variables, system properties, and also `magnolia.properties` (or YAML) files.
+
+    This respects standard [Magnolia configuration precedence](../Architecture/Configuration-management/): system properties → environment variables → configuration files.
+
+2.  By providing a file via the [`magnolia.license.location`](../Architecture/Configuration-management/#magnolia-license-location) property. This is suitable for managed secrets (for example, for Docker or Kubernetes), where you supply the license from container secrets. However, the property can point anywhere in your file system and refer to any file of your choice.
+
+    > **Tip:** This location is monitored for license key changes by default.
+
+3.  Adding a file at the default location `${magnolia.home}/license.key`.
+
+    Supports embedding the license in the deployment image.
+
+    > **Tip:** This location is monitored for license key changes by default.
+
+4.  You can also [manually update the key](#Manually entering a license key) in the About app or in the Configuration app after [installing Magnolia](../../Getting-started-with-Magnolia/Installing-Magnolia/).
+
+
+> **Note:** If a license is already configured in the system, it’s overridden by sources 1 to 3 above. However, if a license isn’t registered automatically, the current license (if any) is left untouched.
+
+### [](#_manually_entering_a_license)Manually entering a license
+
+1.  Open the About Magnolia app
+
+2.  Click **Enter license info**.
+
+3.  Enter the registered email address in the **License owner** field. If you requested a new license, ensure that you enter the same email address you used when requesting the license.
+
+    > **Note:** Email is case-sensitive. If you registered as John.Doe@example.com then john.doe@example.com doesn’t work.
+
+4.  Enter the license key in the **License data** field.
+
+
+> **Tip:** If the About app isn’t installed or not working properly, you can update your license in the Configuration app. Find the /modules/enterprise/license node and update the key property.
+
+### [](#_security_considerations)Security considerations
+
+Using a system property or environment variable (`magnolia.license.key`) may expose the license in some environments:
+
+-   The value can be visible in the About app’s configuration properties.
+
+-   Anyone with access to the host may query a process environment’s variables or inspect command-line parameters.
+
+
+> **Important:** When security considerations are a concern, it’s more secure to choose a file-based approach (magnolia.license.location or ${magnolia.home}/license.key) or use the former JCR-based injection via the Configuration app.
+
+Further reading
+
+-   [Whitepaper: Magnolia for enterprise](https://www.magnolia-cms.com/library/whitepapers/magnolia-for-the-enterprise.html)
+
+-   [Blog: Hybrid headless](https://www.magnolia-cms.com/blog/how-enterprise-brands-use-hybrid-headless-cmss.html)
+
+-   [Whitepaper: Is Headless right for you?](https://www.magnolia-cms.com/library/whitepapers/is-a-headless-cms-right-for-your-enterprise.html)
+
+-   [Webinar: Composable commerce for enterprise](https://www.magnolia-cms.com/library/webinars/delivering-on-composable-commerce-for-the-enterprise.html)

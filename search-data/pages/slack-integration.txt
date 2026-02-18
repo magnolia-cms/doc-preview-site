@@ -1,0 +1,140 @@
+---
+title: "Slack Integration module"
+url: https://docs.magnolia-cms.com/slack-integration/
+category: Modules
+version: modules
+breadcrumb: Slack Integration module
+---
+
+# Slack Integration module
+
+| Issues | [SLACKINT](https://magnolia-cms.atlassian.net/browse/SLACKINT) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/slack-integration) |
+| Latest | 1.2 ** Compatible with Magnolia 6.2.27. | ** | Compatible with Magnolia 6.2.27. |
+| ** | Compatible with Magnolia 6.2.27. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.slack</groupId>
+  <artifactId>magnolia-slack-integration</artifactId>
+  <version>1.2</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+To configure the Slack connections, you will need to create the following file `/decorations/slack-integration/config.yaml` in a Magnolia (light) module.
+
+> **Tip:** To send a message on a Slack channel, you need to configure an incoming webhook as described here. You can then define different channel connections as following:
+
+config.yaml
+
+```yaml
+connections:
+  channel1:
+    url: https://hooks.slack.com/services/XXXXXXXXX/YYYYYYYYYYY/ajaskasnsjsajsasjasnasia
+  channel2:
+    url: https://hooks.slack.com/services/XXXXXXXXX/YYYYYYYYYYY/wqkwqnwqiqnwqiwqwmlqwqmw
+  channel3:
+    url: https://hooks.slack.com/services/XXXXXXXXX/YYYYYYYYYYY/owqwqwqwqowqwokqwqowkqow
+```
+
+### [](#_integration)Integration
+
+#### [](#_node_publication_notification)Node publication notification
+
+In a Magnolia module, create the following file `/hooks/slack-node-publish.yaml`.
+
+> **Note:** The name slack-node-publish.yaml is for example purposes. It can be different.
+
+The command `sendNodeToChannel` sends generic information about the node which has been published.
+
+slack-node-publish.yaml
+
+```yaml
+class: info.magnolia.slack.webhook.SlackWebhookDefinition
+description: Post a message on any configuration change
+connectionName: channel1
+catalog: slack
+commandName: sendNodeToChannel
+trigger:
+  workspace: config
+  actions:
+    - PUBLISH
+```
+
+#### [](#_dam_asset_publication_notification)Dam asset publication notification
+
+In a Magnolia module, create the following file `/hooks/slack-asset-publish.yaml`.
+
+> **Note:** The name slack-asset-publish.yaml is for example purposes. It can be different.
+
+In order to display the asset node specific attributes, use the command `sendAssetToChannel` as following:
+
+slack-asset-publish.yaml
+
+```yaml
+class: info.magnolia.slack.webhook.SlackWebhookDefinition
+description: Post a message on DAM asset publication
+connectionName: channel2
+catalog: slack
+commandName: sendAssetToChannel
+trigger:
+  nodeType: mgnl:asset
+  actions:
+    - PUBLISH
+```
+
+#### [](#_page_publication_notification)Page publication notification
+
+In a Magnolia module, create the following file `/hooks/slack-page-publish.yaml`.
+
+> **Note:** The name slack-page-publish.yaml is for example purposes. It can be different.
+
+In order to display the page node specific attributes, use the command `sendPageToChannel` as following:
+
+slack-page-publish.yaml
+
+```yaml
+class: info.magnolia.slack.webhook.SlackWebhookDefinition
+description: Post a message on page publication
+connectionName: channel2
+catalog: slack
+commandName: sendPageToChannel
+trigger:
+  nodeType: mgnl:page
+  actions:
+    - PUBLISH
+```
+
+##### [](#_publication_request_notification)Publication request notification
+
+In a Magnolia module, create the following file `/hooks/slack-page-request-publish.yaml`.
+
+> **Note:** The name slack-page-request-publish.yaml is for example purposes. It can be different.
+
+In order to display the publication request attributes, use the command `sendPublicationTaskToChannel` as following:
+
+slack-page-request-publish.yaml
+
+```yaml
+class: info.magnolia.slack.webhook.SlackWebhookDefinition
+description: Post a publication workflow task to Slack
+connectionName: channel3
+catalog: slack
+commandName: sendPublicationTaskToChannel
+trigger:
+  nodeType: mgnl:page
+  actions:
+    - SUBMIT_PUBLISH
+```
+
+| Version | Notes |
+| --- | --- |
+| `1.1` | Fixed multi-threading issue. |
+| `1.0` | Initial release of the module. |

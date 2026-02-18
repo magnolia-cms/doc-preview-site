@@ -25,16 +25,10 @@ Things important to know about widgetsets:
 
 For further information about Vaadin [client-side development](https://vaadin.com/docs/v8/framework/clientside/clientside-overview.html) and ways to [compile the widgetset](https://vaadin.com/docs/v8/framework/clientside/clientside-compiling.html), see the [Book of Vaadin](https://vaadin.com/docs/v8/index.html) or the [GWT project](http://www.gwtproject.org/overview.html) website.
 
-## [](#_magnolia_widgetsets)Magnolia widgetsets
-
-Magnolia provides the following widgetsets:
-
 | Identifier | Description | Provided by the module |
 | --- | --- | --- |
 | `info.magnolia.widgetset.MagnoliaWidgetSet` | Default Magnolia widgetset for CE bundles | [magnolia-vaadin-widgetset](https://gitlab.magnolia-platform.com/pd/platform/widgetset/-/tree/release/6.3) |
 | `info.magnolia.widgetset.MagnoliaProWidgetSet` | Default Magnolia widgetset for DX Core bundles | [magnolia-vaadin-widgetset-pro](https://gitlab.magnolia-platform.com/pd/platform/widgetset-pro/-/tree/release/6.3) |
-
-In contrast to `MagnoliaWidgetSet`, `MagnoliaProWidgetSet` contains the client widget code for [personalization](../../../../Modules/List-of-modules/Personalization-module/) and [content editor](../../../../Modules/List-of-modules/Content-Editor-module/) modules. If you do not rely on these modules, you can use `MagnoliaWidgetSet`.
 
 ## [](#_setting_the_widgetset_property)Setting the widgetset property
 

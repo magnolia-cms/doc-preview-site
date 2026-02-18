@@ -1,0 +1,26 @@
+---
+title: "Disk space"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Getting-started-with-Magnolia/Installing-Magnolia/Disk-space/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Getting Started > Installing Magnolia > Disk space
+---
+
+# Disk space
+
+The amount disk space required for a Magnolia instance depends on what data you store and how many versions of content you keep. Today, marketing oriented websites use a lot of images and video. It is not uncommon for such a website to have 5-10 GB of Web content.
+
+> **Note:** We recommend you allocate at least 50GB of disk space for an author instance and 25GB for a public instance.
+
+| Item | `GB` |
+| --- | --- |
+| **Total website content** Including assets such as images and videos. | 5 |
+| **Magnolia and Tomcat systems** | 0.5 |
+| **Cached content** Assuming cache is 70% full. | 3.5 |
+| **Site is served in two languages** The other language is also cached. | 3.5 |
+| **Content indexed for search** A compressed index is `20%` of the original data size. | 1 |
+| **Logs** Access, audit, and errors. | 5 |
+| **Temporary storage** For streaming large files. | 5 |
+| **Total for a public instance** | 23.5 |
+| **Versioning on author instance** Assuming 30% of content is versioned `20` times. | 30 |
+| **Total for an author instance** | 53.5 |

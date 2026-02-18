@@ -8,31 +8,27 @@ breadcrumb: DX Core > Modules > Swift publication > Install the module
 
 # Swift publication module
 
-Unbundled: Extension
-
-|     |     |
-| --- | --- |
 | **Edition** | DX Core |
+| --- | --- |
 | **License** | [MLA](https://www.magnolia-cms.com/mla.html) |
 | **Issues** | [SWIFTPUB](https://magnolia-cms.atlassian.net/browse/SWIFTPUB) |
-| **Maven site** | [Swift publication](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fswift%2Fpublication%2Fmagnolia-swift-publication%2F3.0.0-beta) |
-| **Latest** | 3.0.0-beta |
+| **Maven site** | [Swift publication](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fswift%2Fpublication%2Fmagnolia-swift-publication%2F3.0.1) |
+| **Latest** | 3.0.1 |
 
-Swift publication is a standalone enterprise module that can be used as a replacement for [DX Core publishing](../../Publishing-module/) in the Pages app. It stores versions in an external version store, such as S3. When an author publishes changes, the changes are sent to and stored in the external version store. Public instances then receive notifications to fetch the corresponding version from the version store.
-
-REST communication is used between author and public instances, coordinating the information required for publishing. This allows instances to communicate asynchronously even if an instance is down or not reachable directly.
-
-> **Important:** Swift publication currently manages publication for Pages only. Assets and other content types continue to use the standard DX Core publication mechanism by default. See Configuring the Assets app for more details.As a result, when configuring public instances you must define both sets of receiver properties:magnolia.publishing.receivers.* — DX Core publishing (used by Assets when Swift is installed, or by all content if Swift is not used).swift.publication.receivers.* — Swift publication (applies to Pages only by default).Define both for every public instance you configure so that Pages publish via Swift and other content types publish via DX Core publishing.
-
-## [](#_module_structure)Module structure
-
-The module consists of several submodules.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 40%;"> <col style="width: 60%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">ArtifactID</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-versioning-api</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides an API to create and restore versions in an external version store.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-versioning-ui</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Includes the integration of the user interface to manage versions in a module. Provides a means to manage versions in a module, including implementations for version checks and restoration.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-versioning-s3</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides functionality to implement S3 version storage.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-publication-ui</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides decorations for the Pages app, publishing dialogs, and i18n labels for the new UI buttons.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-publication-api</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides an API for external publishing, including services to process publication requests sent by authors, to represent problems that occur when a parent node is not yet published, and the ordering strategy during publication.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-publication-rest</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Provides a REST publication client with the following.</p></div><div class="ulist"><ul><li><p>A REST publication endpoint</p></li><li><p>Publishing and unpublishing operations</p></li><li><p>Exception handling adhering to the problem details for HTTP APIs specification as defined by RFC 7807</p></li><li><p>Ensuring proper serialization and deserialization</p></li><li><p>Dealing with invalid API tokens</p></li></ul></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-publication-personalization</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Extends <code>PublicationCommand</code> and handles deletion for <a href="#Features/Personalization">personalization</a> when page variants are deleted.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><code>magnolia-swift-versioning-diff</code></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Integrates the <a href="../../Diff-module/" class="xref page">Diff module</a> functionality, allowing you to use it with Swift publication.</p></div></div></td></tr></tbody></table></div>
+| ArtifactID | Description |
+| --- | --- |
+| `magnolia-swift-versioning-api` | Provides an API to create and restore versions in an external version store. |
+| `magnolia-swift-versioning-ui` | Includes the integration of the user interface to manage versions in a module. Provides a means to manage versions in a module, including implementations for version checks and restoration. |
+| `magnolia-swift-versioning-s3` | Provides functionality to implement S3 version storage. |
+| `magnolia-swift-publication-ui` | Provides decorations for the Pages app, publishing dialogs, and i18n labels for the new UI buttons. |
+| `magnolia-swift-publication-api` | Provides an API for external publishing, including services to process publication requests sent by authors, to represent problems that occur when a parent node is not yet published, and the ordering strategy during publication. |
+| `magnolia-swift-publication-rest` | Provides a REST publication client with the following. • A REST publication endpoint • Publishing and unpublishing operations • Exception handling adhering to the problem details for HTTP APIs specification as defined by RFC 7807 • Ensuring proper serialization and deserialization • Dealing with invalid API tokens |
+| `magnolia-swift-publication-personalization` | Extends `PublicationCommand` and handles deletion for [personalization](#Features/Personalization) when page variants are deleted. |
+| `magnolia-swift-versioning-diff` | Integrates the [Diff module](../../Diff-module/) functionality, allowing you to use it with Swift publication. |
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 Some steps below are required, and some parts are optional.
 
@@ -42,7 +38,7 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-versioning-api</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
@@ -54,7 +50,7 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-versioning-ui</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
@@ -66,7 +62,7 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-publication-api</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
@@ -78,7 +74,7 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-publication-ui</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
@@ -90,7 +86,7 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-versioning-diff</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
@@ -104,7 +100,7 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-versioning-s3</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
@@ -118,7 +114,7 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-publication-rest</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
@@ -132,13 +128,13 @@ Some steps below are required, and some parts are optional.
     <dependency>
       <groupId>info.magnolia.swift.publication</groupId>
       <artifactId>magnolia-swift-publication-personalization</artifactId>
-      <version>3.0.0-beta</version> (1)
+      <version>3.0.1</version> (1)
     </dependency>
     ```
 
     |     |     |
     | --- | --- |
-    | **1** | It’s good practice to use the `version` variable from the parent POM (see in the last step), hence `{mgnlSwiftVersion}` would be here instead of `3.0.0-beta`. |
+    | **1** | It’s good practice to use the `version` variable from the parent POM (see in the last step), hence `{mgnlSwiftVersion}` would be here instead of `3.0.1`. |
 
 5.  Add the module version to the `properties` of the parent POM.
 
@@ -147,7 +143,7 @@ Some steps below are required, and some parts are optional.
     ```xml
     <properties>
       …​
-      <mgnlSwiftVersion>3.0.0-beta</mgnlSwiftVersion>
+      <mgnlSwiftVersion>3.0.1</mgnlSwiftVersion>
       …​
     </properties>
     ```

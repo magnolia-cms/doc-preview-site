@@ -8,159 +8,43 @@ breadcrumb: URL Translation Module
 
 # URL Translation Module
 
-[Content management](../product-docs/7.0/use-cases/content-management/) [Tier 1](../incubator-modules/incubator-module-list/#_tier_1_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/url-translation) [MURLTRANS](https://magnolia-cms.atlassian.net/browse/MURLTRANS) [Magnolia 6.4](../product-docs/7.0/) compatible \[[1](#_footnotedef_1 "View footnote.")\]
+[Content management](../product-docs/RNs-6-4-3/use-cases/content-management/) [Tier 1](../incubator-modules/incubator-module-list/#_tier_1_modules) [Incubator](https://gitlab.magnolia-platform.com/ps/incubator/url-translation) [MURLTRANS](https://magnolia-cms.atlassian.net/browse/MURLTRANS) [Magnolia 6.4](../product-docs/RNs-6-4-3/) compatible \[[1](#_footnotedef_1 "View footnote.")\]
 
 The **Magnolia URL Translation** module builds off the previous Urltrans Module. The idea of the module is to provide a way to translate the page names in a single-tree-multi-language website.
 
-See [enabling multilanguage content](../product-docs/7.0/Administration/Language/Language-configuration/#<em>enabling_multilanguage content</em>) for how to set up this type of website. Using the translation module together with your translated website you can internationalize your URLs.
+See [enabling multilanguage content](../product-docs/RNs-6-4-3/Administration/Language/Language-configuration/#<em>enabling_multilanguage content</em>) for how to set up this type of website. Using the translation module together with your translated website you can internationalize your URLs.
 
 > **Warning:** This module is at the INCUBATOR level.In order for page translation to work a domain configuration is requried on the site definition.The class URLTranslator uses a query to locate the translated page names. Very deep hierarchies could see performance impacts.You cannot use folder nodes at the root of the workspace. The top level node must be of mgnl:page type.Testing on the author instance can be tricky when using EE Pro or DX core. If possible do not install the module on the author instance. Without a configured domain in the site definition the multisite module will prefix URIs with the name of the site definition. In most cases this will end up as a 404.This module is meant for use on the public instance to translate urls. If installed on author you will run into problems in the page editing when switching languages (404s). The only thing that needs to be done on the author instance is the capture of the translated page names. This is a pure dialog configuration and nothing more than page level content. If you installed the module on author already you can disable the filter and switch back the link transformers./server/filters/cms/urltrans@enabled → false/server/rendering/linkManagement@class → info.magnolia.multisite.MultiSiteLinkTransformerManager/server/rendering/linkManagement/transformers/absolute@class → info.magnolia.link.AbsolutePathTransformer
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/7.0/Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.i18n</groupId>
   <artifactId>magnolia-url-translation</artifactId>
-  <version>6.4.0</version>
+  <version>6.4.1</version>
 </dependency>
 
 <!-- Rest module is optional -->
 <dependency>
   <groupId>info.magnolia.i18n</groupId>
   <artifactId>magnolia-url-translation-rest</artifactId>
-  <version>6.4.0</version>
+  <version>6.4.1</version>
 </dependency>
 ```
 
-## [](#_usage)Usage
-
-By default the module will expect to find the translated names of pages in an internationalized field called name. This requires the page level dialog to be modified so that editors may be able to set the property.
-
-### [](#_configuration)Configuration
-
-For those requiring personalized pages to have translated names the module offers the option to configure the query so that variant pages can be found. You will also need to store your translations on a property other than the default `name`.
-
-In the module `url-translation` you will find the properties:
-
- PropertyDescription
-
-`nodeType`
-
-**optional**, *defaults to \`mgnl:page\`*
-
-Defines the type for the [query](https://git.magnolia-cms.com/projects/SERVICES/repos/url-translation/browse/magnolia-url-translation/src/main/java/info/magnolia/i18n/url/translation/translator/URLTranslator.java#147).
-
-> **Caution:** Changing this value can affect performance.
-
-`propertyName`
-
-**optional**, *defaults to \`name\`*
-
-Defines the name of the property where the translation can be found.
-
-#### [](#_example)Example
-
-```yaml
-modules:
-  url-translation:
-    config:
-      nodeType: mgnl:page (1)
-      propertyName: name (2)
-```
-
-|     |     |
+| Property | Description |
 | --- | --- |
-| **1** | [`nodeType`](#url-translation-property-table) |
-| **2** | [`propertyName`](#url-translation-property-table) |
-
-### [](#_page_level_dialog)Page level dialog
-
-This module expects to find the translated names of pages in an internationalized field defined by module level configuration `propertyName`.
-
-Consider an example using the MTK2 page dialog as a base: `/mtk2/dialogs/pages/basic.yaml`
-
-```yaml
-form:
-  properties:
-
-    # Here we add the name field to the page properties dialog.
-    # Don't forget to place the property in the layout below.
-    name:
-      $type: textField
-      i18n: true
-      label: Name
-
-    title:
-      $type: textField
-      i18n: true
-    navigationTitle:
-      $type: textField
-      i18n: true
-    hideInNav:
-      $type: checkBoxField
-    windowTitle:
-      $type: textField
-      i18n: true
-    abstract:
-      $type: textField
-      rows: 5
-      i18n: true
-    keywords:
-      $type: textField
-      rows: 3
-      i18n: true
-    description:
-      $type: textField
-      rows: 5
-      i18n: true
-    noCache:
-      $type: checkBoxField
-  layout:
-    $type: tabbedLayout
-    tabs:
-      - name: tabMain
-        fields:
-          - name: name
-          - name: title
-          - name: navigationTitle
-          - name: hideInNav
-          - name: windowTitle
-          - name: abstract
-      - name: tabMeta
-        fields:
-          - name: keywords
-          - name: description
-          - name: noCache
-```
-
-### [](#_seo_considerations)SEO considerations
-
-[Language-specific content](../product-docs/7.0/Administration/Language/Language-configuration/#_language_specific_url) is typically requested using a locale selector. Whether or not the translated page names are sent with the request is not relevant to the system. For example, it’s possible to request German content of the travel demo by adding the `/de` selector to the request URI.
-
--   English content: `https://demopublic.magnolia-cms.com/about.html`
-
--   German content: `https://demopublic.magnolia-cms.com/de/about.html`
-
-
-This creates a scenario where the language-specific travel demo content can have multiple valid request URLs since the German content could be requested using the default language and the translated language.
-
-Blocking default language requests (i.e. returning a `404`) is achieved by reconfiguring the filter. Two settings are required:
-
--   A bypass for the default language using a `LocaleVoter` configuration.
-
--   Add `blockDefaultUrls` set `true`
-
-
-![block default urls](_images/block-default-urls.jpg)
-
-## [](#_changelog)Changelog
+| `nodeType` | **optional** , *defaults to `mgnl:page`* Defines the type for the [query](https://gitlab.magnolia-platform.com/ps/incubator/url-translation/-/blob/master/magnolia-url-translation/src/main/java/info/magnolia/i18n/url/translation/translator/URLTranslator.java#147) . ** Changing this value can affect performance. | ** | Changing this value can affect performance. |
+| ** | Changing this value can affect performance. |
+| `propertyName` | **optional** , *defaults to `name`* Defines the name of the property where the translation can be found. |
 
 | Version | Notes |
 | --- | --- |
-| `6.4.0` | Release for Magnolia 6.4 compatibility.<br><br>[Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20MURLTRANS%20AND%20fixVersion%20%3D%206.4.0) |
+| `6.4.1` | [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20MURLTRANS%20AND%20fixVersion%20%3D%206.4.1) |
+| `6.4.0` | Release for Magnolia 6.4 compatibility. [Changelog](https://magnolia-cms.atlassian.net/issues/?jql=project%20%3D%20MURLTRANS%20AND%20fixVersion%20%3D%206.4.0) |
 
 * * *
 

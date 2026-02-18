@@ -18,81 +18,27 @@ The Cookies app is defined in a YAML file. This YAML file resides in the Magnoli
 
 If you want to change the app definition, you can [decorate](../../../Developing/Definition-decoration/) it, create a copy in the `resources` workspace with the [Resource Files app](../../../Developing/Resources/#_resource_files_app) or create a copy in a file-based light module using the Magnolia [resources origins loading order](../../../Developing/Resources/#_origins_and_loading_order).
 
-## [](#_usage)Usage
-
-Read [GDPR and cookies](../../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/) to understand how to use the Cookies app to set cookies according to website visitor consent.
-
-### [](#_adding_a_cookie_definition)Adding a cookie definition
-
-Open the **Cookies** app from the app launcher.
-
-> **Tip:** Search for apps or for content across all your apps using the Find Bar. Open an app directly from the Find Bar using the command open <app-title> app, for example, type open pages app. You must use the exact app title, as it appears in the App Launcher.
-
-To add a new cookie, click **Add cookie**. New nodes can only be added to the root node (no nested cookies). The properties `id` (cookie’s unique ID) and `cookieName` (cookie’s name as seen in the browser) are mandatory.
-
-![List of cookies with the action bar](../../../_images/6-2-cookiesApp-GDPR.png)
-
-### [](#_editing_a_cookie_definition)Editing a cookie definition
-
-To edit a cookie definition, select a cookie in the browser and click **Edit cookie**. The fields in the Cookie properties dialog correspond to the properties described below.
-
-![Editing cookie definition field](../../../_images/6-2-cookieProperties-GDPR.png)
-
-### [](#_cookie_properties)Cookie properties
-
-You can also edit cookie definitions directly in the Configuration app under `/modules/cookie-manager/config`.
-
 | Property | Description |
 | --- | --- |
-| `id` | **required**<br><br>Cookie’s unique ID. The node name is used as the `id`. The identifier is required to get info.magnolia.consent.cookie.definition.CookieDefinition from info.magnolia.consent.cookie.CookieManager (see [Data privacy API: Managing cookies](../../../Developing/API/Java-Server-APIs/Data-privacy-API/#_managing_cookies)). |
-| `cookieName` | **required**<br><br>The name of the cookie as seen in the browser. |
-| `value` | **optional**<br><br>The value of the cookie. |
-| `domain` | **optional**<br><br>The domain within which this cookie should be presented. |
-| `path` | **optional**<br><br>The path for the cookie to which the client should return the cookie.<br><br>Leave empty if the cookie should be valid just for the subtree of the active page. Use `/` if the cookie should be valid for whole domain. |
-| `maxAge` | **optional**, default is `-1`<br><br>The maximum age of this cookie (in seconds).<br><br>The default value -1 creates a cookie that expires when you shut down the browser. |
-| `requiredConsentRegexp` | **optional**, default is `.+`<br><br>A regular expression used to determine whether a cookie will be set or not. |
-| `secure` | **optional**, default is `false`<br><br>Indicates to the browser whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL. |
-| `isHttpOnly` | **optional**, default is `true`<br><br>HttpOnly cookies are not supposed to be exposed to client-side scripting code, and may therefore help mitigate certain kinds of cross-site scripting attacks. |
-| `enabled` | **optional**, default is `true`<br><br>Set to `false` to disable the cookie definition. |
-| `comment` | **optional**<br><br>This property cannot be edited using the Cookies app. Instead you must create localized [i18n message keys](../../../Administration/Language/Internationalization/#_i18n_message_keys) for this property. The format of the i18n key is `cookies.$cookiesId.comment`. |
+| `id` | **required** Cookie’s unique ID. The node name is used as the `id` . The identifier is required to get info.magnolia.consent.cookie.definition.CookieDefinition from info.magnolia.consent.cookie.CookieManager (see [Data privacy API: Managing cookies](../../../Developing/API/Java-Server-APIs/Data-privacy-API/#_managing_cookies) ). |
+| `cookieName` | **required** The name of the cookie as seen in the browser. |
+| `value` | **optional** The value of the cookie. |
+| `domain` | **optional** The domain within which this cookie should be presented. |
+| `path` | **optional** The path for the cookie to which the client should return the cookie. Leave empty if the cookie should be valid just for the subtree of the active page. Use `/` if the cookie should be valid for whole domain. |
+| `maxAge` | **optional** , default is `-1` The maximum age of this cookie (in seconds). The default value -1 creates a cookie that expires when you shut down the browser. |
+| `requiredConsentRegexp` | **optional** , default is `.+` A regular expression used to determine whether a cookie will be set or not. |
+| `secure` | **optional** , default is `false` Indicates to the browser whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL. |
+| `isHttpOnly` | **optional** , default is `true` HttpOnly cookies are not supposed to be exposed to client-side scripting code, and may therefore help mitigate certain kinds of cross-site scripting attacks. |
+| `enabled` | **optional** , default is `true` Set to `false` to disable the cookie definition. |
+| `comment` | **optional** This property cannot be edited using the Cookies app. Instead you must create localized [i18n message keys](../../../Administration/Language/Internationalization/#_i18n_message_keys) for this property. The format of the i18n key is `cookies.$cookiesId.comment` . |
 
-> **Note:** All properties except requiredConsentRegexp and enabled derive from the Servlet Cookie API.
-
-> **Note:** The implementation of the server-side set cookie calling cookieManager#addCookie may override the properties set in the Cookies app.
-
-#### [](#_magnolia_specific_property_requiredconsentregexp)Magnolia-specific property `requiredConsentRegexp`
-
-In addition to `id` and `cookieName`, the `requiredConsentRegexp` property is also crucial when configuring cookies.
-
-The value of the `requiredConsentRegexp` property is interpreted as a [regular expression](https://en.wikipedia.org/wiki/Regular_expression). The default value is `.+`.
-
-Server-side cookies are set if the regular expression matches the value stored in the `cookieConsent_status` cookie.
-
-See [GDPR and cookies: Understanding when cookies are set](../../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/#_understanding_when_cookies_are_set).
-
-## [](#_bootstrapped_cookie_definitions)Bootstrapped cookie definitions
-
-The Cookies app already contains some nodes. The exact content depends on the modules in your [bundle](../../../Developing/Bundles-and-webapps/). The following table lists the pre-configured cookie definitions you may find in Magnolia:
-
-| ID  | `cookieName` | Usage |
+| ID | `cookieName` | Usage |
 | --- | --- | --- |
-| `cookiesConsent` | `cookieconsent_status` | Stores the cookie consent decision of the website visitor.<br><br>Installed by<br><br>`magnolia‐privacy‐ui` - See [Privacy module](../../../Modules/List-of-modules/Privacy-module/) |
-| `NEW_VISITOR` | `NEW_VISITOR` | Used by the visitor trait.<br><br>Installed by<br><br>[Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
-| `RETURNING_VISITOR` | `VISITOR` | Used by the visitor trait.<br><br>Installed by<br><br>[Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
-| `REGISTERED_VISITOR` | `VISITOR` | Used by the visitor trait.<br><br>Installed by<br><br>[Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
-| `weatherLocality_Basel` | `weatherLocality` | Not used. Can be used for a cookie trait.<br><br>Installed by<br><br>[Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
-| `weatherLocality_London` | `weatherLocality` | Not used. Can be used for a cookie trait.<br><br>Installed by<br><br>[Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
-| `google_analytics` | \` \_ga,\_gid\` | Google Analytics<br><br>Installed by<br><br>[Travel demo modules](../../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/) |
-| `tourType_any` | `tourType` | Tour type buttons on the Travel Demo home page.<br><br>Installed by<br><br>[Travel demo modules](../../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/) |
-
-> **Caution:** We don’t recommend removing these nodes except those from the Travel Demo module.
-
-Related topics
-
--   [Data privacy](../../../Features/Data-privacy/)
-
--   [Data privacy API](../../../Developing/API/Java-Server-APIs/Data-privacy-API/)
-
--   [GDPR and cookies](../../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/)
-
--   [Privacy module](../../../Modules/List-of-modules/Privacy-module/)
+| `cookiesConsent` | `cookieconsent_status` | Stores the cookie consent decision of the website visitor. Installed by : `magnolia‐privacy‐ui` - See [Privacy module](../../../Modules/List-of-modules/Privacy-module/) |
+| `NEW_VISITOR` | `NEW_VISITOR` | Used by the visitor trait. Installed by : [Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
+| `RETURNING_VISITOR` | `VISITOR` | Used by the visitor trait. Installed by : [Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
+| `REGISTERED_VISITOR` | `VISITOR` | Used by the visitor trait. Installed by : [Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
+| `weatherLocality_Basel` | `weatherLocality` | Not used. Can be used for a cookie trait. Installed by : [Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
+| `weatherLocality_London` | `weatherLocality` | Not used. Can be used for a cookie trait. Installed by : [Personalization module](../../../Modules/List-of-modules/Personalization-module/) |
+| `google_analytics` | ` _ga,_gid` | Google Analytics Installed by : [Travel demo modules](../../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/) |
+| `tourType_any` | `tourType` | Tour type buttons on the Travel Demo home page. Installed by : [Travel demo modules](../../../Getting-started-with-Magnolia/Demo/Travel-demo-for-developers/) |

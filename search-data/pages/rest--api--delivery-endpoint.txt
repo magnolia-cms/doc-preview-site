@@ -1,0 +1,54 @@
+---
+title: "Delivery API"
+url: https://docs.magnolia-cms.com/rest/api/delivery-endpoint/
+category: Modules
+version: modules
+breadcrumb: REST module > Delivery API
+---
+
+# Delivery API
+
+This page describes the Delivery endpoint for obtaining JCR data as JSON.
+
+This REST resource is highly customizable. You can define multiple endpoint configurations to serve different needs. Each configured endpoint is accessed through a distinct `endpointPath` property and provides three methods. The methods, called with HTTP GET, allow you to **read a node** (*and its subnodes*) by a given path, **get children of a node** and **query nodes**.
+
+To help you configure and try out the delivery scenarios mentioned on this page, we:
+
+-   Use `delivery` as part of the endpoint path. Our webapps come with a pre-configured user role called `rest-anonymous`, which allows anonymous users to access the `/.rest/delivery/*` path.
+
+-   Set the `bypassWorkspaceAcls` property to `true` in all endpoint configurations.
+
+
+> **Note:** Otherwise, you would have to use the Security app and configure an access control list for the anonymous user to be able to access the nodes inside the various workspaces the delivery scenarios utilize.
+
+> **Tip:** See also the REST Delivery API best practices to improve performance and response times.
+
+> **Important:** REST API payload size limitationThere’s a built-in limit on the size of string values within JSON payloads submitted via the REST API. This is a deliberate security feature originating from the introduction of the DEFAULT_MAX_STRING_LEN property in the Jackson Core library.The maximum string length was first introduced in Jackson 2.15.0 (at 5 million characters) and increased to 20 million in version 2.15.1.In Magnolia 6.4.0 and later, you are affected by the higher value.
+
+> **Caution:** When creating YAML definition files, make sure the file extension is .yaml, not .yml.
+
+| Parameter | Description | Data type |
+| --- | --- | --- |
+| `path` | *required* The path relative to the `rootPath` defined in the [configuration](#_configuration) . | `String` |
+
+| Operator | Meaning |
+| --- | --- |
+| `eq` | `=` |
+| `ne` | `<>` |
+| `gt` | `>` |
+| `lt` | `<` |
+| `lte` | `<=` |
+| `gte` | `>=` |
+| `in` | `IN` |
+| `not-in` | `NOT IN` |
+| `like` Can be used with: `%` (percentage, URL encoded as `%25` ) `_` (underscore) | `LIKE` Can be used with: **Percentage** - Wildcard character that can be used in the search pattern to mean zero or more additional characters. **Underscore** - Wildcard character that can be used in the search pattern to stand for any single character. ** To search for these wildcard characters literally, place the `\` (URL-encoded as `%5C` ) backslash escape character in front of them: description[like]=\% `description%5Blike%5D=%5C%25` description[like]=\_ `description%5Blike%5D=%5C_` | ** | To search for these wildcard characters literally, place the `\` (URL-encoded as `%5C` ) backslash escape character in front of them: description[like]=\% `description%5Blike%5D=%5C%25` description[like]=\_ `description%5Blike%5D=%5C_` |
+| ** | To search for these wildcard characters literally, place the `\` (URL-encoded as `%5C` ) backslash escape character in front of them: description[like]=\% `description%5Blike%5D=%5C%25` description[like]=\_ `description%5Blike%5D=%5C_` |
+| `ilike` | Same as `LIKE` but case-insensitive. |
+| `null` | `NULL` The value can be either `true` or `false` . For example, sending `mgnl:created[null]=false` is equivalent to issuing `mgnl:created IS NOT NULL` in JCR query. The operator can be used with any property. |
+
+| File path | Endpoint path |
+| --- | --- |
+| `/<module-name>/restEndpoint/stories.yaml` | `/.rest/stories` |
+| `/<module-name>/restEndpoint/delivery/stories.yaml` | `/.rest/delivery/stories` |
+| `/<module-name>/restEndpoint/stories/v3.yaml` | `/.rest/stories/v3` |
+| `/<module-name>/restEndpoint/delivery/stories_v3.yaml` | `/.rest/delivery/stories/v3` |

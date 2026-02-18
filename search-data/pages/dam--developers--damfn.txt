@@ -8,233 +8,33 @@ breadcrumb: DAM module > damfn
 
 # damfn
 
-[FreeMarker development only](../../../product-docs/7.0/Developing/Templating/Renderers/#_renderers_provided_by_magnolia)
+[FreeMarker development only](../../../product-docs/RNs-6-4-3/Developing/Templating/Renderers/#_renderers_provided_by_magnolia)
 
 `damfn` templating functions provides access to digital assets such as images. Use these functions to get an asset from Magnolia’s built-in DAM or other asset providers. DAM functions also create asset renditions and links to assets.
 
-## [](#_get_asset)Get asset
-
-Retrieves an `Asset` by `itemKey`.
-
-### [](#_method_signature)Method signature
-
-[`Asset`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#info.magnolia.dam.api.asset) `getAsset(String` [`itemKey`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset)`)`
-
-### [](#_arguments)Arguments
+| Argument | Description |
+| --- | --- |
+| `itemKey` | **required** A key that uniquely identifies an asset. The key is composed of an asset provider ID and a provider-specific asset ID. |
 
 | Argument | Description |
 | --- | --- |
-| `itemKey` | **required**<br><br>A key that uniquely identifies an asset. The key is composed of an asset provider ID and a provider-specific asset ID. |
-
-### [](#_returns)Returns
-
-`Asset`
-
-An asset by the given itemKey.
-
-### [](#_usage)Usage
-
-`damfn.getAsset(itemKey)`
-
-\[#assign itemKey = cmsfn.asContentMap(componentNode).image\]
-\[#assign myAsset = damfn.getAsset(itemKey)\]
-
-In this example `componentNode` is the node of a Text and Image component.
-
-### [](#_related_functions)Related functions
-
--   [`Asset`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_info.magnolia.dam.api.asset)`getAsset(String providerId, String assetPath)`. Returns an asset from a given asset provider. The asset provider does not have to be Magnolia JCR.
-
--   [`Asset`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_info.magnolia.dam.api.asset)`getAssetForAbsolutePath(String providerId, String absoluteAssetPath)`
-
-
-## [](#_get_folder)Get folder
-
-Gets a `Folder` based on an `itemKey`. Deleted or hidden folders are not returned.
-
-### [](#_method_signature_2)Method signature
-
-[`Folder`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#info.magnolia.dam.api.folder) `getFolder(String` [`itemKey`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset)`)`
-
-### [](#_arguments_2)Arguments
+| `itemKey` | **required** A key that uniquely identifies an asset. The key is composed of an asset provider ID and a provider-specific asset ID. |
 
 | Argument | Description |
 | --- | --- |
-| `itemKey` | **required**<br><br>A key that uniquely identifies an asset. The key is composed of an asset provider ID and a provider-specific asset ID. |
-
-### [](#_returns_2)Returns
-
-`Folder`.
-
-A folder by the given item key.
-
-### [](#_usage_2)Usage
-
-`damfn.getFolder(itemKey)`
-
-\[#assign contentPageNode = cmsfn.root(currentNode).getNode("home")\]
-\[#assign componentNode = contentPageNode.getNode("main/0") \]
-\[#assign folderItemKey = cmsfn.asContentMap(componentNode).image\]
-\[#assign myAsset = damfn.getFolder(folderItemKey)\]
-folder-name: ${myAsset.name}
-
-### [](#_related_functions_2)Related functions
-
--   [`Folder`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_info.magnolia.dam.api.folder)`getFolder(String providerId, String folderPath)`
-
-
-## [](#_get_asset_rendition)Get asset rendition
-
-Gets the `AssetRendition` for a given `itemKey` and `renditionName`. If the Asset exists but the rendition is not defined, it returns `default` rendition which is the same as the original asset.
-
-### [](#_method_signature_3)Method signature
-
-[`AssetRendition`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#info.magnolia.dam.api.assetrendition) `getRendition(String` [`itemKey`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset)`, String renditionName)`
-
-### [](#_arguments_3)Arguments
+| `itemKey` | **required** Composite key that identifies the asset’s provider ID and provider-specific ID. |
+| `renditionName` | **required** Name of the rendition. |
 
 | Argument | Description |
 | --- | --- |
-| `itemKey` | **required**<br><br>Composite key that identifies the asset’s provider ID and provider-specific ID. |
-| `renditionName` | **required**<br><br>Name of the rendition. |
-
-### [](#_returns_3)Returns
-
-`AssetRendition`
-
-### [](#_usage_3)Usage
-
-`damfn.getRendition(itemKey, renditionName)`
-
-\[#assign itemKey = cmsfn.asContentMap(componentNode).image\]
-\[#assign myRendition = damfn.getRendition(itemKey, "small-square")!\]
-
-The example above assumes that you have defined a rendition (image variation) named `small-square` in your [Theme](../../../product-docs/7.0/Developing/Templating/Theme/).
-
-### [](#_related_functions_3)Related functions
-
--   [`AssetRendition`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#info.magnolia.dam.api.assetrendition) `getRendition(` [`Asset`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_info.magnolia.dam.api.asset)`asset, String renditionName)`
-
-
-## [](#_create_asset_property_map)Create asset property map
-
-Creates a map for a given `Asset` or a given `itemKey` containing all the bean properties of the asset. Additionally the map may contain further nested maps with the properties of classes implementing info.magnolia.dam.api.metadata.AssetMetadata. The metadata submaps are collected under the key `metadata`.
-
-### [](#_method_signature_4)Method signature
-
-[`Map`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#map-of-an-asset-and-its-metadata) `<String, Object> getAssetMap(` [`Asset`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_info.magnolia.dam.api.asset)`asset)`
-
-[`Map`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#map-of-an-asset-and-its-metadata) `<String, Object> getAssetMap(String` [`itemKey`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset)`)`
-
-[`Map`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#map-of-an-asset-and-its-metadata) `<String, Object> getAssetMapForAssetId(String` [`itemKey`](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset)`)` \*
-
-\*) `getAssetMapForAssetId(String itemKey)` and `getAssetMap(String itemKey)` are both identical except for handling of non-existent assets. While the `getAssetMapForAssetId` is null-safe, the `getAssetMap` is not.
-
-> **Caution:** You should always check for existence of assets or provide a fallback when using the getAssetMap method.
-
-### [](#_arguments_4)Arguments
+| `asset` | **required** `Asset` |
+| `itemKey` | **required** The composed item key. |
 
 | Argument | Description |
 | --- | --- |
-| `asset` | **required**<br><br>`Asset` |
-| `itemKey` | **required**<br><br>The composed item key. |
-
-### [](#_returns_4)Returns
-
-`Map<String, Object>`
-
-A map with the properties of an asset.
-
-### [](#_usage_4)Usage
-
-`damfn.getAssetMap(asset)` or `damfn.getAssetMap(itemKey)`
-
-```numberLines
-[#assign myAsset = damfn.getAsset("jcr", "photos/pool.jpg")!]
-[#assign myAssetMap = damfn.getAssetMap(myAsset)]
-[#-- assign myAssetMap = damfn.getAssetMap("jcr:20d6e4e3-fe53-4b23-8d64-6e67a1c1667f")--]
-fileSize: ${myAssetMap.fileSize}
-name: ${myAssetMap.name}
-title: ${myAssetMap.title}
-width: ${myAssetMap.metadata.mgnl.width}
-format: ${myAssetMap.metadata.dc.format}
-```
-
--   Line 3 shows an alternative for line 1-2.
-
--   The existance of the metadata submaps (see lines 7, 8) depends on the implementation of your info.magnolia.dam.api.AssetProvider (see [Map of an asset and its metadata](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_map_of_an_asset_and_its_metadata)). When JcrAssetProvider (fetching assets for the workspace dam) metadata.mgnl and metadata.dc are available.
-
-
-## [](#_get_link_for_asset)Get link for asset
-
-Gets a link to an `Asset`. Returns null if `Asset` is not found or in case of an exception.
-
-### [](#_method_signature_5)Method signature
-
-``String getAssetLink(String`[`itemKey](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset)```)`
-
-### [](#_arguments_5)Arguments
+| `itemKey` | **required** Composite key that identifies the asset’s provider ID and provider-specific ID. |
 
 | Argument | Description |
 | --- | --- |
-| `itemKey` | **required**<br><br>Composite key that identifies the asset’s provider ID and provider-specific ID. |
-
-### [](#_returns_5)Returns
-
-`String`
-
-The link to an asset by a given asset key.
-
-### [](#_usage_5)Usage
-
-`damfn.getAssetLink(itemKey)`
-
-```cnd
- <img src="${damfn.getAssetLink("jcr:324aa329-7acc-4a21-a05e-d5f9b69bf7e4")}"/>
-```
-
-## [](#_get_link_for_asset_rendition)Get link for asset rendition
-
-Gets the link to the `AssetRendition` for a given `itemKey` and `renditionName`. Returns null in the case of an exception or if Asset or AssetRendition are not found. If the Asset exists but the rendition is not defined, it returns the link to the `default` rendition which is the same as the original asset.
-
-### [](#_method_signature_6)Method signature
-
-``String getAssetLink(String`[`itemKey](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/#_itemkey_of_an_asset)```, String renditionName)`
-
-### [](#_arguments_6)Arguments
-
-| Argument | Description |
-| --- | --- |
-| `itemKey` | **required**<br><br>Composite key that identifies the asset’s provider ID and provider-specific ID. |
-| `renditionName` | **required**<br><br>Name of the rendition. |
-
-### [](#_returns_6)Returns
-
-`String`
-
-The link to an asset rendition by given item key and rendition name.
-
-### [](#_usage_6)Usage
-
-`damfn.getAssetLink(itemKey, renditionName)`
-
-```cnd
- <img src="${damfn.getAssetLink("jcr:324aa329-7acc-4a21-a05e-d5f9b69bf7e4", "small-square")}"/>
-```
-
-### [](#_related_functions_4)Related functions
-
--   `String getAssetLink(Asset asset, String renditionName)`
-
-
-Related topics
-
--   [Digital asset management](../../../product-docs/7.0/use-cases/Digital-asset-management/)
-
--   [Templating functions](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/)
-
--   [Arguments and return types](../../../product-docs/7.0/Developing/Templating/Template-scripts/Templating-functions/Templating-function-arguments-and-return-types/)
-
--   Javadoc info.magnolia.dam.templating.functions.DamTemplatingFunctions
-
--   [How to work with images using `damfn`](../../../product-docs/7.0/Developing/Templating/Template-scripts/How-to-work-with-images/How-to-work-with-images-using-damfn/)
+| `itemKey` | **required** Composite key that identifies the asset’s provider ID and provider-specific ID. |
+| `renditionName` | **required** Name of the rendition. |

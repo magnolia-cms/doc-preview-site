@@ -31,7 +31,7 @@ This information needs to be entered either in the Passwords app under the `/clo
 
 ### [](#_passwords_app)Passwords app
 
-![cloudinary account admincentral](../_images/media-integration-widget/cloudinary-account-admincentral.png)
+![cloudinary account admincentral](../../../developers/_images/media-integration-widget/cloudinary-account-admincentral.png)
 
 ### [](#_decorate_config_yaml)Decorate config.yaml
 
@@ -39,7 +39,7 @@ Available from version 1.2
 
 This should be done via a decorations registry in your own light module.
 
-The decorations you define impact the Media Integration widget’s [`config.yaml` file](https://git.magnolia-cms.com/projects/INCUBATOR/repos/cloudinary-parent/browse/cloudinary-media-widget-integration/src/main/resources/cloudinary-media-widget-integration/config.yaml).
+The decorations you define impact the Media Integration widget’s [`config.yaml` file](https://gitlab.magnolia-platform.com/ps/extensions/cloudinary/-/blob/master/cloudinary-media-widget-integration/src/main/resources/cloudinary-media-widget-integration/config.yaml).
 
 -   From `1.3.0`
 
@@ -107,7 +107,7 @@ your-light-module/ **(1)**
 | **3** | This tells Magnolia to decorate the `cloudinary-media-widget-integration` module. |
 | **4** | Use the `config.yaml` file to decorate as you see fit. |
 
-For more on decorating via light modules, see [Definition decoration](../../../../product-docs/7.0/Developing/Definition-decoration/).
+For more on decorating via light modules, see [Definition decoration](../../../../product-docs/RNs-6-4-3/Developing/Definition-decoration/).
 
 ## [](#_configure_server)Configure server
 
@@ -148,7 +148,10 @@ form:
      image:
         label: Cloudinary Image
         $type: cloudinaryWidgetField
+        defaultParameter: t_example
 ```
+
+> **Note:** The defaultParameters field is optional. When defined, it provides a default transformation parameter that is automatically prefilled in the Parameters input whenever the dialog is opened. Users may edit or override this value at any time, and selecting a Cloudinary asset will only overwrite it if the asset already contains its own derived transformation.
 
 After opening magnolia dialog and clicking on select image button, you are presented with Cloudinary widget select dialog.
 

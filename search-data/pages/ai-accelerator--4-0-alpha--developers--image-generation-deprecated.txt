@@ -1,0 +1,53 @@
+---
+title: "Configure Image IO (Deprecated)"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/image-generation-deprecated/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Legacy image generation
+---
+
+# Configure Image IO (Deprecated)
+
+> **Warning:** Deprecated from version 3.1.0This feature is deprecated and will be removed in a future release. Use the new [AI image generation] dialog instead, which provides a streamlined interface for generating images with AI models.
+
+**Available from version `2.1.0`**
+
+Generate images using configured AI models via simple dialog actions.
+
+## [](#_activation)Activation
+
+For details on model configuration see [Model configuration](../model-configuration/).
+
+To enable Image IO, add the following decoration:
+
+`<light-module-folder>/<light-module-name>/decorations/assets/apps/dam.yaml`
+
+```yaml
+subApps:
+  jcrBrowser:
+    actions:
+      generateAsset:
+        label: Generate Asset
+        icon: icon-import
+        $type: aiOpenCreateImageAction
+        populate: false
+        availability:
+          root: true
+          writePermissionRequired: true
+          rules:
+            notDeleted:
+              $type: jcrIsDeletedRule
+              negate: true
+    actionbar:
+      sections:
+        folder:
+          groups:
+            generate:
+              items:
+                - name: generateAsset
+        root:
+          groups:
+            generate:
+              items:
+                - name: generateAsset
+```

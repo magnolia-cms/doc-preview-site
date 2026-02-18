@@ -1,0 +1,32 @@
+---
+title: "Parameter configuration"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/parameters/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Parameters
+---
+
+# Parameter configuration
+
+Use these parameter types when defining AI Accelerator model or task parameters in YAML so Magnolia knows how to render the input fields in the UI and how to send user input to the underlying model.
+
+Common properties for every parameter are `String name`, `String description`, `Boolean required`, `Boolean hidden`, `Boolean advanced`, and `Object defaultValue`. Additional properties depend on the parameter type.
+
+> **Note:** advanced defaults to false; when set to true the field moves to the collapsed Advanced section. hidden keeps the field out of the UI entirely (but you can still provide a default value), and required enforces user input before submission.
+
+| Parameter Type | Description |
+| --- | --- |
+| `string` | Basic text parameter type. Supports all common parameters. |
+| `prompt` | Specialized string type for AI model prompts. Usually used to render a `HyperPrompt` field in the UI. |
+| `number` | Numeric parameter type. Supports all common parameters plus optional `min` and `max` values. |
+| `enum` | Parameter with predefined options. Requires an `enumValues` array defining the available choices. Optionally supports an `enumLabels` array for display labels that differ from the actual values. `aspectRatio: $type: enum name: Aspect Ratio description: Aspect ratio for the generated image enumValues: [ '1:1', '2:3', '3:2', '16:9' ] enumLabels: [ '1:1 → 1024x1024', '2:3 → 832x1248', '3:2 → 1248x832', '16:9 → 1344x768' ] defaultValue: '1:1'` ** When `enumLabels` is provided, it must have the same length as `enumValues` . The labels are used for display in the UI while the values are sent to the model. | ** | When `enumLabels` is provided, it must have the same length as `enumValues` . The labels are used for display in the UI while the values are sent to the model. |
+| ** | When `enumLabels` is provided, it must have the same length as `enumValues` . The labels are used for display in the UI while the values are sent to the model. |
+| `link` | Special string type for handling URLs or resource links. Usually used to render a `Link` field in the UI. Requires an additional `chooserId` and `workspace` parameter. |
+| `boolean` | True/false parameter type. Supports all common parameters with boolean values. `enable_safety_checker: $type: boolean name: Enable Safety Checker description: Enable content safety filtering defaultValue: true` |
+| `jsonObject` | Complex parameter type for nested configurations in JSON format. The JSON schema is defined in the `jsonSchema` parameter. The `jsonSchema` can be used by the UI to automatically create a form to manually fill parameters. `custom_image_size: $type: jsonObject jsonSchema: | { "$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "properties": { "width": { "type": "integer" }, "height": { "type": "integer" } }, "required": ["width", "height"] }` |
+| `imageUrl` | Special string type for handling image URLs. Can either be a URL or a base64 encoded image. |
+| `base64encodedImage` | Special string type for handling base64 encoded images. |
+| `list` | A list of parameters. Use `itemType` to indicate the type of the list item type. `output: images: $type: list itemType: imageUrl` |
+| `object` | Complex parameter type for nested configurations. Supports all common parameters. This is used for complex input parameters without any specific type. ** If the parameters is in JSON format, use the type `jsonObject` instead. | ** | If the parameters is in JSON format, use the type `jsonObject` instead. |
+| ** | If the parameters is in JSON format, use the type `jsonObject` instead. |
+| 'switchable' | Special parameter type for handling switchable parameters. This can be used when a model or task accepts different types of input in the same parameter. Below a more complex example where an image model allows to either use a preset (type `enum` ) or custom value (type `jsonObject` ): ` image_size: $type: switchable options: preset_image_size: $type: enum enumValues: [square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9] custom_image_size: $type: jsonObject jsonSchema: | { "$schema": "https://json-schema.org/draft/2020-12/schema", "type": "object", "properties": { "width": { "type": "integer" }, "height": { "type": "integer" } }, "required": ["width", "height"] }` |

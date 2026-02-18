@@ -25,79 +25,17 @@ Here’s an overview of how bootstrapping in Maven modules works:
 
 \*) Bootstrap files can also be imported or bootstrapped manually using the import actions in the [JCR Browser](../../../../Apps/List-of-apps/JCR-Browser-app/) and many other apps. However, the content of this page is limited to automatically importing bootstrap files and the term `bootstrapping` is used in this context only.
 
-## [](#_using_bootstrapping_folders)Using bootstrapping folders
-
-Magnolia by default scans some dedicated folders during start up. Add your bootstrap files to this folders to automate the import of the JCR data of these files. Bootstrap files can reside at a webapp or module level.
-
-> **Note:** All bootstrap files are only imported once!Webapp-based bootstrapping is triggered by the WebappBootstrap task only during the first run of the webapp and only after all modules have been installed.Module-based bootstrap files are imported during the first installation of the module.If you want to import bootstrap files on every start up of the Magnolia instance or of a module, you must use custom installation tasks which are executed by the Module version handler or Module start up classes.
-
-### [](#_bootstrapping_on_the_webapp_level)Bootstrapping on the webapp level
-
-The bootstrap directories for webapp bootstrap files are set by the `magnolia.bootstrap.dir` property in the `magnolia.properties` file. See [Configuration management](../../../Architecture/Configuration-management/) for more.
-
-By default the bootstrapping directories on the webapp level are:
-
-| Location |     |
+| Location |  |
 | --- | --- |
-| `WEB-INF/bootstrap/author` | Files will only be imported if the current context is an ***author*** context. |
+| `WEB-INF/bootstrap/author` | Files will only be imported if the current context is an **author** context. |
 | `WEB-INF/bootstrap/common` | Files will be imported on any context. |
-
-Bootstraps are loaded from this directory only the first time the WAR is installed in the container that is running for the first time.
-
-The directory should contain XML or YAML files for initialization of a blank Magnolia instance. If no content is found in any of the repositories, they are initialized by importing the XML or YAML files found in this directory.
-
-![Bootstrap directory](../../../../_images/location-webapp.png)
-
-### [](#_bootstrapping_on_a_module_level)Bootstrapping on a module level
-
-> **Note:** Bootstrapping on a module level only works if your Module has a module version handler class.
-
-There are two directories that you can add bootstrap files to the Magnolia Maven module:
-
--   `src/main/resources/`**`mgnl-bootstrap`**`/<magnolia-module-name>/`
-
--   `src/main/resources/`**`mgnl-bootstrap-samples`**`/<magnolia-module-name>/`
-
-    -   Bootstrap files within *mgnl-bootstrap-samples* are only imported, if the *magnolia.bootstrap.samples* property (which is set in the `magnolia.properties` file, see [Configuration management](../../../Architecture/Configuration-management/)) is true:
-
-        magnolia.bootstrap.samples=true
-
-
-
-![Adding bootstrap files to the Magnolia Maven module](../../../../_images/location-module.png)
-
-#### [](#_example_bootstrap_files_in_the_travel_demo_module)Example - Bootstrap files in the travel-demo module
-
-Here are the configuration files bootstrapped on installation of the `travel-demo` module.
-
-The files are in the directory `/src/main/resources/mgnl-bootstrap/travel-demo`.
-
-| **File** | **Configuration node** | **Description** |
-| --- | --- | --- |
-| `config.modules.site.config.themes.travel-demo-theme.xml` | `/modules/site/config/themes/travel-demo-theme` | [Theme](../../../../Developing/Templating/Theme/) configuration. |
-| `config.modules.travel-demo.config.travel.xml` | `/modules/travel-demo/config/travel` | Templates, theme and i18n nodes of [Site definition](../../../../Developing/Templating/Site-definition/). |
-| `config.server.filters.i18n.bypasses.xml` | `/server/filters/i18n/bypasses` | i18n content support filter bypass. |
-| `config.modules.public-user-registration.config.configurations.travel.xml` | `/modules/public-user-registration/config/configurations/travel` | PUR module configuration. |
-| `config.server.filters.securityCallback.clientCallbacks.travel-demo-pur.xml` | `/server/filters/securityCallback/clientCallbacks/travel-demo-pur` | Security callback for public user registration. |
 
 ## [](#_bootstrapping_content_into_cluster_nodes)Bootstrapping content into cluster nodes
 
 The `magnolia.repositories.jackrabbit.cluster.master` property can be used to identity an instance as a cluster master node. By default this property is set to `false` in `magnolia.properties`. When enabled Magnolia bootstraps content only into master nodes. This ensures that other (replica) nodes installed later don’t override already bootstrapped content. See [Configuration management](../../../Architecture/Configuration-management/) for more.
 
-## [](#_bootstrap_configuration_properties)Bootstrap configuration properties
-
-The table below contains a list of [configuration properties](../../../Architecture/Configuration-management/) set in `magnolia.properties` that are relevant to bootstrapping.
-
 | Property | Description |
 | --- | --- |
-| `magnolia.bootstrap.samples` | **optional**, *default is `true`*<br><br>Installs sample bootstrap files located in `/mgnl-bootstrap-samples/<module name>` directory. |
-| `magnolia.bootstrap.dir` | **required**, *default is \`WEB-INF/bootstrap/author WEB-INF/bootstrap/common\`*<br><br>Sets the directory for webapp bootstrap files. |
-| `magnolia.repositories.jackrabbit.cluster.master` | **required**, default is `false`<br><br>Identifies an instance as cluster master node. |
-
-Related topics
-
--   [Importing and exporting JCR data for bootstrapping](../)
-
--   [Bootstrapping in light modules](../Bootstrapping-in-light-modules/)
-
--   [Content Importer module](../../../../Modules/List-of-modules/Content-Importer-module/)
+| `magnolia.bootstrap.samples` | **optional** , *default is true* Installs sample bootstrap files located in `/mgnl-bootstrap-samples/<module name>` directory. |
+| `magnolia.bootstrap.dir` | **required** , *default is `WEB-INF/bootstrap/author WEB-INF/bootstrap/common`* Sets the directory for webapp bootstrap files. |
+| `magnolia.repositories.jackrabbit.cluster.master` | **required** , default is `false` Identifies an instance as cluster master node. |

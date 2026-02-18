@@ -1,0 +1,161 @@
+---
+title: "UI framework and development pattern changes in Magnolia 6"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Apps/Developing-an-app/General-aspects/UI-framework-and-development-pattern-changes-in-Magnolia-6/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Apps > Developing an app > UI framework and development pattern changes in Magnolia 6
+---
+
+# UI framework and development pattern changes in Magnolia 6
+
+This page describes some architectural approaches adopted for the UI framework in Magnolia 6.x, which—when compared to the UI framework used in Magnolia 5.7—constitutes a shift in applying the model-view-presenter (MVP) pattern. Below, we explain—especially to developers who write custom UI components in Java—how Magnolia UI components use the MVP development pattern for UI components.
+
+In the *Magnolia 6 UI* framework, the *view* is a first-class citizen that consumes definitions and, if required, creates a *presenter*. This contrasts with the approach used in the *Magnolia 5 UI* framework in which the presenter is typically the driver and the view is based on it. In the *Magnolia 6 UI* framework:
+
+-   It is simpler to assemble UI components.
+
+-   Classes are preferred over interfaces.
+
+-   There are fewer abstractions and therefore less code.
+
+-   There are fewer dependencies between parent and child components.
+
+
+## [](#_what_are_the_magnolia_6_and_magnolia_5_ui_frameworks)What are the Magnolia 6 and Magnolia 5 UI frameworks
+
+The Magnolia UI project version 6.x contains both the UI framework used in Magnolia 5.7 (referred to as *Magnolia 5 UI*) and the *Magnolia 6 UI* framework. You can use either framework.
+
+### [](#_magnolia_5_ui)Magnolia 5 UI
+
+In Magnolia 6, *Magnolia 5 UI* has been relocated to the `magnolia-ui-framework-compatibility` module. Many Magnolia apps still rely on this old framework. The fully qualified class names have not changed, which ensures runtime compatibility for older custom components based on the classes from the *Magnolia 5 UI* framework.
+
+### [](#_magnolia_6_ui)Magnolia 6 UI
+
+In the *Magnolia 6 UI* framework, the core components of the UI are located in the `magnolia-ui-framework` module inherited from Magnolia 5.7. The new `magnolia-ui-framework-jcr` module is also part of *Magnolia 6 UI*.
+
+### [](#_ui_modules)UI modules
+
+For more information on the *Magnolia 6 UI* modules, refer to [UI module](../../../../Modules/List-of-modules/UI-module/).
+
+## [](#_the_model_view_presenter_mvp_pattern)The model-view-presenter (MVP) pattern
+
+![The model-view-presenter (MVP) pattern](../../../../_images/6-0_ui-framework-mvp_01.png)
+
+### [](#_understanding_the_mvp_pattern)Understanding the MVP pattern
+
+Model-view-presenter is a pattern commonly used in UI development. Its main purpose is a separation of concerns for the view, the presenter and the model.
+
+-   The **view** primarily describes the layout of the UI and declares the handlers of the relevant user action events such as clicks, key presses and drag & drops.
+
+-   The **presenter** acts as a delegate of the view when executing the business logic of user events, for example, when interacting with the back-end / DB or fetching the data that needs to be displayed in the view. Normally, each view would use its own presenter and would not show it to the outside world. In some cases, when the view is simple enough, no presenter may be needed at all.
+
+-   The **model** keeps the state of the view such as the current selection, filters or toggles. Both the view and the presenter may have access to the model and may mutate it arbitrarily. However, when it comes to modifications done by the presenter, it is important to resolve *synchronization* of such view changes.
+
+
+The MVP pattern helps write UI code in a clean and maintainable way.
+
+In the case of Magnolia, where flexibility is very important, MVP opens up possibilities to augment or customize the UI by overriding only one of the three elements.
+
+### [](#_mvp_in_the_magnolia_ui_framework)MVP in the Magnolia UI framework
+
+Here is a list of specific goals we are trying to achieve with the MVP pattern in the Magnolia UI codebase:
+
+-   *Using definitions*: the user interface should be as configurable as possible so that all three MVP elements would consume a definition (form, dialog or content view) and produce a UI component.
+
+-   Keeping views *back-end-agnostic* as much as possible: the business logic related to the back-end, in most cases to JCR, should be replaceable with similar implementations for other back-ends. This typically boils down to overriding a presenter.
+
+-   *Reusability*: we want to let the developers use the parts of our UI in various custom contexts and compositions.
+
+
+We have been using the MVP pattern already in Magnolia 5. In Magnolia 6, we improve the way we use the UI development patterns. The objective is to better fulfill the requirements listed above and produce a codebase that is easier to customize and maintain.
+
+The next section describes the shift in approach between Magnolia 5 and Magnolia 6.
+
+## [](#_the_shift_in_approach)The shift in approach
+
+We have moved the focus from the presenter to the view. When developing, you concentrate more on the view. When assembling components, you assemble views within the code of a view.
+
+### [](#_the_magnolia_5_ui_framework_the_presenter_is_the_driver)The Magnolia 5 UI framework: the presenter is the driver
+
+In the *Magnolia 5* *UI* framework, the presenter is the driver and you:
+
+-   Let it consume the definition.
+
+-   Build a view based on it.
+
+-   Produce child presenters, if any.
+
+-   Have these child presenters generate their views and attach them to the view.
+
+
+In this presenter-centric approach, the following can be observed:
+
+-   A presenter typically has a `start(…​)` method with the definitions, the event bus and the initial state as input:
+    `TreeView TreePresenter#start(workbenchDefinition, eventBus, viewTypeName, contentConnector)`
+    Besides being bulky and slightly confusing, these methods need to be called externally, forcing the lifecycle of a particular view/presenter to be managed outside. For example, a workbench has to call the start methods of `TreePresenter` and `ListPresenter`; otherwise, they would not be populated properly.
+
+-   A view typically interacts with a presenter over *listener-like* interfaces, which results in additional boilerplate code. In other words, after creating a view, a presenter would subscribe to view events as an observer.
+
+-   *A parent presenter is aware of the sub-presenters*. Moreover, it has access to the sub-views, which adds too much responsibility to it.
+
+-   Component *composition* takes place at the presenter level. This is counter-intuitive compared to composition happening at the view level since views are essentially synonymous with components.
+
+-   The view state is *managed by the presenter* and is shared primarily via events, causing synchronization to be a problem—effectively, only notifications (messages) about the changes are sent, after which every part of the UI involved finds it difficult to store the current state.
+
+
+Example:
+
+![The Magnolia 5 UI framework](../../../../_images/6-0_ui-framework-mvp-mgnl5.png)
+
+`WorkbenchPresenter` is involved in the management of nearly all the other related parts. Among other things, the presenter:
+
+-   Creates sub-presenters.
+
+-   Feeds them configuration (definitions).
+
+-   Gathers sub-views and arranges them into one view (`WorkbenchView`).
+
+-   Orchestrates the selection state.
+
+
+Example classes:
+
+-   `info.magnolia.ui.workbench.WorkbenchStatusBarPresenter` (see [source code on GitLab](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/master/magnolia-ui-framework-compatibility/src/main/java/info/magnolia/ui/workbench/WorkbenchStatusBarPresenter.java))
+
+-   `info.magnolia.ui.contentapp.browser.BrowserSubApp` (see [source code on GitLab](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/master/magnolia-ui-framework-compatibility/src/main/java/info/magnolia/ui/contentapp/browser/BrowserSubApp.java))
+
+
+### [](#_the_magnolia_6_ui_framework_the_view_is_the_first_class_citizen)The Magnolia 6 UI framework: the view is the first-class citizen
+
+In the view-centric approach, you:
+
+-   Let the view consume the definition and populate itself from it.
+
+-   Have the view create and own the presenter as well as interact with it directly without additional interfaces.
+
+-   Compose the UI at the view level.
+
+-   Never let presenters interact with each other.
+
+-   Let the views manage the lifecycle of their children as well as create and destroy them deliberately.
+
+-   Have the views share configuration and resources among themselves without coding overhead.
+
+-   Assign each view its own component provider bound to the view’s UI key.
+
+-   Associate each view with a storage space in an HTTP session where the view state can be kept.
+
+-   Provide convenient means for managing and sharing the view state (also known as view contexts).
+
+
+Example:
+
+![The Magnolia 6 UI framework](../../../../_images/6-0_ui-framework-mvp-mgnl6.png)
+
+`WorkbenchView` takes a definition, directly configures it and passes content view definitions on to `ContentView`, which takes care of its own presenters. The main reason why this separation is now possible is that, instead of manual state synchronization, we can do it through special tools based on session, scoping and IoC.
+
+Example classes:
+
+-   `info.magnolia.ui.contentapp.browser.StatusBar` (see [source code on GitLab](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/master/magnolia-ui-framework/src/main/java/info/magnolia/ui/contentapp/browser/StatusBar.java))
+
+-   `info.magnolia.ui.contentapp.browser.Workbench` (see [source code on GitLab](https://gitlab.magnolia-platform.com/pd/platform/ui/-/blob/master/magnolia-ui-framework/src/main/java/info/magnolia/ui/contentapp/browser/Workbench.java))

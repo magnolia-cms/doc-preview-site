@@ -14,95 +14,11 @@ A `CustomerCertificateExpiring` alert is firing.
 
 > **Note:** CustomerCertificateExpiring alerts are are sent to subscribers via email.
 
-## [](#_observations)Observations
-
-Here are the details on the alerts:
-
-### [](#_alert_customercertificateexpiring)Alert: CustomerCertificateExpiring
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 15%;"> <col style="width: 85%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>(avg(nginx_ingress_controller_ssl_expire_time_seconds{kubernetes_pod_name=<sub>".<strong>",namespace=</strong></sub><strong>".</strong>",ingress=~".*"}) by (tenant,host,k8s_cluster_name,k8s_cluster_id) - time()) / (24*60*60) &lt; 14</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>0</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>host</code></p></li><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_determine_the_ingresses_using_the_certificate)Determine the ingress(es) using the certificate
-
-The alert notes the host certificate that is expiring (or has expired) and the cluster where the ingress is running. Find the ingress using the certificate on the cluster noted in the alert.
-
-Here’s how to find the ingress using `kubectl`:
-
-```bash
-kubectl config use-context <cluster in alert>
-kubectl get ingress -A | grep "<host in alert>"
-```
-
-#### [](#_results)Results
-
-Note the namespace of the ingress in the first column and the ingress name in the second column.
-
-```bash
-$ kubectl get ingress -A | grep "www.example.com"
-prod                 bl-example             <none>   www.example.com                                                             a3052a43267a91491a437.......a6503628baf.elb.eu-central-1.amazonaws.com   80, 443   255d
-prod                 cm-acme-example  nginx    www.example.com                                                             a3052a43267a9491491a43.......58a6503628baf.elb.eu-central-1.amazonaws.com   80        8d
-```
-
-There are two ingresses using the certificate.
-
--   `prod/bl-example` is the nginx ingress actually using the certificate. This ingress actually uses the expiring certificate.
-
--   `prod/cm-acme-example` - is a temporary ingress used for an HTTP acme challenge (more on this later).
-
-
-### [](#_determine_certificate_issuer_used_by_the_ingress)Determine certificate issuer used by the ingress
-
-The ingress you found in the previous observation will show the certificate issuer in an annotation of the ingress.
-
-You can display the annotations of the ingress as follows:
-
-```bash
-kubectl -n <namespace of the ingress> describe ingress <ingress>
-```
-
-or:
-
-```bash
-kubectl -n <namespace of the ingress> get ingress <ingress> -o yaml
-```
-
-```bash
-cert-manager.io/cluster-issuer: letsencrypt-prod (1)
-```
-
-|     |     |
+| **Expression** | `(avg(nginx_ingress_controller_ssl_expire_time_seconds{kubernetes_pod_name=".",namespace=".",ingress=~".*"}) by (tenant,host,k8s_cluster_name,k8s_cluster_id) - time()) / (24*60*60) < 14` |
 | --- | --- |
-| **1** | The certificate issuer - `cert-manager.io/cluster-issuer`. |
-
-### [](#_determine_the_renewal_method_of_the_cluster_issuer)Determine the renewal method of the cluster issuer
-
-The "solver" configuration of the cluster issuer determines how the certificate is renewed.
-
-You can display the solver configuration with:
-
-```bash
-kubectl -n cert-manager describe clusterissuer <clusterissuer>
-```
-
-or
-
-```bash
-kubectl -n cert-manager get clusterissuer <cluster issuer> -o yaml
-```
-
-In either case, look for the solver section in the spec:
-
-```bash
-    solvers:
-    - http01:
-```
-
-or:
-
-```bash
-    solvers:
-    - dns01:
-```
+| **Delay** | `0` minutes |
+| **Labels** | `team: customer` |
+| **Annotations** | • `host` • `summary` • `description` • `tenant` • `cluster_id` • `cluster_name` |
 
 ## [](#_solutions)Solutions
 

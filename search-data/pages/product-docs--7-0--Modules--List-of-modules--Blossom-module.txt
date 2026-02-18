@@ -8,19 +8,12 @@ breadcrumb: DX Core > Modules > Blossom module
 
 # Blossom module
 
-[Developer productivity](../../../use-cases/developer-productivity/) Unbundled: Extension
-
-|     |     |
+| Edition | CE |
 | --- | --- |
-| Edition | CE  |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [BLOSSOM](https://magnolia-cms.atlassian.net/browse/BLOSSOM) |
-| Maven site | [Blossom](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fblossom%2Fmagnolia-module-blossom%2F5.0.0) |
-| Latest | 5.0.0 |
-
-> **Caution:** Due to a dependency issue found in version 5.0.0 of the Blossom module, please install and use version 5.0.1 or later, where the issue is fixed.
-
-The Blossom module makes the [Spring Framework](http://projects.spring.io/spring-framework) available for Magnolia. Blossom enables you to create editing components that display a high level of dynamic behavior. These components can be used by editors to create truly interactive web pages. For example, the Spring Framework application stack makes it easier to connect to business systems, so that they fetch the information that you want to present in your pages. As Blossom is built on the Spring Web MVC, familiarity with this framework will ensure a smooth experience working with the module.
+| Maven site | [Blossom](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fblossom%2Fmagnolia-module-blossom%2F{magnolia-module-blossom-64}) |
+| Latest | {magnolia-module-blossom-64} |
 
 ## [](#_key_blossom_functionality)Key Blossom functionality
 
@@ -42,30 +35,19 @@ The Blossom module makes the [Spring Framework](http://projects.spring.io/spring
 -   Components can be executed in front of Magnolia. This means that it can choose to do a redirect and skip page rendering. This is very useful, for instance, if you have a form that on post should either present an error message or do a redirect.
 
 
-## [](#_compatibility_requirements)Compatibility requirements
-
 | Magnolia version | Blossom release branch | Spring version |
 | --- | --- | --- |
 | 6.4 | 5.0 | 6.2.10 |
 
-> **Note:** We recommend using the latest version of the Blossom module.
-
-For more information about updating the module and its compatibility, see:
-
--   [Blossom module release notes](Blossom-module-release-notes/).
-
--   [Certified stack](../../../Administration/Certified-stack/) (for supported Java versions).
-
-
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.blossom</groupId>
   <artifactId>magnolia-module-blossom</artifactId>
-  <version>5.0.0</version> (1)
+  <version>{magnolia-module-blossom-64}</version> (1)
 </dependency>
 ```
 
@@ -78,11 +60,11 @@ Add the relevant Spring dependencies as well (see the [Compatibility](#_compatib
 > **Note:** The Magnolia Blossom Personalization module is also required. If you are using Magnolia 6.4 and higher, you need:<dependency>
 >   <groupId>info.magnolia.personalization</groupId>
 >   <artifactId>magnolia-personalization-blossom-compatibility</artifactId>
->   <version>4.0.0</version> (1)
+>   <version>{magnolia-personalization-64}</version> (1)
 > </dependency>1Should you need to specify the module version, do it using <version>.If you are using an older branch of Magnolia:<dependency>
 >   <groupId>info.magnolia.personalization</groupId>
 >   <artifactId>magnolia-personalization-blossom</artifactId>
->   <version>4.0.0</version> (1)
+>   <version>{magnolia-personalization-64}</version> (1)
 > </dependency>1Should you need to specify the module version, do it using <version>.
 
 ## [](#_getting_started)Getting Started

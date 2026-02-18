@@ -1,0 +1,52 @@
+---
+title: "SSO module"
+url: https://docs.magnolia-cms.com/magnolia-sso/2.0/
+category: Modules
+version: modules
+breadcrumb: SSO Module > SSO module
+---
+
+# SSO module
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLSSO](https://magnolia-cms.atlassian.net/browse/MGNLSSO) |
+| Maven site | [SSO](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fsso%2Fmagnolia-sso%2F2.0.6) |
+| Latest | 2.0.6 |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.sso</groupId>
+  <artifactId>magnolia-sso</artifactId>
+  <version>2.0.6</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+| Prerequisite | Description |
+| --- | --- |
+| a user | **required** Its username and password are used to access Admincentral. It should have names as well as an email. |
+| a group | **required** When the user logs in, it has to belong (in Keycloak’s eyes, that is either in Keycloak directly, or in a user federation provider) to at least one group defined in the group mappings. That’s how the necessary access to Magnolia is granted. |
+| an OIDC client | **required** With the following properties: |
+| a name | **required** Must be the same as the one used in the YAML configuration of the module. |
+| the `openid-connect` protocol | **required** |
+| a confidential access type | **required** This is required in order for Keycloak to generate credentials. |
+| credentials | **required** Those must be shared with the YAML configuration of the module. |
+| a redirect URI | **required** That points back to Magnolia, e.g. `http://localhost:8080/*` . |
+| a Group Membership mapper | **required** By convention, this is required in order to include the user’s groups in the `groups` property ( info.magnolia.sso.oidc.GroupsAuthorizationGenerator ). Without this data, a user won’t be assigned any Magnolia permission, and hence won’t be able to go past the login screen. Here’s how to configure the mapper in various applications: |
+
+| Module version | Third-party APIs tested against |
+| --- | --- |
+| 2.0+ | Azure Active Directory ** We exclusively support the 2.0 version of the endpoint. This means the URL should look like `https://login.microsoftonline.com/…/v2.0/.well-known/openid-configuration` . | ** | We exclusively support the 2.0 version of the endpoint. This means the URL should look like `https://login.microsoftonline.com/…/v2.0/.well-known/openid-configuration` . |
+| ** | We exclusively support the 2.0 version of the endpoint. This means the URL should look like `https://login.microsoftonline.com/…/v2.0/.well-known/openid-configuration` . |
+| 2.0+ | Google Cloud Identity |
+| 1.1+ | Keycloak 9.0.3 |
+| 1.1+ | Okta 2021.03.3+ |

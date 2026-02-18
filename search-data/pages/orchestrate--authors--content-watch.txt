@@ -1,0 +1,112 @@
+---
+title: "Content Watch"
+url: https://docs.magnolia-cms.com/orchestrate/authors/content-watch/
+category: Modules
+version: modules
+breadcrumb: Orchestrate module > Authors > Content Watch
+---
+
+# Content Watch
+
+Content Watch lets you use Smart Chat to monitor external URLs — such as competitor blogs, industry publications, or partner websites — and generate content ideas powered by AI. The generated ideas can be turned into tasks in Orchestrate module automatically, so your content team can act on them right away.
+
+You interact with Content Watch entirely through Smart Chat. There is nothing to install or configure as an author; just open the Smart Chat chat and describe what you need.
+
+## [](#_what_you_can_do)What you can do
+
+Content Watch gives you four capabilities through the Smart Chat chat:
+
+-   **Generate content ideas** — Analyze a URL right now and get content ideas back.
+
+-   **Schedule recurring monitoring** — Set up a watch on a URL so that ideas are generated automatically on a schedule.
+
+-   **List active watches** — See which URLs are currently being monitored.
+
+-   **Cancel a watch** — Stop monitoring a URL you no longer need to track.
+
+
+| Parameter | How to use it |
+| --- | --- |
+| **URL** | Include the URL in your message. If you don’t, the Smart Chat will ask for it. |
+| **Number of ideas** | Mention a specific number, for example *"give me 6 ideas"* . If you don’t specify, 4 ideas are generated. |
+| **Create tasks** | Say *"and create tasks"* or *"just show the ideas, don’t create tasks"* . If you don’t mention it, the Smart Chat will ask. |
+
+## [](#_schedule_recurring_monitoring)Schedule recurring monitoring
+
+Ask Smart Chat to monitor a URL on a recurring schedule. Each time the watch runs, it analyzes the URL and creates tasks with fresh content ideas.
+
+Example prompts
+
+> Watch [https://competitor.com/blog](https://competitor.com/blog) every Monday and generate content ideas.
+>
+> Monitor [https://industry-news.com/latest](https://industry-news.com/latest) every weekday at 9am.
+>
+> Schedule content ideas from [https://partner.com/resources](https://partner.com/resources) on the first day of each month.
+>
+> Track [https://example.com/blog](https://example.com/blog) for new ideas, check it weekly.
+
+### [](#_what_happens_2)What happens
+
+1.  Smart Chat sets up a recurring job that runs on the schedule you described.
+
+2.  Each time the job runs, it fetches the URL, generates content ideas, and creates tasks.
+
+3.  Smart Chat confirms the schedule and gives you a **job name** that you can use later to cancel the watch.
+
+
+> **Tip:** You don’t need to know cron syntax. Describe the schedule in plain language ("every Monday", "twice a week", "first of each month") and the Smart Chat will translate it for you.
+
+## [](#_list_active_watches)List active watches
+
+Ask Smart Chat to show you all URLs that are currently being monitored.
+
+Example prompts
+
+> What URLs am I monitoring?
+>
+> Show me my active content watches.
+>
+> List all scheduled watches.
+>
+> What’s being monitored right now?
+
+### [](#_what_you_get_back)What you get back
+
+Smart Chat returns a list of active watches, including:
+
+-   The monitored URL
+
+-   The schedule (how often it runs)
+
+-   The job name (needed if you want to cancel it)
+
+-   When it will run next
+
+
+## [](#_cancel_a_watch)Cancel a watch
+
+Ask Smart Chat to stop monitoring a URL. The Smart Chat needs the **job name** that was returned when the watch was scheduled. If you don’t remember the job name, ask the Smart Chat to list your active watches first.
+
+Example prompts
+
+> Stop watching the competitor blog.
+>
+> Cancel the content watch for contentWatch-a1b2c3d4.
+>
+> Remove the scheduled watch on [https://competitor.com/blog](https://competitor.com/blog).
+>
+> List my watches, then cancel the one for the partner site.
+
+> **Tip:** If you don’t remember the exact job name, ask Smart Chat to list your active watches first, then tell it which one to cancel.
+
+## [](#_tips_for_better_results)Tips for better results
+
+-   **Be specific about the URL.** Include the full URL in your message so the Smart Chat doesn’t have to ask.
+
+-   **Mention whether you want tasks created.** This saves a follow-up question from the Smart Chat.
+
+-   **Use plain language for schedules.** Say *"every Monday at 9am"* rather than trying to write a cron expression.
+
+-   **Ask for a specific number of ideas** if you want more or fewer than the default of 4.
+
+-   **Combine actions.** You can say *"List my watches and cancel the one for example.com"* in a single message.

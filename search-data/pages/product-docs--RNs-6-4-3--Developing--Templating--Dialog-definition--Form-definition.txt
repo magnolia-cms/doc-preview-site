@@ -1,0 +1,58 @@
+---
+title: "Form definition"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Developing/Templating/Dialog-definition/Form-definition/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Developing > Templating > Dialog definition > Form definition
+---
+
+# Form definition
+
+Forms define fields and similar components as well as their layout. Form definition is used in dialogs and the detail subapps of content apps.
+
+> **Note:** This form definition is part of the Magnolia 6 UI framework. The fully qualified class name is info.magnolia.ui.editor.FormDefinition.
+
+## [](#_example_definition)Example definition
+
+```yml
+form:
+  properties:
+    salutation:
+      label: Salutation
+      $type: textField
+      i18n: true
+    firstName:
+      label: First name
+      $type: textField
+      required: true
+    lastName:
+      label: Last name
+      $type: textField
+      required: true
+    email:
+      label: Email
+      $type: textField
+      required: true
+      validators:
+        email:
+          $type: emailValidator
+    phone:
+      label: Phone
+      $type: textField
+      required: true
+```
+
+| Property | Description |
+| --- | --- |
+| `properties` | **required** List of editor property definition items (typically, a list of fields). See [Field definition](../Field-definition/) for more information. |
+| `layout` | **optional** , *default is info.magnolia.ui.framework.layout.FormLayoutDefinition* Defines the form layout. The value must be a subtype of `info.magnolia.ui.framework.layout.LayoutDefinition` . See [Layout types](#_layout_types) for more information. |
+
+| $type | class |
+| --- | --- |
+| `declarativeLayout` | `info.magnolia.ui.framework.layout.DeclarativeLayoutDefinition` |
+| `defaultEditorActionLayout` | `info.magnolia.ui.dialog.layout.DefaultEditorActionLayoutDefinition` |
+| `form` | `info.magnolia.ui.framework.layout.FormLayoutDefinition` |
+| `horizontal` | `info.magnolia.ui.framework.layout.HorizontalLayoutDefinition` |
+| `stacked` | `info.magnolia.ui.framework.layout.StackedLayoutProducer` |
+| `tabbedForm` | `info.magnolia.ui.editor.TabWithFieldsFormDefinition` |
+| `tabbedLayout` | `info.magnolia.ui.framework.layout.TabbedLayoutDefinition` |

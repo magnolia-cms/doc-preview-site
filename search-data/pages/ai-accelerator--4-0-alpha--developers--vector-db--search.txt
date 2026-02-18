@@ -1,0 +1,396 @@
+---
+title: "Searching content"
+url: https://docs.magnolia-cms.com/ai-accelerator/4.0-alpha/developers/vector-db/search/
+category: Modules
+version: modules
+breadcrumb: AI Accelerator module > Searching content
+---
+
+# Searching content
+
+| Method | Description | Use Case |
+| --- | --- | --- |
+| **REST API** *(Direct search)* | Call the search endpoint directly from any HTTP client | Custom integrations, testing, external applications |
+| **AI Task** *(Context search)* | Use the `contextSearch` AI task within AI workflows | AI assistants, chatbots, agentic workflows |
+
+## [](#_rest_api_search)REST API search
+
+### [](#_basic_search)Basic search
+
+```bash
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <token>" \ (1)
+  -d '{
+    "query": "travel destinations in Europe", (2)
+    "workspaces": ["website"], (3)
+    "maxResults": 10 (4)
+  }'
+```
+
+|     |     |
+| --- | --- |
+| **1** | Optional authentication token (uses current Magnolia session if omitted) |
+| **2** | Natural language search query |
+| **3** | Workspaces to search (respects user permissions) |
+| **4** | Maximum number of results to return |
+
+Response:
+
+```json
+{
+  "results": [
+    {
+      "id": "magnolia:/website/travel/paris",
+      "content": "Paris is the capital of France...",
+      "score": 0.87, (1)
+      "metadata": {
+        "path": "/travel/paris",
+        "workspace": "website",
+        "nodeType": "mgnl:page",
+        "language": "en",
+        "title": "Visit Paris",
+        "indexedAt": "2026-01-08T10:30:00Z"
+      }
+    },
+    {
+      "id": "magnolia:/website/travel/rome",
+      "content": "Rome, the Eternal City...",
+      "score": 0.82,
+      "metadata": {
+        "path": "/travel/rome",
+        "workspace": "website",
+        "nodeType": "mgnl:page",
+        "language": "en",
+        "title": "Explore Rome"
+      }
+    }
+  ],
+  "totalResults": 2,
+  "processingTime": 145 (2)
+}
+```
+
+|     |     |
+| --- | --- |
+| **1** | Relevance score (0-1, higher = more relevant) |
+| **2** | Processing time in milliseconds |
+
+### [](#_search_with_filters)Search with filters
+
+Filter results by metadata fields:
+
+```bash
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "sustainable tourism",
+    "workspaces": ["website", "blog"],
+    "maxResults": 20,
+    "filters": { (1)
+      "language": "en", (2)
+      "nodeType": "mgnl:page", (3)
+      "workspace": "website" (4)
+    }
+  }'
+```
+
+|     |     |
+| --- | --- |
+| **1** | Metadata filters |
+| **2** | Only English content |
+| **3** | Only pages (not assets or other content) |
+| **4** | Only from website workspace |
+
+### [](#_multi_workspace_search)Multi-workspace search
+
+Search across multiple workspaces with permission filtering:
+
+```bash
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "product documentation",
+    "workspaces": ["website", "docs", "kb"], (1)
+    "maxResults": 15
+  }'
+```
+
+|     |     |
+| --- | --- |
+| **1** | Search across website, documentation, and knowledge base workspaces |
+
+> **Tip:** The search automatically filters results based on the user’s permissions. Users only see content they have read access to.
+
+### [](#_language_specific_search)Language-specific search
+
+Search content in a specific language:
+
+```bash
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "romantische Städte", (1)
+    "workspaces": ["website"],
+    "filters": {
+      "language": "de" (2)
+    }
+  }'
+```
+
+|     |     |
+| --- | --- |
+| **1** | Query in German |
+| **2** | Only return German content |
+
+| Parameter | Description |
+| --- | --- |
+| `query` | **Required** Natural language search query. Can include variables from previous task results. `query: "Content similar to ${page.title}"` |
+| `workspaces` | **Optional** **Default** : All accessible workspaces List of workspaces to search. `workspaces: ["website", "blog"]` |
+| `maxResults` | **Optional** **Default** : 10 Maximum number of results to return. `maxResults: 5` |
+| `filters` | **Optional** Metadata filters to apply. `filters: language: en nodeType: mgnl:page` |
+
+| Query | Keyword Search Finds | Semantic Search Finds |
+| --- | --- | --- |
+| "romantic cities" | Pages with exact words "romantic" and "cities" | Paris, Venice, Prague (even if word "romantic" not present) |
+| "eco-friendly travel" | Pages with "eco-friendly" and "travel" | Sustainable tourism, green travel, carbon-neutral trips |
+| "budget accommodation" | Pages with "budget" and "accommodation" | Hostels, affordable hotels, cheap lodging |
+
+## [](#_advanced_use_cases)Advanced use cases
+
+### [](#_find_similar_content)Find similar content
+
+Find content similar to a specific page:
+
+```bash
+# 1. Get content from a page
+CONTENT=$(curl -s http://localhost:8080/.rest/delivery/pages/v1/travel/paris | jq -r '.content')
+
+# 2. Search for similar content
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"query\": \"${CONTENT}\",
+    \"workspaces\": [\"website\"],
+    \"maxResults\": 5
+  }"
+```
+
+### [](#_content_recommendations)Content recommendations
+
+Generate content recommendations based on user behavior:
+
+```bash
+# User just read about Paris, recommend similar destinations
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "romantic European capitals similar to Paris",
+    "workspaces": ["website"],
+    "filters": {
+      "nodeType": "mgnl:page",
+      "language": "en"
+    },
+    "maxResults": 3
+  }'
+```
+
+### [](#_find_missing_metadata)Find missing metadata
+
+Find pages that might be missing specific metadata:
+
+```bash
+# Find pages about travel but without "destination" metadata
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "travel destinations",
+    "workspaces": ["website"],
+    "maxResults": 50
+  }' | jq '.results[] | select(.metadata.destination == null)'
+```
+
+### [](#_multi_language_content_gap_analysis)Multi-language content gap analysis
+
+Find content available in one language but not others:
+
+```bash
+# Find pages in English
+EN_PAGES=$(curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -d '{"query": "*", "filters": {"language": "en"}}' | jq -r '.results[].metadata.path')
+
+# Check if they exist in German
+for path in $EN_PAGES; do
+  # Search for German version
+  DE_COUNT=$(curl -X POST \
+    http://localhost:8080/.rest/context-search/v1/search \
+    -d "{\"query\": \"${path}\", \"filters\": {\"language\": \"de\"}}" | jq '.totalResults')
+
+  if [ "$DE_COUNT" -eq 0 ]; then
+    echo "Missing German version: $path"
+  fi
+done
+```
+
+### [](#_best_image_for_content)Best image for content
+
+Find the most relevant asset for a page:
+
+```bash
+curl -X POST \
+  http://localhost:8080/.rest/context-search/v1/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Eiffel Tower at sunset romantic evening",
+    "workspaces": ["dam"],
+    "filters": {
+      "nodeType": "mgnl:asset",
+      "mimeType": "image/*" (1)
+    },
+    "maxResults": 5
+  }'
+```
+
+|     |     |
+| --- | --- |
+| **1** | Requires custom metadata indexing for MIME type filtering |
+
+## [](#_performance_optimization)Performance optimization
+
+### [](#_limit_result_count)Limit result count
+
+Request only the number of results you need:
+
+```bash
+"maxResults": 5  # Much faster than maxResults: 100
+```
+
+### [](#_use_specific_workspaces)Use specific workspaces
+
+Search specific workspaces instead of all:
+
+```bash
+"workspaces": ["website"]  # Faster than searching all workspaces
+```
+
+### [](#_apply_filters_early)Apply filters early
+
+Use metadata filters to reduce result set:
+
+```bash
+"filters": {
+  "language": "en",
+  "nodeType": "mgnl:page",
+  "workspace": "website"
+}
+```
+
+### [](#_cache_results)Cache results
+
+Cache search results for frequently executed queries:
+
+```java
+// Pseudo-code
+String cacheKey = query + "_" + workspaces + "_" + filters;
+SearchResults cached = cache.get(cacheKey);
+
+if (cached == null || cached.isExpired()) {
+    cached = contextSearchService.search(query, workspaces, maxResults);
+    cache.put(cacheKey, cached, 5 * 60 * 1000); // 5 minutes TTL
+}
+
+return cached;
+```
+
+| Metric | Description |
+| --- | --- |
+| `processingTime` | Total time for search request (ms) |
+| `vectorDbQueryTime` | Time for vector database query (ms) |
+| `jcrVerificationTime` | Time for JCR permission checks (ms) |
+| `rerankingTime` | Time for TF-IDF reranking (ms) |
+| `resultsBeforeFiltering` | Number of results before permission filtering |
+| `resultsAfterFiltering` | Number of results after permission filtering |
+
+## [](#_troubleshooting)Troubleshooting
+
+### [](#_no_results_returned)No results returned
+
+**Symptom**: Search returns empty results array
+
+**Solutions**:
+
+-   Verify content is indexed (check Context Dashboard)
+
+-   Ensure user has read permissions to content
+
+-   Check if workspace is included in `workspaces` parameter
+
+-   Try broader query terms
+
+-   Check if language filter matches indexed content
+
+
+### [](#_results_missing_expected_content)Results missing expected content
+
+**Symptom**: Known relevant content not in results
+
+**Solutions**:
+
+-   Increase `maxResults` parameter
+
+-   Verify content is indexed (check `indexedAt` timestamp)
+
+-   Check if content path is excluded in indexing configuration
+
+-   Try reindexing the workspace
+
+-   Verify content language matches filter
+
+
+### [](#_permission_errors)Permission errors
+
+**Symptom**: `403 Forbidden` or `401 Unauthorized`
+
+**Solutions**:
+
+-   Verify user is authenticated
+
+-   Check user has read permission to workspace
+
+-   Verify REST endpoint authentication configuration
+
+-   Check Magnolia security configuration
+
+
+### [](#_slow_search_performance)Slow search performance
+
+**Symptom**: Search takes >2 seconds
+
+**Solutions**:
+
+-   Reduce `maxResults` parameter
+
+-   Add more specific filters (language, nodeType, workspace)
+
+-   Check PostgreSQL pgvector performance and resource allocation
+
+-   Consider adding search result caching
+
+-   Check PostgreSQL connection pool settings
+
+
+## [](#_next_steps)Next steps
+
+-   [Understand security model](../security/)
+
+-   [Customize search behavior](../customization/)
+
+-   [Configure AI tasks](../../task-configuration/)

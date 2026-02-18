@@ -12,9 +12,9 @@ This page provides an overview of the different ways of retrieving JSON for JCR-
 
 ## [](#_magnolia_delivery_api)Magnolia Delivery API
 
-The `delivery` API is a Magnolia REST resource introduced with version 2.0 of the Magnolia REST modules. We recommend you use [Delivery API](#rest:api:delivery-endpoint.adoc) to benefit from all the latest features.
+The `delivery` API is a Magnolia REST resource introduced with version 2.0 of the Magnolia REST modules. We recommend you use [Delivery API](../../../../../rest/api/delivery-endpoint/) to benefit from all the latest features.
 
-This REST resource is highly customizable. You can define multiple endpoint configurations to serve different needs. Each configured endpoint is accessed through a distinct [`endpointPath`](#rest:api:delivery-endpoint.adoc#_endpointpath) and provides two sub-resources. The sub-resources can be called with HTTP GET both to read a node (and its subnodes) by a given path and to query nodes.
+This REST resource is highly customizable. You can define multiple endpoint configurations to serve different needs. Each configured endpoint is accessed through a distinct [`endpointPath`](../../../../../rest/api/delivery-endpoint/#_endpointpath) and provides two sub-resources. The sub-resources can be called with HTTP GET both to read a node (and its subnodes) by a given path and to query nodes.
 
 **Example:** Find a tour with the word `Japan` in its description. Return only the variant in the German language:
 
@@ -68,11 +68,11 @@ workspace: tours
 
 -   Provides a fine-grained security.
 
--   Supports [localization](#rest:api:Requesting-localized-content-with-the-delivery-endpoint.adoc).
+-   Supports [localization](../../../../../rest/api/Requesting-localized-content-with-the-delivery-endpoint/).
 
--   Supports [personalization](#rest:api:Requesting-personalized-content-with-the-delivery-endpoint.adoc).
+-   Supports [personalization](../../../../../rest/api/Requesting-personalized-content-with-the-delivery-endpoint/).
 
--   Can [resolve referenced nodes](#rest:api:Resolving-references-with-the-delivery-endpoint.adoc) from other workspaces, including image renditions, within one request.
+-   Can [resolve referenced nodes](../../../../../rest/api/Resolving-references-with-the-delivery-endpoint/) from other workspaces, including image renditions, within one request.
 
 
 ### [](#_cons)Cons
@@ -122,7 +122,7 @@ For more information and examples, see their API pages:
 
 Create a custom REST endpoint depending on your needs.
 
-The following example snippet is taken from the [`CameraCollectionEndpoint`](https://bitbucket.org/magnolia-cms/camera-collection).
+The following example snippet is taken from the [`CameraCollectionEndpoint`]({repo-cameraCollection}).
 
 ```java
     @Path("/allCameras")
@@ -154,7 +154,7 @@ The following example snippet is taken from the [`CameraCollectionEndpoint`](htt
 
 -   Provides a fine-grained security.
 
--   When using `com.wordnik.swagger.annotations.*`, endpoints are automatically exposed in the Swagger tool for testing (see [Swagger API explorer](#rest:ROOT:index.adoc#_api_base_path)).
+-   When using `com.wordnik.swagger.annotations.*`, endpoints are automatically exposed in the Swagger tool for testing (see [Swagger API explorer](../../../../../rest/#_api_base_path)).
 
 -   Delivery of personalized variants of pages or components is possible (see [personalization](../../../use-cases/Personalization/)).
 
@@ -228,7 +228,7 @@ Here is a simple example of how you can assemble JSON structure in FreeMarker:
 
 When assembling JSON manually, you have maximal freedom to define the JSON structure, but this approach also requires a high coding effort.
 
-The sample project [`camera-collection`](https://bitbucket.org/magnolia-cms/camera-collection) provides a more sophisticated FreeMarker-based JSON provider.
+The sample project [`camera-collection`]({repo-cameraCollection}) provides a more sophisticated FreeMarker-based JSON provider.
 
 ### [](#_assembling_json_with_jsonfn)Assembling JSON with `jsonfn`
 
@@ -289,7 +289,7 @@ http://localhost:8080/magnoliaAuthor/getjson/\`\[\`tours\`\]{style="color: rgb(1
 
 Add the following virtual URI mapping:
 
-![Virtual URI mapping](../../../_images/ADVT-HTjson-redconfig.png)
+![Virtual URI mapping](../../../../RNs-6-4-3/_images/ADVT-HTjson-redconfig.png)
 
 ### [](#_pros_4)Pros
 
@@ -322,7 +322,7 @@ Depending on the technique applied to get JSON, you may have to force getting th
 
 ### [](#_with_the_delivery_api)With the delivery API
 
-With the [Delivery API](#rest:api:delivery-endpoint.adoc), you can configure multiple endpoints with full content localization support.
+With the [Delivery API](../../../../../rest/api/delivery-endpoint/), you can configure multiple endpoints with full content localization support.
 
 To request a specific single language variant, do one of the following:
 
@@ -331,7 +331,7 @@ To request a specific single language variant, do one of the following:
 -   Set the ``lang`query parameter. For example: `lang=de-DE``
 
 
-If both are set, the lang parameter takes priority. If neither is set, the decision is delegated to [the I18nContentSupport interface](../../../Administration/Language/AdminCentral-and-public-locales/#_the_i18ncontentsupport_interface).
+If both are set, the lang parameter takes priority. If neither is set, the decision is delegated to [the I18nContentSupport interface](../../../../RNs-6-4-3/Administration/Language/AdminCentral-and-public-locales/#_the_i18ncontentsupport_interface).
 
 To return all language variants:
 
@@ -340,7 +340,7 @@ To return all language variants:
 
 > **Tip:** You can use both the Accept-Language header and the lang query parameter for both sub-resources Read node and Query nodes.
 
-See [Requesting localized content with the delivery endpoint](#rest:api:Requesting-localized-content-with-the-delivery-endpoint.adoc).
+See [Requesting localized content with the delivery endpoint](../../../../../rest/api/Requesting-localized-content-with-the-delivery-endpoint/).
 
 ### [](#_with_default_endpoints_for_nodes_and_properties)With default endpoints for nodes and properties
 
@@ -376,9 +376,9 @@ When using `jsonfn`, add the `wrapForI18n` method before calling the `print` met
 \[#assign pageNode = cmsfn.contentByPath('/magnolia-travels/Kyoto', 'tours') /\]\\
 ${jsonfn.from(pageNode).add("title").\`\*\*\`wrapForI18n()\`\*\*\`.print()}
 
-![Content node default language](../../../_images/content-default-lang.png)
+![Content node default language](../../../../RNs-6-4-3/_images/content-default-lang.png)
 
-![The same content node in German](../../../_images/content_DE.png)
+![The same content node in German](../../../../RNs-6-4-3/_images/content_DE.png)
 
 ## [](#_the_same_origin_policy_problem)The same-origin policy problem
 
@@ -396,6 +396,6 @@ Related topics
 
 -   [jsonfn](../../Templating/Template-scripts/Templating-functions/jsonfn/)
 
--   [Delivery API](#rest:api:delivery-endpoint.adoc)
+-   [Delivery API](../../../../../rest/api/delivery-endpoint/)
 
--   [Headless docs](../../headless/)
+-   [Headless docs](../../../../RNs-6-4-3/Developing/headless/)

@@ -1,0 +1,82 @@
+---
+title: "Webhooks module"
+url: https://docs.magnolia-cms.com/webhooks/1.0/
+category: Modules
+version: modules
+breadcrumb: Webhooks module
+---
+
+# Webhooks module
+
+| Edition | DX Core |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) |
+| Issues | [MGNLHOOK](https://magnolia-cms.atlassian.net/browse/MGNLHOOK) |
+| Git | Enterprise / [webhooks](https://gitlab.magnolia-platform.com/pd/enterprise/webhooks) |
+| Maven site | [Webhooks](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fwebhooks%2Fmagnolia-webhooks-parent%2F1.0.4) |
+| Latest | 1.0.4 |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your bundle:
+
+```xml
+<dependency>
+  <groupId>info.magnolia.webhooks</groupId>
+  <artifactId>magnolia-webhooks-core</artifactId>
+  <version>1.0.4</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.webhooks</groupId>
+  <artifactId>magnolia-webhooks-events</artifactId>
+  <version>1.0.4</version>
+</dependency>
+```
+
+```xml
+<dependency>
+  <groupId>info.magnolia.webhooks</groupId>
+  <artifactId>magnolia-webhooks-events-jcr</artifactId>
+  <version>1.0.4</version>
+</dependency>
+```
+
+> **Note:** The module requires at least the following dependencies, which will be included automatically if you use Maven to add the module to your webapp.<dependency>
+>   <groupId>io.vavr</groupId>
+>   <artifactId>vavr</artifactId>
+> </dependency><dependency>
+>   <groupId>io.github.resilience4j</groupId>
+>   <artifactId>resilience4j-core</artifactId>
+> </dependency><dependency>
+>   <groupId>io.github.resilience4j</groupId>
+>   <artifactId>resilience4j-retry</artifactId>
+> </dependency>
+
+| Property name | Description |
+| --- | --- |
+| `name` | **required** Name of the webhook. The name must be unique across all webhook definitions. |
+| `url` | **required** , if there is no associated REST client referenced through the `restClientName` property (see below). The URL of the target endpoint that is notified when an event occurs. |
+| `method` | **required** , if no associated REST client is referenced. The HTTP method used when Magnolia connects to the target endpoint for an event. Supported methods: `GET` , `POST` , `PUT` , `DELETE` and `PATCH` . |
+| `queryParameters` | **optional** Key-value map with the parameters to be sent as: • A query string in a `GET` request. • A body in a `POST` or `PUT` request. ** See also below [Webhook parameters appended automatically](#auto-added-params) . | ** | See also below [Webhook parameters appended automatically](#auto-added-params) . |
+| ** | See also below [Webhook parameters appended automatically](#auto-added-params) . |
+| `headers` | **optional** Key-value map with the headers to be sent with an HTTP request. Example `headers: "Content-Type": "application/json" "X_Custom_Header": "value"` |
+| `restClientName` | **required** , if the `url` and `method` properties are not configured Name of an already existing REST client configuration that will be used when a webhook event occurs. |
+| `restCallName` | **required** , if the `url` and `method` properties are not configured Name of an already existing REST client call that will be used when a webhook event occurs. |
+| `enabled` | **required** Boolean value which enables or disables the webhook. If `false` , the target endpoint is not touched. |
+| `events` | **required** Node with a list of webhook events. ** A webhook definition must have at least one event definition. Example `events: - name: contentPublished eventType: Published entity: Content - name: contentUnpublished eventType: Unpublished entity: Content` | ** | A webhook definition must have at least one event definition. |
+| ** | A webhook definition must have at least one event definition. |
+| `name` | **required** Name of a webhook event. The name must be unique across all event definitions in the same file. |
+| `eventType` | **required** Type of the webhook event. Two event type values are allowed at the moment, `Published` and `Unpublished` . • `Published` is used when an existing content is published, no matter whether the publication falls under publication workflow or not. • `Unpublished` is used when an existing content is unpublished. |
+| `entity` | **optional** Type of the content. The value can be either `Content` or any existing Content Type. |
+| `filter` | **optional** String that allows you to filter the events. Example `filter: "@path LIKE '%whatever%' or @nodeType = 'mgnl:page'"` The filter grammar expressions are enclosed in parentheses and can be combined using `AND` and `OR` . **Filter properties** • `@path` - filters by node path. • `@workspace` - filters by node workspace. • `@nodeType` - filters by node type. • `@recursive` - boolean value defining whether the webhook event is recursive (including subpages and subtrees) or not (single publication). **Filter operators** The `@path` , `@workspace` and `@nodeType` filter properties expect a String value and support the `=` , `!=` , `<>` and `LIKE` operators. The `@recursive` filter property supports the `=` , `!=` and `<>` operators. |
+
+## [](#_usage)Usage
+
+For usage, see the [How to create a webhook](../3.0/guides/how-to-create-a-webhook/) page.
+
+Related topics
+
+-   [Magnolia webhook SSG demo]({repo-webhookSsgDemo})

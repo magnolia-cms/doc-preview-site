@@ -1,0 +1,62 @@
+---
+title: "Backend Live - Javascript UI"
+url: https://docs.magnolia-cms.com/backend-live/js-ui/
+category: Modules
+version: modules
+breadcrumb: Backend Live > Column Definitions
+---
+
+# Backend Live - Javascript UI
+
+The **Javascript UI** extension provides you with the ability to define your *own* UI Components. So far, the only UI Component available for customization is Column Definitions, specifically the Value Provider’s `apply` method that returns some HTML snippet that would be injected into the columns value.
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+your-webapp-maven-project/pom.xml
+
+```xml
+<dependency>
+  <groupId>info.magnolia.backendlive</groupId>
+  <artifactId>backend-live-ui</artifactId>
+  <version>1.1.0</version>
+</dependency>
+```
+
+## [](#_installing_to_a_bundle)Installing to a Bundle
+
+If you have an existing bundle, perhaps obtained by using the Magnolia CLI, you will need to add the modules as defined at [Javascript Models 2.0](../../javascript-models/#_installing_to_a_bundle), as well as its dependencies to each webapp’s `/WEB-INF/lib` directories:
+
+[Backend Live UI JAR](https://nexus.magnolia-cms.com/service/local/repositories/magnolia.forge.releases/content/info/magnolia/backendlive/backend-live-ui/1.1.0/backend-live-ui-1.1.0.jar)
+
+Using a standard Magnolia Bundle, these directories would be:
+
+-   `apache-tomcat/webapps/magnoliaAuthor/WEB-INF/lib/`
+
+-   `apache-tomcat/webapps/magnoliaPublic/WEB-INF/lib/`
+
+
+| Component | Description |
+| --- | --- |
+| `cmsfn` | Navigate content and create links. |
+| `damfn` | Get assets and renditions and create links to assets. |
+| `sitefn` | Get sites and themes. |
+| `imgfn` | Get links to images from any workspace. |
+| `resfn` | Create links to css and js files by given patterns. |
+| `restfn` | Access REST clients. |
+| `searchfn` | Search pages and content. |
+| `navfn` | Create site navigation. |
+| `catfn` | Get categories (tags) and access content by category. |
+
+| Component | Description |
+| --- | --- |
+| `parameters` | Custom definition items defined in the YAML file under the `parameters` property. |
+| `definition` | This is the YAML definition that you’ve specified when declaring the `$type: jsAvailability` . This is the primary definition you will need to access for this rules properties. |
+| `def` | This is a shorthand representation of the `definition` , simply used as it is carried over from previous versions. |
+| `log` | This is the Magnolia Log4j log bound to the Javascript Availability Rule class. You can log `debug` , `info` , `warn` and `error` messages using this. |
+
+| Version | Notes |
+| --- | --- |
+| `1.0` | • Custom Javascript UI Components Released |
+| `1.1.0` | • Align all provided Backend Live extensions. • Resolved issue with improper JS Models JAR module reference. |

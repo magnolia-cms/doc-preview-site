@@ -1,0 +1,96 @@
+---
+title: "Amazon Rekognition service"
+url: https://docs.magnolia-cms.com/image-recognition/developers/configure_amazon-recognition/
+category: Modules
+version: modules
+breadcrumb: Image Recognition module > Configure > Amazon Rekognition
+---
+
+# Amazon Rekognition service
+
+The Amazon Rekognition service enables image recognition in Magnolia by tagging images using Amazon’s AI capabilities. Configure the service provider and connection settings to integrate this functionality. For detailed configuration, see the sections below.
+
+## [](#_set_the_service_provider)Set the service provider
+
+Configure the service provider class in `/image-recognition/config.yaml`:
+
+/image-recognition/config.yaml
+
+```yaml
+currentService: info.magnolia.ai.image.amazon.AmazonImageRecogniser (1)
+```
+
+<1>The class name of the service to be used for image recognition. Use `info.magnolia.ai.image.amazon.AmazonImageRecogniser`. Default is `info.magnolia.ai.image.ImageRecogniser$Noop`.
+
+## [](#_configure_the_amazon_rekognition_service)Configure the Amazon Rekognition service
+
+High-level configuration steps:
+
+-   Once the correct permissions are granted, configure the connection to the Amazon Rekognition service.
+
+-   Configure the service as required.
+
+-   Fine-tune the performance of parallel image recognition.
+
+
+| 📁 `aws-credentials` |  |
+| --- | --- |
+|  | ** `aws_access_key_id` |
+|  | ** `aws_secret_access_key` |
+
+| Property | Description |
+| --- | --- |
+| `currentService` | **required** , *default is info.magnolia.ai.image.ImageRecogniser$Noop (service disabled)* The class name of the service to be used for Amazon Rekognition: `info.magnolia.ai.image.amazon.AmazonImageRecogniser` |
+
+## [](#_region_name)Region name
+
+You need to know a region name to configure the Amazon Rekognition Image service in Magnolia. To reduce data latency, AWS offers several regional endpoints. Each of the endpoints can be referred to in service configurations by a region name, for example `eu-west-1`.
+
+For more information, see Amazon’s [AWS Regions and Endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html) page.
+
+> **Important:** If you pick a region that doesn’t support this service, you may get erratic results.
+
+| Property | Description |
+| --- | --- |
+| `region` `name` | **required** Label designating a regional endpoint to which the image recognition service connects, such as `eu-west-1` . For a list of available regions and labels, see [AWS: Regional endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) . |
+| `maxLabels` | **required,** *default is 10* The maximum number of tags you want the recognition service to return. This is an integer and the minimum value is `0` . ** If `0` is used, no tag would be assigned to an image asset. | ** | If `0` is used, no tag would be assigned to an image asset. |
+| ** | If `0` is used, no tag would be assigned to an image asset. |
+| `minConfidence` | **required,** *default is 50* The confidence score of recognition. The Amazon Rekognition service returns a confidence score for each image tag. Image tags with a recognition confidence lower than the value of the `minConfidence` property are dropped. |
+| `supportedFormats` | **required,** *default are png, jpg, jpeg* A list of image formats defining which image types are automatically recognized by the image recognition service. The Amazon Rekognition service currently supports only two image formats: `JPEG/JPG` and `PNG` . ** Be aware that the Amazon Rekognition service has several service limits which may influence the performance of the recognition process. For more information, see [Guidelines and quotas in Amazon Rekognition](https://docs.aws.amazon.com/rekognition/latest/dg/limits.html) . | ** | Be aware that the Amazon Rekognition service has several service limits which may influence the performance of the recognition process. For more information, see [Guidelines and quotas in Amazon Rekognition](https://docs.aws.amazon.com/rekognition/latest/dg/limits.html) . |
+| ** | Be aware that the Amazon Rekognition service has several service limits which may influence the performance of the recognition process. For more information, see [Guidelines and quotas in Amazon Rekognition](https://docs.aws.amazon.com/rekognition/latest/dg/limits.html) . |
+
+## [](#_parallel_recognition_threads)Parallel recognition threads
+
+Image recognition can be an intensive process in terms of CPU resources. The recognition process can be delegated to several parallel threads. With more threads working you can obtain the results faster.
+
+You can specify the number of parallel image recognition threads for the image recognition service provided by the `image-recognition-api` submodule. Set the number in the [`magnolia.properties`](../../../product-docs/RNs-6-4-3/Administration/Architecture/Configuration-management/#_customization) configuration file through a Magnolia property called `magnolia.image.recognition.numberOfThreads`.
+
+Example
+
+```none
+magnolia.image.recognition.numberOfThreads=3 (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Sets three recognition threads. If the property isn’t set in the file, the default number of threads used by the system is `1`. |
+
+## [](#_using_other_image_recognition_solutions)Using other image recognition solutions
+
+You can implement another image recognition solution or integrate your app with another third-party image recognition solution using the `info.magnolia.ai.image.ImageRecogniser` interface provided by the `image-recognition-api` submodule:
+
+```java
+/**
+ * Takes an ImageBinary object as parameter and returns a {@link Collection collection}
+ * of {@link ImageLabel Image label}s as output.
+ *
+ * <p>
+ * Returns empty collection for the cases below:
+ * <li>Upon exception</li>
+ * <li>Image couldn't be recognized</li>
+ * </p>
+ *
+ * @param imageBinary an {@link ImageBinary} object containing a binary reference and MIME type
+ */
+Collection<ImageLabel> recognise(ImageBinary imageBinary);
+```

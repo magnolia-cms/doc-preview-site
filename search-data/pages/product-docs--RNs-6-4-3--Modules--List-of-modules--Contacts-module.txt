@@ -1,0 +1,26 @@
+---
+title: "Contacts module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/List-of-modules/Contacts-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Contacts module
+---
+
+# Contacts module
+
+| Edition | CE |
+| --- | --- |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| Issues | [CNTCTSAPP](https://magnolia-cms.atlassian.net/browse/CNTCTSAPP) |
+| Maven site | [Contacts](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fcontacts%2Fmagnolia-contacts%2F{magnolia-contacts-app-64}) |
+| Latest | {magnolia-contacts-app-64} |
+
+## [](#_deprecated_since_6_3_0)Deprecated since 6.3.0
+
+The 6.3 version of the Contacts module isn’t working as expected. Use the 6.2 version if you want to use the [Contacts app](../../../Apps/List-of-apps/Contacts-app/).
+
+> **Important:** Add the 6.2 Contacts module version to your Maven dependencies.<dependency>
+>   <groupId>info.magnolia.contacts</groupId>
+>   <artifactId>magnolia-contacts</artifactId>
+>   <version>6.2_COMPATIBLE_VERSION</version> (1)
+> </dependency>1See 6.2 Contacts module for the latest version. Alternatively, if you have an existing 6.2 installation, copy its 6.2 .jar file to the lib folder in your 6.3 installation and restart. You can find the .jar file at: /webapps/magnoliaAuthor/WEB-INF/lib/magnolia-contacts-<6.2_COMPATIBLE_VERSION>.jar.

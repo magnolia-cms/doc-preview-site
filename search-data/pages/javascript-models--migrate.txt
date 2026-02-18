@@ -1,0 +1,25 @@
+---
+title: "Migrate"
+url: https://docs.magnolia-cms.com/javascript-models/migrate/
+category: Modules
+version: modules
+breadcrumb: Javascript Models > Migrate
+---
+
+# Migrate
+
+## [](#_migrating_to_4_0_0)Migrating to `4.0.0`
+
+### [](#_update_the_dependency)Update the Dependency
+
+#### [](#_using_maven)Using Maven
+
+Open your POM and update the `dependencyManagement` for JS Models.
+
+```xml
+<dependency>
+  <groupId>info.magnolia.javascript-models</groupId>
+  <artifactId>magnolia-module-javascript-models</artifactId>
+  <version>4.0.0</version>
+</dependency>
+```

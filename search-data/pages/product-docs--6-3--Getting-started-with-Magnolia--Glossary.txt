@@ -14,7 +14,7 @@ Action is an instruction to invoke an event in the user interface. You typically
 
 ## [](#_action_bar)Action bar
 
-An action bar makes [actions](../../../../magnolia-5-ui-documentation/Content-apps-5-UI/App-configuration-5-UI/Action-definition-5-UI/) available to users. The action bar is typically displayed on the right-hand side of the browser subapp. The [action bar definition](../../Apps/App-configuration/Action-bar-definition/) organizes actions into sections (green label) and groups (between horizontal lines). Availability rules determine which section is displayed to the user. For example, when the user selects a content item in the browser subapp, availability rules display only actions that are relevant to working with that item. A group contains actions that have something in common, such as actions for adding things.
+An action bar makes [actions](#6.2@product-docs:ROOT:Support/Magnolia-5-UI-documentation/Content-apps-5-UI/App-configuration-5-UI/Action-definition-5-UI.adoc) available to users. The action bar is typically displayed on the right-hand side of the browser subapp. The [action bar definition](../../Apps/App-configuration/Action-bar-definition/) organizes actions into sections (green label) and groups (between horizontal lines). Availability rules determine which section is displayed to the user. For example, when the user selects a content item in the browser subapp, availability rules display only actions that are relevant to working with that item. A group contains actions that have something in common, such as actions for adding things.
 
 ## [](#_action_popup)Action popup
 
@@ -52,7 +52,7 @@ An [app group](../../Administration/App-Launcher/App-launcher-layout/) contains 
 
 ## [](#_app_launcher)App launcher
 
-The App launcher is a key navigation page in Magnolia that you can access using the ![App launcher icon](../../_images/mgnl-app-launcher.png) icon to the left of the Find Bar at the top of every page.
+The App launcher is a key navigation page in Magnolia that you can access using the ![App launcher icon](../../../RNs-6-4-3/_images/mgnl-app-launcher.png) icon to the left of the Find Bar at the top of every page.
 
 ## [](#_app_framework)App framework
 
@@ -64,7 +64,7 @@ Author instance is where editors work. This instance typically resides in a secu
 
 ## [](#_browser_subapp)Browser subapp
 
-Browser subapp is a specialization of the basic subapp, provided by the [content app framework](../../../../magnolia-5-ui-documentation/Content-apps-5-UI/Parts-of-a-content-app-5-UI/). The browser subapp allows you to view and organize content items in tree, list and thumbnail views. The browser subapp descriptor is similar to the basic [subapp descriptor](../../../../magnolia-5-ui-documentation/Content-apps-5-UI/App-configuration-5-UI/Subapp-descriptor-5-UI/), but the classes are different.
+Browser subapp is a specialization of the basic subapp, provided by the [content app framework](#6.2@Support/Magnolia-5-UI-documentation/Content-apps-5-UI/Parts-of-a-content-app-5-UI.adoc). The browser subapp allows you to view and organize content items in tree, list and thumbnail views. The browser subapp descriptor is similar to the basic [subapp descriptor](#6.2@Support/Magnolia-5-UI-documentation/Content-apps-5-UI/App-configuration-5-UI/Subapp-descriptor-5-UI.adoc), but the classes are different.
 
 ## [](#_classpath)Classpath
 
@@ -116,7 +116,7 @@ According to the [JCR specification](https://developer.adobe.com/experience-mana
 
 Magnolia provides its own custom [node types](../../Administration/Architecture/Node-types/) which represent Web content management items such as pages and components. You can see nodes and properties in many apps. For example, the Configuration app renders nodes to users in the following way:
 
-![App node types](../../_images/configuration-app-node-types.png)
+![App node types](../../../RNs-6-4-3/_images/configuration-app-node-types.png)
 
 You can configure the icon for a node type in the [workbench](../../Apps/App-configuration/Workbench-definition/) of your app. For example, the [Pages app](../../Apps/List-of-apps/Pages-app/) displays a page icon for an `mgnl:page` node. You can check which node type an app displays and the icon associated with in the workbench definition of that app.
 
@@ -194,7 +194,7 @@ Examples of rules:
 
 All visitors who meet a given rule belong to a [segment](#_segment).
 
-![Personalization rule](../../_images/personalization-rule.png)
+![Personalization rule](../../../RNs-6-4-3/_images/personalization-rule.png)
 
 ## [](#_segment)Segment
 
@@ -226,7 +226,7 @@ Examples of segments and their rules:
 
 
 
-![Personalization segment](../../_images/personalization-segment.png)
+![Personalization segment](../../../RNs-6-4-3/_images/personalization-segment.png)
 
 ## [](#_segmentation)Segmentation
 
@@ -284,7 +284,7 @@ A tag is typically a piece of JavaScript code. When a page loads, the JavaScript
 
 > **Tip:** If the service provides an analytics dashboard, you can display it in the Marketing Tags app.
 
-![Tags function diagram](../../_images/diagram-tags-manager.png)
+![Tags function diagram](../../../RNs-6-4-3/_images/diagram-tags-manager.png)
 
 Since many of these tags require cookies to work, you can also [link tags to cookies](../../Modules/List-of-modules/Privacy-module/GDPR-and-cookies/) defined in the [Cookies app](../../Apps/List-of-apps/Cookies-app/). By linking tags to cookies, you can make sure the tags used on your website comply with data privacy rules.
 

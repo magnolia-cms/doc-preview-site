@@ -1,0 +1,83 @@
+---
+title: "Tabs"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/tabs/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > Tabs
+---
+
+# Tabs
+
+The Tabs component organizes content into tabbed sections. Each tab can display a description that supports basic formatting and an image.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `tabs` (required) - A multifield for adding one or more tab items. Each item includes:
+
+    -   `title` (required) - Label for the tab.
+
+    -   `description` (optional) - Rich text content shown in the tab’s content area.
+
+    -   `imageChooser` (optional) - A switchable field for selecting an image source:
+
+        -   If `image` is selected:
+
+            -   `image` (required) - Internal image from Magnolia DAM.
+
+            -   `altText` (optional) - Alt text for accessibility.
+
+
+        -   If `externalImage` is selected:
+
+            -   `externalImage` (required) - Full URL to the external image.
+
+            -   `externalImageAlt` (optional) - Alt text for accessibility.
+
+
+
+
+
+## [](#_behavior)Behavior
+
+-   At least one tab item is required.
+
+-   The first tab is displayed by default.
+
+-   Content rendering logic:
+
+    -   If only description is provided - it fills the full width of the tab content area.
+
+    -   If only image is provided - the image is centered and rendered at full width.
+
+    -   If both image and description are present:
+
+        -   Image is displayed on the left (50% width).
+
+        -   Description is displayed on the right (50% width).
+
+
+
+-   Clicking on a tab updates the content shown below.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component Tabs -p tabs
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

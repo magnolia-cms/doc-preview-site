@@ -18,28 +18,11 @@ Memory pressure and nodes
 
 Cluster nodes can suffer from memory pressure (less than `5%` memory available and a high rate of major page faults used by the alerts), but the cluster may have lots of unused memory. The pod distribution across the cluster node may be uneven with one node getting the memory hungry pods while other nodes are lightly loaded.
 
-## [](#_observations)Observations
-
-Here are the details on the alerts:
-
-### [](#_alert_customerclusterhighmemorypressure)Alert: CustomerClusterHighMemoryPressure
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 15%;"> <col style="width: 85%;"></colgroup><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Expression</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>instance:node_memory_available:ratio * 100 &lt; 5 and rate(node_vmstat_pgmajfault[2m]) &gt; 1000</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Delay</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>15</code> minutes</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Labels</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>team: customer</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Annotations</strong></p></td><td class="tableblock halign-left valign-top"><div class="content"><div class="ulist"><ul><li><p><code>summary</code></p></li><li><p><code>description</code></p></li><li><p><code>tenant</code></p></li><li><p><code>cluster_id</code></p></li><li><p><code>cluster_name</code></p></li><li><p><code>instance</code></p></li></ul></div></div></td></tr></tbody></table></div>
-
-### [](#_determine_the_node_with_high_memory_pressure)Determine the node with high memory pressure
-
-The alert contains:
-
--   the cluster name/id (the `k8s_cluster_name` and `k8s_cluster_id` labels)
-
--   the cluster node (the instance label)
-
--   the device (the device label)
-
--   the filesystem (the mountpoint label)
-
-
-> **Important:** It’s important to note the label values from the alert.
+| **Expression** | `instance:node_memory_available:ratio * 100 < 5 and rate(node_vmstat_pgmajfault[2m]) > 1000` |
+| --- | --- |
+| **Delay** | `15` minutes |
+| **Labels** | `team: customer` |
+| **Annotations** | • `summary` • `description` • `tenant` • `cluster_id` • `cluster_name` • `instance` |
 
 ## [](#_solutions)Solutions
 

@@ -25,7 +25,7 @@ This is an overview of how to handle cookies:
 -   We recommend you inform your website visitors about what cookies you’re using and about the purpose of the cookies.
 
 
-Magnolia helps you to implement cookies in compliance with GDPR. It nonetheless remains the responsibility of the website owner to manage cookies properly. The [Privacy module](../) provides the features described on this page.
+Magnolia helps you to implement cookies in compliance with GDPR. It nonetheless remains the responsibility of the website owner to manage cookies properly. The [Privacy module](../../../../../RNs-6-4-3/Modules/List-of-modules/Privacy-module/) provides the features described on this page.
 
 ## [](#_inform_the_website_visitor)Inform the website visitor
 
@@ -35,7 +35,7 @@ You must inform website visitors that you’re using cookies.
 
 Example:
 
-![Cookies information page](../../../../_images/6-2-howToHandleCookiesGdpr-cookiesInfoTable.png)
+![Cookies information page](../../../../../RNs-6-4-3/_images/6-2-howToHandleCookiesGdpr-cookiesInfoTable.png)
 
 ## [](#_types_of_cookie_in_magnolia)Types of cookie in Magnolia
 
@@ -43,7 +43,7 @@ You can set cookies on the server-side using the [Servlet cookie API](https://do
 
 ### [](#_cookies_set_on_the_server_side)Cookies set on the server-side
 
-Magnolia uses cookies for different features and functions, for example in the visitor trait to serve [personalized content](../../../../use-cases/Personalization/).
+Magnolia uses cookies for different features and functions, for example in the visitor trait to serve [personalized content](../../../../../RNs-6-4-3/use-cases/Personalization/).
 
 To set a cookie on the server-side, Magnolia uses info.magnolia.consent.cookie.CookieManager, which always checks the website visitor’s cookie consent decision before the cookie is set.
 
@@ -53,11 +53,11 @@ Many third-party services, such as [Google Analytics](http://analytics.google.co
 
 Generally speaking, you can’t control cookies set on the client-side with Magnolia. However, the code snippet containing the JavaScript code, which sets the cookie, is added by Magnolia on the server-side By adding or not adding the code snippet, you can control whether the cookie is set or not.
 
-By using the [Marketing Tags app](../../../../Apps/List-of-apps/Marketing-Tags-app/) to manage the code snippets for these third-party services and [defining a cookie in the Cookies app and linking it to the marketing tags item](#Linking marketing tag to cookie definition), you control whether the third-party cookie is set based on the website visitor’s cookie consent decision.
+By using the [Marketing Tags app](../../../../../RNs-6-4-3/Apps/List-of-apps/Marketing-Tags-app/) to manage the code snippets for these third-party services and [defining a cookie in the Cookies app and linking it to the marketing tags item](#Linking marketing tag to cookie definition), you control whether the third-party cookie is set based on the website visitor’s cookie consent decision.
 
 ## [](#_managing_consent_for_cookies)Managing consent for cookies
 
-When using the Magnolia GDPR cookie features, Magnolia cookies, and even third-party cookies managed via the [Marketing Tags app](../../../../Apps/List-of-apps/Marketing-Tags-app/), are never set unless the website visitor has given their consent.
+When using the Magnolia GDPR cookie features, Magnolia cookies, and even third-party cookies managed via the [Marketing Tags app](../../../../../RNs-6-4-3/Apps/List-of-apps/Marketing-Tags-app/), are never set unless the website visitor has given their consent.
 
 Visitor consent for cookie usage must therefore be collected and stored. In Magnolia, consent itself is stored in a cookie named `cookieConsent_status`.
 
@@ -79,7 +79,7 @@ In this case, you store a simple value such as `accepted` or `OK` as value of th
 
 With this strategy, you give the website visitor the possibility to give consent for different groups of cookies:
 
-![Consenting to use of cookies](../../../../_images/5-7-0-howToHandleCookiesGdpr-cookieConsentForm.png)
+![Consenting to use of cookies](../../../../../RNs-6-4-3/_images/5-7-0-howToHandleCookiesGdpr-cookieConsentForm.png)
 
 In this case, you store cookie values such as the following, based on which options the user consents to:
 
@@ -116,94 +116,11 @@ public void setCookieConsentCookie(String cookieConsentStatusValue) {
 }
 ```
 
-For more information, see [GDPR API - Managing cookies](../../../../Developing/API/Java-Server-APIs/Data-privacy-API/#_getting_cookiemanager).
+For more information, see [GDPR API - Managing cookies](../../../../../RNs-6-4-3/Developing/API/Java-Server-APIs/Data-privacy-API/#_getting_cookiemanager).
 
-## [](#_configuring_cookies_to_set_cookies_depending_on_visitor_consent)Configuring cookies to set cookies depending on visitor consent
-
-The Privacy module comes with the [Cookies app](../../../../Apps/List-of-apps/Cookies-app/). Make sure you add a cookie definition for all your cookies.
-
-### [](#_configuring_a_cookie)Configuring a cookie
-
-To add a new cookie:
-
-1.  Open the Cookies app from the app launcher.
-
-2.  Click **Add cookie**.
-
-    You can only add a new cookie to the root node (no nested cookies).
-
-3.  Enter at least a unique **ID** and a **Name** (cookie’s name as seen in the browser) for your cookie.
-
-4.  If required, set a specific value for the **'Consent required?'** regex property.
-
-    The value of this property is interpreted as a regular expression. The default value is `.+`.
-
-
-> **Tip:** See Cookie properties for all possible properties.
-
-### [](#_understanding_when_cookies_are_set)Understanding when cookies are set
-
-Every cookie definition has the **'Consent required?'** (`requiredConsentRegexp`) property. If this property isn’t set explicitly, the default value `.+` is used.
-
-Cookies are set when the regular expression matches the value stored in the `cookieConsent_status` cookie.
-
-> **Tip:** If you use the default value .+ for the requiredConsentRegexp property in a cookie definition, the cookie is added by the cookie manager when the cookieConsent_status cookie has any value.If you use .* as the value for the requiredConsentRegexp property in a cookie definition, the cookie is always added by the cookie manager, even if the cookieConsent_status cookie isn’t set.
-
-|     |     |     |
+| cookieConsent_status value | requiredConsentRegexp property(regular expression) | Cookie is set |
 | --- | --- | --- |
-| cookieConsent\_status value | requiredConsentRegexp property(regular expression) | Cookie is set |
-| `features,marketing,statistics` | `.**features.**` | ✓   |
-| `marketing,statistics` | `.**features.**` | ✗   |
-| `accepted` | `.**features.**` | ✗   |
-| `accepted` | no value\*<br><br>(no value defaults to `.+`) | ✓   |
-
-### [](#_example_configuring_a_server_side_set_cookie)Example: Configuring a server-side set cookie
-
-Add a cookie definition to the Cookies app.
-
-![Configuring a server-side set cookie](../../../../_images/6-2-gdprAndCookies-serversideCookieDefinitionExample.png)
-
-### [](#_example_adding_a_marketing_tag_cookie_and_linking_it_to_the_marketing_tags_app)Example: Adding a marketing tag cookie and linking it to the Marketing Tags app
-
-You usually set third-party cookies using a code snippet managed in the [Marketing Tags app](../../../../Apps/List-of-apps/Marketing-Tags-app/). To control whether this kind of cookie is set, you must add a cookie definition to the Cookies app and link it to the marketing tag.
-
-If you do *not* link a cookie definition to a marketing tag, the marketing tag is always set following the marketing tag definition. The cookie consent isn’t checked.
-
-#### [](#_marketing_tag_cookie_definition)Marketing tag cookie definition
-
-|     |     |
-| --- | --- |
-| `ID` | steelhouseCookie |
-| `name` | *steelhouseCookie* |
-| `requiredConsentRegexp` | .**marketing.** |
-
-The `ID` and `name` of the cookie definition are arbitrary and don’t have to match the name of the cookie, which is set by the marketing tag. However, make sure the node name is descriptive and unique.
-
-#### [](#_linking_a_cookie_to_a_marketing_tag)Linking a cookie to a marketing tag
-
-1.  Open the **Marketing Tags** app.
-
-2.  Choose the marketing tag you want to link to a cookie:
-
-    ![Marketing tags app](../../../../_images/6-2-howToHandleCookiesGdpr-marketing-tagCookie-0-.png)
-
-3.  Click **Edit tag**.
-
-4.  In the **Cookies** tab, click **Add**:
-
-    ![Edit marketing tag tab](../../../../_images/6-2-howToHandleCookiesGdpr-marketing-tagCookie-1-.png)
-
-5.  Select the cookie you require and save your changes.
-
-    ![Cookies dropdown](../../../../_images/6-2-howToHandleCookiesGdpr-marketing-tagCookie-select.png)
-
-
-Related topics
-
--   [Data privacy](../../../../Features/Data-privacy/)
-
--   [Data privacy API](../../../../Developing/API/Java-Server-APIs/Data-privacy-API/)
-
--   [Privacy module](../)
-
--   [Cookies app](../../../../Apps/List-of-apps/Cookies-app/)
+| `features,marketing,statistics` | `.features.` | ✓ |
+| `marketing,statistics` | `.features.` | ✗ |
+| `accepted` | `.features.` | ✗ |
+| `accepted` | no value* (no value defaults to `.+` ) | ✓ |

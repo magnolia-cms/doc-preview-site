@@ -1,0 +1,66 @@
+---
+title: "Asset management"
+url: https://docs.magnolia-cms.com/performance-tuning/Image-and-media-handling/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Asset management
+---
+
+# Asset management
+
+## [](#_overview)Overview
+
+This section emphasizes the importance of organizing assets into folders and avoiding storing too many in the same folder. Planning for your asset storage’s size, growth requirements, and content organization is the best practice to prevent performance issues.
+
+In Magnolia 6.4 and later, you can keep asset metadata in JCR while storing binaries in external storage (for example, AWS S3) directly using DAM 6.0. See [Configure the DAM JCR S3 submodule](../../dam/developers/dam-jcr-s3/) for setup details. This replaces the need to rely on the External DAM Integration framework plus a separate connector.
+
+Tuning tips - Asset management
+
+-   **Organising assets**
+
+    -   Avoid storing too many assets in the same folder.
+
+    -   Create subfolders to organize assets to improve scalability.
+
+    -   Aim for a maximum of 500 assets per folder. Organizing content into smaller folders improves navigation and overall user experience.
+
+    -   Avoid publishing assets over 2 GB in size.
+
+        For more, see [Storing assets](Storing-assets/).
+
+
+-   **Asset volume**
+
+    -   When your total volume of assets or the size of individual binaries starts to impact publication times, storage footprint, or operational workflows, consider storing asset binaries in an external provider using DAM 6.0.
+
+        For more, see [Internal vs. external Digital Asset Management (DAM)](Internal-vs-external-dam/).
+
+
+-   **DAM sizing**
+
+    -   It’s crucial to take proactive steps and estimate the size of DAM needed for your data early on. This foresight can help you avoid costly migration processes later.
+
+        For more, see [DAM sizing considerations](DAM-sizing/).
+
+
+-   **Image processing and stability**
+
+    -   Convert progressive JPEGs to baseline encoding before uploading. ImageIO decodes baseline files faster and with less CPU.
+
+    -   When generating thumbnails or previews from large images, [enable sub-sampling](../../imaging/developers/configure/#_image_subsampling) before resizing to reduce memory consumption while keeping acceptable quality.
+
+    -   Remember that images are fully uncompressed in memory during processing. A 5,000x5,000 image (~75 MB) or 10 000x10 000 image (~300 MB) can strain heap space, so avoid unnecessary ultra-high-resolution uploads.
+
+    -   [Enable the throttling mechanism](../../imaging/developers/configure/#_configure_imaging_throttling) to cap concurrent imaging requests and total memory allocation so the system stays responsive under heavy load.
+
+    -   Ensure the Cache module does not cache Imaging module outputs, preventing dynamic renders from filling cache storage.
+
+
+
+## [](#_subpages_in_this_section)Subpages in this section
+
+-   [Storing assets](Storing-assets/)
+
+-   [Internal vs. external Digital Asset Management (DAM)](Internal-vs-external-dam/)
+
+-   [DAM sizing](DAM-sizing/)

@@ -1,0 +1,95 @@
+---
+title: "Testing new plugins"
+url: https://docs.magnolia-cms.com/magnolia-cli/plugins/developing-plugins/testing-plugins/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Plugins > Testing new plugins
+---
+
+# Testing new plugins
+
+This page describes how you can test newly created Magnolia CLI plugins. After you’ve created a new CLI plugin, you can connect it with the CLI.
+
+## [](#_building_and_packing)Building and packing
+
+1.  Build the plugin. In the folder with your new plugin, run this npm command:
+
+    ```console
+    npm run build
+    ```
+
+2.  Pack the package.
+
+    ```console
+    npm pack
+    ```
+
+    You should see the following message:
+
+    ```console
+    ...
+    <plugin_name>-<plugin_version>.tgz
+    ```
+
+
+## [](#_add_it_to_a_project)Add it to a project
+
+### [](#_with_add_plugin)With add-plugin
+
+1.  To install the plugin, run the following command in the project folder.
+
+    ```console
+    npm run mgnl add-plugin /Path/to/<plugin_name>-<plugin_version>.tgz
+    ```
+
+    It will automatically install and register the plugin in `mgnl.config.js`.
+
+
+### [](#_manually)Manually
+
+1.  Install the plugin.
+
+    ```console
+    npm install /Path/to/<plugin_name>-<plugin_version>.tgz
+    ```
+
+2.  Add the new plugin to the `mgnl.config.js` file.
+
+    ```js
+    import <plugin_class_name> from "<plugin_name>";
+
+    export default {
+      plugins: [
+        new <plugin_class_name>()
+      ]
+    };
+    ```
+
+
+## [](#_using_the_plugin)Using the plugin
+
+1.  Check whether the plugin is loaded.
+
+    ```console
+    npm run mgnl -h
+    ```
+
+2.  Run the new plugin.
+
+    ```console
+    npm run mgnl <plugin_name> -- -plugin-option option-value (1)
+    ```
+
+    > **Caution:** Windows users using PowerShell must enclose the two consecutive hyphens (--) in quotes:npm run mgnl "--" ...
+
+    |     |     |
+    | --- | --- |
+    | **1** | For example, `npm run mgnl cli-foo-plugin -s -- -n "John"`. |
+
+    The following should be displayed:
+
+    ```console
+    Plugin started
+    options { name: 'John' }
+    Hello John
+    ```

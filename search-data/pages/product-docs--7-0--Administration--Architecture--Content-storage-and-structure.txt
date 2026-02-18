@@ -8,7 +8,7 @@ breadcrumb: DX Core > Administration > Architecture > Content storage and struct
 
 # Content storage and structure
 
-Magnolia stores all content (web pages, images, documents, configuration, data) in a content repository. The `magnolia` repository contains [workspaces](../Workspaces/) and further [custom workspaces](../Workspaces/#_adding_a_custom_workspace) can be added.
+Magnolia stores all content (web pages, images, documents, configuration, data) in a content repository. The `magnolia` repository contains [workspaces](../../../../RNs-6-4-3/Administration/Architecture/Workspaces/) and further [custom workspaces](../../../../RNs-6-4-3/Administration/Architecture/Workspaces/#_adding_a_custom_workspace) can be added.
 
 A [content repository](#_hierarchical_content_store) is a high-level information management system that’s a superset of traditional data repositories. It implements content services such as:
 
@@ -45,7 +45,7 @@ In the example below, A, B, C, and D are nodes. The boxes represent properties w
 
 Example node structure
 
-![Hierarchical content store](../../../_images/hierarchical-content-store.png)
+![Hierarchical content store](../../../../RNs-6-4-3/_images/hierarchical-content-store.png)
 
 ## [](#_jcr_standard_api_for_content_repositories)JCR standard API for content repositories
 
@@ -53,9 +53,9 @@ Java Content Repository (JCR) is a standard interface for accessing content repo
 
 Magnolia was the first open-source content management system built specifically to leverage JCR. The standard decouples the responsibilities of content storage from content management and provides a common API that enables standardized content reuse across the enterprise and between applications. Magnolia uses the open-source Jackrabbit reference implementation.
 
-![Content storage](../../../_images/Content-storage.png)
+![Content storage](../../../../RNs-6-4-3/_images/Content-storage.png)
 
-As depicted above, Magnolia typically has one repository, `Magnolia`. That, in turn, contains several [workspaces](../Workspaces/). One workspace stores website content, another stores user accounts, a third stores configuration, and so on. For more on creating custom workspaces and naming conventions, see [Workspaces](../Workspaces/).
+As depicted above, Magnolia typically has one repository, `Magnolia`. That, in turn, contains several [workspaces](../../../../RNs-6-4-3/Administration/Architecture/Workspaces/). One workspace stores website content, another stores user accounts, a third stores configuration, and so on. For more on creating custom workspaces and naming conventions, see [Workspaces](../../../../RNs-6-4-3/Administration/Architecture/Workspaces/).
 
 ## [](#_persistent_storage)Persistent storage
 
@@ -78,7 +78,7 @@ Magnolia DX Core allows you to switch between persistence managers. Each workspa
 
 > **Warning:** To avoid losing content, you must create a verifiable content migration before switching persistence managers. Content migration is a time-consuming process. You can use SQL dumps, but you need to review them carefully to ensure they have the proper configurations to import to the target data store.
 
-Changing the `PersistenceManager` entry in the XML allows you to switch [persistence managers](../Repositories/repository-configuration/#_persistence_manager) to use the class best suited for your use case. For more, see [classes](../Workspaces/workspace-configuration/#_persistence_manager), and check out the [Apache PersistenceManagerFAQ](https://jackrabbit.apache.org/archive/wiki/JCR/PersistenceManagerFAQ_115513487.html) if needed.
+Changing the `PersistenceManager` entry in the XML allows you to switch [persistence managers](../../../../RNs-6-4-3/Administration/Architecture/Repositories/repository-configuration/#_persistence_manager) to use the class best suited for your use case. For more, see [classes](../../../../RNs-6-4-3/Administration/Architecture/Workspaces/workspace-configuration/#_persistence_manager), and check out the [Apache PersistenceManagerFAQ](https://jackrabbit.apache.org/archive/wiki/JCR/PersistenceManagerFAQ_115513487.html) if needed.
 
 > **Tip:** Use native database tools to generate and restore backups using a verifiable content migration plan. Logical backups are a great option to copy the database to another environment. For more, see Backing up and restoring instances.The Nodes API allows you to use a REST service for CRUD operations against a running Magnolia instance. Alternatively, you can import content via bootstrapping. Whichever migration approach you choose, ensure the content migration process is verifiable and planned.
 
@@ -87,7 +87,7 @@ Changing the `PersistenceManager` entry in the XML allows you to switch [persist
 
 Related topics
 
--   [Data store deployment](../../Instances/Clustering/#data-deployment-models)
+-   [Data store deployment](../../../../RNs-6-4-3/Administration/Instances/Clustering/#data-deployment-models)
 
 -   [Blog: Trying out Docker, Magnolia and Postgres by Edwin Guilbert](http://www.edwinology.com/2020/05/trying-out-docker-magnolia-and-postgres.html)
 

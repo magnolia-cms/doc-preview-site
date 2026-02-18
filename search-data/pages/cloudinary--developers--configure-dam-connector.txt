@@ -1,0 +1,38 @@
+---
+title: "Configure the DAM connector"
+url: https://docs.magnolia-cms.com/cloudinary/developers/configure-dam-connector/
+category: Modules
+version: modules
+breadcrumb: Cloudinary External DAM module > Configure the DAM connector
+---
+
+# Configure the DAM connector
+
+This sections details how to use the module.
+
+## [](#_prerequisites)Prerequisites
+
+You must have a [Cloudinary account](https://cloudinary.com/).
+
+| Parameter | Description |
+| --- | --- |
+| `maxResults` | **optional** From version `1.1.4` : Defines the number of resources displayed per folder, default is `50` , max value is `500` . |
+| `apiKey` | **mandatory** Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app. |
+| `apiSecret` | **mandatory** Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app. |
+| `cloudName` | **mandatory** Credentials to connect to Cloudinary, they can be defined in the configuration or in the Passwords app. |
+| `isDynamic` | **optional** Boolean indicating if folder and asset renaming is [dynamic](../../authors/#_renaming_cloudinary_items) . • `true` = you can rename your folder or assets from within Magnolia. • `false` = you **cannot** rename your folder or assets from within Magnolia. Defaults to `false` . ** This is only available for Cloudinary accounts created on or after **June 4, 2024** . Those created prior to this date must contact [Cloudinary support](https://support.cloudinary.com/) . | ** | This is only available for Cloudinary accounts created on or after **June 4, 2024** . Those created prior to this date must contact [Cloudinary support](https://support.cloudinary.com/) . |
+| ** | This is only available for Cloudinary accounts created on or after **June 4, 2024** . Those created prior to this date must contact [Cloudinary support](https://support.cloudinary.com/) . |
+
+## [](#_cloudinary_app)Cloudinary app
+
+The Cloudinary app is now part of the default assets app.
+
+![cloudinary app](../_images/dam-connector/cloudinary-app.jpg)
+
+> **Warning:** We are using Asset name for creating cloudinary’s public id, so if you update the name of existing asset, it will create another asset.
+
+## [](#_theming)Theming
+
+This module comes with a component template.
+
+![cloudinary theming](../_images/dam-connector/cloudinary-theming.jpg)

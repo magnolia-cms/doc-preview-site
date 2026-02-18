@@ -8,23 +8,13 @@ breadcrumb: DX Core > Modules > Workflow module
 
 # Workflow module
 
-[Collaboration and workflow](../../../use-cases/collaboration-and-workflow/) Bundled: DX Core
-
 | Download | [Multiple submodules](#Installing with maven) |
 | --- | --- |
 | Edition | DX Core |
 | License | [MLA](https://www.magnolia-cms.com/mla.html) |
 | Issues | [MGNLWORKFLOW](https://magnolia-cms.atlassian.net/browse/MGNLWORKFLOW) |
-| Maven site | [Workflow](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fworkflow%2Fmagnolia-module-workflow%2F8.0.0) |
-| Latest | 8.0.0 |
-
-Magnolia comes with a four-eye content approval workflow. You can reconfigure the default workflow to include more approval steps, more participants and decision points. Workflow is configured in the Workflow and Workflow jBPM modules. The workflow engine is based on the [JBPM Business Process Management](http://www.jboss.org/jbpm/) (BPM) Suite.
-
-## [](#_modules)Modules
-
-Magnolia’s workflow implementation consists of four modules.
-
-![Four modules](../../../_images/workflow_modules.png)
+| Maven site | [Workflow](https://nexus.magnolia-cms.com/#browse/browse:enterprise:info%2Fmagnolia%2Fworkflow%2Fmagnolia-module-workflow%2F{magnolia-workflow-64}) |
+| Latest | {magnolia-workflow-64} |
 
 | Module | Description |
 | --- | --- |
@@ -33,17 +23,15 @@ Magnolia’s workflow implementation consists of four modules.
 | **Drools JCR persistence** | Used for persisting work items and sessions to JCR. |
 | **jBPM JCR persistence** | Used for persisting processes to JCR. |
 
-The Kie modules are heavily inspired by jBPMs own JPA implementation.
-
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.workflow</groupId>
   <artifactId>magnolia-module-workflow</artifactId>
-  <version>8.0.0</version> (1)
+  <version>{magnolia-workflow-64}</version> (1)
 </dependency>
 ```
 
@@ -55,7 +43,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.workflow</groupId>
   <artifactId>magnolia-module-workflow-jbpm</artifactId>
-  <version>8.0.0</version> (1)
+  <version>{magnolia-workflow-64}</version> (1)
 </dependency>
 ```
 
@@ -67,7 +55,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.workflow</groupId>
   <artifactId>drools-jcr-persistence</artifactId>
-  <version>8.0.0</version> (1)
+  <version>{magnolia-workflow-64}</version> (1)
 </dependency>
 ```
 
@@ -79,7 +67,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.workflow</groupId>
   <artifactId>jbpm-jcr-persistence</artifactId>
-  <version>8.0.0</version> (1)
+  <version>{magnolia-workflow-64}</version> (1)
 </dependency>
 ```
 

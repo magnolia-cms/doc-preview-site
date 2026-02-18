@@ -1,0 +1,169 @@
+---
+title: "Clean up scripts using Groovy"
+url: https://docs.magnolia-cms.com/performance-tuning/Maintenance/groovy-scripts/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > Maintenance > Clean up scripts using Groovy
+---
+
+# Clean up scripts using Groovy
+
+Magnolia Groovy module adds Groovy capabilities to Magnolia. Groovy is a popular dynamic language for the JVM. To know more about it, visit the [Groovy official website](http://www.groovy-lang.org/) which has many tutorials and documentation both for beginners and advanced users of the language.
+
+The module provides:
+
+-   A web based Unix-like console where you can access contents in Magnolia repositories in a `groovyish` way
+
+-   A `scripts` repository where you can store your scripts
+
+-   The ability to plug in Groovy classes into Magnolia at runtime, without the need for deploying them and restarting the servlet container.
+
+
+All these tools make for a more agile approach to coding and maintaining Magnolia-based websites.
+
+For more information, see [Groovy module](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Groovy-module/).
+
+## [](#_archive_resolved_tasks)Archive resolved tasks
+
+Resolving tasks is important because removing or archiving tasks that aren’t resolved can result in orphaned workflows. The script below doesn’t cause orphaned workflows because it operates on resolved tasks only.
+
+-   Sample script
+
+-   Console output
+
+
+[archive-resolved-tasks.groovy](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/examples/archive-resolved-tasks.groovy)
+
+```none
+archived 10 tasks
+```
+
+> **Tip:** Alternatively, use the Tasks Cleaner module instead of the Groovy script above.
+
+## [](#_clear_notifications)Clear notifications
+
+Clear all the notifications for a given user.
+
+-   Sample script
+
+-   Console output
+
+
+[clear-notifications-for-user.groovy](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/examples/clear-notifications-for-user.groovy)
+
+Example of usage
+
+```bash
+clearNotificationsForUser('superuser'); (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Notifications removed for `superuser`. |
+
+```none
+archived 7 notifications
+```
+
+## [](#_remove_messages)Remove messages
+
+Removes all messages from the specified user.
+
+-   Sample script
+
+-   Console output
+
+
+[remove-messages-from-user.groovy](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/examples/remove-messages-from-user.groovy)
+
+Example of usage
+
+```bash
+removeMessages("superuser"); (1)
+```
+
+|     |     |
+| --- | --- |
+| **1** | Messages removed for `superuser`. |
+
+```none
+messages of superuser removed
+[/superuser/0]
+```
+
+## [](#_unused_assets)Unused assets
+
+This script shows a list of assets that aren’t referenced from any page.
+
+-   Sample script
+
+-   Console output
+
+
+[list-unused-assets.groovy](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/examples/list-unused-assets.groovy)
+
+```none
+found 90 unused assets
+shark_brian_warrick_0824.JPG
+ash-edmonds-441220-unsplash
+ruben-mishchuk-571314-unsplash
+vietnam_jan_16323513143_82062f3a9a_k.jpg
+...
+```
+
+## [](#_list_all_assets_and_their_sizes)List all assets and their sizes
+
+This script lists all assets printing the node and the size in MB.
+
+-   Sample script
+
+-   Console output
+
+
+[list-all-assets-and-their-sizes.groovy](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/examples/list-all-assets-and-their-sizes.groovy)
+
+```none
+Asset: /travel-demo/social-icons/google-plus.png
+Size(Mb) : 0.010852813720703125
+Asset: /travel-demo/social-icons/fb.png
+Size(Mb) : 0.00937175750732421875
+Asset: /travel-demo/social-icons/linkedin.png
+Size(Mb) : 0.0100536346435546875
+...
+```
+
+## [](#_number_of_active_sessions)Number of active sessions
+
+Get the number of active sessions in Magnolia in Tomcat (you can’t find the number of concurrent users, but this might help estimate it).
+
+-   Sample script
+
+-   Console output
+
+
+[number-of-active-sessions.groovy](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/examples/number-of-active-sessions.groovy)
+
+```none
+40
+```
+
+## [](#_current_jobs_in_execution)Current jobs in execution
+
+This script shows how many jobs are running when it is executed.
+
+-   Sample script
+
+-   Console output
+
+
+[number-of-jobs-in-execution.groovy](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/examples/number-of-jobs-in-execution.groovy)
+
+```none
+0 jobs in execution
+```
+
+Related topics
+
+-   [Groovy module](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Groovy-module/)
+
+-   [Groovy Shell Scripts](https://bitbucket.org/magnolia-cms/groovy-shell-scripts/src/master/)

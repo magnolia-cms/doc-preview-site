@@ -1,0 +1,69 @@
+---
+title: "Memory and CPU allocation"
+url: https://docs.magnolia-cms.com/performance-tuning/System-requirements/RAM/
+category: Modules
+version: modules
+breadcrumb: Performance tuning guide > System requirements > Memory and CPU allocation
+---
+
+# Memory and CPU allocation
+
+## [](#_ram_and_jvm_memory)RAM and JVM memory
+
+Magnolia is a Java application running in a JVM that consumes memory. You should configure and control the memory used by the JVM. This section describes configuring both RAM (Random Access Memory) and JVM (Java Virtual Machine) heap settings to increase performance in your Magnolia instances.
+
+RAM and heap memory are related but distinct concepts in computer systems. RAM is a computer’s overall physical memory, while heap memory is a specific portion of RAM used by Java programs for dynamic memory allocation.
+
+### [](#_minimum_ram_requirements)Minimum RAM requirements
+
+The RAM (Random Access Memory) required for Magnolia depends on many different factors such as the size of your uploads and the images you manipulate, the number of editors, the number of concurrent users on your public instance, if they use sessions or not, and so on.
+
+However, Magnolia suggests you consider the following *minimum* guidelines:
+
+-   Local development: `3 GB`
+
+-   Production environment
+
+    -   Author: `4 - 12 GB`
+
+    -   Public: `4 - 10 GB`
+
+
+
+### [](#_optimizing_heap_size)Optimizing heap size
+
+A JVM running Magnolia may run other applications simultaneously. All JVM applications use heap memory. You can adjust the heap memory settings based on the RAM available to optimize the performance of your instances.
+
+-   The (on) heap memory is the place in memory for the dynamically allocated objects of your running project.
+
+-   The off-heap memory is where the JVM is used for the garbage collection claim, among other tasks, including all the serialized objects.
+
+    > **Note:** Magnolia can use off-heap memory for:Imaging operations (resizing, cropping, other image manipulation)Compressing or decompressing filesPublishing, especially when publishing large digital assets or doing recursive publications
+
+-   When the stack memory reaches capacity, the Java runtime triggers a `java.lang.StackOverflowError`, while a `java.lang.OutOfMemoryError: Java Heap Space` error occurs when the heap memory is exhausted.
+
+    > **Tip:** To resolve the OutOfMemoryError, you can include the JVM parameter XX:MaxRAMPercentage=60 to set the maximum heap as a percentage of total RAM.For more, see The best HotSpot JVM options and switches for Java 11 through Java 17
+
+
+Setting the initial and maximum heap size
+
+-   To specify both the initial and maximum size of heap memory, we can utilize the `-Xms` and `-Xmx` JVM options.
+
+-   The `-Xms` option sets the heap memory’s initial size, while `-Xmx` sets its maximum size.
+
+-   You can adjust these values according to the Java application’s requirements. For example, `-Xms512m -Xmx1024m` sets the initial heap size to 512 megabytes and the maximum heap size to 1024 megabytes.
+
+
+> **Note:** For local development, you can use -Xms and -Xmx values to configure your development server to your needs.Example-Xms1024m
+> -Xmx4096MBased on the minimum RAM requirements, the Magnolia instances for your production environment should have heap sizes in the following ranges.Remember that allocating more heap memory than the total available memory on the running machine (RAM) is not good practice. Doing so forces your environment to increase I/O operations exponentially to serialize the memory onto disk.Heap setting for author instances: 6 - 8 GBHeap setting for public instances: 5 - 6 GB
+
+## [](#_optimizing_cpu_requests_and_limits)Optimizing CPU requests and limits
+
+Setting CPU requests and limits can affect the stability of your Magnolia instances, causing:
+
+-   overcommitment of CPU resources
+
+-   slow responses from Magnolia
+
+
+> **Tip:** If you want to avoid handling things like CPU request and limits, and so forth, consider DX Cloud, a digital Platform as a Service (PaaS) offering.

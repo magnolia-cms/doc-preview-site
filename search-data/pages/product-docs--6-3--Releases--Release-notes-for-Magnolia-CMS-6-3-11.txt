@@ -8,7 +8,7 @@ breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.11
 
 # Release notes for Magnolia CMS 6.3.11
 
-[LTS release](../../../../support/) • Delivered on July 18, 2025 • Page updated on July 24, 2025 • Changelog: [18427](https://magnolia-cms.atlassian.net/issues/?filter=18427)
+[LTS release](#support:ROOT:index.adoc) • Delivered on July 18, 2025 • Page updated on July 24, 2025 • Changelog: [18427](https://magnolia-cms.atlassian.net/issues/?filter=18427)
 
 > **Warning:** Do not upgrade to Magnolia 6.3.11.This version contains two issues that can impact the stability and functionality of your Magnolia instances:Upgrading to Magnolia 6.3.9, 6.3.10, 6.3.11, or 6.3.12 initiates a Marketing Tags version handler task that may cause instances to become unresponsive if the repository contains a large number of versions. See the Known issues page for more information.The issue has been resolved in the Magnolia 6.3.13 release.An unexpected change introduced by ticket MGNLREST-877 breaks the Nodes API functionality. This issue also affects Put/Post operations, resulting in errors such as:Unrecognized field 'properties' (class info.magnolia.rest.service.node.v1.RepositoryNode), not marked as ignorableWorkaround: No workaround is currently available.The issue is resolved in Magnolia 6.3.12, where MGNLREST-877 is reverted.
 
@@ -16,13 +16,13 @@ breadcrumb: DX Core > Releases > Release notes for Magnolia CMS 6.3.11
 
 Bug fixes address issues such as Vaadin Atmosphere log handling, redirect template functionality with special characters, and unintended page deletion during component removal.
 
--   ![Download icon](../../_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.11/magnolia-dx-core-webapp-6.3.11.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [magnolia-dx-core-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/dx/magnolia-dx-core-webapp/6.3.11/magnolia-dx-core-webapp-6.3.11.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.11/travel-demo-webapp-6.3.11.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.enterprise.releases/info/magnolia/demo/travel-demo-webapp/6.3.11/travel-demo-webapp-6.3.11.war)
 
--   ![Download icon](../../_images/icons/download.svg) [travel-demo-community-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.11/travel-demo-community-webapp-6.3.11.war)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [travel-demo-community-webapp-6.3.11.war](https://nexus.magnolia-cms.com/repository/magnolia.public.releases/info/magnolia/demo/travel-demo-community-webapp/6.3.11/travel-demo-community-webapp-6.3.11.war)
 
--   ![Download icon](../../_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
+-   ![Download icon](../../../RNs-6-4-3/_images/icons/download.svg) [mtk2\_3.0.2.zip](../../_attachments/mtk2_3.0.2.zip) (*as a light module*)
 
 
 ## [](#_improvements)Improvements
@@ -36,7 +36,7 @@ Bug fixes address issues such as Vaadin Atmosphere log handling, redirect templa
 
 [ADMINCTR-589](https://magnolia-cms.atlassian.net/browse/ADMINCTR-589), [BUILD-1419](https://magnolia-cms.atlassian.net/browse/BUILD-1419), [BUILD-1431](https://magnolia-cms.atlassian.net/browse/BUILD-1431), [BUILD-1432](https://magnolia-cms.atlassian.net/browse/BUILD-1432), [MGNLTOMCAT-57](https://magnolia-cms.atlassian.net/browse/MGNLTOMCAT-57), [MGNLUI-9214](https://magnolia-cms.atlassian.net/browse/MGNLUI-9214), [MGNLUI-9223](https://magnolia-cms.atlassian.net/browse/MGNLUI-9223)
 
-We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](../../../../support/) if you need more information.
+We keep the details of security fixes private in line with our [security policy](../../Administration/Security/Security-policy/). Stay informed on the latest security updates by subscribing to our Security Announcements list. Contact our [Support team](#support:ROOT:index.adoc) if you need more information.
 
 ## [](#_bug_fixes)Bug fixes
 
@@ -95,25 +95,25 @@ Bundled modules included with this release.
 
 Unbundled modules released since Magnolia 6.3.10.
 
--   [AI Accelerator](#ai-accelerator:ROOT:changelog.adoc) `2.2.5`
+-   [AI Accelerator](../../../../ai-accelerator/4.0-alpha/changelog/) `2.2.5`
 
--   [Campaign Manager](#campaign-manager:ROOT:changelog.adoc) `4.0.1`
+-   [Campaign Manager](../../../../campaign-manager/changelog/) `4.0.1`
 
--   [CDP integration framework](#cdp-integration-framework:ROOT:index.adoc#_changelog) `1.1.2`
+-   [CDP integration framework](../../../../cdp-integration-framework/#_changelog) `1.1.2`
 
--   [Celum DAM Connector](#celum-dam-connector:ROOT:index.adoc#_changelog) `3.0.2`
+-   [Celum DAM Connector](../../../../celum-dam-connector/#_changelog) `3.0.2`
 
--   [Cloudinary External DAM](../../../../cloudinary/1.3/changelog/) `2.1.2`
+-   [Cloudinary External DAM](../../../../cloudinary/changelog/) `2.1.2`
 
 -   [Content Translation Extended](../../../../content-translation-support-ext/#_changelog) `4.2.0`
 
 -   [External DAM](../../Modules/extensions-and-frameworks/external-dam-integration-framework/External-DAM-module/#_external_dam_module_changelog) `2.0.5`
 
--   [JavaScript UI](#ui-framework-javascript:ROOT:index.adoc#_changelog) `3.1.0`
+-   [JavaScript UI](../../../../ui-framework-javascript/#_changelog) `3.1.0`
 
--   [Live Copy](#live-copy:ROOT:changelog.adoc) `4.1.1`
+-   [Live Copy](../../../../live-copy/4.x/changelog/) `4.1.1`
 
--   [WeChat Login](#wechat-connector:ROOT:index.adoc#_changelog) `1.0.0`
+-   [WeChat Login](../../../../wechat-connector/#_changelog) `1.0.0`
 
 
 ## [](#_acknowledgements)Acknowledgements

@@ -35,12 +35,10 @@ datasource:
     enabled: false
 ```
 
-## [](#_list_of_properties)List of properties
-
 | Property | Description |
 | --- | --- |
-| `enabled` | **optional**, *default is `true`*<br><br>The automatic observation could be disabled by setting this property to `false`. Note that browser subapp won’t be refreshed automatically for changes made by other users. |
-| `delay` | **optional**, *default is `500`*<br><br>Minimum delay in milliseconds after which a browser subapp is refreshed when an event occurs.<br><br>  <br><br>***Example***<br><br>Suppose there are 3 JCR events every second, and the delay is set to 5 seconds. This means that every 5 seconds, the UI receives one event that contains data from the 15 previously accumulated JCR events. |
+| `enabled` | **optional** , *default is true* The automatic observation could be disabled by setting this property to `false` . Note that browser subapp won’t be refreshed automatically for changes made by other users. |
+| `delay` | **optional** , *default is 500* Minimum delay in milliseconds after which a browser subapp is refreshed when an event occurs. **Example** Suppose there are 3 JCR events every second, and the delay is set to 5 seconds. This means that every 5 seconds, the UI receives one event that contains data from the 15 previously accumulated JCR events. |
 
 ## [](#_disabling_jcr_observation)Disabling JCR observation
 

@@ -1,0 +1,191 @@
+---
+title: "Magnolia Cloud updates 2019"
+url: https://docs.magnolia-cms.com/cloud/Cloud-changelog/Magnolia-Cloud-updates-2019/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Changelog > Magnolia Cloud updates 2019
+---
+
+# Magnolia Cloud updates 2019
+
+This page lists the updates for Magnolia Cloud in 2019.
+
+## [](#_december)December
+
+### [](#_cockpit_notifications)Cockpit notifications
+
+The Magnolia Cloud Helpdesk regularly needs to inform you of events affecting your subscription package such as planned maintenance requiring a restart or upgrade operations.
+
+Notifications appear in the cockpit banner **Notifications** box and as pop-ups when they are first delivered.
+
+![image](../../_images/cloud-cockpit-banner.png)
+
+A dedicated Notifications page lists all the notifications received for your subscription package, or packages, and provides a clear visual indication of the importance of each message:
+
+![image](../../_images/cloud-cockpit-notifications.png)
+
+-   Red – Critical notifications
+
+-   Yellow – Warning notifications
+
+-   Blue – Information notifications
+
+
+For more information, see [Understanding cockpit notifications](../../Cockpit/Understanding-cockpit-notifications/).
+
+## [](#_october)October
+
+### [](#_cockpit_user_interface_overhaul)Cockpit user interface overhaul
+
+Following on from the redesign of Magnolia 6 user interface, the cockpit has been overhauled to provide a light, modern and relaxing look and feel.
+
+![image](../../_images/cloud-cockpit-new-ui.png)
+
+There is no change in the underlying functionality or user flows.
+
+### [](#_integration_with_datadog_for_monitoring_and_logging)Integration with Datadog for monitoring and logging
+
+A URL link to the [Datadog Application Performance Monitoring (APM)](https://www.datadoghq.com/log-management/) service for your subscription package is provided in the Additional information section. Magnolia will provide you with account details to access your logs there.
+
+![image](../../_images/cloud-datadog-example.png)
+
+As a consequence, the **View logs** action has been removed from the cockpit.
+
+## [](#_september)September
+
+### [](#_cloud_bundle_variants)Cloud bundle variants
+
+Magnolia has adjusted its cloud offer to better suit the needs of our customers and partners.
+
+#### [](#_standard_bundle_light_development)Standard bundle – Light Development
+
+This cloud variant focuses on speed and agility for your projects. Your site is hosted in Magnolia Cloud; Magnolia manages the environment as a service.
+
+The fully managed environment provides the infrastructure for Light Development as well as the Cockpit, which you use for:
+
+-   Configuration
+
+-   Deployment workflow
+
+-   Backup and restore
+
+-   Logs and Monitoring
+
+-   Additional services
+
+
+With this cloud variant you can customize Magnolia using [light development](../../../product-docs/RNs-6-4-3/Developing/Light-development-in-Magnolia/) and manage the deployment environment via the Cockpit. This variant includes the standard DX Core bundle and additionally offers Magnolia Connector Packs and selected Special Features (see [supported modules](../../Supported-modules-in-the-cloud/)).
+
+#### [](#_custom_bundle_light_development_and_java_development)Custom bundle – Light Development and Java Development
+
+This cloud variant is geared towards complex projects that need a high level of customization. With this cloud variant you can customize Magnolia using both Light Development and Java custom modules.
+
+Your site is hosted in Magnolia Cloud and you or your chosen Partner manages the creation of custom Java modules and the deployment of the bundle. This variant provides the highest level of flexibility allowing for a custom CMS that fits your unique needs. It also includes all the functionality of the standard DX Core bundle and additionally offers Magnolia Connector Packs and selected Special Features (see [supported modules](../../Supported-modules-in-the-cloud/)).
+
+Our experienced Services team is available to provide best practices and help you on board to our cloud.
+
+> **Note:** NoteWith custom bundles, our customers and partners may not deploy configuration that results in creating a secondary repository.Should this happen, workspaces and content stored in anything other than a Magnolia-provided repository is not included in:Backup operations.Content cloning operations.SLA obligations.
+
+You can see the bundle types that can be used in your subscription package in the [Additional Information](../../Cockpit/) section.
+
+### [](#_more_information_displayed_for_environments_and_bundles)More information displayed for environments and bundles
+
+When you hover over the environment branch or tag icon in the Environments section in the cockpit, you now see a creation timestamp for the snapshot or release installed in addition to the existing information.
+
+![image](../../_images/envs-installed-site-release-info.png)
+
+When setting up or upgrading an environment, instead of just the bundle version, you also have the full bundle name displayed.
+
+## [](#_july)July
+
+### [](#_deploying_a_snapshot)Deploying a snapshot
+
+Depending on your project requirements, your subscription package environments may vary and affect the [standard development cycle](../../Developing-for-Magnolia-in-the-cloud/).
+
+![image](../../_images/mnow-local-dev-overview.png)
+
+If your subscription package does not include an integration environment, you can deploy a development snapshot directly in the UAT environment.
+
+If your package only consists of a Live environment (no integration or UAT), you can also deploy a development snapshot in the Live environment.
+
+> **Tip:** For more information, see Deploying a snapshot.
+
+## [](#_june)June
+
+### [](#_magnolia_cms_6_1)Magnolia CMS 6.1
+
+With this update, you can use Magnolia CMS 6.1 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud. Note that 6.1 is a [Feature release](#support:ROOT:eol.adoc).
+
+Note that the Contacts, Synchronization, Link Mapper and jsonfn modules are no longer included in the cloud bundle as they are not part of DX Core.
+
+### [](#_environment_protection)Environment protection
+
+You can now protect your environments using a wizard in the cloud cockpit to prevent them from being [torn down](../../Managing-environments-using-the-Magnolia-cockpit/Tearing-down-an-environment/) accidentally or [upgraded](../../managing-updates-using-the-Magnolia-cockpit/Upgrading-Magnolia-in-the-cloud/).
+
+When an environment is protected, a green shield icon is displayed next to it in the Package overview. You must disable protection (using the same cockpit wizard) to be able to tear down the environment again.
+
+For more information, see [Protecting environments](../../Managing-environments-using-the-Magnolia-cockpit/Protecting-environments/).
+
+## [](#_may)May
+
+### [](#_magnolia_5_7_3)Magnolia 5.7.3
+
+With this update, you can use Magnolia CORE 5.7.3 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud. Note that 5.7.3 is a bug-fixing and security release.
+
+We recommend that Magnolia CORE 5.7.3 be used for your production environments until the release of Magnolia CMS 6.1
+
+### [](#_restart_your_instances_in_the_cloud)Restart your instances in the cloud
+
+You can restart instances one by one using a wizard in the cloud cockpit.
+
+![image](../../_images/cloud-restart-instance-wiz2.png)
+
+For more information, see [Restarting instances](../../Managing-environments-using-the-Magnolia-cockpit/Restarting-instances/).
+
+### [](#_view_information_about_your_database)View information about your database
+
+You can view the **Allocated storage space** and **Free storage space** for the database linked to your cloud-based Magnolia package in the cockpit.
+
+For more information, see [Viewing cloud database information](../../Managing-environments-using-the-Magnolia-cockpit/Viewing-cloud-database-information/).
+
+### [](#_domain_name_changes)Domain name changes
+
+Previously, Magnolia required definitive domain names to be provided during the [onboarding](../../Onboarding-to-Magnolia-Cloud/) process. Now you can add and remove domain names and manage certificates at any time by contacting the [Magnolia Cloud Helpdesk](https://magnolia-cms.atlassian.net/servicedesk/customer/portal/6).
+
+## [](#_april)April
+
+### [](#_upgrade_backups_are_automatically_removed)Upgrade backups are automatically removed
+
+When you upgrade your Live environment from one version of Magnolia to another, an automatic upgrade backup is created for [rollback purposes](../../managing-updates-using-the-Magnolia-cockpit/Upgrading-Magnolia-in-the-cloud/#_restore_backup). This backup is now automatically removed after 48h. If you require the backup to be kept for a longer period of time if, for example, you have encountered issues or need additional time to validate the upgrade, you can [extend the time period from 48 hours to 5 days](../../managing-updates-using-the-Magnolia-cockpit/Upgrading-Magnolia-in-the-cloud/#_extend_storage).
+
+Until the automatic backup is removed, you cannot tear down your upgraded environment. If you need to tear down the environment, you can [delete the upgrade backup manually](../../managing-updates-using-the-Magnolia-cockpit/Upgrading-Magnolia-in-the-cloud/#_remove_backup).
+
+### [](#_environment_setup_wizard_supports_multiple_runtimes_of_bundles)Environment setup wizard supports multiple runtimes of bundles
+
+When you set up an environment, you now see runtime information (the OS, JDK and Tomcat versions) when selecting a bundle.
+
+![image](../../_images/cloud-changelog-runtimes.png)
+
+Previously only the bundle type and version were displayed.
+
+## [](#_march)March
+
+### [](#_6_0_1_cloud_pack_bundle_released_to_fix_multisite_licensing_issue)6.0.1 cloud pack bundle released to fix multisite licensing issue
+
+Due to a licensing issue in Magnolia 6.0, cloud customers were unable to use the [Multisite module](../../../product-docs/RNs-6-4-3/Modules/List-of-modules/Multisite-module/) functionality. We have released a 6.0.1 cloud pack bundle to resolve this issue. Please [upgrade your cloud pack bundle version of Magnolia](../../managing-updates-using-the-Magnolia-cockpit/Upgrading-Magnolia-in-the-cloud/) if you require multisite.
+
+## [](#_february)February
+
+### [](#_support_for_git_branches_when_deploying_a_snapshot)Support for Git branches when deploying a snapshot
+
+When moving your development work from Git to your Cloud subscription package, you can now select which Git *branch* you want to retrieve content from. Previously only the latest commit or a tagged version was available from the Master branch, obliging you to squash and rebase your work before [moving it to Magnolia Cloud](../../managing-updates-using-the-Magnolia-cockpit/deploying-snapshot/).
+
+Being able to select a Git branch means you can apply a simple code change to a specific environment without deploying any other (possibly half-finished) code that might already be in your repository. For example, you can hot fix your live environment without affecting ongoing testing on the UAT environment.
+
+![image](../../_images/cloud-install-release-step1.png)
+
+## [](#_january)January
+
+### [](#_magnolia_5_7_2_and_6_0)Magnolia 5.7.2 and 6.0
+
+With this update, you can use Magnolia CORE 5.7.2 and Magnolia CMS 6.0 when [setting up your environments](../../Managing-environments-using-the-Magnolia-cockpit/Setting-up-a-new-environment/) in the cloud.

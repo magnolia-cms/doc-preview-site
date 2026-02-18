@@ -1,0 +1,31 @@
+---
+title: "Custom CSS module"
+url: https://docs.magnolia-cms.com/custom-css/
+category: Modules
+version: modules
+breadcrumb: Custom CSS module
+---
+
+# Custom CSS module
+
+| Edition | Incubator ( *services* ) |
+| --- | --- |
+| Git | [Git](https://gitlab.magnolia-platform.com/ps/incubator/ui-css-custom) |
+| Latest | 1.0 ** Compatible with Magnolia 6.2. | ** | Compatible with Magnolia 6.2. |
+| ** | Compatible with Magnolia 6.2. |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia</groupId>
+  <artifactId>magnolia-ui-css-custom</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
+## [](#_usage)Usage
+
+Click on the app named **Custom CSS** and start extending the Magnolia CSS classes.

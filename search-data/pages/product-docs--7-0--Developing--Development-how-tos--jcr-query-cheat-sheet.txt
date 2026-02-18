@@ -19,32 +19,28 @@ This is a collection of JCR (Java Content Repository) query examples for Magnoli
 -   **XPath** - Alternative query format, deprecated in JCR 2.0
 
 
-## [](#_jcr_query_examples)JCR query examples
-
 | Use Case | SQL-2 | SQL | XPath |
 | --- | --- | --- | --- |
-| **All Pages** | select \* from \[mgnl:page\] | select \* from mgnl:content | //element(\*, mgnl:content) |
-| **Pages with "News" in the Title** | select \* from \[mgnl:page\] where title like '%News%' | select \* from mgnl:content where title like '%News%' | //element(\*, mgnl:content)\[jcr:like(@title, '%News%')\] |
-| **Pages where the Title Exactly Matches "News" (Case Sensitive)** | select \* from \[mgnl:page\] where title like 'News' | select \* from mgnl:content where title like 'News' | //element(\*, mgnl:content)\[@title = 'News'\] |
-| **STK Pages that Have a Header Image** | select \* from \[mgnl:page\] where image is not null | select \* from mgnl:content where image is not null | //element(\*, mgnl:content)\[@image\] |
-| **Instances of a "Teaser" Paragraph** | select \* from \[nt:base\] where \[mgnl:template\] = 'standard-templating-kit:components/teasers/stkTeaser' | select \* from nt:base where mgnl:template = 'stkTeaser' | //\*\[@mgnl:template = 'stkTeaser'\] |
-| **Available Paragraph Types** |     | select \* from nt:base where jcr:path like '/modules/%/paragraphs/%' and type is not null | /jcr:root/modules\[1\]///paragraphs\[1\]//\[@type\] |
-| **Component with Template ID** | select \* from \[mgnl:component\] where \[mgnl:template\] = 'project-site-name:components/landing/callout' |     |     |
-| **Pages that Have the Word "component"** | SELECT \* from \[nt:base\] AS t WHERE ISDESCENDANTNODE('/ftl-sample-site') AND contains(t.\*, 'component') | SELECT \* from nt:base WHERE jcr:path like '/ftl-sample-site%' AND contains(\*, 'component') AND (jcr:primaryType = 'mgnl:page' OR jcr:primaryType = 'mgnl:area' OR jcr:primaryType = 'mgnl:component') order by jcr:path |     |
-| **User with Email** | select \* from \[mgnl:user\] where email = '[eric@example.com](mailto:eric@example.com)' | select \* from mgnl:user where email = '[eric@example.com](mailto:eric@example.com)' | //element(\*, mgnl:user)\[@email = '[eric@example.com](mailto:eric@example.com)'\] |
-| **Template Folders in Module Configuration** | select \* from \[mgnl:content\] as t where ISDESCENDANTNODE('/modules') and name(t) = 'templates' | select \* from mgnl:content where jcr:path like '/modules/%/templates' |     |
-| **Modules that Provide Commands** | select \* from \[mgnl:content\] as t where ISDESCENDANTNODE('/modules') and name(t) = 'commands' | select \* from nt:base where jcr:path like '/modules/%/commands' |     |
-| **All Pages with a Specific Template Ordered by Title** | SELECT p.\* FROM \[nt:base\] AS p WHERE \[mgnl:template\] = 'xxx:pages/jobs' order by p.\[title\] asc |     |     |
-| **Pages under Given Path with Given Template (JOIN)** | SELECT parent.\* FROM \[mgnl:page\] AS parent INNER JOIN \[mgnl:metaData\] AS child ON ISCHILDNODE(child,parent) WHERE ISDESCENDANTNODE(parent, '/demo-project') AND child.\[mgnl:template\] = 'standard-templating-kit:stkNews' | select \* from nt:base where jcr:path like '/demo-project/%' AND mgnl:template = 'standard-templating-kit:stkNews' |     |
-| **Pages under Given Path with Given Template and Category Ordered by Date** |     |     | /jcr:root/demo-project//element(\*, mgnl:metaData)\[@mgnl:template = 'standard-templating-kit:pages/stkArticle'\]/..\[@categories = 'ab9437db-ab2c-4df5-bb41-87e55409e8e1'\] order by @date |
-| **Search a Node with a Certain UUID** | SELECT \* FROM \[nt:base\] WHERE \[jcr:uuid\] = '7fd401be-cada-4634-93fa-88069f46297b' | select \* from nt:base where jcr:uuid = '7fd401be-cada-4634-93fa-88069f46297b' |     |
-| **Search Case Insensitive** | select \* from \[nt:base\] where lower(name) like 'name\_in\_lowercase' | select \* from nt:base where lower(name) like 'name\_in\_lowercase' |     |
-| **Search Pages Created in Given Time Frame** | select \* from \[mgnl:page\] where ISDESCENDANTNODE('/demo-project/') and \[jcr:created\] > cast('2010-01-01T00:00:00.000+02:00' as date) and \[jcr:created\] < cast('2014-09-30T23:59:59.000+02:00' as date) |     |     |
-| **Pages Using a Specific Template Modified by a Specific User** |     |     | /jcr:root/demo-project/**\[mgnl:template='standard-templating-kit:pages/stkSection'\]/**/content\[mgnl:lastModifiedBy='eric'\]/../.. |
-| **Get All Nodes with a Date Property After Midnight** | SELECT p.\* FROM \[nt:base\] AS p WHERE ISDESCENDANTNODE('/') AND (p.\[date\] <> '' AND p.\[date\] > CAST('2015-11-30T00:00:01.000Z' AS DATE)) order by p.\[date\] asc |     |     |
-| **Get All Nodes with Any Property Matching a Given Value** | SELECT \* FROM \[nt:base\] WHERE contains(\[nt:base\].\*, '4055e292-7b01-4075-b4c8-47d73e2e7d47') |     |     |
-
-> **Note:** When using queries with JOINs, you need to get results via getRows() instead of getNodes() since queries with joins can eventually return multiple different node types.
+| **All Pages** | select * from [mgnl:page] | select * from mgnl:content | //element(*, mgnl:content) |
+| **Pages with "News" in the Title** | select * from [mgnl:page] where title like '%News%' | select * from mgnl:content where title like '%News%' | //element(*, mgnl:content)[jcr:like(@title, '%News%')] |
+| **Pages where the Title Exactly Matches "News" (Case Sensitive)** | select * from [mgnl:page] where title like 'News' | select * from mgnl:content where title like 'News' | //element(*, mgnl:content)[@title = 'News'] |
+| **STK Pages that Have a Header Image** | select * from [mgnl:page] where image is not null | select * from mgnl:content where image is not null | //element(*, mgnl:content)[@image] |
+| **Instances of a "Teaser" Paragraph** | select * from [nt:base] where [mgnl:template] = 'standard-templating-kit:components/teasers/stkTeaser' | select * from nt:base where mgnl:template = 'stkTeaser' | //*[@mgnl:template = 'stkTeaser'] |
+| **Available Paragraph Types** |  | select * from nt:base where jcr:path like '/modules/%/paragraphs/%' and type is not null | /jcr:root/modules[1]///paragraphs[1]//[@type] |
+| **Component with Template ID** | select * from [mgnl:component] where [mgnl:template] = 'project-site-name:components/landing/callout' |  |  |
+| **Pages that Have the Word "component"** | SELECT * from [nt:base] AS t WHERE ISDESCENDANTNODE('/ftl-sample-site') AND contains(t.*, 'component') | SELECT * from nt:base WHERE jcr:path like '/ftl-sample-site%' AND contains(*, 'component') AND (jcr:primaryType = 'mgnl:page' OR jcr:primaryType = 'mgnl:area' OR jcr:primaryType = 'mgnl:component') order by jcr:path |  |
+| **User with Email** | select * from [mgnl:user] where email = ' [eric@example.com](mailto:eric@example.com) ' | select * from mgnl:user where email = ' [eric@example.com](mailto:eric@example.com) ' | //element(*, mgnl:user)[@email = ' [eric@example.com](mailto:eric@example.com) '] |
+| **Template Folders in Module Configuration** | select * from [mgnl:content] as t where ISDESCENDANTNODE('/modules') and name(t) = 'templates' | select * from mgnl:content where jcr:path like '/modules/%/templates' |  |
+| **Modules that Provide Commands** | select * from [mgnl:content] as t where ISDESCENDANTNODE('/modules') and name(t) = 'commands' | select * from nt:base where jcr:path like '/modules/%/commands' |  |
+| **All Pages with a Specific Template Ordered by Title** | SELECT p.* FROM [nt:base] AS p WHERE [mgnl:template] = 'xxx:pages/jobs' order by p.[title] asc |  |  |
+| **Pages under Given Path with Given Template (JOIN)** | SELECT parent.* FROM [mgnl:page] AS parent INNER JOIN [mgnl:metaData] AS child ON ISCHILDNODE(child,parent) WHERE ISDESCENDANTNODE(parent, '/demo-project') AND child.[mgnl:template] = 'standard-templating-kit:stkNews' | select * from nt:base where jcr:path like '/demo-project/%' AND mgnl:template = 'standard-templating-kit:stkNews' |  |
+| **Pages under Given Path with Given Template and Category Ordered by Date** |  |  | /jcr:root/demo-project//element(*, mgnl:metaData)[@mgnl:template = 'standard-templating-kit:pages/stkArticle']/..[@categories = 'ab9437db-ab2c-4df5-bb41-87e55409e8e1'] order by @date |
+| **Search a Node with a Certain UUID** | SELECT * FROM [nt:base] WHERE [jcr:uuid] = '7fd401be-cada-4634-93fa-88069f46297b' | select * from nt:base where jcr:uuid = '7fd401be-cada-4634-93fa-88069f46297b' |  |
+| **Search Case Insensitive** | select * from [nt:base] where lower(name) like 'name_in_lowercase' | select * from nt:base where lower(name) like 'name_in_lowercase' |  |
+| **Search Pages Created in Given Time Frame** | select * from [mgnl:page] where ISDESCENDANTNODE('/demo-project/') and [jcr:created] > cast('2010-01-01T00:00:00.000+02:00' as date) and [jcr:created] < cast('2014-09-30T23:59:59.000+02:00' as date) |  |  |
+| **Pages Using a Specific Template Modified by a Specific User** |  |  | /jcr:root/demo-project/ **[mgnl:template='standard-templating-kit:pages/stkSection']/** /content[mgnl:lastModifiedBy='eric']/../.. |
+| **Get All Nodes with a Date Property After Midnight** | SELECT p.* FROM [nt:base] AS p WHERE ISDESCENDANTNODE('/') AND (p.[date] <> '' AND p.[date] > CAST('2015-11-30T00:00:01.000Z' AS DATE)) order by p.[date] asc |  |  |
+| **Get All Nodes with Any Property Matching a Given Value** | SELECT * FROM [nt:base] WHERE contains([nt:base].*, '4055e292-7b01-4075-b4c8-47d73e2e7d47') |  |  |
 
 ## [](#_java_code_example)Java code example
 

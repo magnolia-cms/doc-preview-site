@@ -1,0 +1,101 @@
+---
+title: "Adobe connector configuration"
+url: https://docs.magnolia-cms.com/ecommerce/1.3/config/config-adobe/
+category: Modules
+version: modules
+breadcrumb: E-commerce module > Adobe connector configuration
+---
+
+# Adobe connector configuration
+
+You can create or edit the configuration in the JCR or the File System (YAML) under `/ecommerce-magento-connector/ecommerces/magento.yaml`.
+
+If you do not want the connection definition to appear in any of the subapps, set the `enabled` property (YAML line 3) to `false`.
+
+Note, that you can write your own implementation (YAML lines 4-14) or in the JCR under `/ecommerce-magento-connector/ecommerces/magento.yaml` to suit your requirements, for example, to use additional features such as cross- and up-selling or custom features such as your own checkout solution.
+
+/ecommerce-magento-connector/ecommerces/magento.yaml
+
+```yaml
+class: info.magnolia.ecommerce.common.EcommerceDefinition
+type: Magento
+enabled: true
+implementation:
+  products:
+    all: info.magnolia.ecommerce.magento.products.All
+    byId: info.magnolia.ecommerce.magento.products.ById
+    byCategoryId: info.magnolia.ecommerce.magento.products.ByCategoryId
+    searchByText: info.magnolia.ecommerce.magento.products.SearchByText
+  categories:
+    all: info.magnolia.ecommerce.magento.categories.All
+    byId: info.magnolia.ecommerce.magento.categories.ById
+    byParentCategoryId: info.magnolia.ecommerce.magento.categories.ByParentCategoryId
+    byProductId: info.magnolia.ecommerce.magento.categories.ByProductId
+  connectionValidator: info.magnolia.ecommerce.magento.common.MagentoConnectionValidator
+connections:
+  connectionName:
+    authUrl: http://demo.magento.com
+    baseUrl: http://demo.magento.com
+    enabled: false
+    credentials:
+      username: your_username
+      password: password_or_path_to_password_manager
+```
+
+| Property | Description |
+| --- | --- |
+| `class` | **required** `info.magnolia.ecommerce.common.EcommerceDefinition` |
+| `type` | **required** Your e-commerce solution: `magento` |
+| `enabled` | **required** `true` or `false` |
+| `connections` |  |
+| `connectionName` |  |
+| `authUrl` | **required** Authentication URL. |
+| `baseUrl` | **required** Base URL. |
+| `enabled` | **required** Shows if the connection is enabled or not: `true` or `false` |
+| `credentials` |  |
+| `username` | **required** (unless using Access Token) Username for Adobe Commerce (formerly Magento). |
+| `password` (unless using Access Token) | **required** Password for Adobe Commerce (formerly Magento) or the path to the Magnolia password manager where the password is stored. |
+| `parameters` |  |
+| `accessToken` (unless a username and password is used) | **required** An access token provided by [Adobe Commerce (formerly Magento)](https://devdocs.magento.com/guides/v2.3/get-started/authentication/gs-authentication-token.html) . |
+
+## [](#_viewing_and_testing_connections)Viewing and testing connections
+
+This section explains how to view and test the connection between the Magnolia E-commerce add-on module and your external commerce solution using the [E-commerce app](../../ecommerce-app/).
+
+1.  Open the E-commerce app **Configuration** tab.
+
+2.  Select a connection.
+
+3.  Click **View** to see the details of your connection to an external e-commerce solution.
+
+    ![View connection dialog](../../../_images/6-1-ecom-view-connection-dialog.png)
+
+
+Depending on your external e-commerce solution, the connection information displayed may be:
+
+-   **Definition name** - The unique definition name. This name appears in the Catalogs subapp.
+
+-   **Connection name** - The unique name for the connection configured.
+
+-   **E-commerce type** - The type of external e-commerce solution you are connected to.
+
+-   **Authentication URL** - Authentication URL for the solution you are connected to.
+
+-   **Base URL** - Base URL for the solution you are connected to.
+
+-   **Username** and **Password** - Credentials to access the external solution. Passwords or client secrets can be managed in the [Passwords app](#6.2@product-docs:ROOT:/Apps/List-of-apps/Passwords-app.adoc).
+
+-   **Connection enabled** - Shows if the connection is enabled or not. You may choose to disable the configuration, for example, to improve performance times or to test a connection in one environment before enabling it in another.
+
+
+Click **Test connection** to check the connection configuration is correct. A message appears indicating if the test is successful or not.
+
+Once you’ve tested your connection, go to the E-commerce tab. You can see the connections you have configured listed with the catalogs they contain.
+
+| Property | Description |
+| --- | --- |
+| `images` | **required** |
+| `label` | **optional** Field label displayed to editors. The value can be literal or a [key](#6.2@product-docs:ROOT:/Administration/Language/Internationalization.adoc) of a [message bundle](#6.2@product-docs:ROOT:Administration/Language/Internationalization.adoc) . If you do not provide the property, Magnolia will fall back to a generated i18n key. If you do not want a label at all, define the property and set its value to a blank space such as `label: " "` in YAML. |
+| `$type` | **required** Field type: • `multipleImageField` displays all images for the product (use with `URLsToStrings` converter). • `URLImageField` displays only the first image for the product (use with `ListOfURLsToString` converter). |
+| `converterClass` | **required** `info.magnolia.ecommerce.app.productdetail.field.URLsToStrings` converts all images for the product. `info.magnolia.ecommerce.app.productdetail.field.ListOfURLsToString` converts only the first image for the product. |
+| `imageRatio` | **optional** Defines the ratio of displayed images to the original images in percentage. In the example above, the value `60` is 60% of the original image size. If the property isn’t set, the images are displayed in their original size. |

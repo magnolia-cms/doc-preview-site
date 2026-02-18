@@ -21,86 +21,47 @@ You can use either mechanism alone or both mechanisms together. If you use them 
 
 The [cross-site security filter](../../Architecture/Request-processing-and-filters/Filters/#_cross_site_security) is executed in the Magnolia filter chain before the URI security filter.
 
-## [](#_site_names_and_domain_names)Site names and domain names
-
-A site name identifies a site. The site name is the name of the site definition node. For example, the name of the travel site is `travel`. You need the site name when controlling cross-site access with the filter or with ACLs.
-
-A domain name is mapped to a site in the `domains` node under the [site definition](../../../Developing/Templating/Site-definition/). For example, the `travel` site has the domain `travel-demo.magnolia-cms.com` mapped to it. When a user requests the site with this domain name, content is served from the path defined in the `handlePrefix` property. You will need the domain name when controlling cross-site access with the filter.
-
 | Node name | Value |
 | --- | --- |
-| ⸬ fallback |     |
-| ⸬ travel |     |
-| ⸬ domains |     |
-| ⸬ travel-demo |     |
+| ⸬ fallback |  |
+| ⸬ travel |  |
+| ⸬ domains |  |
+| ⸬ travel-demo |  |
 | ⬩ name | travel-demo.magnolia-cms.com |
-| ⸬ mappings |     |
-| ⸬ website |     |
-| ⬩ URIPrefix |     |
+| ⸬ mappings |  |
+| ⸬ website |  |
+| ⬩ URIPrefix |  |
 | ⬩ handlePrefix | /travel |
 | ⬩ repository | website |
-| ⸬ templates |     |
-| ⸬ theme |     |
-| ⸬ i18n |     |
-| ⸬ sportstation |     |
-| ⸬ domains |     |
-| ⸬ sportstation |     |
+| ⸬ templates |  |
+| ⸬ theme |  |
+| ⸬ i18n |  |
+| ⸬ sportstation |  |
+| ⸬ domains |  |
+| ⸬ sportstation |  |
 | ⬩ name | sportstation.magnolia-cms.com |
-| ⸬ mappings |     |
-| ⸬ templates |     |
-| ⸬ theme |     |
-| ⸬ i18n |     |
+| ⸬ mappings |  |
+| ⸬ templates |  |
+| ⸬ theme |  |
+| ⸬ i18n |  |
 | ⬩ extends | ./travel |
-
-## [](#_cross_site_security_filter)Cross-site security filter
-
-The [cross-site security filter](../../Architecture/Request-processing-and-filters/Filters/#_cross_site_security) is executed in the Magnolia filter chain before the [URI security filter](../../Architecture/Request-processing-and-filters/Filters/#_uri_security). This means that a user must pass the cross-site filter before any ACLs are evaluated. The cross-site filter grants or denies permission to a site when the site is requested through a particular domain name.
-
-The cross-site security filter is configured using resolvers. Each resolver grants access to one site through one domain. If no resolvers exist the filter does not grant access to any site through any domain.
-
-However, a very permissive `allToAll` resolver is enabled by default. It grants permission to access all sites through all domains. This is the starting point from which you can configure more restricted access.
 
 | Node name | Value |
 | --- | --- |
-| 📁 server |     |
-| 📁 filters |     |
-| …​  |     |
-| 📁 crossSite |     |
-| ⸬ bypasses |     |
-| ⸬ dotMagnolia |     |
-| ⸬ resources |     |
-| ⸬ resolvers |     |
-| ⸬ allToAll |     |
+| 📁 server |  |
+| 📁 filters |  |
+| …​ |  |
+| 📁 crossSite |  |
+| ⸬ bypasses |  |
+| ⸬ dotMagnolia |  |
+| ⸬ resources |  |
+| ⸬ resolvers |  |
+| ⸬ allToAll |  |
 | ⬩ enabled | true |
-| ⬩ fromDomain | .\* |
-| ⬩ toSite | .\* |
+| ⬩ fromDomain | .* |
+| ⬩ toSite | .* |
 | ⬩ class | info.magnolia.multisite.filters.CrossSiteSecurityFilter |
 | ⬩ enabled | true |
-
-**Properties**
-
-| Property | Description |
-| --- | --- |
-| `resolvers` | **required**<br><br>Resolvers configuration. |
-| `allToall` | **required**<br><br>Resolver name. |
-| `fromDomain` | **required**<br><br>Domain name that is used to request a site |
-| `toSite` | **required**<br><br>Name of the site that is requested. |
-| `protocol` | **optional**<br><br>Protocol used to request the site such as `http`. |
-| `port` | **optional**<br><br>Port number such as `8080`. |
-| `context` | **optional**<br><br>Context path is the part of the URL where the Magnolia webapp lives. For example in `[http://domain.com/magnoliaPublic](http://domain.com/magnoliaPublic)` the context path is `/magnoliaPublic`. |
-| `enabled` | **optional**<br><br>Enables and disables the resolver. |
-
-> **Note:** To deny cross-site access, disable the allToAll resolver and configure new ones.
-
-**Example**
-
-The example resolvers below grant access to the `travel` site via [`https://travel-demo.magnolia-cms.com/`](https://travel-demo.magnolia-cms.com/) and to the `sportstation` site via [`https://sportstation.magnolia-cms.com/`](https://sportstation.magnolia-cms.com/). This is adequate to prevent cross-site access. If a user requests the `travel` site via [`https://sportstation.magnolia-cms.com/`](https://sportstation.magnolia-cms.com/) they will get a 404 error.
-
-![Cross-site access configuration](../../../_images/ADVT-crosssitesec-eg.png)
-
-You can test cross-site security by adding these configurations on the public site and requesting content at [`https://sportstation.magnolia-cms.com/travel.html`](https://sportstation.magnolia-cms.com/travel.html) or [`https://travel-demo.magnolia-cms.com/sportstation`](https://travel-demo.magnolia-cms.com/sportstation). The requests should result in 404 errors.
-
-In specific server configurations, it may also be necessary to add an additional resolver for the administrator/editor to be able to access both the administration and public instances.
 
 ## [](#_site_specific_acls)Site-specific ACLs
 

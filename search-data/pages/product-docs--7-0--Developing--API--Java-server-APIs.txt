@@ -10,7 +10,7 @@ breadcrumb: DX Core > Developing > API > Java Server APIs
 
 The essential interfaces and classes in the backend API:
 
-![API framework overview](../../../_images/api/api-framework-overview.png)
+![API framework overview](../../../../RNs-6-4-3/_images/api/api-framework-overview.png)
 
 See also full API [Javadoc](../Javadoc/).
 
@@ -147,7 +147,7 @@ Context is an abstraction layer representing the environment of the current proc
     -   `getResponse()` Returns the current servlet response object.
 
 
--   info.magnolia.cms.core.AggregationState. Contains information about the current request and rendering process. It is initialized by the [ContentTypeFilter](#rest:api:delivery-endpoint.adoc#_rest_delivery_endpoint_v2_filter_examples).
+-   info.magnolia.cms.core.AggregationState. Contains information about the current request and rendering process. It is initialized by the [ContentTypeFilter](../../../../../rest/api/delivery-endpoint/#_rest_delivery_endpoint_v2_filter_examples).
 
     -   `getOriginalURI()` Original URI is the URI as requested by the client.
 
@@ -223,7 +223,7 @@ Context is an abstraction layer representing the environment of the current proc
 
     -   [damfn](../../Templating/Template-scripts/Templating-functions/damfn/)
 
-    -   [Developing/Templating/Template-scripts/Templating-functions/imgfn.adoc](../../Templating/Template-scripts/Templating-functions/imgfn/)
+    -   [imgfn](../../Templating/Template-scripts/Templating-functions/imgfn/)
 
     -   [jsonfn](../../Templating/Template-scripts/Templating-functions/jsonfn/)
 

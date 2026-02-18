@@ -1,0 +1,50 @@
+---
+title: "SSO module changelog"
+url: https://docs.magnolia-cms.com/magnolia-sso/2.0/changelog/
+category: Modules
+version: modules
+breadcrumb: SSO Module > Changelog
+---
+
+# SSO module changelog
+
+The changelog gives you an overview of the changes made to the **SSO module** at each release.
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-162** | ** | The SSO module wasn’t considering the context path for the default base URL. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-141** | ** | The SSO config intercepts all requests having an Authorization header. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-120** | ** | There was inconsistent behaviour after the **"Connection lost. Trying to reconnect…​"** message. |
+| **MGNLSSO-104** | ** | We updated Pac4j to the latest version. |
+| **MGNLSSO-80** | ** | There was a conflict in the JSONArray library. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-100** | ** | We updated Pac4j to the latest version. |
+| **MGNLSSO-97** | ** | We updated the dependency of the `magnolia-test-framework` . |
+| **MGNLSSO-94** | ** | The instance would fail if the `authenticationService` configuration was missing. |
+| **MGNLSSO-92** | ** | There was an indefinite loop after the **"Connection lost. Trying to reconnect…​"** message. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-89** | ** | We updated Pac4j to the latest version. |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-77** | ** | We updated Pac4j to the latest version. |
+| **MGNLSSO-75** | ** | We updated the configuration property, `postLogoutRedirectUri` . |
+| **MGNLSSO-70** | ** | We added support for [Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/overview) . |
+
+| Ticket | Type | Description |
+| --- | --- | --- |
+| **MGNLSSO-62** | ** | We introduced the `FixedRoleAuthorizationGenerator` fallback property. ** See the table at [YAML configuration](../../#_yaml_configuration) for more details. | ** | See the table at [YAML configuration](../../#_yaml_configuration) for more details. |
+| ** | See the table at [YAML configuration](../../#_yaml_configuration) for more details. |
+| **MGNLSSO-60** | ** | We improved user attribute mapping. |
+| **MGNLSSO-59** | ** | We made the `OidcClient` the default client. |
+| **MGNLSSO-38** | ** | There was an issue with role assignments. |

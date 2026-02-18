@@ -1,0 +1,197 @@
+---
+title: "Integration"
+url: https://docs.magnolia-cms.com/campaign-manager/3.1/integrate/
+category: Modules
+version: modules
+breadcrumb: Campaign manager module > Headless integration
+---
+
+# Integration
+
+There are two ways to integrate the module.
+
+-   [Server side rendering mode (Freemarker templates)](#_server_side_rendering_mode_freemarker_templates)
+
+-   [Headless mode](#_headless_mode)
+
+
+> **Warning:** Mixing rendering modes is not supported.To ensure compatibility, the rendering mode for the creative and the page must be the same.A server-side creative requires a server-side page.A headless creative requires a headless page.
+
+* * *
+
+## [](#_server_side_rendering_mode_freemarker_templates)Server side rendering mode (Freemarker templates)
+
+If you use the Magnolia server-side rendering mode, the managed campaign component’s area will resolve by itself the campaign to display according to the HTTP request execution date.
+
+## [](#_headless_mode)Headless mode
+
+1.  Create a new page template for the Campaign Manager WYSIWYG editor app.
+
+    Important notes
+
+    -   [YAML definition](https://gitlab.magnolia-platform.com/regional-emea/services-sales-demo-frontend-public/-/blob/master/light-modules/insurance-demo-lm/templates/pages/ManagedCampaign.yaml)
+
+        Please notice the `?campaigns=true` parameter. We will use it in our JS app to know that the WYSIWYG is properly run inside the Campaign Manager app.
+
+    -   [JS component](https://gitlab.magnolia-platform.com/regional-emea/services-sales-demo-frontend-public/-/blob/master/insurance-demo/templates/pages/ManagedCampaign.js)
+
+    -   [Mapping](https://gitlab.magnolia-platform.com/regional-emea/services-sales-demo-frontend-public/-/blob/master/insurance-demo/utils/config.js#L55)
+
+
+2.  Make a template in the Campaign Manager in the Configuration app found at `modules/campaign-manager/config/templates`.
+
+    ![config templates](../_images/config-templates.png)
+
+3.  Create a pages endpoint for the Campaign Manager app.
+
+    > **Note:** Check out this example.The Campaign Manager app stores data in the campaign-manager workspace, hence we need to fetch data from this workspace when running our JS app inside the Campaign Manager app.
+
+4.  Create a template annotations endpoint for the Campaign Manager app.
+
+    > **Note:** Check out this example.
+
+5.  In the Security app, make sure to give `Web access` to the endpoints from points you’ve created. Add `Access control lists` access to `Campaign-manager` and `Campaign-manager-tags` workspaces.
+
+6.  When the JavaScript app is running inside the Campaign Manager app, make it call the correct endpoints you’ve created.
+
+    Important notes
+
+    -   [Determine the app is run inside the Campaign Manager app](https://gitlab.magnolia-platform.com/regional-emea/services-sales-demo-frontend-public/-/blob/master/insurance-demo/pages/%5B%5B...pathname%5D%5D.js#L21)
+
+    -   [Use the pages endpoint to fetch page data](https://gitlab.magnolia-platform.com/regional-emea/services-sales-demo-frontend-public/-/blob/master/insurance-demo/pages/%5B%5B...pathname%5D%5D.js#L43)
+
+    -   [Use the annotations endpoint to fetch template annotations data](https://gitlab.magnolia-platform.com/regional-emea/services-sales-demo-frontend-public/-/blob/master/insurance-demo/pages/%5B%5B...pathname%5D%5D.js#L63)
+
+
+7.  Define the following references resolvers in your delivery endpoint for fetching the pages' data.
+
+    delivery-endpoint.yaml
+
+    ```yaml
+    references:
+      # For the matching campaign resolution
+      - name: campaignReference
+        propertyName: tag
+        referenceResolver:
+          class: info.magnolia.campaign.manager.rest.reference.CampaignReferenceResolverDefinition
+
+      # For the fallback campaign resolution (if used)
+      - name: campaignFallbackReference
+        propertyName: fallback
+        referenceResolver:
+          class: info.magnolia.rest.reference.jcr.JcrReferenceResolverDefinition
+          targetWorkspace: campaign-manager
+    ```
+
+    > **Important:** If you’re using the Campaign manager module in conjunction with the DAM Focal module, you must set your referenceDepth to 2 or greater. Otherwise, the properties from the Image Focal module are not resolved.
+
+    `campaign-manager.yaml` sample
+
+    /campaign-manager/restEndpoints/delivery/campaign-manager.yaml
+
+    ```yaml
+    $type: jcrDeliveryEndpoint_v2
+    workspace: campaign-manager
+    depth: 10
+    referenceDepth: 10 (1)
+    systemProperties:
+      - mgnl:template
+    nodeTypes:
+      - mgnl:page
+      - mgnl:area
+    childNodeTypes:
+      - mgnl:area
+      - mgnl:component
+      - mgnl:contentNode
+
+    references:
+      - name: assetReference
+        propertyName: image
+        referenceResolver:
+          $type: assetReferenceResolver
+
+      - name: linkReference
+        propertyName: link
+        referenceResolver:
+          $type: jcrReferenceResolver
+          targetWorkspace: website
+          expand: false
+          generateLink: true
+    ```
+
+    |     |     |
+    | --- | --- |
+    | **1** | `referenceDepth` set to `10`.<br><br>See [Delivery Endpoint: properties](../../../rest/api/delivery-endpoint/#_properties) for more details. |
+
+    > **Note:** You need to map the Magnolia components defined in the campaign item with their related Javascript components.
+
+    `response-extract.json` sample
+
+    ```json
+    "04": {
+        "@name": "04",
+        "@path": "/home/main/04",
+        "@id": "9dbd0f9e-b4ac-431b-b7d5-82a9b8eabdc6",
+        "@nodeType": "mgnl:component",
+        "tag": {
+            "@name": "Welcome-back",
+            "@path": "/welcome-back/Welcome-back",
+            "@id": "c9e561d5-fb02-4370-a487-c53a0b4b027d",
+            "@nodeType": "campaign-item",
+            "tag": "258c7a63-0f07-4321-b6b0-4986b52f32aa",
+            "name": "Welcome back",
+            "mgnl:template": "headless-ecommerce:pages/ManagedCampaign",
+            "main": {
+                "@name": "main",
+                "@path": "/welcome-back/Welcome-back/main",
+                "@id": "22b5782d-f876-45e9-b843-500f75b92118",
+                "@nodeType": "mgnl:area",
+                "0": {
+                    "@name": "0",
+                    "@path": "/welcome-back/Welcome-back/main/0",
+                    "@id": "676f6a7e-8bab-4b85-837d-2d69d5359167",
+                    "@nodeType": "mgnl:component",
+                    "mgnl:template": "headless-ecommerce:components/Banner",
+                    "subtitle": "We're safely reopening our stores and reintroducing in-store shopping.",
+                    "isLarge": "false",
+                    "title": "WELCOME BACK SALE",
+                    "image": "jcr:23a7ef00-f6c9-4f26-808f-356b41791c74",
+                    "cta": {
+                        "@name": "cta",
+                        "@path": "/welcome-back/Welcome-back/main/0/cta",
+                        "@id": "d8bea341-e2f7-4c48-9a6a-bdb5142fbfa7",
+                        "@nodeType": "mgnl:contentNode",
+                        "link": "4ff81f1f-b515-4433-8b0e-b108348e9b38",
+                        "text": "SHOP AND GET DISCOUNTS",
+                        "@nodes": []
+                    },
+                    "@nodes": [
+                        "cta"
+                    ]
+                },
+                "@nodes": [
+                    "0"
+                ]
+            },
+            "@nodes": [
+                "main"
+            ]
+        },
+        "mgnl:template": "campaign-manager:components/managed-campaign",
+        "masterContent": "true",
+        "skip": "false",
+        "@nodes": []
+    }
+    ```
+
+8.  Create a Campaign Manager component that uses the resolved property `tag` or `fallback` to render the correct component.
+
+    > **Tip:** Check out this example.
+
+9.  Map the `` campaign-manager` `` component.
+
+    > **Tip:** Check out this example.
+
+10.  Make the `` campaign-manager` `` component available in areas where you want to use it.
+
+     > **Tip:** Check out this example.

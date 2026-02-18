@@ -12,15 +12,15 @@ This article is meant to help you better understand storing assets in PaaS.
 
 DX Cloud leverages the Digital Asset Management (DAM) module for managing assets such as images, videos, and documents. In some cases, you may have quite a lot of assets to manage.
 
-By default, thumbnails are disabled to ensure optimal performance in DX Cloud. Projects with a large volume of assets per folder can cause serious performance issues when thumbsnails are enabled. If you wish to turn thumbnails back on, you can do so by setting `thumbnails: true` in the [`dam.subApps.yaml` file](#dam-app:ROOT:developers/dam-app-jcr.adoc#_turning_image_thumbnails_off_in_the_asset_browser).
+By default, thumbnails are disabled to ensure optimal performance in DX Cloud. Projects with a large volume of assets per folder can cause serious performance issues when thumbsnails are enabled. If you wish to turn thumbnails back on, you can do so by setting `thumbnails: true` in the [`dam.subApps.yaml` file](../../../dam-app/developers/dam-app-jcr/#_turning_image_thumbnails_off_in_the_asset_browser).
 
 We only recommend doing this if you have [structured your assets](#_how_to_handle_many_assets) in an optimal way to minimize any performance degradation.
 
 ## [](#_how_to_handle_many_assets)How to handle many assets
 
-The DAM supports a large number of assets. However, if you have more than **10 000** assets, organize them into folders.
+The DAM can handle a very large number of assets and is used in installations with hundreds of thousands or even millions of files. To keep both JCR operations and the Assets app UI fast and usable, avoid very flat hierarchies and organize assets into folders, aiming for roughly 500 assets per folder and using subfolders where needed.
 
-If your asset count significantly exceeds 10 000, consider integrating an external storage system using our [External DAM integration framework](../../../product-docs/7.0/Modules/extensions-and-frameworks/external-dam-integration-framework/), our [DAM API](../../../product-docs/7.0/Developing/API/Java-Server-APIs/DAM-API/), or one of our [Incubator modules](../../../incubator-modules/) extensions.
+When your total volume of assets or the size of individual binaries starts to impact publication times, storage footprint, or operational workflows, consider offloading binaries to [DAM 6.0](../../../dam/), our [External DAM integration framework](../../../product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/external-dam-integration-framework/), our [DAM API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/DAM-API/), or one of our [Incubator modules](../../../incubator-modules/) extensions.
 
 How many assets should I put in a folder?
 
@@ -35,7 +35,7 @@ Use subfolders to stay organized and avoid performance issues.
 
 ## [](#_how_to_handle_large_assets)How to handle large assets
 
-We don’t recommend using publication for any assets above 2 GB. You should store anything of that size in an [external DAM system](#performance-tuning:ROOT:Image-and-media-handling/Internal-vs-external-dam.adoc#_external_dam_integration) and reference it from Magnolia.
+We don’t recommend using publication for any assets above 2 GB. You should store anything of that size in an [external DAM system](../../../performance-tuning/Image-and-media-handling/Internal-vs-external-dam/#_external_dam_integration) and reference it from Magnolia.
 
 Want to know more details about publishing assets?
 
@@ -43,10 +43,10 @@ When you publish an asset, it is fetched from the DB into the app server, conver
 
 Further reading
 
--   [DAM API](../../../product-docs/7.0/Developing/API/Java-Server-APIs/DAM-API/)
+-   [DAM API](../../../product-docs/RNs-6-4-3/Developing/API/Java-Server-APIs/DAM-API/)
 
--   The [External DAM integration framework](../../../product-docs/7.0/Modules/extensions-and-frameworks/external-dam-integration-framework/) allows you to connect with external storage such as Amazon S3 and Bynder.
+-   The [External DAM integration framework](../../../product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/external-dam-integration-framework/) allows you to connect with external storage such as Amazon S3 and Bynder.
 
 -   Learn more about our DAM-focused [Incubator modules](../../../incubator-modules/)
 
--   Performance tuning guide: [performance-tuning:ROOT:Image-and-media-handling.adoc](#performance-tuning:ROOT:Image-and-media-handling.adoc)
+-   Performance tuning guide: [Asset management](../../../performance-tuning/Image-and-media-handling/)

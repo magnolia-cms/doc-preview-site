@@ -39,7 +39,7 @@ For more information on the *Magnolia 6 UI* modules, refer to [UI module](../../
 
 ## [](#_the_model_view_presenter_mvp_pattern)The model-view-presenter (MVP) pattern
 
-![The model-view-presenter (MVP) pattern](../../../../_images/6-0_ui-framework-mvp_01.png)
+![The model-view-presenter (MVP) pattern](../../../../../RNs-6-4-3/_images/6-0_ui-framework-mvp_01.png)
 
 ### [](#_understanding_the_mvp_pattern)Understanding the MVP pattern
 
@@ -105,7 +105,7 @@ In this presenter-centric approach, the following can be observed:
 
 Example:
 
-![The Magnolia 5 UI framework](../../../../_images/6-0_ui-framework-mvp-mgnl5.png)
+![The Magnolia 5 UI framework](../../../../../RNs-6-4-3/_images/6-0_ui-framework-mvp-mgnl5.png)
 
 `WorkbenchPresenter` is involved in the management of nearly all the other related parts. Among other things, the presenter:
 
@@ -150,7 +150,7 @@ In the view-centric approach, you:
 
 Example:
 
-![The Magnolia 6 UI framework](../../../../_images/6-0_ui-framework-mvp-mgnl6.png)
+![The Magnolia 6 UI framework](../../../../../RNs-6-4-3/_images/6-0_ui-framework-mvp-mgnl6.png)
 
 `WorkbenchView` takes a definition, directly configures it and passes content view definitions on to `ContentView`, which takes care of its own presenters. The main reason why this separation is now possible is that, instead of manual state synchronization, we can do it through special tools based on session, scoping and IoC.
 

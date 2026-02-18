@@ -39,7 +39,7 @@ On submission of content to the engine, the following process kicks off:
 4.  **Call template script**: The renderer calls the assigned [template script](../Template-scripts/) and passes the current content, the model and all [context objects](../Template-scripts/Rendering-context-objects/) to it. FreeMarker interpolations like `${content.title}` are replaced with actual values and [directives](../Template-scripts/Directives/) like `#list` are processed. The output of the merge process is an HTML stream response that can be displayed in a browser.
 
 
-![A diagram of the steps involved in rendering content](../../../_images/rendering-engine.png)
+![A diagram of the steps involved in rendering content](../../../../RNs-6-4-3/_images/rendering-engine.png)
 
 ## [](#_renderers)Renderers
 
@@ -92,7 +92,7 @@ Early execution proceeds like this:
 > ...
 > </div><!-- end form-wrapper -->1When using the Form module, do not remove the mgnlModelExecutionUUID parameter when overriding the form template.
 
-![Component execution diagram](../../../_images/early-execution-of-components.png)
+![Component execution diagram](../../../../RNs-6-4-3/_images/early-execution-of-components.png)
 
 ## [](#_direct_component_rendering)Direct component rendering
 
@@ -100,45 +100,12 @@ You can request a component to be rendered directly by URL. This is useful when 
 
 Request the component using the path in the URL:
 
-![Direct component rendering URL path](../../../_images/direct-component-rendering.png)
-
-## [](#_direct_area_rendering)Direct area rendering
-
-Direct area rendering allows you to request any area that has a node in the JCR.
-
-To request an area:
-
-1.  Insert the `mgnlArea` selector into the URL after the page name but before the `.html` extension. Set the value to the area name.
-
-    ```none
-    ~mgnlArea=<area name>~
-    ```
-
-2.  Add the path to the nested area separated by commas to request a nested area.
-
-    ```none
-    ~mgnlArea=<<main area name>,<nested area name>>~
-    ```
-
-
-Direct area rendering is achieved using a rendering listener registered in `/server/rendering/engine/listeners/directAreaRendering`.
-
-![Rendering listener in the Configuration app](../../../_images/ADVT-rendering.png)
+![Direct component rendering URL path](../../../../RNs-6-4-3/_images/direct-component-rendering.png)
 
 | Property | Description |
 | --- | --- |
 | `class` | info.magnolia.rendering.context.AreaFilteringListener is an area rendering listener for enabling/disabling output according to rendered content. |
-| `enabled` | **optional**, *default is `true`*<br><br>Option to disable direct area rendering. When you set this property to `false`, area rendering is bypassed and the entire page is rendered. |
-
-Here’s the `main` area of the `/travel/about` page rendered by the URL:
-
-```none
-http://localhost:8080/magnoliaAuthor/travel/about~mgnlArea=main~.html
-```
-
-![Main area URL](../../../_images/direct-area-rendering.png)
-
-> **Note:** If an area does not exist, the whole page is rendered. For example http://localhost:8080/magnoliaAuthor/your-site/about~mgnlArea=NonExistingArea~.html will return a 404.Where an area exists but contains no content, an empty page is rendered.
+| `enabled` | **optional** , *default is true* Option to disable direct area rendering. When you set this property to `false` , area rendering is bypassed and the entire page is rendered. |
 
 ## [](#_populating_the_rendering_model_with_request_parameters)Populating the rendering model with request parameters
 

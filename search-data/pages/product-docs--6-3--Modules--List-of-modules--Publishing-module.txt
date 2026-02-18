@@ -8,25 +8,14 @@ breadcrumb: DX Core > Modules > Publishing module
 
 # Publishing module
 
-[Collaboration and workflow](../../../use-cases/collaboration-and-workflow/) Bundled: Community edition
-
-|     |     |
+| Edition | CE |
 | --- | --- |
-| Edition | CE  |
-| License | [MLA](https://www.magnolia-cms.com/mla.html), [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| License | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
 | Issues | [PUBLISHING](https://magnolia-cms.atlassian.net/browse/PUBLISHING) |
-| Maven site | [Publishing](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fpublishing%2Fmagnolia-publishing-core%2F2.0.4) |
-| Latest | 2.0.4 |
+| Maven site | [Publishing](https://nexus.magnolia-cms.com/#browse/browse:public:info%2Fmagnolia%2Fpublishing%2Fmagnolia-publishing-core%2F{magnolia-publishing-63}) |
+| Latest | {magnolia-publishing-63} |
 
-The module handles publishing of content from an author instance to a public instance. In DX Core, the functionality of this module is extended by the [Publishing Transactional module](../Publishing-Transactional-module/), which ensures synchronization of content between multiple public instances.
-
-> **Caution:** Content publishing and content synchronizationAlways wait with content publishing actions until all content synchronization tasks have been finished.If you attempt to publish a page while the Synchronization module is mid-sync and hasn’t yet synchronized the page’s parent, the publishing process will fail.
-
-## [](#_module_structure)Module structure
-
-The module (parent) consists of four submodules. All of the submodules are required for the correct functioning of the publishing feature.
-
-| artifactID |     |
+| artifactID |  |
 | --- | --- |
 | `magnolia-publishing-parent` | Parent reactor. |
 | `magnolia-publishing-core` | Provides the main functionality. |
@@ -36,13 +25,13 @@ The module (parent) consists of four submodules. All of the submodules are requi
 
 ## [](#_installing_with_maven)Installing with Maven
 
-Maven is the easiest way to install the module. Add the following to your [bundle](../../../Developing/Bundles-and-webapps/):
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../RNs-6-4-3/Developing/Bundles-and-webapps/):
 
 ```xml
 <dependency>
   <groupId>info.magnolia.publishing</groupId>
   <artifactId>magnolia-publishing-core</artifactId>
-  <version>2.0.4</version> (1)
+  <version>{magnolia-publishing-63}</version> (1)
 </dependency>
 ```
 
@@ -54,7 +43,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.publishing</groupId>
   <artifactId>magnolia-publishing-app</artifactId>
-  <version>2.0.4</version> (1)
+  <version>{magnolia-publishing-63}</version> (1)
 </dependency>
 ```
 
@@ -66,7 +55,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.publishing</groupId>
   <artifactId>magnolia-publishing-sender</artifactId>
-  <version>2.0.4</version> (1)
+  <version>{magnolia-publishing-63}</version> (1)
 </dependency>
 ```
 
@@ -78,7 +67,7 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 <dependency>
   <groupId>info.magnolia.publishing</groupId>
   <artifactId>magnolia-publishing-receiver</artifactId>
-  <version>2.0.4</version> (1)
+  <version>{magnolia-publishing-63}</version> (1)
 </dependency>
 ```
 
@@ -86,224 +75,32 @@ Maven is the easiest way to install the module. Add the following to your [bundl
 | --- | --- |
 | **1** | Should you need to specify the module version, do it using `<version>`. |
 
-## [](#_configuration)Configuration
-
-> **Warning:** Be very careful when modifying the configuration of publishing and always test the changes thoroughly before applying them to a live environment. Sometimes there may exist a better way of solving a publishing-related problem than by tweaking a publishing configuration.
-
-### [](#_main_part)Main part
-
-Except for receiver configuration, the main part of the publishing configuration is under `/modules/publishing-core/config`.
-
-#### [](#_publishing_receivers)Publishing receivers
-
-Publishing receivers are configured using MicroProfile Config, making the configuration updatable at runtime. For more details, see [Receivers](../../../Administration/Instances/Receivers/).
-
-#### [](#_publicationbypathvoters)`publicationByPathVoters`
-
-Sets publication by path (default is by uuid) to configured workspaces.
-
 | Node name | Value |
 | --- | --- |
-| ⸬ publicationByPathVoters |     |
-| ⬩ op | OR  |
-| ⸬ config |     |
+| ⸬ publicationByPathVoters |  |
+| ⬩ op | OR |
+| ⸬ config |  |
 | ⬩ op | AND |
-| ⸬ mgnlExchangeWorkspaceName |     |
+| ⸬ mgnlExchangeWorkspaceName |  |
 | ⬩ pattern | config |
 | ⬩ keyName | mgnlExchangeWorkspaceName |
 | ⬩ class | info.magnolia.publishing.voter.MapKeyPatternVoter |
-| ⸬ 1stAnd2ndLevelNodes |     |
-| ⬩ op | OR  |
+| ⸬ 1stAnd2ndLevelNodes |  |
+| ⬩ op | OR |
 | ⬩ class | info.magnolia.voting.voters.VoterSet |
-| ⸬ mgnlExchangeParentPath |     |
+| ⸬ mgnlExchangeParentPath |  |
 | ⬩ pattern | `^\/[^\/]*$` |
 | ⬩ keyName | mgnlExchangeParentPath |
 | ⬩ class | info.magnolia.publishing.voter.MapKeyPatternVoter |
-| ⸬ mgnlExchangePath |     |
+| ⸬ mgnlExchangePath |  |
 | ⬩ pattern | `^\/[^\/]*(\/[^\/]*)?$` |
 | ⬩ keyName | mgnlExchangePath |
 | ⬩ class | info.magnolia.publishing.voter.MapKeyPatternVoter |
-| ⸬ resources |     |
-| ⸬ workspace |     |
+| ⸬ resources |  |
+| ⸬ workspace |  |
 | ⬩ pattern | resources |
 | ⬩ keyName | mgnlExchangeWorkspaceName |
 | ⬩ class | info.magnolia.publishing.voter.MapKeyPatternVoter |
-
-#### [](#_publishinglogstorage)`publishingLogStorage`
-
-Defines where the information about publishing is logged. The default implementation (info.magnolia.publishing.monitor.MemoryPublishingStorage) keeps the information in memory.
-
-| Node name | Value |
-| --- | --- |
-| ⸬ publishingLogStorage |     |
-| ⬩ class | info.magnolia.publishing.monitor.MemoryPublishingStorage |
-
-#### [](#_operations)`operations`
-
-Contains the list of operations provided by Magnolia and the respective operation classes:
-
--   `publish`
-
--   `unpublish`
-
--   `commit` (DX Core only)
-
--   `rollback` (DX Core only)
-
-    You can define your own operations and add them to the list, but in this case, you will also have to implement your own send and receive operations. info.magnolia.publishing.operation.SendOperation is a base interface that all send operations must implement.
-
-
-With a custom-defined operation, you can publish content to something that’s not a Magnolia public instance, for example to a custom API or a Content Delivery Network.
-
-| Node name | Value |
-| --- | --- |
-| ⸬ operations |     |
-| ⸬ publish |     |
-| ⬩ receiveOperationClass | info.magnolia.publishing.transactional.receiver.operation.jcr.JcrTransactionPublicationOperation |
-| ⬩ sendOperationClass | info.magnolia.publishing.sender.operation.HttpPublicationOperation |
-| ⸬ unpublish |     |
-| ⬩ receiveOperationClass | info.magnolia.publishing.transactional.receiver.operation.jcr.JcrTransactionUnpublicationOperation |
-| ⬩ sendOperationClass | info.magnolia.publishing.sender.operation.HttpUnpublicationOperation |
-| ⸬ activate |     |
-| ⬩ receiveOperationClass | info.magnolia.publishing.transactional.receiver.operation.jcr.JcrTransactionPublicationOperation |
-| ⸬ deactivate |     |
-| ⬩ receiveOperationClass | info.magnolia.publishing.transactional.receiver.operation.jcr.JcrTransactionUnpublicationOperation |
-| ⸬ commit |     |
-| ⬩ receiveOperationClass | info.magnolia.publishing.transactional.receiver.operation.jcr.JcrCommitOperation |
-| ⬩ sendOperationClass | info.magnolia.publishing.transactional.sender.operation.HttpCommitOperation |
-| ⸬ rollback |     |
-| ⬩ receiveOperationClass | info.magnolia.publishing.transactional.receiver.operation.jcr.JcrRollbackOperation |
-| ⬩ sendOperationClass | info.magnolia.publishing.transactional.sender.operation.HttpRollbackOperation |
-
-#### [](#_lockmanagermode_property)`lockManagerMode` property
-
-The property has been introduced with module version 1.2.6. By default, path-based locking is configured using `lockManagerMode=path`. Node-based locking can be set with `lockManagerMode=compatibility`.
-
-> **Caution:** The setting is applicable only on public instances. Changing the property on the author instance has no effect.
-
-### [](#_publish_and_unpublish_commands)Publish and unpublish commands
-
-Users typically publish content by clicking **Publish** in the **Action bar**. The click executes a `publish` command which pushes the content from the author instance to the public instance(s). Conversely, when users click **Unpublish** the system executes an `unpublish` command which deletes the content from the public instance(s).
-
-The `publish` and `unpublish` commands are configured in `/modules/publishing-core/commands`. The `default` catalog contains the commands which just publish the content without versioning. Magnolia also provides a `versioned` command catalog. It contains identically named `publish` and `unpublish` commands which first version the content and then delegate to the default commands.
-
-> **Note:** Both in the default catalog and in the versioned catalog, the command tree contains also the activate and deactivate commands (not shown below), which extend the publish and unpublish commands, respectively. The two commands are included in the configuration for compatibility reasons.To use one of these commands, define the catalog and the command name in the Magnolia DX Core support. See an example in Executing commands with actions.
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 30%;"> <col style="width: 70%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Description</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>params</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>rule</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>The <code>rule</code> property is useful when <em>recursively</em> performing a <a href="../../../Developing/Commands/" class="xref page">command</a>. Adding the <code>allowedTypes</code> property under the <code>rule</code> property lets you define what should be included on each page. In particular, you can specify nodes such as areas and components, but not subpages.</p></div><div class="paragraph"><p>Available classes:</p></div><div class="ulist"><ul><li><p><code>info.magnolia.cms.util.Rule</code></p></li></ul></div><div class="paragraph"><p>For example, let’s take the recursive publishing action defined in the configuration below. Using the recursive property means a version is created for every page in the tree. On each page, only objects below page level, such as area or component, are included in the new page versions because of the <a href="../../../Administration/Architecture/Node-types/" class="xref page">node type</a> <code>mgnl:contentNode</code>.</p></div><div class="listingblock"><div class="title">Example configuration</div><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">...
-  publish:
-    icon: icon-publish
-    $type: jcrCommandAction
-    command: publish
-    catalog: versioned
-    availability:
-      rules:
-        notDeleted: *notDeleted
-          isPublishable: &amp;publishableRule
-            $type: jcrPublishableRule
-    params:
-      recursive: true <i class="conum" data-value="1"></i><b>(1)</b>
-      rule:
-        class: info.magnolia.cms.util.Rule
-        allowedTypes: <i class="conum" data-value="2"></i><b>(2)</b>
-          contentNode: mgnl:contentNode <i class="conum" data-value="3"></i><b>(3)</b></code></pre></div></div><div class="colist arabic"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>Recursive publishing command.</td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>The <code>allowedTypes</code> property determines what is included in each page version.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>Allowed node types set to <code>mgnl:contentNode</code>.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>modifiedOnly</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>true</code></em></p></div><div class="paragraph"><p>Boolean that controls whether only unpublished or modified pages (including subnodes) are published.</p></div><div class="paragraph"><p>To ensure that imported content is publishable, which was previously published before import, you must update the publication command configuration. Specifically, you should set <code>modifiedOnly</code> to <code>false</code>. Otherwise, the content may not be eligible for publishing.</p></div><div class="tabset is-loading"><div class="ulist tabs"><ul><li><p><a id="tabset1_6-3-or-later"></a>6.3 or later</p></li><li><p><a id="tabset1_6-2"></a>6.2</p></li></ul></div><div class="content"><div class="tab-pane" aria-labelledby="tabset1_6-3-or-later"><div class="paragraph"><p><em>Default setting</em>: <code>modifiedOnly=true</code></p></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p>You must set <code>modifiedOnly</code> to <code>false</code> manually to ensure already published imported content is publishable:</p></div><div class="ulist"><ul><li><p><strong>CE <span class="icon"><i class="fa fa-users"></i></span></strong><a href="./" class="xref page">Publishing module</a> <code>2.0</code> or later</p><table class="tableblock frame-all grid-all stretch"><caption class="title"><code>/modules/publishing-core/commands/default/</code></caption> <colgroup><col style="width: 45%;"> <col style="width: 55%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Node name</th><th class="tableblock halign-left valign-top">Value</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">📁 default</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; ⸬ publish</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⬩ modifiedOnly</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td></tr></tbody></table></li><li><p><strong>DX Core <span class="icon"><i class="fa fa-code"></i></span></strong><a href="../Personalization-module/" class="xref page">Personalization module</a> <code>3.1</code> or later</p><table class="tableblock frame-all grid-all stretch"><caption class="title"><code>/modules/personalization-core/commands/default/personalizationActivation</code></caption> <colgroup><col style="width: 45%;"> <col style="width: 55%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Node name</th><th class="tableblock halign-left valign-top">Value</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><p class="tableblock">⸬ personalizationActivation</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp; ⸬ personalizationActivation</p></td><td class="tableblock halign-left valign-top"></td></tr><tr><td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ⬩ modifiedOnly</p></td><td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td></tr></tbody></table></li></ul></div></div><div class="tab-pane" aria-labelledby="tabset1_6-2"><div class="paragraph"><p><em>Default setting</em>: <code>modifiedOnly=false</code></p></div><div class="paragraph"><p><br></p></div><div class="paragraph"><p><code>modifiedOnly</code> is <code>false</code> by default for the following:</p></div><div class="ulist"><ul><li><p><a href="#6.2@product-docs:ROOT:Modules/List-of-modules/Publishing-module.adoc" class="xref unresolved">Publishing module</a> <code>1.3</code> or later</p></li><li><p><a href="#6.2@product-docs:ROOT:Modules/List-of-modules/Personalization-module.adoc" class="xref unresolved">Personalization module</a> <code>2.1</code> or later</p></li></ul></div></div></div></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>recursive</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>false</code></em></p></div><div class="paragraph"><p>When you publish a node and its children, you often end up publishing content whose status is already Published.</p></div><div class="paragraph"><p>Such nodes don’t need to be published, but it’s often more convenient to just publish the whole tree than node-by-node.</p></div><div class="paragraph"><p>To improve the <a href="../../../Administration/Architecture/Publishing/Publishing-performance/" class="xref page">performance</a> of the author instance:</p></div><div class="ulist"><ul><li><p>Exclude the already-published nodes from the action.</p></li><li><p>Publish the modified nodes only.</p></li></ul></div><div class="paragraph"><p>This may also help improve scalability, especially in cases where the author instance has a high concurrent load, typically with many editors activating large amounts of content at the same time.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>version</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Version of the node to be published.</p></div><div class="paragraph"><p>If not specified, the current state of the node will be published. The property can only be used with <code>recursive=false</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>versionMap</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>Versions of the node to be published.</p></div><div class="paragraph"><p>If not specified, the current state of the nodes will be published. The property can only be used with <code>recursive=true</code>.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>itemsPerRequest</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong></p></div><div class="paragraph"><p>If defined, instead of transferring nodes one-by-one, the publication process transfers the subtrees that have fewer descendants in one transaction than defined using the <code>itemsPerRequest</code> property.</p></div><div class="paragraph"><p>If the number of descendants is higher, each child will be published one-by-one, which is the same as when <code>itemsPerRequest</code> isn’t defined at all.</p></div><div class="paragraph"><p>It’s therefore better to split flat structures into sub-folders for <code>itemsPerRequest</code> to take effect.</p></div><div class="paragraph"><p>For more suggestions regarding the <code>itemsPerRequest</code> property, see the <a href="#_configuring_itemsperrequest">Configuring itemsPerRequest</a> section below this table.</p></div><div class="admonitionblock note"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content">Setting the <code>itemsPerRequest</code> property causes the <code>modifiedOnly</code> property to be ignored.</td></tr></tbody></table></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>&nbsp;&nbsp;&nbsp;&nbsp; <code>ordering</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><strong>optional</strong>, <em>default is <code>fast</code></em></p></div><div class="paragraph"><p>Defines the order in which nodes and their siblings are published on a public instance.</p></div><div class="paragraph"><p>For further details, see <a href="#master@performance-tuning:ROOT:Content-structure-and-organization/Publishing-performance.adoc#_optimizing_ordering_on_the_public_instance" class="xref unresolved">Optimizing ordering on the public instance</a>.</p></div></div></td></tr></tbody></table></div>
-
-#### [](#_configuring_itemsperrequest)Configuring itemsPerRequest
-
-Determining the value of `itemsPerRequest` depends on how much data you want to send in one HTTP transaction.
-
-It could be, for example, `100` nodes for workspaces without binary data. For the `assets` workspace, `100` assets might be too much though, depending on the average size of your assets.
-
-> **Tip:** You can get an approximate size of data in one transaction by exporting the trees and checking the size of the exported files.
-
-> **Warning:** This doesn’t support publishing versions. Therefore, it’s not supported for apps with a publication workflow.
-
-
-
-How does `itemsPerRequest` work?
-
-Consider the following tree structure.
-
-```yaml
-'tour-types':
-  'active': {}
-  'destinations':
-    'europe': {}
-    'asia': {}
-```
-
-If you publish `/tour-types` without `itemsPerRequest` defined, each node is sent to public instances separately:
-
-```bash
-INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path [/tour-types/destinations].
-INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path [/tour-types/destinations/asia].
-INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path [/tour-types/destinations/europe].
-INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path [/tour-types/active].
-```
-
-Now, for the `publish` action in the `tourCategories.yaml` app, let’s set `itemsPerRequest` to a very small number (just for demonstration purposes):
-
-```yaml
-subApps:
-  browser:
-    actions:
-      publish:
-        params:
-          itemsPerRequest: 2
-```
-
-Publish `/tour-types` again.
-
--   It first tries to publish the whole `/tour-types` subtree, but it has too many descendants compared to the `itemsPerRequest`. So, the `/tour-types` folder has to be published separately.
-
--   `/tour-types/destination` has two descendants, and so fits the `itemsPerRequest`. Therefore, it will be published including its children in one transaction.
-
--   `/tour-types/active` doesn’t have children, so it’s published separately. The `itemsPerRequest` param doesn’t have any effect.
-
-
-INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path \[/tour-types\].
-INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path \[/tour-types/destinations\].
-INFO  ing.receiver.operation.jcr.JcrPublicationOperation: About to update content under path \[/tour-types/active\].
-
-In this example, we decreased the number of transactions to just a few. In practice, you can reduce the number of transactions from thousands to dozens, provided the workspace structure has been created as a more or less balanced tree.
-
-### [](#_thread_pool_size)Thread pool size
-
-Optionally, administrators can configure several pool size values in the `magnolia.properties` file or [MicroProfile Config](../../../Administration/Architecture/configuration-management/microprofile-config/). The default thread pool is sufficient for most setups.
-
-> **Caution:** Modifying these settings is only recommended when publishing substantially large assets concurrently. Finding a balance for your system’s resources is necessary to ensure optimal performance when multiple editors work simultaneously and those substantially large asset sizes are published over more public instances.
-
-| Property | Description |
-| --- | --- |
-| `magnolia.publishing.pool.size` | **optional**, *default is `10`*<br><br>Size of the default thread pool handling all publication operations in the Publishing module. |
-| `magnolia.publishing.prioritizedPool.size` | **optional**<br><br>You can initialize a prioritized thread pool if there’s high and heavy traffic in the default thread pool. It helps free up the default thread pool for other regular publication operations. The most active workspaces should also be specified using the `magnolia.publishing.prioritizedWorkspaces` property below.<br><br>By default, this property is disabled; specifying the property enables it. |
-| `magnolia.publishing.prioritizedWorkspaces` | **optional**<br><br>A list of comma-separated workspace names that have publication tasks handled by a prioritized thread pool. It’s not specified by default. |
-
-### [](#_activate_bulk_publishing)Activate bulk publishing
-
-Bulk publishing allows you to simultaneously publish multiple items, saving time compared to publishing them individually. This feature, introduced and preconfigured to [enhance asset management](#6.2@product-docs:ROOT:Releases/Release-notes-for-Magnolia-CMS-6.2.43.adoc#_asset_management_enhancements), can also be applied to other apps like the Tours app.
-
-The respective publishing commands use a `uuids` parameter instead of a single path or `uuid`, to process multiple items. You can configure this by setting `bulk: true` in the action configuration.
-
-> **Note:** By default, bulk publishing is only configured for the Assets app. For other apps, you must configure them manually. The bulk option requires the action availability to be multiple.
-
-/tours/apps/tours.yaml
-
-```yaml
-...
-subApps:
-  browser:
-    actions:
-     activate: (1)
-       availability:
-         multiple: true (2)
-       bulk: true (2)
-...
-```
-
-|     |     |
-| --- | --- |
-| **1** | The action name may vary between `activate` and `publish` depending on the app you’re configuring. |
-| **2** | For the `bulk` option to be used, the `availability` property must be set to `multiple`. |
 
 ## [](#_disabling_publishing)Disabling publishing
 
@@ -317,14 +114,14 @@ The `PublishingCommand` collects the content that needs to be (un)published. It 
 
 Node collection for different publishing scenarios is outlined below.
 
--   Publication is [recursive](../../../Administration/Architecture/Publishing/#_recursive_and_non_recursive_publishing):
+-   Publication is [recursive](../../../../RNs-6-4-3/Administration/Architecture/Publishing/#_recursive_and_non_recursive_publishing):
 
-    -   [itemsPerRequest](../../../Administration/Architecture/Publishing/Publishing-performance/#_fewer_publication_requests_using_itemsperrequest) is set and if the number of child nodes is less than 1000: nodes are batched into chunks to improve publication speed (however, this does not work with versions).
+    -   [itemsPerRequest](../../../../RNs-6-4-3/Administration/Architecture/Publishing/Publishing-performance/#_fewer_publication_requests_using_itemsperrequest) is set and if the number of child nodes is less than 1000: nodes are batched into chunks to improve publication speed (however, this does not work with versions).
 
-    -   Publishing [versions](../../../Authoring/Versioning/): node versions are collected, and nodes are ordered bottom-up for publishing.
+    -   Publishing [versions](../../../../RNs-6-4-3/Authoring/Versioning/): node versions are collected, and nodes are ordered bottom-up for publishing.
 
 
--   Publication isn’t [recursive](#_publish_and_unpublish_commands) (Default):
+-   Publication isn’t [recursive](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-module/#_publish_and_unpublish_commands) (Default):
 
     -   The current node is taken.
 
@@ -363,7 +160,7 @@ The `PublicationFilter` receives a sender’s request. The request is then sent 
 
 Published nodes are included before the nearest next sibling existing on all author and public instances. The order of siblings of the published node on public instances isn’t otherwise affected.
 
-Go to the [optimize ordering](../../../Administration/Architecture/Publishing/Publishing-performance/#_optimizing_ordering_on_the_public_instance) section for more information on adapting the ordering to fulfill your needs.
+Go to the [optimize ordering](../../../../RNs-6-4-3/Administration/Architecture/Publishing/Publishing-performance/#_optimizing_ordering_on_the_public_instance) section for more information on adapting the ordering to fulfill your needs.
 
 > **Note:** This default behavior doesn’t take into account the order at any other point in time (such as the time of creating the published version).
 
@@ -373,21 +170,21 @@ The `magnolia-mgnlSystem` workspace is used on public instances in case rollback
 
 ## [](#_troubleshooting)Troubleshooting
 
--   [Instances aren’t in sync](../../../Administration/Troubleshooting/Instances-are-not-in-sync/)
+-   [Instances aren’t in sync](../../../../RNs-6-4-3/Administration/Troubleshooting/Instances-are-not-in-sync/)
 
--   [Invalid receiver](../../../Administration/Troubleshooting/Invalid-receiver/)
+-   [Invalid receiver](../../../../RNs-6-4-3/Administration/Troubleshooting/Invalid-receiver/)
 
--   [Publishing errors](../../../Administration/Troubleshooting/Publishing-issues/)
+-   [Publishing errors](../../../../RNs-6-4-3/Administration/Troubleshooting/Publishing-issues/)
 
 
 Related topics
 
--   [Publishing overview](../../../Administration/Architecture/Publishing/)
+-   [Publishing overview](../../../../RNs-6-4-3/Administration/Architecture/Publishing/)
 
--   [Publishing Transactional module](../Publishing-Transactional-module/)
+-   [Publishing Transactional module](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-Transactional-module/)
 
--   [Publishing Tools app](../../../Apps/List-of-apps/Publishing-Tools-app/)
+-   [Publishing Tools app](../../../../RNs-6-4-3/Apps/List-of-apps/Publishing-Tools-app/)
 
--   [Receivers](../../../Administration/Instances/Receivers/)
+-   [Receivers](../../../../RNs-6-4-3/Administration/Instances/Receivers/)
 
--   [Publishing security](../../../Administration/Security/Publishing-security/)
+-   [Publishing security](../../../../RNs-6-4-3/Administration/Security/Publishing-security/)

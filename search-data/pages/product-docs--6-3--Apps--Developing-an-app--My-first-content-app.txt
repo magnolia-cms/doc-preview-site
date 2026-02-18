@@ -18,7 +18,7 @@ The tutorial consists of three parts:
 
 -   Part I - My first content app – This page, which describes the Bookshelf app.
 
--   [Part II - Creating a basic content app](Part-II---Creating-a-basic-content-app/) – Shows how to install Magnolia with [Magnolia CLI](#magnolia-cli:ROOT:index.adoc) and create the basic Bookshelf app from a content type definition.
+-   [Part II - Creating a basic content app](Part-II---Creating-a-basic-content-app/) – Shows how to install Magnolia with [Magnolia CLI](../../../../../magnolia-cli/) and create the basic Bookshelf app from a content type definition.
 
 -   [Part III - Fine-tuning a basic content app](Part-III---Fine-tuning-a-basic-content-app/) – Provides instructions to turn the basic app into the final and ready-to-use Bookshelf app.
 
@@ -36,7 +36,7 @@ Going through the tutorial you learn:
 -   How to make the elements of the app’s UI ready for [internationalization](../../../Administration/Language/Internationalization/).
 
 
-> **Note:** If you want to skip the tutorial and install the final app immediately, clone the repository containing the ready-made Bookshelf app as a light module directly into your Magnolia light module folder with the command:git clone -b master --single-branch https://bitbucket.org/magnolia-cms/bookshelf.gitYou can also browse or clone the publicly available example at public-doc-samples/bookshelf.
+> **Note:** If you want to skip the tutorial and install the final app immediately, clone the repository containing the ready-made Bookshelf app as a light module directly into your Magnolia light module folder with the command:git clone -b master --single-branch {repo-git-bookshelf}You can also browse or clone the publicly available example at public-doc-samples/bookshelf.
 
 ## [](#_bookshelf_app_use_case)Bookshelf app use case
 
@@ -87,59 +87,12 @@ For each book item, the Bookshelf app can store and retrieve the following conte
 -   ISBN-13 number.
 
 
-## [](#_bookshelf_app_and_magnolia_content_types)Bookshelf app and Magnolia content types
-
-The Bookshelf app is based on Magnolia content types.
-
-### [](#_the_books_workspace)The `books` workspace
-
-Magnolia stores content in the `magnolia` repository, a [JCR repository](https://en.wikipedia.org/wiki/Content_repository_API_for_Java) that is divided into [workspaces](../../../Administration/Architecture/Workspaces/). The Bookshelf app stores all books in a new workspace called `books`.
-
-### [](#_custom_libbook_node_type)Custom `lib:book` node type
-
-In the `books` workspace, each book is a custom `lib:book` [node type](../../../Administration/Architecture/Node-types/) defined specifically for this tutorial.
-
-### [](#_content_type_properties)Content type properties
-
-Each book of the `lib:book` type can have the following content properties:
-
-<div class="joplin-table-wrapper"><table class="tableblock frame-all grid-all stretch"><colgroup><col style="width: 20%;"> <col style="width: 40%;"> <col style="width: 10%;"> <col style="width: 30%;"></colgroup><thead><tr><th class="tableblock halign-left valign-top">Property</th><th class="tableblock halign-left valign-top">Usage</th><th class="tableblock halign-left valign-top">Type</th><th class="tableblock halign-left valign-top">Restrictions</th></tr></thead><tbody><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>authors</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Name(s) of the author(s) of the book.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>String</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>none</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>ed</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>The property to store the <code>true</code> value if the primary role of the Author(s) is editorial.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Boolean</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>none</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>title</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Official book title.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>String</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>none</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>description</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Description of what the book is about.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>String</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>5000 characters max.</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>publisher</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Book publisher’s name.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>String</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>none</p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>publish_date</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date of publication of the book.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Date</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>Display format:</p></div><div class="paragraph"><p><code>YYYY-MM-DD</code></p></div></div></td></tr><tr><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p><code>isbn13</code></p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>International Standard Book Number in the 13-character variant.</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>String</p></div></div></td><td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph"><p>13 characters</p></div><div class="ulist"><ul><li><p>The first 12 characters can only be numerals, the last character can be a numeral or <code>X</code>.</p></li><li><p>The first three numerals can only be either <code>978</code> or <code>979</code>.</p></li><li><p>We don’t need to perform the validity check against the number’s checksum digit.</p></li></ul></div></div></td></tr></tbody></table></div>
-
-#### [](#_the_name_property)The `name` property
-
-When you create an app from a content type definition, the `name` property is generated automatically by Magnolia. The JCR node name is then automatically deduced from it.
-
-We make use of this auto-generated `name` property in the Bookshelf app by:
-
--   Setting it to be a required property.
-
--   Referring to it via the Cataloging name label in user dialogs.
-
--   Using it for creating a short and hyphenated book identifier (JCR node name) such as `Hawking-2005-God-Created-the-Integers`.
-
-    Therefore, in the Bookshelf app, the data in the **Cataloging name** field should be entered using the following syntax:
-
-    ```text
-    <first-author's-surname> <publication-year> <short-form-of-the-book's-full-title>
-    ```
-
-    For example, `Hawking 2005 God Created the Integers`.
-
-    Magnolia automatically replaces the spaces with hyphens when creating a node name from the `name` property.
-
-
-**Continue with [My first content app Part II](Part-II---Creating-a-basic-content-app/)**
-
-
-
-Related topics
-
--   [App configuration](../../App-configuration/)
-
--   [How to add SVG icons for apps](../Specific-aspects/How-to-add-SVG-icons-for-apps/)
-
--   [Content Types](../../../Features/Content-Types/)
-
--   [Light development in Magnolia](../../../Developing/Light-development-in-Magnolia/)
-
--   [My first translation](../../../Administration/Language/My-first-translation/)
+| Property | Usage | Type | Restrictions |
+| --- | --- | --- | --- |
+| `authors` | Name(s) of the author(s) of the book. | String | none |
+| `ed` | The property to store the `true` value if the primary role of the Author(s) is editorial. | Boolean | none |
+| `title` | Official book title. | String | none |
+| `description` | Description of what the book is about. | String | 5000 characters max. |
+| `publisher` | Book publisher’s name. | String | none |
+| `publish_date` | Date of publication of the book. | Date | Display format: `YYYY-MM-DD` |
+| `isbn13` | International Standard Book Number in the 13-character variant. | String | 13 characters • The first 12 characters can only be numerals, the last character can be a numeral or `X` . • The first three numerals can only be either `978` or `979` . • We don’t need to perform the validity check against the number’s checksum digit. |

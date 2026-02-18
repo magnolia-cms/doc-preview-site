@@ -1,0 +1,285 @@
+---
+title: "Marketing Automation module"
+url: https://docs.magnolia-cms.com/product-docs/RNs-6-4-3/Modules/extensions-and-frameworks/marketing-automation-integration-framework/Marketing-Automation-module/
+category: Magnolia 6.4
+version: latest
+breadcrumb: DX Core > Modules > Marketing automation integration framework > Adobe Marketo extension
+---
+
+# Marketing Automation module
+
+| **License** | [MLA](https://www.magnolia-cms.com/mla.html) |
+| --- | --- |
+| **Issues** | [MKTAUT](http://jira.magnolia-cms.com/browse/MKTAUT) |
+| **Maven site** | [marketingautomation](https://nexus.magnolia-cms.com/repository/magnolia.addons.releases/info/magnolia/marketingautomation/) |
+| **Latest** | {magnolia-marketing-automation-64} |
+| **Available on SPA/Headless** | Yes |
+
+| artifactID | Description |
+| --- | --- |
+| `magnolia-marketing-automation-parent` | Parent reactor. |
+| `magnolia-marketing-automation` | Provides the foundation and the API for marketing automation. |
+| `magnolia-marketing-automation-ui` | Provides the sample templating scripts and component definitions to quickly enable external forms in your Magnolia pages. |
+| `magnolia-marketing-automation-marketo-connector` | Provides a default implementation to connect to [Marketo](https://www.marketo.com/) . |
+| `magnolia-marketing-automation-salesforce-connector` | Provides a default implementation to connect to [Salesforce Sales Cloud](https://www.salesforce.com/) . |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../../../../Developing/Bundles-and-webapps/):
+
+```xml
+<dependency>
+  <groupId>info.magnolia.marketingautomation</groupId>
+  <artifactId>magnolia-marketing-automation</artifactId>
+  <version>{magnolia-marketing-automation-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.marketingautomation</groupId>
+  <artifactId>magnolia-marketing-automation-ui</artifactId>
+  <version>{magnolia-marketing-automation-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.marketingautomation</groupId>
+  <artifactId>magnolia-marketing-automation-marketo-connector</artifactId>
+  <version>{magnolia-marketing-automation-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+```xml
+<dependency>
+  <groupId>info.magnolia.marketingautomation</groupId>
+  <artifactId>magnolia-marketing-automation-salesforce-connector</artifactId>
+  <version>{magnolia-marketing-automation-64}</version> (1)
+</dependency>
+```
+
+|     |     |
+| --- | --- |
+| **1** | Should you need to specify the module version, do it using `<version>`. |
+
+| Property | Description |
+| --- | --- |
+| `class` | **required** `info.magnolia.mkautomation.definition.DefaultMarketingFormDefinition` |
+| `enabled` | **required** , *default is false* Enables the connector. Set to `true` to enable. |
+| `type` | **required** Your marketing software solution: `marketo` |
+| `implementation` |  |
+| `forms` |  |
+| `all` | **required** , *default is info.magnolia.mkautomation.marketo.forms.All* Implementation to retrieve all forms from your external marketing software solution. |
+| `byId` | **required** , *default is info.magnolia.mkautomation.marketo.forms.ById* Implementation to retrieve forms by ID from your external marketing software solution. |
+| `byName` | **required** , *default is info.magnolia.mkautomation.marketo.forms.ByName* Implementation to retrieve forms by name from your external marketing software solution. |
+| `submitBy` | **required** , *default is info.magnolia.mkautomation.marketo.forms.SubmitBy* Implementation to submit form by form name/id to your external marketing software solution. *info.magnolia.mkautomation.marketo.forms.SubmitForm* Implementation to sync leads to Marketo and create a *Fill out Form* activity. |
+| `submittedActionType` | **optional** Use `createOrUpdate` to add one more `submittedActionType` property with default value . Other options here are `createOnly, updateOnly, or createDuplicate` . This property `submittedActionType` can be used with `submitBy: info.magnolia.mkautomation.marketo.forms.SubmitBy` API only. |
+| `leads` |  |
+| `searchBy` | **required** *default for Marketo is info.magnolia.mkautomation.marketo.leads.SearchByFilterType* Implementation to retrieve leads based on a search query or filter from your external marketing software solution. |
+| `connection` |  |
+| `authUrl` | **required** Authentication URL for the external solution you want to connect to. |
+| `baseUrl` | **required** Base URL for the external solution you want to connect to. |
+| `credentials` |  |
+| `clientId` | **required** User name for your external solution. |
+| `clientSecret` | **required** Client secret for your external solution or the path to the Magnolia password manager. |
+| `selectedForms` | **optional** Filters the forms displayed. ** The values are case sensitive. For example, with these values set, only the Lead, Account and Contact forms are available in the Marketing Form dialog: `- Lead` `- Account` `- Contact` If the `selectedForms` property isn’t set or if it’s empty, all forms are displayed. | ** | The values are case sensitive. |
+| ** | The values are case sensitive. |
+| `formSelectorId` | **optional** Path to the definition that configures if whole forms or form fields can be selected. Magnolia provides the following form definitions: • `marketing-automation-ui:defaultForm` • `marketing-automation-ui:fieldsSelectionForm` You can create your own [Form definitions](../../../../Developing/Templating/Dialog-definition/Form-definition/) to suit your requirements. If the `formSelectorId` property isn’t set or if it’s empty, only whole forms can be selected in the dialog |
+
+## [](#_configuring_your_own_connector)Configuring your own connector
+
+Magnolia provides an API to enable the Magnolia author instance to get form and lead data from your external marketing software solution. We provide out-of-the-box implementations to connect to Marketo and Salesforce Sales Cloud. If you want to connect to another third-party solution, you must write your own implementation.
+
+You can integrate with another third-party marketing software solution using the following interfaces provided by the `marketing-automation` submodule:
+
+-   `info.magnolia.mkautomation.common.marketingforms` (for forms)
+
+-   `info.magnolia.mkautomation.common.marketingleads` (for leads)
+
+
+MarketingForms.java
+
+```java
+package info.magnolia.mkautomation.common;
+
+import info.magnolia.mkautomation.function.SubmitSupplier;
+import info.magnolia.mkautomation.function.Supplier;
+import info.magnolia.mkautomation.function.SupplierByOptional;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+/**
+ * Provides API to operate on {@linkplain Form} objects.
+ */
+@Data
+@AllArgsConstructor
+public class MarketingForms {
+
+    private All all;
+    private ById byId;
+    private ByName byName;
+    private SubmitBy submitBy;
+
+    /**
+     * Supplier interface for getting all external forms.
+     */
+    public interface All extends Supplier<Form> {
+    }
+
+    /**
+     * Supplier interface for external form searched by id.
+     */
+    public interface ById extends SupplierByOptional<Form, Form.Id> {
+    }
+
+    /**
+     * Supplier interface for external form searched by name.
+     */
+    public interface ByName extends SupplierByOptional<Form, Form.Id> {
+    }
+
+    /**
+     * Supplier interface for post a external form.
+     */
+    public interface SubmitBy extends SubmitSupplier<Form> {
+    }
+}
+```
+
+MarketingLeads.java
+
+```java
+package info.magnolia.mkautomation.common;
+
+import info.magnolia.mkautomation.function.SupplierByOptional;
+
+import java.util.Map;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+/**
+* Provides API to operate on {@linkplain Lead} objects.
+*/
+@Data
+@AllArgsConstructor
+public class MarketingLeads {
+
+private SearchBy searchBy;
+
+/**
+* Supplier interface for external lead searched by parameters.
+*/
+public interface SearchBy extends SupplierByOptional<Lead, Map<String, String>> {
+}
+
+}
+```
+
+## [](#_decorating_mtk2_in_a_light_module)Decorating MTK2 in a light module
+
+[MTK2](#6.2@product-docs:ROOT:/Releases/Release-notes-for-Magnolia-CMS-6.2.10.adoc#_travel_demo_uses_new_mtk2_with_magnolia_6_ui_dialogs) was introduced in Magnolia 6.2.10.
+
+If you want to use the [marketing form component](#_sample_page_component) with MTK2, you must decorate MTK2 and add the marketing form component as shown in the example below:
+
+```bash
+$magnolia.resources.dir
+└── my-module
+    └── decorations
+        ├── mtk2
+        │   └── templates
+        │       └── pages
+        │           └── basic.yaml
+```
+
+/my-module/decorations/mtk2/templates/pages/basic.yaml
+
+```yml
+areas:
+  main:
+    availableComponents:
+      marketingForm:
+        id: marketing-automation-ui:components/marketingForm
+```
+
+## [](#_usage)Usage
+
+The `magnolia-marketing-automation-ui` submodule provides a sample Marketing Forms [component](../../../../Developing/Templating/Template-definition/Component-definition/) that is available in the Basic [page template](../../../../Developing/Templating/Template-definition/Page-definition/) by default.
+
+### [](#_sample_page_component)Sample page component
+
+When you add the **Marketing Form** component to a page, a sample dialog enables you to select the connector you have configured. Once you select the connector, you can choose the form and, if you have [enabled form field selection](#_enabling_form_field_selection), the form fields you want.
+
+![Marketing form](../../../../_images/image2019-11-22_11-51-27.png) ![Marketing form](../../../../_images/6-2-mktaut-dialog-fieldsel.png)
+
+> **Note:** The final set of selected fields for the marketing form can only originate from one form. You cannot select multiple fields from different forms.
+
+When field selection is enabled, note that:
+
+-   If there are required fields for the form type you selected, you must select them in Magnolia.
+
+-   You cannot remove required fields in Magnolia, you must remove them from the original form in your external marketing software solution if required.
+
+-   You cannot reorder the fields you select in Magnolia. They are displayed as they were designed in your external marketing software solution.
+
+
+When field selection is not enabled, the form fields are defined directly in your external marketing software solution and you only select the form in the dialog.
+
+![Marketing form dialog](../../../../_images/6-2-mktaut-dialog-formsel.png)
+
+Once you have added a form to a page, you can [publish](../../../../Authoring/Publishing/) the page and make it available to your website users. Data entered by your users in the rendered form is sent directly back to your external marketing software solution.
+
+![Marketing automation form in Pages app](../../../../_images/6-2-3-marketing-automation-form-in-page.png)
+
+Progressive forms are supported by Magnolia if they are enabled in your external marketing software solution.
+
+## [](#_changelog)Changelog
+
+The changelog gives you an overview of the changes made to the Marketing Automation module at each release.
+
+> **Note:** This changelog covers the 3.x branch of the Marketing Automation module. For the 2.x changelog, see here. For the 1.x changelog, see here.
+
+### [](#_3_0)3.0
+
+Released on **November 12, 2025**.
+
+Compatible with Magnolia 6.4.
+
+| Module version | Magnolia CMS version |
+| --- | --- |
+| **3.0+** | **6.4+** |
+| 2.0+ | 6.3.0+ |
+| 1.0.4 | 6.2.4+ |
+| 1.0.3 | 6.2.4+ |
+| 1.0.2 | 6.2.2+ |
+| 1.0.1 | 6.2.2 |
+| 1.0 | 6.2 |
+
+## [](#_issues)Issues
+
+### [](#_missing_verticalformlayoutdefinition)Missing VerticalFormLayoutDefinition
+
+The missing definition is indicated by the following error:
+
+```console
+2024-09-18 15:30:22,560 WARN  agnolia.transformer.ClassPropertyBasedTypeResolver: Encountered the 'class' property but failed to resolved the type from its value: [info.magnolia.mkautomation.ui.layout.VerticalFormLayoutDefinition]
+java.lang.ClassNotFoundException: info.magnolia.mkautomation.ui.layout.VerticalFormLayoutDefinition
+at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:445) ~[?:?]
+at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:592) ~[?:?]
+at groovy.lang.GroovyClassLoader.loadClass(GroovyClassLoader.java:862) ~[groovy-4.0.22.jar:4.0.22]
+at groovy.lang.GroovyClassLoader.loadClass(GroovyClassLoader.java:736) ~[groovy-4.0.22.jar:4.0.22]
+```

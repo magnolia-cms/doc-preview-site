@@ -8,15 +8,9 @@ breadcrumb: DX Core > Accessible forms (tech preview)
 
 # Accessible forms (tech preview)
 
-> **Note:** This is a technical preview of the Accessible forms feature for Magnolia 6.3; do not use this version in production.A production-ready version of this feature is available in Magnolia 6.4 and later as New UI Forms. You can find the documentation here: New UI Forms.We still encourage you to share your experience, impressions and inputs with us at feedback@magnolia-cms.com.
-
-Magnolia is developing a new UI based on front-end technology (React) and a custom [front-end design system](https://ds.magnolia-cloud.com) built from the ground up for accessibility.
-
-Magnolia’s accessible forms and design system support [equal access](https://www.tpgi.com/essential-guide-european-accessibility-act/) for everyone. They offer a modern design and help you build more readable, consistent, performant, and usable forms. Furthermore, it preserves your current features and improves their accessibility.
-
 | Vaadin form | New Accessible form |
 | --- | --- |
-| ![Vaadin form](../../../../_images/form-engine/form-vaadin.png) | ![New UI form](../../../../_images/form-engine/form-warp-nomagnolia.png) |
+|  |  |
 
 ## [](#_viewing_accessible_forms)Viewing accessible forms
 
@@ -114,53 +108,24 @@ In the **Problems subapp**, only the first problem of each definition is display
 
 Even once the Accessible forms feature is released, not every form will be supported due to the many custom fields included in extensions or customer projects. There will be a transition period. You can continue to use Vaadin forms and upgrade them to Accessible forms as appropriate.
 
-## [](#_current_and_planned_support)Current and planned support
-
-This section outlines which standard Magnolia fields and related features are supported in the new UI.
-
-### [](#_standard_form_fields_supported)Standard form fields supported
-
-The standard fields are described in the [Field definition](../Field-definition/) section of the Magnolia documentation.
-
-| Supported fields | Fields not yet fully supported |
+| Supported fields | Fields not yet fully supported ** |
 | --- | --- |
 | [checkBoxField](../Field-definition/List-of-fields/Checkbox-field/) | [jsonComboBoxField](../Field-definition/List-of-fields/Combobox-field/) |
 | [checkBoxGroupField](../Field-definition/List-of-fields/Checkbox-group-field/) | [jsonLinkField](../Field-definition/List-of-fields/Link-field/) |
 | [compositeField](../Field-definition/List-of-fields/Composite-field/) | [sliderField](../Field-definition/List-of-fields/Slider-field/) |
 | [damLinkField](../Field-definition/List-of-fields/Link-field/) | [staticField](../Field-definition/List-of-fields/Static-field/) |
-| [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) |     |
-| [dateField](../Field-definition/List-of-fields/Date-field/) |     |
-| [jcrMultiField](../Field-definition/List-of-fields/Multi-field/) |     |
-| [jcrMultiLinkField](../Field-definition/List-of-fields/Multi-field/) (renders as [jcrMultiField](../Field-definition/List-of-fields/Multi-field/)) |     |
-| [jcrMultiValueField](../Field-definition/List-of-fields/Multi-field/) |     |
-| [listSelectField](../Field-definition/List-of-fields/List-field/) |     |
-| [pageLinkField](../Field-definition/List-of-fields/Link-field/) |     |
-| [radioButtonGroupField](../Field-definition/List-of-fields/Radio-button-group-field/) |     |
-| [richTextField](../Field-definition/List-of-fields/Rich-text-field/) |     |
-| [textField](../Field-definition/List-of-fields/Text-field/) |     |
-| [tokenField](../Field-definition/List-of-fields/Token-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/)) |     |
-| [twinColSelectField](../Field-definition/List-of-fields/Select-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/)) |     |
-| [switchableField](../Field-definition/List-of-fields/Switchable-field/) |     |
-| [passwordField](../Field-definition/List-of-fields/Password-field/) |     |
-| [linkField](../Field-definition/List-of-fields/Link-field/) |     |
-
-> **Note:** The fields from the Magnolia Extensions and custom fields are not yet supported.
-
-### [](#_features_not_yet_supported)Features not yet supported
-
-For the [standard fields](#_standard_form_fields_supported), several features aren’t supported yet:
-
--   Editing multi-language content.
-
--   Page editor dialogs.
-
--   Reordering items in a [multiField](../Field-definition/List-of-fields/Multi-field/).
-
--   Supplying a [custom fieldType](../Field-definition/Custom-fields/).
-
--   Tabs.
-
--   The [richTextField](../Field-definition/List-of-fields/Rich-text-field/) editor doesn’t have Magnolia plugins.
-
-
-> **Note:** Form layouts are not supported as they lack the flexibility of previous versions and therefore are not even planned for future development.
+| [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) |  |
+| [dateField](../Field-definition/List-of-fields/Date-field/) |  |
+| [jcrMultiField](../Field-definition/List-of-fields/Multi-field/) |  |
+| [jcrMultiLinkField](../Field-definition/List-of-fields/Multi-field/) (renders as [jcrMultiField](../Field-definition/List-of-fields/Multi-field/) ) |  |
+| [jcrMultiValueField](../Field-definition/List-of-fields/Multi-field/) |  |
+| [listSelectField](../Field-definition/List-of-fields/List-field/) |  |
+| [pageLinkField](../Field-definition/List-of-fields/Link-field/) |  |
+| [radioButtonGroupField](../Field-definition/List-of-fields/Radio-button-group-field/) |  |
+| [richTextField](../Field-definition/List-of-fields/Rich-text-field/) |  |
+| [textField](../Field-definition/List-of-fields/Text-field/) |  |
+| [tokenField](../Field-definition/List-of-fields/Token-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) ) |  |
+| [twinColSelectField](../Field-definition/List-of-fields/Select-field/) (renders as [comboBoxField](../Field-definition/List-of-fields/Combobox-field/) ) |  |
+| [switchableField](../Field-definition/List-of-fields/Switchable-field/) |  |
+| [passwordField](../Field-definition/List-of-fields/Password-field/) |  |
+| [linkField](../Field-definition/List-of-fields/Link-field/) |  |

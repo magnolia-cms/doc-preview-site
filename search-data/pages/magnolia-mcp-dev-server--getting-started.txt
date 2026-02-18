@@ -1,0 +1,128 @@
+---
+title: "Getting started"
+url: https://docs.magnolia-cms.com/magnolia-mcp-dev-server/getting-started/
+category: Modules
+version: modules
+breadcrumb: Magnolia DEV MCP > Getting started
+---
+
+# Getting started
+
+Magnolia DEV MCP is an AI-powered development toolkit for Magnolia CMS, built on the [Model Context Protocol (MCP)](https://modelcontextprotocol.io). It gives AI assistants such as Claude, Cursor, and GitHub Copilot direct access to your Magnolia development workflows, from scaffolding projects to validating templates against a running instance.
+
+The server uses a plugin architecture. You install only the plugins you need, and the AI assistant discovers their tools automatically.
+
+## [](#_prerequisites)Prerequisites
+
+Before you begin, make sure you have the following:
+
+-   [Node.js](https://nodejs.org/) 18 or later.
+
+-   An AI assistant that supports MCP, for example [Claude Code](https://docs.anthropic.com/en/docs/claude-code), [Cursor](https://www.cursor.com/), or VS Code with an MCP-compatible extension.
+
+-   (Optional) A running Magnolia Author instance, if you plan to use the API plugin.
+
+-   (Optional) A [Figma personal access token](https://help.figma.com/hc/en-us/articles/8085703771159-Manage-personal-access-tokens), if you plan to use the Figma plugin.
+
+
+## [](#_install_the_server_and_plugins)Install the server and plugins
+
+Use the `--plugin` flag (repeatable) to specify which plugins to install:
+
+```bash
+npx {server-pkg} install \
+  --plugin {cli-pkg} \
+  --plugin {api-pkg} \
+  --plugin {figma-pkg} \
+  --plugin {log-pkg}
+```
+
+To add a plugin later:
+
+```bash
+npx {server-pkg} add-plugin --plugin {log-pkg}
+```
+
+The installer creates a `~/.magnolia-mcp/` directory with the server, your selected plugins, and a default `mgnl.mcp.config.js`.
+
+## [](#_configure_your_magnolia_connection)Configure your Magnolia connection
+
+Open `~/.magnolia-mcp/mgnl.mcp.config.js` and update the `magnolia` section to match your local environment:
+
+```javascript
+export default {
+  magnolia: {
+    baseUrl: 'http://localhost:8080',
+    username: 'superuser',
+    password: 'superuser',
+    authorInstance: 'magnoliaAuthor',
+  },
+  // ...
+};
+```
+
+> **Tip:** You can also place a mgnl.mcp.config.js in your project root to override global settings per project. See Configuration reference for the full list of options.
+
+## [](#_connect_to_your_ai_assistant)Connect to your AI assistant
+
+Add the MCP server to your AI assistant’s configuration. The exact location depends on the tool you use.
+
+### [](#_claude_code)Claude Code
+
+Run the following command in your terminal:
+
+```bash
+claude mcp add magnolia-dev ~/.magnolia-mcp/node_modules/@magnolia-ai/mcp-dev-server/dist/index.js
+```
+
+### [](#_cursor_vs_code)Cursor / VS Code
+
+Add the following to your `.cursor/mcp.json` or `.vscode/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "magnolia-dev": {
+      "command": "node",
+      "args": [
+        "~/.magnolia-mcp/node_modules/@magnolia-ai/mcp-dev-server/dist/index.js"
+      ]
+    }
+  }
+}
+```
+
+### [](#_windsurf)Windsurf
+
+Add the following to your `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "magnolia-dev": {
+      "command": "node",
+      "args": [
+        "~/.magnolia-mcp/node_modules/@magnolia-ai/mcp-dev-server/dist/index.js"
+      ]
+    }
+  }
+}
+```
+
+## [](#_verify_the_connection)Verify the connection
+
+Ask your AI assistant:
+
+```text
+List all available Magnolia MCP plugins.
+```
+
+The assistant calls `mgnl_dev_list_plugins` and returns the list of loaded plugins. If you see your plugins listed, the setup is complete.
+
+## [](#_next_steps)Next steps
+
+-   [Tool reference](../tool-reference/) — See what tools are available and when to use them.
+
+-   [Examples](../examples/) — Follow end-to-end workflows with sample prompts.
+
+-   [Configuration reference](../configuration/) — Fine-tune settings and environment variables.

@@ -8,41 +8,13 @@ breadcrumb: DX Cloud > Environments
 
 # Environments
 
-Environments allow you to develop and test your DX Cloud project in separate places so that your project is thoroughly tested and production-ready without impacting the proper production environment itself.
-
-Typically, you have **three** environments and by default, we offer the following.
-
- EnvironmentDescription
-
-`dev`
-
-The `dev`, or development, environment is typically used for active development where developers build out the project.
-
-> **Note:** This is typically the starting environment for your project.
-
-![dev environment overview](../_images/dev-environment-overview.jpg)
-
-`uat`
-
-The `uat`, or User Acceptance Testing, environment is often used to validate and test the software developed by the developers in the `dev` environment. Hence, the "acceptance" part of the name.
-
-> **Note:** Typically, the environment flow moves from dev > uat > prod.
-
-![uat environment overview](../_images/uat-environment-overview.jpg)
-
-`prod`
-
-The `prod`, or production, environment is the actual live environment and is implemented after `uat`.
-
-![prod environment overview](../_images/prod-environment-overview.jpg)
-
-
-
-Author and Public in environments
-
-We recommend that you have both Public and Author instances within your different environments as this allows proper testing of the entire workflow through multiple environments. Check out the visual below for more details.
-
-![environments with architecture](../_images/environments-with-architecture.jpg)
+| Environment | Description |
+| --- | --- |
+| `dev` | The `dev` , or development, environment is typically used for active development where developers build out the project. ** This is typically the starting environment for your project. | ** | This is typically the starting environment for your project. |
+| ** | This is typically the starting environment for your project. |
+| `uat` | The `uat` , or User Acceptance Testing, environment is often used to validate and test the software developed by the developers in the `dev` environment. Hence, the "acceptance" part of the name. ** Typically, the environment flow moves from `dev` > `uat` > `prod` . | ** | Typically, the environment flow moves from `dev` > `uat` > `prod` . |
+| ** | Typically, the environment flow moves from `dev` > `uat` > `prod` . |
+| `prod` | The `prod` , or production, environment is the actual live environment and is implemented after `uat` . |
 
 ## [](#_feature_environments)Feature environments
 
@@ -115,7 +87,7 @@ push-docker-image: (2)
   before_script:
     - export GIT_TAG=$CI_COMMIT_SHORT_SHA
     - helm repo add mironet https://charts.mirohost.ch/
-    - export HELM_CHART_VERSION=1.17.2
+    - export HELM_CHART_VERSION={helm-chart-version}
     - export KUBECONFIG=$KUBE_CONFIG (6)
     - chmod 600 $KUBE_CONFIG (6)
 
@@ -162,5 +134,5 @@ deploy-uat: (7)
   when: manual (12)
 ```
 
-<div class="joplin-table-wrapper"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>In the <code>build-magnolia</code> stage, the web app is built using maven, as with any Magnolia project. If using <a href="#6.3@product-docs:ROOT:index.adoc" class="xref unresolved">Magnolia 6.3</a>, you need Java 17 under <code>build-magnolia.image</code>.<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">build-magnolia:
+<div class="joplin-table-wrapper"><table><tbody><tr><td><i class="conum" data-value="1"></i><b>1</b></td><td>In the <code>build-magnolia</code> stage, the web app is built using maven, as with any Magnolia project. If using <a href="../../product-docs/6.3/" class="xref page">Magnolia 6.3</a>, you need Java 17 under <code>build-magnolia.image</code>.<div class="listingblock"><div class="content"><pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">build-magnolia:
   image: maven:3.8-openjdk-17-slim</code></pre></div></div></td></tr><tr><td><i class="conum" data-value="2"></i><b>2</b></td><td>In the <code>push-docker-image</code> stage, the Docker image is built and pushed to the Docker registry (<em>in this case the GitLab registry</em>), using the <code>Dockerfile</code> located in the webapp folder.</td></tr><tr><td><i class="conum" data-value="3"></i><b>3</b></td><td>The <code>GIT_TAG</code> is used to set the tag for the created Docker image.</td></tr><tr><td><i class="conum" data-value="4"></i><b>4</b></td><td>The environment variables are set automatically by GitLab if the GitLab registry is used for the project.<div class="admonitionblock note best"><table><tbody><tr><td class="icon"><i class="fa icon-note" title="Note"></i></td><td class="content"><div class="paragraph"><p>We recommend that you use GitLab.</p></div><div class="ulist"><div class="title"><code>env</code> variables</div><ul><li><p><code>$CI_REGISTRY_USER</code></p></li><li><p><code>$CI_REGISTRY_PASSWORD</code></p></li><li><p><code>$CI_REGISTRY</code></p></li></ul></div></td></tr></tbody></table></div></td></tr><tr><td><i class="conum" data-value="5"></i><b>5</b></td><td>The general <code>deployment</code> stage defines the helm chart repo and the version of the Helm chart to be used in the actual deployments.</td></tr><tr><td><i class="conum" data-value="6"></i><b>6</b></td><td>The <code>KUBE_CONFIG</code> CI/CD variable should be defined as type <code>File</code> and hold KubeConfig of the cluster the deployment should go to. The same variable can be defined in different environment scopes (see <code>11</code>). The <code>chmod</code> command changes the access to the file to avoid warnings.</td></tr><tr><td><i class="conum" data-value="7"></i><b>7</b></td><td>The actual <code>deployment</code> stages define the namespace and prefix for the deployment. These stages can be duplicated for different namespaces (<em>so that deployments can run in parallel on the cluster</em>) and for different clusters (see <code>11</code>).</td></tr><tr><td><i class="conum" data-value="8"></i><b>8</b></td><td>This commands creates a namespace for the deployment and adds to the Rancher <code>default</code> project. A loop is integrated to ensure that the namespace exists before continuing. If the namespace already exists, the command is executed without errors.</td></tr><tr><td><i class="conum" data-value="9"></i><b>9</b></td><td>Helm is using the <a href="https://gitlab.com/mironet/magnolia-helm" target="_blank" rel="noopener">Mironet Helm Chart</a> to deploy the Magnolia App and the corresponding databases using the provided values.yml file (see <a href="../deployment/webapp_deployment/#values-yaml-helm" class="xref page">Helm Values</a>) to the defined namespace.</td></tr><tr><td><i class="conum" data-value="10"></i><b>10</b></td><td>The needed secrets are copied over from the <code>default</code> namespace to the newly created namespace.</td></tr><tr><td><i class="conum" data-value="11"></i><b>11</b></td><td>The environment name corresponds to the environment scope (<code>dev</code> or <code>prod</code>) defined in the <code>Deployments</code> section. In different environments the same variable names can be used.</td></tr><tr><td><i class="conum" data-value="12"></i><b>12</b></td><td>The <code>deployment</code> must be triggered manually.</td></tr></tbody></table></div>

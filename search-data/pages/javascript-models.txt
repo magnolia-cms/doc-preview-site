@@ -1,0 +1,40 @@
+---
+title: "Javascript Models"
+url: https://docs.magnolia-cms.com/javascript-models/
+category: Modules
+version: modules
+breadcrumb: Javascript Models
+---
+
+# Javascript Models
+
+| **License** | [MLA](https://www.magnolia-cms.com/mla.html) , [GPL](http://www.gnu.org/licenses/gpl-3.0.html) |
+| --- | --- |
+| **Issues** | [JSMODELS](https://magnolia-cms.atlassian.net/browse/JSMODELS) |
+| **Git** | [Git](https://gitlab.magnolia-platform.com/pd/extensions/javascript-models) |
+| **Maven site** | [JSMODELS](https://nexus.magnolia-cms.com/service/rest/repository/browse/magnolia.public.releases/info/magnolia/javascript-models/magnolia-module-javascript-models/) |
+
+## [](#_installing_with_maven)Installing with Maven
+
+Maven is the easiest way to install the module. Add the following to your [bundle](../product-docs/RNs-6-4-3/Developing/Bundles-and-webapps/):
+
+javascript-models
+
+```xml
+<dependency>
+  <groupId>info.magnolia.javascript-models</groupId>
+  <artifactId>magnolia-module-javascript-models</artifactId>
+  <version>4.0.0</version>
+</dependency>
+```
+
+| Property | Description |
+| --- | --- |
+| `exposedComponents` | **optional** The exposed components' configuration node can be omitted. |
+| `<object-name>` | **required** An arbitrary name of an exposed object |
+| `name` | **required** The name of the object which will be used to reference it. |
+| `componentClass` | **required** A fully qualified class name of the exposed object. |
+
+| Version | Notes |
+| --- | --- |
+| `3.0.0` | • [JSMODELS-53](https://magnolia-cms.atlassian.net/browse/JSMODELS-53) • [JSMODELS-45](https://magnolia-cms.atlassian.net/browse/JSMODELS-45) |

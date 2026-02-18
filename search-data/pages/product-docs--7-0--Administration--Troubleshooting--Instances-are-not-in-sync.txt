@@ -15,7 +15,7 @@ Activation refused due to request arriving too late or time not synced between a
 Please contact your administrator to ensure server times are synced or the tolerance is set high enough to counter the differences.
 ```
 
-The error is coming from info.magnolia.publishing.command.PublicationCommand when using the [Publishing module](../../../Modules/List-of-modules/Publishing-module/).
+The error is coming from info.magnolia.publishing.command.PublicationCommand when using the [Publishing module](../../../../RNs-6-4-3/Modules/List-of-modules/Publishing-module/).
 
 To resolve this issue, check the system time (server time) on both instances. Configure the servers to use Network Time Protocol (NTP) so that they could use the same time and stay in sync.
 

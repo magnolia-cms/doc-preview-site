@@ -1,0 +1,55 @@
+---
+title: "List"
+url: https://docs.magnolia-cms.com/magnolia-cli/framework-prototypes/available-components/list/
+category: CLI
+version: general
+breadcrumb: Magnolia CLI > Magnolia Component Library > Components > List
+---
+
+# List
+
+The List component displays a list of text items, with an optional title.
+
+## [](#_preview)Preview
+
+## [](#_fields)Fields
+
+-   `title` (optional) - Displayed as a heading above the list (rendered as <h2>).
+
+-   `items` (required) - A list of text items:
+
+    -   At least one item is required.
+
+    -   Each item includes:
+
+        -   `field` (required) - A single-line text input representing one list entry.
+
+
+
+
+## [](#_behavior)Behavior
+
+-   If a `title` is provided, it is rendered as a heading (<h2>).
+
+-   The list items are rendered below the title using minimal formatting.
+
+
+## [](#_creating_the_component)Creating the component
+
+To create this component in your project, run:
+
+```console
+npm run mgnl -- create-component List -p list
+```
+
+> **Note:** This command adds a local copy of the component to your project. You can fully customize it afterward.
+
+## [](#_available_in)Available in
+
+-   [Magnolia Angular Component Library](../../cli-angular-prototypes/)
+
+-   [Magnolia Freemarker Component Library](../../cli-freemarker-prototypes/)
+
+-   [Magnolia React Component Library](../../cli-react-prototypes/)
+
+-   [Magnolia Vue Component Library](../../cli-vue-prototypes/)

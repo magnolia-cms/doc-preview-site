@@ -1,0 +1,29 @@
+---
+title: "REST Design – Security"
+url: https://docs.magnolia-cms.com/rest-api-guidelines/1.0/security/
+category: Modules
+version: modules
+breadcrumb: REST API Guidelines > Security
+---
+
+# REST Design – Security
+
+Clarifies which security-related concerns are handled at the Magnolia platform or infrastructure level rather than within individual APIs. It documents why endpoint security, scopes, and rate limiting are excluded from the API design rules.
+
+## [](#104)SKIP secure endpoints
+
+Rationale: Magnolia enforces endpoint security at the platform level. API designers do not define or manage endpoint security individually as part of the API contract.
+
+**Reference:** [Zalando rule #104](https://opensource.zalando.com/restful-api-guidelines/#104)
+
+## [](#105)SKIP secure all endpoints with scopes
+
+Rationale: Authorization and access control using scopes is handled centrally by the Magnolia platform. As a result, scope definitions are not part of the API design guidelines.
+
+**Reference:** [Zalando rule #105](https://opensource.zalando.com/restful-api-guidelines/#105)
+
+## [](#153)SKIP use 429 with header for rate limits
+
+Rationale: Magnolia APIs MAY apply rate limiting and abuse protection. Rate limiting SHOULD be implemented at the infrastructure level rather than within individual APIs. Therefore, API-level requirements for `429` responses and related headers are not enforced.
+
+**Reference:** [Zalando rule #153](https://opensource.zalando.com/restful-api-guidelines/#153)

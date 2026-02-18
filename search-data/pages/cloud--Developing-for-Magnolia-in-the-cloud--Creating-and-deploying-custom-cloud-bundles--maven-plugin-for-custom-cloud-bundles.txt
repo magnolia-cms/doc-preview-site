@@ -1,0 +1,78 @@
+---
+title: "Magnolia Cloud Maven plugin"
+url: https://docs.magnolia-cms.com/cloud/Developing-for-Magnolia-in-the-cloud/Creating-and-deploying-custom-cloud-bundles/maven-plugin-for-custom-cloud-bundles/
+category: Modules
+version: modules
+breadcrumb: Magnolia Cloud > Developing for Magnolia in the cloud > Creating and deploying custom cloud bundles > Magnolia Cloud Maven plugin
+---
+
+# Magnolia Cloud Maven plugin
+
+The [Magnolia Cloud Maven Plugin](https://git.magnolia-cms.com/projects/OD/repos/magnolia-cloud-maven-plugin/browse) is used for the continuous integration and deployment (CI/CD) of custom bundles to Magnolia Cloud. The plugin validates and uploads your custom cloud bundle and deploys it to Magnolia’s pipelines. Currently, the plugin is tested against Java 8 and 13.
+
+> **Note:** Make sure you use the latest version of the Magnolia Cloud Maven Plugin when deploying a new bundle to Magnolia Cloud: 1.1.
+
+> **Caution:** Currently, Magnolia Cloud only allows for incremental upgrades of the environment if the maven version is increased. The only alternative option at this time is to tear down the environment and set it up again.
+
+What does the plugin do?
+
+The plugin validates the custom bundle which
+
+-   Checks for the required configuration in the `web.xml` and `magnolia.properties` files.
+
+-   Inspects required and blacklisted modules and jars.
+
+
+The plugin deploys the WAR file which
+
+-   Uploads the built artifact to the S3 bucket that serves as the primary entry point to Magnolia Cloud’s deployment pipelines.
+
+-   Collects meta-data about the artifact for debugging.
+
+
+| Maven goal | Description |
+| --- | --- |
+| `magnolia-cloud:validate` | Validates the project for compatibility with Magnolia Cloud deployment. |
+| `magnolia-cloud:upload-to-s3` | Uploads the built artifact (the webapp WAR file) to the provided S3 bucket. |
+
+## [](#_example_cicd_pipeline_for_cloud_deployment)Example CI/CD pipeline for cloud deployment
+
+Ideally, you would set up a `Jenkinsfile` in your project. See the example below which uses the [profiles](#cloud-project-profiles) created when setting up the pipeline.
+
+> **Note:** Your profiles and CI/CD setup may vary.
+
+Example Jenkinsfile
+
+```sh
+pipeline {
+
+    agent {
+        label 'java'
+    }
+
+    options {
+        withAWS(region:'eu-central-1',credentials:'stored-in-jenkins-secrets')
+    }
+
+    stages {
+        stage('Build the artifact') { (1)
+            steps {
+                sh 'mvn clean verify -U -Pmagnolia-cloud-verify'
+            }
+        }
+        stage('Deploy to Magnolia Cloud') { (2)
+            when {
+                branch 'release'
+            }
+            steps {
+                sh 'mvn deploy -Pmagnolia-cloud-deploy'
+            }
+        }
+    }
+}
+```
+
+|     |     |
+| --- | --- |
+| **1** | Specify the validation/verification stage. |
+| **2** | Specify the deployment stage. |
