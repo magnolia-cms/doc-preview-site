@@ -51,6 +51,44 @@ class MagnoliaMarkdownGenerator {
       linkStyle: 'inlined'
     });
 
+    // Antora tableblock tables: deeply nested cells that break GFM plugin.
+    // Must be added BEFORE td.use(gfm) so it takes priority.
+    td.addRule('antoraTableBlock', {
+        filter: function (node) {
+          if (node.nodeName === 'TABLE' && node.classList && node.classList.contains('tableblock')) {
+            return true;
+          }
+          if (node.nodeName === 'DIV' && node.querySelector && node.querySelector('table.tableblock')) {
+            return true;
+          }
+          return false;
+        },
+        replacement: function (content, node) {
+          var table = node;
+          if (node.nodeName === 'DIV') {
+            table = node.querySelector('table.tableblock');
+            if (!table) return content;
+          }
+  
+          var rows = table.querySelectorAll('tr');
+          if (!rows || rows.length === 0) return content;
+  
+          var result = [];
+          for (var i = 0; i < rows.length; i++) {
+            var cells = rows[i].querySelectorAll('th, td');
+            var rowCells = [];
+            for (var j = 0; j < cells.length; j++) {
+              rowCells.push(extractCellText(cells[j]));
+            }
+            result.push('| ' + rowCells.join(' | ') + ' |');
+            if (i === 0) {
+              result.push('| ' + rowCells.map(function () { return '---'; }).join(' | ') + ' |');
+            }
+          }
+          return '\n\n' + result.join('\n') + '\n\n';
+        }
+      });
+
     // Enable GFM (tables, strikethrough, task lists)
     td.use(gfm);
 
@@ -494,6 +532,42 @@ class MagnoliaMarkdownGenerator {
     console.log('\n✅ Done!\n');
   }
 }
+
+/**
+ * Extract text from a complex Antora table cell, preserving inline formatting
+ * but flattening block structure into a single line for GFM compatibility.
+ */
+function extractCellText(cell) {
+    var parts = [];
+  
+    function walk(node) {
+      if (node.nodeType === 3) {
+        var text = node.textContent;
+        if (text.trim()) parts.push(text.trim());
+        return;
+      }
+      if (node.nodeType !== 1) return;
+  
+      var tag = node.nodeName;
+      if (tag === 'CODE') { parts.push('`' + node.textContent + '`'); return; }
+      if (tag === 'STRONG' || tag === 'B') { parts.push('**' + node.textContent.trim() + '**'); return; }
+      if (tag === 'EM' || tag === 'I') { parts.push('*' + node.textContent.trim() + '*'); return; }
+      if (tag === 'A') { parts.push('[' + node.textContent.trim() + '](' + (node.getAttribute('href') || '') + ')'); return; }
+      if (tag === 'LI') { parts.push('• '); }
+      if (tag === 'DT') {
+        var children = node.childNodes;
+        for (var i = 0; i < children.length; i++) walk(children[i]);
+        parts.push(':');
+        return;
+      }
+  
+      var children = node.childNodes;
+      for (var i = 0; i < children.length; i++) walk(children[i]);
+    }
+  
+    walk(cell);
+    return parts.join(' ').replace(/\s+/g, ' ').replace(/\s*•\s*/g, ' • ').trim();
+  }
 
 module.exports = MagnoliaMarkdownGenerator;
 
