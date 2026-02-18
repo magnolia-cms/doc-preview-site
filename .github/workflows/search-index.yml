@@ -34,7 +34,8 @@ jobs:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
       - name: Build Antora site (preview)
-        run: npx antora playbook.yml
+        run: npx antora --fetch playbook.yml
+        timeout-minutes: 15
 
       - name: Install native-search dependencies
         run: |
