@@ -8,13 +8,11 @@ if ! antora playbook.yml --fetch; then
   exit 1
 fi
 
-# Copy pre-built search data into the built site
-echo "Copying search data..."
-if [ -d "search-data" ]; then
-  cp -r search-data build/site/
-  echo "Search data copied successfully"
-else
-  echo "WARNING: search-data/ not found, skipping (search may not work)"
-fi
+# Generate search index and LLM .txt files into the built site (build/site is in .gitignore)
+echo "Generating search index and LLM pages..."
+(cd native-search && npm ci --omit=dev)
+(cd native-search && node src/indexer.js ../build/site ../build/site/search-data)
+(cd native-search && node src/markdown-generator.js ../build/site ../build/site/search-data)
+echo "Search data generated at build/site/search-data/"
 
 echo "Build complete"
