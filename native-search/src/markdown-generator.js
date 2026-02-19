@@ -392,18 +392,37 @@ class MagnoliaMarkdownGenerator {
     // Collapse excessive blank lines (3+ → 2)
     md = md.replace(/\n{4,}/g, '\n\n\n');
 
-    // Remove leading/trailing whitespace per line (but preserve code blocks)
-    // We only trim outside of fenced code blocks
+    // Process lines: trim whitespace and convert HTML code tags to markdown
+    // Handles both <code>...</code> and &lt;code&gt;...&lt;/code&gt; patterns
     const lines = md.split('\n');
     let inCodeBlock = false;
-    const cleaned = lines.map(line => {
-      if (line.startsWith('```')) {
+    md = lines.map(line => {
+      // Track code block state
+      if (line.trim().startsWith('```')) {
         inCodeBlock = !inCodeBlock;
+        return line;
       }
-      if (inCodeBlock) return line;
-      return line.trimEnd();
-    });
-    md = cleaned.join('\n');
+      
+      // Skip processing inside code blocks
+      if (inCodeBlock) {
+        return line;
+      }
+      
+      // Trim trailing whitespace
+      line = line.trimEnd();
+      
+      // Convert HTML entity-encoded code tags: &lt;code&gt;...&lt;/code&gt;
+      line = line.replace(/&lt;code&gt;([^&]+?)&lt;\/code&gt;/gi, (match, content) => {
+        return '`' + content.trim() + '`';
+      });
+      
+      // Convert literal HTML code tags: <code>...</code>
+      line = line.replace(/<code>([^<]+?)<\/code>/gi, (match, content) => {
+        return '`' + content.trim() + '`';
+      });
+      
+      return line;
+    }).join('\n');
 
     // Convert relative URLs to absolute
     // Matches markdown links: [text](url) where url starts with / or ../
