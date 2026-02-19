@@ -54,16 +54,19 @@ function categorizeUrl(url) {
   function urlToPagePath(url, baseUrl) {
     // Strip the base URL to get the path portion
     let pagePath = url.replace(baseUrl, '');
-  
+
     // Remove leading/trailing slashes
     pagePath = pagePath.replace(/^\/+/, '').replace(/\/+$/, '');
-  
+
     // Replace path separators and dots with double dashes
     pagePath = pagePath.replace(/\//g, '--').replace(/\./g, '-');
-  
+
     // Clean up any triple+ dashes from edge cases
     pagePath = pagePath.replace(/-{3,}/g, '--');
-  
+
+    // Normalize to lower case so .txt paths and references are consistent (no file conflicts)
+    pagePath = pagePath.toLowerCase();
+
     return 'pages/' + pagePath + '.txt';
   }
   
