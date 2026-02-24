@@ -327,6 +327,9 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-rest-api-guidelines.git
       start_path: docs
       branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/extensions/clamav-scan.git
+      start_path: docs
+      branches: [master]
       
 runtime:
   cache_dir: ./.cache/antora
@@ -475,6 +478,7 @@ asciidoc:
     infoMagnoliaUi-magnoliaUiMediaEditor-version: 6.2.43
     infoMagnoliaWebhooks-magnoliaWebhooksParent-version: '1.0.2'
     infoMagnoliaWorkflow-magnoliaModuleWorkflow-version: '6.0.12'
+    magnolia-dam-clamav-scan-64: '1.0.0'
     infoMagnoliaabtesting-magnoliaabtesting-version: 1.0.1
     infoMagnoliaTemplating-magnoliaJsonfn-version: 1.0.9
     infoMagnoliaAbout-magnoliaAboutApp-bundled: 'Yes'
