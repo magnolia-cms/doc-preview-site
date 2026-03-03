@@ -274,7 +274,22 @@ User's latest question: ${userQuestion}`;
     if (data.error) {
       throw new Error(data.error.message || "OpenAI error");
     }
-    const answer = (data.choices?.[0]?.message?.content ?? "").trim();
+
+    const raw = data.choices?.[0]?.message?.content;
+    if (getEnv("ASK_AI_DEBUG")) {
+      console.log("Ask AI content type:", typeof raw);
+      console.log("Ask AI content value:", typeof raw === "string" ? raw.slice(0, 200) : JSON.stringify(raw)?.slice(0, 500));
+    }
+    let answer = "";
+    if (typeof raw === "string") {
+      answer = raw.trim();
+    } else if (Array.isArray(raw)) {
+      answer = raw
+        .filter((block) => block && (block.type === "text" || block.type === "output_text"))
+        .map((block) => block.text ?? block.content ?? "")
+        .join("\n")
+        .trim();
+    }
 
     return new Response(JSON.stringify({ answer, sources }), {
       status: 200,
