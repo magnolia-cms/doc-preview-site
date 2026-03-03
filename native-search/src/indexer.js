@@ -10,13 +10,15 @@ const fs = require('fs').promises;
 const path = require('path');
 const cheerio = require('cheerio');
 const crypto = require('crypto');
-const { categorizeUrl, urlToPagePath, slugify, pathToUrl } = require('./utils');
+const { categorizeUrl, urlToPagePath, slugify, pathToUrl, getExcludedPathPrefixes } = require('./utils');
 
 class MagnoliaDocsIndexer {
   constructor(options = {}) {
     this.siteDir = options.siteDir || './build/site';
     this.outputDir = options.outputDir || './search-data';
     this.baseUrl = options.baseUrl || 'https://docs.magnolia-cms.com';
+    // Path prefixes (relative to siteDir) to skip; loaded from config/excluded-paths.json unless overridden
+    this.excludePathPrefixes = options.excludePathPrefixes !== undefined ? options.excludePathPrefixes : getExcludedPathPrefixes();
     
     // Search index
     this.searchIndex = [];
@@ -99,11 +101,16 @@ class MagnoliaDocsIndexer {
    * Process a single HTML file
    */
   async processFile(filePath) {
+    const relativePath = path.relative(this.siteDir, filePath);
+    const relativeNorm = relativePath.replace(/\\/g, '/');
+    if (this.excludePathPrefixes.some(prefix => relativeNorm.startsWith(prefix + '/'))) {
+      return;
+    }
+
     const html = await fs.readFile(filePath, 'utf-8');
     const $ = cheerio.load(html);
     
     // Extract URL from file path
-    const relativePath = path.relative(this.siteDir, filePath);
     const url = pathToUrl(relativePath, this.baseUrl);
     
     // Skip non-content pages

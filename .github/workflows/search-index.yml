@@ -53,9 +53,9 @@ jobs:
         run: |
           node native-search/src/indexer.js build/site search-data || exit 1
 
-      - name: Run markdown generator
+      - name: Run markdown generator (llms.txt and pages at site root)
         run: |
-          node native-search/src/markdown-generator.js build/site search-data || exit 1
+          node native-search/src/markdown-generator.js build/site build/site || exit 1
 
       - name: Commit and push updated search-data
         run: |

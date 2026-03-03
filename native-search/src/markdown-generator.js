@@ -15,13 +15,15 @@ const path = require('path');
 const cheerio = require('cheerio');
 const TurndownService = require('turndown');
 const { gfm } = require('@joplin/turndown-plugin-gfm');
-const { categorizeUrl, urlToPagePath, pathToUrl } = require('./utils');
+const { categorizeUrl, urlToPagePath, pathToUrl, getExcludedPathPrefixes } = require('./utils');
 
 class MagnoliaMarkdownGenerator {
   constructor(options = {}) {
     this.siteDir = options.siteDir || './build/site';
-    this.outputDir = options.outputDir || './search-data';
+    this.outputDir = options.outputDir || './build/site';
     this.baseUrl = options.baseUrl || 'https://docs.magnolia-cms.com';
+    // Path prefixes (relative to siteDir) to skip; loaded from config/excluded-paths.json unless overridden
+    this.excludePathPrefixes = options.excludePathPrefixes !== undefined ? options.excludePathPrefixes : getExcludedPathPrefixes();
 
     // All generated pages (for manifest)
     this.pages = [];
@@ -165,12 +167,21 @@ class MagnoliaMarkdownGenerator {
    * Main entry point
    */
   async build() {
+    const startTime = Date.now();
     console.log('📝 Magnolia Docs Markdown Generator');
     console.log('====================================\n');
 
-    // Ensure output directories exist
-    const pagesDir = path.join(this.outputDir, 'pages');
-    await fs.mkdir(pagesDir, { recursive: true });
+    // Ensure output directory exists and is empty for this run (so output matches "pages produced")
+    const llmsDir = path.join(this.outputDir, 'llms');
+    try {
+      const entries = await fs.readdir(llmsDir, { withFileTypes: true });
+      for (const entry of entries) {
+        await fs.rm(path.join(llmsDir, entry.name), { recursive: entry.isDirectory() });
+      }
+    } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+    }
+    await fs.mkdir(llmsDir, { recursive: true });
 
     // Find all HTML files
     console.log(`📂 Scanning ${this.siteDir}...`);
@@ -195,12 +206,12 @@ class MagnoliaMarkdownGenerator {
     // Write the llms.txt manifest
     console.log('\n💾 Writing output files...');
     const pagesCount = this.pages.length;
-    console.log(`   ✓ Pages: ${pagesDir} (${pagesCount} files)`);
+    console.log(`   ✓ llms/: ${llmsDir} (${pagesCount} files)`);
 
     await this.writeManifest();
     console.log(`   ✓ Manifest: ${path.join(this.outputDir, 'llms.txt')}`);
 
-    // Print summary
+    this.buildDurationMs = Date.now() - startTime;
     this.printSummary();
 
     return {
@@ -234,11 +245,17 @@ class MagnoliaMarkdownGenerator {
    * Process a single HTML file
    */
   async processFile(filePath) {
+    const relativePath = path.relative(this.siteDir, filePath);
+    const relativeNorm = relativePath.replace(/\\/g, '/');
+    if (this.excludePathPrefixes.some(prefix => relativeNorm.startsWith(prefix + '/'))) {
+      this.stats.pagesSkipped++;
+      return;
+    }
+
     const html = await fs.readFile(filePath, 'utf-8');
     const $ = cheerio.load(html);
 
     // Extract URL from file path
-    const relativePath = path.relative(this.siteDir, filePath);
     const url = pathToUrl(relativePath, this.baseUrl);
 
     // Skip non-content pages (same logic as indexer)
@@ -267,6 +284,12 @@ class MagnoliaMarkdownGenerator {
     // Post-process the markdown
     markdown = this.postProcess(markdown, url);
 
+    // Skip pages with no substantive content (e.g. title only, no body)
+    if (!this.isSubstantiveMarkdown(markdown)) {
+      this.stats.pagesSkipped++;
+      return;
+    }
+
     // Build the full file with YAML frontmatter
     const output = this.buildOutput(metadata, markdown, url);
 
@@ -274,7 +297,7 @@ class MagnoliaMarkdownGenerator {
     const pagePath = urlToPagePath(url, this.baseUrl);
     const outputPath = path.join(this.outputDir, pagePath);
 
-    // Ensure the parent directory exists (pagePath is always pages/...)
+    // Ensure the parent directory exists (pagePath is always llms/...)
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
     // Write the file
@@ -291,6 +314,18 @@ class MagnoliaMarkdownGenerator {
     });
 
     this.stats.pagesGenerated++;
+  }
+
+  /**
+   * Return false if the markdown body is effectively empty (e.g. only a title line).
+   * Used to skip writing and manifest for stub/placeholder pages.
+   */
+  isSubstantiveMarkdown(markdown) {
+    const trimmed = markdown.trim();
+    if (!trimmed) return false;
+    // Strip leading # title line(s) and blank lines
+    const withoutTitle = trimmed.replace(/^#\s+.+?\n?(\s*\n?)*/m, '').trim();
+    return withoutTitle.length >= 40;
   }
 
   /**
@@ -463,7 +498,30 @@ class MagnoliaMarkdownGenerator {
   }
 
   /**
-   * Write the llms.txt manifest grouped by category
+   * Load intro block for llms.txt from config/llms-intro.md. Falls back to a short default if missing.
+   * @returns {Promise<string[]>} Lines to include at the top of the manifest (no trailing newline needed before category list).
+   */
+  async getManifestIntro() {
+    const configPath = path.join(__dirname, '..', 'config', 'llms-intro.md');
+    try {
+      const raw = await fs.readFile(configPath, 'utf-8');
+      const lines = raw.split(/\r?\n/);
+      return lines[lines.length - 1] === '' ? lines : [...lines, ''];
+    } catch (err) {
+      if (err.code !== 'ENOENT') throw err;
+      return [
+        '# Magnolia CMS Documentation',
+        '',
+        '> Magnolia is a composable digital experience platform (DXP). Edit config/llms-intro.md to customize this intro.',
+        '',
+        '## Documentation map (all pages)',
+        ''
+      ];
+    }
+  }
+
+  /**
+   * Write the llms.txt manifest: intro + grouped page list. Links use relative paths.
    */
   async writeManifest() {
     // Group pages by category
@@ -490,33 +548,23 @@ class MagnoliaMarkdownGenerator {
     const sortedCategories = Object.keys(grouped).sort((a, b) => {
       const ai = categoryOrder.indexOf(a);
       const bi = categoryOrder.indexOf(b);
-      // Known categories first in defined order, then alphabetical
       if (ai !== -1 && bi !== -1) return ai - bi;
       if (ai !== -1) return -1;
       if (bi !== -1) return 1;
       return a.localeCompare(b);
     });
 
-    // Build manifest content
-    const lines = [
-      '# Magnolia CMS Documentation',
-      '',
-      '> Magnolia is a composable digital experience platform (DXP). This documentation covers product setup, development, modules, cloud deployment, and more.',
-      ''
-    ];
+    const lines = await this.getManifestIntro();
 
     for (const category of sortedCategories) {
       const pages = grouped[category];
-
-      // Sort pages by title within each category
       pages.sort((a, b) => a.title.localeCompare(b.title));
 
       lines.push(`## ${category}`);
       lines.push('');
 
       for (const page of pages) {
-        // Build the URL to the .txt file
-        const txtUrl = `${this.baseUrl}/${page.pagePath}`;
+        const txtUrl = `/${page.pagePath}`;
         const desc = page.description
           ? ': ' + page.description.slice(0, 120)
           : '';
@@ -534,15 +582,17 @@ class MagnoliaMarkdownGenerator {
    * Print summary
    */
   printSummary() {
+    const durationSec = this.buildDurationMs != null ? (this.buildDurationMs / 1000).toFixed(2) : '—';
     console.log('\n====================================');
     console.log('📊 Summary');
     console.log('====================================');
-    console.log(`   Files processed: ${this.stats.filesProcessed}`);
-    console.log(`   Pages generated: ${this.stats.pagesGenerated}`);
-    console.log(`   Pages skipped:   ${this.stats.pagesSkipped}`);
+    console.log(`   Files processed:  ${this.stats.filesProcessed}`);
+    console.log(`   Pages produced:   ${this.stats.pagesGenerated}`);
+    console.log(`   Pages skipped:    ${this.stats.pagesSkipped}`);
+    console.log(`   Duration:         ${durationSec}s`);
 
     if (this.stats.errors.length > 0) {
-      console.log(`   Errors:          ${this.stats.errors.length}`);
+      console.log(`   Errors:           ${this.stats.errors.length}`);
       this.stats.errors.slice(0, 5).forEach(err => {
         console.log(`      - ${err.file}: ${err.error}`);
       });
@@ -590,11 +640,12 @@ function extractCellText(cell) {
 
 module.exports = MagnoliaMarkdownGenerator;
 
-// CLI usage
+// CLI usage (default: read and write under doc-preview-site/build/site)
 if (require.main === module) {
   const args = process.argv.slice(2);
-  const siteDir = args[0] || './build/site';
-  const outputDir = args[1] || './search-data';
+  const defaultSite = path.join(__dirname, '..', '..', 'build', 'site');
+  const siteDir = args[0] || defaultSite;
+  const outputDir = args[1] || defaultSite;
 
   const generator = new MagnoliaMarkdownGenerator({ siteDir, outputDir });
   generator.build().catch(err => {

@@ -6,6 +6,30 @@
  * and skip logic.
  */
 
+const path = require('path');
+const fs = require('fs');
+
+/** Default path prefixes to exclude when config file is missing or invalid */
+const DEFAULT_EXCLUDED_PATHS = ['cockpit'];
+
+/**
+ * Load excluded path prefixes from config/excluded-paths.json (relative to native-search).
+ * Used by indexer and markdown generator to skip e.g. build/site/cockpit/*.
+ * @returns {string[]} Array of path prefixes (e.g. ['cockpit'])
+ */
+function getExcludedPathPrefixes() {
+  const configPath = path.join(__dirname, '..', 'config', 'excluded-paths.json');
+  try {
+    const data = fs.readFileSync(configPath, 'utf-8');
+    const parsed = JSON.parse(data);
+    if (Array.isArray(parsed)) return parsed;
+    if (parsed && Array.isArray(parsed.excludePathPrefixes)) return parsed.excludePathPrefixes;
+  } catch (e) {
+    // missing file or invalid JSON
+  }
+  return DEFAULT_EXCLUDED_PATHS;
+}
+
 /**
  * Categorize a URL by documentation area and version.
  * 
@@ -41,7 +65,7 @@ function categorizeUrl(url) {
   
   /**
    * Convert a full page URL to a relative path for the corresponding
-   * LLM-friendly .txt file under search-data/pages/.
+   * LLM-friendly .txt file (e.g. pages/... under site root).
    * 
    * Example:
    *   https://docs.magnolia-cms.com/product-docs/6.3/content-types/
@@ -49,7 +73,7 @@ function categorizeUrl(url) {
    * 
    * @param {string} url - Full page URL
    * @param {string} baseUrl - Site base URL to strip
-   * @returns {string} Relative path like "pages/some--page--path.txt"
+   * @returns {string} Relative path like "llms/some--page--path.txt"
    */
   function urlToPagePath(url, baseUrl) {
     // Strip the base URL to get the path portion
@@ -67,7 +91,7 @@ function categorizeUrl(url) {
     // Normalize to lower case so .txt paths and references are consistent (no file conflicts)
     pagePath = pagePath.toLowerCase();
 
-    return 'pages/' + pagePath + '.txt';
+    return 'llms/' + pagePath + '.txt';
   }
   
   /**
@@ -106,5 +130,6 @@ function categorizeUrl(url) {
     categorizeUrl,
     urlToPagePath,
     slugify,
-    pathToUrl
+    pathToUrl,
+    getExcludedPathPrefixes
   };
