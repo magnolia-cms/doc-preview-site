@@ -55,12 +55,13 @@ Supabase free tier includes **~1 GB database storage**. With ~2200 pages and ~80
 
 4. **Get credentials**: Project Settings → API → Project URL and **service_role** key (not anon).
 
-5. **Run ingest** (from repo root, e.g. `doc-preview-site`). Ingest reads the llms .txt files, chunks them, and pushes directly to Supabase. No `chunks.json` is written unless you pass an output path.
+5. **Run ingest** (from repo root, e.g. `doc-preview-site`). Ingest reads the llms .txt files, chunks them, **computes embeddings via OpenAI** (`text-embedding-3-small`), and pushes to Supabase. You must set `OPENAI_API_KEY` when pushing. No `chunks.json` is written unless you pass an output path.
 
    ```bash
    cd native-search && npm install
    export SUPABASE_URL="https://YOUR_PROJECT.supabase.co"
    export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+   export OPENAI_API_KEY="your-openai-api-key"
    node src/ingest.js
    ```
 
@@ -78,12 +79,11 @@ Supabase free tier includes **~1 GB database storage**. With ~2200 pages and ~80
 |----------|-------------|
 | `SUPABASE_URL` | Project URL (e.g. `https://xxx.supabase.co`) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (bypasses RLS; keep secret) |
+| `OPENAI_API_KEY` | Required for ingest; used to compute embeddings (`text-embedding-3-small`) for vector search |
 
 ## Embeddings
 
-The schema includes an optional `embedding vector(1536)` column. Ingest does **not** generate embeddings; it only upserts `id`, `content`, and `metadata`. To enable vector search:
+Ingest **computes embeddings** for each chunk via OpenAI `text-embedding-3-small` (1536 dimensions) and upserts them into the `embedding` column. The Ask AI edge function uses these for vector search.
 
-- Use Supabase Edge Functions or a separate job to call an embedding API (e.g. OpenAI `text-embedding-3-small`) and update `ai_agent_docs.embedding`.
-- Or use Supabase’s built-in embedding integration if available for your project.
 
-After embeddings are populated, run the optional HNSW index creation in `config/supabase-schema.sql` (uncomment the `create index` block).
+After embeddings are populated, you can add an HNSW index in Supabase for faster similarity search (see your schema or `config/supabase-schema.sql` if present).

@@ -2,14 +2,14 @@
  * Ingest: chunk markdown from the generator and push to Supabase.
  *
  * Reads .txt files (from markdown-generator.js output), splits by second-level
- * headings (##), and produces documents (id, content, metadata). When
- * SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set, upserts directly to
- * the ai_agent_docs table. No chunks.json is written unless you pass outputFile.
+ * headings (##), and produces documents (id, content, metadata, embedding).
+ * When SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set, computes embeddings
+ * via OpenAI (OPENAI_API_KEY required) and upserts to ai_agent_docs.
  *
  * Usage:
  *   node src/ingest.js [llmsDir] [baseUrl] [outputFile]
- *   # Push to Supabase only (env required):
- *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... node src/ingest.js
+ *   # Push to Supabase with embeddings (env required):
+ *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... OPENAI_API_KEY=... node src/ingest.js
  *   # Optionally write chunks to a file (e.g. for debugging):
  *   node src/ingest.js ../build/site/llms https://docs.magnolia-cms.com ./chunks.json
  */
@@ -19,6 +19,10 @@ const path = require('path');
 const { slugify } = require('./utils');
 
 const DEFAULT_BASE_URL = 'https://docs.magnolia-cms.com';
+const EMBEDDING_MODEL = 'text-embedding-3-small';
+const EMBEDDING_BATCH_SIZE = 50;
+const EMBEDDING_MAX_CHARS = 8192;
+const EMBEDDING_BATCH_DELAY_MS = 150;
 
 /**
  * Parse YAML-like frontmatter from generator output (--- ... ---).
@@ -95,6 +99,32 @@ function toRelativeSourceUrl(fullUrl, baseUrl, sectionSlug) {
   return rel;
 }
 
+/**
+ * Call OpenAI embeddings API for a batch of texts. Returns array of embedding vectors.
+ */
+async function fetchEmbeddingBatch(texts, apiKey) {
+  const input = texts.map((t) => String(t).slice(0, EMBEDDING_MAX_CHARS));
+  const res = await fetch('https://api.openai.com/v1/embeddings', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + apiKey
+    },
+    body: JSON.stringify({ model: EMBEDDING_MODEL, input })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message || 'OpenAI embedding error');
+  const list = data.data;
+  if (!Array.isArray(list) || list.length !== input.length) {
+    throw new Error('OpenAI returned unexpected embedding count');
+  }
+  return list.map((d) => d.embedding).filter(Boolean);
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 const BATCH_SIZE = 100;
 
 class Ingest {
@@ -105,8 +135,9 @@ class Ingest {
     this.outputFile = options.outputFile || null;
     this.supabaseUrl = options.supabaseUrl || process.env.SUPABASE_URL || null;
     this.supabaseServiceRoleKey = options.supabaseServiceRoleKey || process.env.SUPABASE_SERVICE_ROLE_KEY || null;
+    this.openaiApiKey = options.openaiApiKey || process.env.OPENAI_API_KEY || null;
     this.supabaseTable = options.supabaseTable || 'ai_agent_docs';
-    this.stats = { filesRead: 0, chunksWritten: 0, errors: [], supabaseUpserted: 0 };
+    this.stats = { filesRead: 0, chunksWritten: 0, errors: [], supabaseUpserted: 0, embeddingsComputed: 0 };
   }
 
   /**
@@ -184,6 +215,12 @@ class Ingest {
     }
 
     if (this.supabaseUrl && this.supabaseServiceRoleKey) {
+      if (!this.openaiApiKey) {
+        console.error('OPENAI_API_KEY is required to push to Supabase (embeddings are computed for vector search).');
+        process.exit(1);
+      }
+      console.log('Computing embeddings via OpenAI (' + EMBEDDING_MODEL + ')...');
+      await this.computeEmbeddings(documents);
       await this.pushToSupabase(documents);
     } else if (documents.length > 0) {
       console.log('Supabase not configured (set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to push).');
@@ -198,6 +235,29 @@ class Ingest {
     this.runDurationMs = Date.now() - startTime;
     this.printSummary();
     return { documents, stats: this.stats };
+  }
+
+  /**
+   * Compute embeddings for all documents in batches via OpenAI. Mutates documents in place.
+   */
+  async computeEmbeddings(documents) {
+    const total = documents.length;
+    for (let i = 0; i < total; i += EMBEDDING_BATCH_SIZE) {
+      const batch = documents.slice(i, i + EMBEDDING_BATCH_SIZE);
+      const texts = batch.map((d) => d.content);
+      const embeddings = await fetchEmbeddingBatch(texts, this.openaiApiKey);
+      for (let j = 0; j < batch.length; j++) {
+        batch[j].embedding = embeddings[j] || null;
+      }
+      this.stats.embeddingsComputed += batch.length;
+      const done = Math.min(i + EMBEDDING_BATCH_SIZE, total);
+      if (done % 500 < EMBEDDING_BATCH_SIZE || done === total) {
+        console.log('   Embeddings', done, '/', total, '...');
+      }
+      if (i + EMBEDDING_BATCH_SIZE < total) {
+        await sleep(EMBEDDING_BATCH_DELAY_MS);
+      }
+    }
   }
 
   async pushToSupabase(documents) {
@@ -234,7 +294,8 @@ class Ingest {
     const rows = documents.map((doc) => ({
       id: doc.id,
       content: doc.content,
-      metadata: doc.metadata || {}
+      metadata: doc.metadata || {},
+      embedding: doc.embedding || null
     }));
     console.log('Pushing to Supabase', table, '...');
     for (let i = 0; i < rows.length; i += BATCH_SIZE) {
@@ -276,6 +337,9 @@ class Ingest {
     console.log('================================================');
     console.log('   .txt files used:  ', this.stats.filesRead);
     console.log('   Chunks produced: ', this.stats.chunksWritten);
+    if (this.stats.embeddingsComputed > 0) {
+      console.log('   Embeddings computed:', this.stats.embeddingsComputed);
+    }
     if (this.stats.supabaseUpserted > 0) {
       console.log('   Supabase upserted:', this.stats.supabaseUpserted);
     }
