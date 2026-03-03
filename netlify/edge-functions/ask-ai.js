@@ -266,7 +266,7 @@ User's latest question: ${userQuestion}`;
       body: JSON.stringify({
         model: "gpt-5",
         messages,
-        max_tokens: 1536,
+        max_completion_tokens: 1536,
         temperature: 0.1,
       }),
     });
