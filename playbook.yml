@@ -327,6 +327,9 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/extensions/clamav-scan.git
       start_path: docs
       branches: ['DOCU-4174-clamav-docs-folder']
+    - url: https://gitlab.magnolia-platform.com/ps/incubator/backend-live-parent.git
+      start_path: docs
+      branches: [master]
       
 runtime:
   cache_dir: ./.cache/antora
