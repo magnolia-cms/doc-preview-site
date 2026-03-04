@@ -1,8 +1,10 @@
 /**
- * Ingest: chunk markdown from the generator and push to Supabase.
+ * Ingest: chunk markdown from Antora llms-export output and push to Supabase.
  *
- * Reads .txt files (from markdown-generator.js output), splits by second-level
- * headings (##), and produces documents (id, content, metadata, embedding).
+ * Reads .txt files from the Antora extension (lib/llms-export-extension.js):
+ * one file per component-version (llms/llms-<component>-<version>.txt) with
+ * page-delimited blocks (--- PAGE START/END ---). Splits each page body by
+ * second-level headings (##) and produces documents (id, content, metadata, embedding).
  * When SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are set, computes embeddings
  * via OpenAI (OPENAI_API_KEY required) and upserts to ai_agent_docs.
  *
@@ -25,8 +27,44 @@ const EMBEDDING_MAX_CHARS = 8192;
 const EMBEDDING_BATCH_DELAY_MS = 150;
 
 /**
- * Parse YAML-like frontmatter from generator output (--- ... ---).
- * Returns { frontmatter: object, body: string } or null if no frontmatter.
+ * Parse Antora llms-export format: page-delimited blocks with ID/Title/URL/NavPath.
+ * Returns array of { title, url, id, navPath, body }. Returns empty array if not this format.
+ */
+function parseComponentVersionFile(raw) {
+  if (!raw.includes('--- PAGE START ---')) return [];
+  const pages = [];
+  const blocks = raw.split(/\r?\n--- PAGE START ---\r?\n/);
+  // First block is "# Component: ...", "# Version: ...", blank
+  for (let i = 1; i < blocks.length; i++) {
+    const block = blocks[i];
+    const endIdx = block.indexOf('--- PAGE END ---');
+    const content = endIdx >= 0 ? block.slice(0, endIdx) : block;
+    const lines = content.split(/\r?\n/);
+    let title = '';
+    let url = '';
+    let id = '';
+    let navPath = '';
+    let bodyStart = 0;
+    for (let j = 0; j < lines.length; j++) {
+      const line = lines[j];
+      if (line.startsWith('Title:')) title = line.slice(6).trim();
+      else if (line.startsWith('URL:')) url = line.slice(4).trim();
+      else if (line.startsWith('ID:')) id = line.slice(3).trim();
+      else if (line.startsWith('NavPath:')) navPath = line.slice(8).trim();
+      else if (line === '' && (title || url)) {
+        bodyStart = j + 1;
+        break;
+      }
+    }
+    const body = lines.slice(bodyStart).join('\n').trim();
+    pages.push({ title: title || 'Untitled', url, id, navPath, body });
+  }
+  return pages;
+}
+
+/**
+ * Parse YAML-like frontmatter from legacy one-page-per-file output (--- ... ---).
+ * Returns { frontmatter: object, body: string }.
  */
 function parseFrontmatter(raw) {
   const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
@@ -181,8 +219,43 @@ class Ingest {
         const baseName = relativePath.split(path.sep).join('/');
         const file_name = dir.replace(/\\/g, '/').endsWith('llms') ? 'llms/' + baseName : baseName;
         const fileContent = await fs.readFile(filePath, 'utf-8');
-        const { frontmatter, body } = parseFrontmatter(fileContent);
+        const fileBase = file_name.replace(/\.txt$/, '');
 
+        // Antora llms-export format: one file per component-version, page-delimited blocks
+        const pages = parseComponentVersionFile(fileContent);
+        if (pages.length > 0) {
+          this.stats.filesRead++;
+          for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+            const page = pages[pageIndex];
+            const chunks = chunkBySecondLevelHeadings(page.body, page.title);
+            const category = page.navPath || fileBase;
+            for (let i = 0; i < chunks.length; i++) {
+              const { sectionTitle, content } = chunks[i];
+              const sectionSlug = slugify(sectionTitle);
+              const source_url = page.url
+                ? (page.url + (sectionSlug ? '#' + sectionSlug : ''))
+                : '';
+              const id = `${fileBase}--p${pageIndex}--${i}--${sectionSlug || 'intro'}`;
+
+              documents.push({
+                id,
+                content,
+                metadata: {
+                  section: sectionTitle,
+                  category,
+                  file_name,
+                  source_url,
+                  parent_page_title: page.title
+                }
+              });
+              this.stats.chunksWritten++;
+            }
+          }
+          continue;
+        }
+
+        // Legacy: one .txt per page with YAML frontmatter
+        const { frontmatter, body } = parseFrontmatter(fileContent);
         const title = frontmatter.title || 'Untitled';
         const url = frontmatter.url || '';
         const category = frontmatter.category || '';
@@ -194,7 +267,7 @@ class Ingest {
           const { sectionTitle, content } = chunks[i];
           const sectionSlug = slugify(sectionTitle);
           const source_url = toRelativeSourceUrl(url, this.baseUrl, sectionSlug || undefined);
-          const id = `${file_name.replace(/\.txt$/, '')}--${i}--${sectionSlug || 'intro'}`;
+          const id = `${fileBase}--${i}--${sectionSlug || 'intro'}`;
 
           documents.push({
             id,

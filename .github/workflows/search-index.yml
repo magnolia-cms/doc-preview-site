@@ -53,9 +53,7 @@ jobs:
         run: |
           node native-search/src/indexer.js build/site search-data || exit 1
 
-      - name: Run markdown generator (llms.txt and pages at site root)
-        run: |
-          node native-search/src/markdown-generator.js build/site build/site || exit 1
+      # llms.txt and llms/*.txt are produced by the Antora llms-export extension during the build step above.
 
       - name: Commit and push updated search-data
         run: |

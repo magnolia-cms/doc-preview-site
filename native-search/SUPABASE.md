@@ -71,8 +71,6 @@ Supabase free tier includes **~1 GB database storage**. With ~2200 pages and ~80
    node src/ingest.js ../build/site/llms https://docs.magnolia-cms.com ./chunks.json
    ```
 
-   **Re-push from an existing file:** If you already have a `chunks.json` and want to push it without re-running ingest, use `node src/push-supabase.js /path/to/chunks.json`.
-
 ## Env vars
 
 | Variable | Description |

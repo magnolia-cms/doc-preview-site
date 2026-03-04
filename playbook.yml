@@ -666,3 +666,8 @@ asciidoc:
   - ./lib/javadoc.js
   # - ./lib/module-version.js
   - asciidoctor-kroki
+
+antora:
+  extensions:
+    - ./lib/llms-export-extension.js
+    
