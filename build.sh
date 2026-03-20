@@ -5,7 +5,7 @@ set -e  # Exit on any error
 # 1. Build Antora site (HTML + llms.txt + llms/*.txt via llms-export extension)
 ###############################################################################
 echo "Building Antora site..."
-if ! antora playbook.yml --fetch; then
+if ! antora playbook.yml --fetch --stacktrace; then
   echo "ERROR: Antora build failed"
   exit 1
 fi
