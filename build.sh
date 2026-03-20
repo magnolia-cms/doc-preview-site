@@ -29,12 +29,12 @@ echo "Search index at build/site/search-data/; LLM corpora at build/site/llms*/ 
 #    - Computes embeddings via OpenAI (if OPENAI_API_KEY set)
 #    - Truncates and upserts into Supabase (if SUPABASE_* set)
 ###############################################################################
-echo "Chunking and pushing to Supabase (ai_agent_docs)..."
-(cd native-search && node src/ingest.js) || {
-  echo "ERROR: Ingest failed (chunking or Supabase push)."
-  echo "  - If Supabase: check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, network, and that config/supabase-schema.sql was run."
-  echo "  - If no env vars set, ingest only chunks and does not push; failure may be missing llms/*.txt files."
-  exit 1
-}
+# echo "Chunking and pushing to Supabase (ai_agent_docs)..."
+# (cd native-search && node src/ingest.js) || {
+#   echo "ERROR: Ingest failed (chunking or Supabase push)."
+#   echo "  - If Supabase: check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, network, and that config/supabase-schema.sql was run."
+#   echo "  - If no env vars set, ingest only chunks and does not push; failure may be missing llms/*.txt files."
+#   exit 1
+# }
 
 echo "Build complete"
