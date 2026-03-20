@@ -13,14 +13,14 @@ fi
 ###############################################################################
 # 2. Build search index (HTML → search-data JSON under build/site/search-data/)
 ###############################################################################
-echo "Generating search index (native-search/indexer)..."
-(cd native-search && npm ci --omit=dev) || { echo "ERROR: native-search npm ci failed"; exit 1; }
+# echo "Generating search index (native-search/indexer)..."
+# (cd native-search && npm ci --omit=dev) || { echo "ERROR: native-search npm ci failed"; exit 1; }
 
-(cd native-search && node src/indexer.js ../build/site ../build/site/search-data) || {
-  echo "ERROR: Search indexer failed. Check that build/site exists and contains HTML."
-  exit 1
-}
-echo "Search index at build/site/search-data/; LLM corpora at build/site/llms*/ (from Antora extension)"
+# (cd native-search && node src/indexer.js ../build/site ../build/site/search-data) || {
+#   echo "ERROR: Search indexer failed. Check that build/site exists and contains HTML."
+#   exit 1
+# }
+# echo "Search index at build/site/search-data/; LLM corpora at build/site/llms*/ (from Antora extension)"
 
 ###############################################################################
 # 3. Chunk LLM corpora and push to Supabase (ai_agent_docs)
