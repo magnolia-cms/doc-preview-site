@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e  # Exit on any error
 
+# Sanity-check (redacted) that GIT_CREDENTIALS is set
+echo "GIT_CREDENTIALS is ${GIT_CREDENTIALS:+set (length ${#GIT_CREDENTIALS})} ${GIT_CREDENTIALS:-UNSET}"
+
 ###############################################################################
 # 1. Build Antora site (HTML + llms.txt + llms/*.txt via llms-export extension)
 ###############################################################################
