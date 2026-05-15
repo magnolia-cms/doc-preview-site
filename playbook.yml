@@ -40,6 +40,10 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-rest-api-guidelines.git
       start_path: docs
       branches: [master]
+    # APIs
+    - url: https://gitlab.magnolia-platform.com/pd/modules/definitions-rest-api.git
+      start_path: docs
+      branches: [main]
       
 runtime:
   cache_dir: ./.cache/antora
