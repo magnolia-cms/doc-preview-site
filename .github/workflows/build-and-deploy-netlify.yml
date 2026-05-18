@@ -1,0 +1,77 @@
+# Builds the preview Antora site on GitHub Actions (Git clone/fetch → GitLab happens here),
+# then publishes only the static output to the preview Netlify site via the Netlify CLI.
+#
+# This is the lighter counterpart to the production docs workflow. The preview playbook
+# pulls a curated subset of content sources, so builds are faster and there's no SDK
+# reference generation or nightly cron.
+#
+# This does NOT replace Netlify hosting: redirects, headers, and edge functions still
+# come from netlify.toml at the repo root when you deploy from this workflow's working
+# directory.
+#
+# Git pushes are skipped on Netlify via netlify.toml [build].ignore (BUILD_REASON check).
+# Build hooks and manual "Trigger deploy" clicks still run full Netlify builds per Netlify docs.
+# Secrets: GIT_CREDENTIALS, NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID.
+
+name: Build preview site and deploy to Netlify
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+concurrency:
+  group: antora-netlify-preview-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    permissions:
+      contents: read
+
+    env:
+      GIT_CREDENTIALS: ${{ secrets.GIT_CREDENTIALS }}
+      # Keep Antora content cache inside the repo so actions/cache matches Netlify's layout.
+      ANTORA_CACHE_DIR: ${{ github.workspace }}/.antora/cache
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.19.0'
+          cache: npm
+
+      - name: Cache Antora content cache
+        uses: actions/cache@v4
+        with:
+          path: .antora/cache
+          key: antora-content-${{ runner.os }}-${{ hashFiles('playbook.yml', 'package-lock.json') }}
+          restore-keys: |
+            antora-content-${{ runner.os }}-
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq curl
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build documentation site
+        run: bash build.sh
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      # CLI v21+ runs `netlify build` (netlify.toml command) before deploy by default — skip it;
+      # we already ran bash build.sh in the previous step.
+      - name: Deploy to Netlify
+        run: netlify deploy --prod --no-build --dir=build/site
