@@ -8,7 +8,7 @@ echo "GIT_CREDENTIALS is ${GIT_CREDENTIALS:+set (length ${#GIT_CREDENTIALS})} ${
 # 1. Build Antora site
 ###############################################################################
 echo "Building Antora site..."
-if ! antora playbook.yml --fetch --stacktrace; then
+if ! npx antora playbook.yml --fetch --stacktrace; then
   echo "ERROR: Antora build failed, clearing cache for next attempt"
   rm -rf .cache/antora
   exit 1
