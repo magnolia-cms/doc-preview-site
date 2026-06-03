@@ -29,9 +29,6 @@ content:
       branches: ["master"]
     - url: https://gitlab.magnolia-platform.com/pd/documentation/hi-magnolia.git
       branches: [master]
-    - url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-content-api.git
-      start_path: docs
-      branches: [master]
     - url: https://gitlab.magnolia-platform.com/pd/extensions/ve/visual-editor.git
       start_path: docs
       branches: [main]
@@ -48,8 +45,31 @@ content:
       start_path: docs
       branches: ['docs/beta']
     # APIs
+    # accessible from the Developer guide  
+    - url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-content-api.git
+      start_path: docs
+      branches: [master]
     - url: https://gitlab.magnolia-platform.com/pd/modules/definitions-rest-api.git
       start_path: docs
+      branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/modules/dam.git
+      start_path: docs
+      branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/enterprise/personalization.git
+      start_path: docs
+      branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/extensions/graphql.git
+      start_path: docs
+      branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/modules/publishing.git
+      start_path: docs
+      branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/enterprise/workflow.git
+      start_path: docs
+      branches: [master]
+    - url: https://gitlab.magnolia-platform.com/pd/enterprise/content-dependencies.git
+      start_path: docs
+      branches: [master]  
       
 runtime:
   cache_dir: ./.cache/antora
