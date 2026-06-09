@@ -14,7 +14,7 @@ git:
 content:
   sources:    
     - url: https://gitlab.magnolia-platform.com/pd/documentation/product-docs.git
-      branches: ['master','dev/6.4.7']
+      branches: ['DOCU-4519-swift-3-1-0-rc','dev/6.4.7']
     - url: https://gitlab.magnolia-platform.com/micro-services/ui/cockpit.git
       start_path: spa/help/help-content
       branches: ['develop']
@@ -47,6 +47,9 @@ content:
     - url: https://gitlab.magnolia-platform.com/ps/extensions/ai/ai-accelerator.git
       start_path: docs
       branches: ['docs/beta']
+    - url: https://gitlab.magnolia-platform.com/pd/extensions/magnolia-sso.git
+      start_path: docs
+      branches: ['DOCU-4679-sso-7-0-0-release']
     # APIs
     # accessible from the Developer guide  
     - url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-content-api.git
