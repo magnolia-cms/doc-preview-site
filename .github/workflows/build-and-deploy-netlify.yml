@@ -43,7 +43,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      # Antora 3.x / site deps are pinned to Node 18.
+      - name: Set up Node.js (build)
         uses: actions/setup-node@v4
         with:
           node-version: '18.19.0'
@@ -67,6 +68,12 @@ jobs:
 
       - name: Build documentation site
         run: bash build.sh
+
+      # Current netlify-cli requires Node >= 22.13; switch only for install/deploy.
+      - name: Set up Node.js (Netlify CLI)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
 
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
