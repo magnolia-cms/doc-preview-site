@@ -58,12 +58,12 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/enterprise/personalization.git
       start_path: docs
       branches: [master]
-    - url: https://gitlab.magnolia-platform.com/pd/extensions/graphql.git
-      start_path: docs
-      branches: ['MGNLGQL-68-query-naming-docs-3.1']
-    - url: https://gitlab.magnolia-platform.com/pd/incubator/graphql-solr.git
-      start_path: docs
-      branches: [MGNLGQLSLR-1-docs]
+    # - url: https://gitlab.magnolia-platform.com/pd/extensions/graphql.git
+    #   start_path: docs
+    #   branches: ['MGNLGQL-68-query-naming-docs-3.1']
+    # - url: https://gitlab.magnolia-platform.com/pd/incubator/graphql-solr.git
+    #   start_path: docs
+    #   branches: [MGNLGQLSLR-1-docs]
     - url: https://gitlab.magnolia-platform.com/pd/modules/publishing.git
       start_path: docs
       branches: [master]
@@ -85,9 +85,9 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/modules/cache.git
       start_path: docs
       branches: [DOCU-4922-cache-m7-migration]  
-    - url: https://gitlab.magnolia-platform.com/ps/extensions/ui-framework-javascript.git
-      start_path: docs
-      branches: ['DOCU-4776-ds-jsfield-sample']
+    # - url: https://gitlab.magnolia-platform.com/ps/extensions/ui-framework-javascript.git
+    #   start_path: docs
+    #   branches: ['DOCU-4776-ds-jsfield-sample']
     - url: https://gitlab.magnolia-platform.com/ps/extensions/ai/ai-accelerator.git
       start_path: docs
       branches: ['docs/ga']
@@ -100,6 +100,9 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/modules/site.git
       start_path: docs
       branches: ['DOCU-4989-site-m7-ia']
+    - url: https://gitlab.magnolia-platform.com/ps/incubator/data-intelligence.git
+      start_path: docs
+      branches: ['docs/data-intelligence-module']
 
 runtime:
   cache_dir: ./.cache/antora
