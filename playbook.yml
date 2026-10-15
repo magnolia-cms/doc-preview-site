@@ -39,14 +39,8 @@ content:
       branches: [master]
     #- url: https://gitlab.magnolia-platform.com/pd/documentation/content-admin-guide.git
     #  branches: ['docu-4909-wire-admin-includes']
-    - url: https://gitlab.magnolia-platform.com/pd/platform/main.git
-      start_path: docs
-      branches: [master]
     # - url: https://gitlab.magnolia-platform.com/pd/documentation/content-authoring-guide.git
     #  branches: [master]
-    - url: https://gitlab.magnolia-platform.com/pd/enterprise/webhooks.git
-      start_path: docs
-      branches: [DOCU-4762-content-api-webhooks-docs]
     # APIs
     # accessible from the Developer guide  
     - url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-content-api.git
@@ -79,9 +73,6 @@ content:
     - url: https://gitlab.magnolia-platform.com/pd/enterprise/license.git
       start_path: docs
       branches: ['DOCU-4844-license-rest-api-docs']
-    - url: https://gitlab.magnolia-platform.com/pd/modules/dam-ui.git
-      start_path: docs
-      branches: [main]
     - url: https://gitlab.magnolia-platform.com/pd/modules/cache.git
       start_path: docs
       branches: [DOCU-4922-cache-m7-migration]  
@@ -94,15 +85,6 @@ content:
     - url: https://gitlab.magnolia-platform.com/ps/incubator/kameleoon-abtesting.git
       start_path: docs
       branches: [master]
-    - url: https://gitlab.magnolia-platform.com/pd/shell.git
-      start_path: docs
-      branches: [main]
-    - url: https://gitlab.magnolia-platform.com/pd/modules/site.git
-      start_path: docs
-      branches: ['DOCU-4989-site-m7-ia']
-    - url: https://gitlab.magnolia-platform.com/pd/m7/segmentation-app.git
-      start_path: docs
-      branches: [main]
     - url: https://gitlab.magnolia-platform.com/ps/incubator/data-intelligence.git
       start_path: docs
       branches: ['docs/data-intelligence-module']
