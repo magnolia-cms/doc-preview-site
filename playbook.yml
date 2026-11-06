@@ -31,9 +31,10 @@ content:
     #  branches: [main]
     #- url: https://gitlab.magnolia-platform.com/pd/documentation/developer-guide.git
     #  branches: [master]
-    - url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-rest-api-guidelines.git
-      start_path: docs
-      branches: [master]
+    # docs/ removed from master in MGNLREST-980
+    #- url: https://gitlab.magnolia-platform.com/pd/platform/magnolia-rest-api-guidelines.git
+    #  start_path: docs
+    #  branches: [master]
     #- url: https://gitlab.magnolia-platform.com/pd/documentation/content-admin-guide.git
     #  branches: ['docu-4909-wire-admin-includes']
     # - url: https://gitlab.magnolia-platform.com/pd/documentation/content-authoring-guide.git
