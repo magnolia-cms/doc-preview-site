@@ -14,7 +14,7 @@ git:
 content:
   sources:    
     - url: https://gitlab.magnolia-platform.com/pd/documentation/product-docs.git
-      branches: ['dev/6.4.12', 'dev/6.3.29', 'dev/6.2.79']
+      branches: ['dev/6.4.12', 'dev/6.2.79']
     - url: https://gitlab.magnolia-platform.com/pd/documentation/cli-docs.git
       branches: [master]
     - url: https://gitlab.magnolia-platform.com/pd/documentation/paas-docs.git
@@ -80,6 +80,9 @@ content:
     - url: https://gitlab.magnolia-platform.com/ps/incubator/data-intelligence.git
       start_path: docs
       branches: ['docs/data-intelligence-module']
+    - url: https://gitlab.magnolia-platform.com/pd/modules/provenance.git
+      start_path: docs
+      branches: ['master']
 
 runtime:
   cache_dir: ./.cache/antora
